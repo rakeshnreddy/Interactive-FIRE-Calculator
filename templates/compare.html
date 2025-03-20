@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Compare Scenarios - FIRE Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --bg-light: #fefefe;
+      --bg-accent: #A8E6CF;
+      --bg-secondary: #FFD3B6;
+      --text-light: #333;
+      --panel-bg: rgba(255, 255, 255, 0.7);
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary));
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+    header {
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: var(--panel-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+      backdrop-filter: blur(8px);
+    }
+    .scenario-header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .scenario-header label {
+      margin-right: 10px;
+    }
+    .scenario-container {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .scenario {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      min-width: 150px;
+    }
+    .scenario h3 {
+      margin-top: 0;
+      font-size: 16px;
+    }
+    .form-group {
+      margin: 8px 0;
+    }
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 6px;
+      box-sizing: border-box;
+    }
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-accent);
+      border: none;
+      color: var(--text-light);
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+    input[type="submit"]:hover {
+      background: #8fd9b6;
+    }
+    a {
+      display: block;
+      margin: 20px auto;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      width: 200px;
+      padding: 10px;
+      background: var(--panel-bg);
+      border-radius: 30px;
+      transition: background 0.3s;
+    }
+    a:hover {
+      background: rgba(255,255,255,0.9);
+    }
+  </style>
+  <script>
+    // Show only the chosen number of scenario boxes.
+    function updateScenarioDisplay() {
+      var count = parseInt($("#scenarioCount").val());
+      $(".scenario").each(function(index) {
+        if (index < count) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+    $(document).ready(function(){
+      updateScenarioDisplay();
+      $("#scenarioCount").on("change", updateScenarioDisplay);
+    });
+  </script>
+</head>
+<body>
+  <header>Compare Scenarios</header>
+  <div class="container">
+    <h2>Enter Comparison Scenarios</h2>
+    <div class="scenario-header">
+      <label for="scenarioCount">Number of Scenarios:</label>
+      <select id="scenarioCount">
+        <option value="1">1</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <form method="post" action="/compare" id="compareForm">
+      <div class="scenario-container">
+        {% for n in range(1,5) %}
+        <div class="scenario" id="scenario{{n}}">
+          <h3>Scenario {{ n }}</h3>
+          <div class="form-group">
+            <label for="scenario{{n}}_W_slider">Annual Expenses (W):</label>
+            <input type="range" id="scenario{{n}}_W_slider" name="scenario{{n}}_W" min="0" max="1000000" step="1000" value="{{ request.form.get('scenario' ~ n ~ '_W', '') }}">
+            <input type="number" id="scenario{{n}}_W_input" class="number-input" name="scenario{{n}}_W" value="{{ request.form.get('scenario' ~ n ~ '_W', '') }}" placeholder="e.g., 50000">
+          </div>
+          <div class="form-group">
+            <label for="scenario{{n}}_r_slider">Expected Annual Return (%):</label>
+            <input type="range" id="scenario{{n}}_r_slider" name="scenario{{n}}_r" min="0" max="15" step="0.1" value="{{ request.form.get('scenario' ~ n ~ '_r', '') }}">
+            <input type="number" id="scenario{{n}}_r_input" class="number-input" name="scenario{{n}}_r" value="{{ request.form.get('scenario' ~ n ~ '_r', '') }}" placeholder="e.g., 7">
+          </div>
+          <div class="form-group">
+            <label for="scenario{{n}}_i_slider">Expected Annual Inflation (%):</label>
+            <input type="range" id="scenario{{n}}_i_slider" name="scenario{{n}}_i" min="0" max="10" step="0.1" value="{{ request.form.get('scenario' ~ n ~ '_i', '') }}">
+            <input type="number" id="scenario{{n}}_i_input" class="number-input" name="scenario{{n}}_i" value="{{ request.form.get('scenario' ~ n ~ '_i', '') }}" placeholder="e.g., 2">
+          </div>
+          <div class="form-group">
+            <label for="scenario{{n}}_T_slider">Retirement Duration (years):</label>
+            <input type="range" id="scenario{{n}}_T_slider" name="scenario{{n}}_T" min="10" max="100" step="1" value="{{ request.form.get('scenario' ~ n ~ '_T', '') }}">
+            <input type="number" id="scenario{{n}}_T_input" class="number-input" name="scenario{{n}}_T" value="{{ request.form.get('scenario' ~ n ~ '_T', '') }}" placeholder="e.g., 30">
+          </div>
+          <div class="form-group">
+            <label>Withdrawal Timing:</label>
+            <input type="radio" name="scenario{{n}}_withdrawal_time" value="start" {% if request.form.get('scenario' ~ n ~ '_withdrawal_time', 'start') == 'start' %}checked{% endif %}> Start of Year
+            <input type="radio" name="scenario{{n}}_withdrawal_time" value="end" {% if request.form.get('scenario' ~ n ~ '_withdrawal_time', 'start') == 'end' %}checked{% endif %}> End of Year
+          </div>
+          <div class="form-group">
+            <label>Enable Scenario {{ n }}:</label>
+            <input type="checkbox" name="scenario{{n}}_enabled" {% if request.form.get('scenario' ~ n ~ '_enabled') == "on" or n == 1 %}checked{% endif %}>
+          </div>
+          {% if scenarios and scenarios|length >= n and scenarios[n-1].enabled %}
+          <div class="result-section">
+            <p><strong>FIRE Number:</strong> ${{ "{:,.2f}".format(scenarios[n-1].fire_number) }}</p>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <input type="submit" value="Compare Scenarios">
+    </form>
+    
+    <!-- Combined Graphs -->
+    <div id="combinedGraphs">
+      {% if combined_balance and combined_withdrawal %}
+        <h3>Combined Portfolio Balance</h3>
+        <div id="combined_balance">{{ combined_balance|safe }}</div>
+        <h3>Combined Annual Withdrawals</h3>
+        <div id="combined_withdrawal">{{ combined_withdrawal|safe }}</div>
+      {% endif %}
+    </div>
+    
+    {% if message %}
+      <p style="color: red; text-align: center;">{{ message }}</p>
+    {% endif %}
+    
+    <a href="/">← Back to Calculator</a>
+  </div>
+  
+  <script>
+    // Show only the chosen number of scenario boxes.
+    function updateScenarioDisplay() {
+      var count = parseInt($("#scenarioCount").val());
+      $(".scenario").each(function(index) {
+        if (index < count) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+    $(document).ready(function(){
+      updateScenarioDisplay();
+      $("#scenarioCount").on("change", updateScenarioDisplay);
+    });
+    
+    // Dynamic update for comparison scenarios via AJAX
+    function updateComparison() {
+      $.ajax({
+        type: "POST",
+        url: "/compare",
+        data: $("#compareForm").serialize(),
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+        success: function(response) {
+          if(response.message) {
+            $("#combinedGraphs").html("");
+            alert(response.message);
+          } else {
+            $("#combinedGraphs").html(
+              "<h3>Combined Portfolio Balance</h3>" +
+              response.combined_balance +
+              "<h3>Combined Annual Withdrawals</h3>" +
+              response.combined_withdrawal
+            );
+            // Update each scenario's FIRE number below its panel
+            response.scenarios.forEach(function(sc) {
+              $("#scenario" + sc.n).find(".result-section").remove();
+              var resultHtml = '<div class="result-section"><p><strong>FIRE Number:</strong> $' + sc.fire_number.toFixed(2) + '</p></div>';
+              $("#scenario" + sc.n).append(resultHtml);
+            });
+          }
+        },
+        error: function() {
+          console.error("Error updating comparison data.");
+        }
+      });
+    }
+    
+    $(document).ready(function(){
+      // When any input in the form changes, update comparison
+      $("#compareForm").on("change", function(){
+        updateComparison();
+      });
+      $("#compareForm").on("submit", function(e){
+        e.preventDefault();
+        updateComparison();
+      });
+    });
+    
+    // Optional: Bind slider changes to corresponding number inputs in each scenario
+    function bindScenarioSync(n) {
+      $("#scenario" + n + "_W_slider").on("input", function(){
+        $("#scenario" + n + "_W_input").val($(this).val());
+      });
+      $("#scenario" + n + "_r_slider").on("input", function(){
+        $("#scenario" + n + "_r_input").val($(this).val());
+      });
+      $("#scenario" + n + "_i_slider").on("input", function(){
+        $("#scenario" + n + "_i_input").val($(this).val());
+      });
+      $("#scenario" + n + "_T_slider").on("input", function(){
+        $("#scenario" + n + "_T_input").val($(this).val());
+      });
+      
+      $("#scenario" + n + "_W_input").on("change", function(){
+        $("#scenario" + n + "_W_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_r_input").on("change", function(){
+        $("#scenario" + n + "_r_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_i_input").on("change", function(){
+        $("#scenario" + n + "_i_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_T_input").on("change", function(){
+        $("#scenario" + n + "_T_slider").val($(this).val());
+        updateComparison();
+      });
+    }
+    
+    $(document).ready(function(){
+      for(var n = 1; n <= 4; n++){
+        bindScenarioSync(n);
+      }
+    });
+  </script>
+</body>
+</html>

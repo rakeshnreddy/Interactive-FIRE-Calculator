@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FIRE Calculator</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #fefefe;
+      --bg-accent: #A8E6CF;
+      --bg-secondary: #FFD3B6;
+      --text-light: #333;
+      --panel-bg: rgba(255, 255, 255, 0.7);
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary));
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+    header {
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .theme-toggle {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+    }
+    /* Explicit dark mode override for theme toggle */
+    body.dark .theme-toggle {
+      color: #e0e0e0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: var(--panel-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+      backdrop-filter: blur(8px);
+    }
+    .form-group {
+      margin: 15px 0;
+    }
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-accent);
+      border: none;
+      color: var(--text-light);
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+    input[type="submit"]:hover {
+      background: #8fd9b6;
+    }
+    .radio-group {
+      margin-top: 10px;
+    }
+    .radio-group input {
+      margin-right: 5px;
+    }
+    /* Dark mode */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+    body.dark header {
+      background: rgba(40,40,40,0.8);
+      color: #e0e0e0;
+    }
+    body.dark .container {
+      background: rgba(30,30,30,0.8);
+    }
+    /* Global anchor styling */
+    a {
+      display: block;
+      margin: 20px auto;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      width: 200px;
+      padding: 10px;
+      background: var(--panel-bg);
+      border-radius: 30px;
+      transition: background 0.3s;
+    }
+    a:hover {
+      background: rgba(255,255,255,0.9);
+    }
+  </style>
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+    function applyTheme() {
+      var storedTheme = localStorage.getItem('theme');
+      if (storedTheme) {
+        if (storedTheme === 'dark') {
+          document.body.classList.add('dark');
+        }
+      } else {
+        var hour = new Date().getHours();
+        if (hour >= 18 || hour < 6) {
+          document.body.classList.add('dark');
+        }
+      }
+    }
+    document.addEventListener("DOMContentLoaded", applyTheme);
+  </script>
+</head>
+<body>
+  <header>
+    FIRE Calculator
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  </header>
+  <div class="container">
+    <h2>Enter Your Details</h2>
+    <form method="post" action="/">
+      <div class="form-group">
+        <label for="W">Annual Expenses (in today's dollars):</label>
+        <input type="number" name="W" id="W" required>
+      </div>
+      <div class="form-group">
+        <label for="r">Expected Annual Return (%):</label>
+        <input type="number" name="r" id="r" step="0.1" required>
+      </div>
+      <div class="form-group">
+        <label for="i">Expected Annual Inflation (%):</label>
+        <input type="number" name="i" id="i" step="0.1" required>
+      </div>
+      <div class="form-group">
+        <label for="T">Retirement Duration (years):</label>
+        <input type="number" name="T" id="T" required>
+      </div>
+      <div class="form-group radio-group">
+        <label>Withdrawal Timing:</label>
+        <input type="radio" name="withdrawal_time" value="start" id="start" checked>
+        <label for="start" style="display:inline;">Start of Year</label>
+        <input type="radio" name="withdrawal_time" value="end" id="end">
+        <label for="end" style="display:inline;">End of Year</label>
+      </div>
+      <input type="submit" value="Calculate">
+    </form>
+    <br>
+    <a href="/compare">Compare Scenarios</a>
+  </div>
+</body>
+</html>

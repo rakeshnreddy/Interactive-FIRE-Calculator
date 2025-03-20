@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FIRE Calculator Results</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Load Plotly and jQuery -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --bg-light: #fefefe;
+      --bg-accent: #A8E6CF;
+      --bg-secondary: #FFD3B6;
+      --text-light: #333;
+      --panel-bg: rgba(255, 255, 255, 0.7);
+      --input-range-bg: rgba(255,255,255,0.4);
+      --thumb-bg: #fff;
+      --thumb-border: #A8E6CF;
+    }
+    /* Dark mode variables with updated colors */
+    body.dark {
+      --bg-light: #1E1E1E;
+      --bg-accent: #80CBC4;
+      --bg-secondary: #4DB6AC;
+      --text-light: #e0e0e0;
+      --panel-bg: rgba(30, 30, 30, 0.9);
+      --input-range-bg: rgba(255,255,255,0.2);
+      --thumb-bg: #e0e0e0;
+      --thumb-border: #80CBC4;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary));
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+    header {
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      color: var(--text-light);
+      padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .theme-toggle {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+    }
+    .export-btn {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background: var(--panel-bg);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-light);
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    .export-btn:hover {
+      background: rgba(255,255,255,0.9);
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 30px auto;
+      width: 90%;
+      justify-content: space-around;
+    }
+    .column {
+      flex: 1;
+      min-width: 320px;
+      max-width: 480px;
+      margin: 20px;
+      padding: 20px;
+      border-radius: 16px;
+      background: var(--panel-bg);
+      box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .slider-container {
+      margin: 15px 0;
+    }
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text-light);
+    }
+    /* Editable number input */
+    .number-input {
+      width: 100%;
+      padding: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: right;
+      margin-top: 4px;
+    }
+    input[type=range] {
+      width: 100%;
+      margin: 8px 0;
+      -webkit-appearance: none;
+      background: var(--input-range-bg);
+      height: 6px;
+      border-radius: 3px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      background: var(--thumb-bg);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--thumb-border);
+      margin-top: -7px;
+    }
+    .result-section {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 10px;
+      color: var(--text-light);
+    }
+    a {
+      display: block;
+      margin: 20px auto;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      width: 200px;
+      padding: 10px;
+      background: var(--panel-bg);
+      border-radius: 30px;
+      transition: background 0.3s;
+    }
+    a:hover {
+      background: rgba(255,255,255,0.9);
+    }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+    function applyTheme() {
+      var storedTheme = localStorage.getItem('theme');
+      if (storedTheme) {
+        if (storedTheme === 'dark') {
+          document.body.classList.add('dark');
+        }
+      } else {
+        var hour = new Date().getHours();
+        if (hour >= 18 || hour < 6) {
+          document.body.classList.add('dark');
+        }
+      }
+    }
+    document.addEventListener("DOMContentLoaded", applyTheme);
+
+    function syncCommonSliders() {
+      $("#r_slider_left").on("input", function() {
+         var val = $(this).val();
+         $("#r_slider_right").val(val);
+         $("#r_output_left").val(val);
+         $("#r_output_right").val(val);
+         updateValues();
+      });
+      $("#i_slider_left").on("input", function() {
+         var val = $(this).val();
+         $("#i_slider_right").val(val);
+         $("#i_output_left").val(val);
+         $("#i_output_right").val(val);
+         updateValues();
+      });
+      $("#T_slider_left").on("input", function() {
+         var val = $(this).val();
+         $("#T_slider_right").val(val);
+         $("#T_output_left").val(val);
+         $("#T_output_right").val(val);
+         updateValues();
+      });
+      $("input[name='withdrawal_time_left']").on("change", function() {
+         var val = $("input[name='withdrawal_time_left']:checked").val();
+         $("input[name='withdrawal_time_right'][value='"+val+"']").prop("checked", true);
+         updateValues();
+      });
+      $("#r_slider_right").on("input", function() {
+         var val = $(this).val();
+         $("#r_slider_left").val(val);
+         $("#r_output_left").val(val);
+         $("#r_output_right").val(val);
+         updateValues();
+      });
+      $("#i_slider_right").on("input", function() {
+         var val = $(this).val();
+         $("#i_slider_left").val(val);
+         $("#i_output_left").val(val);
+         $("#i_output_right").val(val);
+         updateValues();
+      });
+      $("#T_slider_right").on("input", function() {
+         var val = $(this).val();
+         $("#T_slider_left").val(val);
+         $("#T_output_left").val(val);
+         $("#T_output_right").val(val);
+         updateValues();
+      });
+      $("input[name='withdrawal_time_right']").on("change", function() {
+         var val = $("input[name='withdrawal_time_right']:checked").val();
+         $("input[name='withdrawal_time_left'][value='"+val+"']").prop("checked", true);
+         updateValues();
+      });
+    }
+    
+    function bindEditable(fieldSelector, sliderSelector) {
+      $(fieldSelector).on("change", function(){
+        var val = $(this).val();
+        $(sliderSelector).val(val);
+        updateValues();
+      });
+    }
+    
+    function updateValues() {
+      var W = $("#W_slider_left").val();
+      var P = $("#P_slider_right").val();
+      var r = $("#r_slider_left").val();
+      var i = $("#i_slider_left").val();
+      var T = $("#T_slider_left").val();
+      var withdrawal_time = $("input[name='withdrawal_time_left']:checked").val();
+      
+      $("#W_output_left").val(parseFloat(W).toLocaleString());
+      $("#P_output_right").val(parseFloat(P).toLocaleString());
+      
+      $.ajax({
+        type: "POST",
+        url: "/update",
+        data: { W: W, r: r, i: i, T: T, P: P, withdrawal_time: withdrawal_time },
+        success: function(response) {
+          $("#fire_number_W").text(response.fire_number_W);
+          $("#annual_expense_W").text(response.annual_expense_W);
+          $("#portfolio_plot_W").html(response.portfolio_plot_W);
+          $("#withdrawal_plot_W").html(response.withdrawal_plot_W);
+          
+          $("#fire_number_P").text(response.fire_number_P);
+          $("#annual_expense_P").text(response.annual_expense_P);
+          $("#portfolio_plot_P").html(response.portfolio_plot_P);
+          $("#withdrawal_plot_P").html(response.withdrawal_plot_P);
+        },
+        error: function() {
+          console.error("Error updating values.");
+        }
+      });
+    }
+    
+    $(document).ready(function(){
+      syncCommonSliders();
+      bindEditable("#r_output_left", "#r_slider_left");
+      bindEditable("#i_output_left", "#i_slider_left");
+      bindEditable("#T_output_left", "#T_slider_left");
+      bindEditable("#P_output_right", "#P_slider_right");
+      
+      $("#W_slider_left").on("input", function(){
+         updateValues();
+      });
+      $("#P_slider_right").on("input", function(){
+         updateValues();
+      });
+      updateValues();
+    });
+    
+    function exportReport() {
+      window.print();
+    }
+  </script>
+</head>
+<body>
+  <header>
+    FIRE Calculator Results
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  </header>
+  <button class="export-btn" onclick="exportReport()">Export Report</button>
+  <p style="text-align: center; font-style: italic; margin: 10px 0;">
+    Adjust any slider or enter a value – both modes update simultaneously.
+  </p>
+  
+  <div class="container">
+    <!-- Left Column: Expense Mode -->
+    <div class="column" id="left_column">
+      <h2>Expense Mode</h2>
+      <div class="slider-container">
+        <label for="W_slider_left">Annual Expenses (W):</label>
+        <input type="range" id="W_slider_left" name="W_left" min="0" max="1000000" step="1000" value="{{ W }}">
+        <input type="text" id="W_output_left" class="number-input" value="{{ '{:,.2f}'.format(W) }}">
+      </div>
+      <div class="slider-container">
+        <label for="r_slider_left">Expected Annual Return (%):</label>
+        <input type="range" class="common-slider" id="r_slider_left" name="r_left" min="0" max="15" step="0.1" value="{{ r }}">
+        <input type="text" id="r_output_left" class="number-input" value="{{ r }}">
+      </div>
+      <div class="slider-container">
+        <label for="i_slider_left">Expected Annual Inflation (%):</label>
+        <input type="range" class="common-slider" id="i_slider_left" name="i_left" min="0" max="10" step="0.1" value="{{ i }}">
+        <input type="text" id="i_output_left" class="number-input" value="{{ i }}">
+      </div>
+      <div class="slider-container">
+        <label for="T_slider_left">Retirement Duration (years):</label>
+        <input type="range" class="common-slider" id="T_slider_left" name="T_left" min="10" max="100" step="1" value="{{ T }}">
+        <input type="text" id="T_output_left" class="number-input" value="{{ T }}">
+      </div>
+      <div class="slider-container">
+        <label>Withdrawal Timing:</label>
+        <input type="radio" class="common-radio" name="withdrawal_time_left" value="start" {% if withdrawal_time=='start' %}checked{% endif %}> Start of Year
+        <input type="radio" class="common-radio" name="withdrawal_time_left" value="end" {% if withdrawal_time=='end' %}checked{% endif %}> End of Year
+      </div>
+      <div class="result-section">
+        <p><strong>Calculated FIRE Number:</strong> <span id="fire_number_W">${{ '{:,.2f}'.format(fire_number) }}</span></p>
+        <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_W">${{ '{:,.2f}'.format(annual_expense) }}</span></p>
+      </div>
+      <h3>Portfolio Balance</h3>
+      <div id="portfolio_plot_W">
+        {{ portfolio_plot | safe }}
+      </div>
+      <h3>Annual Withdrawals</h3>
+      <div id="withdrawal_plot_W">
+        {{ withdrawal_plot | safe }}
+      </div>
+    </div>
+    
+    <!-- Right Column: FIRE Mode -->
+    <div class="column" id="right_column">
+      <h2>FIRE Mode</h2>
+      <div class="slider-container">
+        <label for="P_slider_right">FIRE Number (P):</label>
+        <input type="range" id="P_slider_right" name="P_right" min="0" max="10000000" step="1000" value="{{ fire_number }}">
+        <input type="text" id="P_output_right" class="number-input" value="{{ '{:,.2f}'.format(fire_number) }}">
+      </div>
+      <!-- Duplicate common sliders -->
+      <div class="slider-container">
+        <label for="r_slider_right">Expected Annual Return (%):</label>
+        <input type="range" class="common-slider" id="r_slider_right" name="r_right" min="0" max="15" step="0.1" value="{{ r }}">
+        <input type="text" id="r_output_right" class="number-input" value="{{ r }}">
+      </div>
+      <div class="slider-container">
+        <label for="i_slider_right">Expected Annual Inflation (%):</label>
+        <input type="range" class="common-slider" id="i_slider_right" name="i_right" min="0" max="10" step="0.1" value="{{ i }}">
+        <input type="text" id="i_output_right" class="number-input" value="{{ i }}">
+      </div>
+      <div class="slider-container">
+        <label for="T_slider_right">Retirement Duration (years):</label>
+        <input type="range" class="common-slider" id="T_slider_right" name="T_right" min="10" max="100" step="1" value="{{ T }}">
+        <input type="text" id="T_output_right" class="number-input" value="{{ T }}">
+      </div>
+      <div class="slider-container">
+        <label>Withdrawal Timing:</label>
+        <input type="radio" class="common-radio" name="withdrawal_time_right" value="start" {% if withdrawal_time=='start' %}checked{% endif %}> Start of Year
+        <input type="radio" class="common-radio" name="withdrawal_time_right" value="end" {% if withdrawal_time=='end' %}checked{% endif %}> End of Year
+      </div>
+      <div class="result-section">
+        <p><strong>FIRE Number (set by slider):</strong> <span id="fire_number_P">${{ '{:,.2f}'.format(fire_number) }}</span></p>
+        <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_P">${{ '{:,.2f}'.format(annual_expense) }}</span></p>
+      </div>
+      <h3>Portfolio Balance</h3>
+      <div id="portfolio_plot_P">
+        {{ portfolio_plot | safe }}
+      </div>
+      <h3>Annual Withdrawals</h3>
+      <div id="withdrawal_plot_P">
+        {{ withdrawal_plot | safe }}
+      </div>
+    </div>
+  </div>
+  <a href="/" style="text-align: center;">← Back to Calculator</a>
+  <script>
+    function syncCommonSliders() {
+      $("#r_slider_left").on("input", function() {
+         var val = $(this).val();
+         $("#r_slider_right").val(val);
+         $("#r_output_left").val(val);
+         $("#r_output_right").val(val);
+         updateValues();
+      });
+      $("#i_slider_left").on("input", function() {
+         var val = $(this).val();
+         $("#i_slider_right").val(val);
+         $("#i_output_left").val(val);
+         $("#i_output_right").val(val);
+         updateValues();
+      });
+      $("#T_slider_left").on("input", function() {
+         var val = $(this).val();
+         $("#T_slider_right").val(val);
+         $("#T_output_left").val(val);
+         $("#T_output_right").val(val);
+         updateValues();
+      });
+      $("input[name='withdrawal_time_left']").on("change", function() {
+         var val = $("input[name='withdrawal_time_left']:checked").val();
+         $("input[name='withdrawal_time_right'][value='"+val+"']").prop("checked", true);
+         updateValues();
+      });
+      $("#r_slider_right").on("input", function() {
+         var val = $(this).val();
+         $("#r_slider_left").val(val);
+         $("#r_output_left").val(val);
+         $("#r_output_right").val(val);
+         updateValues();
+      });
+      $("#i_slider_right").on("input", function() {
+         var val = $(this).val();
+         $("#i_slider_left").val(val);
+         $("#i_output_left").val(val);
+         $("#i_output_right").val(val);
+         updateValues();
+      });
+      $("#T_slider_right").on("input", function() {
+         var val = $(this).val();
+         $("#T_slider_left").val(val);
+         $("#T_output_left").val(val);
+         $("#T_output_right").val(val);
+         updateValues();
+      });
+      $("input[name='withdrawal_time_right']").on("change", function() {
+         var val = $("input[name='withdrawal_time_right']:checked").val();
+         $("input[name='withdrawal_time_left'][value='"+val+"']").prop("checked", true);
+         updateValues();
+      });
+    }
+    
+    function bindEditable(fieldSelector, sliderSelector) {
+      $(fieldSelector).on("change", function(){
+        var val = $(this).val();
+        $(sliderSelector).val(val);
+        updateValues();
+      });
+    }
+    
+    function updateValues() {
+      var W = $("#W_slider_left").val();
+      var P = $("#P_slider_right").val();
+      var r = $("#r_slider_left").val();
+      var i = $("#i_slider_left").val();
+      var T = $("#T_slider_left").val();
+      var withdrawal_time = $("input[name='withdrawal_time_left']:checked").val();
+      
+      $("#W_output_left").val(parseFloat(W).toLocaleString());
+      $("#P_output_right").val(parseFloat(P).toLocaleString());
+      
+      $.ajax({
+        type: "POST",
+        url: "/update",
+        data: { W: W, r: r, i: i, T: T, P: P, withdrawal_time: withdrawal_time },
+        success: function(response) {
+          $("#fire_number_W").text(response.fire_number_W);
+          $("#annual_expense_W").text(response.annual_expense_W);
+          $("#portfolio_plot_W").html(response.portfolio_plot_W);
+          $("#withdrawal_plot_W").html(response.withdrawal_plot_W);
+          
+          $("#fire_number_P").text(response.fire_number_P);
+          $("#annual_expense_P").text(response.annual_expense_P);
+          $("#portfolio_plot_P").html(response.portfolio_plot_P);
+          $("#withdrawal_plot_P").html(response.withdrawal_plot_P);
+        },
+        error: function() {
+          console.error("Error updating values.");
+        }
+      });
+    }
+    
+    $(document).ready(function(){
+      syncCommonSliders();
+      bindEditable("#r_output_left", "#r_slider_left");
+      bindEditable("#i_output_left", "#i_slider_left");
+      bindEditable("#T_output_left", "#T_slider_left");
+      bindEditable("#P_output_right", "#P_slider_right");
+      
+      $("#W_slider_left").on("input", function(){
+         updateValues();
+      });
+      $("#P_slider_right").on("input", function(){
+         updateValues();
+      });
+      updateValues();
+    });
+    
+    function exportReport() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
