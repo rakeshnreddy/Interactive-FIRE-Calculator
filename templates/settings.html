@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FIRE Calculator Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #fefefe;
+      --bg-accent: #A8E6CF;
+      --bg-secondary: #FFD3B6;
+      --text-light: #333;
+      --panel-bg: rgba(255, 255, 255, 0.7);
+      --font-size: 16px;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-size: var(--font-size);
+      margin: 0;
+      padding: 0;
+      background: var(--bg-light);
+      color: var(--text-light);
+      overflow-x: hidden;
+      transition: background 0.5s, color 0.5s;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: var(--panel-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+      transition: background 0.5s;
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    select, input[type="range"], input[type="number"] {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    button {
+      padding: 10px 20px;
+      background: var(--bg-accent);
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    @media (max-width: 480px) {
+      select, input[type="range"], input[type="number"] {
+        font-size: 18px;
+      }
+      button {
+        padding: 14px 24px;
+        font-size: 18px;
+      }
+    }
+  </style>
+  <script>
+    function saveSettings() {
+      const theme = document.getElementById("themeSelect").value;
+      const fontSize = document.getElementById("fontSize").value;
+      const panelOpacity = document.getElementById("panelOpacity").value;
+      const settings = { theme, fontSize, panelOpacity };
+      localStorage.setItem("fireSettings", JSON.stringify(settings));
+      applySettings();
+      alert("Settings saved!");
+    }
+    
+    function applySettings() {
+      const saved = localStorage.getItem("fireSettings");
+      if (saved) {
+        const settings = JSON.parse(saved);
+        document.documentElement.style.setProperty("--font-size", settings.fontSize + "px");
+        document.documentElement.style.setProperty("--panel-bg", `rgba(255, 255, 255, ${settings.panelOpacity})`);
+        if(settings.theme === "Pastel"){
+          document.documentElement.style.setProperty("--bg-accent", "#FDCB9E");
+          document.documentElement.style.setProperty("--bg-secondary", "#FCE38A");
+          document.documentElement.style.setProperty("--text-light", "#333");
+          document.body.classList.remove("dark");
+        } else if(settings.theme === "Modern Dark"){
+          document.documentElement.style.setProperty("--bg-accent", "#80CBC4");
+          document.documentElement.style.setProperty("--bg-secondary", "#4DB6AC");
+          document.documentElement.style.setProperty("--text-light", "#e0e0e0");
+          document.body.classList.add("dark");
+        } else if(settings.theme === "Minimal"){
+          document.documentElement.style.setProperty("--bg-accent", "#DDD");
+          document.documentElement.style.setProperty("--bg-secondary", "#FFF");
+          document.documentElement.style.setProperty("--text-light", "#333");
+          document.body.classList.remove("dark");
+        }
+      }
+    }
+    
+    document.addEventListener("DOMContentLoaded", applySettings);
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Settings</h2>
+    <label for="themeSelect">Select Theme:</label>
+    <select id="themeSelect">
+      <option value="Pastel">Pastel</option>
+      <option value="Modern Dark">Modern Dark</option>
+      <option value="Minimal">Minimal</option>
+    </select>
+    
+    <label for="fontSize">Font Size (px):</label>
+    <input type="number" id="fontSize" value="16" min="12" max="24">
+    
+    <label for="panelOpacity">Panel Opacity (0-1):</label>
+    <input type="range" id="panelOpacity" min="0.5" max="1" step="0.01" value="0.7">
+    
+    <button onclick="saveSettings()">Save Settings</button>
+    <br><br>
+    <a href="/">← Back to Calculator</a>
+  </div>
+</body>
+</html>
