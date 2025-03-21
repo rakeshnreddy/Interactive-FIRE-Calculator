@@ -6,10 +6,7 @@ import plotly.offline as pyo
 app = Flask(__name__)
 
 def annual_simulation(PV, r, i, W, T, withdrawal_time):
-    """
-    Simulate the annual portfolio balance.
-    Returns arrays: years, balances (at start of each year), and annual withdrawals.
-    """
+    """Simulate the annual portfolio balance."""
     years = np.arange(0, T + 1)
     balances = []
     withdrawals = []
@@ -76,7 +73,6 @@ def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
     
     plot_config = {'displayModeBar': False, 'responsive': True}
     
-    # Portfolio Balance Plot
     fig1 = go.Figure()
     fig1.add_trace(go.Scatter(
         x=years, y=balances,
@@ -91,14 +87,14 @@ def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
     )
     portfolio_plot = pyo.plot(fig1, include_plotlyjs=False, output_type='div', config=plot_config)
     
-    # Annual Withdrawals Plot
     fig2 = go.Figure()
     fig2.add_trace(go.Scatter(
         x=years[:-1], y=withdrawals,
         mode='lines+markers',
         name='Annual Withdrawal',
         marker_color='orange',
-        hovertemplate='Year: %{x}<br>Withdrawal: $%{y:,.2f}<extra></extra>'
+        hovertemplate='Year: %{x}<br>Withdrawal: $%{y:,.2f}<extra></extra>',
+        uid="unique_withdrawal"  # ensuring unique uid if needed
     ))
     fig2.update_layout(
         title='Annual Withdrawals',
@@ -217,7 +213,7 @@ def compare():
         )
         combined_balance = pyo.plot(fig_balance, include_plotlyjs=False, output_type='div', config=plot_config)
         
-        # Combined Withdrawals Graph (updated with unique uid for each trace)
+        # Combined Withdrawals Graph
         fig_withdrawal = go.Figure()
         for sc in enabled_scenarios:
             fig_withdrawal.add_trace(go.Scatter(
@@ -242,6 +238,10 @@ def compare():
         })
     else:
         return render_template("compare.html", message="", scenarios=[], combined_balance=None, combined_withdrawal=None)
+
+@app.route('/settings')
+def settings():
+    return render_template("settings.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
