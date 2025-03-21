@@ -4,8 +4,11 @@
   <meta charset="utf-8">
   <title>Compare Scenarios - FIRE Calculator</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- Include jQuery UI for sortable -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     :root {
       --bg-light: #fefefe;
@@ -47,6 +50,7 @@
     .scenario-header label {
       margin-right: 10px;
     }
+    /* Sortable scenario panels */
     .scenario-container {
       display: flex;
       flex-wrap: nowrap;
@@ -60,6 +64,7 @@
       padding: 10px;
       background: #fff;
       min-width: 150px;
+      cursor: move;
     }
     .scenario h3 {
       margin-top: 0;
@@ -73,11 +78,17 @@
       font-weight: 500;
       margin-bottom: 4px;
     }
-    input[type="number"] {
+    input[type="number"],
+    input[type="range"] {
       width: 100%;
+      box-sizing: border-box;
+    }
+    input[type="number"] {
       padding: 6px;
       margin-bottom: 6px;
-      box-sizing: border-box;
+    }
+    input[type="range"] {
+      margin-bottom: 4px;
     }
     input[type="radio"] {
       margin-right: 5px;
@@ -113,6 +124,20 @@
     a:hover {
       background: rgba(255,255,255,0.9);
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: var(--bg-accent);
+      color: var(--text-light);
+    }
   </style>
   <script>
     // Show only the chosen number of scenario boxes.
@@ -129,6 +154,159 @@
     $(document).ready(function(){
       updateScenarioDisplay();
       $("#scenarioCount").on("change", updateScenarioDisplay);
+      // Initialize sortable for scenario panels
+      $(".scenario-container").sortable({
+        placeholder: "ui-state-highlight"
+      });
+    });
+    
+    // Save and Load Scenarios using localStorage
+    function saveScenarios() {
+      var data = $("#compareForm").serializeArray();
+      var scenarioData = {};
+      data.forEach(function(item) {
+        scenarioData[item.name] = item.value;
+      });
+      var scenarioName = prompt("Enter a name for this scenario configuration:");
+      if(scenarioName) {
+        localStorage.setItem("compareScenario_" + scenarioName, JSON.stringify(scenarioData));
+        loadScenarioOptions();
+        alert("Scenario saved as '" + scenarioName + "'.");
+      }
+    }
+    
+    function loadScenarioOptions() {
+      var options = "";
+      for(var key in localStorage) {
+        if(key.startsWith("compareScenario_")) {
+          var name = key.replace("compareScenario_", "");
+          options += "<option value='" + key + "'>" + name + "</option>";
+        }
+      }
+      $("#loadScenarioSelect").html(options);
+    }
+    
+    function loadScenario() {
+      var key = $("#loadScenarioSelect").val();
+      if(key) {
+        var data = JSON.parse(localStorage.getItem(key));
+        for(var prop in data) {
+          var field = $("[name='" + prop + "']");
+          if(field.attr("type") === "checkbox") {
+            field.prop("checked", data[prop] === "on");
+          } else {
+            field.val(data[prop]);
+          }
+        }
+        updateComparison();
+      }
+    }
+    
+    // Dynamic update for comparison scenarios via AJAX
+    function updateComparison() {
+      $.ajax({
+        type: "POST",
+        url: "/compare",
+        data: $("#compareForm").serialize(),
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+        success: function(response) {
+          if(response.message) {
+            $("#combinedGraphs").html("");
+            alert(response.message);
+          } else {
+            $("#combinedGraphs").html(
+              "<h3>Combined Portfolio Balance</h3>" +
+              response.combined_balance +
+              "<h3>Combined Annual Withdrawals</h3>" +
+              response.combined_withdrawal
+            );
+            updateSummaryTable(response.scenarios);
+            // Update each scenario's FIRE number below its panel
+            response.scenarios.forEach(function(sc) {
+              $("#scenario" + sc.n).find(".result-section").remove();
+              var resultHtml = '<div class="result-section"><p><strong>FIRE Number:</strong> $' + sc.fire_number.toFixed(2) + '</p></div>';
+              $("#scenario" + sc.n).append(resultHtml);
+            });
+          }
+        },
+        error: function() {
+          console.error("Error updating comparison data.");
+        }
+      });
+    }
+    
+    // Update summary table with key metrics from each enabled scenario
+    function updateSummaryTable(scenarios) {
+      var html = "<table><thead><tr><th>Scenario</th><th>W</th><th>Return (%)</th><th>Inflation (%)</th><th>T</th><th>Withdrawal Timing</th><th>FIRE Number</th></tr></thead><tbody>";
+      scenarios.forEach(function(sc) {
+        html += "<tr><td>" + sc.n + "</td>" +
+                "<td>" + sc.W + "</td>" +
+                "<td>" + sc.r + "</td>" +
+                "<td>" + sc.i + "</td>" +
+                "<td>" + sc.T + "</td>" +
+                "<td>" + sc.withdrawal_time + "</td>" +
+                "<td>$" + sc.fire_number.toFixed(2) + "</td></tr>";
+      });
+      html += "</tbody></table>";
+      $("#summaryTable").html(html);
+    }
+    
+    // Bind slider and input synchronization for each scenario panel
+    function bindScenarioSync(n) {
+      $("#scenario" + n + "_W_slider").on("input", function(){
+        $("#scenario" + n + "_W_input").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_r_slider").on("input", function(){
+        $("#scenario" + n + "_r_input").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_i_slider").on("input", function(){
+        $("#scenario" + n + "_i_input").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_T_slider").on("input", function(){
+        $("#scenario" + n + "_T_input").val($(this).val());
+        updateComparison();
+      });
+      
+      $("#scenario" + n + "_W_input").on("change", function(){
+        $("#scenario" + n + "_W_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_r_input").on("change", function(){
+        $("#scenario" + n + "_r_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_i_input").on("change", function(){
+        $("#scenario" + n + "_i_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_T_input").on("change", function(){
+        $("#scenario" + n + "_T_slider").val($(this).val());
+        updateComparison();
+      });
+      
+      $("input[name='scenario" + n + "_withdrawal_time']").on("change", function(){
+        updateComparison();
+      });
+      
+      $("input[name='scenario" + n + "_enabled']").on("change", function(){
+        updateComparison();
+      });
+    }
+    
+    $(document).ready(function(){
+      for(var n = 1; n <= 4; n++){
+        bindScenarioSync(n);
+      }
+      // Also update comparison on form submit (prevent full page reload)
+      $("#compareForm").on("submit", function(e){
+        e.preventDefault();
+        updateComparison();
+      });
+      // Load saved scenarios options
+      loadScenarioOptions();
     });
   </script>
 </head>
@@ -144,6 +322,10 @@
         <option value="3">3</option>
         <option value="4">4</option>
       </select>
+      &nbsp;&nbsp;
+      <button type="button" onclick="saveScenarios()">Save Scenarios</button>
+      &nbsp;&nbsp;
+      <select id="loadScenarioSelect" onchange="loadScenario()"></select>
     </div>
     <form method="post" action="/compare" id="compareForm">
       <div class="scenario-container">
@@ -190,7 +372,8 @@
       <input type="submit" value="Compare Scenarios">
     </form>
     
-    <!-- Combined Graphs -->
+    <div id="summaryTable"></div>
+    
     <div id="combinedGraphs">
       {% if combined_balance and combined_withdrawal %}
         <h3>Combined Portfolio Balance</h3>
@@ -208,23 +391,9 @@
   </div>
   
   <script>
-    // Show only the chosen number of scenario boxes.
-    function updateScenarioDisplay() {
-      var count = parseInt($("#scenarioCount").val());
-      $(".scenario").each(function(index) {
-        if (index < count) {
-          $(this).show();
-        } else {
-          $(this).hide();
-        }
-      });
-    }
-    $(document).ready(function(){
-      updateScenarioDisplay();
-      $("#scenarioCount").on("change", updateScenarioDisplay);
-    });
+    // (updateScenarioDisplay() and jQuery UI sortable code are already at the top)
     
-    // Dynamic update for comparison scenarios via AJAX
+    // Dynamic update for comparison scenarios via AJAX with header set
     function updateComparison() {
       $.ajax({
         type: "POST",
@@ -242,7 +411,7 @@
               "<h3>Combined Annual Withdrawals</h3>" +
               response.combined_withdrawal
             );
-            // Update each scenario's FIRE number below its panel
+            updateSummaryTable(response.scenarios);
             response.scenarios.forEach(function(sc) {
               $("#scenario" + sc.n).find(".result-section").remove();
               var resultHtml = '<div class="result-section"><p><strong>FIRE Number:</strong> $' + sc.fire_number.toFixed(2) + '</p></div>';
@@ -256,30 +425,39 @@
       });
     }
     
-    $(document).ready(function(){
-      // When any input in the form changes, update comparison
-      $("#compareForm").on("change", function(){
-        updateComparison();
+    // Update summary table with key metrics
+    function updateSummaryTable(scenarios) {
+      var html = "<table><thead><tr><th>Scenario</th><th>W</th><th>Return (%)</th><th>Inflation (%)</th><th>T</th><th>Withdrawal Timing</th><th>FIRE Number</th></tr></thead><tbody>";
+      scenarios.forEach(function(sc) {
+        html += "<tr><td>" + sc.n + "</td>" +
+                "<td>" + sc.W + "</td>" +
+                "<td>" + sc.r + "</td>" +
+                "<td>" + sc.i + "</td>" +
+                "<td>" + sc.T + "</td>" +
+                "<td>" + sc.withdrawal_time + "</td>" +
+                "<td>$" + sc.fire_number.toFixed(2) + "</td></tr>";
       });
-      $("#compareForm").on("submit", function(e){
-        e.preventDefault();
-        updateComparison();
-      });
-    });
+      html += "</tbody></table>";
+      $("#summaryTable").html(html);
+    }
     
-    // Optional: Bind slider changes to corresponding number inputs in each scenario
+    // Bind slider and input synchronization for each scenario panel
     function bindScenarioSync(n) {
       $("#scenario" + n + "_W_slider").on("input", function(){
         $("#scenario" + n + "_W_input").val($(this).val());
+        updateComparison();
       });
       $("#scenario" + n + "_r_slider").on("input", function(){
         $("#scenario" + n + "_r_input").val($(this).val());
+        updateComparison();
       });
       $("#scenario" + n + "_i_slider").on("input", function(){
         $("#scenario" + n + "_i_input").val($(this).val());
+        updateComparison();
       });
       $("#scenario" + n + "_T_slider").on("input", function(){
         $("#scenario" + n + "_T_input").val($(this).val());
+        updateComparison();
       });
       
       $("#scenario" + n + "_W_input").on("change", function(){
@@ -298,12 +476,25 @@
         $("#scenario" + n + "_T_slider").val($(this).val());
         updateComparison();
       });
+      
+      $("input[name='scenario" + n + "_withdrawal_time']").on("change", function(){
+        updateComparison();
+      });
+      
+      $("input[name='scenario" + n + "_enabled']").on("change", function(){
+        updateComparison();
+      });
     }
     
     $(document).ready(function(){
       for(var n = 1; n <= 4; n++){
         bindScenarioSync(n);
       }
+      // Update on form submit (prevent full page reload)
+      $("#compareForm").on("submit", function(e){
+        e.preventDefault();
+        updateComparison();
+      });
     });
   </script>
 </body>
