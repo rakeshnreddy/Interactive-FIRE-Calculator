@@ -155,6 +155,32 @@
     a:hover {
       background: rgba(255,255,255,0.9);
     }
+    .recalculate-btn {
+      display: block;
+      margin: 20px auto; /* Centered with some margin */
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-light);
+      background-color: var(--panel-bg);
+      border: 1px solid var(--thumb-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .recalculate-btn:hover {
+      background-color: var(--bg-accent); /* Use accent color on hover */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    body.dark .recalculate-btn {
+      background-color: #424242;
+      border-color: var(--thumb-border);
+      color: var(--text-light);
+    }
+    body.dark .recalculate-btn:hover {
+      background-color: var(--bg-secondary); /* Use dark theme accent */
+    }
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -170,16 +196,9 @@
     function applyTheme() {
       var storedTheme = localStorage.getItem('theme');
       if (storedTheme === 'dark') {
-        document.body.classList.add('dark');
+        document.body.classList.add('dark'); // Ensure theme is applied before Plotly renders if it depends on body styles
       }
     }
-    document.addEventListener("DOMContentLoaded", function(){
-      applyTheme();
-      // Trigger updateValues() once to ensure FIRE mode graphs are rendered initially.
-      if (typeof updateValues === "function") {
-        updateValues();
-      }
-    });
     
     function exportReport() {
       window.print();
@@ -187,6 +206,9 @@
   </script>
 </head>
 <body>
+  <script>
+    applyTheme(); // Apply theme early
+  </script>
   <header>
     <div class="header-left">FIRE Calculator Results</div>
     <div class="header-right">
@@ -198,46 +220,47 @@
   <p style="text-align: center; font-style: italic; margin: 10px 0;">
     Adjust any slider or enter a value – both modes update simultaneously.
   </p>
+  <button id="recalculate_button" class="recalculate-btn">Recalculate Graphs & Values</button>
   <div class="container">
     <!-- Left Column: Expense Mode -->
     <div class="column" id="left_column">
       <h2>Expense Mode</h2>
       <div class="slider-container">
         <label for="W_slider_left">Annual Expenses (W):</label>
-        <input type="range" id="W_slider_left" name="W_left" min="0" max="1000000" step="1000" value="{{ W }}">
-        <input type="text" id="W_output_left" class="number-input" value="{{ '{:,.2f}'.format(W) }}">
+        <input type="range" id="W_slider_left" name="W_left" min="0" max="1000000" step="1000" value="{{ fire_W_input_val }}">
+        <input type="text" id="W_output_left" class="number-input" value="{{ '{:,.2f}'.format(fire_W_input_val) }}">
       </div>
       <div class="slider-container">
         <label for="r_slider_left">Expected Annual Return (%):</label>
-        <input type="range" class="common-slider" id="r_slider_left" name="r_left" min="0" max="15" step="0.1" value="{{ r }}">
-        <input type="text" id="r_output_left" class="number-input" value="{{ r }}">
+        <input type="range" class="common-slider" id="r_slider_left" name="r_left" min="0" max="15" step="0.1" value="{{ r_form_val }}">
+        <input type="text" id="r_output_left" class="number-input" value="{{ r_form_val }}">
       </div>
       <div class="slider-container">
         <label for="i_slider_left">Expected Annual Inflation (%):</label>
-        <input type="range" class="common-slider" id="i_slider_left" name="i_left" min="0" max="10" step="0.1" value="{{ i }}">
-        <input type="text" id="i_output_left" class="number-input" value="{{ i }}">
+        <input type="range" class="common-slider" id="i_slider_left" name="i_left" min="0" max="10" step="0.1" value="{{ i_form_val }}">
+        <input type="text" id="i_output_left" class="number-input" value="{{ i_form_val }}">
       </div>
       <div class="slider-container">
         <label for="T_slider_left">Retirement Duration (years):</label>
-        <input type="range" class="common-slider" id="T_slider_left" name="T_left" min="10" max="100" step="1" value="{{ T }}">
-        <input type="text" id="T_output_left" class="number-input" value="{{ T }}">
+        <input type="range" class="common-slider" id="T_slider_left" name="T_left" min="10" max="100" step="1" value="{{ T_form_val }}">
+        <input type="text" id="T_output_left" class="number-input" value="{{ T_form_val }}">
       </div>
       <div class="slider-container">
         <label>Withdrawal Timing:</label>
-        <input type="radio" class="common-radio" name="withdrawal_time_left" value="start" {% if withdrawal_time=='start' %}checked{% endif %}> Start of Year
-        <input type="radio" class="common-radio" name="withdrawal_time_left" value="end" {% if withdrawal_time=='end' %}checked{% endif %}> End of Year
+        <input type="radio" class="common-radio" name="withdrawal_time_left" value="start" {% if withdrawal_time_form_val=='start' %}checked{% endif %}> Start of Year
+        <input type="radio" class="common-radio" name="withdrawal_time_left" value="end" {% if withdrawal_time_form_val=='end' %}checked{% endif %}> End of Year
       </div>
       <div class="result-section">
-        <p><strong>Calculated FIRE Number:</strong> <span id="fire_number_W">${{ '{:,.2f}'.format(fire_number) }}</span></p>
-        <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_W">${{ '{:,.2f}'.format(annual_expense) }}</span></p>
+        <p><strong>Calculated FIRE Number:</strong> <span id="fire_number_W_display">{{ fire_P_calculated_val }}</span></p>
+        <p><strong>Your Annual Expense (Input):</strong> <span id="annual_expense_W_display">${{ '{:,.2f}'.format(fire_W_input_val) }}</span></p>
       </div>
       <h3>Portfolio Balance</h3>
       <div id="portfolio_plot_W">
-        {{ portfolio_plot | safe }}
+        {{ portfolio_plot_fire | safe }}
       </div>
       <h3>Annual Withdrawals</h3>
       <div id="withdrawal_plot_W">
-        {{ withdrawal_plot | safe }}
+        {{ withdrawal_plot_fire | safe }}
       </div>
     </div>
     
@@ -246,47 +269,284 @@
       <h2>FIRE Mode</h2>
       <div class="slider-container">
         <label for="P_slider_right">FIRE Number (P):</label>
-        <input type="range" id="P_slider_right" name="P_right" min="0" max="10000000" step="1000" value="{{ fire_number }}">
-        <input type="text" id="P_output_right" class="number-input" value="{{ '{:,.2f}'.format(fire_number) }}">
+        <input type="range" id="P_slider_right" name="P_right" min="0" max="10000000" step="1000" value="{{ expense_P_input_val if expense_P_input_val != 'N/A' else 0 }}">
+        <input type="text" id="P_output_right" class="number-input" value="{{ '{:,.2f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' else expense_P_input_val }}">
       </div>
       <div class="slider-container">
         <label for="r_slider_right">Expected Annual Return (%):</label>
-        <input type="range" class="common-slider" id="r_slider_right" name="r_right" min="0" max="15" step="0.1" value="{{ r }}">
-        <input type="text" id="r_output_right" class="number-input" value="{{ r }}">
+        <input type="range" class="common-slider" id="r_slider_right" name="r_right" min="0" max="15" step="0.1" value="{{ r_form_val }}">
+        <input type="text" id="r_output_right" class="number-input" value="{{ r_form_val }}">
       </div>
       <div class="slider-container">
         <label for="i_slider_right">Expected Annual Inflation (%):</label>
-        <input type="range" class="common-slider" id="i_slider_right" name="i_right" min="0" max="10" step="0.1" value="{{ i }}">
-        <input type="text" id="i_output_right" class="number-input" value="{{ i }}">
+        <input type="range" class="common-slider" id="i_slider_right" name="i_right" min="0" max="10" step="0.1" value="{{ i_form_val }}">
+        <input type="text" id="i_output_right" class="number-input" value="{{ i_form_val }}">
       </div>
       <div class="slider-container">
         <label for="T_slider_right">Retirement Duration (years):</label>
-        <input type="range" class="common-slider" id="T_slider_right" name="T_right" min="10" max="100" step="1" value="{{ T }}">
-        <input type="text" id="T_output_right" class="number-input" value="{{ T }}">
+        <input type="range" class="common-slider" id="T_slider_right" name="T_right" min="10" max="100" step="1" value="{{ T_form_val }}">
+        <input type="text" id="T_output_right" class="number-input" value="{{ T_form_val }}">
       </div>
       <div class="slider-container">
         <label>Withdrawal Timing:</label>
-        <input type="radio" class="common-radio" name="withdrawal_time_right" value="start" {% if withdrawal_time=='start' %}checked{% endif %}> Start of Year
-        <input type="radio" class="common-radio" name="withdrawal_time_right" value="end" {% if withdrawal_time=='end' %}checked{% endif %}> End of Year
+        <input type="radio" class="common-radio" name="withdrawal_time_right" value="start" {% if withdrawal_time_form_val=='start' %}checked{% endif %}> Start of Year
+        <input type="radio" class="common-radio" name="withdrawal_time_right" value="end" {% if withdrawal_time_form_val=='end' %}checked{% endif %}> End of Year
       </div>
       <div class="result-section">
-        <p><strong>FIRE Number (set by slider):</strong> <span id="fire_number_P">${{ '{:,.2f}'.format(fire_number) }}</span></p>
-        <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_P">${{ '{:,.2f}'.format(annual_expense) }}</span></p>
+        <p><strong>Your FIRE Number (Input):</strong> <span id="fire_number_P_display">${{ '{:,.2f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' else expense_P_input_val }}</span></p>
+        <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_P_display">{{ expense_W_calculated_val }}</span></p>
       </div>
       <h3>Portfolio Balance</h3>
       <div id="portfolio_plot_P">
-        {{ portfolio_plot | safe }}
+        {{ portfolio_plot_expense | safe }}
       </div>
       <h3>Annual Withdrawals</h3>
       <div id="withdrawal_plot_P">
-        {{ withdrawal_plot | safe }}
+        {{ withdrawal_plot_expense | safe }}
       </div>
     </div>
   </div>
   <a href="/">← Back to Calculator</a>
-  <script>
-    // (JavaScript for syncing sliders, AJAX updates, saving/loading scenarios, etc. remains the same.)
-    // Make sure updateValues() is defined and called on page load in result.html if needed.
-  </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // --- Input Elements ---
+    // Left Column (Expense Mode)
+    const W_slider_left = document.getElementById('W_slider_left');
+    const W_output_left = document.getElementById('W_output_left');
+    const r_slider_left = document.getElementById('r_slider_left');
+    const r_output_left = document.getElementById('r_output_left');
+    const i_slider_left = document.getElementById('i_slider_left');
+    const i_output_left = document.getElementById('i_output_left');
+    const T_slider_left = document.getElementById('T_slider_left');
+    const T_output_left = document.getElementById('T_output_left');
+    const withdrawal_time_left_radios = document.querySelectorAll('input[name="withdrawal_time_left"]');
+
+    // Right Column (FIRE Mode)
+    const P_slider_right = document.getElementById('P_slider_right');
+    const P_output_right = document.getElementById('P_output_right');
+    const r_slider_right = document.getElementById('r_slider_right');
+    const r_output_right = document.getElementById('r_output_right');
+    const i_slider_right = document.getElementById('i_slider_right');
+    const i_output_right = document.getElementById('i_output_right');
+    const T_slider_right = document.getElementById('T_slider_right');
+    const T_output_right = document.getElementById('T_output_right');
+    const withdrawal_time_right_radios = document.querySelectorAll('input[name="withdrawal_time_right"]');
+
+    // --- Output Display Elements ---
+    const displayFireNumberW = document.getElementById('fire_number_W_display');
+    const displayAnnualExpenseW = document.getElementById('annual_expense_W_display');
+    const divPortfolioPlotW = document.getElementById('portfolio_plot_W');
+    const divWithdrawalPlotW = document.getElementById('withdrawal_plot_W');
+
+    const displayFireNumberP = document.getElementById('fire_number_P_display');
+    const displayAnnualExpenseP = document.getElementById('annual_expense_P_display');
+    const divPortfolioPlotP = document.getElementById('portfolio_plot_P');
+    const divWithdrawalPlotP = document.getElementById('withdrawal_plot_P');
+
+    // --- Recalculate Button ---
+    const recalculateButton = document.getElementById('recalculate_button');
+    if (recalculateButton) {
+        // Pass a specific identifier or the button itself as source for full refresh
+        recalculateButton.addEventListener('click', () => handleInputChange(recalculateButton));
+    }
+
+    function formatNumber(numStr, precision = 2) {
+        let num = parseFloat(String(numStr).replace(/[^0-9.-]+/g,""));
+        if (isNaN(num)) {
+            // Allow "N/A" to pass through if it's explicitly set
+            return (String(numStr).toUpperCase() === "N/A") ? "N/A" : "0.00";
+        }
+        return num.toLocaleString('en-US', { minimumFractionDigits: precision, maximumFractionDigits: precision, useGrouping: true });
+    }
+
+    function parseFormattedNumber(str) {
+        if (typeof str !== 'string') return parseFloat(str) || 0;
+        return parseFloat(str.replace(/,/g, '')) || 0;
+    }
+
+    function syncSlidersAndOutputs(sourceSlider, targetSlider, sourceOutput, targetOutput, value, isPercentOrYears = false) {
+        sourceSlider.value = value;
+        targetSlider.value = value;
+        if (isPercentOrYears) {
+            sourceOutput.value = value; // For r, i, T, direct value
+            targetOutput.value = value;
+        } else {
+            sourceOutput.value = formatNumber(value); // For W, P, format with commas
+            targetOutput.value = formatNumber(value);
+        }
+    }
+    
+    function syncRadioButtons(sourceName, targetName) {
+        const selectedSource = document.querySelector(`input[name="${sourceName}"]:checked`);
+        if (selectedSource) {
+            document.querySelectorAll(`input[name="${targetName}"]`).forEach(radio => {
+                radio.checked = (radio.value === selectedSource.value);
+            });
+        }
+    }
+
+    function setupInputListeners(slider, output, isUniqueToColumn = true, otherSlider = null, otherOutput = null, isPercentOrYears = false) {
+        slider.addEventListener('input', () => {
+            const val = slider.value;
+            output.value = isPercentOrYears ? val : formatNumber(val);
+            if (!isUniqueToColumn && otherSlider && otherOutput) {
+                otherSlider.value = val;
+                otherOutput.value = isPercentOrYears ? val : formatNumber(val);
+            }
+            handleInputChange(slider); // Pass slider as source
+        });
+        output.addEventListener('change', () => {
+            let val = isPercentOrYears ? parseFloat(output.value) : parseFormattedNumber(output.value);
+            val = Math.max(parseFloat(slider.min), Math.min(parseFloat(slider.max), val));
+            slider.value = val;
+            // Re-format the output field using the slider's actual value (which respects its step)
+            output.value = isPercentOrYears ? slider.value : formatNumber(slider.value);
+            if (!isUniqueToColumn && otherSlider && otherOutput) {
+                // Sync other slider and output based on the current slider's actual value
+                otherSlider.value = slider.value;
+                otherOutput.value = isPercentOrYears ? slider.value : formatNumber(slider.value);
+            }
+            handleInputChange(output); // Pass output field as source
+        });
+    }
+
+    // Setup listeners for unique inputs
+    setupInputListeners(W_slider_left, W_output_left, true, null, null, false); // isUniqueToColumn is true
+    setupInputListeners(P_slider_right, P_output_right, true, null, null, false);
+
+    // Setup listeners for common inputs (syncing them)
+    setupInputListeners(r_slider_left, r_output_left, false, r_slider_right, r_output_right, true);
+    setupInputListeners(r_slider_right, r_output_right, false, r_slider_left, r_output_left, true);
+    setupInputListeners(i_slider_left, i_output_left, false, i_slider_right, i_output_right, true);
+    setupInputListeners(i_slider_right, i_output_right, false, i_slider_left, i_output_left, true);
+    setupInputListeners(T_slider_left, T_output_left, false, T_slider_right, T_output_right, true);
+    setupInputListeners(T_slider_right, T_output_right, false, T_slider_left, T_output_left, true);
+
+    withdrawal_time_left_radios.forEach(radio => radio.addEventListener('change', () => {
+        syncRadioButtons('withdrawal_time_left', 'withdrawal_time_right');
+        handleInputChange(radio); // Pass radio as source
+    }));
+    withdrawal_time_right_radios.forEach(radio => radio.addEventListener('change', () => {
+        syncRadioButtons('withdrawal_time_right', 'withdrawal_time_left');
+        handleInputChange(radio); // Pass radio as source
+    }));
+
+    function handleInputChange(sourceElement = null) { // Added sourceElement parameter
+        const formData = new FormData();
+        formData.append('W', parseFormattedNumber(W_output_left.value));
+        formData.append('P', parseFormattedNumber(P_output_right.value));
+        formData.append('r', r_output_left.value); // Synced, so pick one
+        formData.append('i', i_output_left.value); // Synced, so pick one
+        formData.append('T', T_output_left.value); // Synced, so pick one
+        const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time_left"]:checked');
+        formData.append('withdrawal_time', withdrawal_time_selected ? withdrawal_time_selected.value : 'end');
+
+        fetch('/update', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error('Error from server:', data.error);
+                alert('Error updating calculations: ' + data.error);
+                return;
+            }
+            updatePage(data, sourceElement); // Pass sourceElement to updatePage
+        })
+        .catch(error => {
+            console.error('Error fetching/processing update:', error);
+            alert('Could not update calculations. See console for details.');
+        });
+    }
+
+    /**
+     * Replaces the content of a container with new HTML and ensures any scripts
+     * within the new HTML are executed. This is crucial for Plotly graphs.
+     * @param {HTMLElement} containerElement The DOM element to update.
+     * @param {string} htmlString The new HTML content (e.g., from server).
+     */
+    function updateElementWithScriptExecution(containerElement, htmlString) {
+        containerElement.innerHTML = htmlString; // Set the new HTML
+        // Find script tags within the newly inserted HTML
+        const scripts = Array.from(containerElement.getElementsByTagName("script"));
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement("script");
+            // Copy attributes (like type)
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            // Copy the script content
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            // Replace the old script tag with the new one to encourage execution
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    }
+
+    function updatePage(data, sourceElement = null) { // Added sourceElement parameter
+        // Update Left Column (Expense Mode - W input, P calculated)
+        displayFireNumberW.textContent = data.fire_number_W;
+        displayAnnualExpenseW.textContent = data.annual_expense_W;
+        updateElementWithScriptExecution(divPortfolioPlotW, data.portfolio_plot_W);
+        updateElementWithScriptExecution(divWithdrawalPlotW, data.withdrawal_plot_W);
+
+        // Update Right Column (FIRE Mode - P input, W calculated)
+        displayFireNumberP.textContent = data.fire_number_P;
+        displayAnnualExpenseP.textContent = data.annual_expense_P;
+        updateElementWithScriptExecution(divPortfolioPlotP, data.portfolio_plot_P);
+        updateElementWithScriptExecution(divWithdrawalPlotP, data.withdrawal_plot_P);
+
+        // Update the "other" column's primary input based on calculations
+        // Update P_slider_right and P_output_right from calculated P (data.fire_number_W)
+        // Only update if P_output_right (or its slider) was not the direct source of this change event.
+        if (sourceElement !== P_output_right && sourceElement !== P_slider_right) {
+            if (data.fire_number_W !== "N/A") {
+                let numeric_P = parseFormattedNumber(data.fire_number_W.replace('$', ''));
+                P_slider_right.value = Math.min(parseFloat(P_slider_right.max), Math.max(parseFloat(P_slider_right.min), numeric_P));
+                P_output_right.value = formatNumber(numeric_P);
+            } else {
+                P_output_right.value = "N/A";
+                P_slider_right.value = P_slider_right.min;
+            }
+        }
+
+        // Update W_slider_left and W_output_left from calculated W (data.annual_expense_P)
+        // Only update if W_output_left (or its slider) was not the direct source of this change event.
+        if (sourceElement !== W_output_left && sourceElement !== W_slider_left) {
+            if (data.annual_expense_P !== "N/A") {
+                let numeric_W = parseFormattedNumber(data.annual_expense_P.replace('$', ''));
+                W_slider_left.value = Math.min(parseFloat(W_slider_left.max), Math.max(parseFloat(W_slider_left.min), numeric_W));
+                W_output_left.value = formatNumber(numeric_W);
+            } else {
+                W_output_left.value = "N/A";
+                W_slider_left.value = W_slider_left.min;
+            }
+        }
+    }
+
+    function initializeFormValues() {
+        // Ensure initial text inputs are formatted and sliders match
+        W_output_left.value = formatNumber(W_slider_left.value); // Slider is source of truth for initial numeric val
+        P_output_right.value = formatNumber(P_slider_right.value);
+
+        // For r, i, T, values are direct
+        r_output_left.value = r_slider_left.value;
+        r_output_right.value = r_slider_right.value;
+        i_output_left.value = i_slider_left.value;
+        i_output_right.value = i_slider_right.value;
+        T_output_left.value = T_slider_left.value;
+        T_output_right.value = T_slider_right.value;
+    }
+
+    initializeFormValues();
+    // The page is already rendered with initial plots by the server.
+    // No initial handleInputChange() call is strictly needed unless client-side formatting
+    // significantly changes values that would lead to different initial plots.
+    // The main goal is to make *changes* interactive.
+});
+</script>
 </body>
 </html>
