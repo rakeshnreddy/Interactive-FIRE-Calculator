@@ -142,6 +142,39 @@ def find_max_annual_expense(P, r, i, T, withdrawal_time):
             lower = mid
     return upper
 
+def generate_html_table(years, balances, withdrawals):
+    """
+    Generates an HTML table string from the simulation data.
+
+    Args:
+        years (list or np.array): Array of years (0 to T).
+        balances (list): List of portfolio balances corresponding to each year.
+        withdrawals (list): List of annual withdrawals (for years 0 to T-1).
+
+    Returns:
+        str: HTML string representing the table.
+    """
+    if not years.any() or not balances or not withdrawals:
+        return "<p>No data available to display in table.</p>"
+
+    header = "<thead><tr><th>Year</th><th>Portfolio Balance ($)</th><th>Annual Withdrawal ($)</th></tr></thead>"
+    body_rows = []
+    
+    # Balances list has T+1 elements (for year 0 to T)
+    # Withdrawals list has T elements (for year 0 to T-1)
+    # Table should show T rows, for year 1 to T (or 0 to T-1 if preferred for display)
+
+    for t_idx in range(len(withdrawals)): # Iterate T times, for withdrawals
+        year_display = int(years[t_idx] + 1) # Display as Year 1, Year 2, ...
+        balance_at_year_end_or_start = balances[t_idx+1] # Balance after withdrawal and growth for year t_idx
+        withdrawal_for_year = withdrawals[t_idx]
+        body_rows.append(f"<tr><td>{year_display}</td><td>{balance_at_year_end_or_start:,.2f}</td><td>{withdrawal_for_year:,.2f}</td></tr>")
+    
+    # Add the final balance at the end of year T, with no corresponding withdrawal for that year's row
+    # body_rows.append(f"<tr><td>{int(years[-1]) + 1} (End)</td><td>{balances[-1]:,.2f}</td><td>N/A</td></tr>")
+
+    return f"<table class='data-table'> {header} <tbody>{''.join(body_rows)}</tbody> </table>"
+
 def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
     """
     Calculates financial figures and generates Plotly plots for portfolio balance and withdrawals.
@@ -156,13 +189,14 @@ def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
         P_value (float, optional): Initial portfolio value (used if mode='P'). Defaults to None.
 
     Returns:
-        tuple: (required_portfolio_or_P_value, calculated_W, portfolio_plot_div, withdrawal_plot_div)
+        tuple: (required_portfolio_or_P_value, calculated_W, portfolio_plot_div, withdrawal_plot_div, table_html)
     """
     if mode == MODE_WITHDRAWAL:
         required_portfolio = find_required_portfolio(W, r, i, T, withdrawal_time)
         if required_portfolio == float('inf'):
              # Handle case where no portfolio can sustain the withdrawal (e.g., W too high)
-            return float('inf'), W, "<div>Cannot find a suitable portfolio. Withdrawals may be too high.</div>", "<div></div>"
+            error_message = "<div>Cannot find a suitable portfolio. Withdrawals may be too high.</div>"
+            return float('inf'), W, error_message, "<div></div>", "<p>Table data not available due to error.</p>"
     else:
         required_portfolio = P_value
         W = find_max_annual_expense(required_portfolio, r, i, T, withdrawal_time)
@@ -199,8 +233,9 @@ def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
         yaxis_title='Withdrawal ($)'
     )
     withdrawal_plot = pyo.plot(fig2, include_plotlyjs=False, output_type='div', config=plot_config)
-    
-    return required_portfolio, W, portfolio_plot, withdrawal_plot
+
+    table_html = generate_html_table(years, balances, withdrawals)
+    return required_portfolio, W, portfolio_plot, withdrawal_plot, table_html
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -251,16 +286,17 @@ def index():
         # Initialize variables for both modes
         portfolio_plot_W_mode, withdrawal_plot_W_mode = "<div>Error generating FIRE mode plot.</div>", "<div>Error generating FIRE mode plot.</div>"
         portfolio_plot_P_mode, withdrawal_plot_P_mode = "<div>Error generating Expense mode plot.</div>", "<div>Error generating Expense mode plot.</div>"
+        table_data_W_mode_html = "<p>Table data not available.</p>"
+        table_data_P_mode_html = "<p>Table data not available.</p>"
         calculated_P_output = "N/A"
         initial_W_input_for_fire_mode = W_form
         calculated_W_output_for_expense_mode = "N/A"
         initial_P_input_for_expense_mode_raw = P_value_form # Store raw value first
 
-        #initial_P_input_for_expense_mode = P_value_form if mode_form == MODE_PORTFOLIO else "N/A"
 
         if mode_form == MODE_WITHDRAWAL:
             # Primary calculation: FIRE Mode (W input -> P calculated)
-            P_calc_primary, W_actual_primary, p_plot_w, w_plot_w = generate_plots(
+            P_calc_primary, W_actual_primary, p_plot_w, w_plot_w, table_w = generate_plots(
                 W_form, r_calc, i_calc, T_form, withdrawal_time_form, MODE_WITHDRAWAL, P_value=None
             )
             if P_calc_primary == float('inf'):
@@ -270,34 +306,36 @@ def index():
             calculated_P_output = P_calc_primary
             initial_W_input_for_fire_mode = W_actual_primary # This will be W_form
             portfolio_plot_W_mode, withdrawal_plot_W_mode = p_plot_w, w_plot_w
+            table_data_W_mode_html = table_w
 
             # Secondary calculation for Expense Mode section (using P_calc_primary)
-            #initial_P_input_for_expense_mode = P_calc_primary
             initial_P_input_for_expense_mode_raw = P_calc_primary
-            _, W_calc_secondary, p_plot_p, w_plot_p = generate_plots(
+            _, W_calc_secondary, p_plot_p, w_plot_p, table_p = generate_plots(
                 initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=initial_P_input_for_expense_mode_raw
             )
             calculated_W_output_for_expense_mode = W_calc_secondary
             portfolio_plot_P_mode, withdrawal_plot_P_mode = p_plot_p, w_plot_p
+            table_data_P_mode_html = table_p
 
         elif mode_form == MODE_PORTFOLIO:
             # Primary calculation: Expense Mode (P input -> W calculated)
-            P_actual_primary, W_calc_primary, p_plot_p, w_plot_p = generate_plots(
+            P_actual_primary, W_calc_primary, p_plot_p, w_plot_p, table_p = generate_plots(
                 W_form, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=P_value_form
             )
-            #initial_P_input_for_expense_mode = P_actual_primary # This will be P_value_form
             initial_P_input_for_expense_mode_raw = P_actual_primary # This will be P_value_form
             calculated_W_output_for_expense_mode = W_calc_primary
             portfolio_plot_P_mode, withdrawal_plot_P_mode = p_plot_p, w_plot_p
+            table_data_P_mode_html = table_p
 
             # Secondary calculation for FIRE Mode section (using W_calc_primary)
             initial_W_input_for_fire_mode = W_calc_primary
-            P_calc_secondary, _, p_plot_w, w_plot_w = generate_plots(
+            P_calc_secondary, _, p_plot_w, w_plot_w, table_w = generate_plots(
                 initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_WITHDRAWAL, P_value=None
             )
             calculated_P_output = P_calc_secondary
             # If P_calc_secondary is inf, generate_plots returns the error div for plots
             portfolio_plot_W_mode, withdrawal_plot_W_mode = p_plot_w, w_plot_w
+            table_data_W_mode_html = table_w
         
         # Prepare initial_P_input_for_expense_mode for the template
         if initial_P_input_for_expense_mode_raw == float('inf'):
@@ -321,12 +359,14 @@ def index():
                                fire_P_calculated_val=f"${calculated_P_output:,.2f}" if isinstance(calculated_P_output, (int, float)) and calculated_P_output != float('inf') else "N/A",
                                portfolio_plot_fire=portfolio_plot_W_mode,
                                withdrawal_plot_fire=withdrawal_plot_W_mode,
+                               table_data_fire_html=table_data_W_mode_html,
 
                                # Expense Mode Data (P input, W calculated)
                                expense_P_input_val=initial_P_input_for_expense_mode_template,
                                expense_W_calculated_val=f"${calculated_W_output_for_expense_mode:,.2f}" if isinstance(calculated_W_output_for_expense_mode, (int, float)) else "N/A",
                                portfolio_plot_expense=portfolio_plot_P_mode,
                                withdrawal_plot_expense=withdrawal_plot_P_mode,
+                               table_data_expense_html=table_data_P_mode_html,
                                **form_params_for_result_page)
     
     # GET request: render with default values
@@ -365,13 +405,13 @@ def update():
         return jsonify({'error': f'Invalid input: {str(e)}'})
     
     # Calculate for mode 'W'
-    required_portfolio_W, annual_expense_W, portfolio_plot_W, withdrawal_plot_W = generate_plots(
+    required_portfolio_W, annual_expense_W, portfolio_plot_W, withdrawal_plot_W, table_data_W_html = generate_plots(
         W_form, r_calc, i_calc, T_form, withdrawal_time, mode=MODE_WITHDRAWAL
     )
     
     # Calculate for mode 'P'
     # Note: The 'W' passed here is from the form, but generate_plots will recalculate W if mode='P'
-    required_portfolio_P, annual_expense_P, portfolio_plot_P, withdrawal_plot_P = generate_plots(
+    required_portfolio_P, annual_expense_P, portfolio_plot_P, withdrawal_plot_P, table_data_P_html = generate_plots(
         W_form, r_calc, i_calc, T_form, withdrawal_time, mode=MODE_PORTFOLIO, P_value=P_value
     )
     
@@ -380,10 +420,12 @@ def update():
         'annual_expense_W': f"${annual_expense_W:,.2f}",
         'portfolio_plot_W': portfolio_plot_W,
         'withdrawal_plot_W': withdrawal_plot_W,
+        'table_data_W_html': table_data_W_html,
         'fire_number_P': f"${required_portfolio_P:,.2f}" if required_portfolio_P != float('inf') else "N/A", # P is an input here
         'annual_expense_P': f"${annual_expense_P:,.2f}",
         'portfolio_plot_P': portfolio_plot_P,
-        'withdrawal_plot_P': withdrawal_plot_P
+        'withdrawal_plot_P': withdrawal_plot_P,
+        'table_data_P_html': table_data_P_html
     })
 
 @app.route('/compare', methods=['GET', 'POST'])

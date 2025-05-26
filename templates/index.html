@@ -3,150 +3,11 @@
 <head>
   <meta charset="utf-8">
   <title>FIRE Calculator</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-light: #fefefe;
-      --bg-accent: #A8E6CF;
-      --bg-secondary: #FFD3B6;
-      --text-light: #333;
-      --panel-bg: rgba(255, 255, 255, 0.7);
-    }
-    body {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary));
-      color: var(--text-light);
-      overflow-x: hidden;
-      transition: background 0.5s, color 0.5s;
-    }
-    body.dark {
-      background: #121212;
-      color: #e0e0e0;
-    }
-    header {
-      background: var(--panel-bg);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 26px;
-      font-weight: 500;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: background 0.5s, color 0.5s;
-      position: relative;
-    }
-    body.dark header {
-      background: #333;
-      color: #e0e0e0;
-    }
-    .header-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .theme-toggle {
-      cursor: pointer;
-      font-size: 16px;
-      background: transparent;
-      border: none;
-      color: var(--text-light);
-    }
-    body.dark .theme-toggle {
-      color: #e0e0e0;
-    }
-    .settings-link {
-      text-decoration: none;
-      font-size: 24px;
-      color: var(--text-light);
-    }
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      background: var(--panel-bg);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(31,38,135,0.2);
-      backdrop-filter: blur(8px);
-      transition: background 0.5s;
-    }
-    body.dark .container {
-      background: #2b2b2b;
-    }
-    .form-group {
-      margin: 15px 0;
-    }
-    label {
-      display: block;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    input[type="number"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    input[type="submit"] {
-      width: 100%;
-      padding: 12px;
-      background: var(--bg-accent);
-      border: none;
-      color: var(--text-light);
-      font-size: 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 20px;
-      transition: background 0.3s;
-    }
-    input[type="submit"]:hover {
-      background: #8fd9b6;
-    }
-    a {
-      display: block;
-      margin: 20px auto;
-      text-align: center;
-      text-decoration: none;
-      color: var(--text-light);
-      font-weight: 500;
-      width: 200px;
-      padding: 10px;
-      background: var(--panel-bg);
-      border-radius: 30px;
-      transition: background 0.3s;
-    }
-    a:hover {
-      background: rgba(255,255,255,0.9);
-    }
-    @media (max-width: 480px) {
-      input[type="range"] {
-        height: 12px;
-      }
-      button, input[type="submit"] {
-        padding: 14px 24px;
-        font-size: 18px;
-      }
-    }
-  </style>
-  <script>
-    function toggleTheme() {
-      document.body.classList.toggle('dark');
-      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-    }
-    function applyTheme() {
-      var storedTheme = localStorage.getItem('theme');
-      if (storedTheme === 'dark') {
-        document.body.classList.add('dark');
-      }
-    }
-    document.addEventListener("DOMContentLoaded", applyTheme);
-  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <script>applyTheme();</script>
   <header>
     <div>FIRE Calculator</div>
     <div class="header-right">
@@ -154,7 +15,7 @@
       <a href="/settings" class="settings-link">&#9776;</a>
     </div>
   </header>
-  <div class="container">
+  <div class="container index-page"> <!-- .index-page class is already here -->
     <h2>Enter Your Details</h2>
     <form method="post" action="/">
       <div class="form-group">
