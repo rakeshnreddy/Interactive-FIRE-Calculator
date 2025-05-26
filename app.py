@@ -10,7 +10,7 @@ MODE_WITHDRAWAL = 'W'
 MODE_PORTFOLIO = 'P'
 TIME_START = "start"
 TIME_END = "end"
-DEFAULT_TOLERANCE = 1.0
+DEFAULT_TOLERANCE = 0.01
 MAX_SCENARIOS_COMPARE = 4
 PV_MAX_GUESS_LIMIT = 1e12 # Example limit for portfolio value guess
 W_MIN_GUESS_FOR_MAX_EXPENSE = 1.0 # Minimum guess for W if calculated upper is too low
@@ -91,7 +91,7 @@ def find_required_portfolio(W, r, i, T, withdrawal_time):
     # A more precise factor would be (1+r).
     # However, bisection is robust to the exactness of initial bounds.
     if withdrawal_time == TIME_START:
-        lower *= 1.05
+        lower *= (1 + r) # Changed from 1.05
         
     upper = lower * 1.5
     while simulate_final_balance(upper, r, i, W, T, withdrawal_time) < 0:
@@ -255,10 +255,10 @@ def index():
                 raise ValueError("Time horizon (T) must be greater than 0.")
             if W_form < 0:
                 raise ValueError("Annual withdrawal (W) cannot be negative.")
-            if not (-100 < r_perc_form < 1000): # Example reasonable range for return
-                raise ValueError("Annual return (r) is out of typical range.")
-            if not (-100 < i_perc_form < 1000): # Example reasonable range for inflation
-                raise ValueError("Inflation rate (i) is out of typical range.")
+            if not (-50 <= r_perc_form <= 100):
+                raise ValueError("Annual return (r) must be between -50% and 100%.")
+            if not (-50 <= i_perc_form <= 100):
+                raise ValueError("Inflation rate (i) must be between -50% and 100%.")
 
             r_calc = r_perc_form / 100
             i_calc = i_perc_form / 100
@@ -389,10 +389,10 @@ def update():
 
         if T_form <= 0: raise ValueError("Time horizon (T) must be greater than 0.")
         if W_form < 0: raise ValueError("Annual withdrawal (W) cannot be negative.")
-        if not (-100 < r_perc_form < 1000):
-            raise ValueError("Annual return (r) is out of typical range.")
-        if not (-100 < i_perc_form < 1000):
-            raise ValueError("Inflation rate (i) is out of typical range.")
+        if not (-50 <= r_perc_form <= 100):
+            raise ValueError("Annual return (r) must be between -50% and 100%.")
+        if not (-50 <= i_perc_form <= 100):
+            raise ValueError("Inflation rate (i) must be between -50% and 100%.")
 
         withdrawal_time = request.form.get('withdrawal_time', TIME_END)
         P_value = float(request.form['P'])
@@ -463,11 +463,11 @@ def compare():
                 
 
                 # Validation for each scenario's inputs
-                if not (-100 < scenario['r_perc'] < 1000):
-                    scenario['error'] = f"Scenario {n}: Annual return (r) is out of typical range."
+                if not (-50 <= scenario['r_perc'] <= 100):
+                    scenario['error'] = f"Scenario {n}: Annual return (r) must be between -50% and 100%."
                     scenario['enabled'] = False
-                elif not (-100 < scenario['i_perc'] < 1000):
-                    scenario['error'] = f"Scenario {n}: Inflation rate (i) is out of typical range."
+                elif not (-50 <= scenario['i_perc'] <= 100):
+                    scenario['error'] = f"Scenario {n}: Inflation rate (i) must be between -50% and 100%."
                     scenario['enabled'] = False
                 elif scenario['T'] <= 0:
                     scenario['error'] = f"Scenario {n}: Time (T) must be > 0."
