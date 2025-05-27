@@ -33,39 +33,6 @@ from constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_START, TIME_END, MAX
 # Old global constants (MODE_WITHDRAWAL, etc.) are now imported from constants.py
 
 # Financial calculation functions (annual_simulation, simulate_final_balance, 
-# find_required_portfolio, find_max_annual_expense) are now in financial_calcs.py
-
-def generate_html_table(years, balances, withdrawals):
-    """
-    Simulate the annual portfolio balance over T years.
-
-    Args:
-        PV (float): Present Value (initial portfolio balance).
-        r (float): Annual rate of return (e.g., 0.05 for 5%).
-        i (float): Annual inflation rate (e.g., 0.02 for 2%).
-        W (float): Initial annual withdrawal amount.
-        T (int): Time horizon in years.
-        withdrawal_time (str): Time of withdrawal, "start" or "end" of the year.
-
-    Returns:
-        tuple: (years_array, balances_list, withdrawals_list)
-    """
-    years = np.arange(0, T + 1)
-    balances = []
-    withdrawals = []
-    B = PV
-    for t in range(T):
-        annual_withdrawal = W * ((1 + i) ** t)
-        withdrawals.append(annual_withdrawal)
-        if withdrawal_time == TIME_START:
-            B = B - annual_withdrawal
-            balances.append(B)
-            B = B * (1 + r)
-        else:
-            balances.append(B)
-            B = B * (1 + r) - annual_withdrawal
-    balances.append(B)
-    return years, balances, withdrawals
 
 def simulate_final_balance(PV, r, i, W, T, withdrawal_time):
     """
@@ -85,7 +52,7 @@ def simulate_final_balance(PV, r, i, W, T, withdrawal_time):
     _, balances, _ = annual_simulation(PV, r, i, W, T, withdrawal_time)
     return balances[-1]
 
-def find_required_portfolio(W, r, i, T, withdrawal_time):
+def find_required_portfolio(W, r, i, T, withdrawal_time, desired_final_value=0.0):
     """
     Find the required initial portfolio (PV) to sustain withdrawals W for T years.
     Uses a bisection method.
@@ -96,6 +63,7 @@ def find_required_portfolio(W, r, i, T, withdrawal_time):
         i (float): Annual inflation rate.
         T (int): Time horizon in years.
         withdrawal_time (str): "start" or "end".
+        desired_final_value (float, optional): Desired portfolio value at the end of T years. Defaults to 0.0.
 
     Returns:
         float: Required initial portfolio.
@@ -121,16 +89,17 @@ def find_required_portfolio(W, r, i, T, withdrawal_time):
             # Or it implies W is too high for any reasonable PV
             return float('inf') # Or handle as an error
 
-    while (upper - lower) > DEFAULT_TOLERANCE:
+    while (upper - lower) > app.config['DEFAULT_TOLERANCE']: # Use app.config
         mid = (lower + upper) / 2.0
-        if simulate_final_balance(mid, r, i, W, T, withdrawal_time) < 0:
+        if simulate_final_balance(mid, r, i, W, T, withdrawal_time) < desired_final_value: # Compare to desired_final_value
             lower = mid
         else:
             upper = mid
     return upper
 
-def find_max_annual_expense(P, r, i, T, withdrawal_time):
+def find_max_annual_expense(P, r, i, T, withdrawal_time, desired_final_value=0.0):
     """
+    
     Find the maximum initial annual withdrawal (W) sustainable from portfolio P for T years.
     Uses a bisection method.
 
@@ -140,6 +109,7 @@ def find_max_annual_expense(P, r, i, T, withdrawal_time):
         i (float): Annual inflation rate.
         T (int): Time horizon in years.
         withdrawal_time (str): "start" or "end".
+        desired_final_value (float, optional): Desired portfolio value at the end of T years. Defaults to 0.0.
 
     Returns:
         float: Maximum sustainable initial annual withdrawal.
@@ -153,10 +123,10 @@ def find_max_annual_expense(P, r, i, T, withdrawal_time):
     # Ensure upper bound is reasonable, especially if P is very small or T is large
     upper = max(upper, app.config['W_MIN_GUESS_FOR_MAX_EXPENSE']) # Avoid issues if formula gives tiny/negative upper
 
-    while (upper - lower) > DEFAULT_TOLERANCE:
+    while (upper - lower) > app.config['DEFAULT_TOLERANCE']: # Use app.config
         mid = (lower + upper) / 2.0
-        final_balance = simulate_final_balance(P, r, i, mid, T, withdrawal_time)
-        if final_balance < 0:
+        final_balance = simulate_final_balance(P, r, i, mid, T, withdrawal_time) # Simulate with the guessed W (mid)
+        if final_balance < desired_final_value: # Check if the final balance is less than the desired amount
             upper = mid
         else:
             lower = mid
@@ -256,7 +226,7 @@ def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None, desired_fina
     table_html = generate_html_table(years, balances, withdrawals)
     return required_portfolio, W, portfolio_plot, withdrawal_plot, table_html
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST']) # This route handles the main form submission
 def index():
     """
     Handles GET requests for the main page and POST requests for form submissions 
@@ -340,7 +310,7 @@ def index():
 
             # Secondary calculation for Expense Mode section (using P_calc_primary)
             initial_P_input_for_expense_mode_raw = P_calc_primary
-            _, W_calc_secondary, p_plot_p, w_plot_p, table_p = generate_plots(
+            _, W_calc_secondary, p_plot_p, w_plot_p, table_p = generate_plots( # Pass D_form here too
                 initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=initial_P_input_for_expense_mode_raw, desired_final_value=D_form
             )
             calculated_W_output_for_expense_mode = W_calc_secondary
@@ -349,7 +319,7 @@ def index():
 
         elif mode_form == MODE_PORTFOLIO:
             # Primary calculation: Expense Mode (P input -> W calculated)
-            P_actual_primary, W_calc_primary, p_plot_p, w_plot_p, table_p = generate_plots(
+            P_actual_primary, W_calc_primary, p_plot_p, w_plot_p, table_p = generate_plots( # Pass D_form here too
                 W_form, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=P_value_form, desired_final_value=D_form
             )
             initial_P_input_for_expense_mode_raw = P_actual_primary # This will be P_value_form
@@ -358,7 +328,7 @@ def index():
             table_data_P_mode_html = table_p
 
             # Secondary calculation for FIRE Mode section (using W_calc_primary)
-            initial_W_input_for_fire_mode = W_calc_primary
+            initial_W_input_for_fire_mode = W_calc_primary # This is the calculated W from P mode
             P_calc_secondary, _, p_plot_w, w_plot_w, table_w = generate_plots(
                 initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_WITHDRAWAL, P_value=None, desired_final_value=D_form
             )
@@ -467,7 +437,7 @@ def update():
     # Note: The 'W' passed here is from the form, but generate_plots will recalculate W if mode='P'
     required_portfolio_P, annual_expense_P, portfolio_plot_P, withdrawal_plot_P, table_data_P_html = generate_plots(
         W_form, r_calc, i_calc, T_form, withdrawal_time, mode=MODE_PORTFOLIO, P_value=P_value, desired_final_value=D_form
-    )
+    ) # Pass D_form here too
     
     return jsonify({
         'fire_number_W': f"${required_portfolio_W:,.2f}" if required_portfolio_W != float('inf') else "N/A",
@@ -548,7 +518,7 @@ def compare():
             if scenario.get('enabled'): # Proceed if enabled and no parsing/validation errors
                 r_val = scenario['r_perc'] / 100
                 i_val = scenario['i_perc'] / 100
-                portfolio = find_required_portfolio(scenario['W'], r_val, i_val, scenario['T'], scenario['withdrawal_time'], desired_final_value=scenario['D'])
+                portfolio = find_required_portfolio(scenario['W'], r_val, i_val, scenario['T'], scenario['withdrawal_time'], desired_final_value=scenario['D']) # Pass D
                 
                 if portfolio == float('inf'):
                     scenario['error'] = f"Scenario {n}: Cannot find suitable portfolio (inputs unrealistic)."
@@ -556,7 +526,7 @@ def compare():
                     scenario['years'], scenario['balances'], scenario['withdrawals'] = [], [], []
                 else:
                     years, balances, withdrawals = annual_simulation(portfolio, r_val, i_val, scenario['W'], scenario['T'], scenario['withdrawal_time'])
-                    scenario['fire_number'] = portfolio
+                    scenario['fire_number'] = portfolio # This is the calculated P
                     scenario['years'] = years.tolist()
                     scenario['balances'] = balances
                     scenario['withdrawals'] = withdrawals
@@ -649,17 +619,19 @@ def export_csv():
     Retrieves parameters from query string, validates them, runs simulation,
     and returns data (currently as JSON placeholder).
     """
+    app.logger.info(f"Export CSV request received with args: {request.args}")
     try:
         # Retrieve and parse parameters
-        w_str = request.args.get('W', type=str)
-        r_str = request.args.get('r', type=str)
-        i_str = request.args.get('i', type=str)
-        t_str = request.args.get('T', type=str)
+        w_str = request.args.get('W') # Get as string first
+        r_str = request.args.get('r')
+        # ... (other parameters as before)
+        i_str = request.args.get('i')
+        t_str = request.args.get('T')
         withdrawal_time = request.args.get('withdrawal_time', default=TIME_END, type=str)
         mode = request.args.get('mode', default=MODE_WITHDRAWAL, type=str)
-        p_str = request.args.get('P', type=str)
+        p_str = request.args.get('P')
         d_str = request.args.get('D', default='0.0', type=str)
-
+        
         # Validate mode and withdrawal_time
         if mode not in [MODE_WITHDRAWAL, MODE_PORTFOLIO]:
             raise ValueError("Invalid mode specified.")
@@ -667,12 +639,13 @@ def export_csv():
             raise ValueError("Invalid withdrawal_time specified.")
 
         # Convert and validate required numeric inputs
-        if r_str is None or i_str is None or t_str is None:
-            raise ValueError("Missing required parameters (r, i, T).")
+        if r_str is None: raise ValueError("Parameter 'r' (Expected Annual Return) is required.")
+        if i_str is None: raise ValueError("Parameter 'i' (Expected Annual Inflation) is required.")
+        if t_str is None: raise ValueError("Parameter 'T' (Retirement Duration) is required.")
         
-        r_perc = float(r_str)
-        i_perc = float(i_str)
-        T_form_val = int(t_str)
+        r_perc = float(r_str) if r_str is not None else 0.0 # Default if None
+        i_perc = float(i_str) if i_str is not None else 0.0 # Default if None
+        T_form_val = int(t_str) if t_str is not None else 0   # Default if None
         D_form_val = float(d_str) if d_str else 0.0
 
         W_form_val = 0.0
@@ -681,13 +654,11 @@ def export_csv():
         if mode == MODE_WITHDRAWAL:
             if w_str is None:
                 raise ValueError("Parameter 'W' (Annual Expenses) is required for FIRE Mode.")
-            W_form_val = float(w_str)
-            if W_form_val < 0:
-                raise ValueError("Annual withdrawal (W) cannot be negative.")
+            W_form_val = float(w_str) if w_str is not None else 0.0
         elif mode == MODE_PORTFOLIO:
             if p_str is None:
                 raise ValueError("Parameter 'P' (Initial Portfolio) is required for Expense Mode.")
-            P_form_val = float(p_str)
+            P_form_val = float(p_str) if p_str is not None else 0.0
             if P_form_val < 0:
                 raise ValueError("Initial portfolio (P) cannot be negative.")
         
@@ -698,6 +669,8 @@ def export_csv():
             raise ValueError("Annual return (r) must be between -50% and 100%.")
         if not (-50 <= i_perc <= 100):
             raise ValueError("Inflation rate (i) must be between -50% and 100%.")
+        if W_form_val < 0 and mode == MODE_WITHDRAWAL : # W is only primary input for this mode
+            raise ValueError("Annual withdrawal (W) cannot be negative.")
         if D_form_val < 0:
             raise ValueError("Desired final portfolio value (D) cannot be negative.")
 
@@ -738,7 +711,7 @@ def export_csv():
             balance_at_year_end = balances[t_idx+1] 
             withdrawal_for_year = withdrawals[t_idx]
             writer.writerow([year_display, balance_at_year_end, withdrawal_for_year])
-            
+
         csv_string = output.getvalue()
         
         response = Response(
@@ -746,6 +719,7 @@ def export_csv():
             mimetype='text/csv',
             headers={'Content-Disposition': 'attachment;filename=fire_results.csv'}
         )
+        app.logger.info("Successfully generated CSV response.")
         return response
 
     except ValueError as e:

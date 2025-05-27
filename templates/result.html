@@ -61,7 +61,7 @@
           </div>
           <div class="slider-container">
             <label for="i_slider">Expected Annual Inflation (%):</label>
-            <input type="range" class="common-slider" id="i_slider" name="i" min="0" max="10" step="0.1" value="{{ i_form_val }}">
+            <input type="range" id="i_slider" name="i" min="0" max="10" step="0.1" value="{{ i_form_val }}">
             <input type="text" id="i_output" class="number-input" value="{{ i_form_val }}">
           </div>
           <div class="slider-container">
@@ -154,10 +154,10 @@
     // Page-specific JavaScript for result.html (the interactive part)
     // The toggleTheme and applyTheme functions are now in theme.js
     function exportReport() {
-      // console.log("exportReport function called"); // You can keep or remove this for debugging
+      // console.log("exportReport function called"); 
       window.print();
     }
-
+    // The DOMContentLoaded listener should be part of this same script block
 document.addEventListener('DOMContentLoaded', function () {
     // --- Input Elements ---
     // Left Column (Expense Mode)
@@ -320,6 +320,27 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function updateExportCsvLink() {
+      const container = document.getElementById('exportParamsContainer');
+      const exportLink = document.getElementById('exportCsvLink');
+
+      if (container && exportLink) {
+        const params = new URLSearchParams();
+        // Read current values from the input fields or data attributes that are kept up-to-date
+        params.append('W', parseFormattedNumber(W_output_left.value) || container.dataset.w || '0');
+        params.append('r', r_output.value || container.dataset.r || '0');
+        params.append('i', i_output.value || container.dataset.i || '0');
+        params.append('T', T_output.value || container.dataset.t || '0');
+        const withdrawal_time_selected_for_export = document.querySelector('input[name="withdrawal_time"]:checked');
+        params.append('withdrawal_time', (withdrawal_time_selected_for_export ? withdrawal_time_selected_for_export.value : container.dataset.withdrawalTime) || '{{ TIME_END_const }}');
+        // Determine current mode for export. This might need refinement based on which panel was last interacted with or a dedicated mode selector for export.
+        // For simplicity, let's assume it uses the initial mode or a default if not clearly defined.
+        params.append('mode', container.dataset.mode || '{{ MODE_WITHDRAWAL_const }}'); // Or derive from UI state
+        params.append('P', parseFormattedNumber(P_output_right.value) || container.dataset.p || '0');
+        params.append('D', container.dataset.d || '0.0'); // Assuming D is not directly editable on result page, use initial
+        exportLink.href = `/export_csv?${params.toString()}`;
+      }
+    }
     function updatePage(data, sourceElement = null) { // Added sourceElement parameter
         // Update Left Column (Expense Mode - W input, P calculated)
         displayFireNumberW.textContent = data.fire_number_W;
@@ -367,6 +388,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 W_slider_left.value = W_slider_left.min;
             }
         }
+        // Update the CSV export link with the new values
+        updateExportCsvLink(); 
     }
 
     function initializeFormValues() {
@@ -390,29 +413,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // No initial handleInputChange() call is strictly needed unless client-side formatting
     // significantly changes values that would lead to different initial plots.
     // The main goal is to make *changes* interactive.
+    updateExportCsvLink(); // Initialize the export link on page load
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  const container = document.getElementById('exportParamsContainer');
-  const exportLink = document.getElementById('exportCsvLink');
-
-  if (container && exportLink) {
-    const params = new URLSearchParams();
-    // Ensure correct mapping from dataset property names to query param names
-    params.append('W', container.dataset.w);
-    params.append('r', container.dataset.r);
-    params.append('i', container.dataset.i);
-    params.append('T', container.dataset.t);
-    params.append('withdrawal_time', container.dataset.withdrawalTime); // dataset.withdrawalTime for data-withdrawal-time
-    params.append('mode', container.dataset.mode);
-    params.append('P', container.dataset.p);
-    params.append('D', container.dataset.d);
-
-    exportLink.href = `/export_csv?${params.toString()}`;
-  } else {
-    console.error("Export CSV elements not found on page.");
-  }
-});
 </script>
 </body>
 </html>

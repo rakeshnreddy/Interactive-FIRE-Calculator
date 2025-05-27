@@ -1,0 +1,7 @@
+# Application-wide constants
+MODE_WITHDRAWAL = 'W'
+MODE_PORTFOLIO = 'P'
+TIME_START = "start"
+TIME_END = "end"
+MAX_SCENARIOS_COMPARE = 4
+# Note: DEFAULT_TOLERANCE, PV_MAX_GUESS_LIMIT, W_MIN_GUESS_FOR_MAX_EXPENSE are in app.config
