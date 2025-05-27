@@ -1,21 +1,41 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, make_response, Response # Add Response
 import numpy as np
 import plotly.graph_objects as go
 import plotly.offline as pyo
+import logging
+import os
+import io
+import csv
 
 app = Flask(__name__)
 
-# Constants
-MODE_WITHDRAWAL = 'W'
-MODE_PORTFOLIO = 'P'
-TIME_START = "start"
-TIME_END = "end"
-DEFAULT_TOLERANCE = 0.01
-MAX_SCENARIOS_COMPARE = 4
-PV_MAX_GUESS_LIMIT = 1e12 # Example limit for portfolio value guess
-W_MIN_GUESS_FOR_MAX_EXPENSE = 1.0 # Minimum guess for W if calculated upper is too low
+# Basic Logging Configuration
+log_dir = os.path.join(os.path.dirname(__file__), 'logs')
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+log_file = os.path.join(log_dir, 'app.log')
+logging.basicConfig(
+    filename=log_file,
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s'
+)
 
-def annual_simulation(PV, r, i, W, T, withdrawal_time):
+# Flask App Configuration for specific constants
+app.config['PV_MAX_GUESS_LIMIT'] = 1e12 # Safeguard limit for the upper bound in bisection search for find_required_portfolio.
+app.config['W_MIN_GUESS_FOR_MAX_EXPENSE'] = 1.0 # Floor for the initial upper withdrawal guess in find_max_annual_expense bisection.
+app.config['DEFAULT_TOLERANCE'] = 0.01 # Tolerance for bisection method convergence.
+
+# Import functions and constants from new modules
+from financial_calcs import annual_simulation, simulate_final_balance, find_required_portfolio, find_max_annual_expense
+from constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_START, TIME_END, MAX_SCENARIOS_COMPARE
+
+# Old global constants (DEFAULT_TOLERANCE, PV_MAX_GUESS_LIMIT, W_MIN_GUESS_FOR_MAX_EXPENSE) are now in app.config
+# Old global constants (MODE_WITHDRAWAL, etc.) are now imported from constants.py
+
+# Financial calculation functions (annual_simulation, simulate_final_balance, 
+# find_required_portfolio, find_max_annual_expense) are now in financial_calcs.py
+
+def generate_html_table(years, balances, withdrawals):
     """
     Simulate the annual portfolio balance over T years.
 
@@ -96,7 +116,7 @@ def find_required_portfolio(W, r, i, T, withdrawal_time):
     upper = lower * 1.5
     while simulate_final_balance(upper, r, i, W, T, withdrawal_time) < 0:
         upper *= 2
-        if upper > PV_MAX_GUESS_LIMIT: # Add a safety break for upper bound
+        if upper > app.config['PV_MAX_GUESS_LIMIT']: # Add a safety break for upper bound
             # This case should ideally not be hit if logic is sound
             # Or it implies W is too high for any reasonable PV
             return float('inf') # Or handle as an error
@@ -131,7 +151,7 @@ def find_max_annual_expense(P, r, i, T, withdrawal_time):
         upper = P * (1 + i) / T
     
     # Ensure upper bound is reasonable, especially if P is very small or T is large
-    upper = max(upper, W_MIN_GUESS_FOR_MAX_EXPENSE) # Avoid issues if formula gives tiny/negative upper
+    upper = max(upper, app.config['W_MIN_GUESS_FOR_MAX_EXPENSE']) # Avoid issues if formula gives tiny/negative upper
 
     while (upper - lower) > DEFAULT_TOLERANCE:
         mid = (lower + upper) / 2.0
@@ -142,6 +162,7 @@ def find_max_annual_expense(P, r, i, T, withdrawal_time):
             lower = mid
     return upper
 
+# generate_html_table remains in app.py as it's primarily for presentation within Flask
 def generate_html_table(years, balances, withdrawals):
     """
     Generates an HTML table string from the simulation data.
@@ -170,12 +191,9 @@ def generate_html_table(years, balances, withdrawals):
         withdrawal_for_year = withdrawals[t_idx]
         body_rows.append(f"<tr><td>{year_display}</td><td>{balance_at_year_end_or_start:,.2f}</td><td>{withdrawal_for_year:,.2f}</td></tr>")
     
-    # Add the final balance at the end of year T, with no corresponding withdrawal for that year's row
-    # body_rows.append(f"<tr><td>{int(years[-1]) + 1} (End)</td><td>{balances[-1]:,.2f}</td><td>N/A</td></tr>")
-
     return f"<table class='data-table'> {header} <tbody>{''.join(body_rows)}</tbody> </table>"
 
-def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
+def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None, desired_final_value=0.0):
     """
     Calculates financial figures and generates Plotly plots for portfolio balance and withdrawals.
 
@@ -187,19 +205,20 @@ def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
         withdrawal_time (str): "start" or "end".
         mode (str): Calculation mode, 'W' (find portfolio for W) or 'P' (find W for portfolio P).
         P_value (float, optional): Initial portfolio value (used if mode='P'). Defaults to None.
+        desired_final_value (float, optional): Desired portfolio value at the end of T years. Defaults to 0.0.
 
     Returns:
         tuple: (required_portfolio_or_P_value, calculated_W, portfolio_plot_div, withdrawal_plot_div, table_html)
     """
     if mode == MODE_WITHDRAWAL:
-        required_portfolio = find_required_portfolio(W, r, i, T, withdrawal_time)
+        required_portfolio = find_required_portfolio(W, r, i, T, withdrawal_time, desired_final_value=desired_final_value)
         if required_portfolio == float('inf'):
              # Handle case where no portfolio can sustain the withdrawal (e.g., W too high)
             error_message = "<div>Cannot find a suitable portfolio. Withdrawals may be too high.</div>"
             return float('inf'), W, error_message, "<div></div>", "<p>Table data not available due to error.</p>"
-    else:
+    else: # mode == MODE_PORTFOLIO
         required_portfolio = P_value
-        W = find_max_annual_expense(required_portfolio, r, i, T, withdrawal_time)
+        W = find_max_annual_expense(required_portfolio, r, i, T, withdrawal_time, desired_final_value=desired_final_value)
     years, balances, withdrawals = annual_simulation(required_portfolio, r, i, W, T, withdrawal_time)
     
     plot_config = {'displayModeBar': False, 'responsive': True}
@@ -239,6 +258,10 @@ def generate_plots(W, r, i, T, withdrawal_time, mode, P_value=None):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """
+    Handles GET requests for the main page and POST requests for form submissions 
+    to calculate FIRE figures. Renders `index.html` or `result.html`.
+    """
     if request.method == 'POST':
         form_data = request.form.to_dict()
         try:
@@ -249,8 +272,13 @@ def index():
             
             withdrawal_time_form = form_data.get('withdrawal_time', TIME_END)
             mode_form = form_data.get('mode', MODE_WITHDRAWAL)
+            
+            D_form_str = form_data.get('D', '0.0') # Get 'D', default to string '0.0'
+            D_form = float(D_form_str) if D_form_str else 0.0 # Convert to float, ensure empty string becomes 0.0
 
             # Basic Validations
+            if D_form < 0:
+                raise ValueError("Desired final portfolio value (D) cannot be negative.")
             if T_form <= 0:
                 raise ValueError("Time horizon (T) must be greater than 0.")
             if W_form < 0:
@@ -277,10 +305,12 @@ def index():
                 'r': form_data.get('r', '5'),
                 'i': form_data.get('i', '2'),
                 'T': form_data.get('T', '30'),
+                'D': form_data.get('D', '0.0'), # Added D
                 'withdrawal_time': form_data.get('withdrawal_time', TIME_END),
                 'mode': form_data.get('mode', MODE_WITHDRAWAL),
                 'P': form_data.get('P', '500000')
             }
+            app.logger.error(f"Invalid input in index route: {e} - Form data: {form_data}")
             return render_template('index.html', error=str(e), **template_form_data)
         
         # Initialize variables for both modes
@@ -297,10 +327,10 @@ def index():
         if mode_form == MODE_WITHDRAWAL:
             # Primary calculation: FIRE Mode (W input -> P calculated)
             P_calc_primary, W_actual_primary, p_plot_w, w_plot_w, table_w = generate_plots(
-                W_form, r_calc, i_calc, T_form, withdrawal_time_form, MODE_WITHDRAWAL, P_value=None
+                W_form, r_calc, i_calc, T_form, withdrawal_time_form, MODE_WITHDRAWAL, P_value=None, desired_final_value=D_form
             )
             if P_calc_primary == float('inf'):
-                template_form_data = { 'W': W_form, 'r': r_perc_form, 'i': i_perc_form, 'T': T_form, 'withdrawal_time': withdrawal_time_form, 'mode': mode_form, 'P': '' }
+                template_form_data = { 'W': W_form, 'r': r_perc_form, 'i': i_perc_form, 'T': T_form, 'D': D_form_str, 'withdrawal_time': withdrawal_time_form, 'mode': mode_form, 'P': '' }
                 return render_template('index.html', error="Cannot find a suitable portfolio for the given withdrawal. Inputs may be unrealistic.", **template_form_data)
 
             calculated_P_output = P_calc_primary
@@ -311,7 +341,7 @@ def index():
             # Secondary calculation for Expense Mode section (using P_calc_primary)
             initial_P_input_for_expense_mode_raw = P_calc_primary
             _, W_calc_secondary, p_plot_p, w_plot_p, table_p = generate_plots(
-                initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=initial_P_input_for_expense_mode_raw
+                initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=initial_P_input_for_expense_mode_raw, desired_final_value=D_form
             )
             calculated_W_output_for_expense_mode = W_calc_secondary
             portfolio_plot_P_mode, withdrawal_plot_P_mode = p_plot_p, w_plot_p
@@ -320,7 +350,7 @@ def index():
         elif mode_form == MODE_PORTFOLIO:
             # Primary calculation: Expense Mode (P input -> W calculated)
             P_actual_primary, W_calc_primary, p_plot_p, w_plot_p, table_p = generate_plots(
-                W_form, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=P_value_form
+                W_form, r_calc, i_calc, T_form, withdrawal_time_form, MODE_PORTFOLIO, P_value=P_value_form, desired_final_value=D_form
             )
             initial_P_input_for_expense_mode_raw = P_actual_primary # This will be P_value_form
             calculated_W_output_for_expense_mode = W_calc_primary
@@ -330,7 +360,7 @@ def index():
             # Secondary calculation for FIRE Mode section (using W_calc_primary)
             initial_W_input_for_fire_mode = W_calc_primary
             P_calc_secondary, _, p_plot_w, w_plot_w, table_w = generate_plots(
-                initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_WITHDRAWAL, P_value=None
+                initial_W_input_for_fire_mode, r_calc, i_calc, T_form, withdrawal_time_form, MODE_WITHDRAWAL, P_value=None, desired_final_value=D_form
             )
             calculated_P_output = P_calc_secondary
             # If P_calc_secondary is inf, generate_plots returns the error div for plots
@@ -343,15 +373,30 @@ def index():
         else:
             initial_P_input_for_expense_mode_template = initial_P_input_for_expense_mode_raw
 
+        # Prepare distinct variable names for form values to pre-fill result.html, avoiding clashes.
         # Common parameters for form pre-filling on result.html
         # Using distinct names to avoid potential clashes if result.html also uses 'r', 'i', 'T' for display
         form_params_for_result_page = {
             'r_form_val': r_perc_form,
             'i_form_val': i_perc_form,
             'T_form_val': T_form,
+            'D_form_val': D_form, 
             'withdrawal_time_form_val': withdrawal_time_form,
             'initial_mode_from_index': mode_form # Helps result.html know the user's primary focus
         }
+
+        # Determine P_for_js based on the mode and calculated/input values
+        P_for_js = 0.0
+        if mode_form == MODE_PORTFOLIO:
+            P_for_js = P_value_form if P_value_form is not None else 0.0
+        elif mode_form == MODE_WITHDRAWAL: # mode was W, P was calculated
+            if calculated_P_output != "N/A" and isinstance(calculated_P_output, (int, float)):
+                 P_for_js = calculated_P_output
+        
+        form_params_for_result_page['P_input_raw_for_js'] = P_for_js
+        form_params_for_result_page['TIME_END_const'] = TIME_END # Pass for default filter
+        form_params_for_result_page['MODE_WITHDRAWAL_const'] = MODE_WITHDRAWAL # Pass for default filter
+
 
         return render_template('result.html',
                                # FIRE Mode Data (W input, P calculated)
@@ -371,7 +416,7 @@ def index():
     
     # GET request: render with default values
     default_form_data = {
-        'W': '20000', 'r': '5', 'i': '2', 'T': '30',
+        'W': '20000', 'r': '5', 'i': '2', 'T': '30', 'D': '0.0', # Added D
         'withdrawal_time': TIME_END, 'mode': MODE_WITHDRAWAL, 'P': '500000', 'error': None
     }
     return render_template('index.html', **default_form_data)
@@ -379,6 +424,10 @@ def index():
 
 @app.route('/update', methods=['POST'])
 def update():
+    """
+    Handles POST requests (typically AJAX) to update FIRE calculations 
+    based on new input values. Returns JSON data.
+    """
     # Similar validation as in index() POST should be applied here if inputs can be arbitrary
     # For brevity, assuming inputs are somewhat controlled or client-side validated for this AJAX endpoint
     try:
@@ -386,9 +435,13 @@ def update():
         r_perc_form = float(request.form['r'])
         i_perc_form = float(request.form['i'])
         T_form = int(request.form['T'])
+        
+        D_form_str = request.form.get('D', '0.0')
+        D_form = float(D_form_str) if D_form_str else 0.0
 
         if T_form <= 0: raise ValueError("Time horizon (T) must be greater than 0.")
         if W_form < 0: raise ValueError("Annual withdrawal (W) cannot be negative.")
+        if D_form < 0: raise ValueError("Desired final portfolio value (D) cannot be negative.")
         if not (-50 <= r_perc_form <= 100):
             raise ValueError("Annual return (r) must be between -50% and 100%.")
         if not (-50 <= i_perc_form <= 100):
@@ -402,17 +455,18 @@ def update():
         i_calc = i_perc_form / 100
 
     except ValueError as e:
+        app.logger.error(f"Invalid input in update route: {e} - Form data: {request.form}")
         return jsonify({'error': f'Invalid input: {str(e)}'})
     
     # Calculate for mode 'W'
     required_portfolio_W, annual_expense_W, portfolio_plot_W, withdrawal_plot_W, table_data_W_html = generate_plots(
-        W_form, r_calc, i_calc, T_form, withdrawal_time, mode=MODE_WITHDRAWAL
+        W_form, r_calc, i_calc, T_form, withdrawal_time, mode=MODE_WITHDRAWAL, desired_final_value=D_form
     )
     
     # Calculate for mode 'P'
     # Note: The 'W' passed here is from the form, but generate_plots will recalculate W if mode='P'
     required_portfolio_P, annual_expense_P, portfolio_plot_P, withdrawal_plot_P, table_data_P_html = generate_plots(
-        W_form, r_calc, i_calc, T_form, withdrawal_time, mode=MODE_PORTFOLIO, P_value=P_value
+        W_form, r_calc, i_calc, T_form, withdrawal_time, mode=MODE_PORTFOLIO, P_value=P_value, desired_final_value=D_form
     )
     
     return jsonify({
@@ -430,6 +484,10 @@ def update():
 
 @app.route('/compare', methods=['GET', 'POST'])
 def compare():
+    """
+    Handles GET requests for the scenario comparison page and POST requests 
+    to compare multiple financial scenarios. Returns HTML or JSON data.
+    """
     if request.method == 'POST':
         scenarios = []
         for n in range(1, MAX_SCENARIOS_COMPARE + 1):
@@ -459,7 +517,10 @@ def compare():
                 scenario['i_perc'] = float(i_str)
                 scenario['T'] = int(t_str)
                 scenario['withdrawal_time'] = request.form.get(f"scenario{n}_withdrawal_time", TIME_END)
+                d_str = request.form.get(f"scenario{n}_D", "0.0")
+                scenario['D'] = float(d_str) if d_str else 0.0
                 
+                # Scenario initially marked as 'enabled' by user checkbox might be set to False below if validation fails.
                 
 
                 # Validation for each scenario's inputs
@@ -475,15 +536,19 @@ def compare():
                 elif scenario['W'] < 0:
                     scenario['error'] = f"Scenario {n}: Withdrawal (W) must be >= 0."
                     scenario['enabled'] = False
+                elif scenario['D'] < 0:
+                    scenario['error'] = f"Scenario {n}: Desired Final Value (D) must be >= 0."
+                    scenario['enabled'] = False
                 
-            except ValueError:
+            except ValueError as e:
+                app.logger.error(f"Invalid numeric input for scenario {n} in compare route: {e}")
                 scenario['error'] = f"Scenario {n}: Invalid numeric input."
                 scenario['enabled'] = False
             
             if scenario.get('enabled'): # Proceed if enabled and no parsing/validation errors
                 r_val = scenario['r_perc'] / 100
                 i_val = scenario['i_perc'] / 100
-                portfolio = find_required_portfolio(scenario['W'], r_val, i_val, scenario['T'], scenario['withdrawal_time'])
+                portfolio = find_required_portfolio(scenario['W'], r_val, i_val, scenario['T'], scenario['withdrawal_time'], desired_final_value=scenario['D'])
                 
                 if portfolio == float('inf'):
                     scenario['error'] = f"Scenario {n}: Cannot find suitable portfolio (inputs unrealistic)."
@@ -551,6 +616,7 @@ def compare():
             sc['r_perc'] = sc.get('r_perc', 0)
             sc['i_perc'] = sc.get('i_perc', 0)
             sc['T'] = sc.get('T', 0)
+            sc['D'] = sc.get('D', 0.0) # Ensure D is in the output for each scenario
             sc['withdrawal_time'] = sc.get('withdrawal_time', TIME_END)
 
             # Ensure 'error' key exists for all scenarios for template consistency
@@ -567,7 +633,124 @@ def compare():
 
 @app.route('/settings')
 def settings():
+    """
+    Handles GET requests for the settings page. Renders `settings.html`.
+    """
     return render_template("settings.html")
 
 if __name__ == '__main__':
+    app.logger.info("Flask application starting in debug mode.")
     app.run(debug=True)
+
+@app.route('/export_csv')
+def export_csv():
+    """
+    Handles GET requests to export simulation data as a CSV file.
+    Retrieves parameters from query string, validates them, runs simulation,
+    and returns data (currently as JSON placeholder).
+    """
+    try:
+        # Retrieve and parse parameters
+        w_str = request.args.get('W', type=str)
+        r_str = request.args.get('r', type=str)
+        i_str = request.args.get('i', type=str)
+        t_str = request.args.get('T', type=str)
+        withdrawal_time = request.args.get('withdrawal_time', default=TIME_END, type=str)
+        mode = request.args.get('mode', default=MODE_WITHDRAWAL, type=str)
+        p_str = request.args.get('P', type=str)
+        d_str = request.args.get('D', default='0.0', type=str)
+
+        # Validate mode and withdrawal_time
+        if mode not in [MODE_WITHDRAWAL, MODE_PORTFOLIO]:
+            raise ValueError("Invalid mode specified.")
+        if withdrawal_time not in [TIME_START, TIME_END]:
+            raise ValueError("Invalid withdrawal_time specified.")
+
+        # Convert and validate required numeric inputs
+        if r_str is None or i_str is None or t_str is None:
+            raise ValueError("Missing required parameters (r, i, T).")
+        
+        r_perc = float(r_str)
+        i_perc = float(i_str)
+        T_form_val = int(t_str)
+        D_form_val = float(d_str) if d_str else 0.0
+
+        W_form_val = 0.0
+        P_form_val = 0.0
+
+        if mode == MODE_WITHDRAWAL:
+            if w_str is None:
+                raise ValueError("Parameter 'W' (Annual Expenses) is required for FIRE Mode.")
+            W_form_val = float(w_str)
+            if W_form_val < 0:
+                raise ValueError("Annual withdrawal (W) cannot be negative.")
+        elif mode == MODE_PORTFOLIO:
+            if p_str is None:
+                raise ValueError("Parameter 'P' (Initial Portfolio) is required for Expense Mode.")
+            P_form_val = float(p_str)
+            if P_form_val < 0:
+                raise ValueError("Initial portfolio (P) cannot be negative.")
+        
+        # Common validations
+        if T_form_val <= 0:
+            raise ValueError("Time horizon (T) must be greater than 0.")
+        if not (-50 <= r_perc <= 100):
+            raise ValueError("Annual return (r) must be between -50% and 100%.")
+        if not (-50 <= i_perc <= 100):
+            raise ValueError("Inflation rate (i) must be between -50% and 100%.")
+        if D_form_val < 0:
+            raise ValueError("Desired final portfolio value (D) cannot be negative.")
+
+        r_calc = r_perc / 100
+        i_calc = i_perc / 100
+
+        # Determine primary calculation values
+        P_to_simulate = 0.0
+        W_to_simulate = 0.0
+
+        if mode == MODE_WITHDRAWAL:
+            W_to_simulate = W_form_val
+            P_to_simulate = find_required_portfolio(W_to_simulate, r_calc, i_calc, T_form_val, withdrawal_time, D_form_val)
+            if P_to_simulate == float('inf'):
+                app.logger.error(f"Cannot calculate portfolio for CSV export, inputs may be unrealistic. Args: {request.args}")
+                return jsonify({'error': 'Cannot calculate portfolio for CSV export, inputs may be unrealistic.'}), 400
+        elif mode == MODE_PORTFOLIO:
+            P_to_simulate = P_form_val
+            W_to_simulate = find_max_annual_expense(P_to_simulate, r_calc, i_calc, T_form_val, withdrawal_time, D_form_val)
+
+        # Run annual_simulation
+        years, balances, withdrawals = annual_simulation(P_to_simulate, r_calc, i_calc, W_to_simulate, T_form_val, withdrawal_time)
+        
+        # CSV Generation Logic
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Write Header Row
+        writer.writerow(["Year", "Portfolio Balance ($)", "Annual Withdrawal ($)"])
+        
+        # Write Data Rows
+        # Balances list has T+1 elements (year 0 to T). withdrawals has T elements (for year 0 to T-1, or year 1 to T).
+        # The simulation runs for T_form_val years. Withdrawals list has T_form_val elements.
+        for t_idx in range(T_form_val):
+            year_display = int(years[t_idx] + 1) # Display as Year 1, Year 2, ...
+            # balance_at_year_end corresponds to balances[t_idx+1]
+            # This is the balance at the end of 'year_display' or start of next year before next withdrawal if 'start'
+            balance_at_year_end = balances[t_idx+1] 
+            withdrawal_for_year = withdrawals[t_idx]
+            writer.writerow([year_display, balance_at_year_end, withdrawal_for_year])
+            
+        csv_string = output.getvalue()
+        
+        response = Response(
+            csv_string,
+            mimetype='text/csv',
+            headers={'Content-Disposition': 'attachment;filename=fire_results.csv'}
+        )
+        return response
+
+    except ValueError as e:
+        app.logger.error(f"Invalid parameters for CSV export: {e} - Query args: {request.args}")
+        return jsonify({'error': str(e)}), 400
+    except Exception as e: # Catch any other unexpected errors
+        app.logger.error(f"Unexpected error during CSV export: {e} - Query args: {request.args}", exc_info=True)
+        return jsonify({'error': "An unexpected error occurred. Please check logs."}), 500

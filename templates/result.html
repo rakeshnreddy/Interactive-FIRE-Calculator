@@ -22,7 +22,24 @@
     </div>
   </header>
 
+  <div id="exportParamsContainer"
+       data-w="{{ fire_W_input_val | default(0) }}"
+       data-r="{{ r_form_val | default(0) }}"
+       data-i="{{ i_form_val | default(0) }}"
+       data-t="{{ T_form_val | default(0) }}"
+       data-withdrawal-time="{{ withdrawal_time_form_val | default(TIME_END_const) }}"
+       data-mode="{{ initial_mode_from_index | default(MODE_WITHDRAWAL_const) }}"
+       data-p="{{ P_input_raw_for_js | default(0) }}"
+       data-d="{{ D_form_val | default(0.0) }}">
+      <a href="#" id="exportCsvLink" class="export-btn" download="fire_results.csv" style="margin-top: 10px; margin-bottom: 10px;">Export to CSV</a>
+  </div>
+
   <div style="text-align: center; margin: 15px 0;">
+    {% if D_form_val and D_form_val > 0 %}
+    <p style="font-weight: bold; background-color: rgba(255, 229, 180, 0.5); padding: 8px; border-radius: 5px;">
+      Calculations aim for a Desired Final Portfolio Value of: <strong>${{ "{:,.2f}".format(D_form_val) }}</strong>
+    </p>
+    {% endif %}
     <span class="info-icon global-info">&#9432;
       <span class="tooltip-text">Adjust any slider or enter a value – both modes update simultaneously. The graphs and values will refresh automatically.</span>
     </span>
@@ -130,7 +147,7 @@
       </div>
     </div>
   </div>
-  <button id="recalculate_button" class="recalculate-btn" style="margin-top: 30px;">Recalculate Graphs & Values</button> <!-- Moved button down -->
+  <button id="recalculate_button" class="recalculate-btn" style="margin-top: 30px;">Update Results</button> <!-- Changed text -->
   <a href="/">← Back to Calculator</a>
 
   <script>
@@ -373,6 +390,28 @@ document.addEventListener('DOMContentLoaded', function () {
     // No initial handleInputChange() call is strictly needed unless client-side formatting
     // significantly changes values that would lead to different initial plots.
     // The main goal is to make *changes* interactive.
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const container = document.getElementById('exportParamsContainer');
+  const exportLink = document.getElementById('exportCsvLink');
+
+  if (container && exportLink) {
+    const params = new URLSearchParams();
+    // Ensure correct mapping from dataset property names to query param names
+    params.append('W', container.dataset.w);
+    params.append('r', container.dataset.r);
+    params.append('i', container.dataset.i);
+    params.append('T', container.dataset.t);
+    params.append('withdrawal_time', container.dataset.withdrawalTime); // dataset.withdrawalTime for data-withdrawal-time
+    params.append('mode', container.dataset.mode);
+    params.append('P', container.dataset.p);
+    params.append('D', container.dataset.d);
+
+    exportLink.href = `/export_csv?${params.toString()}`;
+  } else {
+    console.error("Export CSV elements not found on page.");
+  }
 });
 </script>
 </body>

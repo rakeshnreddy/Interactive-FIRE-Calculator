@@ -91,12 +91,14 @@
     
     <label for="fontSize">Font Size (px):</label>
     <input type="number" id="fontSize" value="16" min="12" max="24">
+    <small>Changes the base font size across the application (Default: 16px).</small>
     
     <label for="panelOpacity">Panel Opacity (0-1):</label>
     <input type="range" id="panelOpacity" min="0.5" max="1" step="0.01" value="0.7">
+    <small>Adjusts the transparency of UI panels (Default: 0.7 for light, 0.9 for dark).</small>
     
     <button onclick="saveSettings()">Save Settings</button>
-    <br><br>
+    <p><small>Settings are saved in your browser's local storage.</small></p>
     <a href="/">← Back to Calculator</a>
   </div>
 </body>

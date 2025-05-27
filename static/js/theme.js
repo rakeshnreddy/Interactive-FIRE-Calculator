@@ -24,16 +24,19 @@ function applyTheme() {
     if (fireSettings.fontSize) {
       document.documentElement.style.setProperty("--font-size", fireSettings.fontSize + "px");
       // Also update body font-size directly if not using --font-size variable globally
+      // This ensures font size is applied even if the --font-size CSS variable is not used everywhere.
       document.body.style.fontSize = fireSettings.fontSize + "px";
     }
+    // Note on panelOpacity:
+    // The `panelOpacity` setting from `fireSettings` is applied in `settings.html`'s own
+    // `applySettings()` function by setting the `--panel-alpha` CSS variable.
+    // This `applyTheme()` function (in theme.js) currently does not directly apply panelOpacity,
+    // but it's called by settings.html's `applySettings` to handle the base theme and font size.
+    // If panelOpacity needed to be applied globally by theme.js without settings.html's intervention,
+    // logic to set `--panel-alpha` would be needed here.
     if (fireSettings.panelOpacity) {
-      // This needs to be applied carefully. The --panel-bg variable includes rgba().
-      // We need to reconstruct the rgba string if we want to change only opacity.
-      // For simplicity, if settings.html is the only place controlling panel opacity,
-      // it can continue to set --panel-bg directly.
-      // Or, we define separate variables for panel color and opacity.
-      // For now, let settings.html handle its specific --panel-bg update.
-      // If other pages need dynamic panel opacity, this needs more thought.
+      // Example of how it could be applied here if needed:
+      // document.documentElement.style.setProperty("--panel-alpha", fireSettings.panelOpacity);
     }
   }
 }

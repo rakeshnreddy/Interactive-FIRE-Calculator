@@ -36,10 +36,15 @@
       </div>
       <div class="form-group radio-group">
         <label>Withdrawal Timing:</label>
-        <input type="radio" name="withdrawal_time" value="start" id="start" checked>
+        <input type="radio" name="withdrawal_time" value="start" id="start" {% if withdrawal_time == 'start' or not withdrawal_time %}checked{% endif %}>
         <label for="start" style="display:inline;">Start of Year</label>
-        <input type="radio" name="withdrawal_time" value="end" id="end">
+        <input type="radio" name="withdrawal_time" value="end" id="end" {% if withdrawal_time == 'end' %}checked{% endif %}>
         <label for="end" style="display:inline;">End of Year</label>
+      </div>
+      <div class="form-group">
+        <label for="D">Desired Final Portfolio Value ($):</label>
+        <input type="number" name="D" id="D" value="{{ D | default('0.0') }}" step="any" min="0">
+        <small>Optional. The portfolio value you want remaining at the end of the term.</small>
       </div>
       <input type="submit" value="Calculate">
     </form>

@@ -1,5 +1,5 @@
 # Interactive-FIRE-Calculator
-Interactive FIRE Calculator built with Flask, Plotly, and jQuery. Features dynamic visualizations, light/dark themes, scenario comparison, and export options to help users plan for financial independence and retirement.
+Interactive FIRE Calculator built with Flask, Plotly, and jQuery. Features dynamic visualizations, light/dark themes, scenario comparison, the ability to specify a desired final portfolio value, and an option to export results to CSV, all to help users plan for financial independence and retirement.
 
 ---
 ## Suggested Enhancements and Modernization

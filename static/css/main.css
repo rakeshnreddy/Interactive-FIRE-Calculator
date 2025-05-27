@@ -565,6 +565,21 @@ body.dark .compare-page td {
     flex-direction: column;
     align-items: center;
   }
+
+  /* Mobile Responsiveness Fixes for index.html radio buttons */
+  .index-page .radio-group label[for="start"],
+  .index-page .radio-group label[for="end"] {
+    display: block; /* Stack the labels */
+    margin-left: 0; /* Reset any left margin */
+    margin-top: 5px; /* Space above label when stacked */
+    margin-bottom: 10px; /* Space below this radio/label pair */
+  }
+
+  .index-page .radio-group input[type="radio"] {
+    /* Ensure radio buttons align well when labels stack */
+    vertical-align: middle; /* Or adjust as needed */
+    margin-right: 5px; 
+  }
 }
 
 @media (max-width: 480px) { /* From index.html and settings.html */

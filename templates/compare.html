@@ -66,6 +66,10 @@
             <input type="radio" name="scenario{{n}}_withdrawal_time" value="end" {% if request.form.get('scenario' ~ n ~ '_withdrawal_time', 'start') == 'end' %}checked{% endif %}> End of Year
           </div>
           <div class="form-group">
+            <label for="scenario{{n}}_D">Desired Final Portfolio Value ($):</label>
+            <input type="number" name="scenario{{n}}_D" id="scenario{{n}}_D" value="0.0" step="any" min="0">
+          </div>
+          <div class="form-group">
             <label>Enable Scenario {{ n }}:</label>
             <input type="checkbox" name="scenario{{n}}_enabled" {% if request.form.get('scenario' ~ n ~ '_enabled') == "on" or n == 1 %}checked{% endif %}>
           </div>
