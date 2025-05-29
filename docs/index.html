@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FIRE Calculator</title>
+  <link rel="stylesheet" href="static/css/main.css">
+</head>
+<body>
+  <script src="static/js/theme.js"></script>
+  <script>applyTheme();</script>
+  <header>
+    <div>FIRE Calculator</div>
+    <div class="header-right">
+      <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+      <a href="/settings" class="settings-link">&#9776;</a>
+    </div>
+  </header>
+  <div class="container index-page"> <!-- .index-page class is already here -->
+    <h2>Enter Your Details</h2>
+    <form method="post" action="/">
+      <div class="form-group">
+        <label for="W">Annual Expenses (in today's dollars):</label>
+        <input type="number" name="W" id="W" required>
+      </div>
+      <div class="form-group">
+        <label for="r">Expected Annual Return (%):</label>
+        <input type="number" name="r" id="r" step="0.1" required>
+      </div>
+      <div class="form-group">
+        <label for="i">Expected Annual Inflation (%):</label>
+        <input type="number" name="i" id="i" step="0.1" required>
+      </div>
+      <div class="form-group">
+        <label for="T">Retirement Duration (years):</label>
+        <input type="number" name="T" id="T" required>
+      </div>
+      <div class="form-group radio-group">
+        <label>Withdrawal Timing:</label>
+        <input type="radio" name="withdrawal_time" value="start" id="start" <!-- {% if withdrawal_time == 'start' or not withdrawal_time %}checked{% endif %} --> checked>
+        <label for="start" style="display:inline;">Start of Year</label>
+        <input type="radio" name="withdrawal_time" value="end" id="end" <!-- {% if withdrawal_time == 'end' %}checked{% endif %} -->>
+        <label for="end" style="display:inline;">End of Year</label>
+      </div>
+      <div class="form-group">
+        <label for="D">Desired Final Portfolio Value ($):</label>
+        <input type="number" name="D" id="D" value="0.0" step="any" min="0">
+        <small>Optional. The portfolio value you want remaining at the end of the term.</small>
+      </div>
+      <input type="submit" value="Calculate">
+    </form>
+    <br>
+    <a href="/compare">Compare Scenarios</a>
+  </div>
+</body>
+</html>
