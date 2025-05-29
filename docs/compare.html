@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Compare Scenarios - FIRE Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="stylesheet" href="static/css/main.css">
+</head>
+<body>
+  <script src="static/js/theme.js"></script>
+  <script>applyTheme();</script>
+  <header>
+    <div>Compare Scenarios</div>
+    <div class="header-right">
+      <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+      <a href="/settings" class="settings-link">&#9776;</a>
+    </div>
+  </header>
+  <div class="container compare-page"> <!-- .compare-page class is already here -->
+    <h2>Enter Comparison Scenarios</h2>
+    <div class="scenario-header">
+      <label for="scenarioCount">Number of Scenarios:</label>
+      <select id="scenarioCount">
+        <option value="1">1</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      &nbsp;&nbsp;
+      <button type="button" onclick="saveScenarios()">Save Scenarios</button>
+      &nbsp;&nbsp;
+      <select id="loadScenarioSelect" onchange="loadScenario()"></select>
+    </div>
+    <form method="post" action="/compare" id="compareForm">
+      <div class="scenario-container">
+        <!-- {% for n in range(1,5) %} -->
+        <!-- Scenario 1 -->
+        <div class="scenario" id="scenario1">
+          <h3>Scenario 1</h3>
+          <div class="form-group">
+            <label for="scenario1_W_slider">Annual Expenses (W):</label>
+            <input type="range" id="scenario1_W_slider" name="scenario1_W" min="0" max="1000000" step="1000" value="50000"> <!-- {{ request.form.get('scenario1_W', '') }} -->
+            <input type="number" id="scenario1_W_input" class="number-input" name="scenario1_W" value="50000" placeholder="e.g., 50000"> <!-- {{ request.form.get('scenario1_W', '') }} -->
+          </div>
+          <div class="form-group">
+            <label for="scenario1_r_slider">Expected Annual Return (%):</label>
+            <input type="range" id="scenario1_r_slider" name="scenario1_r" min="0" max="15" step="0.01" value="7"> <!-- {{ request.form.get('scenario1_r', '') }} -->
+            <input type="number" id="scenario1_r_input" class="number-input" name="scenario1_r" value="7" placeholder="e.g., 7"> <!-- {{ request.form.get('scenario1_r', '') }} -->
+          </div>
+          <div class="form-group">
+            <label for="scenario1_i_slider">Expected Annual Inflation (%):</label>
+            <input type="range" id="scenario1_i_slider" name="scenario1_i" min="0" max="10" step="0.01" value="3"> <!-- {{ request.form.get('scenario1_i', '') }} -->
+            <input type="number" id="scenario1_i_input" class="number-input" name="scenario1_i" value="3" placeholder="e.g., 2"> <!-- {{ request.form.get('scenario1_i', '') }} -->
+          </div>
+          <div class="form-group">
+            <label for="scenario1_T_slider">Retirement Duration (years):</label>
+            <input type="range" id="scenario1_T_slider" name="scenario1_T" min="10" max="100" step="1" value="30"> <!-- {{ request.form.get('scenario1_T', '') }} -->
+            <input type="number" id="scenario1_T_input" class="number-input" name="scenario1_T" value="30" placeholder="e.g., 30"> <!-- {{ request.form.get('scenario1_T', '') }} -->
+          </div>
+          <div class="form-group">
+            <label>Withdrawal Timing:</label>
+            <input type="radio" name="scenario1_withdrawal_time" value="start" checked> <!-- {% if request.form.get('scenario1_withdrawal_time', 'start') == 'start' %}checked{% endif %} --> Start of Year
+            <input type="radio" name="scenario1_withdrawal_time" value="end"> <!-- {% if request.form.get('scenario1_withdrawal_time', 'start') == 'end' %}checked{% endif %} --> End of Year
+          </div>
+          <div class="form-group">
+            <label for="scenario1_D">Desired Final Portfolio Value ($):</label>
+            <input type="number" name="scenario1_D" id="scenario1_D" value="0.0" step="any" min="0">
+          </div>
+          <div class="form-group">
+            <label>Enable Scenario 1:</label>
+            <input type="checkbox" name="scenario1_enabled" checked> <!-- {% if request.form.get('scenario1_enabled') == "on" or n == 1 %}checked{% endif %} -->
+          </div>
+          <!-- {% if scenarios and scenarios|length >= 1 and scenarios[0].enabled %}
+          <div class="result-section">
+            <p><strong>FIRE Number:</strong> ${{ "{:,.2f}".format(scenarios[0].fire_number) }}</p>
+          </div>
+          {% endif %} -->
+        </div>
+        <!-- Scenario 2 -->
+        <div class="scenario" id="scenario2">
+          <h3>Scenario 2</h3>
+          <div class="form-group">
+            <label for="scenario2_W_slider">Annual Expenses (W):</label>
+            <input type="range" id="scenario2_W_slider" name="scenario2_W" min="0" max="1000000" step="1000" value=""> <!-- {{ request.form.get('scenario2_W', '') }} -->
+            <input type="number" id="scenario2_W_input" class="number-input" name="scenario2_W" value="" placeholder="e.g., 50000"> <!-- {{ request.form.get('scenario2_W', '') }} -->
+          </div>
+          <div class="form-group">
+            <label for="scenario2_r_slider">Expected Annual Return (%):</label>
+            <input type="range" id="scenario2_r_slider" name="scenario2_r" min="0" max="15" step="0.01" value=""> <!-- {{ request.form.get('scenario2_r', '') }} -->
+            <input type="number" id="scenario2_r_input" class="number-input" name="scenario2_r" value="" placeholder="e.g., 7"> <!-- {{ request.form.get('scenario2_r', '') }} -->
+          </div>
+          <div class="form-group">
+            <label for="scenario2_i_slider">Expected Annual Inflation (%):</label>
+            <input type="range" id="scenario2_i_slider" name="scenario2_i" min="0" max="10" step="0.01" value=""> <!-- {{ request.form.get('scenario2_i', '') }} -->
+            <input type="number" id="scenario2_i_input" class="number-input" name="scenario2_i" value="" placeholder="e.g., 2"> <!-- {{ request.form.get('scenario2_i', '') }} -->
+          </div>
+          <div class="form-group">
+            <label for="scenario2_T_slider">Retirement Duration (years):</label>
+            <input type="range" id="scenario2_T_slider" name="scenario2_T" min="10" max="100" step="1" value=""> <!-- {{ request.form.get('scenario2_T', '') }} -->
+            <input type="number" id="scenario2_T_input" class="number-input" name="scenario2_T" value="" placeholder="e.g., 30"> <!-- {{ request.form.get('scenario2_T', '') }} -->
+          </div>
+          <div class="form-group">
+            <label>Withdrawal Timing:</label>
+            <input type="radio" name="scenario2_withdrawal_time" value="start" checked> <!-- {% if request.form.get('scenario2_withdrawal_time', 'start') == 'start' %}checked{% endif %} --> Start of Year
+            <input type="radio" name="scenario2_withdrawal_time" value="end"> <!-- {% if request.form.get('scenario2_withdrawal_time', 'start') == 'end' %}checked{% endif %} --> End of Year
+          </div>
+          <div class="form-group">
+            <label for="scenario2_D">Desired Final Portfolio Value ($):</label>
+            <input type="number" name="scenario2_D" id="scenario2_D" value="0.0" step="any" min="0">
+          </div>
+          <div class="form-group">
+            <label>Enable Scenario 2:</label>
+            <input type="checkbox" name="scenario2_enabled" checked> <!-- {% if request.form.get('scenario2_enabled') == "on" or n == 1 %}checked{% endif %} -->
+          </div>
+          <!-- {% if scenarios and scenarios|length >= 2 and scenarios[1].enabled %}
+          <div class="result-section">
+            <p><strong>FIRE Number:</strong> ${{ "{:,.2f}".format(scenarios[1].fire_number) }}</p>
+          </div>
+          {% endif %} -->
+        </div>
+        <!-- Add similar blocks for scenario3 and scenario4, removing Jinja and setting default values -->
+        <!-- Scenario 3 (template) -->
+        <div class="scenario" id="scenario3" style="display:none;">
+          <h3>Scenario 3</h3>
+          <div class="form-group">
+            <label for="scenario3_W_slider">Annual Expenses (W):</label>
+            <input type="range" id="scenario3_W_slider" name="scenario3_W" min="0" max="1000000" step="1000" value="">
+            <input type="number" id="scenario3_W_input" class="number-input" name="scenario3_W" value="" placeholder="e.g., 50000">
+          </div>
+          <div class="form-group">
+            <label for="scenario3_r_slider">Expected Annual Return (%):</label>
+            <input type="range" id="scenario3_r_slider" name="scenario3_r" min="0" max="15" step="0.01" value="">
+            <input type="number" id="scenario3_r_input" class="number-input" name="scenario3_r" value="" placeholder="e.g., 7">
+          </div>
+          <div class="form-group">
+            <label for="scenario3_i_slider">Expected Annual Inflation (%):</label>
+            <input type="range" id="scenario3_i_slider" name="scenario3_i" min="0" max="10" step="0.01" value="">
+            <input type="number" id="scenario3_i_input" class="number-input" name="scenario3_i" value="" placeholder="e.g., 2">
+          </div>
+          <div class="form-group">
+            <label for="scenario3_T_slider">Retirement Duration (years):</label>
+            <input type="range" id="scenario3_T_slider" name="scenario3_T" min="10" max="100" step="1" value="">
+            <input type="number" id="scenario3_T_input" class="number-input" name="scenario3_T" value="" placeholder="e.g., 30">
+          </div>
+          <div class="form-group">
+            <label>Withdrawal Timing:</label>
+            <input type="radio" name="scenario3_withdrawal_time" value="start" checked> Start of Year
+            <input type="radio" name="scenario3_withdrawal_time" value="end"> End of Year
+          </div>
+          <div class="form-group">
+            <label for="scenario3_D">Desired Final Portfolio Value ($):</label>
+            <input type="number" name="scenario3_D" id="scenario3_D" value="0.0" step="any" min="0">
+          </div>
+          <div class="form-group">
+            <label>Enable Scenario 3:</label>
+            <input type="checkbox" name="scenario3_enabled">
+          </div>
+        </div>
+        <!-- Scenario 4 (template) -->
+        <div class="scenario" id="scenario4" style="display:none;">
+          <h3>Scenario 4</h3>
+          <div class="form-group">
+            <label for="scenario4_W_slider">Annual Expenses (W):</label>
+            <input type="range" id="scenario4_W_slider" name="scenario4_W" min="0" max="1000000" step="1000" value="">
+            <input type="number" id="scenario4_W_input" class="number-input" name="scenario4_W" value="" placeholder="e.g., 50000">
+          </div>
+          <div class="form-group">
+            <label for="scenario4_r_slider">Expected Annual Return (%):</label>
+            <input type="range" id="scenario4_r_slider" name="scenario4_r" min="0" max="15" step="0.01" value="">
+            <input type="number" id="scenario4_r_input" class="number-input" name="scenario4_r" value="" placeholder="e.g., 7">
+          </div>
+          <div class="form-group">
+            <label for="scenario4_i_slider">Expected Annual Inflation (%):</label>
+            <input type="range" id="scenario4_i_slider" name="scenario4_i" min="0" max="10" step="0.01" value="">
+            <input type="number" id="scenario4_i_input" class="number-input" name="scenario4_i" value="" placeholder="e.g., 2">
+          </div>
+          <div class="form-group">
+            <label for="scenario4_T_slider">Retirement Duration (years):</label>
+            <input type="range" id="scenario4_T_slider" name="scenario4_T" min="10" max="100" step="1" value="">
+            <input type="number" id="scenario4_T_input" class="number-input" name="scenario4_T" value="" placeholder="e.g., 30">
+          </div>
+          <div class="form-group">
+            <label>Withdrawal Timing:</label>
+            <input type="radio" name="scenario4_withdrawal_time" value="start" checked> Start of Year
+            <input type="radio" name="scenario4_withdrawal_time" value="end"> End of Year
+          </div>
+          <div class="form-group">
+            <label for="scenario4_D">Desired Final Portfolio Value ($):</label>
+            <input type="number" name="scenario4_D" id="scenario4_D" value="0.0" step="any" min="0">
+          </div>
+          <div class="form-group">
+            <label>Enable Scenario 4:</label>
+            <input type="checkbox" name="scenario4_enabled">
+          </div>
+        </div>
+        <!-- {% endfor %} -->
+      </div>
+      <input type="submit" value="Compare Scenarios">
+    </form>
+    
+    <div id="summaryTable"></div>
+    
+    <div id="combinedGraphs">
+      <!-- {% if combined_balance and combined_withdrawal %}
+        <h3>Combined Portfolio Balance</h3>
+        <div id="combined_balance">{{ combined_balance|safe }}</div>
+        <h3>Combined Annual Withdrawals</h3>
+        <div id="combined_withdrawal">{{ combined_withdrawal|safe }}</div>
+      {% endif %} -->
+      <p>Combined graphs will appear here.</p>
+    </div>
+    
+    <!-- {% if message %}
+      <p style="color: red; text-align: center;">{{ message }}</p>
+    {% endif %} -->
+    
+    <a href="/">← Back to Calculator</a>
+  </div>
+  
+  <script>
+    function updateScenarioDisplay() {
+      var count = parseInt($("#scenarioCount").val());
+      $(".scenario").each(function(index) {
+        if (index < count) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+    $(document).ready(function(){
+      updateScenarioDisplay();
+      $("#scenarioCount").on("change", updateScenarioDisplay);
+      $(".scenario-container").sortable({ placeholder: "ui-state-highlight" });
+      loadScenarioOptions();
+    });
+    
+    function saveScenarios() {
+      var data = $("#compareForm").serializeArray();
+      var scenarioData = {};
+      data.forEach(function(item) {
+        scenarioData[item.name] = item.value;
+      });
+      var scenarioName = prompt("Enter a name for this scenario configuration:");
+      if(scenarioName) {
+        localStorage.setItem("compareScenario_" + scenarioName, JSON.stringify(scenarioData));
+        loadScenarioOptions();
+        alert("Scenario saved as '" + scenarioName + "'.");
+      }
+    }
+    
+    function loadScenarioOptions() {
+      var options = "";
+      for(var key in localStorage) {
+        if(key.startsWith("compareScenario_")) {
+          var name = key.replace("compareScenario_", "");
+          options += "<option value='" + key + "'>" + name + "</option>";
+        }
+      }
+      $("#loadScenarioSelect").html(options);
+    }
+    
+    function loadScenario() {
+      var key = $("#loadScenarioSelect").val();
+      if(key) {
+        var data = JSON.parse(localStorage.getItem(key));
+        for(var prop in data) {
+          var field = $("[name='" + prop + "']");
+          if(field.attr("type") === "checkbox") {
+            field.prop("checked", data[prop] === "on");
+          } else {
+            field.val(data[prop]);
+          }
+        }
+        updateComparison();
+      }
+    }
+    
+    function updateComparison() {
+      $.ajax({
+        type: "POST",
+        url: "/compare",
+        data: $("#compareForm").serialize(),
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+        success: function(response) {
+          if(response.message) {
+            $("#combinedGraphs").html("");
+            alert(response.message);
+          } else {
+            $("#combinedGraphs").html(
+              "<h3>Combined Portfolio Balance</h3>" +
+              response.combined_balance +
+              "<h3>Combined Annual Withdrawals</h3>" +
+              response.combined_withdrawal
+            );
+            updateSummaryTable(response.scenarios);
+            response.scenarios.forEach(function(sc) {
+              $("#scenario" + sc.n).find(".result-section").remove();
+              var resultHtml = '<div class="result-section"><p><strong>FIRE Number:</strong> $' + sc.fire_number.toFixed(2) + '</p></div>';
+              $("#scenario" + sc.n).append(resultHtml);
+            });
+          }
+        },
+        error: function() {
+          console.error("Error updating comparison data.");
+        }
+      });
+    }
+    
+    function updateSummaryTable(scenarios) {
+      var html = "<table><thead><tr><th>Scenario</th><th>W</th><th>Return (%)</th><th>Inflation (%)</th><th>T</th><th>Withdrawal Timing</th><th>FIRE Number</th></tr></thead><tbody>";
+      scenarios.forEach(function(sc) {
+        html += "<tr><td>" + sc.n + "</td>" +
+                "<td>" + sc.W + "</td>" +
+                "<td>" + sc.r_perc + "</td>" +  // Corrected
+                "<td>" + sc.i_perc + "</td>" +  // Corrected
+                "<td>" + sc.T + "</td>" +
+                "<td>" + sc.withdrawal_time + "</td>" +
+                "<td>$" + sc.fire_number.toFixed(2) + "</td></tr>";
+      });
+      html += "</tbody></table>";
+      $("#summaryTable").html(html);
+    }
+    
+    function bindScenarioSync(n) {
+      $("#scenario" + n + "_W_slider").on("input", function(){
+        $("#scenario" + n + "_W_input").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_r_slider").on("input", function(){
+        $("#scenario" + n + "_r_input").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_i_slider").on("input", function(){
+        $("#scenario" + n + "_i_input").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_T_slider").on("input", function(){
+        $("#scenario" + n + "_T_input").val($(this).val());
+        updateComparison();
+      });
+      
+      $("#scenario" + n + "_W_input").on("change", function(){
+        $("#scenario" + n + "_W_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_r_input").on("change", function(){
+        $("#scenario" + n + "_r_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_i_input").on("change", function(){
+        $("#scenario" + n + "_i_slider").val($(this).val());
+        updateComparison();
+      });
+      $("#scenario" + n + "_T_input").on("change", function(){
+        $("#scenario" + n + "_T_slider").val($(this).val());
+        updateComparison();
+      });
+      
+      $("input[name='scenario" + n + "_withdrawal_time']").on("change", function(){
+        updateComparison();
+      });
+      
+      $("input[name='scenario" + n + "_enabled']").on("change", function(){
+        updateComparison();
+      });
+    }
+    
+    $(document).ready(function(){
+      for(var n = 1; n <= 4; n++){
+        bindScenarioSync(n);
+      }
+      $("#compareForm").on("submit", function(e){
+        e.preventDefault();
+        updateComparison();
+      });
+      loadScenarioOptions();
+    });
+  </script>
+</body>
+</html>

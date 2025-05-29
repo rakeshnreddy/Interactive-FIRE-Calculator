@@ -1,0 +1,659 @@
+/* static/css/main.css */
+:root {
+  --bg-light: #fefefe;
+  --bg-accent: #A8E6CF;
+  --bg-secondary: #FFD3B6;
+  --text-light: #333;
+  --panel-rgb: 255, 255, 255; /* Light theme panel RGB */
+  --panel-alpha: 0.7;       /* Default panel alpha */
+  --panel-bg: rgba(var(--panel-rgb), var(--panel-alpha));
+  --input-range-bg: rgba(255,255,255,0.4);
+  --thumb-bg: #fff;
+  --thumb-border: #A8E6CF;
+  --font-size: 16px; /* Default font size */
+}
+
+body.dark {
+  --bg-light: #1E1E1E;
+  /* Dark theme gradient colors */
+  --bg-accent: #2E3C40; /* Dark Slate / Deep Teal */
+  --bg-secondary: #1A2930; /* Very Dark Blue / Almost Black Blue */
+  --text-light: #e0e0e0;
+  --panel-rgb: 30, 30, 30;   /* Dark theme panel RGB */
+  --panel-alpha: 0.9;       /* Default dark theme panel alpha */
+  --panel-bg: rgba(var(--panel-rgb), var(--panel-alpha));
+  --input-range-bg: rgba(255,255,255,0.2);
+  --thumb-bg: #e0e0e0;
+  --thumb-border: #80CBC4;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: var(--font-size); /* Apply global font size */
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, var(--bg-accent) 0%, var(--bg-secondary) 100%);
+  color: var(--text-light);
+  overflow-x: hidden;
+  transition: background 0.5s, color 0.5s;
+}
+
+header {
+  background: var(--panel-bg);
+  backdrop-filter: blur(10px);
+  color: var(--text-light);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 26px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background 0.5s, color 0.5s;
+  position: relative;
+}
+
+body.dark header { /* Ensure header uses the dark panel background */
+  background: var(--panel-bg);
+  color: #e0e0e0;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.theme-toggle {
+  cursor: pointer;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+}
+
+body.dark .theme-toggle {
+  color: #e0e0e0;
+}
+
+.settings-link {
+  text-decoration: none;
+  font-size: 24px;
+  color: var(--text-light);
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 30px auto;
+  width: 90%;
+  justify-content: space-around;
+}
+
+/* Styles for settings.html and index.html containers */
+.container.settings-page, .container.index-page {
+  max-width: 700px; /* Adjusted max-width for these pages */
+  background: var(--panel-bg);
+  border-radius: 16px;
+  padding: 20px;
+  /* Ensure single column layout for form content */
+  display: flex; 
+  flex-direction: column;
+  align-items: stretch; /* Make children take full width */
+  margin: 30px auto; /* Ensure centering */
+  box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+  backdrop-filter: blur(8px);
+  transition: background 0.5s;
+}
+body.dark .container.settings-page, body.dark .container.index-page {
+  background: rgba(43, 43, 43, 0.85); /* #2b2b2b with opacity */
+}
+
+
+.column { /* For result.html */
+  flex: 1;
+  min-width: 320px;
+  max-width: 480px;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--panel-bg);
+  box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.slider-container { /* For result.html */
+  margin: 15px 0;
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text-light);
+}
+
+.number-input { /* For result.html */
+  width: 100%;
+  padding: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: right;
+  margin-top: 4px;
+}
+
+input[type=range] {
+  width: 100%;
+  margin: 8px 0;
+  -webkit-appearance: none;
+  background: var(--input-range-bg);
+  height: 6px;
+  border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: var(--thumb-bg);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--thumb-border);
+  margin-top: -7px;
+}
+
+.result-section { /* For result.html */
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 10px;
+  color: var(--text-light);
+}
+
+a {
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-light);
+  font-weight: 500;
+  width: 200px;
+  padding: 10px;
+  background: var(--panel-bg);
+  border-radius: 30px;
+  transition: background 0.3s;
+}
+
+a:hover {
+  background: rgba(255,255,255,0.9);
+}
+body.dark a:hover {
+    background: rgba(70, 70, 70, 0.9);
+}
+
+
+.recalculate-btn {
+  display: block;
+  margin: 20px auto; /* Centered with some margin */
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-light);
+  background-color: var(--panel-bg);
+  border: 1px solid var(--thumb-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recalculate-btn:hover {
+  background-color: #A8E6CF; /* Light theme accent for hover */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+body.dark .recalculate-btn {
+  background-color: #37474F; /* Darker button bg */
+  border-color: var(--thumb-border);
+  color: var(--text-light);
+}
+
+body.dark .recalculate-btn:hover {
+  background-color: #4DB6AC;
+}
+
+.common-parameters-container {
+  /* Will behave like a column item now */
+  flex: 1;
+  min-width: 320px; /* Consistent with columns */
+  max-width: 480px; /* Consistent with columns */
+  margin: 20px;     /* Consistent with columns */
+  border-radius: 16px; /* Consistent with columns */
+  font-size: 0.85em;
+  border: 1px solid transparent; /* Placeholder for border on expand */
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.common-parameters-container.expanded { /* Styles for the main container when expanded */
+  background: var(--panel-bg);
+  box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.collapsible-header {
+  /* Styling to match .export-btn */
+  font-size: 15px; /* Matches .export-btn */
+  font-weight: 500; /* Less bold */
+  color: var(--text-light);
+  background-color: var(--panel-bg);
+  border: 1px solid var(--thumb-border);
+  border-radius: 8px;
+  padding: 10px 15px; /* Adjusted padding slightly for description + icon */
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s; /* For hover effect if added */
+}
+
+.collapsible-header:hover {
+    background-color: #A8E6CF; /* Light theme accent */
+}
+
+body.dark .collapsible-header:hover {
+    background-color: #4DB6AC; /* Dark theme accent for hover */
+}
+
+.collapsible-header .toggle-icon {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  padding: 0 15px; /* Horizontal padding, vertical padding comes with max-height */
+}
+
+.common-parameters-container.expanded .collapsible-content {
+  max-height: 350px;
+  padding: 10px 15px; /* Add vertical padding when expanded */
+}
+
+.collapsible-header .description {
+  /* Description is now the main text of the header, so it inherits header styles */
+  flex-grow: 1; /* Allow description to take available space */
+  margin-right: 10px; /* Space before the toggle icon */
+  font-weight: 500; /* Match button text weight */
+}
+
+/* Keep existing styles for .slider-container, label, .number-input */
+.common-parameters-container .slider-container {
+  margin-bottom: 8px; /* Tighter spacing between sliders */
+}
+
+.export-btn {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-light);
+  background-color: var(--panel-bg);
+  border: 1px solid var(--thumb-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.export-btn:hover { /* Light theme hover */
+  background-color: #A8E6CF;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+body.dark .export-btn {
+  background-color: #37474F; /* Darker button bg */
+  border-color: var(--thumb-border);
+  color: var(--text-light);
+}
+
+body.dark .export-btn:hover {
+  background-color: #4DB6AC; /* Dark theme accent for hover */
+}
+
+.layout-column-group {
+  flex: 1 1 480px; /* Allow shrinking, prefer 480px basis */
+  min-width: 320px; /* Min width of a group */
+  max-width: 500px; /* Max width of a group, allowing some padding/margin */
+  margin: 10px;     /* Margin for the group itself */
+  display: flex;
+  flex-direction: column;
+}
+
+.export-button-container-above-fire {
+  /* Behaves like a column item */
+  flex: 1;
+  min-width: 320px;
+  max-width: 480px;
+  margin: 20px;
+  display: flex;
+  justify-content: center; /* Center the button within this container */
+  align-items: flex-start; /* Align button to the top */
+}
+
+/* Adjust margins for items when they are direct children of a layout-column-group */
+.layout-column-group > .common-parameters-container,
+.layout-column-group > .export-button-container-above-fire,
+.layout-column-group > .column {
+  margin: 10px 0; /* Vertical spacing, horizontal handled by item's own width/max-width and group's alignment */
+  width: 100%; /* Make items take full width of their group, respecting their own max-width */
+}
+
+.info-icon {
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--thumb-border);
+  cursor: help;
+  position: relative;
+  font-weight: bold;
+}
+
+.info-icon .tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 135%; /* Position above the icon */
+  left: 50%;
+  margin-left: -110px; /* Use half of the width to center */
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9em;
+  font-weight: normal;
+}
+
+.table-container { /* Hide tables by default on screen */
+  display: none;
+}
+
+.info-icon:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Styles from index.html */
+.form-group {
+  margin: 15px 0;
+}
+input[type="number"] { /* General number input, might need more specific selectors if conflicts */
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+input[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-accent);
+  border: none;
+  color: var(--text-light);
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+input[type="submit"]:hover {
+  background: #8fd9b6; /* Consider using a CSS variable for hover */
+}
+body.dark input[type="submit"] {
+    background: var(--thumb-border); /* Example dark theme submit button */
+}
+body.dark input[type="submit"]:hover {
+    background: #4DB6AC;
+}
+
+/* Styles from settings.html */
+.container.settings-page h2 {
+  text-align: center;
+}
+.container.settings-page select,
+.container.settings-page input[type="range"],
+.container.settings-page input[type="number"] {
+  width: 100%;
+  margin-bottom: 12px;
+  box-sizing: border-box; /* Ensure padding/border doesn't expand width */
+}
+.container.settings-page button { /* Save settings button */
+  padding: 10px 20px;
+  background: var(--bg-accent);
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+body.dark .container.settings-page button {
+    background: var(--thumb-border);
+}
+body.dark .container.settings-page button:hover {
+    background: #4DB6AC;
+}
+
+
+/* Styles from compare.html */
+.container.compare-page {
+    /* Override general container flex behavior for this page */
+    display: flex; 
+    flex-direction: column;
+    align-items: stretch; /* Make children take full width */
+    margin: 30px auto; /* Ensure centering */
+    max-width: 900px;
+}
+body.dark .container.compare-page {
+  background: rgba(43, 43, 43, 0.85);
+}
+.scenario-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.scenario-header label {
+  margin-right: 10px;
+}
+.scenario-container {
+  display: flex;
+  flex-wrap: nowrap; /* Allows horizontal scrolling if too many scenarios */
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto; /* Enable horizontal scroll for scenarios */
+}
+.scenario {
+  flex: 1 0 200px; /* Flex basis of 200px, can grow and shrink */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff; /* Scenarios have their own background */
+  min-width: 200px; /* Min width for a scenario box */
+  cursor: move;
+}
+body.dark .scenario {
+    background: #3a3a3a;
+    border-color: #555;
+}
+.scenario h3 {
+  margin-top: 0;
+  font-size: 16px;
+}
+.compare-page .form-group { /* Specific to compare page form groups */
+  margin: 8px 0;
+}
+.compare-page label {
+  margin-bottom: 4px;
+}
+.compare-page input[type="number"], /* Specific to compare page inputs */
+.compare-page input[type="range"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+.compare-page input[type="number"] {
+  padding: 6px;
+  margin-bottom: 6px;
+}
+.compare-page input[type="range"] {
+  margin-bottom: 4px;
+}
+.compare-page input[type="radio"] {
+  margin-right: 5px;
+}
+.compare-page input[type="submit"] { /* Compare scenarios button */
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-accent);
+  border: none;
+  color: var(--text-light);
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+.compare-page input[type="submit"]:hover {
+  background: #8fd9b6;
+}
+body.dark .compare-page input[type="submit"] {
+    background: var(--thumb-border);
+}
+body.dark .compare-page input[type="submit"]:hover {
+    background: #4DB6AC;
+}
+.compare-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.compare-page th, .compare-page td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+.compare-page th {
+  background: var(--bg-accent);
+  color: var(--text-light);
+}
+body.dark .compare-page th {
+    background: var(--thumb-border);
+}
+body.dark .compare-page td {
+    border-color: #555;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Mobile Responsiveness Fixes for index.html radio buttons */
+  .index-page .radio-group label[for="start"],
+  .index-page .radio-group label[for="end"] {
+    display: block; /* Stack the labels */
+    margin-left: 0; /* Reset any left margin */
+    margin-top: 5px; /* Space above label when stacked */
+    margin-bottom: 10px; /* Space below this radio/label pair */
+  }
+
+  .index-page .radio-group input[type="radio"] {
+    /* Ensure radio buttons align well when labels stack */
+    vertical-align: middle; /* Or adjust as needed */
+    margin-right: 5px; 
+  }
+}
+
+@media (max-width: 480px) { /* From index.html and settings.html */
+  input[type="range"] { /* General, might need more specificity */
+    height: 12px;
+  }
+  /* General button/submit styling for small screens */
+  button, input[type="submit"], .export-btn, .recalculate-btn, .collapsible-header {
+    padding: 14px 24px;
+    font-size: 18px;
+  }
+  .container.settings-page select,
+  .container.settings-page input[type="range"],
+  .container.settings-page input[type="number"] {
+    font-size: 18px; /* From settings.html */
+  }
+}
+
+
+/* Print Styles */
+@media print {
+  body {
+    background: #fff !important; /* Ensure white background for print */
+    color: #000 !important; /* Ensure black text for print */
+    font-size: 10pt;
+    margin: 0; /* Remove default body margins for print */
+    padding: 0;
+    -webkit-print-color-adjust: exact !important; /* Ensure background colors and images print if needed, though we aim for white bg */
+    color-adjust: exact !important;
+    orphans: 3; /* Minimum lines at the bottom of a page before a break */
+    widows: 3;  /* Minimum lines at the top of a page after a break */
+  }
+  header,
+  .export-btn,
+  .recalculate-btn,
+  a[href="/"],
+  .common-parameters-container,
+  .theme-toggle,
+  .settings-link,
+  .info-icon.global-info,
+  div[style*="text-align: center; margin: 15px 0;"]
+   {
+    display: none !important;
+  }
+  .column {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    margin: 10px 0 !important;
+    padding: 15px !important;
+    width: 95% !important; /* Make columns take more width in print */
+    margin-top: 0 !important; /* Ensure columns start near top of page */
+    page-break-inside: avoid; /* Try to keep individual column content from splitting across pages */
+  }
+  .layout-column-group {
+    margin: 0 !important; /* Remove margin from the groups themselves */
+    padding: 0 !important;
+    page-break-inside: avoid; /* Try to keep groups from splitting if possible */
+  }
+  .container { /* The main container holding the columns */
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      display: block !important; /* Force block display for print to simplify flow */
+  }
+  .slider-container { display: none !important; } /* Hide all input sliders */
+  .result-section, .plot-container, .table-container { margin-top: 10px; }
+  h2, h3 { font-size: 14pt; margin-bottom: 5px; }
+  .js-plotly-plot .plotly, .js-plotly-plot {
+      max-width: 100% !important;
+      height: auto !important;
+  }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 9pt;}
+  .table-container { /* Make tables visible for print */
+      display: block !important;
+  }
+  th, td { border: 1px solid #ddd; padding: 4px; text-align: left; }
+  th { background-color: #f2f2f2; }
+}
