@@ -8,25 +8,25 @@
     {% if error %}
       <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
-    <form method="post" action="{{ url_for('routes.index') }}">
+    <form method="post" action="{{ url_for('routes.index') }}" class="needs-validation" novalidate>
       <div class="mb-3">
         <label for="W" class="form-label">Annual Expenses (in today's dollars):</label>
-        <input type="number" name="W" id="W" class="form-control" value="{{ request.form.get('W', W if W else '20000') }}" required>
+        <input type="number" name="W" id="W" class="form-control" value="{{ request.form.get('W', W if W else '20000') }}" required min="0">
       </div>
       
       <div class="mb-3">
         <label for="r" class="form-label">Overall Annual Return (%) (Fallback):</label>
-        <input type="number" name="r" id="r" class="form-control" step="0.1" value="{{ request.form.get('r', r if r else '5') }}" required>
+        <input type="number" name="r" id="r" class="form-control" step="0.1" value="{{ request.form.get('r', r if r else '5') }}" min="-50" max="100">
         <small class="form-text text-muted">Used if no periodic rates are specified below.</small>
       </div>
       <div class="mb-3">
         <label for="i" class="form-label">Overall Annual Inflation (%) (Fallback):</label>
-        <input type="number" name="i" id="i" class="form-control" step="0.1" value="{{ request.form.get('i', i if i else '2') }}" required>
+        <input type="number" name="i" id="i" class="form-control" step="0.1" value="{{ request.form.get('i', i if i else '2') }}" min="-50" max="100">
         <small class="form-text text-muted">Used if no periodic rates are specified below.</small>
       </div>
       <div class="mb-3">
         <label for="T" class="form-label">Total Duration (years) (Fallback):</label>
-        <input type="number" name="T" id="T" class="form-control" value="{{ request.form.get('T', T if T else '30') }}" required>
+        <input type="number" name="T" id="T" class="form-control" value="{{ request.form.get('T', T if T else '30') }}" min="1" step="1">
         <small class="form-text text-muted">Used if no periodic rates are specified below. If using periods, total duration is sum of period durations.</small>
       </div>
 
@@ -38,15 +38,15 @@
       <h4>Period {{ k }}</h4>
       <div class="mb-3">
         <label for="period{{k}}_duration" class="form-label">Period {{ k }} Duration (years):</label>
-        <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control" value="{{ request.form.get('period{}_duration'.format(k), globals().get('period{}_duration'.format(k), '')) }}" min="0">
+        <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control" value="{{ request.form.get('period{}_duration'.format(k), globals().get('period{}_duration'.format(k), '')) }}" min="0" step="1">
       </div>
       <div class="mb-3">
         <label for="period{{k}}_r" class="form-label">Period {{ k }} Return (%):</label>
-        <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control" step="0.1" value="{{ request.form.get('period{}_r'.format(k), globals().get('period{}_r'.format(k), '')) }}">
+        <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control" step="0.1" value="{{ request.form.get('period{}_r'.format(k), globals().get('period{}_r'.format(k), '')) }}" min="-50" max="100">
       </div>
       <div class="mb-3">
         <label for="period{{k}}_i" class="form-label">Period {{ k }} Inflation (%):</label>
-        <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control" step="0.1" value="{{ request.form.get('period{}_i'.format(k), globals().get('period{}_i'.format(k), '')) }}">
+        <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control" step="0.1" value="{{ request.form.get('period{}_i'.format(k), globals().get('period{}_i'.format(k), '')) }}" min="-50" max="100">
       </div>
       {% endfor %}
       <hr>
