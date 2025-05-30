@@ -18,6 +18,11 @@ Interactive FIRE Calculator built with Flask, Plotly, and jQuery. Features dynam
     *   Consider user accounts if server-side persistence is implemented, allowing users to save and retrieve their data across devices.
 *   **Export Options:**
     *   Implement functionality to export calculation results, tables, and graphs (e.g., as CSV, PDF, or image files).
+*   **Varying Rates of Return/Inflation:**
+    *   Users can specify different rates of return and inflation for different time periods within their simulation.
+    *   The input forms (main calculator and compare scenarios) allow for up to 3 distinct periods, each with its own duration, return rate (%), and inflation rate (%).
+    *   If no specific period data is entered, the calculator will use the "Overall" (Fallback) values for return rate, inflation rate, and total duration.
+    *   The total duration for the simulation is automatically calculated from the sum of individual period durations if periods are specified.
 
 **UI/UX Improvements (incorporating user feedback):**
 *   **Comprehensive UI Review:**
