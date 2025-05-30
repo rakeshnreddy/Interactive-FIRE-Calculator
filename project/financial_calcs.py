@@ -1,6 +1,6 @@
 import numpy as np
 from flask import current_app
-from constants import TIME_START, TIME_END # TIME_END will be used by annual_simulation
+from .constants import TIME_START, TIME_END # TIME_END will be used by annual_simulation
 
 def annual_simulation(PV, r, i, W, T, withdrawal_time):
     """

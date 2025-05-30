@@ -10,7 +10,7 @@ import io
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import app # Import the Flask app instance
-from constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_END, TIME_START
+from project.constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_END, TIME_START
 
 class TestAppRoutes(unittest.TestCase):
     def setUp(self):
@@ -32,7 +32,7 @@ class TestAppRoutes(unittest.TestCase):
         self.assertIn('name="withdrawal_time" value="start" id="start" checked', response_data)
         # The mode is not a field in the index.html form, so cannot assert its default selection here.
 
-    @patch('app.generate_plots')
+    @patch('project.routes.generate_plots')
     def test_index_post_mode_withdrawal_valid(self, mock_generate_plots):
         # Configure the mock to return different tuples for the two calls
         mock_generate_plots.side_effect = [
@@ -78,7 +78,7 @@ class TestAppRoutes(unittest.TestCase):
         self.assertIn("plot1_expense", response_data)
         self.assertIn("table_expense", response_data)
 
-    @patch('app.generate_plots')
+    @patch('project.routes.generate_plots')
     def test_index_post_mode_portfolio_valid(self, mock_generate_plots):
         # Configure the mock to return different tuples for the two calls
         mock_generate_plots.side_effect = [
@@ -149,7 +149,7 @@ class TestAppRoutes(unittest.TestCase):
         # self.assertIn('name="W" value="20000"', response_data)
         # self.assertIn('name="T" value="-5"', response_data)
 
-    @patch('app.generate_plots')
+    @patch('project.routes.generate_plots')
     def test_index_post_mode_withdrawal_inf_portfolio(self, mock_generate_plots):
         # Mock generate_plots for MODE_WITHDRAWAL where the first call (primary) returns inf
         # The actual string content of plots/table doesn't matter much if P is inf, as an error page is shown.
@@ -196,7 +196,7 @@ class TestAppRoutes(unittest.TestCase):
 
 
     # Tests for /update route
-    @patch('app.generate_plots')
+    @patch('project.routes.generate_plots')
     def test_update_valid_data(self, mock_generate_plots):
         # Configure mock for two calls, as generate_plots is called for MODE_WITHDRAWAL then MODE_PORTFOLIO
         mock_generate_plots.side_effect = [
@@ -279,8 +279,8 @@ class TestAppRoutes(unittest.TestCase):
         self.assertIn('id="scenario1_D"', response_data)
         self.assertIn('Desired Final Portfolio Value ($):</label>', response_data) # General label check
 
-    @patch('app.annual_simulation')
-    @patch('app.find_required_portfolio')
+    @patch('project.routes.annual_simulation')
+    @patch('project.routes.find_required_portfolio')
     def test_compare_post_valid_scenarios(self, mock_frp, mock_annual_sim):
         # Mock return values for find_required_portfolio for two scenarios
         mock_frp.side_effect = [100000.0, 120000.0] 
@@ -343,8 +343,8 @@ class TestAppRoutes(unittest.TestCase):
         mock_frp.assert_any_call(W=25000.0, r=0.06, i=0.025, T=25, withdrawal_time=TIME_START, desired_final_value=0.0)
         self.assertEqual(mock_annual_sim.call_count, 2)
 
-    @patch('app.annual_simulation')
-    @patch('app.find_required_portfolio')
+    @patch('project.routes.annual_simulation')
+    @patch('project.routes.find_required_portfolio')
     def test_compare_post_invalid_and_disabled_scenarios(self, mock_frp, mock_annual_sim):
         # Scenario 1: Valid, enabled. Mock its backend calls.
         mock_frp.return_value = 150000.0 
@@ -405,8 +405,8 @@ class TestAppRoutes(unittest.TestCase):
         mock_frp.assert_called_once_with(W=30000.0, r=0.04, i=0.01, T=20, withdrawal_time=TIME_END, desired_final_value=0.0)
         self.assertEqual(mock_annual_sim.call_count, 1)
 
-    @patch('app.annual_simulation') # Mock to prevent actual calculations
-    @patch('app.find_required_portfolio') # Mock to prevent actual calculations
+    @patch('project.routes.annual_simulation') # Mock to prevent actual calculations
+    @patch('project.routes.find_required_portfolio') # Mock to prevent actual calculations
     def test_compare_post_invalid_input_D_negative(self, mock_frp, mock_annual_sim):
         form_data = {
             'scenario1_enabled': 'on', 'scenario1_W': '20000', 'scenario1_r': '5', 
@@ -481,8 +481,8 @@ class TestAppRoutes(unittest.TestCase):
         self.assertEqual(json_response['error'], 'Invalid input: Annual return (r) must be between -50% and 100%.')
 
     # New test for r range validation in compare route
-    @patch('app.annual_simulation') # Mock to prevent actual calculations
-    @patch('app.find_required_portfolio') # Mock to prevent actual calculations
+    @patch('project.routes.annual_simulation') # Mock to prevent actual calculations
+    @patch('project.routes.find_required_portfolio') # Mock to prevent actual calculations
     def test_compare_post_invalid_input_r_too_high(self, mock_frp, mock_annual_sim):
         form_data = {
             'scenario1_enabled': 'on', 'scenario1_W': '20000', 'scenario1_r': '150', # r too high
