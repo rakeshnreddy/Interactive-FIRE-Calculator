@@ -43,39 +43,54 @@
           <div class="form-group">
             <label for="scenario{{n}}_W_slider">Annual Expenses (W):</label>
             <input type="range" id="scenario{{n}}_W_slider" name="scenario{{n}}_W" min="0" max="1000000" step="1000" value="{{ request.form.get('scenario' ~ n ~ '_W', '') }}">
-            <input type="number" id="scenario{{n}}_W_input" class="number-input" name="scenario{{n}}_W" value="{{ request.form.get('scenario' ~ n ~ '_W', '') }}" placeholder="e.g., 50000">
+            <input type="number" id="scenario{{n}}_W_input" class="number-input" name="scenario{{n}}_W" value="{{ request.form.get('scenario{}__W'.format(n), scenario.W_form) }}" placeholder="e.g., 50000">
           </div>
           <div class="form-group">
-            <label for="scenario{{n}}_r_slider">Expected Annual Return (%):</label>
-            <input type="range" id="scenario{{n}}_r_slider" name="scenario{{n}}_r" min="0" max="15" step="0.01" value="{{ request.form.get('scenario' ~ n ~ '_r', '') }}">
-            <input type="number" id="scenario{{n}}_r_input" class="number-input" name="scenario{{n}}_r" value="{{ request.form.get('scenario' ~ n ~ '_r', '') }}" placeholder="e.g., 7">
+            <label for="scenario{{n}}_r_slider">Overall Return (%) (Fallback):</label>
+            <input type="range" id="scenario{{n}}_r_slider" name="scenario{{n}}_r" min="0" max="15" step="0.01" value="{{ request.form.get('scenario{}__r'.format(n), scenario.r_form) }}">
+            <input type="number" id="scenario{{n}}_r_input" class="number-input" name="scenario{{n}}_r" value="{{ request.form.get('scenario{}__r'.format(n), scenario.r_form) }}" placeholder="e.g., 7">
           </div>
           <div class="form-group">
-            <label for="scenario{{n}}_i_slider">Expected Annual Inflation (%):</label>
-            <input type="range" id="scenario{{n}}_i_slider" name="scenario{{n}}_i" min="0" max="10" step="0.01" value="{{ request.form.get('scenario' ~ n ~ '_i', '') }}">
-            <input type="number" id="scenario{{n}}_i_input" class="number-input" name="scenario{{n}}_i" value="{{ request.form.get('scenario' ~ n ~ '_i', '') }}" placeholder="e.g., 2">
+            <label for="scenario{{n}}_i_slider">Overall Inflation (%) (Fallback):</label>
+            <input type="range" id="scenario{{n}}_i_slider" name="scenario{{n}}_i" min="0" max="10" step="0.01" value="{{ request.form.get('scenario{}__i'.format(n), scenario.i_form) }}">
+            <input type="number" id="scenario{{n}}_i_input" class="number-input" name="scenario{{n}}_i" value="{{ request.form.get('scenario{}__i'.format(n), scenario.i_form) }}" placeholder="e.g., 2">
           </div>
           <div class="form-group">
-            <label for="scenario{{n}}_T_slider">Retirement Duration (years):</label>
-            <input type="range" id="scenario{{n}}_T_slider" name="scenario{{n}}_T" min="10" max="100" step="1" value="{{ request.form.get('scenario' ~ n ~ '_T', '') }}">
-            <input type="number" id="scenario{{n}}_T_input" class="number-input" name="scenario{{n}}_T" value="{{ request.form.get('scenario' ~ n ~ '_T', '') }}" placeholder="e.g., 30">
+            <label for="scenario{{n}}_T_slider">Total Duration (years) (Fallback):</label>
+            <input type="range" id="scenario{{n}}_T_slider" name="scenario{{n}}_T" min="10" max="100" step="1" value="{{ request.form.get('scenario{}__T'.format(n), scenario.T_form) }}">
+            <input type="number" id="scenario{{n}}_T_input" class="number-input" name="scenario{{n}}_T" value="{{ request.form.get('scenario{}__T'.format(n), scenario.T_form) }}" placeholder="e.g., 30">
           </div>
+
+          <div class="periodic-rates-section">
+            <h5>Periodic Rates (Optional for Scenario {{n}})</h5>
+            {% for k in range(1, 4) %}
+            <div class="form-group period-group">
+              <label for="scenario{{n}}_period{{k}}_duration">P{{k}} Dur.:</label>
+              <input type="number" name="scenario{{n}}_period{{k}}_duration" id="scenario{{n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(n, k), scenario.get('period{}_duration_form'.format(k), '')) }}" min="0" placeholder="Years">
+              <label for="scenario{{n}}_period{{k}}_r" style="margin-left: 10px;">P{{k}} Ret(%):</label>
+              <input type="number" name="scenario{{n}}_period{{k}}_r" id="scenario{{n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(n, k), scenario.get('period{}_r_form'.format(k), '')) }}" placeholder="%">
+              <label for="scenario{{n}}_period{{k}}_i" style="margin-left: 10px;">P{{k}} Inf(%):</label>
+              <input type="number" name="scenario{{n}}_period{{k}}_i" id="scenario{{n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(n, k), scenario.get('period{}_i_form'.format(k), '')) }}" placeholder="%">
+            </div>
+            {% endfor %}
+          </div>
+
           <div class="form-group">
             <label>Withdrawal Timing:</label>
-            <input type="radio" name="scenario{{n}}_withdrawal_time" value="start" {% if request.form.get('scenario' ~ n ~ '_withdrawal_time', 'start') == 'start' %}checked{% endif %}> Start of Year
-            <input type="radio" name="scenario{{n}}_withdrawal_time" value="end" {% if request.form.get('scenario' ~ n ~ '_withdrawal_time', 'start') == 'end' %}checked{% endif %}> End of Year
+            <input type="radio" name="scenario{{n}}_withdrawal_time" value="start" {% if request.form.get('scenario{}withdrawal_time'.format(n), scenario.withdrawal_time_form) == 'start' %}checked{% endif %}> Start of Year
+            <input type="radio" name="scenario{{n}}_withdrawal_time" value="end" {% if request.form.get('scenario{}withdrawal_time'.format(n), scenario.withdrawal_time_form) == 'end' %}checked{% endif %}> End of Year
           </div>
           <div class="form-group">
             <label for="scenario{{n}}_D">Desired Final Portfolio Value ($):</label>
-            <input type="number" name="scenario{{n}}_D" id="scenario{{n}}_D" value="0.0" step="any" min="0">
+            <input type="number" name="scenario{{n}}_D" id="scenario{{n}}_D" value="{{ request.form.get('scenario{}__D'.format(n), scenario.D_form) }}" step="any" min="0">
           </div>
           <div class="form-group">
             <label>Enable Scenario {{ n }}:</label>
-            <input type="checkbox" name="scenario{{n}}_enabled" {% if request.form.get('scenario' ~ n ~ '_enabled') == "on" or n == 1 %}checked{% endif %}>
+            <input type="checkbox" name="scenario{{n}}_enabled" {% if request.form.get('scenario{}enabled'.format(n)) == "on" or (not request.form and scenario.enabled) %}checked{% endif %}>
           </div>
-          {% if scenarios and scenarios|length >= n and scenarios[n-1].enabled %}
+          {% if scenario.fire_number_display and scenario.fire_number_display != "N/A" %}
           <div class="result-section">
-            <p><strong>FIRE Number:</strong> ${{ "{:,.2f}".format(scenarios[n-1].fire_number) }}</p>
+            <p><strong>FIRE Number:</strong> {{ scenario.fire_number_display }}</p>
           </div>
           {% endif %}
         </div>

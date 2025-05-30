@@ -20,20 +20,46 @@
     <form method="post" action="/">
       <div class="form-group">
         <label for="W">Annual Expenses (in today's dollars):</label>
-        <input type="number" name="W" id="W" required>
+        <input type="number" name="W" id="W" value="{{ request.form.get('W', '20000') }}" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="r">Overall Annual Return (%) (Fallback):</label>
+        <input type="number" name="r" id="r" step="0.1" value="{{ request.form.get('r', '5') }}" required>
+        <small>Used if no periodic rates are specified below.</small>
       </div>
       <div class="form-group">
-        <label for="r">Expected Annual Return (%):</label>
-        <input type="number" name="r" id="r" step="0.1" required>
+        <label for="i">Overall Annual Inflation (%) (Fallback):</label>
+        <input type="number" name="i" id="i" step="0.1" value="{{ request.form.get('i', '2') }}" required>
+        <small>Used if no periodic rates are specified below.</small>
       </div>
       <div class="form-group">
-        <label for="i">Expected Annual Inflation (%):</label>
-        <input type="number" name="i" id="i" step="0.1" required>
+        <label for="T">Total Duration (years) (Fallback):</label>
+        <input type="number" name="T" id="T" value="{{ request.form.get('T', '30') }}" required>
+        <small>Used if no periodic rates are specified below. If using periods, total duration is sum of period durations.</small>
+      </div>
+
+      <hr>
+      <h3>Periodic Rate Configuration (Optional)</h3>
+      <p><small>If any period duration is specified, these periodic rates will override the overall fallback rates above. Unspecified periods will be ignored.</small></p>
+      
+      {% for k in range(1, 4) %}
+      <h4>Period {{ k }}</h4>
+      <div class="form-group">
+        <label for="period{{k}}_duration">Period {{ k }} Duration (years):</label>
+        <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" value="{{ request.form.get('period{}_duration'.format(k), '') }}" min="0">
       </div>
       <div class="form-group">
-        <label for="T">Retirement Duration (years):</label>
-        <input type="number" name="T" id="T" required>
+        <label for="period{{k}}_r">Period {{ k }} Return (%):</label>
+        <input type="number" name="period{{k}}_r" id="period{{k}}_r" step="0.1" value="{{ request.form.get('period{}_r'.format(k), '') }}">
       </div>
+      <div class="form-group">
+        <label for="period{{k}}_i">Period {{ k }} Inflation (%):</label>
+        <input type="number" name="period{{k}}_i" id="period{{k}}_i" step="0.1" value="{{ request.form.get('period{}_i'.format(k), '') }}">
+      </div>
+      {% endfor %}
+      <hr>
+
       <div class="form-group radio-group">
         <label>Withdrawal Timing:</label>
         <input type="radio" name="withdrawal_time" value="start" id="start" {% if withdrawal_time == 'start' or not withdrawal_time %}checked{% endif %}>
@@ -43,7 +69,7 @@
       </div>
       <div class="form-group">
         <label for="D">Desired Final Portfolio Value ($):</label>
-        <input type="number" name="D" id="D" value="{{ D | default('0.0') }}" step="any" min="0">
+        <input type="number" name="D" id="D" value="{{ request.form.get('D', '0.0') }}" step="any" min="0">
         <small>Optional. The portfolio value you want remaining at the end of the term.</small>
       </div>
       <input type="submit" value="Calculate">
