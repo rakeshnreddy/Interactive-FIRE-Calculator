@@ -13,7 +13,7 @@
   --font-size: 16px; /* Default font size */
 }
 
-body.dark {
+[data-bs-theme="dark"] {
   --bg-light: #1E1E1E;
   /* Dark theme gradient colors */
   --bg-accent: #2E3C40; /* Dark Slate / Deep Teal */
@@ -28,16 +28,17 @@ body.dark {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
-  font-size: var(--font-size); /* Apply global font size */
-  margin: 0;
-  padding: 0;
+  /* font-family: 'Roboto', sans-serif; */ /* Handled by Bootstrap, but Roboto is a good choice if we customize BS's font stack */
+  /* font-size: var(--font-size); */ /* Base font size set by Bootstrap, can be overridden via --bs-body-font-size */
+  /* margin: 0; */ /* Handled by Bootstrap */
+  /* padding: 0; */ /* Handled by Bootstrap */
   background: linear-gradient(135deg, var(--bg-accent) 0%, var(--bg-secondary) 100%);
-  color: var(--text-light);
-  overflow-x: hidden;
+  color: var(--text-light); /* This will be overridden by Bootstrap's default body color or more specific selectors */
+  /* overflow-x: hidden; */ /* Generally good, Bootstrap might handle this via .container or specific utilities */
   transition: background 0.5s, color 0.5s;
 }
 
+/*
 header {
   background: var(--panel-bg);
   backdrop-filter: blur(10px);
@@ -53,7 +54,7 @@ header {
   position: relative;
 }
 
-body.dark header { /* Ensure header uses the dark panel background */
+[data-bs-theme="dark"] header { 
   background: var(--panel-bg);
   color: #e0e0e0;
 }
@@ -72,7 +73,7 @@ body.dark header { /* Ensure header uses the dark panel background */
   color: var(--text-light);
 }
 
-body.dark .theme-toggle {
+[data-bs-theme="dark"] .theme-toggle {
   color: #e0e0e0;
 }
 
@@ -81,7 +82,9 @@ body.dark .theme-toggle {
   font-size: 24px;
   color: var(--text-light);
 }
+*/
 
+/*
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -89,9 +92,11 @@ body.dark .theme-toggle {
   width: 90%;
   justify-content: space-around;
 }
+*/
 
 /* Styles for settings.html and index.html containers */
-.container.settings-page, .container.index-page {
+/* These create the "panel" look on specific pages. Ensure they are placed within a Bootstrap .container or .container-fluid */
+.container.settings-page, .container.index-page { 
   max-width: 700px; /* Adjusted max-width for these pages */
   background: var(--panel-bg);
   border-radius: 16px;
@@ -105,12 +110,15 @@ body.dark .theme-toggle {
   backdrop-filter: blur(8px);
   transition: background 0.5s;
 }
-body.dark .container.settings-page, body.dark .container.index-page {
+[data-bs-theme="dark"] .container.settings-page, 
+[data-bs-theme="dark"] .container.index-page {
   background: rgba(43, 43, 43, 0.85); /* #2b2b2b with opacity */
+  /* specific styling for dark mode panel */
 }
 
-
-.column { /* For result.html */
+/* .column and .layout-column-group are likely superseded by Bootstrap grid system (.row, .col-md-6 etc.) */
+/*
+.column { 
   flex: 1;
   min-width: 320px;
   max-width: 480px;
@@ -124,18 +132,40 @@ body.dark .container.settings-page, body.dark .container.index-page {
   border: 1px solid rgba(255,255,255,0.18);
 }
 
-.slider-container { /* For result.html */
-  margin: 15px 0;
+.layout-column-group {
+  flex: 1 1 480px; 
+  min-width: 320px; 
+  max-width: 500px; 
+  margin: 10px;     
+  display: flex;
+  flex-direction: column;
 }
 
+.layout-column-group > .common-parameters-container,
+.layout-column-group > .export-button-container-above-fire,
+.layout-column-group > .column {
+  margin: 10px 0; 
+  width: 100%; 
+}
+*/
+
+
+.slider-container { /* For result.html - if still used with form-range, may need review */
+  margin: 15px 0; /* Bootstrap's mb-3 might replace this if form-group becomes mb-3 */
+}
+
+/*
 label {
   display: block;
   font-weight: 500;
   margin-bottom: 6px;
   color: var(--text-light);
 }
+*/
 
-.number-input { /* For result.html */
+/* .number-input is used on result.html for text inputs next to sliders. Bootstrap .form-control will style these. */
+/*
+.number-input { 
   width: 100%;
   padding: 6px;
   font-size: 16px;
@@ -145,7 +175,10 @@ label {
   text-align: right;
   margin-top: 4px;
 }
+*/
 
+/* input[type=range] and its thumb styles are replaced by Bootstrap's .form-range */
+/*
 input[type=range] {
   width: 100%;
   margin: 8px 0;
@@ -165,15 +198,22 @@ input[type=range]::-webkit-slider-thumb {
   border: 2px solid var(--thumb-border);
   margin-top: -7px;
 }
+*/
 
-.result-section { /* For result.html */
+.result-section { /* For result.html - specific panel styling */
   margin-top: 20px;
   padding: 15px;
-  background: rgba(255,255,255,0.25);
+  background: rgba(var(--panel-rgb), 0.25); /* Use panel-rgb for theme consistency */
   border-radius: 10px;
-  color: var(--text-light);
+  color: var(--text-light); /* Ensure text color contrasts with the semi-transparent background */
+}
+[data-bs-theme="dark"] .result-section {
+    background: rgba(var(--panel-rgb), 0.4); /* Darker, more opaque for dark theme */
 }
 
+
+/* General 'a' styling - replaced by Bootstrap defaults or .btn styling */
+/*
 a {
   display: block;
   margin: 20px auto;
@@ -191,12 +231,14 @@ a {
 a:hover {
   background: rgba(255,255,255,0.9);
 }
-body.dark a:hover {
+[data-bs-theme="dark"] a:hover { /* This was body.dark a:hover */
     background: rgba(70, 70, 70, 0.9);
 }
+*/
 
-
-.recalculate-btn {
+/* .recalculate-btn, .export-btn, .collapsible-header are styled with Bootstrap .btn classes or card classes */
+/* Specific overrides can be kept if necessary, but base styling should come from Bootstrap */
+.recalculate-btn { /* Now primarily uses .btn .btn-primary */
   display: block;
   margin: 20px auto; /* Centered with some margin */
   padding: 12px 25px;
@@ -216,13 +258,13 @@ body.dark a:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-body.dark .recalculate-btn {
+[data-bs-theme="dark"] .recalculate-btn {
   background-color: #37474F; /* Darker button bg */
   border-color: var(--thumb-border);
   color: var(--text-light);
 }
 
-body.dark .recalculate-btn:hover {
+[data-bs-theme="dark"] .recalculate-btn:hover {
   background-color: #4DB6AC;
 }
 
@@ -266,7 +308,7 @@ body.dark .recalculate-btn:hover {
     background-color: #A8E6CF; /* Light theme accent */
 }
 
-body.dark .collapsible-header:hover {
+[data-bs-theme="dark"] .collapsible-header:hover {
     background-color: #4DB6AC; /* Dark theme accent for hover */
 }
 
@@ -317,13 +359,13 @@ body.dark .collapsible-header:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-body.dark .export-btn {
+[data-bs-theme="dark"] .export-btn {
   background-color: #37474F; /* Darker button bg */
   border-color: var(--thumb-border);
   color: var(--text-light);
 }
 
-body.dark .export-btn:hover {
+[data-bs-theme="dark"] .export-btn:hover {
   background-color: #4DB6AC; /* Dark theme accent for hover */
 }
 
@@ -418,10 +460,10 @@ input[type="submit"] {
 input[type="submit"]:hover {
   background: #8fd9b6; /* Consider using a CSS variable for hover */
 }
-body.dark input[type="submit"] {
+[data-bs-theme="dark"] input[type="submit"] {
     background: var(--thumb-border); /* Example dark theme submit button */
 }
-body.dark input[type="submit"]:hover {
+[data-bs-theme="dark"] input[type="submit"]:hover {
     background: #4DB6AC;
 }
 
@@ -445,10 +487,10 @@ body.dark input[type="submit"]:hover {
   border-radius: 6px;
   font-size: 16px;
 }
-body.dark .container.settings-page button {
+[data-bs-theme="dark"] .container.settings-page button {
     background: var(--thumb-border);
 }
-body.dark .container.settings-page button:hover {
+[data-bs-theme="dark"] .container.settings-page button:hover {
     background: #4DB6AC;
 }
 
@@ -462,9 +504,10 @@ body.dark .container.settings-page button:hover {
     margin: 30px auto; /* Ensure centering */
     max-width: 900px;
 }
-body.dark .container.compare-page {
+[data-bs-theme="dark"] .container.compare-page {
   background: rgba(43, 43, 43, 0.85);
 }
+*/
 .scenario-header {
   margin-bottom: 20px;
   text-align: center;
@@ -488,10 +531,11 @@ body.dark .container.compare-page {
   min-width: 200px; /* Min width for a scenario box */
   cursor: move;
 }
-body.dark .scenario {
+[data-bs-theme="dark"] .scenario { /* This specific .scenario might be a .card now */
     background: #3a3a3a;
     border-color: #555;
 }
+/*
 .scenario h3 {
   margin-top: 0;
   font-size: 16px;
@@ -532,10 +576,10 @@ body.dark .scenario {
 .compare-page input[type="submit"]:hover {
   background: #8fd9b6;
 }
-body.dark .compare-page input[type="submit"] {
+[data-bs-theme="dark"] .compare-page input[type="submit"] {
     background: var(--thumb-border);
 }
-body.dark .compare-page input[type="submit"]:hover {
+[data-bs-theme="dark"] .compare-page input[type="submit"]:hover {
     background: #4DB6AC;
 }
 .compare-page table {
@@ -552,10 +596,10 @@ body.dark .compare-page input[type="submit"]:hover {
   background: var(--bg-accent);
   color: var(--text-light);
 }
-body.dark .compare-page th {
+[data-bs-theme="dark"] .compare-page th {
     background: var(--thumb-border);
 }
-body.dark .compare-page td {
+[data-bs-theme="dark"] .compare-page td {
     border-color: #555;
 }
 

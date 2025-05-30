@@ -1,123 +1,142 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Compare Scenarios - FIRE Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+{% extends "base.html" %}
+
+{% block title %}Compare Scenarios - FIRE Calculator{% endblock %}
+
+{% block head_extra %}
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
-  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-  <script>applyTheme();</script>
-  <header>
-    <div>Compare Scenarios</div>
-    <div class="header-right">
-      <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
-      <a href="/settings" class="settings-link">&#9776;</a>
-    </div>
-  </header>
-  <div class="container compare-page"> <!-- .compare-page class is already here -->
-    <h2>Enter Comparison Scenarios</h2>
-    <div class="scenario-header">
-      <label for="scenarioCount">Number of Scenarios:</label>
-      <select id="scenarioCount">
-        <option value="1">1</option>
-        <option value="2" selected>2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
-      &nbsp;&nbsp;
-      <button type="button" onclick="saveScenarios()">Save Scenarios</button>
-      &nbsp;&nbsp;
-      <select id="loadScenarioSelect" onchange="loadScenario()"></select>
-    </div>
-    <form method="post" action="/compare" id="compareForm">
-      <div class="scenario-container">
-        {% for n in range(1,5) %}
-        <div class="scenario" id="scenario{{n}}">
-          <h3>Scenario {{ n }}</h3>
+  {# Note: main.css is already in base.html, so not repeated here #}
+{% endblock %}
+
+{% block content %}
+<div class="container compare-page">
+  <h2>Enter Comparison Scenarios</h2>
+  <div class="scenario-header mb-3"> {# Added mb-3 for spacing #}
+    <label for="scenarioCount" class="form-label">Number of Scenarios:</label>
+    <select id="scenarioCount" class="form-select" style="width: auto; display: inline-block;">
+      <option value="1">1</option>
+      <option value="2" selected>2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+    &nbsp;&nbsp;
+    <button type="button" class="btn btn-secondary btn-sm" onclick="saveScenarios()">Save Scenarios</button>
+    &nbsp;&nbsp;
+    <select id="loadScenarioSelect" class="form-select" style="width: auto; display: inline-block;" onchange="loadScenario()"></select>
+  </div>
+
+  <form method="post" action="{{ url_for('routes.compare') }}" id="compareForm">
+    <div class="scenario-container">
+      {# The scenarios variable is passed from the route #}
+      {% for scenario in scenarios %} 
+      <div class="scenario card mb-3" id="scenario{{scenario.n}}" {% if not scenario.enabled %}style="display:none;"{% endif %}>
+        <div class="card-header"><h3>Scenario {{ scenario.n }}</h3></div>
+        <div class="card-body">
           <div class="form-group">
-            <label for="scenario{{n}}_W_slider">Annual Expenses (W):</label>
-            <input type="range" id="scenario{{n}}_W_slider" name="scenario{{n}}_W" min="0" max="1000000" step="1000" value="{{ request.form.get('scenario' ~ n ~ '_W', '') }}">
-            <input type="number" id="scenario{{n}}_W_input" class="number-input" name="scenario{{n}}_W" value="{{ request.form.get('scenario{}__W'.format(n), scenario.W_form) }}" placeholder="e.g., 50000">
+            <label for="scenario{{scenario.n}}_W_input">Annual Expenses (W):</label> {# Removed slider part for brevity in compare #}
+            <input type="number" id="scenario{{scenario.n}}_W_input" class="form-control number-input" name="scenario{{scenario.n}}_W" value="{{ request.form.get('scenario{}__W'.format(scenario.n), scenario.W_form) }}" placeholder="e.g., 50000">
           </div>
           <div class="form-group">
-            <label for="scenario{{n}}_r_slider">Overall Return (%) (Fallback):</label>
-            <input type="range" id="scenario{{n}}_r_slider" name="scenario{{n}}_r" min="0" max="15" step="0.01" value="{{ request.form.get('scenario{}__r'.format(n), scenario.r_form) }}">
-            <input type="number" id="scenario{{n}}_r_input" class="number-input" name="scenario{{n}}_r" value="{{ request.form.get('scenario{}__r'.format(n), scenario.r_form) }}" placeholder="e.g., 7">
+            <label for="scenario{{scenario.n}}_r_input">Overall Return (%) (Fallback):</label>
+            <input type="number" id="scenario{{scenario.n}}_r_input" class="form-control number-input" name="scenario{{scenario.n}}_r" step="0.1" value="{{ request.form.get('scenario{}__r'.format(scenario.n), scenario.r_form) }}" placeholder="e.g., 7">
           </div>
           <div class="form-group">
-            <label for="scenario{{n}}_i_slider">Overall Inflation (%) (Fallback):</label>
-            <input type="range" id="scenario{{n}}_i_slider" name="scenario{{n}}_i" min="0" max="10" step="0.01" value="{{ request.form.get('scenario{}__i'.format(n), scenario.i_form) }}">
-            <input type="number" id="scenario{{n}}_i_input" class="number-input" name="scenario{{n}}_i" value="{{ request.form.get('scenario{}__i'.format(n), scenario.i_form) }}" placeholder="e.g., 2">
+            <label for="scenario{{scenario.n}}_i_input">Overall Inflation (%) (Fallback):</label>
+            <input type="number" id="scenario{{scenario.n}}_i_input" class="form-control number-input" name="scenario{{scenario.n}}_i" step="0.1" value="{{ request.form.get('scenario{}__i'.format(scenario.n), scenario.i_form) }}" placeholder="e.g., 2">
           </div>
           <div class="form-group">
-            <label for="scenario{{n}}_T_slider">Total Duration (years) (Fallback):</label>
-            <input type="range" id="scenario{{n}}_T_slider" name="scenario{{n}}_T" min="10" max="100" step="1" value="{{ request.form.get('scenario{}__T'.format(n), scenario.T_form) }}">
-            <input type="number" id="scenario{{n}}_T_input" class="number-input" name="scenario{{n}}_T" value="{{ request.form.get('scenario{}__T'.format(n), scenario.T_form) }}" placeholder="e.g., 30">
+            <label for="scenario{{scenario.n}}_T_input">Total Duration (years) (Fallback):</label>
+            <input type="number" id="scenario{{scenario.n}}_T_input" class="form-control number-input" name="scenario{{scenario.n}}_T" value="{{ request.form.get('scenario{}__T'.format(scenario.n), scenario.T_form) }}" placeholder="e.g., 30">
           </div>
 
-          <div class="periodic-rates-section">
-            <h5>Periodic Rates (Optional for Scenario {{n}})</h5>
+          <div class="periodic-rates-section mt-3">
+            <h5>Periodic Rates (Optional for Scenario {{scenario.n}})</h5>
             {% for k in range(1, 4) %}
-            <div class="form-group period-group">
-              <label for="scenario{{n}}_period{{k}}_duration">P{{k}} Dur.:</label>
-              <input type="number" name="scenario{{n}}_period{{k}}_duration" id="scenario{{n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(n, k), scenario.get('period{}_duration_form'.format(k), '')) }}" min="0" placeholder="Years">
-              <label for="scenario{{n}}_period{{k}}_r" style="margin-left: 10px;">P{{k}} Ret(%):</label>
-              <input type="number" name="scenario{{n}}_period{{k}}_r" id="scenario{{n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(n, k), scenario.get('period{}_r_form'.format(k), '')) }}" placeholder="%">
-              <label for="scenario{{n}}_period{{k}}_i" style="margin-left: 10px;">P{{k}} Inf(%):</label>
-              <input type="number" name="scenario{{n}}_period{{k}}_i" id="scenario{{n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(n, k), scenario.get('period{}_i_form'.format(k), '')) }}" placeholder="%">
+            <div class="form-group period-group row gx-2"> {# Using Bootstrap row and gx-2 for closer spacing #}
+              <div class="col">
+                <label for="scenario{{scenario.n}}_period{{k}}_duration">P{{k}} Dur.:</label>
+                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_duration" id="scenario{{scenario.n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(scenario.n, k), scenario.get('period{}_duration_form'.format(k), '')) }}" min="0" placeholder="Years">
+              </div>
+              <div class="col">
+                <label for="scenario{{scenario.n}}_period{{k}}_r">P{{k}} Ret(%):</label>
+                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_r" id="scenario{{scenario.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario.n, k), scenario.get('period{}_r_form'.format(k), '')) }}" placeholder="%">
+              </div>
+              <div class="col">
+                <label for="scenario{{scenario.n}}_period{{k}}_i">P{{k}} Inf(%):</label>
+                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_i" id="scenario{{scenario.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario.n, k), scenario.get('period{}_i_form'.format(k), '')) }}" placeholder="%">
+              </div>
             </div>
             {% endfor %}
           </div>
 
-          <div class="form-group">
+          <div class="form-group mt-3">
             <label>Withdrawal Timing:</label>
-            <input type="radio" name="scenario{{n}}_withdrawal_time" value="start" {% if request.form.get('scenario{}withdrawal_time'.format(n), scenario.withdrawal_time_form) == 'start' %}checked{% endif %}> Start of Year
-            <input type="radio" name="scenario{{n}}_withdrawal_time" value="end" {% if request.form.get('scenario{}withdrawal_time'.format(n), scenario.withdrawal_time_form) == 'end' %}checked{% endif %}> End of Year
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="scenario{{scenario.n}}_withdrawal_time" id="scenario{{scenario.n}}_withdrawal_time_start" value="start" {% if request.form.get('scenario{}withdrawal_time'.format(scenario.n), scenario.withdrawal_time_form) == 'start' %}checked{% endif %}>
+                <label class="form-check-label" for="scenario{{scenario.n}}_withdrawal_time_start">Start</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="scenario{{scenario.n}}_withdrawal_time" id="scenario{{scenario.n}}_withdrawal_time_end" value="end" {% if request.form.get('scenario{}withdrawal_time'.format(scenario.n), scenario.withdrawal_time_form) == 'end' %}checked{% endif %}>
+                <label class="form-check-label" for="scenario{{scenario.n}}_withdrawal_time_end">End</label>
+            </div>
           </div>
           <div class="form-group">
-            <label for="scenario{{n}}_D">Desired Final Portfolio Value ($):</label>
-            <input type="number" name="scenario{{n}}_D" id="scenario{{n}}_D" value="{{ request.form.get('scenario{}__D'.format(n), scenario.D_form) }}" step="any" min="0">
+            <label for="scenario{{scenario.n}}_D">Desired Final Portfolio Value ($):</label>
+            <input type="number" class="form-control" name="scenario{{scenario.n}}_D" id="scenario{{scenario.n}}_D" value="{{ request.form.get('scenario{}__D'.format(scenario.n), scenario.D_form) }}" step="any" min="0">
           </div>
-          <div class="form-group">
-            <label>Enable Scenario {{ n }}:</label>
-            <input type="checkbox" name="scenario{{n}}_enabled" {% if request.form.get('scenario{}enabled'.format(n)) == "on" or (not request.form and scenario.enabled) %}checked{% endif %}>
+          <div class="form-check mt-3">
+            <input type="checkbox" class="form-check-input" name="scenario{{scenario.n}}_enabled" id="scenario{{scenario.n}}_enabled" {% if request.form.get('scenario{}enabled'.format(scenario.n)) == "on" or (not request.form and scenario.enabled) %}checked{% endif %}>
+            <label class="form-check-label" for="scenario{{scenario.n}}_enabled">Enable Scenario {{ scenario.n }}</label>
           </div>
-          {% if scenario.fire_number_display and scenario.fire_number_display != "N/A" %}
-          <div class="result-section">
-            <p><strong>FIRE Number:</strong> {{ scenario.fire_number_display }}</p>
-          </div>
+          
+          {# Display error for this specific scenario if it exists #}
+          {% if scenario.error %}
+            <div class="alert alert-warning mt-2 p-2">{{ scenario.error }}</div>
           {% endif %}
+
+          <div class="result-section mt-2"> {# For AJAX updated FIRE number #}
+            {% if scenario.fire_number_display and scenario.fire_number_display != "N/A" and not scenario.error %}
+              <p><strong>FIRE Number:</strong> {{ scenario.fire_number_display }}</p>
+            {% endif %}
+          </div>
         </div>
-        {% endfor %}
       </div>
-      <input type="submit" value="Compare Scenarios">
-    </form>
-    
-    <div id="summaryTable"></div>
-    
-    <div id="combinedGraphs">
-      {% if combined_balance and combined_withdrawal %}
-        <h3>Combined Portfolio Balance</h3>
-        <div id="combined_balance">{{ combined_balance|safe }}</div>
-        <h3>Combined Annual Withdrawals</h3>
-        <div id="combined_withdrawal">{{ combined_withdrawal|safe }}</div>
-      {% endif %}
+      {% endfor %}
     </div>
-    
-    {% if message %}
-      <p style="color: red; text-align: center;">{{ message }}</p>
-    {% endif %}
-    
-    <a href="/">← Back to Calculator</a>
+    <button type="submit" class="btn btn-primary mt-3">Compare Scenarios</button> {# Changed from input to button #}
+  </form>
+  
+  <div id="summaryTableContainer" class="mt-4"> {# Added container for styling #}
+    <h3>Comparison Summary</h3>
+    <div id="summaryTable" class="table-responsive"></div> {# Added table-responsive #}
   </div>
   
+  <div id="combinedGraphs" class="mt-4">
+    {% if combined_balance and combined_withdrawal %}
+      <h3>Combined Portfolio Balance</h3>
+      <div id="combined_balance">{{ combined_balance|safe }}</div>
+      <h3>Combined Annual Withdrawals</h3>
+      <div id="combined_withdrawal">{{ combined_withdrawal|safe }}</div>
+    {% endif %}
+  </div>
+  
+  {# General message area, distinct from per-scenario errors #}
+  {% if message %} 
+    <div class="alert alert-info mt-3">{{ message }}</div>
+  {% endif %}
+  
+  <div class="mt-4"> {# Added spacing for back link #}
+    <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary">← Back to Calculator</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
   <script>
+    // JS for compare page interactivity (scenario count, sortable, save/load, AJAX update)
+    // This script was largely from the original file, adapted slightly.
     function updateScenarioDisplay() {
       var count = parseInt($("#scenarioCount").val());
       $(".scenario").each(function(index) {
@@ -128,11 +147,23 @@
         }
       });
     }
+
     $(document).ready(function(){
       updateScenarioDisplay();
       $("#scenarioCount").on("change", updateScenarioDisplay);
-      $(".scenario-container").sortable({ placeholder: "ui-state-highlight" });
+      
+      // Make scenarios sortable if jQuery UI is loaded
+      if (typeof $.fn.sortable === 'function') {
+        $(".scenario-container").sortable({ 
+            placeholder: "ui-state-highlight card mb-3", // Use card classes for placeholder
+            forcePlaceholderSize: true,
+            axis: "y",
+            handle: ".card-header" // Allow dragging by the card header
+        });
+      }
       loadScenarioOptions();
+      // Initial AJAX update if there's data to compare from GET (e.g. shared link - future feature)
+      // Or if default scenarios should be calculated on load. For now, user clicks button.
     });
     
     function saveScenarios() {
@@ -150,7 +181,7 @@
     }
     
     function loadScenarioOptions() {
-      var options = "";
+      var options = '<option value="">Load Saved...</option>'; // Add a default empty option
       for(var key in localStorage) {
         if(key.startsWith("compareScenario_")) {
           var name = key.replace("compareScenario_", "");
@@ -166,116 +197,112 @@
         var data = JSON.parse(localStorage.getItem(key));
         for(var prop in data) {
           var field = $("[name='" + prop + "']");
-          if(field.attr("type") === "checkbox") {
+          if(field.is(":radio")) {
+            field.filter("[value='" + data[prop] + "']").prop("checked", true);
+          } else if(field.is(":checkbox")) {
             field.prop("checked", data[prop] === "on");
           } else {
             field.val(data[prop]);
           }
         }
-        updateComparison();
+        // updateComparison(); // Optionally auto-submit after loading
       }
     }
     
     function updateComparison() {
       $.ajax({
         type: "POST",
-        url: "/compare",
+        url: "{{ url_for('routes.compare') }}", // Use url_for for robustness
         data: $("#compareForm").serialize(),
-        headers: { "X-Requested-With": "XMLHttpRequest" },
+        headers: { "X-Requested-With": "XMLHttpRequest" }, 
         success: function(response) {
-          if(response.message) {
-            $("#combinedGraphs").html("");
-            alert(response.message);
-          } else {
+          // Clear previous general message
+          if (window.globalFlashMessageContainer) { // Assuming you add such a container in base.html
+              window.globalFlashMessageContainer.innerHTML = '';
+          }
+
+          if(response.message && response.message.length > 0) {
+            $("#combinedGraphs").html(""); 
+            $("#summaryTable").html(""); 
+            // Display general message (e.g. "No valid scenarios to plot")
+            // This could be shown in a dedicated message area or as an alert
+            // For now, using an alert for general messages.
+            alert(response.message); 
+          } else if (response.scenarios) {
             $("#combinedGraphs").html(
               "<h3>Combined Portfolio Balance</h3>" +
-              response.combined_balance +
+              (response.combined_balance || "<p>No balance graph data.</p>") +
               "<h3>Combined Annual Withdrawals</h3>" +
-              response.combined_withdrawal
+              (response.combined_withdrawal || "<p>No withdrawal graph data.</p>")
             );
-            updateSummaryTable(response.scenarios);
-            response.scenarios.forEach(function(sc) {
-              $("#scenario" + sc.n).find(".result-section").remove();
-              var resultHtml = '<div class="result-section"><p><strong>FIRE Number:</strong> $' + sc.fire_number.toFixed(2) + '</p></div>';
-              $("#scenario" + sc.n).append(resultHtml);
-            });
+          } else {
+             $("#combinedGraphs").html("<p>Error: Received unexpected response from server.</p>");
+             $("#summaryTable").html("");
+          }
+          
+          // Always update scenarios display (errors, results) and summary table
+          if(response.scenarios && Array.isArray(response.scenarios)){
+              updateSummaryTable(response.scenarios); 
+              response.scenarios.forEach(function(sc, index) {
+                  var scenarioDiv = $("#scenario" + (sc.n || index + 1)); // Use sc.n if available
+                  scenarioDiv.find(".result-section").remove(); // Clear old results
+                  scenarioDiv.find(".error-message").remove(); // Clear old errors
+                  if(sc.error){
+                      scenarioDiv.append('<div class="alert alert-warning mt-2 p-2 error-message">' + sc.error + '</div>');
+                  } else if (sc.fire_number_display && sc.fire_number_display !== "N/A") {
+                      var resultHtml = '<div class="result-section mt-2"><p><strong>FIRE Number:</strong> ' + sc.fire_number_display + '</p></div>';
+                      scenarioDiv.append(resultHtml);
+                  }
+              });
           }
         },
-        error: function() {
-          console.error("Error updating comparison data.");
+        error: function(xhr, status, error) {
+          console.error("Error updating comparison data:", error);
+          $("#combinedGraphs").html("<p>Error communicating with server. Please try again.</p>");
+          $("#summaryTable").html("");
+          alert("Error: Could not update comparison. " + error);
         }
       });
     }
     
     function updateSummaryTable(scenarios) {
-      var html = "<table><thead><tr><th>Scenario</th><th>W</th><th>Return (%)</th><th>Inflation (%)</th><th>T</th><th>Withdrawal Timing</th><th>FIRE Number</th></tr></thead><tbody>";
+      var html = "<table class='table table-striped table-hover'><thead><tr><th>#</th><th>W</th><th>Rates & Dur.</th><th>Timing</th><th>FIRE #</th><th>Error</th></tr></thead><tbody>";
       scenarios.forEach(function(sc) {
+        let rates_display = "N/A";
+        if (sc.rates_periods_data && sc.rates_periods_data.length > 0) {
+            if (sc.rates_periods_data.length === 1) {
+                let p = sc.rates_periods_data[0];
+                rates_display = `R: ${(p.r * 100).toFixed(1)}%, I: ${(p.i * 100).toFixed(1)}%, T: ${p.duration}y`;
+            } else {
+                rates_display = sc.rates_periods_data.map(p => `(R:${(p.r*100).toFixed(1)}% I:${(p.i*100).toFixed(1)}% D:${p.duration}y)`).join('<br>');
+            }
+        } else { // Fallback if rates_periods_data not directly in scenario object, use form values
+            rates_display = `R: ${sc.r_form}%, I: ${sc.i_form}%, T: ${sc.T_form}y`;
+        }
+
         html += "<tr><td>" + sc.n + "</td>" +
-                "<td>" + sc.W + "</td>" +
-                "<td>" + sc.r_perc + "</td>" +  // Corrected
-                "<td>" + sc.i_perc + "</td>" +  // Corrected
-                "<td>" + sc.T + "</td>" +
-                "<td>" + sc.withdrawal_time + "</td>" +
-                "<td>$" + sc.fire_number.toFixed(2) + "</td></tr>";
+                "<td>" + (sc.W_form || 'N/A') + "</td>" +
+                "<td>" + rates_display + "</td>" + 
+                "<td>" + (sc.withdrawal_time_form || 'N/A') + "</td>" +
+                "<td>" + (sc.fire_number_display || "N/A") + "</td>" +
+                "<td class='text-danger'>" + (sc.error || "") + "</td></tr>";
       });
       html += "</tbody></table>";
       $("#summaryTable").html(html);
     }
     
-    function bindScenarioSync(n) {
-      $("#scenario" + n + "_W_slider").on("input", function(){
-        $("#scenario" + n + "_W_input").val($(this).val());
-        updateComparison();
-      });
-      $("#scenario" + n + "_r_slider").on("input", function(){
-        $("#scenario" + n + "_r_input").val($(this).val());
-        updateComparison();
-      });
-      $("#scenario" + n + "_i_slider").on("input", function(){
-        $("#scenario" + n + "_i_input").val($(this).val());
-        updateComparison();
-      });
-      $("#scenario" + n + "_T_slider").on("input", function(){
-        $("#scenario" + n + "_T_input").val($(this).val());
-        updateComparison();
-      });
-      
-      $("#scenario" + n + "_W_input").on("change", function(){
-        $("#scenario" + n + "_W_slider").val($(this).val());
-        updateComparison();
-      });
-      $("#scenario" + n + "_r_input").on("change", function(){
-        $("#scenario" + n + "_r_slider").val($(this).val());
-        updateComparison();
-      });
-      $("#scenario" + n + "_i_input").on("change", function(){
-        $("#scenario" + n + "_i_slider").val($(this).val());
-        updateComparison();
-      });
-      $("#scenario" + n + "_T_input").on("change", function(){
-        $("#scenario" + n + "_T_slider").val($(this).val());
-        updateComparison();
-      });
-      
-      $("input[name='scenario" + n + "_withdrawal_time']").on("change", function(){
-        updateComparison();
-      });
-      
-      $("input[name='scenario" + n + "_enabled']").on("change", function(){
-        updateComparison();
-      });
-    }
+    // Removed bindScenarioSync as AJAX updates are now manual via button.
+    // If automatic updates on input change are desired for some fields, they can be re-added.
     
     $(document).ready(function(){
-      for(var n = 1; n <= 4; n++){
-        bindScenarioSync(n);
-      }
+      // Initial setup calls
+      updateScenarioDisplay(); 
+      loadScenarioOptions(); 
+
       $("#compareForm").on("submit", function(e){
-        e.preventDefault();
-        updateComparison();
+        e.preventDefault(); 
+        updateComparison(); 
       });
-      loadScenarioOptions();
     });
   </script>
-</body>
-</html>
+{% endblock %}

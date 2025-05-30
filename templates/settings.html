@@ -1,105 +1,112 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>FIRE Calculator Settings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <script>
-    function saveSettings() {
-      const theme = document.getElementById("themeSelect").value;
-      const fontSize = document.getElementById("fontSize").value;
-      const panelOpacity = document.getElementById("panelOpacity").value;
-      // Save the binary theme preference
-      localStorage.setItem('theme', theme); 
-      // Save other settings
-      const settings = { fontSize, panelOpacity }; // Theme is now separate
-      localStorage.setItem("fireSettings", JSON.stringify(settings));
-      applySettings(); // Apply all settings including the new theme state
-      alert("Settings saved!");
-    }
+{% extends "base.html" %}
+
+{% block title %}Settings - FIRE Calculator{% endblock %}
+
+{% block content %}
+<div class="container settings-page">
+  <h2>Settings</h2>
+  
+  <div class="mb-3">
+    <label for="themeSelect" class="form-label">Select Default Theme:</label>
+    <select id="themeSelect" class="form-select">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+      {# Add other theme options here if main.css supports them and theme.js handles them #}
+      {# e.g. <option value="pastel">Pastel</option> #}
+    </select>
+    <small class="form-text text-muted">This sets the default theme preference. The toggle button in the navbar provides immediate switching.</small>
+  </div>
+  
+  <div class="mb-3">
+    <label for="fontSize" class="form-label">Font Size (px):</label>
+    <input type="number" id="fontSize" class="form-control" value="16" min="12" max="24">
+    <small class="form-text text-muted">Changes the base font size across the application (Default: 16px).</small>
+  </div>
+  
+  <div class="mb-3">
+    <label for="panelOpacity" class="form-label">Panel Opacity (0-1):</label>
+    <input type="range" id="panelOpacity" class="form-range" min="0.5" max="1" step="0.01" value="0.85"> {# Default to a less transparent value #}
+    <small class="form-text text-muted">Adjusts the transparency of UI panels (e.g., cards, modals if used).</small>
+  </div>
+  
+  <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+  <p class="mt-2"><small>Settings are saved in your browser's local storage.</small></p>
+  
+  <div class="mt-4">
+    <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary">← Back to Calculator</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+  function saveSettings() {
+    const theme = document.getElementById("themeSelect").value;
+    const fontSize = document.getElementById("fontSize").value;
+    const panelOpacity = document.getElementById("panelOpacity").value;
     
-    function applySettings() {
-      // Call the global applyTheme from theme.js
-      if (typeof applyTheme === "function") {
-        applyTheme(); 
+    // Save the theme preference for Bootstrap (used by theme.js)
+    localStorage.setItem('theme', theme); 
+    
+    // Save other settings
+    const settings = { fontSize, panelOpacity };
+    localStorage.setItem("fireSettings", JSON.stringify(settings));
+    
+    applySettings(); // Apply all settings including the new theme state
+    
+    // Provide feedback to user
+    // Create a temporary message
+    let msgDiv = document.createElement('div');
+    msgDiv.className = 'alert alert-success alert-dismissible fade show fixed-top m-3';
+    msgDiv.setAttribute('role', 'alert');
+    msgDiv.innerHTML = 'Settings saved successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+    document.body.appendChild(msgDiv);
+    // Automatically remove the message after a few seconds
+    setTimeout(() => {
+        let alertNode = bootstrap.Alert.getInstance(msgDiv);
+        if(alertNode) alertNode.close(); else if(msgDiv.parentNode) msgDiv.parentNode.removeChild(msgDiv);
+    }, 3000);
+  }
+  
+  function applyPageSpecificSettings() {
+    // applyTheme() is called from base.html
+
+    // Apply font size and panel opacity specifically
+    const fireSettingsSaved = localStorage.getItem("fireSettings");
+    if (fireSettingsSaved) {
+      const settings = JSON.parse(fireSettingsSaved);
+      if (settings.fontSize) {
+        document.documentElement.style.setProperty("--bs-body-font-size", (parseInt(settings.fontSize) / 16) + "rem");
+        // If you have other elements that don't inherit --bs-body-font-size, you might need more specific selectors
+      }
+      if (settings.panelOpacity) {
+        // This assumes you have CSS variables for panel background that includes an alpha channel
+        // For example, in main.css: .card { background-color: rgba(var(--bs-tertiary-bg-rgb), var(--panel-alpha)); }
+        document.documentElement.style.setProperty("--panel-alpha", settings.panelOpacity);
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      // applyTheme() is already called in base.html, so it should have set the Bootstrap theme attribute
+      applyPageSpecificSettings(); // Apply other page-specific settings like font size, opacity
+
+      // Initialize form controls with saved values
+      const savedTheme = localStorage.getItem('theme'); // This is for Bootstrap theme
+      if (savedTheme) {
+          document.getElementById("themeSelect").value = savedTheme;
       }
 
-      // Apply font size and panel opacity specifically
       const fireSettingsSaved = localStorage.getItem("fireSettings");
       if (fireSettingsSaved) {
-        const settings = JSON.parse(fireSettingsSaved);
-        if (settings.fontSize) {
-          document.documentElement.style.setProperty("--font-size", settings.fontSize + "px");
-          document.body.style.fontSize = settings.fontSize + "px"; // Directly set body font size
-        }
-        if (settings.panelOpacity) {
-          // Assumes --panel-alpha is defined in main.css
-          document.documentElement.style.setProperty("--panel-alpha", settings.panelOpacity);
-        }
+          const settings = JSON.parse(fireSettingsSaved);
+          if (settings.fontSize) {
+              document.getElementById("fontSize").value = settings.fontSize;
+          }
+          if (settings.panelOpacity) {
+              document.getElementById("panelOpacity").value = settings.panelOpacity;
+          }
       }
-    }
-    // Ensure global applyTheme (if defined) and then page-specific applySettings are called
-    document.addEventListener("DOMContentLoaded", function() {
-        if (typeof applyTheme === "function") { // From theme.js
-            applyTheme();
-        }
-        applySettings(); // Page-specific settings
-
-        // Initialize form controls with saved values
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.getElementById("themeSelect").value = savedTheme;
-        }
-
-        const fireSettingsSaved = localStorage.getItem("fireSettings");
-        if (fireSettingsSaved) {
-            const settings = JSON.parse(fireSettingsSaved);
-            if (settings.fontSize) {
-                document.getElementById("fontSize").value = settings.fontSize;
-            }
-            if (settings.panelOpacity) {
-                document.getElementById("panelOpacity").value = settings.panelOpacity;
-            }
-            // If panelOpacity is not in fireSettings, it will retain its default or CSS-set value.
-        }
-    });
-  </script>
-</head>
-<body>
-  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-  <!-- applyTheme() is called by DOMContentLoaded above -->
-
-  <header> <!-- Added a simple header for consistency -->
-    <div>Settings</div>
-    <div class="header-right">
-        <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
-        <a href="/" class="settings-link" style="font-size: 1.5em;">&times;</a> <!-- Close icon -->
-    </div>
-  </header>
-
-  <div class="container settings-page">
-    <h2>Settings</h2>
-    <label for="themeSelect">Select Theme:</label>
-    <select id="themeSelect">
-      <option value="light">Light Default</option>
-      <option value="dark">Dark Default</option>
-      <!-- Keep other theme options if you plan to expand main.css for them -->
-      <!-- <option value="Pastel">Pastel</option> -->
-      <!-- <option value="Minimal">Minimal</option> -->
-    </select>
-    
-    <label for="fontSize">Font Size (px):</label>
-    <input type="number" id="fontSize" value="16" min="12" max="24">
-    <small>Changes the base font size across the application (Default: 16px).</small>
-    
-    <label for="panelOpacity">Panel Opacity (0-1):</label>
-    <input type="range" id="panelOpacity" min="0.5" max="1" step="0.01" value="0.7">
-    <small>Adjusts the transparency of UI panels (Default: 0.7 for light, 0.9 for dark).</small>
-    
-    <button onclick="saveSettings()">Save Settings</button>
-    <p><small>Settings are saved in your browser's local storage.</small></p>
-    <a href="/">← Back to Calculator</a>
-  </div>
-</body>
-</html>
+  });
+</script>
+{% endblock %}
