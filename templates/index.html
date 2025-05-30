@@ -8,7 +8,7 @@
     {% if error %}
       <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
-    <form method="post" action="{{ url_for('routes.index') }}" class="needs-validation" novalidate>
+    <form method="post" action="{{ url_for('routes.index') }}" class="needs-validation" novalidate id="calculatorForm">
       <div class="mb-3">
         <label for="W" class="form-label">Annual Expenses (in today's dollars):</label>
         <input type="number" name="W" id="W" class="form-control" value="{{ request.form.get('W', W if W else '20000') }}" required min="0">
