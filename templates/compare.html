@@ -27,45 +27,45 @@
     <select id="loadScenarioSelect" class="form-select" style="width: auto; display: inline-block;" onchange="loadScenario()"></select>
   </div>
 
-  <form method="post" action="{{ url_for('routes.compare') }}" id="compareForm">
+  <form method="post" action="{{ url_for('routes.compare') }}" id="compareForm" class="needs-validation" novalidate>
     <div class="scenario-container">
       {# The scenarios variable is passed from the route #}
       {% for scenario in scenarios %} 
       <div class="scenario card mb-3" id="scenario{{scenario.n}}" {% if not scenario.enabled %}style="display:none;"{% endif %}>
         <div class="card-header"><h3>Scenario {{ scenario.n }}</h3></div>
         <div class="card-body">
-          <div class="form-group">
-            <label for="scenario{{scenario.n}}_W_input">Annual Expenses (W):</label> {# Removed slider part for brevity in compare #}
-            <input type="number" id="scenario{{scenario.n}}_W_input" class="form-control number-input" name="scenario{{scenario.n}}_W" value="{{ request.form.get('scenario{}__W'.format(scenario.n), scenario.W_form) }}" placeholder="e.g., 50000">
+          <div class="mb-3">
+            <label for="scenario{{scenario.n}}_W_input" class="form-label">Annual Expenses (W):</label>
+            <input type="number" id="scenario{{scenario.n}}_W_input" class="form-control number-input" name="scenario{{scenario.n}}_W" value="{{ request.form.get('scenario{}__W'.format(scenario.n), scenario.W_form) }}" placeholder="e.g., 50000" required min="0">
           </div>
-          <div class="form-group">
-            <label for="scenario{{scenario.n}}_r_input">Overall Return (%) (Fallback):</label>
-            <input type="number" id="scenario{{scenario.n}}_r_input" class="form-control number-input" name="scenario{{scenario.n}}_r" step="0.1" value="{{ request.form.get('scenario{}__r'.format(scenario.n), scenario.r_form) }}" placeholder="e.g., 7">
+          <div class="mb-3">
+            <label for="scenario{{scenario.n}}_r_input" class="form-label">Overall Return (%) (Fallback):</label>
+            <input type="number" id="scenario{{scenario.n}}_r_input" class="form-control number-input" name="scenario{{scenario.n}}_r" step="0.1" value="{{ request.form.get('scenario{}__r'.format(scenario.n), scenario.r_form) }}" placeholder="e.g., 7" min="-50" max="100">
           </div>
-          <div class="form-group">
-            <label for="scenario{{scenario.n}}_i_input">Overall Inflation (%) (Fallback):</label>
-            <input type="number" id="scenario{{scenario.n}}_i_input" class="form-control number-input" name="scenario{{scenario.n}}_i" step="0.1" value="{{ request.form.get('scenario{}__i'.format(scenario.n), scenario.i_form) }}" placeholder="e.g., 2">
+          <div class="mb-3">
+            <label for="scenario{{scenario.n}}_i_input" class="form-label">Overall Inflation (%) (Fallback):</label>
+            <input type="number" id="scenario{{scenario.n}}_i_input" class="form-control number-input" name="scenario{{scenario.n}}_i" step="0.1" value="{{ request.form.get('scenario{}__i'.format(scenario.n), scenario.i_form) }}" placeholder="e.g., 2" min="-50" max="100">
           </div>
-          <div class="form-group">
-            <label for="scenario{{scenario.n}}_T_input">Total Duration (years) (Fallback):</label>
-            <input type="number" id="scenario{{scenario.n}}_T_input" class="form-control number-input" name="scenario{{scenario.n}}_T" value="{{ request.form.get('scenario{}__T'.format(scenario.n), scenario.T_form) }}" placeholder="e.g., 30">
+          <div class="mb-3">
+            <label for="scenario{{scenario.n}}_T_input" class="form-label">Total Duration (years) (Fallback):</label>
+            <input type="number" id="scenario{{scenario.n}}_T_input" class="form-control number-input" name="scenario{{scenario.n}}_T" value="{{ request.form.get('scenario{}__T'.format(scenario.n), scenario.T_form) }}" placeholder="e.g., 30" min="1" step="1">
           </div>
 
           <div class="periodic-rates-section mt-3">
             <h5>Periodic Rates (Optional for Scenario {{scenario.n}})</h5>
             {% for k in range(1, 4) %}
-            <div class="form-group period-group row gx-2"> {# Using Bootstrap row and gx-2 for closer spacing #}
+            <div class="period-group row gx-2 mb-2"> {# Using Bootstrap row and gx-2 for closer spacing, mb-2 for spacing between periods #}
               <div class="col">
-                <label for="scenario{{scenario.n}}_period{{k}}_duration">P{{k}} Dur.:</label>
-                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_duration" id="scenario{{scenario.n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(scenario.n, k), scenario.get('period{}_duration_form'.format(k), '')) }}" min="0" placeholder="Years">
+                <label for="scenario{{scenario.n}}_period{{k}}_duration" class="form-label-sm">P{{k}} Dur.:</label>
+                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_duration" id="scenario{{scenario.n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(scenario.n, k), scenario.get('period{}_duration_form'.format(k), '')) }}" min="0" step="1" placeholder="Years">
               </div>
               <div class="col">
-                <label for="scenario{{scenario.n}}_period{{k}}_r">P{{k}} Ret(%):</label>
-                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_r" id="scenario{{scenario.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario.n, k), scenario.get('period{}_r_form'.format(k), '')) }}" placeholder="%">
+                <label for="scenario{{scenario.n}}_period{{k}}_r" class="form-label-sm">P{{k}} Ret(%):</label>
+                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_r" id="scenario{{scenario.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario.n, k), scenario.get('period{}_r_form'.format(k), '')) }}" placeholder="%" min="-50" max="100">
               </div>
               <div class="col">
-                <label for="scenario{{scenario.n}}_period{{k}}_i">P{{k}} Inf(%):</label>
-                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_i" id="scenario{{scenario.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario.n, k), scenario.get('period{}_i_form'.format(k), '')) }}" placeholder="%">
+                <label for="scenario{{scenario.n}}_period{{k}}_i" class="form-label-sm">P{{k}} Inf(%):</label>
+                <input type="number" class="form-control form-control-sm" name="scenario{{scenario.n}}_period{{k}}_i" id="scenario{{scenario.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario.n, k), scenario.get('period{}_i_form'.format(k), '')) }}" placeholder="%" min="-50" max="100">
               </div>
             </div>
             {% endfor %}
