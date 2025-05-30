@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 # Updated imports:
-from financial_calcs import annual_simulation, find_required_portfolio, find_max_annual_expense, simulate_final_balance
-from constants import TIME_START, TIME_END
+from project.financial_calcs import annual_simulation, find_required_portfolio, find_max_annual_expense, simulate_final_balance
+from project.constants import TIME_START, TIME_END
 from app import app as flask_app # Import the Flask app instance
 
 class TestFinancialCalculations(unittest.TestCase):
