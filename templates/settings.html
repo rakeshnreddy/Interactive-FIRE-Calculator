@@ -40,22 +40,84 @@
 
 {% block scripts_extra %}
 <script>
+  function showFieldError(inputEl, message) {
+      inputEl.classList.add('is-invalid');
+      inputEl.classList.remove('is-valid');
+      let feedbackEl = inputEl.parentNode.querySelector('.invalid-feedback');
+      if (!feedbackEl) {
+          feedbackEl = document.createElement('div');
+          feedbackEl.classList.add('invalid-feedback');
+          // Insert after the input or its direct wrapper if any
+          inputEl.parentNode.insertBefore(feedbackEl, inputEl.nextSibling);
+      }
+      feedbackEl.style.display = 'block';
+      feedbackEl.textContent = message;
+  }
+
+  function clearFieldError(inputEl, setValid = false) {
+      inputEl.classList.remove('is-invalid');
+      // Use checkValidity for overall state if possible, and ensure value is not empty if required
+      if (setValid && inputEl.checkValidity() && (inputEl.value !== '' || !inputEl.hasAttribute('required'))) {
+          inputEl.classList.add('is-valid');
+      } else {
+          inputEl.classList.remove('is-valid');
+      }
+      let feedbackEl = inputEl.parentNode.querySelector('.invalid-feedback');
+      if (feedbackEl) {
+          feedbackEl.textContent = '';
+          feedbackEl.style.display = 'none';
+      }
+  }
+
   function saveSettings() {
-    const theme = document.getElementById("themeSelect").value;
-    const fontSize = document.getElementById("fontSize").value;
-    const panelOpacity = document.getElementById("panelOpacity").value;
+    let allSettingsValid = true;
+    const themeSelect = document.getElementById("themeSelect");
+    const fontSizeInput = document.getElementById("fontSize");
+    const panelOpacityInput = document.getElementById("panelOpacity");
+
+    // Validate Theme Select
+    if (!themeSelect.value) {
+        allSettingsValid = false;
+        showFieldError(themeSelect, "Please select a theme.");
+    } else {
+        clearFieldError(themeSelect, true);
+    }
+
+    // Validate Font Size
+    const fontSizeValue = parseFloat(fontSizeInput.value);
+    if (isNaN(fontSizeValue) || fontSizeValue < parseFloat(fontSizeInput.min) || fontSizeValue > parseFloat(fontSizeInput.max)) {
+        allSettingsValid = false;
+        showFieldError(fontSizeInput, `Font size must be between ${fontSizeInput.min} and ${fontSizeInput.max}.`);
+    } else {
+        clearFieldError(fontSizeInput, true);
+    }
+
+    // Validate Panel Opacity
+    const panelOpacityValue = parseFloat(panelOpacityInput.value);
+    if (isNaN(panelOpacityValue) || panelOpacityValue < parseFloat(panelOpacityInput.min) || panelOpacityValue > parseFloat(panelOpacityInput.max)) {
+        allSettingsValid = false;
+        showFieldError(panelOpacityInput, `Panel opacity must be between ${panelOpacityInput.min} and ${panelOpacityInput.max}.`);
+    } else {
+        clearFieldError(panelOpacityInput, true);
+    }
+
+    if (!allSettingsValid) {
+        return;
+    }
+
+    // Save settings if all valid
+    const theme = themeSelect.value;
+    const fontSize = fontSizeInput.value;
+    const panelOpacity = panelOpacityInput.value;
     
-    // Save the theme preference for Bootstrap (used by theme.js)
     localStorage.setItem('theme', theme); 
-    
-    // Save other settings
     const settings = { fontSize, panelOpacity };
     localStorage.setItem("fireSettings", JSON.stringify(settings));
     
-    applySettings(); // Apply all settings including the new theme state
+    applyPageSpecificSettings(); // Apply visual changes
+    window.applyTheme(); // Apply Bootstrap theme attribute from theme.js
     
     // Provide feedback to user
-    // Create a temporary message
     let msgDiv = document.createElement('div');
     msgDiv.className = 'alert alert-success alert-dismissible fade show fixed-top m-3';
     msgDiv.setAttribute('role', 'alert');
