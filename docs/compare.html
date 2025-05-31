@@ -201,9 +201,9 @@
       </div>
       <input type="submit" value="Compare Scenarios">
     </form>
-    
+
     <div id="summaryTable"></div>
-    
+
     <div id="combinedGraphs">
       <!-- {% if combined_balance and combined_withdrawal %}
         <h3>Combined Portfolio Balance</h3>
@@ -213,14 +213,14 @@
       {% endif %} -->
       <p>Combined graphs will appear here.</p>
     </div>
-    
+
     <!-- {% if message %}
       <p style="color: red; text-align: center;">{{ message }}</p>
     {% endif %} -->
-    
+
     <a href="/">← Back to Calculator</a>
   </div>
-  
+
   <script>
     function updateScenarioDisplay() {
       var count = parseInt($("#scenarioCount").val());
@@ -238,7 +238,7 @@
       $(".scenario-container").sortable({ placeholder: "ui-state-highlight" });
       loadScenarioOptions();
     });
-    
+
     function saveScenarios() {
       var data = $("#compareForm").serializeArray();
       var scenarioData = {};
@@ -252,7 +252,7 @@
         alert("Scenario saved as '" + scenarioName + "'.");
       }
     }
-    
+
     function loadScenarioOptions() {
       var options = "";
       for(var key in localStorage) {
@@ -263,7 +263,7 @@
       }
       $("#loadScenarioSelect").html(options);
     }
-    
+
     function loadScenario() {
       var key = $("#loadScenarioSelect").val();
       if(key) {
@@ -279,7 +279,7 @@
         updateComparison();
       }
     }
-    
+
     function updateComparison() {
       $.ajax({
         type: "POST",
@@ -310,7 +310,7 @@
         }
       });
     }
-    
+
     function updateSummaryTable(scenarios) {
       var html = "<table><thead><tr><th>Scenario</th><th>W</th><th>Return (%)</th><th>Inflation (%)</th><th>T</th><th>Withdrawal Timing</th><th>FIRE Number</th></tr></thead><tbody>";
       scenarios.forEach(function(sc) {
@@ -325,7 +325,7 @@
       html += "</tbody></table>";
       $("#summaryTable").html(html);
     }
-    
+
     function bindScenarioSync(n) {
       $("#scenario" + n + "_W_slider").on("input", function(){
         $("#scenario" + n + "_W_input").val($(this).val());
@@ -343,7 +343,7 @@
         $("#scenario" + n + "_T_input").val($(this).val());
         updateComparison();
       });
-      
+
       $("#scenario" + n + "_W_input").on("change", function(){
         $("#scenario" + n + "_W_slider").val($(this).val());
         updateComparison();
@@ -360,16 +360,16 @@
         $("#scenario" + n + "_T_slider").val($(this).val());
         updateComparison();
       });
-      
+
       $("input[name='scenario" + n + "_withdrawal_time']").on("change", function(){
         updateComparison();
       });
-      
+
       $("input[name='scenario" + n + "_enabled']").on("change", function(){
         updateComparison();
       });
     }
-    
+
     $(document).ready(function(){
       for(var n = 1; n <= 4; n++){
         bindScenarioSync(n);

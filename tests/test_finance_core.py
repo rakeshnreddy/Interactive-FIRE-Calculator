@@ -37,7 +37,7 @@ class TestFinancialCalculations(unittest.TestCase):
                 "name": "Multi Period - Example from problem description",
                 "PV": 100000, "W_initial": 1000, "withdrawal_time": TIME_END,
                 "rates_periods": [
-                    {'duration': 1, 'r': 0.05, 'i': 0.02}, 
+                    {'duration': 1, 'r': 0.05, 'i': 0.02},
                     {'duration': 1, 'r': 0.06, 'i': 0.03}
                 ],
                 "expected_balances": [100000.00, 104000.00, 109220.00],
@@ -48,7 +48,7 @@ class TestFinancialCalculations(unittest.TestCase):
                 "name": "Multi Period - Zero rates, 3 years total",
                 "PV": 100000, "W_initial": 1000, "withdrawal_time": TIME_END,
                 "rates_periods": [
-                    {'duration': 2, 'r': 0.00, 'i': 0.00}, 
+                    {'duration': 2, 'r': 0.00, 'i': 0.00},
                     {'duration': 1, 'r': 0.00, 'i': 0.00}
                 ],
                 "expected_balances": [100000.00, 99000.00, 98000.00, 97000.00],
@@ -77,16 +77,16 @@ class TestFinancialCalculations(unittest.TestCase):
     def test_simulate_final_balance_logic(self):
         test_cases = [
             {
-                "name": "Single Period - DFV Zero", 
-                "PV": 100000, "W_initial": 4000, "withdrawal_time": TIME_END, 
+                "name": "Single Period - DFV Zero",
+                "PV": 100000, "W_initial": 4000, "withdrawal_time": TIME_END,
                 "rates_periods": [{'duration': 1, 'r': 0.05, 'i': 0.02}],
                 "desired_final_value": 0.0, "expected_diff": 101000.00
             },
             {
-                "name": "Multi Period - DFV Positive", 
+                "name": "Multi Period - DFV Positive",
                 "PV": 100000, "W_initial": 1000, "withdrawal_time": TIME_END,
                 "rates_periods": [
-                    {'duration': 1, 'r': 0.05, 'i': 0.02}, 
+                    {'duration': 1, 'r': 0.05, 'i': 0.02},
                     {'duration': 1, 'r': 0.06, 'i': 0.03}
                 ],
                 "desired_final_value": 100000.0, "expected_diff": 9220.00 # 109220 - 100000
@@ -95,7 +95,7 @@ class TestFinancialCalculations(unittest.TestCase):
         for case in test_cases:
             with self.subTest(name=case["name"]):
                 actual_diff = simulate_final_balance(
-                    case["PV"], case["W_initial"], case["withdrawal_time"], 
+                    case["PV"], case["W_initial"], case["withdrawal_time"],
                     case["rates_periods"], case["desired_final_value"]
                 )
                 self.assertAlmostEqual(actual_diff, case["expected_diff"], places=2)
@@ -106,13 +106,13 @@ class TestFinancialCalculations(unittest.TestCase):
                 "name": "Single Period - Basic Time End DFV Zero",
                 "W_initial": 40000, "withdrawal_time": TIME_END, "desired_final_value": 0.0,
                 "rates_periods": [{'duration': 25, 'r': 0.07, 'i': 0.03}],
-                "expected_pv": 614223.147699631, "delta": 0.02 
+                "expected_pv": 614223.147699631, "delta": 0.02
             },
             {
                 "name": "Multi Period - 2 periods, varying rates",
                 "W_initial": 1000, "withdrawal_time": TIME_END, "desired_final_value": 100000.0,
                  "rates_periods": [
-                    {'duration': 1, 'r': 0.05, 'i': 0.02}, 
+                    {'duration': 1, 'r': 0.05, 'i': 0.02},
                     {'duration': 1, 'r': 0.06, 'i': 0.03}
                 ], # Total T=2. Expected final balance with PV=X should be DFV.
                 # For W=1000, DFV=100000, Balances EOY0 = X*1.05-1000, EOY1 = (X*1.05-1000)*1.06 - 1020
@@ -140,13 +140,13 @@ class TestFinancialCalculations(unittest.TestCase):
                 "name": "Multi Period - 2 periods, varying rates",
                 "P": 100000, "withdrawal_time": TIME_END, "desired_final_value": 0.0,
                 "rates_periods": [
-                    {'duration': 1, 'r': 0.05, 'i': 0.02}, 
+                    {'duration': 1, 'r': 0.05, 'i': 0.02},
                     {'duration': 1, 'r': 0.06, 'i': 0.03}
                 ], # Total T=2
                 # Bal EOY0 = 100000*1.05 - W = 105000 - W
                 # Bal EOY1 = (105000-W)*1.06 - W*(1+0.02) = (105000-W)*1.06 - 1.02*W = 0
                 # 111300 - 1.06W - 1.02W = 0 => 111300 = 2.08W => W = 111300 / 2.08 = 53509.61
-                "expected_W": 53509.61, "delta": 0.02 
+                "expected_W": 53509.61, "delta": 0.02
             },
         ]
         for case in test_cases:
@@ -160,7 +160,7 @@ class TestFinancialCalculations(unittest.TestCase):
         W_initial = 1e8 # 100 million
         rates_periods = [{'duration': 50, 'r': 0.01, 'i': 0.00}]
         withdrawal_time = TIME_START
-        expected_PV = 3958807870.6488113 
+        expected_PV = 3958807870.6488113
         actual_PV = find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_final_value=0.0)
         self.assertAlmostEqual(actual_PV, expected_PV, delta=0.1)
 

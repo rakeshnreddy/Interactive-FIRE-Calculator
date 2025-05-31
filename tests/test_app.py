@@ -51,17 +51,17 @@ class TestAppRoutes(unittest.TestCase):
         # Check call count based on the logic in app.py:
         # In MODE_WITHDRAWAL, generate_plots is called for FIRE mode, then for Expense mode.
         self.assertEqual(mock_generate_plots.call_count, 2)
-        
+
         expected_rates_periods_fallback = [{'duration': 30, 'r': 0.05, 'i': 0.02}]
         # Verify desired_final_value was passed and rates_periods for fallback
         mock_generate_plots.assert_any_call(
-            W_form='20000', withdrawal_time=TIME_END, 
+            W_form='20000', withdrawal_time=TIME_END,
             mode=MODE_WITHDRAWAL, rates_periods=expected_rates_periods_fallback,
             P_value=None, desired_final_value=0.0
         )
         # Check the second call (secondary Expense mode calculation)
         mock_generate_plots.assert_any_call(
-            W_form=20000.0, withdrawal_time=TIME_END, 
+            W_form=20000.0, withdrawal_time=TIME_END,
             mode=MODE_PORTFOLIO, rates_periods=expected_rates_periods_fallback,
             P_value=500000, desired_final_value=0.0
         )
@@ -98,17 +98,17 @@ class TestAppRoutes(unittest.TestCase):
         self.assertTrue(mock_generate_plots.called)
         # In MODE_PORTFOLIO, generate_plots is called for Expense mode, then for FIRE mode.
         self.assertEqual(mock_generate_plots.call_count, 2)
-        
+
         expected_rates_periods_fallback_portfolio = [{'duration': 25, 'r': 0.06, 'i': 0.025}]
         # Primary call (Expense mode)
         mock_generate_plots.assert_any_call(
-            W_form='20000', withdrawal_time=TIME_START, 
+            W_form='20000', withdrawal_time=TIME_START,
             mode=MODE_PORTFOLIO, rates_periods=expected_rates_periods_fallback_portfolio,
             P_value=600000.0, desired_final_value=0.0
         )
         # Secondary call (FIRE mode, derived from primary W_calc)
         mock_generate_plots.assert_any_call(
-            W_form=25000, withdrawal_time=TIME_START, 
+            W_form=25000, withdrawal_time=TIME_START,
             mode=MODE_WITHDRAWAL, rates_periods=expected_rates_periods_fallback_portfolio,
             P_value=None, desired_final_value=0.0
         )
@@ -222,12 +222,12 @@ class TestAppRoutes(unittest.TestCase):
         expected_rates_periods_update = [{'duration': 28, 'r': 0.06, 'i': 0.025}]
         # Verify desired_final_value was passed in both calls and rates_periods
         mock_generate_plots.assert_any_call(
-            W_form=25000.0, withdrawal_time=TIME_END, 
+            W_form=25000.0, withdrawal_time=TIME_END,
             mode=MODE_WITHDRAWAL, rates_periods=expected_rates_periods_update,
             P_value=None, desired_final_value=0.0
         )
         mock_generate_plots.assert_any_call(
-            W_form=25000.0, withdrawal_time=TIME_END, 
+            W_form=25000.0, withdrawal_time=TIME_END,
             mode=MODE_PORTFOLIO, rates_periods=expected_rates_periods_update,
             P_value=550000.0, desired_final_value=0.0
         )
@@ -585,7 +585,7 @@ class TestAppRoutes(unittest.TestCase):
             response = self.client.get('/export_csv', query_string=query_params)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.mimetype, 'text/csv')
-            
+
             csv_data_string = response.data.decode('utf-8')
             reader = csv.reader(io.StringIO(csv_data_string))
             csv_rows = list(reader)

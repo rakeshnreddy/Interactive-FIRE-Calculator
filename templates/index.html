@@ -13,7 +13,7 @@
         <label for="W" class="form-label">Annual Expenses (in today's dollars):</label>
         <input type="number" name="W" id="W" class="form-control" value="{{ request.form.get('W', W if W else '20000') }}" required min="0">
       </div>
-      
+
       <div class="mb-3">
         <label for="r" class="form-label">Overall Annual Return (%) (Fallback):</label>
         <input type="number" name="r" id="r" class="form-control" step="0.1" value="{{ request.form.get('r', r if r else '5') }}" min="-50" max="100">
@@ -33,7 +33,7 @@
       <hr>
       <h3>Periodic Rate Configuration (Optional)</h3>
       <p><small class="form-text text-muted">If any period duration is specified, these periodic rates will override the overall fallback rates above. Unspecified periods will be ignored.</small></p>
-      
+
       {% for k in range(1, 4) %}
       <h4>Period {{ k }}</h4>
       <div class="mb-3">

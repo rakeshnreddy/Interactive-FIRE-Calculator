@@ -8,12 +8,12 @@ function applyTheme() {
     theme = 'dark';
     localStorage.setItem('theme', 'dark'); // Migrate to new theme key
   }
-  
+
   // Default to 'light' if no theme is stored or resolved from old settings
   if (theme !== 'dark' && theme !== 'light') {
     theme = 'light';
     // Optionally save the default if it wasn't set
-    // localStorage.setItem('theme', theme); 
+    // localStorage.setItem('theme', theme);
   }
 
   document.documentElement.setAttribute('data-bs-theme', theme);

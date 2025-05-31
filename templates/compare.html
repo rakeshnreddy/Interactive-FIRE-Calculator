@@ -30,7 +30,7 @@
   <form method="post" action="{{ url_for('routes.compare') }}" id="compareForm" class="needs-validation" novalidate>
     <div class="scenario-container">
       {# The scenarios variable is passed from the route #}
-      {% for scenario in scenarios %} 
+      {% for scenario in scenarios %}
       <div class="scenario card mb-3" id="scenario{{scenario.n}}" {% if not scenario.enabled %}style="display:none;"{% endif %}>
         <div class="card-header"><h3>Scenario {{ scenario.n }}</h3></div>
         <div class="card-body">
@@ -90,7 +90,7 @@
             <input type="checkbox" class="form-check-input" name="scenario{{scenario.n}}_enabled" id="scenario{{scenario.n}}_enabled" {% if request.form.get('scenario{}enabled'.format(scenario.n)) == "on" or (not request.form and scenario.enabled) %}checked{% endif %}>
             <label class="form-check-label" for="scenario{{scenario.n}}_enabled">Enable Scenario {{ scenario.n }}</label>
           </div>
-          
+
           {# Display error for this specific scenario if it exists #}
           {% if scenario.error %}
             <div class="alert alert-warning mt-2 p-2">{{ scenario.error }}</div>
@@ -107,12 +107,12 @@
     </div>
     <button type="submit" class="btn btn-primary mt-3">Compare Scenarios</button> {# Changed from input to button #}
   </form>
-  
+
   <div id="summaryTableContainer" class="mt-4"> {# Added container for styling #}
     <h3>Comparison Summary</h3>
     <div id="summaryTable" class="table-responsive"></div> {# Added table-responsive #}
   </div>
-  
+
   <div id="combinedGraphs" class="mt-4">
     {% if combined_balance and combined_withdrawal %}
       <h3>Combined Portfolio Balance</h3>
@@ -123,10 +123,10 @@
   </div>
   
   {# General message area, distinct from per-scenario errors #}
-  {% if message %} 
+  {% if message %}
     <div class="alert alert-info mt-3">{{ message }}</div>
   {% endif %}
-  
+
   <div class="mt-4"> {# Added spacing for back link #}
     <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary">← Back to Calculator</a>
   </div>
@@ -151,10 +151,10 @@
     $(document).ready(function(){
       updateScenarioDisplay();
       $("#scenarioCount").on("change", updateScenarioDisplay);
-      
+
       // Make scenarios sortable if jQuery UI is loaded
       if (typeof $.fn.sortable === 'function') {
-        $(".scenario-container").sortable({ 
+        $(".scenario-container").sortable({
             placeholder: "ui-state-highlight card mb-3", // Use card classes for placeholder
             forcePlaceholderSize: true,
             axis: "y",
@@ -214,7 +214,7 @@
         type: "POST",
         url: "{{ url_for('routes.compare') }}", // Use url_for for robustness
         data: $("#compareForm").serialize(),
-        headers: { "X-Requested-With": "XMLHttpRequest" }, 
+        headers: { "X-Requested-With": "XMLHttpRequest" },
         success: function(response) {
           // Clear previous general message
           if (window.globalFlashMessageContainer) { // Assuming you add such a container in base.html
@@ -222,12 +222,12 @@
           }
 
           if(response.message && response.message.length > 0) {
-            $("#combinedGraphs").html(""); 
-            $("#summaryTable").html(""); 
+            $("#combinedGraphs").html("");
+            $("#summaryTable").html("");
             // Display general message (e.g. "No valid scenarios to plot")
             // This could be shown in a dedicated message area or as an alert
             // For now, using an alert for general messages.
-            alert(response.message); 
+            alert(response.message);
           } else if (response.scenarios) {
             $("#combinedGraphs").html(
               "<h3>Combined Portfolio Balance</h3>" +
@@ -239,10 +239,10 @@
              $("#combinedGraphs").html("<p>Error: Received unexpected response from server.</p>");
              $("#summaryTable").html("");
           }
-          
+
           // Always update scenarios display (errors, results) and summary table
           if(response.scenarios && Array.isArray(response.scenarios)){
-              updateSummaryTable(response.scenarios); 
+              updateSummaryTable(response.scenarios);
               response.scenarios.forEach(function(sc, index) {
                   var scenarioDiv = $("#scenario" + (sc.n || index + 1)); // Use sc.n if available
                   scenarioDiv.find(".result-section").remove(); // Clear old results
@@ -282,7 +282,7 @@
 
         html += "<tr><td>" + sc.n + "</td>" +
                 "<td>" + (sc.W_form || 'N/A') + "</td>" +
-                "<td>" + rates_display + "</td>" + 
+                "<td>" + rates_display + "</td>" +
                 "<td>" + (sc.withdrawal_time_form || 'N/A') + "</td>" +
                 "<td>" + (sc.fire_number_display || "N/A") + "</td>" +
                 "<td class='text-danger'>" + (sc.error || "") + "</td></tr>";
@@ -296,12 +296,12 @@
     
     $(document).ready(function(){
       // Initial setup calls
-      updateScenarioDisplay(); 
-      loadScenarioOptions(); 
+      updateScenarioDisplay();
+      loadScenarioOptions();
 
       $("#compareForm").on("submit", function(e){
-        e.preventDefault(); 
-        updateComparison(); 
+        e.preventDefault();
+        updateComparison();
       });
     });
   </script>

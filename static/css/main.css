@@ -54,7 +54,7 @@ header {
   position: relative;
 }
 
-[data-bs-theme="dark"] header { 
+[data-bs-theme="dark"] header {
   background: var(--panel-bg);
   color: #e0e0e0;
 }
@@ -96,7 +96,7 @@ header {
 
 /* Styles for settings.html and index.html containers */
 /* These create the "panel" look on specific pages. Ensure they are placed within a Bootstrap .container or .container-fluid */
-.container.settings-page, .container.index-page { 
+.container.settings-page, .container.index-page {
   max-width: 700px; /* Adjusted max-width for these pages */
   background: var(--panel-bg);
   border-radius: 16px;
@@ -110,7 +110,7 @@ header {
   backdrop-filter: blur(8px);
   transition: background 0.5s;
 }
-[data-bs-theme="dark"] .container.settings-page, 
+[data-bs-theme="dark"] .container.settings-page,
 [data-bs-theme="dark"] .container.index-page {
   background: rgba(43, 43, 43, 0.85); /* #2b2b2b with opacity */
   /* specific styling for dark mode panel */
@@ -118,7 +118,7 @@ header {
 
 /* .column and .layout-column-group are likely superseded by Bootstrap grid system (.row, .col-md-6 etc.) */
 /*
-.column { 
+.column {
   flex: 1;
   min-width: 320px;
   max-width: 480px;
@@ -133,10 +133,10 @@ header {
 }
 
 .layout-column-group {
-  flex: 1 1 480px; 
-  min-width: 320px; 
-  max-width: 500px; 
-  margin: 10px;     
+  flex: 1 1 480px;
+  min-width: 320px;
+  max-width: 500px;
+  margin: 10px;
   display: flex;
   flex-direction: column;
 }
@@ -144,8 +144,8 @@ header {
 .layout-column-group > .common-parameters-container,
 .layout-column-group > .export-button-container-above-fire,
 .layout-column-group > .column {
-  margin: 10px 0; 
-  width: 100%; 
+  margin: 10px 0;
+  width: 100%;
 }
 */
 
@@ -165,7 +165,7 @@ label {
 
 /* .number-input is used on result.html for text inputs next to sliders. Bootstrap .form-control will style these. */
 /*
-.number-input { 
+.number-input {
   width: 100%;
   padding: 6px;
   font-size: 16px;
