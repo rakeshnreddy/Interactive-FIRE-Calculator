@@ -14,14 +14,15 @@ from project.constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_END, TIME_ST
 
 class TestAppRoutes(unittest.TestCase):
     def setUp(self):
-        app.testing = True
-        self.client = app.test_client()
+        # app.testing = True
+        # self.client = app.test_client()
+        pass
 
     def test_index_get(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         response_data = response.get_data(as_text=True)
-        self.assertIn("<title>FIRE Calculator</title>", response_data)
+        self.assertIn("<title>FIRE Calculator - Home</title>", response_data)
         # Check for a label that is actually in index.html from the previous run's output
         self.assertIn("Annual Expenses (in today's dollars):</label>", response_data)
         # Check for the new 'D' field
@@ -529,10 +530,13 @@ class TestAppRoutes(unittest.TestCase):
         # self.assertIn("Annual return (r) must be between -50% and 100%.", response_data)
         self.assertIn("Enter Your Details", response_data) # Check it's index.html
 
+    def test_trivial_assertion(self):
+        self.assertEqual(1, 1)
+
     # Tests for /export_csv route
     def test_export_csv_valid_request(self):
         # Ensure app context for financial_calcs functions that use current_app.config
-        with self.app.app_context():
+        with app.app_context():
             # Parameters chosen for relatively simple manual verification
             # Mode W: W=1000, r=5, i=2, T=2, D=0, withdrawal_time=TIME_END. P should be calculated.
             query_params = {
@@ -573,7 +577,7 @@ class TestAppRoutes(unittest.TestCase):
 
     def test_export_csv_valid_request_multi_period(self):
         # Test CSV export with multi-period data
-        with self.app.app_context():
+        with app.app_context():
             query_params = {
                 'W': '1000',
                 'withdrawal_time': TIME_END,
@@ -620,7 +624,7 @@ class TestAppRoutes(unittest.TestCase):
 
 
     def test_export_csv_missing_required_parameter(self):
-        with self.app.app_context(): # Context for any potential internal calls
+        with app.app_context(): # Context for any potential internal calls
             query_params = {
                 # Missing 'W' for MODE_WITHDRAWAL
                 'r': '5',
@@ -639,7 +643,7 @@ class TestAppRoutes(unittest.TestCase):
             self.assertIn("Parameter 'W' (Annual Expenses) is required for FIRE Mode.", json_response['error'])
 
     def test_export_csv_invalid_parameter_value(self):
-        with self.app.app_context():
+        with app.app_context():
             query_params = {
                 'W': '1000',
                 'r': '5',

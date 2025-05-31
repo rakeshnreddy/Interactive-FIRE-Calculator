@@ -406,34 +406,34 @@ def register_app_routes(app_instance):
             app_instance.logger.error(f"Unexpected error during input processing in update route: {e} - Form data: {form_data}", exc_info=True)
             return jsonify({'error': 'An unexpected error occurred while processing inputs.'})
 
-    # Calculate for mode 'W' (Expense Mode on client, calculates P)
-    # W_form is the W_initial for generate_plots in MODE_WITHDRAWAL
-    # These lines (393 onwards) are reached only if the try block above completes successfully
-    # or if an unhandled error occurred and execution somehow continued (which the pre-initialization guards against NameError).
-    required_portfolio_W, actual_W_for_mode_W, portfolio_plot_W, withdrawal_plot_W, table_data_W_html = generate_plots(
-        W_form, withdrawal_time, MODE_WITHDRAWAL, rates_periods_data, P_value=None, desired_final_value=D_form
-    )
-    
-    # Calculate for mode 'P' (FIRE Mode on client, calculates W)
-    # P_value is the P_initial for generate_plots in MODE_PORTFOLIO
-    # W_form is passed as initial guess but find_max_annual_expense will calculate the actual W
-    input_P_for_mode_P, calculated_W_for_mode_P, portfolio_plot_P, withdrawal_plot_P, table_data_P_html = generate_plots(
-        W_form, withdrawal_time, MODE_PORTFOLIO, rates_periods_data, P_value=P_value, desired_final_value=D_form
-    )
-    
-    return jsonify({
-        'fire_number_W': f"${required_portfolio_W:,.2f}" if required_portfolio_W != float('inf') else "N/A", # This is the P calculated for a given W
-        'annual_expense_W': f"${actual_W_for_mode_W:,.2f}", # This is the W that was input
-        'portfolio_plot_W': portfolio_plot_W,
-        'withdrawal_plot_W': withdrawal_plot_W,
-        'table_data_W_html': table_data_W_html,
+        # Calculate for mode 'W' (Expense Mode on client, calculates P)
+        # W_form is the W_initial for generate_plots in MODE_WITHDRAWAL
+        # These lines (393 onwards) are reached only if the try block above completes successfully
+        # or if an unhandled error occurred and execution somehow continued (which the pre-initialization guards against NameError).
+        required_portfolio_W, actual_W_for_mode_W, portfolio_plot_W, withdrawal_plot_W, table_data_W_html = generate_plots(
+            W_form, withdrawal_time, MODE_WITHDRAWAL, rates_periods_data, P_value=None, desired_final_value=D_form
+        )
+
+        # Calculate for mode 'P' (FIRE Mode on client, calculates W)
+        # P_value is the P_initial for generate_plots in MODE_PORTFOLIO
+        # W_form is passed as initial guess but find_max_annual_expense will calculate the actual W
+        input_P_for_mode_P, calculated_W_for_mode_P, portfolio_plot_P, withdrawal_plot_P, table_data_P_html = generate_plots(
+            W_form, withdrawal_time, MODE_PORTFOLIO, rates_periods_data, P_value=P_value, desired_final_value=D_form
+        )
         
-        'fire_number_P': f"${input_P_for_mode_P:,.2f}" if input_P_for_mode_P != float('inf') else "N/A", # This is the P that was input
-        'annual_expense_P': f"${calculated_W_for_mode_P:,.2f}", # This is the W calculated for a given P
-        'portfolio_plot_P': portfolio_plot_P,
-        'withdrawal_plot_P': withdrawal_plot_P,
-        'table_data_P_html': table_data_P_html
-    })
+        return jsonify({
+            'fire_number_W': f"${required_portfolio_W:,.2f}" if required_portfolio_W != float('inf') else "N/A", # This is the P calculated for a given W
+            'annual_expense_W': f"${actual_W_for_mode_W:,.2f}", # This is the W that was input
+            'portfolio_plot_W': portfolio_plot_W,
+            'withdrawal_plot_W': withdrawal_plot_W,
+            'table_data_W_html': table_data_W_html,
+
+            'fire_number_P': f"${input_P_for_mode_P:,.2f}" if input_P_for_mode_P != float('inf') else "N/A", # This is the P that was input
+            'annual_expense_P': f"${calculated_W_for_mode_P:,.2f}", # This is the W calculated for a given P
+            'portfolio_plot_P': portfolio_plot_P,
+            'withdrawal_plot_P': withdrawal_plot_P,
+            'table_data_P_html': table_data_P_html
+        })
 
     @app_instance.route('/compare', methods=['GET', 'POST'])
     def compare():

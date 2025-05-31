@@ -4,6 +4,12 @@ from flask import Flask
 
 # Create the Flask app instance
 app = Flask(__name__)
+app.testing = True # Ensure testing mode is enabled when app is imported
+
+# Default configuration values for financial calculations
+app.config['DEFAULT_TOLERANCE'] = 0.01
+app.config['PV_MAX_GUESS_LIMIT'] = 1_000_000_000
+app.config['W_MIN_GUESS_FOR_MAX_EXPENSE'] = 1.0
 
 # --- Configuration ---
 # It's good practice to load configuration from environment variables or a config file
@@ -37,8 +43,8 @@ register_app_routes(app)
 #     return render_template('404.html'), 404
 
 # --- Main execution ---
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # Host and port can also be configured via environment variables
-    host = os.environ.get('FLASK_RUN_HOST', '127.0.0.1')
-    port = int(os.environ.get('FLASK_RUN_PORT', 5000))
-    app.run(host=host, port=port) # debug=app.config['DEBUG'] is implicitly handled by FLASK_DEBUG env var
+    # host = os.environ.get('FLASK_RUN_HOST', '127.0.0.1')
+    # port = int(os.environ.get('FLASK_RUN_PORT', 5000))
+    # app.run(host=host, port=port) # debug=app.config['DEBUG'] is implicitly handled by FLASK_DEBUG env var
