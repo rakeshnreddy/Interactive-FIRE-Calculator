@@ -113,7 +113,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Right Column: FIRE Mode -->
       <div class="col-md-6 mb-3">
         <div class="card h-100"> {# Added h-100 for equal height cards in a row #}
@@ -330,7 +330,7 @@
             formData.append('T', T_output.value);
             const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
             formData.append('withdrawal_time', withdrawal_time_selected ? withdrawal_time_selected.value : 'end');
-            
+
             // Add period data if available from data attributes (passed from backend)
             const exportContainer = document.getElementById('exportParamsContainer');
             const ratesPeriodsJson = exportContainer.dataset.ratesPeriods;
@@ -376,7 +376,7 @@
 
         function updateElementWithScriptExecution(containerElement, htmlString) {
             if (!containerElement) return;
-            containerElement.innerHTML = htmlString; 
+            containerElement.innerHTML = htmlString;
             const scripts = Array.from(containerElement.getElementsByTagName("script"));
             scripts.forEach(oldScript => {
                 const newScript = document.createElement("script");
@@ -397,7 +397,7 @@
           params.append('W', parseFormattedNumber(W_output_left.value) || container.dataset.w || '0');
           params.append('P', parseFormattedNumber(P_output_right.value) || container.dataset.p || '0');
           params.append('D', container.dataset.d || '0.0');
-          
+
           const withdrawal_time_selected_for_export = document.querySelector('input[name="withdrawal_time"]:checked');
           params.append('withdrawal_time', (withdrawal_time_selected_for_export ? withdrawal_time_selected_for_export.value : container.dataset.withdrawalTime) || '{{ TIME_END_const }}');
           params.append('mode', container.dataset.mode || '{{ MODE_WITHDRAWAL_const }}');
@@ -474,7 +474,7 @@
                     W_slider_left.value = W_slider_left.min;
                 }
             }
-            updateExportCsvLink(); 
+            updateExportCsvLink();
         }
 
         function initializeFormValues() {

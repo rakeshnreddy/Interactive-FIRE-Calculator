@@ -160,7 +160,7 @@
     // Page-specific JavaScript for result.html (the interactive part)
     // The toggleTheme and applyTheme functions are now in theme.js
     function exportReport() {
-      // console.log("exportReport function called"); 
+      // console.log("exportReport function called");
       window.print();
     }
     // The DOMContentLoaded listener should be part of this same script block
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         // Update the CSV export link with the new values
-        updateExportCsvLink(); 
+        updateExportCsvLink();
     }
 
     function initializeFormValues() {
@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (P_output_right.value.toUpperCase() !== "N/A") {
             P_output_right.value = formatNumber(P_slider_right.value);
         }
-        
+
         // For common r, i, T, values are direct from their sliders
         r_output.value = r_slider.value;
         i_output.value = i_slider.value;

@@ -97,7 +97,7 @@ body.dark .theme-toggle {
   border-radius: 16px;
   padding: 20px;
   /* Ensure single column layout for form content */
-  display: flex; 
+  display: flex;
   flex-direction: column;
   align-items: stretch; /* Make children take full width */
   margin: 30px auto; /* Ensure centering */
@@ -456,7 +456,7 @@ body.dark .container.settings-page button:hover {
 /* Styles from compare.html */
 .container.compare-page {
     /* Override general container flex behavior for this page */
-    display: flex; 
+    display: flex;
     flex-direction: column;
     align-items: stretch; /* Make children take full width */
     margin: 30px auto; /* Ensure centering */
@@ -578,7 +578,7 @@ body.dark .compare-page td {
   .index-page .radio-group input[type="radio"] {
     /* Ensure radio buttons align well when labels stack */
     vertical-align: middle; /* Or adjust as needed */
-    margin-right: 5px; 
+    margin-right: 5px;
   }
 }
 

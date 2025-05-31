@@ -11,18 +11,18 @@
       const fontSize = document.getElementById("fontSize").value;
       const panelOpacity = document.getElementById("panelOpacity").value;
       // Save the binary theme preference
-      localStorage.setItem('theme', theme); 
+      localStorage.setItem('theme', theme);
       // Save other settings
       const settings = { fontSize, panelOpacity }; // Theme is now separate
       localStorage.setItem("fireSettings", JSON.stringify(settings));
       applySettings(); // Apply all settings including the new theme state
       alert("Settings saved!");
     }
-    
+
     function applySettings() {
       // Call the global applyTheme from theme.js
       if (typeof applyTheme === "function") {
-        applyTheme(); 
+        applyTheme();
       }
 
       // Apply font size and panel opacity specifically
@@ -88,15 +88,15 @@
       <!-- <option value="Pastel">Pastel</option> -->
       <!-- <option value="Minimal">Minimal</option> -->
     </select>
-    
+
     <label for="fontSize">Font Size (px):</label>
     <input type="number" id="fontSize" value="16" min="12" max="24">
     <small>Changes the base font size across the application (Default: 16px).</small>
-    
+
     <label for="panelOpacity">Panel Opacity (0-1):</label>
     <input type="range" id="panelOpacity" min="0.5" max="1" step="0.01" value="0.7">
     <small>Adjusts the transparency of UI panels (Default: 0.7 for light, 0.9 for dark).</small>
-    
+
     <button onclick="saveSettings()">Save Settings</button>
     <p><small>Settings are saved in your browser's local storage.</small></p>
     <a href="/">← Back to Calculator</a>

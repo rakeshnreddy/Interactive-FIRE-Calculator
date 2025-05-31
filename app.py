@@ -9,6 +9,13 @@ import os
 
 app = Flask(__name__)
 
+# Secret key configuration
+# IMPORTANT: Change this in production! Best practice is to set it from an environment variable.
+# For development, a default key is provided. For production, set the SECRET_KEY environment variable.
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_default_secret_key_123!@#')
+if app.config['SECRET_KEY'] == 'dev_default_secret_key_123!@#':
+    app.logger.warning("Using default SECRET_KEY for development. Ensure SECRET_KEY environment variable is set for production.")
+
 # Basic Logging Configuration
 log_dir = os.path.join(os.path.dirname(__file__), 'logs')
 if not os.path.exists(log_dir):
@@ -38,7 +45,7 @@ app.config['DEFAULT_TOLERANCE'] = 0.01 # Tolerance for bisection method converge
 # Financial calculation helper functions (simulate_final_balance, find_required_portfolio, find_max_annual_expense)
 # are removed from here. Their canonical definitions are in financial_calcs.py.
 
-# Route handler functions (index, update, compare, settings, export_csv) and their direct helpers 
+# Route handler functions (index, update, compare, settings, export_csv) and their direct helpers
 # (generate_plots, generate_html_table) are moved to project/routes.py.
 
 # Import routes after app is defined and configured

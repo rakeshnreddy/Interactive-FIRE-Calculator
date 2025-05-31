@@ -89,7 +89,7 @@
             return false;
         }
     }
-    
+
     // --- Standard Validation ---
     if (isRequired && value === '') {
       showValidationMessage(inputElement, 'This field is required.');
@@ -114,7 +114,7 @@
         return false;
       }
     }
-    
+
     if (inputElement.tagName === 'SELECT' && isRequired && value === '') {
         showValidationMessage(inputElement, 'Please select an option.');
         return false;
@@ -139,7 +139,7 @@
             const fallbackR = form.querySelector('[name="r"]');
             const fallbackI = form.querySelector('[name="i"]');
             const fallbackT = form.querySelector('[name="T"]');
-            
+
             if (!validateInput(W)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = W; }
             if (!validateInput(D)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = D; }
 
@@ -161,14 +161,14 @@
                 if (rField && !validateInput(rField, { isPeriodRateField: true, periodDurationValue: durField ? durField.value : '' })) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = rField; }
                 if (iField && !validateInput(iField, { isPeriodRateField: true, periodDurationValue: durField ? durField.value : '' })) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = iField; }
             }
-            
+
             // Fallback fields only required if no period data
             const fallbackContext = { isFallbackField: true, formHasPeriodData: mainFormHasPeriodData };
             if (fallbackR && !validateInput(fallbackR, fallbackContext)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = fallbackR;}
             if (fallbackI && !validateInput(fallbackI, fallbackContext)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = fallbackI;}
             if (fallbackT && !validateInput(fallbackT, fallbackContext)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = fallbackT;}
 
-        } 
+        }
         // --- Handling for compare.html form ---
         else if (form.id === 'compareForm') {
             for (let n = 1; n <= MAX_SCENARIOS; n++) {
@@ -177,7 +177,7 @@
                     // Clear validation for disabled scenarios
                     const scenarioInputs = form.querySelectorAll(`[name^="scenario${n}_"]`);
                     scenarioInputs.forEach(input => clearValidationMessage(input));
-                    continue; 
+                    continue;
                 }
 
                 const scenarioW = form.querySelector(`[name="scenario${n}_W"]`);
@@ -188,7 +188,7 @@
 
                 if (scenarioW && !validateInput(scenarioW)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = scenarioW; }
                 if (scenarioD && !validateInput(scenarioD)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = scenarioD; }
-                
+
                 let scenarioHasPeriodData = false;
                 for (let k = 1; k <= 3; k++) {
                     const durField = form.querySelector(`[name="scenario${n}_period${k}_duration"]`);
@@ -202,7 +202,7 @@
                     const durField = form.querySelector(`[name="scenario${n}_period${k}_duration"]`);
                     const rField = form.querySelector(`[name="scenario${n}_period${k}_r"]`);
                     const iField = form.querySelector(`[name="scenario${n}_period${k}_i"]`);
-                    
+
                     if (durField && !validateInput(durField, { isPeriodDurationField: true, periodRateValue: rField ? rField.value : '', periodInflationValue: iField ? iField.value : '' })) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = durField; }
                     if (rField && !validateInput(rField, { isPeriodRateField: true, periodDurationValue: durField ? durField.value : ''})) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = rField; }
                     if (iField && !validateInput(iField, { isPeriodRateField: true, periodDurationValue: durField ? durField.value : ''})) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = iField; }
@@ -213,9 +213,9 @@
                 if (scenarioFallbackI && !validateInput(scenarioFallbackI, fallbackContextScenario)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = scenarioFallbackI; }
                 if (scenarioFallbackT && !validateInput(scenarioFallbackT, fallbackContextScenario)) { formIsValidOverall = false; if(!firstInvalidField) firstInvalidField = scenarioFallbackT; }
             }
-        } 
+        }
         // --- Fallback for other forms or if specific ID logic not met ---
-        else { 
+        else {
             const inputsToValidate = form.querySelectorAll(
               'input[required], input[type="number"], select[required], textarea[required]'
             );
@@ -239,7 +239,7 @@
         } else {
           if (form.id === 'compareForm') {
             if (typeof window.updateComparison === 'function') {
-              event.preventDefault(); 
+              event.preventDefault();
               window.updateComparison();
             }
           }

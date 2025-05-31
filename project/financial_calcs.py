@@ -26,13 +26,13 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
     years = np.arange(0, total_T + 1)
     balances = []
     sim_withdrawals = [] # Renamed to avoid conflict with outer scope 'withdrawals' in some contexts
-    
+
     B = PV
     current_annual_withdrawal = W_initial
-    
+
     current_period_idx = 0
     time_in_current_period = 0
-    
+
     for t_year_idx in range(total_T):
         # Determine current period's rates
         while time_in_current_period >= rates_periods[current_period_idx]['duration']:
@@ -56,7 +56,7 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
             balances.append(B) # Balance before withdrawal and growth for this year
             B *= (1 + r_current_period)
             B -= current_annual_withdrawal
-        
+
         # Inflate withdrawal for the *next* year using the current year's inflation
         current_annual_withdrawal *= (1 + i_current_period)
         time_in_current_period += 1
@@ -67,7 +67,7 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
 
 def simulate_final_balance(PV, W_initial, withdrawal_time, rates_periods, desired_final_value=0.0):
     """
-    Helper function to get the difference between the final balance after T years 
+    Helper function to get the difference between the final balance after T years
     (with varying rates) and the desired_final_value.
 
     Args:
@@ -79,7 +79,7 @@ def simulate_final_balance(PV, W_initial, withdrawal_time, rates_periods, desire
     """
     if not rates_periods: # Basic check, annual_simulation will also raise
         raise ValueError("rates_periods list cannot be empty for simulation.")
-        
+
     _, balances, _ = annual_simulation(PV, W_initial, withdrawal_time, rates_periods)
     actual_final_balance = balances[-1]
     return actual_final_balance - desired_final_value
@@ -99,7 +99,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
     """
     if not rates_periods:
         raise ValueError("rates_periods list cannot be empty.")
-    
+
     total_T_from_periods = sum(p.get('duration', 0) for p in rates_periods)
 
     if total_T_from_periods == 0:
@@ -109,7 +109,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
         return 0.0
 
     lower = desired_final_value if desired_final_value > 0 else 0.0
-    
+
     # Rough upper bound heuristic
     if W_initial > 0:
         upper = (W_initial * total_T_from_periods * 2) + max(0, desired_final_value)
@@ -123,7 +123,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
     # This is a more robust starting upper bound if W_initial is substantial.
     # Heuristic: sum of all (inflated) withdrawals + desired final value, then add buffer.
     # For simplicity, using a multiplier on W_initial * T as a proxy.
-    estimated_total_withdrawals = W_initial * total_T_from_periods 
+    estimated_total_withdrawals = W_initial * total_T_from_periods
     # A more generous upper bound if W_initial is positive
     if W_initial > 0:
         potential_upper = (estimated_total_withdrawals * 1.5) + max(0, desired_final_value) * 1.5
@@ -141,7 +141,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
         iteration_count_upper_bound_search += 1
         if iteration_count_upper_bound_search > max_iterations_upper_bound:
             return float('inf') # Cannot find a suitable upper bound
-        
+
         upper_multiplier = 2.0
         # If upper is very small or zero, and W_initial is positive, give it a more substantial boost
         if upper < W_initial * total_T_from_periods and W_initial > 0 :
@@ -153,8 +153,8 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
             upper = current_app.config['PV_MAX_GUESS_LIMIT']
             if simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value) < 0:
                 return float('inf') # Even PV_MAX_GUESS_LIMIT is not enough
-            break 
-    
+            break
+
     # If lower itself is sufficient
     if simulate_final_balance(lower, W_initial, withdrawal_time, rates_periods, desired_final_value) >= 0:
          # And if the range is already very small
@@ -176,7 +176,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
             lower = mid
         else:
             upper = mid
-            
+
     # Final check on 'upper' as it's the one that should satisfy the condition or be very close
     if simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value) < -current_app.config['DEFAULT_TOLERANCE']:
         # If 'upper' significantly misses, and 'lower' (which was too low) is float('inf'), something is wrong.
@@ -216,7 +216,7 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
         return 0.0 # No withdrawals possible over zero time
 
     lower = 0.0
-    
+
     # Heuristic for upper bound
     if total_T_from_periods > 0:
         # Estimate based on average withdrawal if portfolio just depletes to desired_final_value
@@ -224,7 +224,7 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
         avg_r = sum(p['r'] * p['duration'] for p in rates_periods) / total_T_from_periods if total_T_from_periods > 0 else 0
         # Effective principal available for withdrawals over the period
         P_adjusted_for_dfv = P - (desired_final_value / ((1 + avg_r)**total_T_from_periods if (1 + avg_r) > 0 else 1))
-        
+
         if P_adjusted_for_dfv <= 0: # If P is not enough to even reach DFV without withdrawals
             upper = 0.0
         else:
@@ -232,8 +232,8 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
             upper = (P_adjusted_for_dfv / (total_T_from_periods / 1.5)) if total_T_from_periods > 0 else 0 # Added safety factor 1.5
             upper = max(upper, current_app.config.get('W_MIN_GUESS_FOR_MAX_EXPENSE', 1.0))
     else: # total_T_from_periods is 0
-        upper = 0.0 
-        
+        upper = 0.0
+
     upper = max(upper, current_app.config.get('W_MIN_GUESS_FOR_MAX_EXPENSE', 1.0))
     if P <= 0 and desired_final_value <=0 : # If portfolio is zero or negative, and no positive target, max W is 0
         upper = 0.0
@@ -249,13 +249,13 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
     # Bisection search for W_initial
     iteration_count = 0
     max_iterations = 100 # Safety break
-    
+
     # Loop while the difference between upper and lower is greater than tolerance
     while (upper - lower) > current_app.config['DEFAULT_TOLERANCE']:
         iteration_count += 1
         if iteration_count > max_iterations:
-            break 
-        
+            break
+
         mid_W = (lower + upper) / 2.0
         if mid_W == lower or mid_W == upper: # Precision limit reached
             break
@@ -268,7 +268,7 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
         # So, new lower bound is mid_W, try for a higher W.
         else:
             lower = mid_W
-            
+
     # 'lower' should be the highest sustainable W_initial found.
     # Final check on 'lower' to ensure it's truly valid and non-negative.
     if lower < 0: return 0.0 # Should not happen if initial lower is 0.0
@@ -276,5 +276,5 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
     if simulate_final_balance(P, lower, withdrawal_time, rates_periods, desired_final_value) < -current_app.config['DEFAULT_TOLERANCE']:
         # If even 'lower' doesn't meet target (within tolerance), means no positive W could be found.
         return 0.0
-        
+
     return lower
