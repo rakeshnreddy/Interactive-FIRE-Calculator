@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import plotly.offline as pyo
 import io
 import csv
+import datetime
 
 # Assuming app.py is in the root directory.
 # financial_calcs.py and constants.py are now in the same 'project' package.
@@ -321,6 +322,8 @@ def register_app_routes(app_instance):
                 # Pass rates_periods_data itself if result.html needs to be aware of multi-period for display
                 'rates_periods_info_json': rates_periods_data # For potential display or JS use on result page
             }
+            current_year = datetime.datetime.now().year
+            template_context['current_year'] = current_year
             return render_template('result.html', **template_context)
         else: # GET request: render with default values
             default_form_data = {
@@ -330,6 +333,8 @@ def register_app_routes(app_instance):
                 'period2_duration': '', 'period2_r': '', 'period2_i': '',
                 'period3_duration': '', 'period3_r': '', 'period3_i': '',
             }
+            current_year = datetime.datetime.now().year
+            default_form_data['current_year'] = current_year
             return render_template('index.html', **default_form_data)
 
 
@@ -574,14 +579,16 @@ def register_app_routes(app_instance):
                     sc[f'period{p_num}_r_form'] = ''
                     sc[f'period{p_num}_i_form'] = ''
                 default_scenarios_for_template.append(sc)
-            return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None)
+            current_year = datetime.datetime.now().year
+            return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None, current_year=current_year)
 
     @app_instance.route('/settings')
     def settings():
         """
         Handles GET requests for the settings page. Renders `settings.html`.
         """
-        return render_template("settings.html")
+        current_year = datetime.datetime.now().year
+        return render_template("settings.html", current_year=current_year)
 
     @app_instance.route('/export_csv')
     def export_csv():
