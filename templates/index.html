@@ -38,15 +38,15 @@
       <h4>Period {{ k }}</h4>
       <div class="mb-3">
         <label for="period{{k}}_duration" class="form-label">Period {{ k }} Duration (years):</label>
-        <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control" value="{{ request.form.get('period{}_duration'.format(k)) or _context['period{}_duration'.format(k)] }}" min="0" step="1">
+        <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control" value="{{ request.form.get('period{}_duration'.format(k)) or vars()['period{}_duration'.format(k)] }}" min="0" step="1">
       </div>
       <div class="mb-3">
         <label for="period{{k}}_r" class="form-label">Period {{ k }} Return (%):</label>
-        <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control" step="0.1" value="{{ request.form.get('period{}_r'.format(k)) or _context['period{}_r'.format(k)] }}" min="-50" max="100">
+        <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control" step="0.1" value="{{ request.form.get('period{}_r'.format(k)) or vars()['period{}_r'.format(k)] }}" min="-50" max="100">
       </div>
       <div class="mb-3">
         <label for="period{{k}}_i" class="form-label">Period {{ k }} Inflation (%):</label>
-        <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control" step="0.1" value="{{ request.form.get('period{}_i'.format(k)) or _context['period{}_i'.format(k)] }}" min="-50" max="100">
+        <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control" step="0.1" value="{{ request.form.get('period{}_i'.format(k)) or vars()['period{}_i'.format(k)] }}" min="-50" max="100">
       </div>
       {% endfor %}
       <hr>
