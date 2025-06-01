@@ -43,8 +43,9 @@ register_app_routes(app)
 #     return render_template('404.html'), 404
 
 # --- Main execution ---
-# if __name__ == '__main__':
+if __name__ == '__main__':
     # Host and port can also be configured via environment variables
-    # host = os.environ.get('FLASK_RUN_HOST', '127.0.0.1')
-    # port = int(os.environ.get('FLASK_RUN_PORT', 5000))
-    # app.run(host=host, port=port) # debug=app.config['DEBUG'] is implicitly handled by FLASK_DEBUG env var
+    host = os.environ.get('FLASK_RUN_HOST', '127.0.0.1')
+    port = int(os.environ.get('FLASK_RUN_PORT', 5000))
+    print("Attempting to start Flask server...")
+    app.run(host=host, port=port, debug=True) # debug=app.config['DEBUG'] is implicitly handled by FLASK_DEBUG env var
