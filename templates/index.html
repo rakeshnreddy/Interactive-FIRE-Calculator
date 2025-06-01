@@ -8,7 +8,7 @@
     {% if error %}
       <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
-    <form method="post" action="{{ url_for('routes.index') }}" class="needs-validation" novalidate id="calculatorForm">
+    <form method="post" action="{{ url_for('index') }}" class="needs-validation" novalidate id="calculatorForm">
       <div class="mb-3">
         <label for="W" class="form-label">Annual Expenses (in today's dollars):</label>
         <input type="number" name="W" id="W" class="form-control" value="{{ request.form.get('W', W if W else '20000') }}" required min="0">
@@ -70,7 +70,7 @@
       <button type="submit" class="btn btn-primary">Calculate</button>
     </form>
     <div class="mt-4 text-center"> {# Added margin and text centering for the link/button #}
-      <a href="{{ url_for('routes.compare') }}" class="btn btn-secondary">Compare Scenarios</a>
+      <a href="{{ url_for('compare') }}" class="btn btn-secondary">Compare Scenarios</a>
     </div>
   </div>
 {% endblock %}

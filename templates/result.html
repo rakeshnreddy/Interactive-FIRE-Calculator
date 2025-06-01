@@ -218,7 +218,7 @@
   </div>
   <div class="text-center mt-4"> {# Centering for buttons #}
     <button id="recalculate_button" class="btn btn-primary recalculate-btn" style="margin-top: 30px;">Update Results</button>
-    <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary" style="margin-top: 30px;">← Back to Calculator</a>
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary" style="margin-top: 30px;">← Back to Calculator</a>
   </div>
 </div>
 {% endblock %}
@@ -350,7 +350,7 @@
             formData.append('D', exportContainer.dataset.d || '0.0');
 
 
-            fetch("{{ url_for('routes.update') }}", { // Use url_for for robustness
+            fetch("{{ url_for('update') }}", { // Use url_for for robustness
                 method: 'POST',
                 body: formData
             })
@@ -432,7 +432,7 @@
                 params.append('i', i_output.value || container.dataset.i || '0');
                 params.append('T', T_output.value || container.dataset.t || '0');
           }
-          exportLink.href = `{{ url_for('routes.export_csv') }}?${params.toString()}`;
+          exportLink.href = `{{ url_for('export_csv') }}?${params.toString()}`;
         }
 
         function updatePage(data, sourceElement = null) {
