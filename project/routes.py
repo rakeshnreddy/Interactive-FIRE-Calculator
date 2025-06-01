@@ -335,7 +335,9 @@ def register_app_routes(app_instance):
             }
             current_year = datetime.datetime.now().year
             default_form_data['current_year'] = current_year
-            return render_template('index.html', **default_form_data)
+            # Pass default_form_data as a dictionary named 'defaults'
+            # and also pass current_year as a top-level variable for convenience if needed directly
+            return render_template('index.html', defaults=default_form_data, current_year=default_form_data.get('current_year'))
 
 
     @app_instance.route('/update', methods=['POST'])
