@@ -426,7 +426,7 @@ a:hover {
   margin-left: -110px; /* Use half of the width to center */
   opacity: 0;
   transition: opacity 0.3s;
-  font-size: 0.9em;
+  font-size: 0.9rem; /* Changed from 0.9em to match sub-nav items */
   font-weight: normal;
 }
 
@@ -745,4 +745,36 @@ header h1 a:hover {
 /* Ensure the theme toggle button in sub-nav aligns well */
 .sub-nav .btn {
    line-height: 1; /* Adjust line height for better vertical alignment if needed */
+}
+
+/* Tooltip for the main site title */
+.title-tooltip-container {
+  position: relative; /* Establishes a positioning context for the tooltip */
+  display: inline-block; 
+  cursor: help; 
+}
+
+.main-title-tooltip {
+  visibility: hidden;
+  width: 300px; 
+  background-color: #555;
+  color: #fff;
+  text-align: left; 
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 100; 
+  bottom: 125%; 
+  left: 50%;
+  margin-left: -150px; 
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9rem; /* Match sub-nav item size */
+  font-weight: normal; 
+  line-height: 1.4; 
+}
+
+.title-tooltip-container:hover .main-title-tooltip {
+  visibility: visible;
+  opacity: 1;
 }

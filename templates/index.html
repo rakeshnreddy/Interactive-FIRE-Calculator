@@ -10,22 +10,22 @@
     {% endif %}
     <form method="post" action="{{ url_for('index') }}" class="needs-validation" novalidate id="calculatorForm">
       <div class="mb-3">
-        <label for="W" class="form-label">Annual Expenses (in today's dollars):</label>
+        <label for="W" class="form-label">Annual Expenses (in today's dollars):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
         <input type="number" name="W" id="W" class="form-control" value="{{ request.form.get('W', defaults.W) }}" required min="0">
       </div>
 
       <div class="mb-3">
-        <label for="r" class="form-label">Overall Annual Return (%) (Fallback):</label>
+        <label for="r" class="form-label">Overall Annual Return (%) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return (e.g., 7% for 7). Used if no specific periods are defined.</span></span></label>
         <input type="number" name="r" id="r" class="form-control" step="0.1" value="{{ request.form.get('r', defaults.r) }}" min="-50" max="100">
         <small class="form-text text-muted">Used if no periodic rates are specified below.</small>
       </div>
       <div class="mb-3">
-        <label for="i" class="form-label">Overall Annual Inflation (%) (Fallback):</label>
+        <label for="i" class="form-label">Overall Annual Inflation (%) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate (e.g., 3% for 3). Used if no specific periods are defined.</span></span></label>
         <input type="number" name="i" id="i" class="form-control" step="0.1" value="{{ request.form.get('i', defaults.i) }}" min="-50" max="100">
         <small class="form-text text-muted">Used if no periodic rates are specified below.</small>
       </div>
       <div class="mb-3">
-        <label for="T" class="form-label">Total Duration (years) (Fallback):</label>
+        <label for="T" class="form-label">Total Duration (years) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">How many years your retirement funds need to last. Used if no specific periods are defined.</span></span></label>
         <input type="number" name="T" id="T" class="form-control" value="{{ request.form.get('T', defaults.T) }}" min="1" step="1">
         <small class="form-text text-muted">Used if no periodic rates are specified below. If using periods, total duration is sum of period durations.</small>
       </div>
@@ -37,15 +37,15 @@
       {% for k in range(1, 4) %}
       <div class="period-group row gx-2 mb-2">
         <div class="col">
-          <label for="period{{k}}_duration" class="form-label form-label-sm">P{{k}} Dur.:</label>
+          <label for="period{{k}}_duration" class="form-label form-label-sm">P{{k}} Dur.:<span class="info-icon">&#9432;<span class="tooltip-text">Duration (in years) for this specific period.</span></span></label>
           <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control form-control-sm" value="{{ request.form.get('period{}_duration'.format(k)) or defaults['period{}_duration'.format(k)] }}" min="0" step="1" placeholder="Years">
         </div>
         <div class="col">
-          <label for="period{{k}}_r" class="form-label form-label-sm">P{{k}} Ret(%):</label>
+          <label for="period{{k}}_r" class="form-label form-label-sm">P{{k}} Ret(%):<span class="info-icon">&#9432;<span class="tooltip-text">Expected annual investment return for this period.</span></span></label>
           <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control form-control-sm" step="0.1" value="{{ request.form.get('period{}_r'.format(k)) or defaults['period{}_r'.format(k)] }}" min="-50" max="100" placeholder="%">
         </div>
         <div class="col">
-          <label for="period{{k}}_i" class="form-label form-label-sm">P{{k}} Inf(%):</label>
+          <label for="period{{k}}_i" class="form-label form-label-sm">P{{k}} Inf(%):<span class="info-icon">&#9432;<span class="tooltip-text">Expected annual inflation rate for this period.</span></span></label>
           <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control form-control-sm" step="0.1" value="{{ request.form.get('period{}_i'.format(k)) or defaults['period{}_i'.format(k)] }}" min="-50" max="100" placeholder="%">
         </div>
       </div>
@@ -53,7 +53,7 @@
       <hr>
 
       <div class="mb-3"> {# Changed from form-group radio-group #}
-        <label class="form-label">Withdrawal Timing:</label> {# Main label for the group #}
+        <label class="form-label">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose whether withdrawals occur at the start or end of each year.</span></span></label> {# Main label for the group #}
         <div class="form-check">
             <input class="form-check-input" type="radio" name="withdrawal_time" value="start" id="start" {% if request.form.get('withdrawal_time', defaults.withdrawal_time) == 'start' %}checked{% endif %}>
             <label class="form-check-label" for="start">Start of Year</label>
@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="D" class="form-label">Desired Final Portfolio Value ($):</label>
+        <label for="D" class="form-label">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">The amount you wish to have remaining at the end of the retirement duration. Default is $0.</span></span></label>
         <input type="number" name="D" id="D" class="form-control" value="{{ request.form.get('D', defaults.D) }}" step="any" min="0">
         <small class="form-text text-muted">Optional. The portfolio value you want remaining at the end of the term.</small>
       </div>

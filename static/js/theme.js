@@ -1,41 +1,60 @@
 // static/js/theme.js
+
+// Store the media query globally to easily add/remove listener
+const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+function getActualTheme(storedTheme) {
+  if (storedTheme === 'system') {
+    return prefersDarkScheme.matches ? 'dark' : 'light';
+  }
+  // Default to 'light' if storedTheme is null, undefined, or not 'dark' (e.g. old invalid values)
+  return (storedTheme === 'dark') ? 'dark' : 'light'; 
+}
+
 function applyTheme() {
-  let theme = localStorage.getItem('theme');
-  const fireSettings = JSON.parse(localStorage.getItem("fireSettings")); // For settings page compatibility
+  let storedTheme = localStorage.getItem('theme'); // Can be 'light', 'dark', or 'system'
+  
+  const actualThemeToApply = getActualTheme(storedTheme);
 
-  // Compatibility with old settings.html theme selection if new 'theme' is not set
-  if (!theme && fireSettings && fireSettings.theme === "Modern Dark") {
-    theme = 'dark';
-    localStorage.setItem('theme', 'dark'); // Migrate to new theme key
+  document.documentElement.setAttribute('data-bs-theme', actualThemeToApply);
+  document.documentElement.style.colorScheme = actualThemeToApply;
+
+  // Manage system theme listener
+  if (storedTheme === 'system') {
+    // Add listener only if it's not already there (though modern browsers handle duplicates)
+    prefersDarkScheme.removeEventListener('change', handleSystemThemeChange); // Remove first to avoid duplicates if logic is complex
+    prefersDarkScheme.addEventListener('change', handleSystemThemeChange);
+  } else {
+    prefersDarkScheme.removeEventListener('change', handleSystemThemeChange);
   }
 
-  // Default to 'light' if no theme is stored or resolved from old settings
-  if (theme !== 'dark' && theme !== 'light') {
-    theme = 'light';
-    // Optionally save the default if it wasn't set
-    // localStorage.setItem('theme', theme);
-  }
-
-  document.documentElement.setAttribute('data-bs-theme', theme);
-  document.documentElement.style.colorScheme = theme;
-
-  // Apply font size from fireSettings if they exist
-  // Panel opacity is handled by settings.html's applyPageSpecificSettings
-  if (fireSettings && fireSettings.fontSize) {
-    // Using --bs-body-font-size for Bootstrap 5 compatibility if possible,
-    // or a custom variable like --font-size if main.css is set up for it.
-    // Assuming --font-size is still used by custom CSS parts not covered by BS utility classes.
-    document.documentElement.style.setProperty("--font-size", fireSettings.fontSize + "px");
-    // For direct Bootstrap body font size, if needed:
-    // document.documentElement.style.setProperty("--bs-body-font-size", (parseInt(fireSettings.fontSize) / 16) + "rem");
+  // Apply other visual settings from fireSettings if they exist
+  const fireSettingsSaved = localStorage.getItem("fireSettings");
+  if (fireSettingsSaved) {
+     const settings = JSON.parse(fireSettingsSaved);
+     if (settings.fontSize) {
+         document.documentElement.style.setProperty("--font-size", settings.fontSize + "px");
+         // For Bootstrap 5 body font size, if you transition to this:
+         // document.documentElement.style.setProperty("--bs-body-font-size", (parseInt(settings.fontSize) / 16) + "rem");
+     }
+     if (settings.panelOpacity) {
+         // This assumes your CSS uses --panel-alpha for opacity in panel backgrounds
+         document.documentElement.style.setProperty("--panel-alpha", settings.panelOpacity);
+     }
   }
 }
 
+function handleSystemThemeChange() {
+  // This function is called when the system theme changes AND 'system' is the selected theme.
+  applyTheme(); // Re-apply based on the new system preference
+}
+
 function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('theme', newTheme);
-  applyTheme();
+  // When toggling, explicitly set to light or dark, effectively overriding 'system' preference.
+  let currentAppliedTheme = document.documentElement.getAttribute('data-bs-theme');
+  const newTheme = currentAppliedTheme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', newTheme); // Save the explicit choice
+  applyTheme(); // This will also remove the system listener if it was active.
 }
 
 // Initial theme application when the script loads

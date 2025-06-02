@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ - FIRE Calculator{% endblock %}
+
+{% block content %}
+<div class="container content-page">
+  <h2>Frequently Asked Questions (FAQ)</h2>
+
+  <div class="accordion" id="faqAccordion">
+    <div class="accordion-item">
+      <h3 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          What is FIRE?
+        </button>
+      </h3>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          FIRE stands for Financial Independence, Retire Early. It's a financial movement with the goal of accumulating sufficient assets to live off investment income and/or savings before traditional retirement age.
+        </div>
+      </div>
+    </div>
+  
+    <div class="accordion-item">
+      <h3 class="accordion-header" id="headingTwo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          How are calculations performed?
+        </button>
+      </h3>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          The calculator uses standard financial formulas to simulate portfolio growth and withdrawals over time, accounting for investment returns and inflation. You can specify these rates either as overall averages or for distinct periods with different financial conditions.
+        </div>
+      </div>
+    </div>
+  
+    <div class="accordion-item">
+      <h3 class="accordion-header" id="headingThree">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          What are "periodic rates"?
+        </button>
+      </h3>
+      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Periodic rates allow you to define different expected annual return and inflation rates for specific durations (periods) within your overall plan. For example, you might anticipate higher returns in early years and more conservative returns later. If periodic rates are set, they override the "Overall Fallback" rates.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h3 class="accordion-header" id="headingFour">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+          Are the results financial advice?
+        </button>
+      </h3>
+      <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          No. This tool is for informational and educational purposes only. The calculations are based on your inputs and general financial models. It is not financial advice. Consult with a qualified financial advisor for advice tailored to your personal situation.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">← Back to Calculator</a>
+  </div>
+</div>
+{% endblock %}

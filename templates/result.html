@@ -55,22 +55,22 @@
           </div>
           <div class="card-body collapsible-content">
             <div class="mb-3">
-              <label for="r_slider" class="form-label">Expected Annual Return (%):</label>
+              <label for="r_slider" class="form-label">Expected Annual Return (%):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return (e.g., 7% for 7). This will update calculations for both modes.</span></span></label>
               <input type="range" id="r_slider" name="r" class="form-range" min="0" max="15" step="0.1" value="{{ r_form_val | default(5) }}">
               <input type="text" id="r_output" class="number-input form-control form-control-sm mt-1" value="{{ r_form_val | default(5) }}">
             </div>
             <div class="mb-3">
-              <label for="i_slider" class="form-label">Expected Annual Inflation (%):</label>
+              <label for="i_slider" class="form-label">Expected Annual Inflation (%):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate (e.g., 3% for 3). This will update calculations for both modes.</span></span></label>
               <input type="range" id="i_slider" name="i" class="form-range" min="0" max="10" step="0.1" value="{{ i_form_val | default(2) }}">
               <input type="text" id="i_output" class="number-input form-control form-control-sm mt-1" value="{{ i_form_val | default(2) }}">
             </div>
             <div class="mb-3">
-              <label for="T_slider" class="form-label">Retirement Duration (years):</label>
+              <label for="T_slider" class="form-label">Retirement Duration (years):<span class="info-icon">&#9432;<span class="tooltip-text">How many years your retirement funds need to last. This will update calculations for both modes.</span></span></label>
               <input type="range" id="T_slider" name="T" class="form-range" min="10" max="100" step="1" value="{{ T_form_val | default(30) }}">
               <input type="text" id="T_output" class="number-input form-control form-control-sm mt-1" value="{{ T_form_val | default(30) }}">
             </div>
             <div class="mb-3">
-              <label class="form-label">Withdrawal Timing:</label>
+              <label class="form-label">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose whether withdrawals occur at the start or end of each year. This will update calculations for both modes.</span></span></label>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="withdrawal_time" value="start" id="withdrawal_time_start_results" {% if withdrawal_time_form_val=='start' %}checked{% endif %}>
                 <label class="form-check-label" for="withdrawal_time_start_results">Start of Year</label>
@@ -94,7 +94,7 @@
               </span>
             </h2>
             <div class="mb-3">
-              <label for="W_slider_left" class="form-label">Annual Expenses (W):</label>
+              <label for="W_slider_left" class="form-label">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your desired annual living expenses. Adjusting this will recalculate the FIRE number needed.</span></span></label>
               <input type="range" id="W_slider_left" name="W" class="form-range" min="0" max="1000000" step="1000" value="{{ fire_W_input_val | default(20000) }}">
               <input type="text" id="W_output_left" class="number-input form-control form-control-sm mt-1" value="{{ '{:,.0f}'.format(fire_W_input_val | default(20000)) }}">
             </div>
@@ -128,7 +128,7 @@
               </span>
             </h2>
             <div class="mb-3">
-              <label for="P_slider_right" class="form-label">FIRE Number (P):</label>
+              <label for="P_slider_right" class="form-label">FIRE Number (P):<span class="info-icon">&#9432;<span class="tooltip-text">Your target retirement portfolio principal. Adjusting this will recalculate the maximum sustainable annual expense.</span></span></label>
               <input type="range" id="P_slider_right" name="P" class="form-range" min="0" max="25000000" step="1000" value="{{ expense_P_input_val if expense_P_input_val != 'N/A' else 0 }}">
               <input type="text" id="P_output_right" class="number-input form-control form-control-sm mt-1" value="{{ '{:,.0f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' and expense_P_input_val is not none else (expense_P_input_val if expense_P_input_val == 'N/A' else '0') }}">
             </div>
