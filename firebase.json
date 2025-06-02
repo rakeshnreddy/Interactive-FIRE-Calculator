@@ -1,0 +1,19 @@
+{
+  "hosting": {
+    "public": "public",  // Or whatever directory contains your static files
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**", // This will match all incoming requests
+        "run": {
+          "serviceId": "interactive-fire-calculator-1",  // The name of your Cloud Run service
+          "region": "us-west2"  // The region where your Cloud Run service is deployed
+        }
+      }
+    ]
+  }
+}
