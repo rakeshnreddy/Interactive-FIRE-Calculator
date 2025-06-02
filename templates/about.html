@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}About - FIRE Calculator{% endblock %}
+
+{% block content %}
+<div class="container content-page"> {# Using a generic 'content-page' class for potential styling #}
+  <h2>About the FIRE Calculator</h2>
+  <p>This FIRE (Financial Independence, Retire Early) Calculator is a tool designed to help you explore various financial scenarios related to long-term planning and retirement.</p>
+  <p>Key features include:</p>
+  <ul>
+    <li>Calculating required retirement portfolios based on desired annual expenses.</li>
+    <li>Estimating sustainable annual withdrawals from a given portfolio size.</li>
+    <li>Modeling the effects of different investment return rates, inflation rates, and retirement durations.</li>
+    <li>Support for multi-period analysis, allowing you to define different financial conditions for different phases of your plan.</li>
+    <li>Comparing multiple scenarios side-by-side to understand the impact of various assumptions.</li>
+  </ul>
+  <p>Whether you are just starting to think about financial independence or are well on your way, this calculator aims to provide valuable insights. Remember that all calculations are based on the inputs you provide and are for informational purposes only. Financial planning is complex, and it's recommended to consult with a qualified financial advisor for personalized advice.</p>
+  <div class="mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">← Back to Calculator</a>
+  </div>
+</div>
+{% endblock %}

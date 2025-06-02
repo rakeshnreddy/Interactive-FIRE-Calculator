@@ -704,3 +704,13 @@ def register_app_routes(app_instance):
         except Exception as e: # Catch any other unexpected errors
             app_instance.logger.error(f"Unexpected error during CSV export: {e} - Query args: {request.args}", exc_info=True)
             return jsonify({'error': "An unexpected error occurred. Please check logs."}), 500
+
+    @app_instance.route('/about')
+    def about():
+        current_year = datetime.datetime.now().year
+        return render_template("about.html", current_year=current_year)
+
+    @app_instance.route('/faq')
+    def faq():
+        current_year = datetime.datetime.now().year
+        return render_template("faq.html", current_year=current_year)
