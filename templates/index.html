@@ -35,18 +35,19 @@
       <p><small class="form-text text-muted">If any period duration is specified, these periodic rates will override the overall fallback rates above. Unspecified periods will be ignored.</small></p>
 
       {% for k in range(1, 4) %}
-      <h4>Period {{ k }}</h4>
-      <div class="mb-3">
-        <label for="period{{k}}_duration" class="form-label">Period {{ k }} Duration (years):</label>
-        <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control" value="{{ request.form.get('period{}_duration'.format(k)) or defaults['period{}_duration'.format(k)] }}" min="0" step="1">
-      </div>
-      <div class="mb-3">
-        <label for="period{{k}}_r" class="form-label">Period {{ k }} Return (%):</label>
-        <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control" step="0.1" value="{{ request.form.get('period{}_r'.format(k)) or defaults['period{}_r'.format(k)] }}" min="-50" max="100">
-      </div>
-      <div class="mb-3">
-        <label for="period{{k}}_i" class="form-label">Period {{ k }} Inflation (%):</label>
-        <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control" step="0.1" value="{{ request.form.get('period{}_i'.format(k)) or defaults['period{}_i'.format(k)] }}" min="-50" max="100">
+      <div class="period-group row gx-2 mb-2">
+        <div class="col">
+          <label for="period{{k}}_duration" class="form-label form-label-sm">P{{k}} Dur.:</label>
+          <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control form-control-sm" value="{{ request.form.get('period{}_duration'.format(k)) or defaults['period{}_duration'.format(k)] }}" min="0" step="1" placeholder="Years">
+        </div>
+        <div class="col">
+          <label for="period{{k}}_r" class="form-label form-label-sm">P{{k}} Ret(%):</label>
+          <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control form-control-sm" step="0.1" value="{{ request.form.get('period{}_r'.format(k)) or defaults['period{}_r'.format(k)] }}" min="-50" max="100" placeholder="%">
+        </div>
+        <div class="col">
+          <label for="period{{k}}_i" class="form-label form-label-sm">P{{k}} Inf(%):</label>
+          <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control form-control-sm" step="0.1" value="{{ request.form.get('period{}_i'.format(k)) or defaults['period{}_i'.format(k)] }}" min="-50" max="100" placeholder="%">
+        </div>
       </div>
       {% endfor %}
       <hr>
