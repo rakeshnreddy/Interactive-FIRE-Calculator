@@ -531,15 +531,20 @@ def register_app_routes(app_instance):
                     scenario_input['enabled'] = False # Mark as not successfully processed
 
                 scenarios_data_for_template.append(scenario_input)
+            # END OF SCENARIO PROCESSING LOOP
 
-                # Filter for scenarios that were successfully processed for plotting
-                plottable_scenarios = [s for s in scenarios_data_for_template if s.get('enabled') and not s.get('error') and 'years_data' in s and s['years_data']]
+            # Filter for scenarios that were successfully processed for plotting, after collecting all scenarios
+            plottable_scenarios = [s for s in scenarios_data_for_template if s.get('enabled') and not s.get('error') and 'years_data' in s and s['years_data']]
 
-                if not plottable_scenarios:
-                    message = "No valid scenarios to plot. Please check inputs or enable scenarios."
-                    # Return all scenarios_data_for_template so errors can be shown for each
-                    return jsonify({"message": message, "scenarios": scenarios_data_for_template})
+            combined_balance_plot_html = ""
+            combined_withdrawal_plot_html = ""
+            message = ""
 
+            if not plottable_scenarios:
+                message = "No valid scenarios to plot. Please check inputs or enable scenarios."
+                # Return all scenarios_data_for_template so errors/data can be shown for each non-plottable one
+                # Plots will be empty as initialized
+            else:
                 plot_config = {'displayModeBar': False, 'responsive': True}
                 fig_balance = go.Figure()
                 fig_withdrawal = go.Figure()
@@ -564,13 +569,14 @@ def register_app_routes(app_instance):
                 fig_withdrawal.update_layout(title="Annual Withdrawals Comparison", xaxis_title="Years", yaxis_title="Withdrawal ($)")
                 combined_withdrawal_plot_html = pyo.plot(fig_withdrawal, include_plotlyjs=False, output_type='div', config=plot_config)
 
-                # scenarios_data_for_template already contains all necessary info for each scenario, including errors and display values
-                return jsonify({
-                    "combined_balance": combined_balance_plot_html,
-                    "combined_withdrawal": combined_withdrawal_plot_html,
-                    "scenarios": scenarios_data_for_template, 
-                    "message": ""
-                 })
+            # Return all scenarios_data_for_template (which includes errors and display values for each)
+            # and the combined plots if any were generated.
+            return jsonify({
+                "combined_balance": combined_balance_plot_html,
+                "combined_withdrawal": combined_withdrawal_plot_html,
+                "scenarios": scenarios_data_for_template,
+                "message": message
+            })
         else: # GET request
         # Provide empty structures for periods for the template on initial load
             default_scenarios_for_template = []

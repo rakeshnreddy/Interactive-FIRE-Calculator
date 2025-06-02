@@ -325,7 +325,7 @@ a:hover {
 }
 
 .common-parameters-container.expanded .collapsible-content {
-  max-height: 350px;
+  max-height: 450px; /* Increased from 350px */
   padding: 10px 15px; /* Add vertical padding when expanded */
 }
 
