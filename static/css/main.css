@@ -378,6 +378,11 @@ a:hover {
   flex-direction: column;
 }
 
+.layout-column-group.row {
+  flex-direction: row !important;
+  max-width: none !important;
+}
+
 .export-button-container-above-fire {
   /* Behaves like a column item */
   flex: 1;
