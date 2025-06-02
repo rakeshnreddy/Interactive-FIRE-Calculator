@@ -107,7 +107,7 @@
               {{ withdrawal_plot_fire | safe }}
             </div>
             <h3>Yearly Data</h3>
-            <div id="table_data_W_container" class="table-responsive"> {# Added table-responsive #}
+            <div id="table_data_W_container" class="table-container table-responsive"> {# Added table-responsive #}
               {{ table_data_fire_html | safe if table_data_fire_html else "<p>Yearly data table will appear here after calculation.</p>" }}
             </div>
           </div>
@@ -144,74 +144,10 @@
               {{ withdrawal_plot_expense | safe }}
             </div>
             <h3>Yearly Data</h3>
-            <div id="table_data_P_container" class="table-responsive"> {# Added table-responsive #}
+            <div id="table_data_P_container" class="table-container table-responsive"> {# Added table-responsive #}
               {{ table_data_expense_html | safe if table_data_expense_html else "<p>Yearly data table will appear here after calculation.</p>" }}
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="text-center mt-4"> {# Centering for buttons #}
-          </span>
-        </h2>
-        <div class="slider-container">
-          <label for="W_slider_left">Annual Expenses (W):</label>
-          <input type="range" id="W_slider_left" name="W" min="0" max="1000000" step="1000" value="{{ fire_W_input_val | default(20000) }}">
-          <input type="text" id="W_output_left" class="number-input form-control form-control-sm" value="{{ '{:,.0f}'.format(fire_W_input_val | default(20000)) }}">
-        </div>
-        <div class="result-section">
-          <p><strong>Calculated FIRE Number:</strong> <span id="fire_number_W_display">{{ fire_P_calculated_val }}</span></p>
-          <p><strong>Your Annual Expense (Input):</strong> <span id="annual_expense_W_display">${{ '{:,.2f}'.format(fire_W_input_val | default(0)) }}</span></p>
-        </div>
-        <h3>Portfolio Balance</h3>
-        <div id="portfolio_plot_W" class="plot-container">
-          {{ portfolio_plot_fire | safe }}
-        </div>
-        <h3>Annual Withdrawals</h3>
-        <div id="withdrawal_plot_W" class="plot-container">
-          {{ withdrawal_plot_fire | safe }}
-        </div>
-        <h3>Yearly Data</h3>
-        <div id="table_data_W_container" class="table-container">
-          {{ table_data_fire_html | safe if table_data_fire_html else "<p>Yearly data table will appear here after calculation.</p>" }}
-        </div>
-      </div>
-    </div>
-
-    <div class="layout-column-group">
-      <!-- Export Button Container - positioned to be above FIRE Mode -->
-      <div class="export-button-container-above-fire">
-        <button class="btn btn-secondary export-btn" onclick="exportReport()">Export Report PDF</button> {# Changed text slightly #}
-      </div>
-
-      <!-- Right Column: FIRE Mode -->
-      <div class="column" id="right_column">
-        <h2>FIRE Mode
-          <span class="info-icon">&#9432;
-            <span class="tooltip-text">In FIRE Mode, you input your target FIRE number (total portfolio), and the calculator determines the maximum sustainable annual expense you can withdraw.</span>
-          </span>
-        </h2>
-        <div class="slider-container">
-          <label for="P_slider_right">FIRE Number (P):</label>
-          <input type="range" id="P_slider_right" name="P" min="0" max="25000000" step="1000" value="{{ expense_P_input_val if expense_P_input_val != 'N/A' else 0 }}">
-          <input type="text" id="P_output_right" class="number-input form-control form-control-sm" value="{{ '{:,.0f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' and expense_P_input_val is not none else (expense_P_input_val if expense_P_input_val == 'N/A' else '0') }}">
-        </div>
-        <div class="result-section">
-          <p><strong>Your FIRE Number (Input):</strong> <span id="fire_number_P_display">${{ '{:,.2f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' and expense_P_input_val is not none else (expense_P_input_val if expense_P_input_val == 'N/A' else '0.00') }}</span></p>
-          <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_P_display">{{ expense_W_calculated_val }}</span></p>
-        </div>
-        <h3>Portfolio Balance</h3>
-        <div id="portfolio_plot_P" class="plot-container">
-          {{ portfolio_plot_expense | safe }}
-        </div>
-        <h3>Annual Withdrawals</h3>
-        <div id="withdrawal_plot_P" class="plot-container">
-          {{ withdrawal_plot_expense | safe }}
-        </div>
-        <h3>Yearly Data</h3>
-        <div id="table_data_P_container" class="table-container">
-          {{ table_data_expense_html | safe if table_data_expense_html else "<p>Yearly data table will appear here after calculation.</p>" }}
         </div>
       </div>
     </div>
