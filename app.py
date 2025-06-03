@@ -1,10 +1,23 @@
 # /Users/Rakesh/Projects/FIRE_web/Interactive-FIRE-Calculator/app.py
 import os
 from flask import Flask
+from flask_babel import Babel, get_locale as flask_babel_get_locale
+from babel.numbers import format_currency
 
 # Create the Flask app instance
 app = Flask(__name__)
 app.testing = True # Ensure testing mode is enabled when app is imported
+
+# Configure Babel
+app.config['LANGUAGES'] = {
+    'en': 'English',
+    'es': 'Spanish'
+}
+babel = Babel(app)
+
+# Default currency
+DEFAULT_CURRENCY = 'USD' # Could be moved to app.config if desired
+app.config['DEFAULT_CURRENCY'] = DEFAULT_CURRENCY
 
 # Default configuration values for financial calculations
 app.config['DEFAULT_TOLERANCE'] = 0.01
@@ -35,6 +48,20 @@ from project.routes import register_app_routes
 
 # Call the function to register all routes, passing the app instance
 register_app_routes(app)
+
+# --- Babel Locale Selector ---
+@babel.localeselector
+def get_locale_selector(): # Renamed to avoid conflict with imported get_locale
+    # For now, default to 'en'. Later, this can be enhanced
+    # to use session, query parameter, or browser preferences.
+    # request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+    return 'en' # For now, keep it simple
+
+# Make format_currency, get_locale, and DEFAULT_CURRENCY available in Jinja templates
+app.jinja_env.globals['format_currency'] = format_currency
+app.jinja_env.globals['get_locale'] = flask_babel_get_locale # Use the one from Flask-Babel for context
+app.jinja_env.globals['DEFAULT_CURRENCY'] = app.config['DEFAULT_CURRENCY']
+
 
 # --- Error Handlers (Optional) ---
 # Example:
