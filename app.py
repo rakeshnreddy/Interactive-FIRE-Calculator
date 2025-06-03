@@ -1,6 +1,6 @@
 # /Users/Rakesh/Projects/FIRE_web/Interactive-FIRE-Calculator/app.py
 import os
-from flask import Flask
+from flask import Flask, request # Ensure request is imported
 from flask_babel import Babel, get_locale as flask_babel_get_locale
 from babel.numbers import format_currency
 
@@ -51,11 +51,11 @@ register_app_routes(app)
 
 # --- Babel Locale Selector ---
 @babel.localeselector
-def get_locale_selector(): # Renamed to avoid conflict with imported get_locale
-    # For now, default to 'en'. Later, this can be enhanced
-    # to use session, query parameter, or browser preferences.
-    # request.accept_languages.best_match(app.config['LANGUAGES'].keys())
-    return 'en' # For now, keep it simple
+def get_locale_selector():
+    # Use the Accept-Language header to determine the best match.
+    # The first part of a language code (e.g., 'en' from 'en-US') is used if specific subtype isn't available.
+    # Example: if 'fr-CA' is requested and only 'fr' is available, 'fr' will be chosen.
+    return request.accept_languages.best_match(app.config['LANGUAGES'].keys(), default='en')
 
 # Make format_currency, get_locale, and DEFAULT_CURRENCY available in Jinja templates
 app.jinja_env.globals['format_currency'] = format_currency
