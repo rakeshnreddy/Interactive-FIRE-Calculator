@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "public",  // Or whatever directory contains your static files
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -8,12 +8,23 @@
     ],
     "rewrites": [
       {
-        "source": "**", // This will match all incoming requests
+        "source": "**",
         "run": {
-          "serviceId": "interactive-fire-calculator-1",  // The name of your Cloud Run service
-          "region": "us-west2"  // The region where your Cloud Run service is deployed
+          "serviceId": "interactive-fire-calculator-1",
+          "region": "us-west2"
         }
       }
+    ]
+  },
+  "apphosting": {
+    "backendId": "firecalcapp",
+    "rootDir": "/",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "functions"
     ]
   }
 }
