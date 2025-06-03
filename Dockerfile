@@ -24,4 +24,4 @@ EXPOSE 8080
 
 # Run the application using Gunicorn when the container starts
 # 'app:app' tells Gunicorn to find the 'app' variable in 'app.py'
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--log-level", "debug", "--access-logfile", "-", "--error-logfile", "-", "app:app"]

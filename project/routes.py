@@ -1,6 +1,7 @@
-from flask import render_template, jsonify, request, current_app, Response # Assuming these are used; current_app can be an alternative in some cases
+from flask import render_template, jsonify, request, current_app, Response
 from flask_babel import gettext, get_locale
 from babel.numbers import format_currency
+# current_app is already imported via `from flask import ...`
 import numpy as np
 import plotly.graph_objects as go
 import plotly.offline as pyo
@@ -140,6 +141,7 @@ def register_app_routes(app_instance):
         Handles GET requests for the main page and POST requests for form submissions 
         to calculate FIRE figures. Renders `index.html` or `result.html`.
         """
+        current_app.logger.info(f"Index route called. Method: {request.method}")
         if request.method == 'POST': # Line 127 in a typical full file if docstring is 3 lines
             form_data = request.form.to_dict() # Line 128
             # Initialize form_params_for_result_page with all possible form fields for pre-filling
@@ -362,6 +364,7 @@ def register_app_routes(app_instance):
         Handles POST requests (typically AJAX) to update FIRE calculations 
         based on new input values including period data. Returns JSON data.
         """
+        current_app.logger.info(f"Update route called. Method: {request.method}")
         form_data = request.form
 
         # Initialize variables to ensure they are defined, even if parsing fails unexpectedly later.
@@ -465,6 +468,7 @@ def register_app_routes(app_instance):
         Handles GET requests for the scenario comparison page and POST requests 
         to compare multiple financial scenarios. Returns HTML or JSON data.
         """
+        current_app.logger.info(f"Compare route called. Method: {request.method}")
         if request.method == 'POST':
             form_data = request.form
             scenarios_data_for_template = []
@@ -629,7 +633,8 @@ def register_app_routes(app_instance):
         Retrieves parameters from query string, including period data, validates them, 
         runs simulation, and returns CSV data.
         """
-        app_instance.logger.info(f"Export CSV request received with args: {request.args}")
+        current_app.logger.info(f"Export CSV route called. Args: {request.args}")
+        # app_instance.logger.info(f"Export CSV request received with args: {request.args}") # Original line
         args = request.args
         try:
             w_str = args.get('W')
