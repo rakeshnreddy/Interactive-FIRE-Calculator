@@ -1,0 +1,907 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-06-03 14:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: project/financial_calcs.py:21 project/financial_calcs.py:102
+#: project/financial_calcs.py:212
+msgid "rates_periods list cannot be empty."
+msgstr ""
+
+#: project/financial_calcs.py:25
+msgid "Total duration from rates_periods must be greater than zero."
+msgstr ""
+
+#: project/financial_calcs.py:44
+msgid "Ran out of rate periods unexpectedly."
+msgstr ""
+
+#: project/financial_calcs.py:82
+msgid "rates_periods list cannot be empty for simulation."
+msgstr ""
+
+#: project/routes.py:29
+msgid "No data available to display in table."
+msgstr ""
+
+#: project/routes.py:31 project/routes.py:681
+msgid "Year"
+msgstr ""
+
+#: project/routes.py:31 project/routes.py:681
+msgid "Portfolio Balance ($)"
+msgstr ""
+
+#: project/routes.py:31 project/routes.py:681
+msgid "Annual Withdrawal ($)"
+msgstr ""
+
+#: project/routes.py:63
+msgid "Error: No rate periods provided."
+msgstr ""
+
+#: project/routes.py:63
+msgid "Table data error."
+msgstr ""
+
+#: project/routes.py:70
+msgid ""
+"Cannot find a suitable portfolio. Withdrawals may be too high or periods "
+"too long/unfavorable."
+msgstr ""
+
+#: project/routes.py:71
+msgid "Table data not available due to error."
+msgstr ""
+
+#: project/routes.py:79
+msgid ""
+"Error calculating sustainable withdrawal. Inputs might be unrealistic for"
+" the given portfolio."
+msgstr ""
+
+#: project/routes.py:80
+msgid "Table data not available due to error in withdrawal calculation."
+msgstr ""
+
+#: project/routes.py:92 templates/result.html:105 templates/result.html:139
+msgid "Portfolio Balance"
+msgstr ""
+
+#: project/routes.py:93 project/routes.py:557
+#, python-brace-format
+msgid "Year: %{x}<br>Balance: $%{y:,.2f}<extra></extra>"
+msgstr ""
+
+#: project/routes.py:96
+#, python-format
+msgid "Portfolio Balance (Withdrawals at %(withdrawal_time)s)"
+msgstr ""
+
+#: project/routes.py:97 project/routes.py:113 project/routes.py:567
+#: project/routes.py:570 templates/compare.html:60 templates/index.html:41
+msgid "Years"
+msgstr ""
+
+#: project/routes.py:98 project/routes.py:567
+msgid "Portfolio Value ($)"
+msgstr ""
+
+#: project/routes.py:106
+msgid "Annual Withdrawal"
+msgstr ""
+
+#: project/routes.py:108 project/routes.py:564
+#, python-brace-format
+msgid "Year: %{x}<br>Withdrawal: $%{y:,.2f}<extra></extra>"
+msgstr ""
+
+#: project/routes.py:112 templates/result.html:109 templates/result.html:143
+msgid "Annual Withdrawals"
+msgstr ""
+
+#: project/routes.py:114 project/routes.py:570
+msgid "Withdrawal ($)"
+msgstr ""
+
+#: project/routes.py:152 project/routes.py:373 project/routes.py:627
+msgid "Desired final portfolio value (D) cannot be negative."
+msgstr ""
+
+#: project/routes.py:153 project/routes.py:372 project/routes.py:625
+msgid "Annual withdrawal (W) cannot be negative."
+msgstr ""
+
+#: project/routes.py:168 project/routes.py:390
+#, python-format
+msgid "Period %(k)s annual return (r) must be between -50% and 100%."
+msgstr ""
+
+#: project/routes.py:170 project/routes.py:392
+#, python-format
+msgid "Period %(k)s inflation rate (i) must be between -50% and 100%."
+msgstr ""
+
+#: project/routes.py:173 project/routes.py:395 project/routes.py:643
+#, python-format
+msgid "Period %(k)s duration cannot be negative."
+msgstr ""
+
+#: project/routes.py:184 project/routes.py:405
+msgid "Time horizon (T) must be greater than 0 for single period mode."
+msgstr ""
+
+#: project/routes.py:185 project/routes.py:406 project/routes.py:506
+msgid "Annual return (r) must be between -50% and 100%."
+msgstr ""
+
+#: project/routes.py:186 project/routes.py:407 project/routes.py:507
+msgid "Inflation rate (i) must be between -50% and 100%."
+msgstr ""
+
+#: project/routes.py:192 project/routes.py:626
+msgid "Initial portfolio (P) cannot be negative."
+msgstr ""
+
+#: project/routes.py:199
+msgid "Error generating FIRE mode plot."
+msgstr ""
+
+#: project/routes.py:200
+msgid "Error generating Expense mode plot."
+msgstr ""
+
+#: project/routes.py:201 project/routes.py:202
+msgid "Table data not available."
+msgstr ""
+
+#: project/routes.py:213
+msgid ""
+"Cannot find a suitable portfolio for the given withdrawal. Inputs may be "
+"unrealistic."
+msgstr ""
+
+#: project/routes.py:314 project/routes.py:319 project/routes.py:433
+#: project/routes.py:439 project/routes.py:474 project/routes.py:517
+#: project/routes.py:526 project/routes.py:531
+msgid "N/A"
+msgstr ""
+
+#: project/routes.py:374
+msgid "Initial Portfolio (P) must be >= 0."
+msgstr ""
+
+#: project/routes.py:398
+#, python-format
+msgid "Invalid input for period %(k)s: %(error)s"
+msgstr ""
+
+#: project/routes.py:412
+#, python-format
+msgid "Invalid input: %(error)s"
+msgstr ""
+
+#: project/routes.py:415
+msgid "An unexpected error occurred while processing inputs."
+msgstr ""
+
+#: project/routes.py:473
+#, python-format
+msgid "Scenario %(n)s: Not enabled by user."
+msgstr ""
+
+#: project/routes.py:483
+msgid "Withdrawal (W) cannot be negative."
+msgstr ""
+
+#: project/routes.py:484
+msgid "Desired Final Value (D) cannot be negative."
+msgstr ""
+
+#: project/routes.py:496
+#, python-format
+msgid "Period %(p_num)s annual return (r) must be between -50% and 100%."
+msgstr ""
+
+#: project/routes.py:497
+#, python-format
+msgid "Period %(p_num)s inflation rate (i) must be between -50% and 100%."
+msgstr ""
+
+#: project/routes.py:499
+#, python-format
+msgid "Period %(p_num)s duration cannot be negative."
+msgstr ""
+
+#: project/routes.py:505
+msgid "Time (T) must be > 0 for single period mode."
+msgstr ""
+
+#: project/routes.py:516
+#, python-format
+msgid "Scenario %(n)s: Cannot find suitable portfolio (inputs unrealistic)."
+msgstr ""
+
+#: project/routes.py:530
+#, python-format
+msgid "Scenario %(n)s: %(error)s"
+msgstr ""
+
+#: project/routes.py:545
+msgid "No valid scenarios to plot. Please check inputs or enable scenarios."
+msgstr ""
+
+#: project/routes.py:556
+#, python-format
+msgid "Scenario %(n)s Balance"
+msgstr ""
+
+#: project/routes.py:562
+#, python-format
+msgid "Scenario %(n)s Withdrawal"
+msgstr ""
+
+#: project/routes.py:567
+msgid "Portfolio Balance Comparison"
+msgstr ""
+
+#: project/routes.py:570
+msgid "Annual Withdrawals Comparison"
+msgstr ""
+
+#: project/routes.py:618
+msgid "Invalid mode specified."
+msgstr ""
+
+#: project/routes.py:619
+msgid "Invalid withdrawal_time specified."
+msgstr ""
+
+#: project/routes.py:640
+#, python-format
+msgid "Period %(k)s 'r' out of range."
+msgstr ""
+
+#: project/routes.py:641
+#, python-format
+msgid "Period %(k)s 'i' out of range."
+msgstr ""
+
+#: project/routes.py:645
+#, python-format
+msgid "Invalid period %(k)s data: %(error)s"
+msgstr ""
+
+#: project/routes.py:652
+msgid ""
+"Either period data (p1_dur, p1_r, p1_i, ...) or single (r, i, T) "
+"parameters are required for CSV export."
+msgstr ""
+
+#: project/routes.py:657
+msgid "Time horizon (T) must be > 0 for single period export."
+msgstr ""
+
+#: project/routes.py:658
+msgid "Single 'r' out of range."
+msgstr ""
+
+#: project/routes.py:659
+msgid "Single 'i' out of range."
+msgstr ""
+
+#: project/routes.py:670
+msgid "Cannot calculate portfolio for CSV export, inputs may be unrealistic."
+msgstr ""
+
+#: project/routes.py:707
+msgid "An unexpected error occurred. Please check logs."
+msgstr ""
+
+#: templates/about.html:3
+msgid "About - FIRE Calculator"
+msgstr ""
+
+#: templates/about.html:7
+msgid "About the FIRE Calculator"
+msgstr ""
+
+#: templates/about.html:8
+msgid ""
+"This FIRE (Financial Independence, Retire Early) Calculator is a tool "
+"designed to help you explore various financial scenarios related to long-"
+"term planning and retirement."
+msgstr ""
+
+#: templates/about.html:9
+msgid "Key features include:"
+msgstr ""
+
+#: templates/about.html:11
+msgid ""
+"Calculating required retirement portfolios based on desired annual "
+"expenses."
+msgstr ""
+
+#: templates/about.html:12
+msgid "Estimating sustainable annual withdrawals from a given portfolio size."
+msgstr ""
+
+#: templates/about.html:13
+msgid ""
+"Modeling the effects of different investment return rates, inflation "
+"rates, and retirement durations."
+msgstr ""
+
+#: templates/about.html:14
+msgid ""
+"Support for multi-period analysis, allowing you to define different "
+"financial conditions for different phases of your plan."
+msgstr ""
+
+#: templates/about.html:15
+msgid ""
+"Comparing multiple scenarios side-by-side to understand the impact of "
+"various assumptions."
+msgstr ""
+
+#: templates/about.html:17
+msgid ""
+"Whether you are just starting to think about financial independence or "
+"are well on your way, this calculator aims to provide valuable insights. "
+"Remember that all calculations are based on the inputs you provide and "
+"are for informational purposes only. Financial planning is complex, and "
+"it's recommended to consult with a qualified financial advisor for "
+"personalized advice."
+msgstr ""
+
+#: templates/about.html:19 templates/compare.html:131 templates/faq.html:63
+#: templates/result.html:157 templates/settings.html:37
+msgid "← Back to Calculator"
+msgstr ""
+
+#: templates/base.html:6 templates/base.html:15 templates/base.html:42
+msgid "FIRE Calculator"
+msgstr ""
+
+#: templates/base.html:16
+msgid ""
+"Financial Independence, Retire Early: A movement dedicated to a program "
+"of extreme savings and investment that aims to allow proponents to retire"
+" far earlier than traditional budgets and retirement plans would permit."
+msgstr ""
+
+#: templates/base.html:20
+msgid "Home"
+msgstr ""
+
+#: templates/base.html:21
+msgid "Compare"
+msgstr ""
+
+#: templates/base.html:22 templates/settings.html:7
+msgid "Settings"
+msgstr ""
+
+#: templates/base.html:23
+msgid "Toggle Theme"
+msgstr ""
+
+#: templates/base.html:33
+msgid "Close"
+msgstr ""
+
+#: templates/base.html:43
+msgid "About"
+msgstr ""
+
+#: templates/base.html:44
+msgid "FAQ"
+msgstr ""
+
+#: templates/compare.html:3
+msgid "Compare Scenarios - FIRE Calculator"
+msgstr ""
+
+#: templates/compare.html:15
+msgid "Enter Comparison Scenarios"
+msgstr ""
+
+#: templates/compare.html:17
+msgid "Number of Scenarios:"
+msgstr ""
+
+#: templates/compare.html:25
+msgid "Save Scenarios"
+msgstr ""
+
+#: templates/compare.html:35
+msgid "Scenario"
+msgstr ""
+
+#: templates/compare.html:38 templates/result.html:97
+msgid "Annual Expenses (W):"
+msgstr ""
+
+#: templates/compare.html:38
+msgid "Your estimated current annual living expenses for this scenario."
+msgstr ""
+
+#: templates/compare.html:39
+msgid "e.g., 50000"
+msgstr ""
+
+#: templates/compare.html:42
+msgid "Overall Return (%) (Fallback):"
+msgstr ""
+
+#: templates/compare.html:42
+msgid ""
+"Expected average annual investment return for this scenario. Used if no "
+"specific periods are defined for this scenario."
+msgstr ""
+
+#: templates/compare.html:43
+msgid "e.g., 7"
+msgstr ""
+
+#: templates/compare.html:46
+msgid "Overall Inflation (%) (Fallback):"
+msgstr ""
+
+#: templates/compare.html:46
+msgid ""
+"Expected average annual inflation rate for this scenario. Used if no "
+"specific periods are defined for this scenario."
+msgstr ""
+
+#: templates/compare.html:47
+msgid "e.g., 2"
+msgstr ""
+
+#: templates/compare.html:50 templates/index.html:28
+msgid "Total Duration (years) (Fallback):"
+msgstr ""
+
+#: templates/compare.html:50
+msgid ""
+"How many years retirement funds need to last for this scenario. Used if "
+"no specific periods are defined for this scenario."
+msgstr ""
+
+#: templates/compare.html:51
+msgid "e.g., 30"
+msgstr ""
+
+#: templates/compare.html:55
+msgid "Periodic Rates (Optional for Scenario"
+msgstr ""
+
+#: templates/compare.html:59 templates/compare.html:63
+#: templates/compare.html:67 templates/index.html:40 templates/index.html:44
+#: templates/index.html:48
+msgid "P"
+msgstr ""
+
+#: templates/compare.html:59 templates/index.html:40
+msgid "Dur.:"
+msgstr ""
+
+#: templates/compare.html:59
+msgid "Duration (in years) for this specific period in this scenario."
+msgstr ""
+
+#: templates/compare.html:63 templates/index.html:44
+msgid "Ret(%):"
+msgstr ""
+
+#: templates/compare.html:63
+msgid "Expected annual investment return for this period in this scenario."
+msgstr ""
+
+#: templates/compare.html:67 templates/index.html:48
+msgid "Inf(%):"
+msgstr ""
+
+#: templates/compare.html:67
+msgid "Expected annual inflation rate for this period in this scenario."
+msgstr ""
+
+#: templates/compare.html:75 templates/index.html:56 templates/result.html:73
+msgid "Withdrawal Timing:"
+msgstr ""
+
+#: templates/compare.html:75
+msgid "Choose withdrawal timing for this scenario."
+msgstr ""
+
+#: templates/compare.html:78
+msgid "Start"
+msgstr ""
+
+#: templates/compare.html:82
+msgid "End"
+msgstr ""
+
+#: templates/compare.html:86 templates/index.html:67
+msgid "Desired Final Portfolio Value ($):"
+msgstr ""
+
+#: templates/compare.html:86
+msgid ""
+"The amount you wish to have remaining at the end of the duration for this"
+" scenario. Default is $0."
+msgstr ""
+
+#: templates/compare.html:91
+msgid "Enable Scenario"
+msgstr ""
+
+#: templates/compare.html:101
+msgid "FIRE Number:"
+msgstr ""
+
+#: templates/compare.html:108 templates/index.html:74
+msgid "Compare Scenarios"
+msgstr ""
+
+#: templates/compare.html:112
+msgid "Comparison Summary"
+msgstr ""
+
+#: templates/compare.html:118
+msgid "Combined Portfolio Balance"
+msgstr ""
+
+#: templates/compare.html:120
+msgid "Combined Annual Withdrawals"
+msgstr ""
+
+#: templates/faq.html:3
+msgid "FAQ - FIRE Calculator"
+msgstr ""
+
+#: templates/faq.html:7
+msgid "Frequently Asked Questions (FAQ)"
+msgstr ""
+
+#: templates/faq.html:13
+msgid "What is FIRE?"
+msgstr ""
+
+#: templates/faq.html:18
+msgid ""
+"FIRE stands for Financial Independence, Retire Early. It's a financial "
+"movement with the goal of accumulating sufficient assets to live off "
+"investment income and/or savings before traditional retirement age."
+msgstr ""
+
+#: templates/faq.html:26
+msgid "How are calculations performed?"
+msgstr ""
+
+#: templates/faq.html:31
+msgid ""
+"The calculator uses standard financial formulas to simulate portfolio "
+"growth and withdrawals over time, accounting for investment returns and "
+"inflation. You can specify these rates either as overall averages or for "
+"distinct periods with different financial conditions."
+msgstr ""
+
+#: templates/faq.html:39
+msgid "What are \"periodic rates\"?"
+msgstr ""
+
+#: templates/faq.html:44
+msgid ""
+"Periodic rates allow you to define different expected annual return and "
+"inflation rates for specific durations (periods) within your overall "
+"plan. For example, you might anticipate higher returns in early years and"
+" more conservative returns later. If periodic rates are set, they "
+"override the \"Overall Fallback\" rates."
+msgstr ""
+
+#: templates/faq.html:52
+msgid "Are the results financial advice?"
+msgstr ""
+
+#: templates/faq.html:57
+msgid ""
+"No. This tool is for informational and educational purposes only. The "
+"calculations are based on your inputs and general financial models. It is"
+" not financial advice. Consult with a qualified financial advisor for "
+"advice tailored to your personal situation."
+msgstr ""
+
+#: templates/index.html:3
+msgid "FIRE Calculator - Home"
+msgstr ""
+
+#: templates/index.html:7
+msgid "Enter Your Details"
+msgstr ""
+
+#: templates/index.html:13
+msgid "Annual Expenses (in today's dollars):"
+msgstr ""
+
+#: templates/index.html:13
+msgid "Your estimated current annual living expenses."
+msgstr ""
+
+#: templates/index.html:18
+msgid "Overall Annual Return (%) (Fallback):"
+msgstr ""
+
+#: templates/index.html:18
+#, python-format
+msgid ""
+"Expected average annual investment return (e.g., 7% for 7). Used if no "
+"specific periods are defined."
+msgstr ""
+
+#: templates/index.html:20 templates/index.html:25
+msgid "Used if no periodic rates are specified below."
+msgstr ""
+
+#: templates/index.html:23
+msgid "Overall Annual Inflation (%) (Fallback):"
+msgstr ""
+
+#: templates/index.html:23
+#, python-format
+msgid ""
+"Expected average annual inflation rate (e.g., 3% for 3). Used if no "
+"specific periods are defined."
+msgstr ""
+
+#: templates/index.html:28
+msgid ""
+"How many years your retirement funds need to last. Used if no specific "
+"periods are defined."
+msgstr ""
+
+#: templates/index.html:30
+msgid ""
+"Used if no periodic rates are specified below. If using periods, total "
+"duration is sum of period durations."
+msgstr ""
+
+#: templates/index.html:34
+msgid "Periodic Rate Configuration (Optional)"
+msgstr ""
+
+#: templates/index.html:35
+msgid ""
+"If any period duration is specified, these periodic rates will override "
+"the overall fallback rates above. Unspecified periods will be ignored."
+msgstr ""
+
+#: templates/index.html:40
+msgid "Duration (in years) for this specific period."
+msgstr ""
+
+#: templates/index.html:44
+msgid "Expected annual investment return for this period."
+msgstr ""
+
+#: templates/index.html:48
+msgid "Expected annual inflation rate for this period."
+msgstr ""
+
+#: templates/index.html:56
+msgid "Choose whether withdrawals occur at the start or end of each year."
+msgstr ""
+
+#: templates/index.html:59 templates/result.html:76
+msgid "Start of Year"
+msgstr ""
+
+#: templates/index.html:63 templates/result.html:80
+msgid "End of Year"
+msgstr ""
+
+#: templates/index.html:67
+msgid ""
+"The amount you wish to have remaining at the end of the retirement "
+"duration. Default is $0."
+msgstr ""
+
+#: templates/index.html:69
+msgid "Optional. The portfolio value you want remaining at the end of the term."
+msgstr ""
+
+#: templates/index.html:71
+msgid "Calculate"
+msgstr ""
+
+#: templates/result.html:3
+msgid "Calculation Results - FIRE Calculator"
+msgstr ""
+
+#: templates/result.html:34
+msgid "Calculations aim for a Desired Final Portfolio Value of:"
+msgstr ""
+
+#: templates/result.html:38
+msgid ""
+"Adjust any slider or enter a value – both modes update simultaneously. "
+"The graphs and values will refresh automatically."
+msgstr ""
+
+#: templates/result.html:46
+msgid "Export to CSV"
+msgstr ""
+
+#: templates/result.html:47
+msgid "Export Report PDF"
+msgstr ""
+
+#: templates/result.html:53
+msgid ""
+"Adjust return, inflation, duration & withdrawal timing. (Note: These are "
+"single/fallback values if multi-period was used in calculation)"
+msgstr ""
+
+#: templates/result.html:58
+msgid "Expected Annual Return (%):"
+msgstr ""
+
+#: templates/result.html:58
+#, python-format
+msgid ""
+"Expected average annual investment return (e.g., 7% for 7). This will "
+"update calculations for both modes."
+msgstr ""
+
+#: templates/result.html:63
+msgid "Expected Annual Inflation (%):"
+msgstr ""
+
+#: templates/result.html:63
+#, python-format
+msgid ""
+"Expected average annual inflation rate (e.g., 3% for 3). This will update"
+" calculations for both modes."
+msgstr ""
+
+#: templates/result.html:68
+msgid "Retirement Duration (years):"
+msgstr ""
+
+#: templates/result.html:68
+msgid ""
+"How many years your retirement funds need to last. This will update "
+"calculations for both modes."
+msgstr ""
+
+#: templates/result.html:73
+msgid ""
+"Choose whether withdrawals occur at the start or end of each year. This "
+"will update calculations for both modes."
+msgstr ""
+
+#: templates/result.html:91
+msgid "Expense Mode"
+msgstr ""
+
+#: templates/result.html:93
+msgid ""
+"In Expense Mode, you input your desired annual expenses, and the "
+"calculator determines the FIRE number (total portfolio) you'll need."
+msgstr ""
+
+#: templates/result.html:97
+msgid ""
+"Your desired annual living expenses. Adjusting this will recalculate the "
+"FIRE number needed."
+msgstr ""
+
+#: templates/result.html:102
+msgid "Calculated FIRE Number:"
+msgstr ""
+
+#: templates/result.html:103
+msgid "Your Annual Expense (Input):"
+msgstr ""
+
+#: templates/result.html:113 templates/result.html:147
+msgid "Yearly Data"
+msgstr ""
+
+#: templates/result.html:115 templates/result.html:149
+msgid "Yearly data table will appear here after calculation."
+msgstr ""
+
+#: templates/result.html:125
+msgid "FIRE Mode"
+msgstr ""
+
+#: templates/result.html:127
+msgid ""
+"In FIRE Mode, you input your target FIRE number (total portfolio), and "
+"the calculator determines the maximum sustainable annual expense you can "
+"withdraw."
+msgstr ""
+
+#: templates/result.html:131
+msgid "FIRE Number (P):"
+msgstr ""
+
+#: templates/result.html:131
+msgid ""
+"Your target retirement portfolio principal. Adjusting this will "
+"recalculate the maximum sustainable annual expense."
+msgstr ""
+
+#: templates/result.html:136
+msgid "Your FIRE Number (Input):"
+msgstr ""
+
+#: templates/result.html:137
+msgid "Max Sustainable Annual Expense:"
+msgstr ""
+
+#: templates/settings.html:3
+msgid "Settings - FIRE Calculator"
+msgstr ""
+
+#: templates/settings.html:10
+msgid "Select Default Theme:"
+msgstr ""
+
+#: templates/settings.html:12
+msgid "System"
+msgstr ""
+
+#: templates/settings.html:13
+msgid "Light"
+msgstr ""
+
+#: templates/settings.html:14
+msgid "Dark"
+msgstr ""
+
+#: templates/settings.html:18
+msgid ""
+"This sets the default theme preference. The toggle button in the navbar "
+"provides immediate switching."
+msgstr ""
+
+#: templates/settings.html:22
+msgid "Font Size (px):"
+msgstr ""
+
+#: templates/settings.html:24
+msgid "Changes the base font size across the application (Default: 16px)."
+msgstr ""
+
+#: templates/settings.html:28
+msgid "Panel Opacity (0-1):"
+msgstr ""
+
+#: templates/settings.html:30
+msgid "Adjusts the transparency of UI panels (e.g., cards, modals if used)."
+msgstr ""
+
+#: templates/settings.html:33
+msgid "Save Settings"
+msgstr ""
+
+#: templates/settings.html:34
+msgid "Settings are saved in your browser's local storage."
+msgstr ""
