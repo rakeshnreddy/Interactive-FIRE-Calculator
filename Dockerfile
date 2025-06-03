@@ -15,6 +15,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code into the working directory
 COPY . .
 
+# Compile translations
+RUN pybabel compile -d project/translations
+
 # Expose the port that your application will listen on.
 # Cloud Run (which powers App Hosting backends) expects apps to listen on 8080
 EXPOSE 8080
