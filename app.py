@@ -13,13 +13,21 @@ if not app.debug:
     app.logger.setLevel(logging.INFO) # Or logging.DEBUG
 app.logger.info("Flask app initialized.")
 
+# --- Babel Locale Selector Function (must be defined before Babel initialization) ---
+def get_locale_selector(): # No decorator here
+    app.logger.debug("Attempting to get locale in get_locale_selector.")
+    selected_locale = request.accept_languages.best_match(app.config['LANGUAGES'].keys(), default='en')
+    app.logger.debug(f"Locale selected by best_match: {selected_locale}")
+    return selected_locale
+
 # Configure Babel
 app.config['LANGUAGES'] = {
     'en': 'English',
     'es': 'Spanish'
 }
-babel = Babel(app)
-app.logger.info("Flask-Babel initialized.")
+# Initialize Babel with the locale selector
+babel = Babel(app, locale_selector=get_locale_selector) # Pass the function here
+app.logger.info("Flask-Babel initialized with locale_selector.") # Log moved after actual init
 app.logger.info(f"Configured languages: {app.config.get('LANGUAGES')}")
 
 
@@ -48,15 +56,6 @@ app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
 from project.routes import register_app_routes
 register_app_routes(app)
 app.logger.info("Application routes registered.")
-
-# --- Babel Locale Selector ---
-@babel.locale_selector
-def get_locale_selector():
-    app.logger.debug("Attempting to get locale in get_locale_selector.")
-    # Use the Accept-Language header to determine the best match.
-    selected_locale = request.accept_languages.best_match(app.config['LANGUAGES'].keys(), default='en')
-    app.logger.debug(f"Locale selected by best_match: {selected_locale}")
-    return selected_locale
 
 # Make format_currency, get_locale, and DEFAULT_CURRENCY available in Jinja templates
 app.jinja_env.globals['format_currency'] = format_currency
