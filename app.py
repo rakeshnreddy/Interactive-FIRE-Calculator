@@ -50,7 +50,7 @@ register_app_routes(app)
 app.logger.info("Application routes registered.")
 
 # --- Babel Locale Selector ---
-@babel.localeselector
+@babel.locale_selector
 def get_locale_selector():
     app.logger.debug("Attempting to get locale in get_locale_selector.")
     # Use the Accept-Language header to determine the best match.
