@@ -20,7 +20,7 @@
         <small class="form-text text-muted">{{ _("Used if no periodic rates are specified below.") }}</small>
       </div>
       <div class="mb-3">
-        <label for="i" class="form-label">{{ _("Overall Annual Inflation") }} (%%) {{ _("(Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate (e.g., 3% for 3). Used if no specific periods are defined.") }}</span></span></label>
+        <label for="i" class="form-label">Overall Annual Inflation (%%) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate (e.g., 3% for 3). Used if no specific periods are defined.</span></span></label>
         <input type="number" name="i" id="i" class="form-control" step="0.1" value="{{ request.form.get('i', defaults.i) }}" min="-50" max="100">
         <small class="form-text text-muted">{{ _("Used if no periodic rates are specified below.") }}</small>
       </div>
