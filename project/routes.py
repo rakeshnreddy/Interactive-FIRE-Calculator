@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, jsonify #, Response, render_template # render_template and Response might not be needed
+from flask import Blueprint, current_app, request, jsonify, render_template # render_template is now needed
 from flask_babel import gettext, get_locale # Uncommented
 from babel.numbers import format_currency # Uncommented
 # # current_app is already imported via `from flask import ...`
@@ -7,7 +7,7 @@ from babel.numbers import format_currency # Uncommented
 # import plotly.offline as pyo # Commented out
 # import io # Commented out
 # import csv # Commented out
-# import datetime # Commented out
+import datetime # Uncommented for settings route
 
 # Assuming app.py is in the root directory.
 # financial_calcs.py and constants.py are now in the same 'project' package.
@@ -131,8 +131,11 @@ def compare():
 
 @project_blueprint.route('/settings')
 def settings():
-    current_app.logger.info(f"Settings route called (minimal). Method: {request.method}")
-    return f"Settings route reached successfully (minimal). Method: {request.method}"
+    current_app.logger.info(f"Settings route called. Method: {request.method}")
+    # current_year = datetime.datetime.now().year # Original line
+    # return render_template("settings.html", current_year=current_year) # Original line
+    current_year = datetime.datetime.now().year
+    return render_template("settings.html", current_year=current_year)
 
 @project_blueprint.route('/export_csv')
 def export_csv():
