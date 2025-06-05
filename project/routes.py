@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, jsonify, render_template, Response # Added Response
+from flask import Blueprint, current_app, request, jsonify, render_template, Response
 from flask_babel import gettext, get_locale
 from babel.numbers import format_currency
 import numpy as np
@@ -11,7 +11,7 @@ import datetime
 from .financial_calcs import annual_simulation, simulate_final_balance, find_required_portfolio, find_max_annual_expense
 from .constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_START, TIME_END, MAX_SCENARIOS_COMPARE
 
-DEFAULT_CURRENCY = 'USD' # Uncommented: Ensure this is active for helper functions
+DEFAULT_CURRENCY = 'USD'
 
 project_blueprint = Blueprint('project', __name__)
 
@@ -27,7 +27,7 @@ def generate_html_table(years, balances, withdrawals):
     Returns:
         str: HTML string representing the table.
     """
-    if not np.any(years) or not balances or not withdrawals: # Corrected from years.any()
+    if not np.any(years) or not balances or not withdrawals:
         return "<p>" + gettext("No data available to display in table.") + "</p>"
 
     locale_str = get_locale().language if get_locale() else 'en_US'
@@ -170,7 +170,7 @@ def index():
                              raise ValueError(gettext("Period %(k)s duration cannot be negative.", k=k))
                     except ValueError as e:
                         current_app.logger.error(f"Invalid input for period {k}: {e} - Form data for period: dur='{dur_str}', r='{r_str}', i='{i_str}'")
-                        return render_template('index.html', error=str(e), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year) # Added defaults and current_year
+                        return render_template('index.html', error=str(e), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year)
 
             if not rates_periods_data:
                 r_perc_form = float(form_data.get('r', 0))
@@ -188,7 +188,7 @@ def index():
 
         except ValueError as e:
             current_app.logger.error(f"Invalid input in index route: {e} - Form data: {form_data}")
-            return render_template('index.html', error=str(e), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year) # Added defaults and current_year
+            return render_template('index.html', error=str(e), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year)
 
         portfolio_plot_W_mode, withdrawal_plot_W_mode = "<div>" + gettext("Error generating FIRE mode plot.") + "</div>", "<div>" + gettext("Error generating FIRE mode plot.") + "</div>"
         portfolio_plot_P_mode, withdrawal_plot_P_mode = "<div>" + gettext("Error generating Expense mode plot.") + "</div>", "<div>" + gettext("Error generating Expense mode plot.") + "</div>"
@@ -225,7 +225,7 @@ def index():
             )
             initial_P_input_for_expense_mode_raw = P_actual_primary
             calculated_W_output_for_expense_mode = W_calc_primary
-            portfolio_plot_P_mode, withdrawal_plot_P_mode = p_plot_p, w_plot_p
+            portfolio_plot_P_mode, withdrawal_plot_P_mode = p_plot_p, w_plot_w
             table_data_P_mode_html = table_p
 
             initial_W_input_for_fire_mode = W_calc_primary
@@ -295,39 +295,30 @@ def index():
 @project_blueprint.route('/update', methods=['POST'])
 def update():
     current_app.logger.info(f"Update route called. Method: {request.method}")
-    # """
-    # Handles POST requests (typically AJAX) to update FIRE calculations
-    # based on new input values including period data. Returns JSON data.
-    # """
     form_data = request.form
 
-    # Initialize variables to ensure they are defined, even if parsing fails unexpectedly later.
-    # These defaults should ideally lead to a graceful failure or be handled if used.
     W_form = 0.0
     D_form = 0.0
-    withdrawal_time = TIME_END  # Default from constants
+    withdrawal_time = TIME_END
     P_value = 0.0
     rates_periods_data = []
-    # Variables for single period fallback, if used and not otherwise defined
     r_perc_form = 0.0
     i_perc_form = 0.0
     T_form = 0
 
     try:
-        # Use .get(key, 'default_string') for float/int conversions to be safe
         W_form = float(form_data.get('W', '0'))
         D_form_str = form_data.get('D', '0.0')
         D_form = float(D_form_str) if D_form_str else 0.0
         withdrawal_time = form_data.get('withdrawal_time', TIME_END)
-        P_value = float(form_data.get('P', '0')) # Used for MODE_PORTFOLIO
+        P_value = float(form_data.get('P', '0'))
 
         if W_form < 0: raise ValueError(gettext("Annual withdrawal (W) cannot be negative."))
         if D_form < 0: raise ValueError(gettext("Desired final portfolio value (D) cannot be negative."))
         if P_value < 0: raise ValueError(gettext("Initial Portfolio (P) must be >= 0."))
-        # Ensure rates_periods_data is fresh for this request if it was pre-initialized
         rates_periods_data = []
 
-        for k in range(1, 4): # Max 3 periods
+        for k in range(1, 4):
             dur_str = form_data.get(f'period{k}_duration')
             r_str = form_data.get(f'period{k}_r')
             i_str = form_data.get(f'period{k}_i')
@@ -346,11 +337,9 @@ def update():
                     elif duration < 0:
                         raise ValueError(gettext("Period %(k)s duration cannot be negative.", k=k))
                 except ValueError as e:
-                    # Re-raise to be caught by the main ValueError handler below
                     raise ValueError(gettext("Invalid input for period %(k)s: %(error)s", k=k, error=str(e)))
 
-
-        if not rates_periods_data: # Fallback to single period from main r, i, T fields
+        if not rates_periods_data:
             r_perc_form = float(form_data.get('r', '0'))
             i_perc_form = float(form_data.get('i', '0'))
             T_form = int(form_data.get('T', '0'))
@@ -362,18 +351,13 @@ def update():
     except ValueError as e:
         current_app.logger.error(f"Invalid input (ValueError) in update route: {e} - Form data: {form_data}")
         return jsonify({'error': gettext('Invalid input: %(error)s', error=str(e))})
-    except Exception as e: # Catch other unexpected errors during parsing
+    except Exception as e:
         current_app.logger.error(f"Unexpected error during input processing in update route: {e} - Form data: {form_data}", exc_info=True)
         return jsonify({'error': gettext('An unexpected error occurred while processing inputs.')})
 
-    # Calculate for mode 'W' (Expense Mode on client, calculates P)
-    # W_form is the W_initial for generate_plots in MODE_WITHDRAWAL
     required_portfolio_W, actual_W_for_mode_W, portfolio_plot_W, withdrawal_plot_W, table_data_W_html = generate_plots(
         W_form, withdrawal_time, MODE_WITHDRAWAL, rates_periods_data, P_value=None, desired_final_value=D_form
     )
-
-    # Calculate for mode 'P' (FIRE Mode on client, calculates W)
-    # P_value is the P_initial for generate_plots in MODE_PORTFOLIO
     input_P_for_mode_P, calculated_W_for_mode_P, portfolio_plot_P, withdrawal_plot_P, table_data_P_html = generate_plots(
         W_form, withdrawal_time, MODE_PORTFOLIO, rates_periods_data, P_value=P_value, desired_final_value=D_form
     )
@@ -396,161 +380,145 @@ def update():
 
 @project_blueprint.route('/compare', methods=['GET', 'POST'])
 def compare():
-    current_app.logger.info(f"Compare route called (minimal). Method: {request.method}")
-    # """
-    # Handles GET requests for the scenario comparison page and POST requests
-    # to compare multiple financial scenarios. Returns HTML or JSON data.
-    # """
+    current_app.logger.info(f"Compare route called. Method: {request.method}")
     if request.method == 'POST':
-    #     form_data = request.form
-    #     scenarios_data_for_template = []
+        form_data = request.form
+        scenarios_data_for_template = []
 
-    #     for n in range(1, MAX_SCENARIOS_COMPARE + 1): # Line 429
-    #         scenario_input = {'n': n}
-    #         scenario_input['enabled'] = form_data.get(f"scenario{n}_enabled") == "on"
+        for n in range(1, MAX_SCENARIOS_COMPARE + 1):
+            scenario_input = {'n': n}
+            scenario_input['enabled'] = form_data.get(f"scenario{n}_enabled") == "on"
 
-    #         # Pre-populate for template even if not enabled or invalid, using form values
-    #         scenario_input['W_form'] = form_data.get(f"scenario{n}_W", "0")
-    #         scenario_input['r_form'] = form_data.get(f"scenario{n}_r", "0") # Single r
-    #         scenario_input['i_form'] = form_data.get(f"scenario{n}_i", "0") # Single i
-    #         scenario_input['T_form'] = form_data.get(f"scenario{n}_T", "0") # Single T
-    #         scenario_input['D_form'] = form_data.get(f"scenario{n}_D", "0.0")
-    #         scenario_input['withdrawal_time_form'] = form_data.get(f"scenario{n}_withdrawal_time", TIME_END)
-    #         for p_num in range(1, 4): # Max 3 periods
-    #             scenario_input[f'period{p_num}_duration_form'] = form_data.get(f"scenario{n}_period{p_num}_duration", "")
-    #             scenario_input[f'period{p_num}_r_form'] = form_data.get(f"scenario{n}_period{p_num}_r", "")
-    #             scenario_input[f'period{p_num}_i_form'] = form_data.get(f"scenario{n}_period{p_num}_i", "")
+            scenario_input['W_form'] = form_data.get(f"scenario{n}_W", "0")
+            scenario_input['r_form'] = form_data.get(f"scenario{n}_r", "0")
+            scenario_input['i_form'] = form_data.get(f"scenario{n}_i", "0")
+            scenario_input['T_form'] = form_data.get(f"scenario{n}_T", "0")
+            scenario_input['D_form'] = form_data.get(f"scenario{n}_D", "0.0")
+            scenario_input['withdrawal_time_form'] = form_data.get(f"scenario{n}_withdrawal_time", TIME_END)
+            for p_num in range(1, 4):
+                scenario_input[f'period{p_num}_duration_form'] = form_data.get(f"scenario{n}_period{p_num}_duration", "")
+                scenario_input[f'period{p_num}_r_form'] = form_data.get(f"scenario{n}_period{p_num}_r", "")
+                scenario_input[f'period{p_num}_i_form'] = form_data.get(f"scenario{n}_period{p_num}_i", "")
 
-    #         if not scenario_input['enabled']:
-    #             scenario_input['error'] = gettext("Scenario %(n)s: Not enabled by user.", n=n)
-    #             scenario_input['fire_number_display'] = gettext("N/A")
-    #             scenarios_data_for_template.append(scenario_input)
-    #             continue
+            if not scenario_input['enabled']:
+                scenario_input['error'] = gettext("Scenario %(n)s: Not enabled by user.", n=n)
+                scenario_input['fire_number_display'] = gettext("N/A")
+                scenarios_data_for_template.append(scenario_input)
+                continue
 
-    #         try:
-    #             W_val = float(scenario_input['W_form'])
-    #             D_val = float(scenario_input['D_form'])
-    #             withdrawal_time_val = scenario_input['withdrawal_time_form']
+            try:
+                W_val = float(scenario_input['W_form'])
+                D_val = float(scenario_input['D_form'])
+                withdrawal_time_val = scenario_input['withdrawal_time_form']
 
-    #             if W_val < 0: raise ValueError(gettext("Withdrawal (W) cannot be negative."))
-    #             if D_val < 0: raise ValueError(gettext("Desired Final Value (D) cannot be negative."))
+                if W_val < 0: raise ValueError(gettext("Withdrawal (W) cannot be negative."))
+                if D_val < 0: raise ValueError(gettext("Desired Final Value (D) cannot be negative."))
 
-    #             scenario_rates_periods = []
-    #             for p_num in range(1, 4):
-    #                 dur_str = form_data.get(f"scenario{n}_period{p_num}_duration")
-    #                 r_str = form_data.get(f"scenario{n}_period{p_num}_r")
-    #                 i_str = form_data.get(f"scenario{n}_period{p_num}_i")
-    #                 if dur_str and r_str and i_str:
-    #                     duration = int(dur_str)
-    #                     r_perc = float(r_str)
-    #                     i_perc = float(i_str)
-    #                     if duration > 0:
-    #                         if not (-50 <= r_perc <= 100): raise ValueError(gettext("Period %(p_num)s annual return (r) must be between -50% and 100%.", p_num=p_num))
-    #                         if not (-50 <= i_perc <= 100): raise ValueError(gettext("Period %(p_num)s inflation rate (i) must be between -50% and 100%.", p_num=p_num))
-    #                         scenario_rates_periods.append({'duration': duration, 'r': r_perc / 100, 'i': i_perc / 100})
-    #                     elif duration < 0: raise ValueError(gettext("Period %(p_num)s duration cannot be negative.", p_num=p_num))
+                scenario_rates_periods = []
+                for p_num in range(1, 4):
+                    dur_str = form_data.get(f"scenario{n}_period{p_num}_duration")
+                    r_str = form_data.get(f"scenario{n}_period{p_num}_r")
+                    i_str = form_data.get(f"scenario{n}_period{p_num}_i")
+                    if dur_str and r_str and i_str:
+                        duration = int(dur_str)
+                        r_perc = float(r_str)
+                        i_perc = float(i_str)
+                        if duration > 0:
+                            if not (-50 <= r_perc <= 100): raise ValueError(gettext("Period %(p_num)s annual return (r) must be between -50% and 100%.", p_num=p_num))
+                            if not (-50 <= i_perc <= 100): raise ValueError(gettext("Period %(p_num)s inflation rate (i) must be between -50% and 100%.", p_num=p_num))
+                            scenario_rates_periods.append({'duration': duration, 'r': r_perc / 100, 'i': i_perc / 100})
+                        elif duration < 0: raise ValueError(gettext("Period %(p_num)s duration cannot be negative.", p_num=p_num))
 
-    #             if not scenario_rates_periods: # Fallback to single r, i, T for this scenario
-    #                 r_perc_single = float(scenario_input['r_form'])
-    #                 i_perc_single = float(scenario_input['i_form'])
-    #                 T_single = int(scenario_input['T_form'])
-    #                 if T_single <= 0: raise ValueError(gettext("Time (T) must be > 0 for single period mode."))
-    #                 if not (-50 <= r_perc_single <= 100): raise ValueError(gettext("Annual return (r) must be between -50% and 100%."))
-    #                 if not (-50 <= i_perc_single <= 100): raise ValueError(gettext("Inflation rate (i) must be between -50% and 100%."))
-    #                 scenario_rates_periods.append({'duration': T_single, 'r': r_perc_single / 100, 'i': i_perc_single / 100})
+                if not scenario_rates_periods:
+                    r_perc_single = float(scenario_input['r_form'])
+                    i_perc_single = float(scenario_input['i_form'])
+                    T_single = int(scenario_input['T_form'])
+                    if T_single <= 0: raise ValueError(gettext("Time (T) must be > 0 for single period mode."))
+                    if not (-50 <= r_perc_single <= 100): raise ValueError(gettext("Annual return (r) must be between -50% and 100%."))
+                    if not (-50 <= i_perc_single <= 100): raise ValueError(gettext("Inflation rate (i) must be between -50% and 100%."))
+                    scenario_rates_periods.append({'duration': T_single, 'r': r_perc_single / 100, 'i': i_perc_single / 100})
 
-    #             scenario_input['rates_periods_data'] = scenario_rates_periods # Store for potential later use/display
+                scenario_input['rates_periods_data'] = scenario_rates_periods
 
-    #             # Calculate financial figures for this scenario
-    #             portfolio = find_required_portfolio(W_val, withdrawal_time_val, scenario_rates_periods, desired_final_value=D_val)
+                portfolio = find_required_portfolio(W_val, withdrawal_time_val, scenario_rates_periods, desired_final_value=D_val)
 
-    #             if portfolio == float('inf'):
-    #                 scenario_input['error'] = gettext("Scenario %(n)s: Cannot find suitable portfolio (inputs unrealistic).", n=n)
-    #                 scenario_input['fire_number'] = gettext("N/A")
-    #                 scenario_input['years_data'], scenario_input['balances_data'], scenario_input['withdrawals_data'] = [], [], []
-    #             else:
-    #                 years, balances, withdrawals = annual_simulation(portfolio, W_val, withdrawal_time_val, scenario_rates_periods)
-    #                 scenario_input['fire_number'] = portfolio
-    #                 scenario_input['years_data'] = years.tolist()
-    #             scenario_input['balances_data'] = balances # Keep as numbers for JS plotting
-    #             scenario_input['withdrawals_data'] = withdrawals # Keep as numbers for JS plotting
+                if portfolio == float('inf'):
+                    scenario_input['error'] = gettext("Scenario %(n)s: Cannot find suitable portfolio (inputs unrealistic).", n=n)
+                    scenario_input['fire_number'] = gettext("N/A")
+                    scenario_input['years_data'], scenario_input['balances_data'], scenario_input['withdrawals_data'] = [], [], []
+                else:
+                    years, balances, withdrawals = annual_simulation(portfolio, W_val, withdrawal_time_val, scenario_rates_periods)
+                    scenario_input['fire_number'] = portfolio
+                    scenario_input['years_data'] = years.tolist()
+                    scenario_input['balances_data'] = balances
+                    scenario_input['withdrawals_data'] = withdrawals
 
-    #         scenario_input['fire_number_display'] = format_currency(portfolio, DEFAULT_CURRENCY, locale=get_locale().language if get_locale() else 'en_US') if isinstance(portfolio, (int, float)) and portfolio != float('inf') else gettext("N/A")
+                scenario_input['fire_number_display'] = format_currency(portfolio, DEFAULT_CURRENCY, locale=get_locale().language if get_locale() else 'en_US') if isinstance(portfolio, (int, float)) and portfolio != float('inf') else gettext("N/A")
 
-    #         except ValueError as e:
-    #             current_app.logger.error(f"Invalid input for scenario {n} in compare route: {e}")
-    #             scenario_input['error'] = gettext("Scenario %(n)s: %(error)s", n=n, error=str(e))
-    #             scenario_input['fire_number_display'] = gettext("N/A")
-    #             scenario_input['enabled'] = False # Mark as not successfully processed
+            except ValueError as e:
+                current_app.logger.error(f"Invalid input for scenario {n} in compare route: {e}")
+                scenario_input['error'] = gettext("Scenario %(n)s: %(error)s", n=n, error=str(e))
+                scenario_input['fire_number_display'] = gettext("N/A")
+                scenario_input['enabled'] = False
 
-    #         scenarios_data_for_template.append(scenario_input)
-    #     # END OF SCENARIO PROCESSING LOOP
+            scenarios_data_for_template.append(scenario_input)
 
-    #     # Filter for scenarios that were successfully processed for plotting, after collecting all scenarios
-    #     plottable_scenarios = [s for s in scenarios_data_for_template if s.get('enabled') and not s.get('error') and 'years_data' in s and s['years_data']]
+        plottable_scenarios = [s for s in scenarios_data_for_template if s.get('enabled') and not s.get('error') and 'years_data' in s and s['years_data']]
 
-    #     combined_balance_plot_html = ""
-    #     combined_withdrawal_plot_html = ""
-    #     message = ""
+        combined_balance_plot_html = ""
+        combined_withdrawal_plot_html = ""
+        message = ""
 
-    #     if not plottable_scenarios:
-    #         message = gettext("No valid scenarios to plot. Please check inputs or enable scenarios.")
-    #         # Return all scenarios_data_for_template so errors/data can be shown for each non-plottable one
-    #         # Plots will be empty as initialized
-    #     else:
-    #         plot_config = {'displayModeBar': False, 'responsive': True}
-    #         locale_str_compare = get_locale().language if get_locale() else 'en_US'
-    #         fig_balance = go.Figure()
-    #         fig_withdrawal = go.Figure()
+        if not plottable_scenarios:
+            message = gettext("No valid scenarios to plot. Please check inputs or enable scenarios.")
+        else:
+            plot_config = {'displayModeBar': False, 'responsive': True}
+            locale_str_compare = get_locale().language if get_locale() else 'en_US'
+            fig_balance = go.Figure()
+            fig_withdrawal = go.Figure()
 
-    #         for sc_data in plottable_scenarios:
-    #             # Balances and withdrawals are numbers, format them for hover
-    #             formatted_balances_compare = [format_currency(b, DEFAULT_CURRENCY, locale=locale_str_compare) for b in sc_data["balances_data"]]
-    #             formatted_withdrawals_compare = [format_currency(w, DEFAULT_CURRENCY, locale=locale_str_compare) for w in sc_data["withdrawals_data"]]
+            for sc_data in plottable_scenarios:
+                formatted_balances_compare = [format_currency(b, DEFAULT_CURRENCY, locale=locale_str_compare) for b in sc_data["balances_data"]]
+                formatted_withdrawals_compare = [format_currency(w, DEFAULT_CURRENCY, locale=locale_str_compare) for w in sc_data["withdrawals_data"]]
 
-    #             fig_balance.add_trace(go.Scatter(
-    #                 x=sc_data["years_data"], y=sc_data["balances_data"],
-    #                 mode='lines+markers', name=gettext("Scenario %(n)s Balance", n=sc_data['n']),
-    #                 customdata=[(fb,) for fb in formatted_balances_compare],
-    #                 hovertemplate=gettext('Year: %{x}<br>Balance: %{customdata[0]}<extra></extra>')
-    #             ))
-    #             plot_years_withdrawal = sc_data["years_data"][:-1] if len(sc_data["years_data"]) > 1 else []
-    #             fig_withdrawal.add_trace(go.Scatter(
-    #                 x=plot_years_withdrawal, y=sc_data["withdrawals_data"], # y-values are raw numbers
-    #                 mode='lines+markers', name=gettext("Scenario %(n)s Withdrawal", n=sc_data['n']),
-    #                 customdata=[(fw,) for fw in formatted_withdrawals_compare], # Pass formatted for hover
-    #                 uid=f"scenario_{sc_data['n']}_compare_withdrawal",
-    #                 hovertemplate=gettext('Year: %{x}<br>Withdrawal: %{customdata[0]}<extra></extra>')
-    #             ))
+                fig_balance.add_trace(go.Scatter(
+                    x=sc_data["years_data"], y=sc_data["balances_data"],
+                    mode='lines+markers', name=gettext("Scenario %(n)s Balance", n=sc_data['n']),
+                    customdata=[(fb,) for fb in formatted_balances_compare],
+                    hovertemplate=gettext('Year: %{x}<br>Balance: %{customdata[0]}<extra></extra>')
+                ))
+                plot_years_withdrawal = sc_data["years_data"][:-1] if len(sc_data["years_data"]) > 1 else []
+                fig_withdrawal.add_trace(go.Scatter(
+                    x=plot_years_withdrawal, y=sc_data["withdrawals_data"],
+                    mode='lines+markers', name=gettext("Scenario %(n)s Withdrawal", n=sc_data['n']),
+                    customdata=[(fw,) for fw in formatted_withdrawals_compare],
+                    uid=f"scenario_{sc_data['n']}_compare_withdrawal",
+                    hovertemplate=gettext('Year: %{x}<br>Withdrawal: %{customdata[0]}<extra></extra>')
+                ))
 
-    #         fig_balance.update_layout(title=gettext("Portfolio Balance Comparison"), xaxis_title=gettext("Years"), yaxis_title=gettext("Portfolio Value ({currency})").format(currency=DEFAULT_CURRENCY))
-    #         combined_balance_plot_html = pyo.plot(fig_balance, include_plotlyjs=False, output_type='div', config=plot_config)
+            fig_balance.update_layout(title=gettext("Portfolio Balance Comparison"), xaxis_title=gettext("Years"), yaxis_title=gettext("Portfolio Value ({currency})").format(currency=DEFAULT_CURRENCY))
+            combined_balance_plot_html = pyo.plot(fig_balance, include_plotlyjs=False, output_type='div', config=plot_config)
 
-    #         fig_withdrawal.update_layout(title=gettext("Annual Withdrawals Comparison"), xaxis_title=gettext("Years"), yaxis_title=gettext("Withdrawal ({currency})").format(currency=DEFAULT_CURRENCY))
-    #         combined_withdrawal_plot_html = pyo.plot(fig_withdrawal, include_plotlyjs=False, output_type='div', config=plot_config)
+            fig_withdrawal.update_layout(title=gettext("Annual Withdrawals Comparison"), xaxis_title=gettext("Years"), yaxis_title=gettext("Withdrawal ({currency})").format(currency=DEFAULT_CURRENCY))
+            combined_withdrawal_plot_html = pyo.plot(fig_withdrawal, include_plotlyjs=False, output_type='div', config=plot_config)
 
-    #     # Return all scenarios_data_for_template (which includes errors and display values for each)
-    #     # and the combined plots if any were generated.
-    #     return jsonify({
-    #         "combined_balance": combined_balance_plot_html,
-    #         "combined_withdrawal": combined_withdrawal_plot_html,
-    #         "scenarios": scenarios_data_for_template,
-    #         "message": message
-    #     })
-    # else: # GET request
-    # # Provide empty structures for periods for the template on initial load
-    #     default_scenarios_for_template = []
-    #     for n in range(1, MAX_SCENARIOS_COMPARE + 1): # Line 551
-    #         sc = {'n': n, 'enabled': (n <=2), 'W_form': '', 'r_form': '', 'i_form': '', 'T_form': '', 'D_form': '0.0', 'withdrawal_time_form': TIME_END}
-    #         for p_num in range(1,4):
-    #             sc[f'period{p_num}_duration_form'] = ''
-    #             sc[f'period{p_num}_r_form'] = ''
-    #             sc[f'period{p_num}_i_form'] = ''
-    #         default_scenarios_for_template.append(sc)
-    #     current_year = datetime.datetime.now().year
-    #     return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None, current_year=current_year)
-        return jsonify({"message": "Compare route reached successfully (minimal POST)"})
-    return "Compare route reached successfully (minimal GET)"
+        return jsonify({
+            "combined_balance": combined_balance_plot_html,
+            "combined_withdrawal": combined_withdrawal_plot_html,
+            "scenarios": scenarios_data_for_template,
+            "message": message
+        })
+    else:
+        default_scenarios_for_template = []
+        for n in range(1, MAX_SCENARIOS_COMPARE + 1):
+            sc = {'n': n, 'enabled': (n <=2), 'W_form': '', 'r_form': '', 'i_form': '', 'T_form': '', 'D_form': '0.0', 'withdrawal_time_form': TIME_END}
+            for p_num in range(1,4):
+                sc[f'period{p_num}_duration_form'] = ''
+                sc[f'period{p_num}_r_form'] = ''
+                sc[f'period{p_num}_i_form'] = ''
+            default_scenarios_for_template.append(sc)
+        current_year = datetime.datetime.now().year
+        return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None, current_year=current_year)
 
 @project_blueprint.route('/settings')
 def settings():
@@ -579,5 +547,7 @@ def register_app_routes(app_instance):
     app_instance.logger.info("Attempting to register project_blueprint (minimal version with simplified routes).")
     app_instance.register_blueprint(project_blueprint)
     app_instance.logger.info("project_blueprint (minimal version) registered.")
+
+[end of project/routes.py]
 
 [end of project/routes.py]
