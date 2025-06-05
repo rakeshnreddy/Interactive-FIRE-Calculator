@@ -15,7 +15,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="r" class="form-label">{{ _("Overall Annual Return") }} (%%) {{ _("(Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return (e.g., 7% for 7). Used if no specific periods are defined.") }}</span></span></label>
+        <label for="r" class="form-label">Overall Annual Return (%%) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return (e.g., 7% for 7). Used if no specific periods are defined.</span></span></label>
         <input type="number" name="r" id="r" class="form-control" step="0.1" value="{{ request.form.get('r', defaults.r) }}" min="-50" max="100">
         <small class="form-text text-muted">{{ _("Used if no periodic rates are specified below.") }}</small>
       </div>
