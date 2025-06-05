@@ -1,6 +1,6 @@
 from flask import Blueprint, current_app, request, jsonify #, Response, render_template # render_template and Response might not be needed
-# from flask_babel import gettext, get_locale # Commented out
-# from babel.numbers import format_currency # Commented out
+from flask_babel import gettext, get_locale # Uncommented
+from babel.numbers import format_currency # Uncommented
 # # current_app is already imported via `from flask import ...`
 # import numpy as np # Commented out
 # import plotly.graph_objects as go # Commented out
@@ -12,10 +12,10 @@ from flask import Blueprint, current_app, request, jsonify #, Response, render_t
 # Assuming app.py is in the root directory.
 # financial_calcs.py and constants.py are now in the same 'project' package.
 # DO NOT: from app import app # This was causing the circular import
-# from .financial_calcs import annual_simulation, simulate_final_balance, find_required_portfolio, find_max_annual_expense # Commented out
-# from .constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_START, TIME_END, MAX_SCENARIOS_COMPARE # Commented out
+from .financial_calcs import annual_simulation, simulate_final_balance, find_required_portfolio, find_max_annual_expense # Uncommented
+from .constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_START, TIME_END, MAX_SCENARIOS_COMPARE # Uncommented
 
-# DEFAULT_CURRENCY = 'USD' # Commented out
+# DEFAULT_CURRENCY = 'USD' # Commented out, will use from app.config or define locally if needed by stub routes
 
 project_blueprint = Blueprint('project', __name__)
 
