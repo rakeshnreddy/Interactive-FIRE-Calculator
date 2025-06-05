@@ -294,8 +294,105 @@ def index():
 
 @project_blueprint.route('/update', methods=['POST'])
 def update():
-    current_app.logger.info(f"Update route called (minimal). Method: {request.method}")
-    return jsonify({"message": "Update route reached successfully (minimal)"})
+    current_app.logger.info(f"Update route called. Method: {request.method}")
+    # """
+    # Handles POST requests (typically AJAX) to update FIRE calculations
+    # based on new input values including period data. Returns JSON data.
+    # """
+    form_data = request.form
+
+    # Initialize variables to ensure they are defined, even if parsing fails unexpectedly later.
+    # These defaults should ideally lead to a graceful failure or be handled if used.
+    W_form = 0.0
+    D_form = 0.0
+    withdrawal_time = TIME_END  # Default from constants
+    P_value = 0.0
+    rates_periods_data = []
+    # Variables for single period fallback, if used and not otherwise defined
+    r_perc_form = 0.0
+    i_perc_form = 0.0
+    T_form = 0
+
+    try:
+        # Use .get(key, 'default_string') for float/int conversions to be safe
+        W_form = float(form_data.get('W', '0'))
+        D_form_str = form_data.get('D', '0.0')
+        D_form = float(D_form_str) if D_form_str else 0.0
+        withdrawal_time = form_data.get('withdrawal_time', TIME_END)
+        P_value = float(form_data.get('P', '0')) # Used for MODE_PORTFOLIO
+
+        if W_form < 0: raise ValueError(gettext("Annual withdrawal (W) cannot be negative."))
+        if D_form < 0: raise ValueError(gettext("Desired final portfolio value (D) cannot be negative."))
+        if P_value < 0: raise ValueError(gettext("Initial Portfolio (P) must be >= 0."))
+        # Ensure rates_periods_data is fresh for this request if it was pre-initialized
+        rates_periods_data = []
+
+        for k in range(1, 4): # Max 3 periods
+            dur_str = form_data.get(f'period{k}_duration')
+            r_str = form_data.get(f'period{k}_r')
+            i_str = form_data.get(f'period{k}_i')
+
+            if dur_str and r_str and i_str:
+                try:
+                    duration = int(dur_str)
+                    r_perc = float(r_str)
+                    i_perc = float(i_str)
+                    if duration > 0:
+                        if not (-50 <= r_perc <= 100):
+                            raise ValueError(gettext("Period %(k)s annual return (r) must be between -50% and 100%.", k=k))
+                        if not (-50 <= i_perc <= 100):
+                            raise ValueError(gettext("Period %(k)s inflation rate (i) must be between -50% and 100%.", k=k))
+                        rates_periods_data.append({'duration': duration, 'r': r_perc / 100, 'i': i_perc / 100})
+                    elif duration < 0:
+                        raise ValueError(gettext("Period %(k)s duration cannot be negative.", k=k))
+                except ValueError as e:
+                    # Re-raise to be caught by the main ValueError handler below
+                    raise ValueError(gettext("Invalid input for period %(k)s: %(error)s", k=k, error=str(e)))
+
+
+        if not rates_periods_data: # Fallback to single period from main r, i, T fields
+            r_perc_form = float(form_data.get('r', '0'))
+            i_perc_form = float(form_data.get('i', '0'))
+            T_form = int(form_data.get('T', '0'))
+            if T_form <= 0: raise ValueError(gettext("Time horizon (T) must be greater than 0 for single period mode."))
+            if not (-50 <= r_perc_form <= 100): raise ValueError(gettext("Annual return (r) must be between -50% and 100%."))
+            if not (-50 <= i_perc_form <= 100): raise ValueError(gettext("Inflation rate (i) must be between -50% and 100%."))
+            rates_periods_data.append({'duration': T_form, 'r': r_perc_form / 100, 'i': i_perc_form / 100})
+
+    except ValueError as e:
+        current_app.logger.error(f"Invalid input (ValueError) in update route: {e} - Form data: {form_data}")
+        return jsonify({'error': gettext('Invalid input: %(error)s', error=str(e))})
+    except Exception as e: # Catch other unexpected errors during parsing
+        current_app.logger.error(f"Unexpected error during input processing in update route: {e} - Form data: {form_data}", exc_info=True)
+        return jsonify({'error': gettext('An unexpected error occurred while processing inputs.')})
+
+    # Calculate for mode 'W' (Expense Mode on client, calculates P)
+    # W_form is the W_initial for generate_plots in MODE_WITHDRAWAL
+    required_portfolio_W, actual_W_for_mode_W, portfolio_plot_W, withdrawal_plot_W, table_data_W_html = generate_plots(
+        W_form, withdrawal_time, MODE_WITHDRAWAL, rates_periods_data, P_value=None, desired_final_value=D_form
+    )
+
+    # Calculate for mode 'P' (FIRE Mode on client, calculates W)
+    # P_value is the P_initial for generate_plots in MODE_PORTFOLIO
+    input_P_for_mode_P, calculated_W_for_mode_P, portfolio_plot_P, withdrawal_plot_P, table_data_P_html = generate_plots(
+        W_form, withdrawal_time, MODE_PORTFOLIO, rates_periods_data, P_value=P_value, desired_final_value=D_form
+    )
+
+    locale_str_update = get_locale().language if get_locale() else 'en_US'
+    return jsonify({
+        'fire_number_W': format_currency(required_portfolio_W, DEFAULT_CURRENCY, locale=locale_str_update) if required_portfolio_W != float('inf') else gettext("N/A"),
+        'annual_expense_W': format_currency(actual_W_for_mode_W, DEFAULT_CURRENCY, locale=locale_str_update),
+        'portfolio_plot_W': portfolio_plot_W,
+        'withdrawal_plot_W': withdrawal_plot_W,
+        'table_data_W_html': table_data_W_html,
+
+        'fire_number_P': format_currency(input_P_for_mode_P, DEFAULT_CURRENCY, locale=locale_str_update) if input_P_for_mode_P != float('inf') else gettext("N/A"),
+        'annual_expense_P': format_currency(calculated_W_for_mode_P, DEFAULT_CURRENCY, locale=locale_str_update),
+        'portfolio_plot_P': portfolio_plot_P,
+        'withdrawal_plot_P': withdrawal_plot_P,
+        'table_data_P_html': table_data_P_html
+    })
+
 
 @project_blueprint.route('/compare', methods=['GET', 'POST'])
 def compare():
