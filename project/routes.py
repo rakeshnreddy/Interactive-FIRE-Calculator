@@ -1,121 +1,296 @@
-from flask import Blueprint, current_app, request, jsonify, render_template # render_template is now needed
-from flask_babel import gettext, get_locale # Uncommented
-from babel.numbers import format_currency # Uncommented
-# # current_app is already imported via `from flask import ...`
-# import numpy as np # Commented out
-# import plotly.graph_objects as go # Commented out
-# import plotly.offline as pyo # Commented out
-# import io # Commented out
+from flask import Blueprint, current_app, request, jsonify, render_template, Response # Added Response
+from flask_babel import gettext, get_locale
+from babel.numbers import format_currency
+import numpy as np
+import plotly.graph_objects as go
+import plotly.offline as pyo
+# import io # Commented out - io and csv are for export_csv route, which is still a stub
 # import csv # Commented out
-import datetime # Uncommented for settings route
+import datetime
 
-# Assuming app.py is in the root directory.
-# financial_calcs.py and constants.py are now in the same 'project' package.
-# DO NOT: from app import app # This was causing the circular import
-from .financial_calcs import annual_simulation, simulate_final_balance, find_required_portfolio, find_max_annual_expense # Uncommented
-from .constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_START, TIME_END, MAX_SCENARIOS_COMPARE # Uncommented
+from .financial_calcs import annual_simulation, simulate_final_balance, find_required_portfolio, find_max_annual_expense
+from .constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_START, TIME_END, MAX_SCENARIOS_COMPARE
 
-# DEFAULT_CURRENCY = 'USD' # Commented out, will use from app.config or define locally if needed by stub routes
+DEFAULT_CURRENCY = 'USD' # Uncommented: Ensure this is active for helper functions
 
 project_blueprint = Blueprint('project', __name__)
 
-# # def generate_html_table(years, balances, withdrawals):
-# #     """
-# #     Generates an HTML table string from the simulation data.
-# #     Args:
-# #         years (list or np.array): Array of years (0 to T).
-# #         balances (list): List of portfolio balances corresponding to each year.
-# #         withdrawals (list): List of annual withdrawals (for years 0 to T-1).
-# #     Returns:
-# #         str: HTML string representing the table.
-# #     """
-# #     if not years.any() or not balances or not withdrawals:
-# #         return "<p>" + gettext("No data available to display in table.") + "</p>"
-# #     locale_str = get_locale().language if get_locale() else 'en_US' # Default to en_US if locale is None
-# #     header = "<thead><tr><th>" + gettext("Year") + \
-# #              "</th><th>" + gettext("Portfolio Balance ({currency})").format(currency=DEFAULT_CURRENCY) + \
-# #              "</th><th>" + gettext("Annual Withdrawal ({currency})").format(currency=DEFAULT_CURRENCY) + \
-# #              "</th></tr></thead>"
-# #     body_rows = []
-# #     for t_idx in range(len(withdrawals)): # Iterate T times, for withdrawals
-# #         year_display = int(years[t_idx] + 1) # Display as Year 1, Year 2, ...
-# #         balance_at_year_end_or_start = balances[t_idx+1] # Balance after withdrawal and growth for year t_idx
-# #         withdrawal_for_year = withdrawals[t_idx]
-# #         formatted_balance = format_currency(balance_at_year_end_or_start, DEFAULT_CURRENCY, locale=locale_str)
-# #         formatted_withdrawal = format_currency(withdrawal_for_year, DEFAULT_CURRENCY, locale=locale_str)
-# #         body_rows.append(f"<tr><td>{year_display}</td><td>{formatted_balance}</td><td>{formatted_withdrawal}</td></tr>")
-# #     return f"<table class='data-table'> {header} <tbody>{''.join(body_rows)}</tbody> </table>"
+def generate_html_table(years, balances, withdrawals):
+    """
+    Generates an HTML table string from the simulation data.
 
-# # def generate_plots(W, withdrawal_time, mode, rates_periods, P_value=None, desired_final_value=0.0):
-# #     """
-# #     Calculates financial figures and generates Plotly plots for portfolio balance and withdrawals.
-# #     Now uses rates_periods instead of fixed r, i, T.
-# #     Args:
-# #         W (float): Initial annual withdrawal.
-# #         withdrawal_time (str): "start" or "end".
-# #         mode (str): Calculation mode, 'W' (find portfolio for W) or 'P' (find W for portfolio P).
-# #         rates_periods (list of dicts): List of rate periods.
-# #         P_value (float, optional): Initial portfolio value (used if mode='P'). Defaults to None.
-# #         desired_final_value (float, optional): Desired portfolio value at the end of T years. Defaults to 0.0.
-# #     Returns:
-# #         tuple: (required_portfolio_or_P_value, calculated_W, portfolio_plot_div, withdrawal_plot_div, table_html)
-# #     """
-# #     if not rates_periods: # Should be caught by calling routes, but defensive check.
-# #         return 0, 0, "<div>" + gettext("Error: No rate periods provided.") + "</div>", "<div></div>", "<p>" + gettext("Table data error.") + "</p>"
-# #     if mode == MODE_WITHDRAWAL:
-# #         required_portfolio = find_required_portfolio(W, withdrawal_time, rates_periods, desired_final_value=desired_final_value)
-# #         calculated_W = W
-# #         if required_portfolio == float('inf'):
-# #             error_message = "<div>" + gettext("Cannot find a suitable portfolio. Withdrawals may be too high or periods too long/unfavorable.") + "</div>"
-# #             return float('inf'), calculated_W, error_message, "<div></div>", "<p>" + gettext("Table data not available due to error.") + "</p>"
-# #     else: # mode == MODE_PORTFOLIO
-# #         required_portfolio = P_value
-# #         calculated_W = find_max_annual_expense(required_portfolio, withdrawal_time, rates_periods, desired_final_value=desired_final_value)
-# #     if calculated_W is None or (isinstance(calculated_W, float) and (np.isnan(calculated_W) or np.isinf(calculated_W))):
-# #         error_message = "<div>" + gettext("Error calculating sustainable withdrawal. Inputs might be unrealistic for the given portfolio.") + "</div>"
-# #         return required_portfolio, 0, error_message, "<div></div>", "<p>" + gettext("Table data not available due to error in withdrawal calculation.") + "</p>"
-# #     years, balances, sim_withdrawals = annual_simulation(required_portfolio, calculated_W, withdrawal_time, rates_periods)
-# #     plot_config = {'displayModeBar': False, 'responsive': True}
-# #     locale_str = get_locale().language if get_locale() else 'en_US'
-# #     fig1 = go.Figure()
-# #     formatted_balances_hover = [format_currency(b, DEFAULT_CURRENCY, locale=locale_str) for b in balances]
-# #     fig1.add_trace(go.Scatter(
-# #         x=years, y=balances,
-# #         mode='lines+markers',
-# #         name=gettext('Portfolio Balance'),
-# #         customdata=[(fb,) for fb in formatted_balances_hover],
-# #         hovertemplate=gettext('Year: %{x}<br>Balance: %{customdata[0]}<extra></extra>')
-# #     ))
-# #     fig1.update_layout(
-# #         title=gettext('Portfolio Balance (Withdrawals at %(withdrawal_time)s)', withdrawal_time=withdrawal_time.capitalize()),
-# #         xaxis_title=gettext('Years'),
-# #         yaxis_title=gettext('Portfolio Value ({currency})').format(currency=DEFAULT_CURRENCY)
-# #     )
-# #     portfolio_plot = pyo.plot(fig1, include_plotlyjs=False, output_type='div', config=plot_config)
-# #     fig2 = go.Figure()
-# #     formatted_withdrawals_hover = [format_currency(w, DEFAULT_CURRENCY, locale=locale_str) for w in sim_withdrawals]
-# #     fig2.add_trace(go.Scatter(
-# #         x=years[:-1], y=sim_withdrawals,
-# #         mode='lines+markers',
-# #         name=gettext('Annual Withdrawal'),
-# #         marker_color='orange',
-# #         customdata=[(fw,) for fw in formatted_withdrawals_hover],
-# #         hovertemplate=gettext('Year: %{x}<br>Withdrawal: %{customdata[0]}<extra></extra>'),
-# #         uid="unique_withdrawal"
-# #     ))
-# #     fig2.update_layout(
-# #         title=gettext('Annual Withdrawals'),
-# #         xaxis_title=gettext('Years'),
-# #         yaxis_title=gettext('Withdrawal ({currency})').format(currency=DEFAULT_CURRENCY)
-# #     )
-# #     withdrawal_plot = pyo.plot(fig2, include_plotlyjs=False, output_type='div', config=plot_config)
-# #     table_html = generate_html_table(years, balances, sim_withdrawals)
-# #     return required_portfolio, calculated_W, portfolio_plot, withdrawal_plot, table_html
+    Args:
+        years (list or np.array): Array of years (0 to T).
+        balances (list): List of portfolio balances corresponding to each year.
+        withdrawals (list): List of annual withdrawals (for years 0 to T-1).
+
+    Returns:
+        str: HTML string representing the table.
+    """
+    if not np.any(years) or not balances or not withdrawals: # Corrected from years.any()
+        return "<p>" + gettext("No data available to display in table.") + "</p>"
+
+    locale_str = get_locale().language if get_locale() else 'en_US'
+    header = "<thead><tr><th>" + gettext("Year") + \
+             "</th><th>" + gettext("Portfolio Balance ({currency})").format(currency=DEFAULT_CURRENCY) + \
+             "</th><th>" + gettext("Annual Withdrawal ({currency})").format(currency=DEFAULT_CURRENCY) + \
+             "</th></tr></thead>"
+    body_rows = []
+
+    for t_idx in range(len(withdrawals)):
+        year_display = int(years[t_idx] + 1)
+        balance_at_year_end_or_start = balances[t_idx+1]
+        withdrawal_for_year = withdrawals[t_idx]
+        formatted_balance = format_currency(balance_at_year_end_or_start, DEFAULT_CURRENCY, locale=locale_str)
+        formatted_withdrawal = format_currency(withdrawal_for_year, DEFAULT_CURRENCY, locale=locale_str)
+        body_rows.append(f"<tr><td>{year_display}</td><td>{formatted_balance}</td><td>{formatted_withdrawal}</td></tr>")
+
+    return f"<table class='data-table'> {header} <tbody>{''.join(body_rows)}</tbody> </table>"
+
+def generate_plots(W, withdrawal_time, mode, rates_periods, P_value=None, desired_final_value=0.0):
+    """
+    Calculates financial figures and generates Plotly plots for portfolio balance and withdrawals.
+    Now uses rates_periods instead of fixed r, i, T.
+
+    Args:
+        W (float): Initial annual withdrawal.
+        withdrawal_time (str): "start" or "end".
+        mode (str): Calculation mode, 'W' (find portfolio for W) or 'P' (find W for portfolio P).
+        rates_periods (list of dicts): List of rate periods.
+        P_value (float, optional): Initial portfolio value (used if mode='P'). Defaults to None.
+        desired_final_value (float, optional): Desired portfolio value at the end of T years. Defaults to 0.0.
+
+    Returns:
+        tuple: (required_portfolio_or_P_value, calculated_W, portfolio_plot_div, withdrawal_plot_div, table_html)
+    """
+    if not rates_periods:
+        return 0, 0, "<div>" + gettext("Error: No rate periods provided.") + "</div>", "<div></div>", "<p>" + gettext("Table data error.") + "</p>"
+
+    if mode == MODE_WITHDRAWAL:
+        required_portfolio = find_required_portfolio(W, withdrawal_time, rates_periods, desired_final_value=desired_final_value)
+        calculated_W = W
+        if required_portfolio == float('inf'):
+            error_message = "<div>" + gettext("Cannot find a suitable portfolio. Withdrawals may be too high or periods too long/unfavorable.") + "</div>"
+            return float('inf'), calculated_W, error_message, "<div></div>", "<p>" + gettext("Table data not available due to error.") + "</p>"
+    else: # mode == MODE_PORTFOLIO
+        required_portfolio = P_value
+        calculated_W = find_max_annual_expense(required_portfolio, withdrawal_time, rates_periods, desired_final_value=desired_final_value)
+
+    if calculated_W is None or (isinstance(calculated_W, float) and (np.isnan(calculated_W) or np.isinf(calculated_W))):
+        error_message = "<div>" + gettext("Error calculating sustainable withdrawal. Inputs might be unrealistic for the given portfolio.") + "</div>"
+        return required_portfolio, 0, error_message, "<div></div>", "<p>" + gettext("Table data not available due to error in withdrawal calculation.") + "</p>"
+
+    years, balances, sim_withdrawals = annual_simulation(required_portfolio, calculated_W, withdrawal_time, rates_periods)
+
+    plot_config = {'displayModeBar': False, 'responsive': True}
+    locale_str = get_locale().language if get_locale() else 'en_US'
+
+    fig1 = go.Figure()
+    formatted_balances_hover = [format_currency(b, DEFAULT_CURRENCY, locale=locale_str) for b in balances]
+    fig1.add_trace(go.Scatter(
+        x=years, y=balances,
+        mode='lines+markers',
+        name=gettext('Portfolio Balance'),
+        customdata=[(fb,) for fb in formatted_balances_hover],
+        hovertemplate=gettext('Year: %{x}<br>Balance: %{customdata[0]}<extra></extra>')
+    ))
+    fig1.update_layout(
+        title=gettext('Portfolio Balance (Withdrawals at %(withdrawal_time)s)', withdrawal_time=withdrawal_time.capitalize()),
+        xaxis_title=gettext('Years'),
+        yaxis_title=gettext('Portfolio Value ({currency})').format(currency=DEFAULT_CURRENCY)
+    )
+    portfolio_plot = pyo.plot(fig1, include_plotlyjs=False, output_type='div', config=plot_config)
+
+    fig2 = go.Figure()
+    formatted_withdrawals_hover = [format_currency(w, DEFAULT_CURRENCY, locale=locale_str) for w in sim_withdrawals]
+    fig2.add_trace(go.Scatter(
+        x=years[:-1], y=sim_withdrawals,
+        mode='lines+markers',
+        name=gettext('Annual Withdrawal'),
+        marker_color='orange',
+        customdata=[(fw,) for fw in formatted_withdrawals_hover],
+        hovertemplate=gettext('Year: %{x}<br>Withdrawal: %{customdata[0]}<extra></extra>'),
+        uid="unique_withdrawal"
+    ))
+    fig2.update_layout(
+        title=gettext('Annual Withdrawals'),
+        xaxis_title=gettext('Years'),
+        yaxis_title=gettext('Withdrawal ({currency})').format(currency=DEFAULT_CURRENCY)
+    )
+    withdrawal_plot = pyo.plot(fig2, include_plotlyjs=False, output_type='div', config=plot_config)
+
+    table_html = generate_html_table(years, balances, sim_withdrawals)
+    return required_portfolio, calculated_W, portfolio_plot, withdrawal_plot, table_html
 
 @project_blueprint.route('/', methods=['GET', 'POST'])
 def index():
-    current_app.logger.info(f"Index route called (minimal). Method: {request.method}")
-    return f"Index route reached successfully (minimal). Method: {request.method}"
+    current_app.logger.info(f"Index route called. Method: {request.method}")
+    if request.method == 'POST':
+        form_data = request.form.to_dict()
+        form_params_for_result_page = {
+            'W': form_data.get('W', '20000'),
+            'r': form_data.get('r', '5'), 'i': form_data.get('i', '2'), 'T': form_data.get('T', '30'),
+            'D': form_data.get('D', '0.0'),
+            'withdrawal_time': form_data.get('withdrawal_time', TIME_END),
+            'mode': form_data.get('mode', MODE_WITHDRAWAL),
+            'P': form_data.get('P', '500000'),
+            'period1_duration': form_data.get('period1_duration', ''), 'period1_r': form_data.get('period1_r', ''), 'period1_i': form_data.get('period1_i', ''),
+            'period2_duration': form_data.get('period2_duration', ''), 'period2_r': form_data.get('period2_r', ''), 'period2_i': form_data.get('period2_i', ''),
+            'period3_duration': form_data.get('period3_duration', ''), 'period3_r': form_data.get('period3_r', ''), 'period3_i': form_data.get('period3_i', ''),
+        }
+
+        try:
+            W_form = float(form_data.get('W', 0))
+            withdrawal_time_form = form_data.get('withdrawal_time', TIME_END)
+            mode_form = form_data.get('mode', MODE_WITHDRAWAL)
+            D_form_str = form_data.get('D', '0.0')
+            D_form = float(D_form_str) if D_form_str else 0.0
+
+            if D_form < 0: raise ValueError(gettext("Desired final portfolio value (D) cannot be negative."))
+            if W_form < 0: raise ValueError(gettext("Annual withdrawal (W) cannot be negative."))
+
+            rates_periods_data = []
+            for k in range(1, 4):
+                dur_str = form_data.get(f'period{k}_duration')
+                r_str = form_data.get(f'period{k}_r')
+                i_str = form_data.get(f'period{k}_i')
+
+                if dur_str and r_str and i_str:
+                    try:
+                        duration = int(dur_str)
+                        r_perc = float(r_str)
+                        i_perc = float(i_str)
+                        if duration > 0:
+                            if not (-50 <= r_perc <= 100):
+                                raise ValueError(gettext("Period %(k)s annual return (r) must be between -50% and 100%.", k=k))
+                            if not (-50 <= i_perc <= 100):
+                                raise ValueError(gettext("Period %(k)s inflation rate (i) must be between -50% and 100%.", k=k))
+                            rates_periods_data.append({'duration': duration, 'r': r_perc / 100, 'i': i_perc / 100})
+                        elif duration < 0 :
+                             raise ValueError(gettext("Period %(k)s duration cannot be negative.", k=k))
+                    except ValueError as e:
+                        current_app.logger.error(f"Invalid input for period {k}: {e} - Form data for period: dur='{dur_str}', r='{r_str}', i='{i_str}'")
+                        return render_template('index.html', error=str(e), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year) # Added defaults and current_year
+
+            if not rates_periods_data:
+                r_perc_form = float(form_data.get('r', 0))
+                i_perc_form = float(form_data.get('i', 0))
+                T_form = int(form_data.get('T', 0))
+                if T_form <= 0: raise ValueError(gettext("Time horizon (T) must be greater than 0 for single period mode."))
+                if not (-50 <= r_perc_form <= 100): raise ValueError(gettext("Annual return (r) must be between -50% and 100%."))
+                if not (-50 <= i_perc_form <= 100): raise ValueError(gettext("Inflation rate (i) must be between -50% and 100%."))
+                rates_periods_data.append({'duration': T_form, 'r': r_perc_form / 100, 'i': i_perc_form / 100})
+
+            P_value_form = None
+            if mode_form == MODE_PORTFOLIO:
+                P_value_form = float(form_data.get('P', 0))
+                if P_value_form < 0: raise ValueError(gettext("Initial portfolio (P) cannot be negative."))
+
+        except ValueError as e:
+            current_app.logger.error(f"Invalid input in index route: {e} - Form data: {form_data}")
+            return render_template('index.html', error=str(e), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year) # Added defaults and current_year
+
+        portfolio_plot_W_mode, withdrawal_plot_W_mode = "<div>" + gettext("Error generating FIRE mode plot.") + "</div>", "<div>" + gettext("Error generating FIRE mode plot.") + "</div>"
+        portfolio_plot_P_mode, withdrawal_plot_P_mode = "<div>" + gettext("Error generating Expense mode plot.") + "</div>", "<div>" + gettext("Error generating Expense mode plot.") + "</div>"
+        table_data_W_mode_html = "<p>" + gettext("Table data not available.") + "</p>"
+        table_data_P_mode_html = "<p>" + gettext("Table data not available.") + "</p>"
+        calculated_P_output = "N/A"
+        initial_W_input_for_fire_mode = W_form
+        calculated_W_output_for_expense_mode = "N/A"
+        initial_P_input_for_expense_mode_raw = P_value_form
+
+        if mode_form == MODE_WITHDRAWAL:
+            P_calc_primary, W_actual_primary, p_plot_w, w_plot_w, table_w = generate_plots(
+                W_form, withdrawal_time_form, MODE_WITHDRAWAL, rates_periods_data, P_value=None, desired_final_value=D_form
+            )
+            if P_calc_primary == float('inf'):
+                return render_template('index.html', error=gettext("Cannot find a suitable portfolio for the given withdrawal. Inputs may be unrealistic."), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year)
+
+            calculated_P_output = P_calc_primary
+            initial_W_input_for_fire_mode = W_actual_primary
+            portfolio_plot_W_mode, withdrawal_plot_W_mode = p_plot_w, w_plot_w
+            table_data_W_mode_html = table_w
+
+            initial_P_input_for_expense_mode_raw = P_calc_primary
+            _, W_calc_secondary, p_plot_p, w_plot_p, table_p = generate_plots(
+                initial_W_input_for_fire_mode, withdrawal_time_form, MODE_PORTFOLIO, rates_periods_data, P_value=initial_P_input_for_expense_mode_raw, desired_final_value=D_form
+            )
+            calculated_W_output_for_expense_mode = W_calc_secondary
+            portfolio_plot_P_mode, withdrawal_plot_P_mode = p_plot_p, w_plot_p
+            table_data_P_mode_html = table_p
+
+        elif mode_form == MODE_PORTFOLIO:
+            P_actual_primary, W_calc_primary, p_plot_p, w_plot_w, table_p = generate_plots(
+                W_form, withdrawal_time_form, MODE_PORTFOLIO, rates_periods_data, P_value=P_value_form, desired_final_value=D_form
+            )
+            initial_P_input_for_expense_mode_raw = P_actual_primary
+            calculated_W_output_for_expense_mode = W_calc_primary
+            portfolio_plot_P_mode, withdrawal_plot_P_mode = p_plot_p, w_plot_p
+            table_data_P_mode_html = table_p
+
+            initial_W_input_for_fire_mode = W_calc_primary
+            P_calc_secondary, _, p_plot_w, w_plot_w, table_w = generate_plots(
+                initial_W_input_for_fire_mode, withdrawal_time_form, MODE_WITHDRAWAL, rates_periods_data, P_value=None, desired_final_value=D_form
+            )
+            calculated_P_output = P_calc_secondary
+            portfolio_plot_W_mode, withdrawal_plot_W_mode = p_plot_w, w_plot_w
+            table_data_W_mode_html = table_w
+
+        if initial_P_input_for_expense_mode_raw == float('inf'):
+            initial_P_input_for_expense_mode_template = "N/A"
+        else:
+            initial_P_input_for_expense_mode_template = initial_P_input_for_expense_mode_raw
+
+        if len(rates_periods_data) == 1:
+             form_params_for_result_page['r_form_val'] = rates_periods_data[0]['r'] * 100
+             form_params_for_result_page['i_form_val'] = rates_periods_data[0]['i'] * 100
+             form_params_for_result_page['T_form_val'] = rates_periods_data[0]['duration']
+
+        form_params_for_result_page['D_form_val'] = D_form
+        form_params_for_result_page['withdrawal_time_form_val'] = withdrawal_time_form
+        form_params_for_result_page['initial_mode_from_index'] = mode_form
+
+        P_for_js = 0.0
+        if mode_form == MODE_PORTFOLIO:
+            P_for_js = P_value_form if P_value_form is not None else 0.0
+        elif mode_form == MODE_WITHDRAWAL:
+            if calculated_P_output != "N/A" and isinstance(calculated_P_output, (int, float)):
+                 P_for_js = calculated_P_output
+
+        form_params_for_result_page['P_input_raw_for_js'] = P_for_js
+        form_params_for_result_page['TIME_END_const'] = TIME_END
+        form_params_for_result_page['MODE_WITHDRAWAL_const'] = MODE_WITHDRAWAL
+
+        locale_str = get_locale().language if get_locale() else 'en_US'
+        template_context = {
+            **form_params_for_result_page,
+            'fire_W_input_val': initial_W_input_for_fire_mode,
+            'fire_P_calculated_val': format_currency(calculated_P_output, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_P_output, (int, float)) and calculated_P_output != float('inf') else gettext("N/A"),
+            'portfolio_plot_fire': portfolio_plot_W_mode,
+            'withdrawal_plot_fire': withdrawal_plot_W_mode,
+            'table_data_fire_html': table_data_W_mode_html,
+            'expense_P_input_val': initial_P_input_for_expense_mode_template,
+            'expense_W_calculated_val': format_currency(calculated_W_output_for_expense_mode, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_W_output_for_expense_mode, (int, float)) else gettext("N/A"),
+            'portfolio_plot_expense': portfolio_plot_P_mode,
+            'withdrawal_plot_expense': withdrawal_plot_P_mode,
+            'table_data_expense_html': table_data_P_mode_html,
+            'rates_periods_info_json': rates_periods_data
+        }
+        current_year = datetime.datetime.now().year
+        template_context['current_year'] = current_year
+        return render_template('result.html', **template_context)
+    else:
+        default_form_data = {
+            'W': '20000', 'r': '5', 'i': '2', 'T': '30', 'D': '0.0',
+            'withdrawal_time': TIME_END, 'mode': MODE_WITHDRAWAL, 'P': '500000', 'error': None,
+            'period1_duration': '', 'period1_r': '', 'period1_i': '',
+            'period2_duration': '', 'period2_r': '', 'period2_i': '',
+            'period3_duration': '', 'period3_r': '', 'period3_i': '',
+        }
+        current_year = datetime.datetime.now().year
+        default_form_data['current_year'] = current_year
+        return render_template('index.html', defaults=default_form_data, current_year=default_form_data.get('current_year'))
+
 
 @project_blueprint.route('/update', methods=['POST'])
 def update():
