@@ -12,14 +12,14 @@
   <header class="container mt-3 mb-3 text-center">
     <h1>
       <span class="title-tooltip-container">
-        <a class="text-decoration-none" href="{{ url_for('index') }}">{{ _("FIRE Calculator") }}</a>
+        <a class="text-decoration-none" href="{{ url_for('project.index') }}">{{ _("FIRE Calculator") }}</a>
         <span class="tooltip-text main-title-tooltip">{{ _("Financial Independence, Retire Early: A movement dedicated to a program of extreme savings and investment that aims to allow proponents to retire far earlier than traditional budgets and retirement plans would permit.") }}</span>
       </span>
     </h1>
     <div class="sub-nav">
-      <a href="{{ url_for('index') }}" class="sub-nav-item {% if request.endpoint == 'index' %}active{% endif %}">{{ _("Home") }}</a>
-      <a href="{{ url_for('compare') }}" class="sub-nav-item {% if request.endpoint == 'compare' %}active{% endif %}">{{ _("Compare") }}</a>
-      <a href="{{ url_for('settings') }}" class="sub-nav-item {% if request.endpoint == 'settings' %}active{% endif %}">{{ _("Settings") }}</a>
+      <a href="{{ url_for('project.index') }}" class="sub-nav-item {% if request.endpoint == 'project.index' %}active{% endif %}">{{ _("Home") }}</a>
+      <a href="{{ url_for('project.compare') }}" class="sub-nav-item {% if request.endpoint == 'project.compare' %}active{% endif %}">{{ _("Compare") }}</a>
+      <a href="{{ url_for('project.settings') }}" class="sub-nav-item {% if request.endpoint == 'project.settings' %}active{% endif %}">{{ _("Settings") }}</a>
       <button class="btn btn-sm btn-outline-secondary sub-nav-item" onclick="toggleTheme()">{{ _("Toggle Theme") }}</button>
     </div>
   </header>
@@ -40,8 +40,8 @@
 
   <footer class="container mt-5 py-3 text-center text-muted">
     <p>&copy; {{ _("FIRE Calculator") }} {% block year %}{{ current_year }}{% endblock %} |
-      <a href="{{ url_for('about') }}" class="text-muted">{{ _("About") }}</a> |
-      <a href="{{ url_for('faq') }}" class="text-muted">{{ _("FAQ") }}</a>
+      <a href="{{ url_for('project.about') }}" class="text-muted">{{ _("About") }}</a> |
+      <a href="{{ url_for('project.faq') }}" class="text-muted">{{ _("FAQ") }}</a>
     </p>
   </footer>
 
