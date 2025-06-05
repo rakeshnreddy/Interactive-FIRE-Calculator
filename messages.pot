@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-05 17:16+0000\n"
+"POT-Creation-Date: 2025-06-05 17:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -515,8 +515,11 @@ msgid "Your estimated current annual living expenses."
 msgstr ""
 
 #: templates/index.html:18
-#, python-format
-msgid "Overall Annual Return (%%) (Fallback):"
+msgid "Overall Annual Return"
+msgstr ""
+
+#: templates/index.html:18 templates/index.html:23
+msgid "(Fallback):"
 msgstr ""
 
 #: templates/index.html:18
@@ -531,8 +534,7 @@ msgid "Used if no periodic rates are specified below."
 msgstr ""
 
 #: templates/index.html:23
-#, python-format
-msgid "Overall Annual Inflation (%%) (Fallback):"
+msgid "Overall Annual Inflation"
 msgstr ""
 
 #: templates/index.html:23
@@ -569,8 +571,7 @@ msgid "Duration (in years) for this specific period."
 msgstr ""
 
 #: templates/index.html:44
-#, python-format
-msgid "Ret(%%):"
+msgid "Ret"
 msgstr ""
 
 #: templates/index.html:44
@@ -578,8 +579,7 @@ msgid "Expected annual investment return for this period."
 msgstr ""
 
 #: templates/index.html:48
-#, python-format
-msgid "Inf(%%):"
+msgid "Inf"
 msgstr ""
 
 #: templates/index.html:48
