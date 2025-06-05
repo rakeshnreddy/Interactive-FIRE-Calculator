@@ -15,12 +15,12 @@
       </div>
 
       <div class="mb-3">
-        <label for="r" class="form-label">{{ _("Overall Annual Return (%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return (e.g., 7% for 7). Used if no specific periods are defined.") }}</span></span></label>
+        <label for="r" class="form-label">{{ _("Overall Annual Return (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return (e.g., 7% for 7). Used if no specific periods are defined.") }}</span></span></label>
         <input type="number" name="r" id="r" class="form-control" step="0.1" value="{{ request.form.get('r', defaults.r) }}" min="-50" max="100">
         <small class="form-text text-muted">{{ _("Used if no periodic rates are specified below.") }}</small>
       </div>
       <div class="mb-3">
-        <label for="i" class="form-label">{{ _("Overall Annual Inflation (%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate (e.g., 3% for 3). Used if no specific periods are defined.") }}</span></span></label>
+        <label for="i" class="form-label">{{ _("Overall Annual Inflation (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate (e.g., 3% for 3). Used if no specific periods are defined.") }}</span></span></label>
         <input type="number" name="i" id="i" class="form-control" step="0.1" value="{{ request.form.get('i', defaults.i) }}" min="-50" max="100">
         <small class="form-text text-muted">{{ _("Used if no periodic rates are specified below.") }}</small>
       </div>
@@ -41,11 +41,11 @@
           <input type="number" name="period{{k}}_duration" id="period{{k}}_duration" class="form-control form-control-sm" value="{{ request.form.get('period{}_duration'.format(k)) or defaults['period{}_duration'.format(k)] }}" min="0" step="1" placeholder="{{ _('Years') }}">
         </div>
         <div class="col">
-          <label for="period{{k}}_r" class="form-label form-label-sm">{{ _("P") }}{{k}} {{ _("Ret(%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected annual investment return for this period.") }}</span></span></label>
+          <label for="period{{k}}_r" class="form-label form-label-sm">{{ _("P") }}{{k}} {{ _("Ret(%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected annual investment return for this period.") }}</span></span></label>
           <input type="number" name="period{{k}}_r" id="period{{k}}_r" class="form-control form-control-sm" step="0.1" value="{{ request.form.get('period{}_r'.format(k)) or defaults['period{}_r'.format(k)] }}" min="-50" max="100" placeholder="%">
         </div>
         <div class="col">
-          <label for="period{{k}}_i" class="form-label form-label-sm">{{ _("P") }}{{k}} {{ _("Inf(%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected annual inflation rate for this period.") }}</span></span></label>
+          <label for="period{{k}}_i" class="form-label form-label-sm">{{ _("P") }}{{k}} {{ _("Inf(%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected annual inflation rate for this period.") }}</span></span></label>
           <input type="number" name="period{{k}}_i" id="period{{k}}_i" class="form-control form-control-sm" step="0.1" value="{{ request.form.get('period{}_i'.format(k)) or defaults['period{}_i'.format(k)] }}" min="-50" max="100" placeholder="%">
         </div>
       </div>
