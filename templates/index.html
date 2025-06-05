@@ -8,7 +8,7 @@
     {% if error %}
       <div class="alert alert-danger">{{ error }}</div> {# Error messages from backend are already translated #}
     {% endif %}
-    <form method="post" action="{{ url_for('index') }}" class="needs-validation" novalidate id="calculatorForm">
+    <form method="post" action="{{ url_for('project.index') }}" class="needs-validation" novalidate id="calculatorForm">
       <div class="mb-3">
         <label for="W" class="form-label">{{ _("Annual Expenses (in today's dollars):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Your estimated current annual living expenses.") }}</span></span></label>
         <input type="number" name="W" id="W" class="form-control" value="{{ request.form.get('W', defaults.W) }}" required min="0">
@@ -71,7 +71,7 @@
       <button type="submit" class="btn btn-primary">{{ _("Calculate") }}</button>
     </form>
     <div class="mt-4 text-center"> {# Added margin and text centering for the link/button #}
-      <a href="{{ url_for('compare') }}" class="btn btn-secondary">{{ _("Compare Scenarios") }}</a>
+      <a href="{{ url_for('project.compare') }}" class="btn btn-secondary">{{ _("Compare Scenarios") }}</a>
     </div>
   </div>
 {% endblock %}

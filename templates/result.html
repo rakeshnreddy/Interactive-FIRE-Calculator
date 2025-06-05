@@ -158,7 +158,7 @@
     </div>
   </div>
   <div class="text-center mt-4"> {# Centering for buttons #}
-    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary" style="margin-top: 30px;">{{ _("← Back to Calculator") }}</a>
+    <a href="{{ url_for('project.index') }}" class="btn btn-outline-secondary" style="margin-top: 30px;">{{ _("← Back to Calculator") }}</a>
   </div>
 </div>
 {% endblock %}
@@ -307,7 +307,7 @@
             formData.append('D', exportContainer.dataset.d || '0.0');
 
 
-            fetch("{{ url_for('update') }}", { // Use url_for for robustness
+            fetch("{{ url_for('project.update') }}", { // Use url_for for robustness
                 method: 'POST',
                 body: formData
             })
@@ -389,7 +389,7 @@
                 params.append('i', i_output.value || container.dataset.i || '0');
                 params.append('T', T_output.value || container.dataset.t || '0');
           }
-          exportLink.href = `{{ url_for('export_csv') }}?${params.toString()}`;
+          exportLink.href = `{{ url_for('project.export_csv') }}?${params.toString()}`;
         }
 
         function updatePage(data, sourceElement = null) {

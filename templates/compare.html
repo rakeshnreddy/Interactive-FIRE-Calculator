@@ -27,7 +27,7 @@
     <select id="loadScenarioSelect" class="form-select" style="width: auto; display: inline-block;" onchange="loadScenario()"></select>
   </div>
 
-  <form method="post" action="{{ url_for('compare') }}" id="compareForm" class="needs-validation" novalidate>
+  <form method="post" action="{{ url_for('project.compare') }}" id="compareForm" class="needs-validation" novalidate>
     <div class="scenario-container">
       {# The scenarios variable is passed from the route #}
       {% for scenario in scenarios %}
@@ -128,7 +128,7 @@
   {% endif %}
 
   <div class="mt-4"> {# Added spacing for back link #}
-    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">{{ _("← Back to Calculator") }}</a>
+    <a href="{{ url_for('project.index') }}" class="btn btn-outline-secondary">{{ _("← Back to Calculator") }}</a>
   </div>
 </div>
 {% endblock %}
@@ -213,7 +213,7 @@
     function updateComparison() {
       $.ajax({
         type: "POST",
-        url: "{{ url_for('compare') }}", // Use url_for for robustness
+        url: "{{ url_for('project.compare') }}", // Use url_for for robustness
         data: $("#compareForm").serialize(),
         headers: { "X-Requested-With": "XMLHttpRequest" },
         success: function(response) {
