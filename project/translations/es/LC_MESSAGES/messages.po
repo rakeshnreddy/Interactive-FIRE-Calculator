@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-03 14:11+0000\n"
+"POT-Creation-Date: 2025-06-05 17:16+0000\n"
 "PO-Revision-Date: 2025-06-03 14:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -35,282 +35,153 @@ msgstr ""
 msgid "rates_periods list cannot be empty for simulation."
 msgstr ""
 
-#: project/routes.py:29
+#: project/routes.py:31
 msgid "No data available to display in table."
 msgstr ""
 
-#: project/routes.py:31 project/routes.py:681
+#: project/routes.py:34
 msgid "Year"
 msgstr ""
 
-#: project/routes.py:31 project/routes.py:681
-msgid "Portfolio Balance ($)"
+#: project/routes.py:35
+#, python-brace-format
+msgid "Portfolio Balance ({currency})"
 msgstr ""
 
-#: project/routes.py:31 project/routes.py:681
-msgid "Annual Withdrawal ($)"
+#: project/routes.py:36
+#, python-brace-format
+msgid "Annual Withdrawal ({currency})"
 msgstr ""
 
-#: project/routes.py:63
+#: project/routes.py:67
 msgid "Error: No rate periods provided."
 msgstr ""
 
-#: project/routes.py:63
+#: project/routes.py:67
 msgid "Table data error."
 msgstr ""
 
-#: project/routes.py:70
+#: project/routes.py:73
 msgid ""
 "Cannot find a suitable portfolio. Withdrawals may be too high or periods "
 "too long/unfavorable."
 msgstr ""
 
-#: project/routes.py:71
+#: project/routes.py:74
 msgid "Table data not available due to error."
 msgstr ""
 
-#: project/routes.py:79
+#: project/routes.py:80
 msgid ""
 "Error calculating sustainable withdrawal. Inputs might be unrealistic for"
 " the given portfolio."
 msgstr ""
 
-#: project/routes.py:80
+#: project/routes.py:81
 msgid "Table data not available due to error in withdrawal calculation."
 msgstr ""
 
-#: project/routes.py:92 templates/result.html:105 templates/result.html:139
+#: project/routes.py:93 templates/result.html:108 templates/result.html:143
 msgid "Portfolio Balance"
 msgstr ""
 
-#: project/routes.py:93 project/routes.py:557
+#: project/routes.py:95
 #, python-brace-format
-msgid "Year: %{x}<br>Balance: $%{y:,.2f}<extra></extra>"
+msgid "Year: %{x}<br>Balance: %{customdata[0]}<extra></extra>"
 msgstr ""
 
-#: project/routes.py:96
+#: project/routes.py:98
 #, python-format
 msgid "Portfolio Balance (Withdrawals at %(withdrawal_time)s)"
 msgstr ""
 
-#: project/routes.py:97 project/routes.py:113 project/routes.py:567
-#: project/routes.py:570 templates/compare.html:60 templates/index.html:41
+#: project/routes.py:99 project/routes.py:117 templates/compare.html:60
+#: templates/index.html:41
 msgid "Years"
 msgstr ""
 
-#: project/routes.py:98 project/routes.py:567
-msgid "Portfolio Value ($)"
+#: project/routes.py:100
+#, python-brace-format
+msgid "Portfolio Value ({currency})"
 msgstr ""
 
-#: project/routes.py:106
+#: project/routes.py:109
 msgid "Annual Withdrawal"
 msgstr ""
 
-#: project/routes.py:108 project/routes.py:564
+#: project/routes.py:112
 #, python-brace-format
-msgid "Year: %{x}<br>Withdrawal: $%{y:,.2f}<extra></extra>"
+msgid "Year: %{x}<br>Withdrawal: %{customdata[0]}<extra></extra>"
 msgstr ""
 
-#: project/routes.py:112 templates/result.html:109 templates/result.html:143
+#: project/routes.py:116 templates/result.html:112 templates/result.html:147
 msgid "Annual Withdrawals"
 msgstr ""
 
-#: project/routes.py:114 project/routes.py:570
-msgid "Withdrawal ($)"
+#: project/routes.py:118
+#, python-brace-format
+msgid "Withdrawal ({currency})"
 msgstr ""
 
-#: project/routes.py:152 project/routes.py:373 project/routes.py:627
+#: project/routes.py:149
 msgid "Desired final portfolio value (D) cannot be negative."
 msgstr ""
 
-#: project/routes.py:153 project/routes.py:372 project/routes.py:625
+#: project/routes.py:150
 msgid "Annual withdrawal (W) cannot be negative."
 msgstr ""
 
-#: project/routes.py:168 project/routes.py:390
+#: project/routes.py:165
 #, python-format
 msgid "Period %(k)s annual return (r) must be between -50% and 100%."
 msgstr ""
 
-#: project/routes.py:170 project/routes.py:392
+#: project/routes.py:167
 #, python-format
 msgid "Period %(k)s inflation rate (i) must be between -50% and 100%."
 msgstr ""
 
-#: project/routes.py:173 project/routes.py:395 project/routes.py:643
+#: project/routes.py:170
 #, python-format
 msgid "Period %(k)s duration cannot be negative."
 msgstr ""
 
-#: project/routes.py:184 project/routes.py:405
+#: project/routes.py:179
 msgid "Time horizon (T) must be greater than 0 for single period mode."
 msgstr ""
 
-#: project/routes.py:185 project/routes.py:406 project/routes.py:506
+#: project/routes.py:180
 msgid "Annual return (r) must be between -50% and 100%."
 msgstr ""
 
-#: project/routes.py:186 project/routes.py:407 project/routes.py:507
+#: project/routes.py:181
 msgid "Inflation rate (i) must be between -50% and 100%."
 msgstr ""
 
-#: project/routes.py:192 project/routes.py:626
+#: project/routes.py:187
 msgid "Initial portfolio (P) cannot be negative."
 msgstr ""
 
-#: project/routes.py:199
+#: project/routes.py:193
 msgid "Error generating FIRE mode plot."
 msgstr ""
 
-#: project/routes.py:200
+#: project/routes.py:194
 msgid "Error generating Expense mode plot."
 msgstr ""
 
-#: project/routes.py:201 project/routes.py:202
+#: project/routes.py:195 project/routes.py:196
 msgid "Table data not available."
 msgstr ""
 
-#: project/routes.py:213
+#: project/routes.py:207
 msgid ""
 "Cannot find a suitable portfolio for the given withdrawal. Inputs may be "
 "unrealistic."
 msgstr ""
 
-#: project/routes.py:314 project/routes.py:319 project/routes.py:433
-#: project/routes.py:439 project/routes.py:474 project/routes.py:517
-#: project/routes.py:526 project/routes.py:531
+#: project/routes.py:268 project/routes.py:273
 msgid "N/A"
-msgstr ""
-
-#: project/routes.py:374
-msgid "Initial Portfolio (P) must be >= 0."
-msgstr ""
-
-#: project/routes.py:398
-#, python-format
-msgid "Invalid input for period %(k)s: %(error)s"
-msgstr ""
-
-#: project/routes.py:412
-#, python-format
-msgid "Invalid input: %(error)s"
-msgstr ""
-
-#: project/routes.py:415
-msgid "An unexpected error occurred while processing inputs."
-msgstr ""
-
-#: project/routes.py:473
-#, python-format
-msgid "Scenario %(n)s: Not enabled by user."
-msgstr ""
-
-#: project/routes.py:483
-msgid "Withdrawal (W) cannot be negative."
-msgstr ""
-
-#: project/routes.py:484
-msgid "Desired Final Value (D) cannot be negative."
-msgstr ""
-
-#: project/routes.py:496
-#, python-format
-msgid "Period %(p_num)s annual return (r) must be between -50% and 100%."
-msgstr ""
-
-#: project/routes.py:497
-#, python-format
-msgid "Period %(p_num)s inflation rate (i) must be between -50% and 100%."
-msgstr ""
-
-#: project/routes.py:499
-#, python-format
-msgid "Period %(p_num)s duration cannot be negative."
-msgstr ""
-
-#: project/routes.py:505
-msgid "Time (T) must be > 0 for single period mode."
-msgstr ""
-
-#: project/routes.py:516
-#, python-format
-msgid "Scenario %(n)s: Cannot find suitable portfolio (inputs unrealistic)."
-msgstr ""
-
-#: project/routes.py:530
-#, python-format
-msgid "Scenario %(n)s: %(error)s"
-msgstr ""
-
-#: project/routes.py:545
-msgid "No valid scenarios to plot. Please check inputs or enable scenarios."
-msgstr ""
-
-#: project/routes.py:556
-#, python-format
-msgid "Scenario %(n)s Balance"
-msgstr ""
-
-#: project/routes.py:562
-#, python-format
-msgid "Scenario %(n)s Withdrawal"
-msgstr ""
-
-#: project/routes.py:567
-msgid "Portfolio Balance Comparison"
-msgstr ""
-
-#: project/routes.py:570
-msgid "Annual Withdrawals Comparison"
-msgstr ""
-
-#: project/routes.py:618
-msgid "Invalid mode specified."
-msgstr ""
-
-#: project/routes.py:619
-msgid "Invalid withdrawal_time specified."
-msgstr ""
-
-#: project/routes.py:640
-#, python-format
-msgid "Period %(k)s 'r' out of range."
-msgstr ""
-
-#: project/routes.py:641
-#, python-format
-msgid "Period %(k)s 'i' out of range."
-msgstr ""
-
-#: project/routes.py:645
-#, python-format
-msgid "Invalid period %(k)s data: %(error)s"
-msgstr ""
-
-#: project/routes.py:652
-msgid ""
-"Either period data (p1_dur, p1_r, p1_i, ...) or single (r, i, T) "
-"parameters are required for CSV export."
-msgstr ""
-
-#: project/routes.py:657
-msgid "Time horizon (T) must be > 0 for single period export."
-msgstr ""
-
-#: project/routes.py:658
-msgid "Single 'r' out of range."
-msgstr ""
-
-#: project/routes.py:659
-msgid "Single 'i' out of range."
-msgstr ""
-
-#: project/routes.py:670
-msgid "Cannot calculate portfolio for CSV export, inputs may be unrealistic."
-msgstr ""
-
-#: project/routes.py:707
-msgid "An unexpected error occurred. Please check logs."
 msgstr ""
 
 #: templates/about.html:3
@@ -371,7 +242,7 @@ msgid ""
 msgstr ""
 
 #: templates/about.html:19 templates/compare.html:131 templates/faq.html:63
-#: templates/result.html:157 templates/settings.html:37
+#: templates/result.html:161 templates/settings.html:37
 msgid "← Back to Calculator"
 msgstr ""
 
@@ -506,7 +377,7 @@ msgstr ""
 msgid "Duration (in years) for this specific period in this scenario."
 msgstr ""
 
-#: templates/compare.html:63 templates/index.html:44
+#: templates/compare.html:63
 msgid "Ret(%):"
 msgstr ""
 
@@ -514,7 +385,7 @@ msgstr ""
 msgid "Expected annual investment return for this period in this scenario."
 msgstr ""
 
-#: templates/compare.html:67 templates/index.html:48
+#: templates/compare.html:67
 msgid "Inf(%):"
 msgstr ""
 
@@ -538,7 +409,7 @@ msgstr ""
 msgid "End"
 msgstr ""
 
-#: templates/compare.html:86 templates/index.html:67
+#: templates/compare.html:86
 msgid "Desired Final Portfolio Value ($):"
 msgstr ""
 
@@ -645,7 +516,8 @@ msgid "Your estimated current annual living expenses."
 msgstr ""
 
 #: templates/index.html:18
-msgid "Overall Annual Return (%) (Fallback):"
+#, python-format
+msgid "Overall Annual Return (%%) (Fallback):"
 msgstr ""
 
 #: templates/index.html:18
@@ -660,7 +532,8 @@ msgid "Used if no periodic rates are specified below."
 msgstr ""
 
 #: templates/index.html:23
-msgid "Overall Annual Inflation (%) (Fallback):"
+#, python-format
+msgid "Overall Annual Inflation (%%) (Fallback):"
 msgstr ""
 
 #: templates/index.html:23
@@ -697,7 +570,17 @@ msgid "Duration (in years) for this specific period."
 msgstr ""
 
 #: templates/index.html:44
+#, python-format
+msgid "Ret(%%):"
+msgstr ""
+
+#: templates/index.html:44
 msgid "Expected annual investment return for this period."
+msgstr ""
+
+#: templates/index.html:48
+#, python-format
+msgid "Inf(%%):"
 msgstr ""
 
 #: templates/index.html:48
@@ -714,6 +597,10 @@ msgstr ""
 
 #: templates/index.html:63 templates/result.html:80
 msgid "End of Year"
+msgstr ""
+
+#: templates/index.html:67
+msgid "Desired Final Portfolio Value"
 msgstr ""
 
 #: templates/index.html:67
@@ -816,44 +703,44 @@ msgstr ""
 msgid "Calculated FIRE Number:"
 msgstr ""
 
-#: templates/result.html:103
+#: templates/result.html:106
 msgid "Your Annual Expense (Input):"
 msgstr ""
 
-#: templates/result.html:113 templates/result.html:147
+#: templates/result.html:116 templates/result.html:151
 msgid "Yearly Data"
 msgstr ""
 
-#: templates/result.html:115 templates/result.html:149
+#: templates/result.html:118 templates/result.html:153
 msgid "Yearly data table will appear here after calculation."
 msgstr ""
 
-#: templates/result.html:125
+#: templates/result.html:128
 msgid "FIRE Mode"
 msgstr ""
 
-#: templates/result.html:127
+#: templates/result.html:130
 msgid ""
 "In FIRE Mode, you input your target FIRE number (total portfolio), and "
 "the calculator determines the maximum sustainable annual expense you can "
 "withdraw."
 msgstr ""
 
-#: templates/result.html:131
+#: templates/result.html:134
 msgid "FIRE Number (P):"
 msgstr ""
 
-#: templates/result.html:131
+#: templates/result.html:134
 msgid ""
 "Your target retirement portfolio principal. Adjusting this will "
 "recalculate the maximum sustainable annual expense."
 msgstr ""
 
-#: templates/result.html:136
+#: templates/result.html:140
 msgid "Your FIRE Number (Input):"
 msgstr ""
 
-#: templates/result.html:137
+#: templates/result.html:141
 msgid "Max Sustainable Annual Expense:"
 msgstr ""
 
@@ -906,3 +793,117 @@ msgstr ""
 #: templates/settings.html:34
 msgid "Settings are saved in your browser's local storage."
 msgstr ""
+
+#~ msgid "Portfolio Balance ($)"
+#~ msgstr ""
+
+#~ msgid "Annual Withdrawal ($)"
+#~ msgstr ""
+
+#~ msgid "Year: %{x}<br>Balance: $%{y:,.2f}<extra></extra>"
+#~ msgstr ""
+
+#~ msgid "Portfolio Value ($)"
+#~ msgstr ""
+
+#~ msgid "Year: %{x}<br>Withdrawal: $%{y:,.2f}<extra></extra>"
+#~ msgstr ""
+
+#~ msgid "Withdrawal ($)"
+#~ msgstr ""
+
+#~ msgid "Initial Portfolio (P) must be >= 0."
+#~ msgstr ""
+
+#~ msgid "Invalid input for period %(k)s: %(error)s"
+#~ msgstr ""
+
+#~ msgid "Invalid input: %(error)s"
+#~ msgstr ""
+
+#~ msgid "An unexpected error occurred while processing inputs."
+#~ msgstr ""
+
+#~ msgid "Scenario %(n)s: Not enabled by user."
+#~ msgstr ""
+
+#~ msgid "Withdrawal (W) cannot be negative."
+#~ msgstr ""
+
+#~ msgid "Desired Final Value (D) cannot be negative."
+#~ msgstr ""
+
+#~ msgid "Period %(p_num)s annual return (r) must be between -50% and 100%."
+#~ msgstr ""
+
+#~ msgid "Period %(p_num)s inflation rate (i) must be between -50% and 100%."
+#~ msgstr ""
+
+#~ msgid "Period %(p_num)s duration cannot be negative."
+#~ msgstr ""
+
+#~ msgid "Time (T) must be > 0 for single period mode."
+#~ msgstr ""
+
+#~ msgid "Scenario %(n)s: Cannot find suitable portfolio (inputs unrealistic)."
+#~ msgstr ""
+
+#~ msgid "Scenario %(n)s: %(error)s"
+#~ msgstr ""
+
+#~ msgid "No valid scenarios to plot. Please check inputs or enable scenarios."
+#~ msgstr ""
+
+#~ msgid "Scenario %(n)s Balance"
+#~ msgstr ""
+
+#~ msgid "Scenario %(n)s Withdrawal"
+#~ msgstr ""
+
+#~ msgid "Portfolio Balance Comparison"
+#~ msgstr ""
+
+#~ msgid "Annual Withdrawals Comparison"
+#~ msgstr ""
+
+#~ msgid "Invalid mode specified."
+#~ msgstr ""
+
+#~ msgid "Invalid withdrawal_time specified."
+#~ msgstr ""
+
+#~ msgid "Period %(k)s 'r' out of range."
+#~ msgstr ""
+
+#~ msgid "Period %(k)s 'i' out of range."
+#~ msgstr ""
+
+#~ msgid "Invalid period %(k)s data: %(error)s"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Either period data (p1_dur, p1_r, p1_i,"
+#~ " ...) or single (r, i, T) "
+#~ "parameters are required for CSV export."
+#~ msgstr ""
+
+#~ msgid "Time horizon (T) must be > 0 for single period export."
+#~ msgstr ""
+
+#~ msgid "Single 'r' out of range."
+#~ msgstr ""
+
+#~ msgid "Single 'i' out of range."
+#~ msgstr ""
+
+#~ msgid "Cannot calculate portfolio for CSV export, inputs may be unrealistic."
+#~ msgstr ""
+
+#~ msgid "An unexpected error occurred. Please check logs."
+#~ msgstr ""
+
+#~ msgid "Overall Annual Return (%) (Fallback):"
+#~ msgstr ""
+
+#~ msgid "Overall Annual Inflation (%) (Fallback):"
+#~ msgstr ""
