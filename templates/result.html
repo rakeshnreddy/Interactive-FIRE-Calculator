@@ -55,12 +55,12 @@
           </div>
           <div class="card-body collapsible-content">
             <div class="mb-3">
-              <label for="r_slider" class="form-label">{{ _("Expected Annual Return (%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return (e.g., 7% for 7). This will update calculations for both modes.") }}</span></span></label>
+              <label for="r_slider" class="form-label">{{ _("Expected Annual Return (%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return (e.g., 7%% for 7). This will update calculations for both modes.") }}</span></span></label>
               <input type="range" id="r_slider" name="r" class="form-range" min="0" max="15" step="0.1" value="{{ r_form_val | default(5) }}">
               <input type="text" id="r_output" class="number-input form-control form-control-sm mt-1" value="{{ r_form_val | default(5) }}">
             </div>
             <div class="mb-3">
-              <label for="i_slider" class="form-label">{{ _("Expected Annual Inflation (%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate (e.g., 3% for 3). This will update calculations for both modes.") }}</span></span></label>
+              <label for="i_slider" class="form-label">{{ _("Expected Annual Inflation (%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate (e.g., 3%% for 3). This will update calculations for both modes.") }}</span></span></label>
               <input type="range" id="i_slider" name="i" class="form-range" min="0" max="10" step="0.1" value="{{ i_form_val | default(2) }}">
               <input type="text" id="i_output" class="number-input form-control form-control-sm mt-1" value="{{ i_form_val | default(2) }}">
             </div>
