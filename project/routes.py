@@ -132,8 +132,6 @@ def compare():
 @project_blueprint.route('/settings')
 def settings():
     current_app.logger.info(f"Settings route called. Method: {request.method}")
-    # current_year = datetime.datetime.now().year # Original line
-    # return render_template("settings.html", current_year=current_year) # Original line
     current_year = datetime.datetime.now().year
     return render_template("settings.html", current_year=current_year)
 
@@ -144,13 +142,15 @@ def export_csv():
 
 @project_blueprint.route('/about')
 def about():
-    current_app.logger.info(f"About route called (minimal). Method: {request.method}")
-    return f"About route reached successfully (minimal). Method: {request.method}"
+    current_app.logger.info(f"About route called. Method: {request.method}")
+    current_year = datetime.datetime.now().year
+    return render_template("about.html", current_year=current_year)
 
 @project_blueprint.route('/faq')
 def faq():
-    current_app.logger.info(f"FAQ route called (minimal). Method: {request.method}")
-    return f"FAQ route reached successfully (minimal). Method: {request.method}"
+    current_app.logger.info(f"FAQ route called. Method: {request.method}")
+    current_year = datetime.datetime.now().year
+    return render_template("faq.html", current_year=current_year)
 
 def register_app_routes(app_instance):
     app_instance.logger.info("Attempting to register project_blueprint (minimal version with simplified routes).")
