@@ -211,16 +211,24 @@
     }
     
     function updateComparison() {
+      console.log('[CompareDebug] updateComparison() called.');
+      console.log('[CompareDebug] Form data being sent:', $("#compareForm").serialize());
       $.ajax({
         type: "POST",
         url: "{{ url_for('project.compare') }}", // Use url_for for robustness
         data: $("#compareForm").serialize(),
         headers: { "X-Requested-With": "XMLHttpRequest" },
         success: function(response) {
+          console.log('[CompareDebug] AJAX success. Raw response:', response);
           // Clear previous general message
           if (window.globalFlashMessageContainer) { // Assuming you add such a container in base.html
               window.globalFlashMessageContainer.innerHTML = '';
           }
+
+          console.log('[CompareDebug] Response message:', response.message);
+          console.log('[CompareDebug] Response combined_balance HTML (first 100 chars):', response.combined_balance ? response.combined_balance.substring(0,100) : 'N/A');
+          console.log('[CompareDebug] Response combined_withdrawal HTML (first 100 chars):', response.combined_withdrawal ? response.combined_withdrawal.substring(0,100) : 'N/A');
+          console.log('[CompareDebug] Response scenarios:', response.scenarios);
 
           if(response.message && response.message.length > 0) {
             $("#combinedGraphs").html("");
@@ -258,7 +266,7 @@
           }
         },
         error: function(xhr, status, error) {
-          console.error("Error updating comparison data:", error);
+          console.error('[CompareDebug] AJAX error. Status:', status, 'Error:', error, 'XHR:', xhr);
           $("#combinedGraphs").html("<p>" + _("Error communicating with server. Please try again.") + "</p>");
           $("#summaryTable").html("");
           alert(_("Error: Could not update comparison. ") + error);
@@ -267,6 +275,7 @@
     }
     
     function updateSummaryTable(scenarios) {
+      console.log('[CompareDebug] updateSummaryTable() called with scenarios:', scenarios);
       var html = "<table class='table table-striped table-hover'><thead><tr><th>#</th><th>" + _("W") + "</th><th>" + _("Rates & Dur.") + "</th><th>" + _("Timing") + "</th><th>" + _("FIRE #") + "</th><th>" + _("Error") + "</th></tr></thead><tbody>";
       scenarios.forEach(function(sc) {
         let rates_display = "N/A";
@@ -290,6 +299,7 @@
       });
       html += "</tbody></table>";
       $("#summaryTable").html(html);
+      console.log('[CompareDebug] Generated summary table HTML:', html);
     }
     
     // Removed bindScenarioSync as AJAX updates are now manual via button.
@@ -301,6 +311,7 @@
       loadScenarioOptions();
 
       $("#compareForm").on("submit", function(e){
+        console.log('[CompareDebug] Compare form submitted.');
         e.preventDefault();
         updateComparison();
       });

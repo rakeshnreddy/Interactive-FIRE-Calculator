@@ -279,6 +279,7 @@ def update():
 def compare():
     current_app.logger.info(f"Compare route called. Method: {request.method}")
     if request.method == 'POST':
+        current_app.logger.info(f"[CompareDebug] Received POST /compare request. Form data: {request.form.to_dict(flat=False)}")
         form_data = request.form
         scenarios_data_for_template = []
         for n in range(1, MAX_SCENARIOS_COMPARE + 1):
@@ -289,7 +290,11 @@ def compare():
                 scenario_input.update({'error': gettext("Scenario %(n)s: Not enabled by user.", n=n), 'fire_number_display': gettext("N/A")})
                 scenarios_data_for_template.append(scenario_input); continue
             try:
-                W_val, D_val, withdrawal_time_val = float(scenario_input['W_form']), float(scenario_input['D_form']), scenario_input['withdrawal_time_form']
+                W_val_str = scenario_input.get('W_form', '0')
+                D_val_str = scenario_input.get('D_form', '0.0')
+                W_val = float(W_val_str) if W_val_str else 0.0
+                D_val = float(D_val_str) if D_val_str else 0.0
+                withdrawal_time_val = scenario_input.get('withdrawal_time_form', TIME_END)
                 if W_val < 0: raise ValueError(gettext("Withdrawal (W) cannot be negative."))
                 if D_val < 0: raise ValueError(gettext("Desired Final Value (D) cannot be negative."))
                 scenario_rates_periods = []
@@ -308,16 +313,23 @@ def compare():
                     if not (-50 <= r_perc_single <= 100): raise ValueError(gettext("Annual return (r) must be between -50% and 100%."))
                     if not (-50 <= i_perc_single <= 100): raise ValueError(gettext("Inflation rate (i) must be between -50% and 100%."))
                     scenario_rates_periods.append({'duration': T_single, 'r': r_perc_single / 100, 'i': i_perc_single / 100})
-                scenario_input['rates_periods_data'] = scenario_rates_periods
+
+                current_app.logger.info(f"[CompareDebug] Scenario {n} calc params: W={W_val}, D={D_val}, time={withdrawal_time_val}, rates={scenario_rates_periods}")
+                scenario_input['rates_periods_data'] = scenario_rates_periods # Store for potential re-use or display if needed
+
                 portfolio = find_required_portfolio(W_val, withdrawal_time_val, scenario_rates_periods, D_val)
                 if portfolio == float('inf'):
                     scenario_input.update({'error': gettext("Scenario %(n)s: Cannot find suitable portfolio (inputs unrealistic).", n=n), 'fire_number': gettext("N/A"), 'years_data': [], 'balances_data': [], 'withdrawals_data': []})
                 else:
+                    # For a valid portfolio, we can also run annual_simulation to get yearly data if needed for the summary table or future plots
                     years, balances, withdrawals = annual_simulation(portfolio, W_val, withdrawal_time_val, scenario_rates_periods)
                     scenario_input.update({'fire_number': portfolio, 'years_data': years.tolist(), 'balances_data': balances, 'withdrawals_data': withdrawals})
+
+                # Format for display
                 scenario_input['fire_number_display'] = format_currency(portfolio, DEFAULT_CURRENCY, locale=(get_locale().language if get_locale() else 'en_US')) if isinstance(portfolio, (int, float)) and portfolio != float('inf') else gettext("N/A")
+
             except ValueError as e:
-                current_app.logger.error(f"Invalid input for scenario {n} in compare route: {e}")
+                current_app.logger.error(f"[CompareDebug] Invalid input for scenario {n} in compare route: {e} - Scenario Input: {scenario_input}")
                 scenario_input.update({'error': gettext("Scenario %(n)s: %(error)s", n=n, error=str(e)), 'fire_number_display': gettext("N/A"), 'enabled': False})
             scenarios_data_for_template.append(scenario_input)
 
@@ -325,6 +337,7 @@ def compare():
         combined_balance_plot_html, combined_withdrawal_plot_html, message = "", "", ""
         if not plottable_scenarios: message = gettext("No valid scenarios to plot. Please check inputs or enable scenarios.")
         else:
+            current_app.logger.info(f"[CompareDebug] Plotting {len(plottable_scenarios)} scenarios.")
             plot_config, locale_str_compare = {'displayModeBar': False, 'responsive': True}, (get_locale().language if get_locale() else 'en_US')
             fig_balance, fig_withdrawal = go.Figure(), go.Figure()
             for sc_data in plottable_scenarios:
@@ -337,8 +350,15 @@ def compare():
             combined_balance_plot_html = pyo.plot(fig_balance, include_plotlyjs=False, output_type='div', config=plot_config)
             fig_withdrawal.update_layout(title=gettext("Annual Withdrawals Comparison"), xaxis_title=gettext("Years"), yaxis_title=gettext("Withdrawal ({currency})").format(currency=DEFAULT_CURRENCY))
             combined_withdrawal_plot_html = pyo.plot(fig_withdrawal, include_plotlyjs=False, output_type='div', config=plot_config)
+
+        current_app.logger.info(f"[CompareDebug] scenarios_data_for_template before jsonify (first scenario sample): {scenarios_data_for_template[0] if scenarios_data_for_template else 'empty'}")
+        current_app.logger.info(f"[CompareDebug] combined_balance_plot_html length: {len(combined_balance_plot_html) if combined_balance_plot_html else 0}")
+        current_app.logger.info(f"[CompareDebug] combined_withdrawal_plot_html length: {len(combined_withdrawal_plot_html) if combined_withdrawal_plot_html else 0}")
+        current_app.logger.info(f"[CompareDebug] Message for jsonify: {message}")
+
         return jsonify({"combined_balance": combined_balance_plot_html, "combined_withdrawal": combined_withdrawal_plot_html, "scenarios": scenarios_data_for_template, "message": message})
     else: # GET request
+        current_app.logger.info(f"[CompareLinkDebug] Received GET /compare request. Args: {request.args.to_dict(flat=False)}")
         default_scenarios_for_template = []
         for n in range(1, MAX_SCENARIOS_COMPARE + 1):
             sc = {'n': n, 'enabled': (n <=2), 'W_form': '', 'r_form': '', 'i_form': '', 'T_form': '', 'D_form': '0.0', 'withdrawal_time_form': TIME_END}
