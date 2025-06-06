@@ -13,9 +13,23 @@
   {# Header content is now part of base.html, including theme toggle #}
   {# The old header div is removed #}
 
-  <div class="primary-result-display" style="text-align: center; margin-bottom: 20px; padding: 15px; background-color: #f0f0f0; border-radius: 5px;">
-    <h3>{{ primary_result_label | default(_('Result:')) }}</h3>
-    <p style="font-size: 1.5em; margin-top: 5px;"><strong>{{ primary_result_value_formatted | default(_('N/A')) }}</strong></p>
+  <div class="primary-result-panel card mb-3">
+    <div class="card-body" style="text-align: center;">
+      <h3>{{ primary_result_label | default(_('Result:')) }}</h3>
+      <p style="font-size: 1.5em; margin-top: 5px;"><strong>{{ primary_result_value_formatted | default(_('N/A')) }}</strong></p>
+
+      <div class="calculation-context mt-3" style="font-size: 0.9em; line-height: 1.4;">
+        <p style="margin-bottom: 2px;"><em>{{ _("Calculation based on:") }}</em></p>
+        {% if p_initial_mode == "withdrawal" %}
+          <p style="margin-bottom: 2px;">{{ _("Input Annual Expenses:") }} <strong>{{ p_input_w }}</strong></p>
+        {% elif p_initial_mode == "portfolio" %}
+          <p style="margin-bottom: 2px;">{{ _("Input Target Portfolio:") }} <strong>{{ p_input_p }}</strong></p>
+        {% endif %}
+        <p style="margin-bottom: 2px;">{{ p_input_period_summary }}</p>
+        <p style="margin-bottom: 2px;">{{ _("Desired Final Portfolio:") }} <strong>{{ p_input_d }}</strong></p>
+        <p style="margin-bottom: 2px;">{{ _("Withdrawal Timing:") }} <strong>{{ p_input_withdrawal_time }}</strong></p>
+      </div>
+    </div>
   </div>
 
   <div id="loadingIndicator" style="display: none; text-align: center; padding: 10px; color: #555;">{{ _("Calculating...") }}</div>
@@ -465,40 +479,61 @@
 
         function updateCompareScenariosLink() {
             const compareLink = document.getElementById('compareScenariosLink');
-            if (!compareLink) return;
-
-            const container = document.getElementById('exportParamsContainer');
-            if (!container) return;
-
-            const params = new URLSearchParams();
-
-            // Get W, D, withdrawal_time
-            if (W_output_left) params.append('W', parseFormattedNumberFromInput(W_output_left.value) || '0');
-            params.append('D', container.dataset.d || '0.0');
-
-            const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
-            params.append('withdrawal_time', (withdrawal_time_selected ? withdrawal_time_selected.value : container.dataset.withdrawalTime) || '{{ TIME_END_const }}');
-
-            // Handle single vs multi-period data
-            const ratesPeriodsJson = container.dataset.ratesPeriods;
-            let ratesPeriods = null;
-            if (ratesPeriodsJson) {
-                try { ratesPeriods = JSON.parse(ratesPeriodsJson); } catch(e) { console.error("Error parsing rates_periods_info_json for compare link: ", e); }
+            if (!compareLink) {
+                console.warn('compareScenariosLink element not found');
+                return;
             }
 
-            if (ratesPeriods && Array.isArray(ratesPeriods) && ratesPeriods.length > 0) {
-                ratesPeriods.forEach((period, index) => {
-                    params.append(`period${index+1}_duration`, period.duration);
-                    params.append(`period${index+1}_r`, period.r * 100); // Pass as percentage
-                    params.append(`period${index+1}_i`, period.i * 100); // Pass as percentage
-                });
-            } else {
-                // Fallback to single period values if no multi-period data
-                if (r_output) params.append('r', r_output.value || container.dataset.r || '0');
-                if (i_output) params.append('i', i_output.value || container.dataset.i || '0');
-                if (T_output) params.append('T', T_output.value || container.dataset.t || '0');
+            try {
+                const container = document.getElementById('exportParamsContainer');
+                if (!container) {
+                    console.warn('exportParamsContainer element not found for compare link update.');
+                    compareLink.href = `{{ url_for('project.compare') }}`; // Fallback
+                    return;
+                }
+
+                const params = new URLSearchParams();
+
+                // Get W, D, withdrawal_time
+                if (W_output_left) {
+                    params.append('W', parseFormattedNumberFromInput(W_output_left.value) || '0');
+                } else {
+                    params.append('W', container.dataset.w || '0'); // Fallback to initial data-w if W_output_left is missing
+                }
+                params.append('D', container.dataset.d || '0.0');
+
+                const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
+                params.append('withdrawal_time', (withdrawal_time_selected ? withdrawal_time_selected.value : container.dataset.withdrawalTime) || '{{ TIME_END_const }}');
+
+                // Handle single vs multi-period data
+                const ratesPeriodsJson = container.dataset.ratesPeriods;
+                let ratesPeriods = null;
+                if (ratesPeriodsJson && ratesPeriodsJson !== "null" && ratesPeriodsJson.trim() !== "") { // Ensure not empty or literal "null"
+                    try {
+                        ratesPeriods = JSON.parse(ratesPeriodsJson);
+                    } catch(e) {
+                        console.error("Error parsing rates_periods_info_json for compare link: ", e, "JSON string was:", ratesPeriodsJson);
+                        ratesPeriods = null; // Ensure ratesPeriods is null if parsing fails
+                    }
+                }
+
+                if (ratesPeriods && Array.isArray(ratesPeriods) && ratesPeriods.length > 0) {
+                    ratesPeriods.forEach((period, index) => {
+                        params.append(`period${index+1}_duration`, period.duration);
+                        params.append(`period${index+1}_r`, period.r * 100); // Pass as percentage
+                        params.append(`period${index+1}_i`, period.i * 100); // Pass as percentage
+                    });
+                } else {
+                    // Fallback to single period values if no multi-period data or if parsing failed
+                    if (r_output) params.append('r', r_output.value); else params.append('r', container.dataset.r || '0');
+                    if (i_output) params.append('i', i_output.value); else params.append('i', container.dataset.i || '0');
+                    if (T_output) params.append('T', T_output.value); else params.append('T', container.dataset.t || '0');
+                }
+                compareLink.href = `{{ url_for('project.compare') }}?${params.toString()}`;
+            } catch (e) {
+                console.error("Error updating compare scenarios link:", e);
+                if(compareLink) compareLink.href = `{{ url_for('project.compare') }}`; // Fallback to base URL
             }
-            compareLink.href = `{{ url_for('project.compare') }}?${params.toString()}`;
         }
 
         function initializeFormValues() {
