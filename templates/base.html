@@ -3,42 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}FIRE Calculator{% endblock %}</title>
+  <title>{% block title %}{{ _("FIRE Calculator") }}{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{{ url_for('routes.index') }}">FIRE Calc</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'routes.index' %}active{% endif %}" aria-current="page" href="{{ url_for('routes.index') }}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'routes.compare' %}active{% endif %}" href="{{ url_for('routes.compare') }}">Compare</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'routes.settings' %}active{% endif %}" href="{{ url_for('routes.settings') }}">Settings</a>
-          </li>
-        </ul>
-        <button class="btn btn-outline-secondary" onclick="toggleTheme()">Toggle Theme</button>
-      </div>
+  <header class="container mt-3 mb-3 text-center">
+    <h1>
+      <span class="title-tooltip-container">
+        <a class="text-decoration-none" href="{{ url_for('project.index') }}">{{ _("FIRE Calculator") }}</a>
+        <span class="tooltip-text main-title-tooltip">{{ _("Financial Independence, Retire Early: A movement dedicated to a program of extreme savings and investment that aims to allow proponents to retire far earlier than traditional budgets and retirement plans would permit.") }}</span>
+      </span>
+    </h1>
+    <div class="sub-nav">
+      <a href="{{ url_for('project.index') }}" class="sub-nav-item {% if request.endpoint == 'project.index' %}active{% endif %}">{{ _("Home") }}</a>
+      <a href="{{ url_for('project.compare') }}" class="sub-nav-item {% if request.endpoint == 'project.compare' %}active{% endif %}">{{ _("Compare") }}</a>
+      <a href="{{ url_for('project.settings') }}" class="sub-nav-item {% if request.endpoint == 'project.settings' %}active{% endif %}">{{ _("Settings") }}</a>
+      <button class="btn btn-sm btn-outline-secondary sub-nav-item" onclick="toggleTheme()">{{ _("Toggle Theme") }}</button>
     </div>
-  </nav>
+  </header>
 
   <main class="container mt-4">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
           <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{ message }} {# Already handled by gettext in routes.py #}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('Close') }}"></button>
           </div>
         {% endfor %}
       {% endif %}
@@ -47,7 +39,10 @@
   </main>
 
   <footer class="container mt-5 py-3 text-center text-muted">
-    <p>&copy; FIRE Calculator {% block year %}{{ 'now' | date('Y') }}{% endblock %}</p>
+    <p>&copy; {{ _("FIRE Calculator") }} {% block year %}{{ current_year }}{% endblock %} |
+      <a href="{{ url_for('project.about') }}" class="text-muted">{{ _("About") }}</a> |
+      <a href="{{ url_for('project.faq') }}" class="text-muted">{{ _("FAQ") }}</a>
+    </p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

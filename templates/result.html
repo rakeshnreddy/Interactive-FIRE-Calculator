@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Calculation Results - FIRE Calculator{% endblock %}
+{% block title %}{{ _("Calculation Results - FIRE Calculator") }}{% endblock %}
 
 {% block head_extra %}
   <!-- Google Fonts (already in base, but keeping here if specific version/subset was intended for results page) -->
@@ -26,54 +26,58 @@
        {# and have JS construct more detailed query params for export_csv #}
        data-rates-periods="{{ rates_periods_info_json | tojson | safe if rates_periods_info_json else '' }}"
        >
-      <a href="#" id="exportCsvLink" class="btn btn-info export-btn" download="fire_results.csv" style="margin-top: 10px; margin-bottom: 10px;">Export to CSV</a>
   </div>
 
   <div style="text-align: center; margin: 15px 0;">
     {% if D_form_val and D_form_val > 0 %}
     <p class="alert alert-info">
-      Calculations aim for a Desired Final Portfolio Value of: <strong>${{ "{:,.2f}".format(D_form_val) }}</strong>
+      {{ _("Calculations aim for a Desired Final Portfolio Value of:") }} <strong>{{ format_currency(D_form_val, DEFAULT_CURRENCY, locale=get_locale()) }}</strong>
     </p>
     {% endif %}
     <span class="info-icon global-info">&#9432;
-      <span class="tooltip-text">Adjust any slider or enter a value – both modes update simultaneously. The graphs and values will refresh automatically.</span>
+      <span class="tooltip-text">{{ _("Adjust any slider or enter a value – both modes update simultaneously. The graphs and values will refresh automatically.") }}</span>
     </span>
   </div>
 
   <div class="container"> {# This was an extra container, can be merged or kept if styling needs it #}
     <div class="layout-column-group row">
+      <!-- Export Buttons -->
+      <div class="col-12 mb-3 text-end">
+        <a href="#" id="exportCsvLink" class="btn btn-info export-btn me-2" download="fire_results.csv">{{ _("Export to CSV") }}</a>
+        <button class="btn btn-outline-success export-btn" onclick="exportReport()">{{ _("Export Report PDF") }}</button>
+      </div>
       <!-- Calculation Assumptions -->
       <div class="col-md-12 mb-3">
         <div class="card common-parameters-container collapsible-section">
           <div class="card-header collapsible-header">
-            <span class="description">Adjust return, inflation, duration & withdrawal timing. (Note: These are single/fallback values if multi-period was used in calculation)</span>
+            <span class="description">{{ _("Adjust return, inflation, duration & withdrawal timing. (Note: These are single/fallback values if multi-period was used in calculation)") }}</span>
             <span class="toggle-icon float-end">+</span>
           </div>
           <div class="card-body collapsible-content">
             <div class="mb-3">
-              <label for="r_slider" class="form-label">Expected Annual Return (%):</label>
+              <label for="r_slider" class="form-label">{{ _("Expected Annual Return (%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return (e.g., 7%% for 7). This will update calculations for both modes.") }}</span></span></label>
               <input type="range" id="r_slider" name="r" class="form-range" min="0" max="15" step="0.1" value="{{ r_form_val | default(5) }}">
               <input type="text" id="r_output" class="number-input form-control form-control-sm mt-1" value="{{ r_form_val | default(5) }}">
             </div>
             <div class="mb-3">
-              <label for="i_slider" class="form-label">Expected Annual Inflation (%):</label>
+              <label for="i_slider" class="form-label">{{ _("Expected Annual Inflation (%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate (e.g., 3%% for 3). This will update calculations for both modes.") }}</span></span></label>
               <input type="range" id="i_slider" name="i" class="form-range" min="0" max="10" step="0.1" value="{{ i_form_val | default(2) }}">
               <input type="text" id="i_output" class="number-input form-control form-control-sm mt-1" value="{{ i_form_val | default(2) }}">
             </div>
             <div class="mb-3">
-              <label for="T_slider" class="form-label">Retirement Duration (years):</label>
+              <label for="T_slider" class="form-label">{{ _("Retirement Duration (years):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("How many years your retirement funds need to last. This will update calculations for both modes.") }}</span></span></label>
               <input type="range" id="T_slider" name="T" class="form-range" min="10" max="100" step="1" value="{{ T_form_val | default(30) }}">
               <input type="text" id="T_output" class="number-input form-control form-control-sm mt-1" value="{{ T_form_val | default(30) }}">
             </div>
             <div class="mb-3">
-              <label class="form-label">Withdrawal Timing:</label>
+              <label class="form-label">{{ _("Withdrawal Timing:") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Choose whether withdrawals occur at the start or end of each year. This will update calculations for both modes.") }}</span></span></label>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="withdrawal_time" value="start" id="withdrawal_time_start_results" {% if withdrawal_time_form_val=='start' %}checked{% endif %}>
-                <label class="form-check-label" for="withdrawal_time_start_results">Start of Year</label>
+                <label class="form-check-label" for="withdrawal_time_start_results">{{ _("Start of Year") }}</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="withdrawal_time" value="end" id="withdrawal_time_end_results" {% if withdrawal_time_form_val=='end' or not withdrawal_time_form_val %}checked{% endif %}>
-                <label class="form-check-label" for="withdrawal_time_end_results">End of Year</label>
+                <label class="form-check-label" for="withdrawal_time_end_results">{{ _("End of Year") }}</label>
               </div>
             </div>
           </div>
@@ -84,31 +88,34 @@
       <div class="col-md-6 mb-3">
         <div class="card h-100"> {# Added h-100 for equal height cards in a row #}
           <div class="card-body column" id="left_column">
-            <h2>Expense Mode
+            <h2>{{ _("Expense Mode") }}
               <span class="info-icon">&#9432;
-                <span class="tooltip-text">In Expense Mode, you input your desired annual expenses, and the calculator determines the FIRE number (total portfolio) you'll need.</span>
+                <span class="tooltip-text">{{ _("In Expense Mode, you input your desired annual expenses, and the calculator determines the FIRE number (total portfolio) you'll need.") }}</span>
               </span>
             </h2>
             <div class="mb-3">
-              <label for="W_slider_left" class="form-label">Annual Expenses (W):</label>
+              <label for="W_slider_left" class="form-label">{{ _("Annual Expenses (W):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Your desired annual living expenses. Adjusting this will recalculate the FIRE number needed.") }}</span></span></label>
               <input type="range" id="W_slider_left" name="W" class="form-range" min="0" max="1000000" step="1000" value="{{ fire_W_input_val | default(20000) }}">
               <input type="text" id="W_output_left" class="number-input form-control form-control-sm mt-1" value="{{ '{:,.0f}'.format(fire_W_input_val | default(20000)) }}">
             </div>
             <div class="result-section">
-              <p><strong>Calculated FIRE Number:</strong> <span id="fire_number_W_display">{{ fire_P_calculated_val }}</span></p>
-              <p><strong>Your Annual Expense (Input):</strong> <span id="annual_expense_W_display">${{ '{:,.2f}'.format(fire_W_input_val | default(0)) }}</span></p>
+              <div class="row mb-1"><div class="col-8"><strong>{{ _("Calculated FIRE Number:") }}</strong></div><div class="col-4 text-end"><span id="fire_number_W_display">{{ fire_P_calculated_val }}</span></div></div>
+              {# The fire_W_input_val is a raw number, format it for display. Or ensure it's pre-formatted from route. #}
+              {# Assuming fire_W_input_val is passed as a number, and we want JS to handle its input field formatting. #}
+              {# For this display span, we should format it. #}
+              <div class="row"><div class="col-8"><strong>{{ _("Your Annual Expense (Input):") }}</strong></div><div class="col-4 text-end"><span id="annual_expense_W_display">{{ format_currency(fire_W_input_val | default(0), DEFAULT_CURRENCY, locale=get_locale()) }}</span></div></div>
             </div>
-            <h3>Portfolio Balance</h3>
+            <h3>{{ _("Portfolio Balance") }}</h3>
             <div id="portfolio_plot_W" class="plot-container">
               {{ portfolio_plot_fire | safe }}
             </div>
-            <h3>Annual Withdrawals</h3>
+            <h3>{{ _("Annual Withdrawals") }}</h3>
             <div id="withdrawal_plot_W" class="plot-container">
               {{ withdrawal_plot_fire | safe }}
             </div>
-            <h3>Yearly Data</h3>
-            <div id="table_data_W_container" class="table-responsive"> {# Added table-responsive #}
-              {{ table_data_fire_html | safe if table_data_fire_html else "<p>Yearly data table will appear here after calculation.</p>" }}
+            <h3>{{ _("Yearly Data") }}</h3>
+            <div id="table_data_W_container" class="table-container table-responsive"> {# Added table-responsive #}
+              {{ table_data_fire_html | safe if table_data_fire_html else "<p>" + _("Yearly data table will appear here after calculation.") + "</p>" }}
             </div>
           </div>
         </div>
@@ -118,34 +125,32 @@
       <div class="col-md-6 mb-3">
         <div class="card h-100"> {# Added h-100 for equal height cards in a row #}
           <div class="card-body column" id="right_column">
-            <div class="export-button-container-above-fire text-end mb-2"> {# Adjusted styling for export button #}
-              <button class="btn btn-sm btn-outline-success export-btn" onclick="exportReport()">Export Report PDF</button>
-            </div>
-            <h2>FIRE Mode
+            <h2>{{ _("FIRE Mode") }}
               <span class="info-icon">&#9432;
-                <span class="tooltip-text">In FIRE Mode, you input your target FIRE number (total portfolio), and the calculator determines the maximum sustainable annual expense you can withdraw.</span>
+                <span class="tooltip-text">{{ _("In FIRE Mode, you input your target FIRE number (total portfolio), and the calculator determines the maximum sustainable annual expense you can withdraw.") }}</span>
               </span>
             </h2>
             <div class="mb-3">
-              <label for="P_slider_right" class="form-label">FIRE Number (P):</label>
+              <label for="P_slider_right" class="form-label">{{ _("FIRE Number (P):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Your target retirement portfolio principal. Adjusting this will recalculate the maximum sustainable annual expense.") }}</span></span></label>
               <input type="range" id="P_slider_right" name="P" class="form-range" min="0" max="25000000" step="1000" value="{{ expense_P_input_val if expense_P_input_val != 'N/A' else 0 }}">
               <input type="text" id="P_output_right" class="number-input form-control form-control-sm mt-1" value="{{ '{:,.0f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' and expense_P_input_val is not none else (expense_P_input_val if expense_P_input_val == 'N/A' else '0') }}">
             </div>
             <div class="result-section">
-              <p><strong>Your FIRE Number (Input):</strong> <span id="fire_number_P_display">${{ '{:,.2f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' and expense_P_input_val is not none else (expense_P_input_val if expense_P_input_val == 'N/A' else '0.00') }}</span></p>
-              <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_P_display">{{ expense_W_calculated_val }}</span></p>
+              {# expense_P_input_val is a number or "N/A", format it for display if it's a number. #}
+              <div class="row mb-1"><div class="col-8"><strong>{{ _("Your FIRE Number (Input):") }}</strong></div><div class="col-4 text-end"><span id="fire_number_P_display">{% if expense_P_input_val != 'N/A' and expense_P_input_val is not none %}{{ format_currency(expense_P_input_val, DEFAULT_CURRENCY, locale=get_locale()) }}{% else %}{{ expense_P_input_val | e }}{% endif %}</span></div></div>
+              <div class="row"><div class="col-8"><strong>{{ _("Max Sustainable Annual Expense:") }}</strong></div><div class="col-4 text-end"><span id="annual_expense_P_display">{{ expense_W_calculated_val }}</span></div></div>
             </div>
-            <h3>Portfolio Balance</h3>
+            <h3>{{ _("Portfolio Balance") }}</h3>
             <div id="portfolio_plot_P" class="plot-container">
               {{ portfolio_plot_expense | safe }}
             </div>
-            <h3>Annual Withdrawals</h3>
+            <h3>{{ _("Annual Withdrawals") }}</h3>
             <div id="withdrawal_plot_P" class="plot-container">
               {{ withdrawal_plot_expense | safe }}
             </div>
-            <h3>Yearly Data</h3>
-            <div id="table_data_P_container" class="table-responsive"> {# Added table-responsive #}
-              {{ table_data_expense_html | safe if table_data_expense_html else "<p>Yearly data table will appear here after calculation.</p>" }}
+            <h3>{{ _("Yearly Data") }}</h3>
+            <div id="table_data_P_container" class="table-container table-responsive"> {# Added table-responsive #}
+              {{ table_data_expense_html | safe if table_data_expense_html else "<p>" + _("Yearly data table will appear here after calculation.") + "</p>" }}
             </div>
           </div>
         </div>
@@ -153,72 +158,7 @@
     </div>
   </div>
   <div class="text-center mt-4"> {# Centering for buttons #}
-          </span>
-        </h2>
-        <div class="slider-container">
-          <label for="W_slider_left">Annual Expenses (W):</label>
-          <input type="range" id="W_slider_left" name="W" min="0" max="1000000" step="1000" value="{{ fire_W_input_val | default(20000) }}">
-          <input type="text" id="W_output_left" class="number-input form-control form-control-sm" value="{{ '{:,.0f}'.format(fire_W_input_val | default(20000)) }}">
-        </div>
-        <div class="result-section">
-          <p><strong>Calculated FIRE Number:</strong> <span id="fire_number_W_display">{{ fire_P_calculated_val }}</span></p>
-          <p><strong>Your Annual Expense (Input):</strong> <span id="annual_expense_W_display">${{ '{:,.2f}'.format(fire_W_input_val | default(0)) }}</span></p>
-        </div>
-        <h3>Portfolio Balance</h3>
-        <div id="portfolio_plot_W" class="plot-container">
-          {{ portfolio_plot_fire | safe }}
-        </div>
-        <h3>Annual Withdrawals</h3>
-        <div id="withdrawal_plot_W" class="plot-container">
-          {{ withdrawal_plot_fire | safe }}
-        </div>
-        <h3>Yearly Data</h3>
-        <div id="table_data_W_container" class="table-container">
-          {{ table_data_fire_html | safe if table_data_fire_html else "<p>Yearly data table will appear here after calculation.</p>" }}
-        </div>
-      </div>
-    </div>
-
-    <div class="layout-column-group">
-      <!-- Export Button Container - positioned to be above FIRE Mode -->
-      <div class="export-button-container-above-fire">
-        <button class="btn btn-secondary export-btn" onclick="exportReport()">Export Report PDF</button> {# Changed text slightly #}
-      </div>
-
-      <!-- Right Column: FIRE Mode -->
-      <div class="column" id="right_column">
-        <h2>FIRE Mode
-          <span class="info-icon">&#9432;
-            <span class="tooltip-text">In FIRE Mode, you input your target FIRE number (total portfolio), and the calculator determines the maximum sustainable annual expense you can withdraw.</span>
-          </span>
-        </h2>
-        <div class="slider-container">
-          <label for="P_slider_right">FIRE Number (P):</label>
-          <input type="range" id="P_slider_right" name="P" min="0" max="25000000" step="1000" value="{{ expense_P_input_val if expense_P_input_val != 'N/A' else 0 }}">
-          <input type="text" id="P_output_right" class="number-input form-control form-control-sm" value="{{ '{:,.0f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' and expense_P_input_val is not none else (expense_P_input_val if expense_P_input_val == 'N/A' else '0') }}">
-        </div>
-        <div class="result-section">
-          <p><strong>Your FIRE Number (Input):</strong> <span id="fire_number_P_display">${{ '{:,.2f}'.format(expense_P_input_val) if expense_P_input_val != 'N/A' and expense_P_input_val is not none else (expense_P_input_val if expense_P_input_val == 'N/A' else '0.00') }}</span></p>
-          <p><strong>Max Sustainable Annual Expense:</strong> <span id="annual_expense_P_display">{{ expense_W_calculated_val }}</span></p>
-        </div>
-        <h3>Portfolio Balance</h3>
-        <div id="portfolio_plot_P" class="plot-container">
-          {{ portfolio_plot_expense | safe }}
-        </div>
-        <h3>Annual Withdrawals</h3>
-        <div id="withdrawal_plot_P" class="plot-container">
-          {{ withdrawal_plot_expense | safe }}
-        </div>
-        <h3>Yearly Data</h3>
-        <div id="table_data_P_container" class="table-container">
-          {{ table_data_expense_html | safe if table_data_expense_html else "<p>Yearly data table will appear here after calculation.</p>" }}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="text-center mt-4"> {# Centering for buttons #}
-    <button id="recalculate_button" class="btn btn-primary recalculate-btn" style="margin-top: 30px;">Update Results</button>
-    <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary" style="margin-top: 30px;">← Back to Calculator</a>
+    <a href="{{ url_for('project.index') }}" class="btn btn-outline-secondary" style="margin-top: 30px;">{{ _("← Back to Calculator") }}</a>
   </div>
 </div>
 {% endblock %}
@@ -227,6 +167,9 @@
   <script>
     // Page-specific JavaScript for result.html (the interactive part)
     // The toggleTheme and applyTheme functions are now in theme.js (called from base.html)
+    // No translatable strings in this script block for static elements.
+    // Dynamic alerts/messages should be translated if they were generated client-side,
+    // but currently, most alerts are from server-side or use existing translated text.
     function exportReport() {
       window.print();
     }
@@ -256,11 +199,6 @@
         const divWithdrawalPlotP = document.getElementById('withdrawal_plot_P');
         const tableDataWContainer = document.getElementById('table_data_W_container');
         const tableDataPContainer = document.getElementById('table_data_P_container');
-        const recalculateButton = document.getElementById('recalculate_button');
-
-        if (recalculateButton) {
-            recalculateButton.addEventListener('click', () => handleInputChange(recalculateButton));
-        }
 
         const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
         collapsibleHeaders.forEach(header => {
@@ -276,17 +214,35 @@
             });
         });
 
-        function formatNumber(numStr, precision = 2) {
-            let num = parseFloat(String(numStr).replace(/[^0-9.-]+/g,""));
+        // Get the current locale from Flask for JS formatting if needed.
+        const currentLocale = "{{ get_locale() }}"; // e.g., "en", "es"
+        const currentCurrency = "{{ DEFAULT_CURRENCY }}";
+
+        function formatNumberForDisplay(numStr, precision = 2) {
+            // This function is primarily for the input fields which expect numeric-like strings,
+            // but might need to show "N/A" or be robust to it.
+            // For general display, backend should send formatted strings.
+            let num = parseFloat(String(numStr).replace(/[^0-9.,-]+/g, "").replace(',', '.')); // Basic attempt to parse
             if (isNaN(num)) {
-                return (String(numStr).toUpperCase() === "N/A") ? "N/A" : "0.00";
+                return (String(numStr).toUpperCase() === "N/A") ? "N/A" : "0"; // Default to 0 for inputs if parsing fails
             }
-            return num.toLocaleString('en-US', { minimumFractionDigits: precision, maximumFractionDigits: precision, useGrouping: true });
+            // Formatting for input fields can be simpler, or use Intl.NumberFormat if consistency is key
+            return num.toFixed(precision); // Keep simple for inputs
         }
 
-        function parseFormattedNumber(str) {
+        function parseFormattedNumberFromInput(str) {
+            // Parses a number from a (potentially) locale-formatted string from an input field
             if (typeof str !== 'string') return parseFloat(str) || 0;
-            return parseFloat(str.replace(/,/g, '')) || 0;
+
+            // Attempt to parse using Intl.NumberFormat for robustness if available and configured
+            // For now, a simpler parseFloat after removing common non-numeric chars typical in formatted numbers
+            // This needs to be robust to various decimal/grouping separators or rely on backend for parsing
+            // For example, Spanish uses '.' for thousands and ',' for decimal.
+            // A simple replace might not work for all locales.
+            // Let's assume inputs are mostly machine-readable or use a library for this if it becomes an issue.
+            // The current `parseFormattedNumber` in the original script is okay for en-US style.
+            // If backend sends formatted currency, this function is mostly for user input parsing.
+            return parseFloat(String(str).replace(/[^\d.-]/g, '')) || 0;
         }
 
         function setupInputListeners(slider, output, isPercentOrYears = false) {
@@ -294,38 +250,39 @@
             slider.addEventListener('input', () => {
                 const val = slider.value;
                 output.value = isPercentOrYears ? val : formatNumber(val, isPercentOrYears ? 1 : 0); // Use 0 decimal for W/P outputs
-                // No automatic handleInputChange on slider input for result page to prevent too many updates.
-                // User clicks "Update Results" button.
+                handleInputChange(slider);
             });
             output.addEventListener('change', () => {
-                let val = isPercentOrYears ? parseFloat(output.value) : parseFormattedNumber(output.value);
+                let val = isPercentOrYears ? parseFloat(output.value) : parseFormattedNumberFromInput(output.value);
                 val = Math.max(parseFloat(slider.min), Math.min(parseFloat(slider.max), val));
                 // Ensure slider value respects step if applicable (though range sliders might handle this)
                 if (slider.step) {
                     val = Math.round(val / parseFloat(slider.step)) * parseFloat(slider.step);
                 }
                 slider.value = val;
-                output.value = isPercentOrYears ? slider.value : formatNumber(slider.value, isPercentOrYears ? 1 : 0);
-                // No automatic handleInputChange
+                // For W and P outputs, we expect them to be numbers, not pre-formatted currency strings
+                // The display spans are for formatted currency. Input fields should be numeric.
+                output.value = isPercentOrYears ? slider.value : formatNumberForDisplay(slider.value, 0); // 0 precision for W/P inputs
+                handleInputChange(output);
             });
         }
 
-        setupInputListeners(W_slider_left, W_output_left, false);
-        setupInputListeners(P_slider_right, P_output_right, false);
+        setupInputListeners(W_slider_left, W_output_left, false); // W_output_left is an input field
+        setupInputListeners(P_slider_right, P_output_right, false); // P_output_right is an input field
         setupInputListeners(r_slider, r_output, true);
         setupInputListeners(i_slider, i_output, true);
         setupInputListeners(T_slider, T_output, true);
 
-        // withdrawal_time_radios.forEach(radio => radio.addEventListener('change', () => {
-        //     handleInputChange(radio); // Recalculate on radio change
-        // }));
-        // Commented out automatic recalculation for radio buttons as well.
+        withdrawal_time_radios.forEach(radio => radio.addEventListener('change', () => {
+            handleInputChange(radio);
+        }));
 
         function handleInputChange(sourceElement = null) {
             const formData = new FormData();
-            formData.append('W', parseFormattedNumber(W_output_left.value));
-            formData.append('P', parseFormattedNumber(P_output_right.value));
-            formData.append('r', r_output.value);
+            // Use parseFormattedNumberFromInput for values from input fields
+            formData.append('W', parseFormattedNumberFromInput(W_output_left.value));
+            formData.append('P', parseFormattedNumberFromInput(P_output_right.value));
+            formData.append('r', r_output.value); // r, i, T are direct number inputs
             formData.append('i', i_output.value);
             formData.append('T', T_output.value);
             const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
@@ -350,7 +307,7 @@
             formData.append('D', exportContainer.dataset.d || '0.0');
 
 
-            fetch("{{ url_for('routes.update') }}", { // Use url_for for robustness
+            fetch("{{ url_for('project.update') }}", { // Use url_for for robustness
                 method: 'POST',
                 body: formData
             })
@@ -363,14 +320,14 @@
             .then(data => {
                 if (data.error) {
                     console.error('Error from server:', data.error);
-                    alert('Error updating calculations: ' + data.error);
+                    alert(_('Error updating calculations: ') + data.error); // data.error should be pre-translated
                     return;
                 }
                 updatePage(data, sourceElement);
             })
             .catch(error => {
                 console.error('Error fetching/processing update:', error);
-                alert('Could not update calculations. See console for details.');
+                alert(_('Could not update calculations. See console for details.'));
             });
         }
 
@@ -394,8 +351,8 @@
           if (!container || !exportLink) return;
 
           const params = new URLSearchParams();
-          params.append('W', parseFormattedNumber(W_output_left.value) || container.dataset.w || '0');
-          params.append('P', parseFormattedNumber(P_output_right.value) || container.dataset.p || '0');
+          params.append('W', parseFormattedNumberFromInput(W_output_left.value) || container.dataset.w || '0');
+          params.append('P', parseFormattedNumberFromInput(P_output_right.value) || container.dataset.p || '0');
           params.append('D', container.dataset.d || '0.0');
 
           const withdrawal_time_selected_for_export = document.querySelector('input[name="withdrawal_time"]:checked');
@@ -432,7 +389,7 @@
                 params.append('i', i_output.value || container.dataset.i || '0');
                 params.append('T', T_output.value || container.dataset.t || '0');
           }
-          exportLink.href = `{{ url_for('routes.export_csv') }}?${params.toString()}`;
+          exportLink.href = `{{ url_for('project.export_csv') }}?${params.toString()}`;
         }
 
         function updatePage(data, sourceElement = null) {
@@ -453,24 +410,41 @@
                 tableDataPContainer.innerHTML = data.table_data_P_html;
             }
 
+            // Backend now sends fully formatted strings for display.
+            // JS should primarily update input fields with raw numbers or simple formats,
+            // and display fields with the backend-provided formatted strings.
+
+            // The logic for cross-updating sliders from calculated values needs to parse the formatted string from backend.
+            // This is tricky. It's better if backend also sends raw numbers for these updates.
+            // For now, assuming data.raw_fire_number_W and data.raw_annual_expense_P exist if needed by JS.
+            // If not, parsing formatted currency is complex and locale-dependent.
+            // The current parseFormattedNumberFromInput is a simple attempt.
+
+            // Example: If data.fire_number_W is "$1,234,567.89"
+            // parseFormattedNumberFromInput might get 1234567.89 for en-US.
+            // This is okay for slider.value and input.value if they expect numbers.
+
             if (sourceElement !== P_output_right && sourceElement !== P_slider_right) {
-                if (data.fire_number_W !== "N/A" && P_slider_right && P_output_right) {
-                    let numeric_P = parseFormattedNumber(data.fire_number_W.replace('$', ''));
-                    P_slider_right.value = Math.min(parseFloat(P_slider_right.max), Math.max(parseFloat(P_slider_right.min), numeric_P));
-                    P_output_right.value = formatNumber(numeric_P, 0);
+                if (data.fire_number_W !== _("N/A") && P_slider_right && P_output_right) {
+                    // Assuming backend sends a raw numeric value for this cross-update, e.g., data.raw_fire_number_W_for_P_input
+                    // If not, we have to parse data.fire_number_W which is locale-formatted.
+                    // For now, let's assume the simple parse is okay for en-US.
+                    let numeric_P = parseFormattedNumberFromInput(data.fire_number_W); // data.fire_number_W is already formatted
+                    P_slider_right.value = Math.min(parseFloat(P_slider_right.max), Math.max(parseFloat(P_slider_right.min), numeric_P || 0));
+                    P_output_right.value = formatNumberForDisplay(P_slider_right.value, 0);
                 } else if (P_output_right && P_slider_right) {
-                    P_output_right.value = "N/A";
+                    P_output_right.value = _("N/A"); // Use translated "N/A"
                     P_slider_right.value = P_slider_right.min;
                 }
             }
 
             if (sourceElement !== W_output_left && sourceElement !== W_slider_left) {
-                if (data.annual_expense_P !== "N/A" && W_slider_left && W_output_left) {
-                    let numeric_W = parseFormattedNumber(data.annual_expense_P.replace('$', ''));
-                    W_slider_left.value = Math.min(parseFloat(W_slider_left.max), Math.max(parseFloat(W_slider_left.min), numeric_W));
-                    W_output_left.value = formatNumber(numeric_W, 0);
+                if (data.annual_expense_P !== _("N/A") && W_slider_left && W_output_left) {
+                    let numeric_W = parseFormattedNumberFromInput(data.annual_expense_P); // data.annual_expense_P is already formatted
+                    W_slider_left.value = Math.min(parseFloat(W_slider_left.max), Math.max(parseFloat(W_slider_left.min), numeric_W || 0));
+                    W_output_left.value = formatNumberForDisplay(W_slider_left.value, 0);
                 } else if (W_output_left && W_slider_left) {
-                    W_output_left.value = "N/A";
+                    W_output_left.value = _("N/A"); // Use translated "N/A"
                     W_slider_left.value = W_slider_left.min;
                 }
             }
@@ -478,12 +452,17 @@
         }
 
         function initializeFormValues() {
-            if(W_output_left && W_slider_left) W_output_left.value = formatNumber(W_slider_left.value,0);
-            if(P_output_right && P_slider_right && P_output_right.value.toUpperCase() !== "N/A") {
-                 P_output_right.value = formatNumber(P_slider_right.value,0);
+            // Input fields should be initialized with simple numeric formats or "N/A"
+            if(W_output_left && W_slider_left) W_output_left.value = formatNumberForDisplay(W_slider_left.value,0);
+            if(P_output_right && P_slider_right) {
+                if (P_output_right.value.toUpperCase() !== _("N/A").toUpperCase()) {
+                    P_output_right.value = formatNumberForDisplay(P_slider_right.value,0);
+                } else {
+                     P_output_right.value = _("N/A"); // Ensure it's translated if "N/A"
+                }
             }
-            if(r_output && r_slider) r_output.value = r_slider.value;
-            if(i_output && i_slider) i_output.value = i_slider.value;
+            if(r_output && r_slider) r_output.value = r_slider.value; // These are percentages, no special formatting
+            if(i_output && i_slider) i_output.value = i_slider.value; // These are percentages
             if(T_output && T_slider) T_output.value = T_slider.value;
         }
 

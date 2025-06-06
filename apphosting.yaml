@@ -1,0 +1,25 @@
+# apphosting.yaml
+
+# This file configures your Firebase App Hosting service.
+# Learn more: https://firebase.google.com/docs/app-hosting/yaml
+
+service: default # 'default' is typical for your main backend
+
+backend:
+  # The 'path' points to the directory relative to your repo root
+  # that contains your backend code and Dockerfile.
+  path: .
+  # App Hosting will automatically look for a Dockerfile in this path
+  # to build your backend image.
+
+frontend:
+  # The 'path' points to the directory relative to your repo root
+  # that contains your static files (HTML, CSS, JS, etc.).
+  # App Hosting will serve these files directly.
+  path: public/
+
+# You can also configure resource limits here, like CPU and memory,
+# but default settings are often fine to start.
+# resources:
+#   cpu: 1
+#   memory: 512Mi

@@ -325,7 +325,7 @@ a:hover {
 }
 
 .common-parameters-container.expanded .collapsible-content {
-  max-height: 350px;
+  max-height: 450px; /* Increased from 350px */
   padding: 10px 15px; /* Add vertical padding when expanded */
 }
 
@@ -378,6 +378,11 @@ a:hover {
   flex-direction: column;
 }
 
+.layout-column-group.row {
+  flex-direction: row !important;
+  max-width: none !important;
+}
+
 .export-button-container-above-fire {
   /* Behaves like a column item */
   flex: 1;
@@ -421,7 +426,7 @@ a:hover {
   margin-left: -110px; /* Use half of the width to center */
   opacity: 0;
   transition: opacity 0.3s;
-  font-size: 0.9em;
+  font-size: 0.9rem; /* Changed from 0.9em to match sub-nav items */
   font-weight: normal;
 }
 
@@ -700,4 +705,76 @@ input[type="submit"]:hover {
   }
   th, td { border: 1px solid #ddd; padding: 4px; text-align: left; }
   th { background-color: #f2f2f2; }
+}
+
+/* New styles for sub-navigation */
+.sub-nav {
+  margin-top: 0.5rem;
+  display: flex; /* Arrange items in a row */
+  justify-content: center; /* Center the items */
+  align-items: center; /* Align items vertically */
+  gap: 1rem; /* Space between items */
+}
+
+.sub-nav-item {
+  text-decoration: none;
+  color: var(--bs-secondary-color); /* Use Bootstrap's secondary text color */
+  font-size: 0.9rem; /* Slightly smaller than normal text */
+}
+
+.sub-nav-item.active {
+  font-weight: bold;
+  color: var(--bs-primary); /* Use Bootstrap's primary color for active link */
+}
+
+.sub-nav-item:hover {
+  color: var(--bs-primary);
+  text-decoration: underline;
+}
+
+/* Adjustments for the main heading link style */
+header h1 a {
+  color: var(--bs-body-color); /* Ensure heading link color matches body text */
+}
+
+header h1 a:hover {
+  /* color: var(--bs-body-color); Optional: prevent color change on hover for main title */
+  text-decoration: none; /* No underline for main title link */
+}
+
+/* Ensure the theme toggle button in sub-nav aligns well */
+.sub-nav .btn {
+   line-height: 1; /* Adjust line height for better vertical alignment if needed */
+}
+
+/* Tooltip for the main site title */
+.title-tooltip-container {
+  position: relative; /* Establishes a positioning context for the tooltip */
+  display: inline-block; 
+  cursor: help; 
+}
+
+.main-title-tooltip {
+  visibility: hidden;
+  width: 300px; 
+  background-color: #555;
+  color: #fff;
+  text-align: left; 
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 100; 
+  bottom: 125%; 
+  left: 50%;
+  margin-left: -150px; 
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9rem; /* Match sub-nav item size */
+  font-weight: normal; 
+  line-height: 1.4; 
+}
+
+.title-tooltip-container:hover .main-title-tooltip {
+  visibility: visible;
+  opacity: 1;
 }

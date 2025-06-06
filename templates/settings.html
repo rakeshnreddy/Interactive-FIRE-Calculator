@@ -1,45 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}Settings - FIRE Calculator{% endblock %}
+{% block title %}{{ _("Settings - FIRE Calculator") }}{% endblock %}
 
 {% block content %}
 <div class="container settings-page">
-  <h2>Settings</h2>
+  <h2>{{ _("Settings") }}</h2>
 
   <div class="mb-3">
-    <label for="themeSelect" class="form-label">Select Default Theme:</label>
+    <label for="themeSelect" class="form-label">{{ _("Select Default Theme:") }}</label>
     <select id="themeSelect" class="form-select" required>
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
+      <option value="system">{{ _("System") }}</option>
+      <option value="light">{{ _("Light") }}</option>
+      <option value="dark">{{ _("Dark") }}</option>
       {# Add other theme options here if main.css supports them and theme.js handles them #}
       {# e.g. <option value="pastel">Pastel</option> #}
     </select>
-    <small class="form-text text-muted">This sets the default theme preference. The toggle button in the navbar provides immediate switching.</small>
+    <small class="form-text text-muted">{{ _("This sets the default theme preference. The toggle button in the navbar provides immediate switching.") }}</small>
   </div>
 
   <div class="mb-3">
-    <label for="fontSize" class="form-label">Font Size (px):</label>
+    <label for="fontSize" class="form-label">{{ _("Font Size (px):") }}</label>
     <input type="number" id="fontSize" class="form-control" value="16" min="10" max="24" step="1" required>
-    <small class="form-text text-muted">Changes the base font size across the application (Default: 16px).</small>
+    <small class="form-text text-muted">{{ _("Changes the base font size across the application (Default: 16px).") }}</small>
   </div>
 
   <div class="mb-3">
-    <label for="panelOpacity" class="form-label">Panel Opacity (0-1):</label>
+    <label for="panelOpacity" class="form-label">{{ _("Panel Opacity (0-1):") }}</label>
     <input type="range" id="panelOpacity" class="form-range" min="0.1" max="1.0" step="0.05" value="0.85" required>
-    <small class="form-text text-muted">Adjusts the transparency of UI panels (e.g., cards, modals if used).</small>
+    <small class="form-text text-muted">{{ _("Adjusts the transparency of UI panels (e.g., cards, modals if used).") }}</small>
   </div>
 
-  <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
-  <p class="mt-2"><small>Settings are saved in your browser's local storage.</small></p>
+  <button class="btn btn-primary" onclick="saveSettings()">{{ _("Save Settings") }}</button>
+  <p class="mt-2"><small>{{ _("Settings are saved in your browser's local storage.") }}</small></p>
 
   <div class="mt-4">
-    <a href="{{ url_for('routes.index') }}" class="btn btn-outline-secondary">← Back to Calculator</a>
+    <a href="{{ url_for('project.index') }}" class="btn btn-outline-secondary">{{ _("← Back to Calculator") }}</a>
   </div>
 </div>
 {% endblock %}
 
 {% block scripts_extra %}
 <script>
+  // No user-visible strings in this script block that need translation,
+  // except for dynamically created error messages and success messages.
   function showFieldError(inputEl, message) {
       inputEl.classList.add('is-invalid');
       inputEl.classList.remove('is-valid');
@@ -51,7 +54,7 @@
           inputEl.parentNode.insertBefore(feedbackEl, inputEl.nextSibling);
       }
       feedbackEl.style.display = 'block';
-      feedbackEl.textContent = message;
+      feedbackEl.textContent = message; // This message is dynamically set, needs translation if from JS.
   }
 
   function clearFieldError(inputEl, setValid = false) {
@@ -78,7 +81,7 @@
     // Validate Theme Select
     if (!themeSelect.value) {
         allSettingsValid = false;
-        showFieldError(themeSelect, "Please select a theme.");
+        showFieldError(themeSelect, _("Please select a theme."));
     } else {
         clearFieldError(themeSelect, true);
     }
@@ -87,7 +90,7 @@
     const fontSizeValue = parseFloat(fontSizeInput.value);
     if (isNaN(fontSizeValue) || fontSizeValue < parseFloat(fontSizeInput.min) || fontSizeValue > parseFloat(fontSizeInput.max)) {
         allSettingsValid = false;
-        showFieldError(fontSizeInput, `Font size must be between ${fontSizeInput.min} and ${fontSizeInput.max}.`);
+        showFieldError(fontSizeInput, _("Font size must be between %(min)s and %(max)s.", { min: fontSizeInput.min, max: fontSizeInput.max }));
     } else {
         clearFieldError(fontSizeInput, true);
     }
@@ -96,7 +99,7 @@
     const panelOpacityValue = parseFloat(panelOpacityInput.value);
     if (isNaN(panelOpacityValue) || panelOpacityValue < parseFloat(panelOpacityInput.min) || panelOpacityValue > parseFloat(panelOpacityInput.max)) {
         allSettingsValid = false;
-        showFieldError(panelOpacityInput, `Panel opacity must be between ${panelOpacityInput.min} and ${panelOpacityInput.max}.`);
+        showFieldError(panelOpacityInput, _("Panel opacity must be between %(min)s and %(max)s.", {min: panelOpacityInput.min, max: panelOpacityInput.max}));
     } else {
         clearFieldError(panelOpacityInput, true);
     }
@@ -121,7 +124,7 @@
     let msgDiv = document.createElement('div');
     msgDiv.className = 'alert alert-success alert-dismissible fade show fixed-top m-3';
     msgDiv.setAttribute('role', 'alert');
-    msgDiv.innerHTML = 'Settings saved successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+    msgDiv.innerHTML = _("Settings saved successfully!") + ' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' + _("Close") + '"></button>';
     document.body.appendChild(msgDiv);
     // Automatically remove the message after a few seconds
     setTimeout(() => {

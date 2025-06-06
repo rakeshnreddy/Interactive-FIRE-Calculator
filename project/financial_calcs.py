@@ -1,5 +1,6 @@
 import numpy as np
 from flask import current_app
+from flask_babel import gettext
 from .constants import TIME_START, TIME_END # TIME_END will be used by annual_simulation
 
 def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
@@ -17,11 +18,11 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
         tuple: (years_array, balances_list, withdrawals_list)
     """
     if not rates_periods:
-        raise ValueError("rates_periods list cannot be empty.")
+        raise ValueError(gettext("rates_periods list cannot be empty."))
 
     total_T = sum(p.get('duration', 0) for p in rates_periods)
     if total_T <= 0:
-        raise ValueError("Total duration from rates_periods must be greater than zero.")
+        raise ValueError(gettext("Total duration from rates_periods must be greater than zero."))
 
     years = np.arange(0, total_T + 1)
     balances = []
@@ -40,7 +41,7 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
             current_period_idx += 1
             if current_period_idx >= len(rates_periods):
                  # This should not happen if total_T is calculated correctly and loop runs for total_T years
-                raise IndexError("Ran out of rate periods unexpectedly.")
+                raise IndexError(gettext("Ran out of rate periods unexpectedly."))
 
         r_current_period = rates_periods[current_period_idx]['r']
         i_current_period = rates_periods[current_period_idx]['i']
@@ -78,7 +79,7 @@ def simulate_final_balance(PV, W_initial, withdrawal_time, rates_periods, desire
         desired_final_value (float, optional): Target value. Defaults to 0.0.
     """
     if not rates_periods: # Basic check, annual_simulation will also raise
-        raise ValueError("rates_periods list cannot be empty for simulation.")
+        raise ValueError(gettext("rates_periods list cannot be empty for simulation."))
 
     _, balances, _ = annual_simulation(PV, W_initial, withdrawal_time, rates_periods)
     actual_final_balance = balances[-1]
@@ -98,7 +99,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
         desired_final_value (float, optional): Target value. Defaults to 0.0.
     """
     if not rates_periods:
-        raise ValueError("rates_periods list cannot be empty.")
+        raise ValueError(gettext("rates_periods list cannot be empty."))
 
     total_T_from_periods = sum(p.get('duration', 0) for p in rates_periods)
 
@@ -208,7 +209,7 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
         desired_final_value (float, optional): Target value. Defaults to 0.0.
     """
     if not rates_periods:
-        raise ValueError("rates_periods list cannot be empty.")
+        raise ValueError(gettext("rates_periods list cannot be empty."))
 
     total_T_from_periods = sum(p.get('duration', 0) for p in rates_periods)
 
