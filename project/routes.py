@@ -179,39 +179,56 @@ def index():
         P_for_js = P_value_form if mode_form == MODE_PORTFOLIO and P_value_form is not None else (calculated_P_output if mode_form == MODE_WITHDRAWAL and isinstance(calculated_P_output, (int, float)) else 0.0)
         form_params_for_result_page.update({'P_input_raw_for_js': P_for_js, 'TIME_END_const': TIME_END, 'MODE_WITHDRAWAL_const': MODE_WITHDRAWAL})
 
-        # Prepare additional parameters for display
-        p_input_w_formatted = format_currency(W_form, DEFAULT_CURRENCY, locale=locale_str)
-        p_input_p_formatted = format_currency(P_value_form, DEFAULT_CURRENCY, locale=locale_str) if P_value_form is not None else gettext("N/A")
-        p_input_d_formatted = format_currency(D_form, DEFAULT_CURRENCY, locale=locale_str) if D_form > 0 else gettext("Not specified")
-        p_input_withdrawal_time_display = gettext("Start of Year") if withdrawal_time_form == TIME_START else gettext("End of Year")
-
-        if form_data.get('period1_duration'): # Check if user interacted with multi-period fields
-            p_input_period_summary = gettext("Multi-period: %(num)d stage(s) defined", num=len(rates_periods_data))
-        else:
-            # Use values from form_data directly as they represent the user's input for single period
-            r_display = float(form_data.get('r', 0))
-            i_display = float(form_data.get('i', 0))
-            T_display = int(form_data.get('T', 0))
-            p_input_period_summary = gettext("Return: %(r).1f%%, Inflation: %(i).1f%%, Duration: %(T)d years", r=r_display, i=i_display, T=T_display)
-
         template_context = {
-            **form_params_for_result_page,
-            'p_initial_mode': mode_form,
-            'p_input_w': p_input_w_formatted,
-            'p_input_p': p_input_p_formatted,
-            'p_input_d': p_input_d_formatted,
-            'p_input_withdrawal_time': p_input_withdrawal_time_display,
-            'p_input_period_summary': p_input_period_summary,
+            **form_params_for_result_page, # Includes D_form_val, withdrawal_time_form_val, initial_mode_from_index etc.
             'primary_result_label': primary_result_label,
             'primary_result_value_formatted': primary_result_value_formatted,
-            'fire_W_input_val': initial_W_input_for_fire_mode,
+            'fire_W_input_val': initial_W_input_for_fire_mode, # This is W_form or calculated W from P mode
             'fire_P_calculated_val': format_currency(calculated_P_output, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_P_output, (int, float)) and calculated_P_output != float('inf') else gettext("N/A"),
             'portfolio_plot_fire': portfolio_plot_W_mode, 'withdrawal_plot_fire': withdrawal_plot_W_mode, 'table_data_fire_html': table_data_W_mode_html,
-            'expense_P_input_val': initial_P_input_for_expense_mode_template,
+            'expense_P_input_val': initial_P_input_for_expense_mode_template, # This is P_value_form or calculated P from W mode
             'expense_W_calculated_val': format_currency(calculated_W_output_for_expense_mode, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_W_output_for_expense_mode, (int, float)) and calculated_W_output_for_expense_mode != float('inf') else gettext("N/A"),
             'portfolio_plot_expense': portfolio_plot_P_mode, 'withdrawal_plot_expense': withdrawal_plot_P_mode, 'table_data_expense_html': table_data_P_mode_html,
-            'rates_periods_info_json': rates_periods_data
+            'rates_periods_info_json': rates_periods_data # This is the structured data used for calculations
         }
+
+        # Explicitly set p_input_ fields for the "Calculation based on:" section
+        template_context['p_initial_mode'] = mode_form
+
+        if mode_form == MODE_WITHDRAWAL:
+            template_context['p_input_w'] = format_currency(W_form, DEFAULT_CURRENCY, locale=locale_str)
+            template_context['p_input_p'] = gettext("N/A")
+        elif mode_form == MODE_PORTFOLIO:
+            template_context['p_input_w'] = gettext("N/A")
+            if P_value_form is not None:
+                template_context['p_input_p'] = format_currency(P_value_form, DEFAULT_CURRENCY, locale=locale_str)
+            else:
+                template_context['p_input_p'] = gettext("Not provided")
+        else:
+            template_context['p_input_w'] = gettext("N/A")
+            template_context['p_input_p'] = gettext("N/A")
+
+        if D_form > 0:
+            template_context['p_input_d'] = format_currency(D_form, DEFAULT_CURRENCY, locale=locale_str)
+        else:
+            template_context['p_input_d'] = gettext("Not specified")
+
+        if withdrawal_time_form == TIME_START:
+            template_context['p_input_withdrawal_time'] = gettext("Start of Year")
+        else:
+            template_context['p_input_withdrawal_time'] = gettext("End of Year")
+
+        # Check if multi-period fields from form_data were used
+        # A simple check for the presence of the first period's duration, r, and i fields is sufficient
+        # to distinguish from fallback single-period mode, assuming these fields are only submitted if user interacts with them.
+        if form_data.get('period1_duration') and form_data.get('period1_r') and form_data.get('period1_i'):
+            template_context['p_input_period_summary'] = gettext("Multi-period: %(num)d stage(s) defined", num=len(rates_periods_data))
+        else:
+            r_from_form = float(form_data.get('r', '0'))
+            i_from_form = float(form_data.get('i', '0'))
+            T_from_form = int(form_data.get('T', '0'))
+            template_context['p_input_period_summary'] = gettext("Return: %(r).1f%%, Inflation: %(i).1f%%, Duration: %(T)d years", r=r_from_form, i=i_from_form, T=T_from_form)
+
         template_context['current_year'] = datetime.datetime.now().year
         return render_template('result.html', **template_context)
     else: # GET request

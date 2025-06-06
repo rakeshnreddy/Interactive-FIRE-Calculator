@@ -494,34 +494,43 @@
 
                 const params = new URLSearchParams();
 
-                // Get W, D, withdrawal_time
-                const wValForLog = W_output_left ? W_output_left.value : 'W_output_left not found';
-                console.log('[CompareLinkDebug] W_output_left value:', wValForLog);
-                const parsedWForLog = W_output_left ? parseFormattedNumberFromInput(W_output_left.value) : 'N/A';
-                console.log('[CompareLinkDebug] Parsed W for params:', parsedWForLog);
-                if (W_output_left) {
-                    params.append('W', String(parsedWForLog || '0'));
-                } else {
-                    params.append('W', String(container.dataset.w || '0'));
+                // Parameter W
+                let wVal = '0';
+                if (W_output_left && W_output_left.value && W_output_left.value.trim() !== '' && W_output_left.value.toUpperCase() !== _('N/A').toUpperCase()) {
+                    wVal = String(parseFormattedNumberFromInput(W_output_left.value));
+                } else if (container && container.dataset.w) {
+                    wVal = String(container.dataset.w);
                 }
+                params.append('W', wVal);
+                console.log('[CompareLinkDebug] Appending W:', wVal);
 
-                const dValForLog = container ? container.dataset.d : 'container not found';
-                console.log('[CompareLinkDebug] container.dataset.d:', dValForLog);
-                params.append('D', String(dValForLog || '0.0'));
+                // Parameter D
+                let dVal = '0.0';
+                if (container && container.dataset.d) {
+                    dVal = String(container.dataset.d);
+                }
+                params.append('D', dVal);
+                console.log('[CompareLinkDebug] Appending D:', dVal);
 
+                // Parameter withdrawal_time
+                let wtVal = '{{ TIME_END_const }}';
                 const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
-                const withdrawalTimeValForLog = withdrawal_time_selected ? withdrawal_time_selected.value : (container ? container.dataset.withdrawalTime : 'withdrawal_time_selected and container.dataset.withdrawalTime not found');
-                console.log('[CompareLinkDebug] withdrawal_time value or fallback:', withdrawalTimeValForLog);
-                params.append('withdrawal_time', String(withdrawalTimeValForLog || '{{ TIME_END_const }}'));
+                if (withdrawal_time_selected && withdrawal_time_selected.value) {
+                    wtVal = String(withdrawal_time_selected.value);
+                } else if (container && container.dataset.withdrawalTime) {
+                    wtVal = String(container.dataset.withdrawalTime);
+                }
+                params.append('withdrawal_time', wtVal);
+                console.log('[CompareLinkDebug] Appending withdrawal_time:', wtVal);
 
-                // Handle single vs multi-period data
+                // Multi-period vs Single-period data
+                let periodParamsAdded = false;
                 const ratesPeriodsJson = container.dataset.ratesPeriods;
-                console.log('[CompareLinkDebug] Raw ratesPeriodsJson:', ratesPeriodsJson);
+                console.log('[CompareLinkDebug] Raw ratesPeriodsJson for link:', ratesPeriodsJson);
                 let ratesPeriods = null;
                 if (ratesPeriodsJson && ratesPeriodsJson !== "null" && ratesPeriodsJson.trim() !== "") {
                     try {
                         ratesPeriods = JSON.parse(ratesPeriodsJson);
-                        console.log('[CompareLinkDebug] Parsed ratesPeriods:', ratesPeriods);
                     } catch(e) {
                         console.error("[CompareLinkDebug] Error parsing rates_periods_info_json for compare link: ", e, "JSON string was:", ratesPeriodsJson);
                         ratesPeriods = null;
@@ -529,30 +538,40 @@
                 }
 
                 if (ratesPeriods && Array.isArray(ratesPeriods) && ratesPeriods.length > 0) {
-                    console.log('[CompareLinkDebug] Using multi-period data for link.');
+                    console.log('[CompareLinkDebug] Appending multi-period data:', ratesPeriods);
                     ratesPeriods.forEach((period, index) => {
                         params.append(`period${index+1}_duration`, String(period.duration));
                         params.append(`period${index+1}_r`, String(period.r * 100));
                         params.append(`period${index+1}_i`, String(period.i * 100));
                     });
+                    periodParamsAdded = true;
                 } else {
-                    console.log('[CompareLinkDebug] Using single-period data for link or fallback.');
-                    const rValForLog = r_output ? r_output.value : (container ? container.dataset.r : 'r_output and container.dataset.r not found');
-                    console.log('[CompareLinkDebug] r_output value or fallback:', rValForLog);
-                    if (r_output) params.append('r', String(r_output.value)); else params.append('r', String(container.dataset.r || '0'));
-
-                    const iValForLog = i_output ? i_output.value : (container ? container.dataset.i : 'i_output and container.dataset.i not found');
-                    console.log('[CompareLinkDebug] i_output value or fallback:', iValForLog);
-                    if (i_output) params.append('i', String(i_output.value)); else params.append('i', String(container.dataset.i || '0'));
-
-                    const tValForLog = T_output ? T_output.value : (container ? container.dataset.t : 'T_output and container.dataset.t not found');
-                    console.log('[CompareLinkDebug] T_output value or fallback:', tValForLog);
-                    if (T_output) params.append('T', String(T_output.value)); else params.append('T', String(container.dataset.t || '0'));
+                     console.log('[CompareLinkDebug] No valid multi-period data found or error in parsing.');
                 }
 
-                console.log('[CompareLinkDebug] Constructed query params:', params.toString());
-                compareLink.href = `{{ url_for('project.compare') }}?${params.toString()}`;
-                console.log('[CompareLinkDebug] Final compareLink.href:', compareLink.href);
+                if (!periodParamsAdded) {
+                    let rVal = '0';
+                    if (r_output && r_output.value) { rVal = String(r_output.value); } else if (container && container.dataset.r) { rVal = String(container.dataset.r); }
+                    params.append('r', rVal);
+                    console.log('[CompareLinkDebug] Appending single r:', rVal);
+
+                    let iVal = '0';
+                    if (i_output && i_output.value) { iVal = String(i_output.value); } else if (container && container.dataset.i) { iVal = String(container.dataset.i); }
+                    params.append('i', iVal);
+                    console.log('[CompareLinkDebug] Appending single i:', iVal);
+
+                    let tVal = '0';
+                    if (T_output && T_output.value) { tVal = String(T_output.value); } else if (container && container.dataset.t) { tVal = String(container.dataset.t); }
+                    params.append('T', tVal);
+                    console.log('[CompareLinkDebug] Appending single T:', tVal);
+                }
+
+                const queryString = params.toString();
+                console.log('[CompareLinkDebug] Final query string:', queryString);
+                if (compareLink) {
+                    compareLink.href = `{{ url_for('project.compare') }}?${queryString}`;
+                    console.log('[CompareLinkDebug] Set compareLink.href to:', compareLink.href);
+                }
 
             } catch (e) {
                 console.error("[CompareLinkDebug] Error updating compare scenarios link:", e);
