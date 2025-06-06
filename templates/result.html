@@ -503,6 +503,7 @@
                 }
                 params.append('W', wVal);
                 console.log('[CompareLinkDebug] Appending W:', wVal);
+                console.log(`[CompareLinkDebug] After W: ${params.toString()}`);
 
                 // Parameter D
                 let dVal = '0.0';
@@ -511,6 +512,7 @@
                 }
                 params.append('D', dVal);
                 console.log('[CompareLinkDebug] Appending D:', dVal);
+                console.log(`[CompareLinkDebug] After D: ${params.toString()}`);
 
                 // Parameter withdrawal_time
                 let wtVal = '{{ TIME_END_const }}';
@@ -522,6 +524,7 @@
                 }
                 params.append('withdrawal_time', wtVal);
                 console.log('[CompareLinkDebug] Appending withdrawal_time:', wtVal);
+                console.log(`[CompareLinkDebug] After withdrawal_time: ${params.toString()}`);
 
                 // Multi-period vs Single-period data
                 let periodParamsAdded = false;
@@ -545,6 +548,7 @@
                         params.append(`period${index+1}_i`, String(period.i * 100));
                     });
                     periodParamsAdded = true;
+                    console.log(`[CompareLinkDebug] After multi-period loop (if run): ${params.toString()}`);
                 } else {
                      console.log('[CompareLinkDebug] No valid multi-period data found or error in parsing.');
                 }
@@ -554,16 +558,19 @@
                     if (r_output && r_output.value) { rVal = String(r_output.value); } else if (container && container.dataset.r) { rVal = String(container.dataset.r); }
                     params.append('r', rVal);
                     console.log('[CompareLinkDebug] Appending single r:', rVal);
+                    console.log(`[CompareLinkDebug] After single r: ${params.toString()}`);
 
                     let iVal = '0';
                     if (i_output && i_output.value) { iVal = String(i_output.value); } else if (container && container.dataset.i) { iVal = String(container.dataset.i); }
                     params.append('i', iVal);
                     console.log('[CompareLinkDebug] Appending single i:', iVal);
+                    console.log(`[CompareLinkDebug] After single i: ${params.toString()}`);
 
                     let tVal = '0';
                     if (T_output && T_output.value) { tVal = String(T_output.value); } else if (container && container.dataset.t) { tVal = String(container.dataset.t); }
                     params.append('T', tVal);
                     console.log('[CompareLinkDebug] Appending single T:', tVal);
+                    console.log(`[CompareLinkDebug] After single T: ${params.toString()}`);
                 }
 
                 const queryString = params.toString();

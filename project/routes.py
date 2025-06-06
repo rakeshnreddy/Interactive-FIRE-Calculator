@@ -196,38 +196,48 @@ def index():
         template_context['p_initial_mode'] = mode_form
 
         if mode_form == MODE_WITHDRAWAL:
+            # W_form is the user's input for annual expenses.
+            # This is the value we want to display as "Input Annual Expenses".
             template_context['p_input_w'] = format_currency(W_form, DEFAULT_CURRENCY, locale=locale_str)
             template_context['p_input_p'] = gettext("N/A")
         elif mode_form == MODE_PORTFOLIO:
             template_context['p_input_w'] = gettext("N/A")
             if P_value_form is not None:
+                # P_value_form is the user's input for the portfolio.
+                # This is the value we want to display as "Input Target Portfolio".
                 template_context['p_input_p'] = format_currency(P_value_form, DEFAULT_CURRENCY, locale=locale_str)
             else:
-                template_context['p_input_p'] = gettext("Not provided")
+                template_context['p_input_p'] = gettext("Not provided (Error)") # Should ideally not happen
         else:
             template_context['p_input_w'] = gettext("N/A")
             template_context['p_input_p'] = gettext("N/A")
 
-        if D_form > 0:
+        # Re-confirm other p_input_* variables for "Calculation based on:" section
+        if D_form > 0: # D_form is a float
             template_context['p_input_d'] = format_currency(D_form, DEFAULT_CURRENCY, locale=locale_str)
         else:
             template_context['p_input_d'] = gettext("Not specified")
 
-        if withdrawal_time_form == TIME_START:
+        if withdrawal_time_form == TIME_START: # TIME_START is a constant
             template_context['p_input_withdrawal_time'] = gettext("Start of Year")
-        else:
+        else: # Default to End of Year if not TIME_START or if value is different
             template_context['p_input_withdrawal_time'] = gettext("End of Year")
 
-        # Check if multi-period fields from form_data were used
-        # A simple check for the presence of the first period's duration, r, and i fields is sufficient
-        # to distinguish from fallback single-period mode, assuming these fields are only submitted if user interacts with them.
+        # Logic for p_input_period_summary
+        # Check if actual multi-period fields from form_data were used
         if form_data.get('period1_duration') and form_data.get('period1_r') and form_data.get('period1_i'):
-            template_context['p_input_period_summary'] = gettext("Multi-period: %(num)d stage(s) defined", num=len(rates_periods_data))
+            num_stages = len(rates_periods_data) if rates_periods_data else 0
+            template_context['p_input_period_summary'] = gettext("Multi-period: %(num)d stage(s) defined", num=num_stages)
         else:
+            # Fallback to single period summary using r, i, T from form_data
             r_from_form = float(form_data.get('r', '0'))
             i_from_form = float(form_data.get('i', '0'))
             T_from_form = int(form_data.get('T', '0'))
             template_context['p_input_period_summary'] = gettext("Return: %(r).1f%%, Inflation: %(i).1f%%, Duration: %(T)d years", r=r_from_form, i=i_from_form, T=T_from_form)
+
+        # Add new logging for these specific context variables
+        current_app.logger.info(f"[PrimaryDisplayDebug] Context for result.html: p_initial_mode='{template_context.get('p_initial_mode')}', p_input_w='{template_context.get('p_input_w')}', p_input_p='{template_context.get('p_input_p')}'")
+        current_app.logger.info(f"[PrimaryDisplayDebug] Context for result.html: p_input_d='{template_context.get('p_input_d')}', p_input_withdrawal_time='{template_context.get('p_input_withdrawal_time')}', p_input_period_summary='{template_context.get('p_input_period_summary')}'")
 
         template_context['current_year'] = datetime.datetime.now().year
         return render_template('result.html', **template_context)
