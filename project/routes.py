@@ -179,8 +179,29 @@ def index():
         P_for_js = P_value_form if mode_form == MODE_PORTFOLIO and P_value_form is not None else (calculated_P_output if mode_form == MODE_WITHDRAWAL and isinstance(calculated_P_output, (int, float)) else 0.0)
         form_params_for_result_page.update({'P_input_raw_for_js': P_for_js, 'TIME_END_const': TIME_END, 'MODE_WITHDRAWAL_const': MODE_WITHDRAWAL})
 
+        # Prepare additional parameters for display
+        p_input_w_formatted = format_currency(W_form, DEFAULT_CURRENCY, locale=locale_str)
+        p_input_p_formatted = format_currency(P_value_form, DEFAULT_CURRENCY, locale=locale_str) if P_value_form is not None else gettext("N/A")
+        p_input_d_formatted = format_currency(D_form, DEFAULT_CURRENCY, locale=locale_str) if D_form > 0 else gettext("Not specified")
+        p_input_withdrawal_time_display = gettext("Start of Year") if withdrawal_time_form == TIME_START else gettext("End of Year")
+
+        if form_data.get('period1_duration'): # Check if user interacted with multi-period fields
+            p_input_period_summary = gettext("Multi-period: %(num)d stage(s) defined", num=len(rates_periods_data))
+        else:
+            # Use values from form_data directly as they represent the user's input for single period
+            r_display = float(form_data.get('r', 0))
+            i_display = float(form_data.get('i', 0))
+            T_display = int(form_data.get('T', 0))
+            p_input_period_summary = gettext("Return: %(r).1f%%, Inflation: %(i).1f%%, Duration: %(T)d years", r=r_display, i=i_display, T=T_display)
+
         template_context = {
             **form_params_for_result_page,
+            'p_initial_mode': mode_form,
+            'p_input_w': p_input_w_formatted,
+            'p_input_p': p_input_p_formatted,
+            'p_input_d': p_input_d_formatted,
+            'p_input_withdrawal_time': p_input_withdrawal_time_display,
+            'p_input_period_summary': p_input_period_summary,
             'primary_result_label': primary_result_label,
             'primary_result_value_formatted': primary_result_value_formatted,
             'fire_W_input_val': initial_W_input_for_fire_mode,
