@@ -13,6 +13,13 @@ function getActualTheme(storedTheme) {
 
 function applyTheme() {
   let storedTheme = localStorage.getItem('theme'); // Can be 'light', 'dark', or 'system'
+  if (storedTheme === null) {
+      // If no theme is stored (e.g., first visit), default to 'system'.
+      storedTheme = 'system';
+      // Optionally, save 'system' to localStorage so this becomes the persistent choice
+      // until the user manually changes it via the toggle.
+      localStorage.setItem('theme', 'system');
+  }
   
   const actualThemeToApply = getActualTheme(storedTheme);
 

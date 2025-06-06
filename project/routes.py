@@ -142,8 +142,8 @@ def index():
                 return render_template('index.html', error=gettext("Cannot find a suitable portfolio for the given withdrawal. Inputs may be unrealistic."), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year)
             calculated_P_output, initial_W_input_for_fire_mode, portfolio_plot_W_mode, withdrawal_plot_W_mode, table_data_W_mode_html = P_calc_primary, W_actual_primary, p_plot_w, w_plot_w, table_w
             initial_P_input_for_expense_mode_raw = P_calc_primary
-            _, W_calc_secondary, p_plot_p, w_plot_p, table_p = generate_plots(initial_W_input_for_fire_mode, withdrawal_time_form, MODE_PORTFOLIO, rates_periods_data, initial_P_input_for_expense_mode_raw, D_form)
-            calculated_W_output_for_expense_mode, portfolio_plot_P_mode, withdrawal_plot_P_mode, table_data_P_mode_html = W_calc_secondary, p_plot_p, w_plot_p, table_p
+            _, W_calc_secondary, p_plot_p, w_plot_w, table_p = generate_plots(initial_W_input_for_fire_mode, withdrawal_time_form, MODE_PORTFOLIO, rates_periods_data, initial_P_input_for_expense_mode_raw, D_form)
+            calculated_W_output_for_expense_mode, portfolio_plot_P_mode, withdrawal_plot_P_mode, table_data_P_mode_html = W_calc_secondary, p_plot_p, w_plot_w, table_p
         elif mode_form == MODE_PORTFOLIO:
             P_actual_primary, W_calc_primary, p_plot_p, w_plot_w, table_p = generate_plots(W_form, withdrawal_time_form, MODE_PORTFOLIO, rates_periods_data, P_value_form, D_form)
             initial_P_input_for_expense_mode_raw, calculated_W_output_for_expense_mode, portfolio_plot_P_mode, withdrawal_plot_P_mode, table_data_P_mode_html = P_actual_primary, W_calc_primary, p_plot_p, w_plot_w, table_p
@@ -243,9 +243,12 @@ def index():
         return render_template('result.html', **template_context)
     else: # GET request
         default_form_data = {
-            'W': '20000', 'r': '5', 'i': '2', 'T': '30', 'D': '0.0', 'withdrawal_time': TIME_END,
-            'mode': MODE_WITHDRAWAL, 'P': '500000', 'error': None,
-            'period1_duration': '', 'period1_r': '', 'period1_i': '', 'period2_duration': '', 'period2_r': '', 'period2_i': '',
+            'W': '80000', 'r': '7', 'i': '3', 'T': '30', 'D': '0.0',
+            'withdrawal_time': TIME_END,
+            'mode': MODE_WITHDRAWAL,
+            'P': '500000', 'error': None,
+            'period1_duration': '', 'period1_r': '', 'period1_i': '',
+            'period2_duration': '', 'period2_r': '', 'period2_i': '',
             'period3_duration': '', 'period3_r': '', 'period3_i': '',
         }
         default_form_data['current_year'] = datetime.datetime.now().year
@@ -478,3 +481,5 @@ def register_app_routes(app_instance):
     app_instance.logger.info("Attempting to register project_blueprint (with restored routes).")
     app_instance.register_blueprint(project_blueprint)
     app_instance.logger.info("project_blueprint (with restored routes) registered.")
+
+[end of project/routes.py]
