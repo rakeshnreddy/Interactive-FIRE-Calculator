@@ -20,9 +20,9 @@
 
       <div class="calculation-context mt-3" style="font-size: 0.9em; line-height: 1.4;">
         <p style="margin-bottom: 2px;"><em>{{ _("Calculation based on:") }}</em></p>
-        {% if p_initial_mode == "withdrawal" %}
+        {% if p_initial_mode == "W" %} {# Check against 'W' as confirmed from constants.py and logs #}
           <p style="margin-bottom: 2px;">{{ _("Input Annual Expenses:") }} <strong>{{ p_input_w }}</strong></p>
-        {% elif p_initial_mode == "portfolio" %}
+        {% elif p_initial_mode == "P" %} {# Check against 'P' as confirmed from constants.py #}
           <p style="margin-bottom: 2px;">{{ _("Input Target Portfolio:") }} <strong>{{ p_input_p }}</strong></p>
         {% endif %}
         <p style="margin-bottom: 2px;">{{ p_input_period_summary }}</p>
@@ -498,16 +498,16 @@
                 let wVal = '0';
                 if (W_output_left && W_output_left.value && W_output_left.value.trim() !== '' && W_output_left.value.toUpperCase() !== _('N/A').toUpperCase()) {
                     wVal = String(parseFormattedNumberFromInput(W_output_left.value));
-                } else if (container && container.dataset.w) {
+                } else if (container && container.dataset.w) { // Fallback to dataset if input is empty/invalid
                     wVal = String(container.dataset.w);
-                }
+                } // If both are unavailable, wVal remains '0'
                 params.append('W', wVal);
                 console.log('[CompareLinkDebug] Appending W:', wVal);
                 console.log(`[CompareLinkDebug] After W: ${params.toString()}`);
 
                 // Parameter D
                 let dVal = '0.0';
-                if (container && container.dataset.d) {
+                if (container && container.dataset.d && container.dataset.d.trim() !== '') { // Ensure dataset.d is not empty
                     dVal = String(container.dataset.d);
                 }
                 params.append('D', dVal);
@@ -515,11 +515,11 @@
                 console.log(`[CompareLinkDebug] After D: ${params.toString()}`);
 
                 // Parameter withdrawal_time
-                let wtVal = '{{ TIME_END_const }}';
+                let wtVal = String('{{ TIME_END_const }}'); // Ensure default is string
                 const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
                 if (withdrawal_time_selected && withdrawal_time_selected.value) {
                     wtVal = String(withdrawal_time_selected.value);
-                } else if (container && container.dataset.withdrawalTime) {
+                } else if (container && container.dataset.withdrawalTime && container.dataset.withdrawalTime.trim() !== '') { // Ensure dataset.withdrawalTime is not empty
                     wtVal = String(container.dataset.withdrawalTime);
                 }
                 params.append('withdrawal_time', wtVal);
@@ -528,7 +528,7 @@
 
                 // Multi-period vs Single-period data
                 let periodParamsAdded = false;
-                const ratesPeriodsJson = container.dataset.ratesPeriods;
+                const ratesPeriodsJson = container ? container.dataset.ratesPeriods : null; // Ensure container exists
                 console.log('[CompareLinkDebug] Raw ratesPeriodsJson for link:', ratesPeriodsJson);
                 let ratesPeriods = null;
                 if (ratesPeriodsJson && ratesPeriodsJson !== "null" && ratesPeriodsJson.trim() !== "") {
