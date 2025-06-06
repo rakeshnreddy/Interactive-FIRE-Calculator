@@ -500,19 +500,19 @@
                 const parsedWForLog = W_output_left ? parseFormattedNumberFromInput(W_output_left.value) : 'N/A';
                 console.log('[CompareLinkDebug] Parsed W for params:', parsedWForLog);
                 if (W_output_left) {
-                    params.append('W', parsedWForLog || '0');
+                    params.append('W', String(parsedWForLog || '0'));
                 } else {
-                    params.append('W', container.dataset.w || '0');
+                    params.append('W', String(container.dataset.w || '0'));
                 }
 
                 const dValForLog = container ? container.dataset.d : 'container not found';
                 console.log('[CompareLinkDebug] container.dataset.d:', dValForLog);
-                params.append('D', dValForLog || '0.0');
+                params.append('D', String(dValForLog || '0.0'));
 
                 const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
                 const withdrawalTimeValForLog = withdrawal_time_selected ? withdrawal_time_selected.value : (container ? container.dataset.withdrawalTime : 'withdrawal_time_selected and container.dataset.withdrawalTime not found');
                 console.log('[CompareLinkDebug] withdrawal_time value or fallback:', withdrawalTimeValForLog);
-                params.append('withdrawal_time', withdrawalTimeValForLog || '{{ TIME_END_const }}');
+                params.append('withdrawal_time', String(withdrawalTimeValForLog || '{{ TIME_END_const }}'));
 
                 // Handle single vs multi-period data
                 const ratesPeriodsJson = container.dataset.ratesPeriods;
@@ -531,23 +531,23 @@
                 if (ratesPeriods && Array.isArray(ratesPeriods) && ratesPeriods.length > 0) {
                     console.log('[CompareLinkDebug] Using multi-period data for link.');
                     ratesPeriods.forEach((period, index) => {
-                        params.append(`period${index+1}_duration`, period.duration);
-                        params.append(`period${index+1}_r`, period.r * 100);
-                        params.append(`period${index+1}_i`, period.i * 100);
+                        params.append(`period${index+1}_duration`, String(period.duration));
+                        params.append(`period${index+1}_r`, String(period.r * 100));
+                        params.append(`period${index+1}_i`, String(period.i * 100));
                     });
                 } else {
                     console.log('[CompareLinkDebug] Using single-period data for link or fallback.');
                     const rValForLog = r_output ? r_output.value : (container ? container.dataset.r : 'r_output and container.dataset.r not found');
                     console.log('[CompareLinkDebug] r_output value or fallback:', rValForLog);
-                    if (r_output) params.append('r', r_output.value); else params.append('r', container.dataset.r || '0');
+                    if (r_output) params.append('r', String(r_output.value)); else params.append('r', String(container.dataset.r || '0'));
 
                     const iValForLog = i_output ? i_output.value : (container ? container.dataset.i : 'i_output and container.dataset.i not found');
                     console.log('[CompareLinkDebug] i_output value or fallback:', iValForLog);
-                    if (i_output) params.append('i', i_output.value); else params.append('i', container.dataset.i || '0');
+                    if (i_output) params.append('i', String(i_output.value)); else params.append('i', String(container.dataset.i || '0'));
 
                     const tValForLog = T_output ? T_output.value : (container ? container.dataset.t : 'T_output and container.dataset.t not found');
                     console.log('[CompareLinkDebug] T_output value or fallback:', tValForLog);
-                    if (T_output) params.append('T', T_output.value); else params.append('T', container.dataset.t || '0');
+                    if (T_output) params.append('T', String(T_output.value)); else params.append('T', String(container.dataset.t || '0'));
                 }
 
                 console.log('[CompareLinkDebug] Constructed query params:', params.toString());
