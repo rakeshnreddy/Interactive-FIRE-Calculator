@@ -240,27 +240,27 @@
           } else if (response.scenarios && response.scenarios.length > 0) {
               $("#combinedGraphs").html(''); // Clear previous graphs before adding new ones
               try {
-                  const balanceContent = "<h3>" + _("Combined Portfolio Balance") + "</h3>" +
-                                     (response.combined_balance || "<p>" + _("No balance graph data.") + "</p>");
+                  const balanceContent = "<h3>Combined Portfolio Balance</h3>" +
+                                     (response.combined_balance || "<p>No balance graph data.</p>");
                   $("#combinedGraphs").append(balanceContent);
                   console.log('[CompareDebug] Updated combined balance graph section.');
               } catch (e) {
                   console.error('[CompareDebug] Error updating balance graph:', e);
-                  $("#combinedGraphs").append("<p class='text-danger'>" + _("Error displaying balance graph.") + "</p>");
+                  $("#combinedGraphs").append("<p class='text-danger'>Error displaying balance graph.</p>");
               }
 
               try {
-                  const withdrawalContent = "<h3>" + _("Combined Annual Withdrawals") + "</h3>" +
-                                        (response.combined_withdrawal || "<p>" + _("No withdrawal graph data.") + "</p>");
+                  const withdrawalContent = "<h3>Combined Annual Withdrawals</h3>" +
+                                        (response.combined_withdrawal || "<p>No withdrawal graph data.</p>");
                   $("#combinedGraphs").append(withdrawalContent);
                   console.log('[CompareDebug] Updated combined withdrawal graph section.');
               } catch (e) {
                   console.error('[CompareDebug] Error updating withdrawal graph:', e);
-                  $("#combinedGraphs").append("<p class='text-danger'>" + _("Error displaying withdrawal graph.") + "</p>");
+                  $("#combinedGraphs").append("<p class='text-danger'>Error displaying withdrawal graph.</p>");
               }
           } else {
               console.log('[CompareDebug] No message and no scenarios in response. Clearing graphs/table.');
-              $("#combinedGraphs").html("<p>" + _("No comparison data available or an unexpected error occurred.") + "</p>");
+              $("#combinedGraphs").html("<p>No comparison data available or an unexpected error occurred.</p>");
               $("#summaryTable").html("");
           }
 
@@ -271,7 +271,7 @@
                   console.log('[CompareDebug] Summary table update attempted.');
               } catch (e) {
                   console.error('[CompareDebug] Error calling updateSummaryTable:', e);
-                  $("#summaryTable").html("<p class='text-danger'>" + _("Error displaying summary table.") + "</p>");
+                  $("#summaryTable").html("<p class='text-danger'>Error displaying summary table.</p>");
               }
 
               try {
@@ -286,7 +286,7 @@
                       if(sc.error){
                           scenarioDiv.append('<div class="alert alert-warning mt-2 p-2 error-message">' + sc.error + '</div>');
                       } else if (sc.fire_number_display && sc.fire_number_display !== "N/A") {
-                          var resultHtml = '<div class="result-section mt-2"><p><strong>' + _("FIRE Number:") + '</strong> ' + sc.fire_number_display + '</p></div>';
+                          var resultHtml = '<div class="result-section mt-2"><p><strong>FIRE Number:</strong> ' + sc.fire_number_display + '</p></div>';
                           scenarioDiv.append(resultHtml);
                       }
                   });
@@ -307,18 +307,18 @@
     
     function updateSummaryTable(scenarios) {
       console.log('[CompareDebug] updateSummaryTable() called with scenarios:', scenarios);
-      var html = "<table class='table table-striped table-hover'><thead><tr><th>#</th><th>" + _("W") + "</th><th>" + _("Rates & Dur.") + "</th><th>" + _("Timing") + "</th><th>" + _("FIRE #") + "</th><th>" + _("Error") + "</th></tr></thead><tbody>";
+      var html = "<table class='table table-striped table-hover'><thead><tr><th>#</th><th>W</th><th>Rates & Dur.</th><th>Timing</th><th>FIRE #</th><th>Error</th></tr></thead><tbody>";
       scenarios.forEach(function(sc) {
         let rates_display = "N/A";
         if (sc.rates_periods_data && sc.rates_periods_data.length > 0) {
             if (sc.rates_periods_data.length === 1) {
                 let p = sc.rates_periods_data[0];
-                rates_display = _("R:") + ` ${(p.r * 100).toFixed(1)}%, ` + _("I:") + ` ${(p.i * 100).toFixed(1)}%, ` + _("T:") + ` ${p.duration}y`;
+                rates_display = "R:" + ` ${(p.r * 100).toFixed(1)}%, ` + "I:" + ` ${(p.i * 100).toFixed(1)}%, ` + "T:" + ` ${p.duration}y`;
             } else {
-                rates_display = sc.rates_periods_data.map(p => `(` + _("R:") + `${(p.r*100).toFixed(1)}% ` + _("I:") + `${(p.i*100).toFixed(1)}% ` + _("D:") + `${p.duration}y)`).join('<br>');
+                rates_display = sc.rates_periods_data.map(p => `(R:${(p.r*100).toFixed(1)}% I:${(p.i*100).toFixed(1)}% D:${p.duration}y)`).join('<br>');
             }
         } else { // Fallback if rates_periods_data not directly in scenario object, use form values
-            rates_display = _("R:") + ` ${sc.r_form}%, ` + _("I:") + ` ${sc.i_form}%, ` + _("T:") + ` ${sc.T_form}y`;
+            rates_display = "R:" + ` ${sc.r_form}%, ` + "I:" + ` ${sc.i_form}%, ` + "T:" + ` ${sc.T_form}y`;
         }
 
         html += "<tr><td>" + sc.n + "</td>" +
