@@ -13,6 +13,13 @@
   {# Header content is now part of base.html, including theme toggle #}
   {# The old header div is removed #}
 
+  <div class="primary-result-display" style="text-align: center; margin-bottom: 20px; padding: 15px; background-color: #f0f0f0; border-radius: 5px;">
+    <h3>{{ primary_result_label | default(_('Result:')) }}</h3>
+    <p style="font-size: 1.5em; margin-top: 5px;"><strong>{{ primary_result_value_formatted | default(_('N/A')) }}</strong></p>
+  </div>
+
+  <div id="loadingIndicator" style="display: none; text-align: center; padding: 10px; color: #555;">{{ _("Calculating...") }}</div>
+
   <div id="exportParamsContainer"
        data-w="{{ fire_W_input_val | default(0) }}"
        data-r="{{ r_form_val | default(0) }}" {# These will be the single/fallback values #}
@@ -160,6 +167,9 @@
   <div class="text-center mt-4"> {# Centering for buttons #}
     <a href="{{ url_for('project.index') }}" class="btn btn-outline-secondary" style="margin-top: 30px;">{{ _("← Back to Calculator") }}</a>
   </div>
+  <div class="text-center mt-3">
+    <a href="#" id="compareScenariosLink" class="btn btn-outline-info">{{ _("Compare with other scenarios →") }}</a>
+  </div>
 </div>
 {% endblock %}
 
@@ -249,7 +259,8 @@
             if (!slider || !output) return; // Add null check
             slider.addEventListener('input', () => {
                 const val = slider.value;
-                output.value = isPercentOrYears ? val : formatNumber(val, isPercentOrYears ? 1 : 0); // Use 0 decimal for W/P outputs
+                // Use formatNumberForDisplay for W/P outputs, ensuring 0 decimal places for non-percent/year values
+                output.value = isPercentOrYears ? val : formatNumberForDisplay(val, 0);
                 handleInputChange(slider);
             });
             output.addEventListener('change', () => {
@@ -278,6 +289,9 @@
         }));
 
         function handleInputChange(sourceElement = null) {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) loadingIndicator.style.display = 'block';
+
             const formData = new FormData();
             // Use parseFormattedNumberFromInput for values from input fields
             formData.append('W', parseFormattedNumberFromInput(W_output_left.value));
@@ -328,6 +342,7 @@
             .catch(error => {
                 console.error('Error fetching/processing update:', error);
                 alert(_('Could not update calculations. See console for details.'));
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
             });
         }
 
@@ -393,6 +408,9 @@
         }
 
         function updatePage(data, sourceElement = null) {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+
             if(displayFireNumberW) displayFireNumberW.textContent = data.fire_number_W;
             if(displayAnnualExpenseW) displayAnnualExpenseW.textContent = data.annual_expense_W;
             updateElementWithScriptExecution(divPortfolioPlotW, data.portfolio_plot_W);
@@ -415,59 +433,100 @@
             // and display fields with the backend-provided formatted strings.
 
             // The logic for cross-updating sliders from calculated values needs to parse the formatted string from backend.
-            // This is tricky. It's better if backend also sends raw numbers for these updates.
-            // For now, assuming data.raw_fire_number_W and data.raw_annual_expense_P exist if needed by JS.
-            // If not, parsing formatted currency is complex and locale-dependent.
-            // The current parseFormattedNumberFromInput is a simple attempt.
+            // Cross-update sliders using raw numeric values from backend data.
+            // This section is for when an input in one column affects an input in the other.
 
-            // Example: If data.fire_number_W is "$1,234,567.89"
-            // parseFormattedNumberFromInput might get 1234567.89 for en-US.
-            // This is okay for slider.value and input.value if they expect numbers.
-
-            if (sourceElement !== P_output_right && sourceElement !== P_slider_right) {
-                if (data.fire_number_W !== _("N/A") && P_slider_right && P_output_right) {
-                    // Assuming backend sends a raw numeric value for this cross-update, e.g., data.raw_fire_number_W_for_P_input
-                    // If not, we have to parse data.fire_number_W which is locale-formatted.
-                    // For now, let's assume the simple parse is okay for en-US.
-                    let numeric_P = parseFormattedNumberFromInput(data.fire_number_W); // data.fire_number_W is already formatted
+            // Update FIRE Mode inputs (P_slider_right, P_output_right) based on Expense Mode calculation (data.raw_fire_number_W)
+            if (P_slider_right && P_output_right && sourceElement !== P_output_right && sourceElement !== P_slider_right) {
+                if (data.raw_fire_number_W !== null) {
+                    let numeric_P = parseFloat(data.raw_fire_number_W);
                     P_slider_right.value = Math.min(parseFloat(P_slider_right.max), Math.max(parseFloat(P_slider_right.min), numeric_P || 0));
                     P_output_right.value = formatNumberForDisplay(P_slider_right.value, 0);
-                } else if (P_output_right && P_slider_right) {
-                    P_output_right.value = _("N/A"); // Use translated "N/A"
-                    P_slider_right.value = P_slider_right.min;
+                } else {
+                    P_output_right.value = _("N/A");
+                    P_slider_right.value = P_slider_right.min; // Or some other default like 0
                 }
             }
 
-            if (sourceElement !== W_output_left && sourceElement !== W_slider_left) {
-                if (data.annual_expense_P !== _("N/A") && W_slider_left && W_output_left) {
-                    let numeric_W = parseFormattedNumberFromInput(data.annual_expense_P); // data.annual_expense_P is already formatted
+            // Update Expense Mode inputs (W_slider_left, W_output_left) based on FIRE Mode calculation (data.raw_annual_expense_P)
+            if (W_slider_left && W_output_left && sourceElement !== W_output_left && sourceElement !== W_slider_left) {
+                if (data.raw_annual_expense_P !== null) {
+                    let numeric_W = parseFloat(data.raw_annual_expense_P);
                     W_slider_left.value = Math.min(parseFloat(W_slider_left.max), Math.max(parseFloat(W_slider_left.min), numeric_W || 0));
                     W_output_left.value = formatNumberForDisplay(W_slider_left.value, 0);
-                } else if (W_output_left && W_slider_left) {
-                    W_output_left.value = _("N/A"); // Use translated "N/A"
-                    W_slider_left.value = W_slider_left.min;
+                } else {
+                    W_output_left.value = _("N/A");
+                    W_slider_left.value = W_slider_left.min; // Or some other default like 0
                 }
             }
             updateExportCsvLink();
+            updateCompareScenariosLink(); // Call after other updates
+        }
+
+        function updateCompareScenariosLink() {
+            const compareLink = document.getElementById('compareScenariosLink');
+            if (!compareLink) return;
+
+            const container = document.getElementById('exportParamsContainer');
+            if (!container) return;
+
+            const params = new URLSearchParams();
+
+            // Get W, D, withdrawal_time
+            if (W_output_left) params.append('W', parseFormattedNumberFromInput(W_output_left.value) || '0');
+            params.append('D', container.dataset.d || '0.0');
+
+            const withdrawal_time_selected = document.querySelector('input[name="withdrawal_time"]:checked');
+            params.append('withdrawal_time', (withdrawal_time_selected ? withdrawal_time_selected.value : container.dataset.withdrawalTime) || '{{ TIME_END_const }}');
+
+            // Handle single vs multi-period data
+            const ratesPeriodsJson = container.dataset.ratesPeriods;
+            let ratesPeriods = null;
+            if (ratesPeriodsJson) {
+                try { ratesPeriods = JSON.parse(ratesPeriodsJson); } catch(e) { console.error("Error parsing rates_periods_info_json for compare link: ", e); }
+            }
+
+            if (ratesPeriods && Array.isArray(ratesPeriods) && ratesPeriods.length > 0) {
+                ratesPeriods.forEach((period, index) => {
+                    params.append(`period${index+1}_duration`, period.duration);
+                    params.append(`period${index+1}_r`, period.r * 100); // Pass as percentage
+                    params.append(`period${index+1}_i`, period.i * 100); // Pass as percentage
+                });
+            } else {
+                // Fallback to single period values if no multi-period data
+                if (r_output) params.append('r', r_output.value || container.dataset.r || '0');
+                if (i_output) params.append('i', i_output.value || container.dataset.i || '0');
+                if (T_output) params.append('T', T_output.value || container.dataset.t || '0');
+            }
+            compareLink.href = `{{ url_for('project.compare') }}?${params.toString()}`;
         }
 
         function initializeFormValues() {
             // Input fields should be initialized with simple numeric formats or "N/A"
-            if(W_output_left && W_slider_left) W_output_left.value = formatNumberForDisplay(W_slider_left.value,0);
-            if(P_output_right && P_slider_right) {
-                if (P_output_right.value.toUpperCase() !== _("N/A").toUpperCase()) {
-                    P_output_right.value = formatNumberForDisplay(P_slider_right.value,0);
+            if (W_output_left && W_slider_left) {
+                 W_output_left.value = formatNumberForDisplay(W_slider_left.value,0);
+            }
+            if (P_output_right && P_slider_right) {
+                // Check if the initial value (from Jinja) is "N/A"
+                // The P_output_right.value is already set by Jinja template.
+                // We need to ensure the slider reflects this initial state if it's "N/A".
+                if (P_output_right.value.toUpperCase() === _("N/A").toUpperCase()) {
+                    // P_slider_right.value is set by Jinja to '0' if expense_P_input_val is 'N/A'.
+                    // This is acceptable, or could be P_slider_right.min.
+                    // The main thing is P_output_right displays "N/A".
                 } else {
-                     P_output_right.value = _("N/A"); // Ensure it's translated if "N/A"
+                    // If not "N/A", format the numeric value from slider (or output initial value if preferred)
+                     P_output_right.value = formatNumberForDisplay(P_slider_right.value,0);
                 }
             }
-            if(r_output && r_slider) r_output.value = r_slider.value; // These are percentages, no special formatting
+            if (r_output && r_slider) r_output.value = r_slider.value; // These are percentages, no special formatting
             if(i_output && i_slider) i_output.value = i_slider.value; // These are percentages
             if(T_output && T_slider) T_output.value = T_slider.value;
         }
 
         initializeFormValues();
         updateExportCsvLink();
+        updateCompareScenariosLink(); // Initial call on page load
     });
   </script>
 {% endblock %}

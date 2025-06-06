@@ -151,6 +151,27 @@ def index():
             P_calc_secondary, _, p_plot_w, w_plot_w, table_w = generate_plots(initial_W_input_for_fire_mode, withdrawal_time_form, MODE_WITHDRAWAL, rates_periods_data, None, D_form)
             calculated_P_output, portfolio_plot_W_mode, withdrawal_plot_W_mode, table_data_W_mode_html = P_calc_secondary, p_plot_w, w_plot_w, table_w
 
+        # Determine primary result based on the initial mode
+        primary_result_label = ""
+        primary_result_value_formatted = gettext("N/A")
+        locale_str = get_locale().language if get_locale() else 'en_US'
+
+        if mode_form == MODE_WITHDRAWAL: # Expense mode was primary
+            primary_result_label = gettext("Your Calculated FIRE Number:")
+            if isinstance(calculated_P_output, (int, float)) and calculated_P_output != float('inf'):
+                primary_result_value_formatted = format_currency(calculated_P_output, DEFAULT_CURRENCY, locale=locale_str)
+            else:
+                primary_result_value_formatted = gettext("N/A")
+        elif mode_form == MODE_PORTFOLIO: # FIRE mode was primary
+            primary_result_label = gettext("Your Max Sustainable Annual Expense:")
+            if isinstance(calculated_W_output_for_expense_mode, (int, float)) and calculated_W_output_for_expense_mode != float('inf'):
+                primary_result_value_formatted = format_currency(calculated_W_output_for_expense_mode, DEFAULT_CURRENCY, locale=locale_str)
+            else:
+                primary_result_value_formatted = gettext("N/A")
+        else: # Fallback
+            primary_result_label = gettext("Result:")
+            primary_result_value_formatted = gettext("N/A")
+
         initial_P_input_for_expense_mode_template = "N/A" if initial_P_input_for_expense_mode_raw == float('inf') else initial_P_input_for_expense_mode_raw
         if len(rates_periods_data) == 1:
             form_params_for_result_page.update({'r_form_val': rates_periods_data[0]['r'] * 100, 'i_form_val': rates_periods_data[0]['i'] * 100, 'T_form_val': rates_periods_data[0]['duration']})
@@ -158,14 +179,15 @@ def index():
         P_for_js = P_value_form if mode_form == MODE_PORTFOLIO and P_value_form is not None else (calculated_P_output if mode_form == MODE_WITHDRAWAL and isinstance(calculated_P_output, (int, float)) else 0.0)
         form_params_for_result_page.update({'P_input_raw_for_js': P_for_js, 'TIME_END_const': TIME_END, 'MODE_WITHDRAWAL_const': MODE_WITHDRAWAL})
 
-        locale_str = get_locale().language if get_locale() else 'en_US'
         template_context = {
             **form_params_for_result_page,
+            'primary_result_label': primary_result_label,
+            'primary_result_value_formatted': primary_result_value_formatted,
             'fire_W_input_val': initial_W_input_for_fire_mode,
             'fire_P_calculated_val': format_currency(calculated_P_output, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_P_output, (int, float)) and calculated_P_output != float('inf') else gettext("N/A"),
             'portfolio_plot_fire': portfolio_plot_W_mode, 'withdrawal_plot_fire': withdrawal_plot_W_mode, 'table_data_fire_html': table_data_W_mode_html,
             'expense_P_input_val': initial_P_input_for_expense_mode_template,
-            'expense_W_calculated_val': format_currency(calculated_W_output_for_expense_mode, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_W_output_for_expense_mode, (int, float)) else gettext("N/A"),
+            'expense_W_calculated_val': format_currency(calculated_W_output_for_expense_mode, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_W_output_for_expense_mode, (int, float)) and calculated_W_output_for_expense_mode != float('inf') else gettext("N/A"),
             'portfolio_plot_expense': portfolio_plot_P_mode, 'withdrawal_plot_expense': withdrawal_plot_P_mode, 'table_data_expense_html': table_data_P_mode_html,
             'rates_periods_info_json': rates_periods_data
         }
@@ -221,10 +243,14 @@ def update():
     locale_str_update = get_locale().language if get_locale() else 'en_US'
     return jsonify({
         'fire_number_W': format_currency(required_portfolio_W, DEFAULT_CURRENCY, locale=locale_str_update) if required_portfolio_W != float('inf') else gettext("N/A"),
-        'annual_expense_W': format_currency(actual_W_for_mode_W, DEFAULT_CURRENCY, locale=locale_str_update),
+        'raw_fire_number_W': required_portfolio_W if required_portfolio_W != float('inf') else None,
+        'annual_expense_W': format_currency(actual_W_for_mode_W, DEFAULT_CURRENCY, locale=locale_str_update) if actual_W_for_mode_W is not None and actual_W_for_mode_W != float('inf') else gettext("N/A"), # Assuming actual_W_for_mode_W can be None if W_form was invalid before generate_plots, or if calculated_W in generate_plots becomes None
+        'raw_annual_expense_W': actual_W_for_mode_W if actual_W_for_mode_W is not None and actual_W_for_mode_W != float('inf') else None,
         'portfolio_plot_W': portfolio_plot_W, 'withdrawal_plot_W': withdrawal_plot_W, 'table_data_W_html': table_data_W_html,
         'fire_number_P': format_currency(input_P_for_mode_P, DEFAULT_CURRENCY, locale=locale_str_update) if input_P_for_mode_P != float('inf') else gettext("N/A"),
-        'annual_expense_P': format_currency(calculated_W_for_mode_P, DEFAULT_CURRENCY, locale=locale_str_update),
+        'raw_fire_number_P': input_P_for_mode_P if input_P_for_mode_P != float('inf') else None,
+        'annual_expense_P': format_currency(calculated_W_for_mode_P, DEFAULT_CURRENCY, locale=locale_str_update) if calculated_W_for_mode_P is not None and calculated_W_for_mode_P != float('inf') else gettext("N/A"),
+        'raw_annual_expense_P': calculated_W_for_mode_P if calculated_W_for_mode_P is not None and calculated_W_for_mode_P != float('inf') else None,
         'portfolio_plot_P': portfolio_plot_P, 'withdrawal_plot_P': withdrawal_plot_P, 'table_data_P_html': table_data_P_html
     })
 
@@ -297,6 +323,50 @@ def compare():
             sc = {'n': n, 'enabled': (n <=2), 'W_form': '', 'r_form': '', 'i_form': '', 'T_form': '', 'D_form': '0.0', 'withdrawal_time_form': TIME_END}
             for p_num in range(1,4): sc.update({f'period{p_num}_{field}_form': '' for field in ['duration', 'r', 'i']})
             default_scenarios_for_template.append(sc)
+
+        # Pre-fill first scenario from query parameters
+        if default_scenarios_for_template:
+            first_scenario = default_scenarios_for_template[0]
+            first_scenario['W_form'] = request.args.get('W', first_scenario['W_form'])
+            first_scenario['D_form'] = request.args.get('D', first_scenario['D_form'])
+            first_scenario['withdrawal_time_form'] = request.args.get('withdrawal_time', first_scenario['withdrawal_time_form'])
+
+            # Check for multi-period parameters first
+            is_multi_period = False
+            if request.args.get('period1_duration'):
+                is_multi_period = True
+                for k_period in range(1, 4): # Assuming max 3 periods as per form structure
+                    dur_param = f'period{k_period}_duration'
+                    r_param = f'period{k_period}_r'
+                    i_param = f'period{k_period}_i'
+                    if request.args.get(dur_param):
+                        first_scenario[f'period{k_period}_duration_form'] = request.args.get(dur_param)
+                        first_scenario[f'period{k_period}_r_form'] = request.args.get(r_param)
+                        first_scenario[f'period{k_period}_i_form'] = request.args.get(i_param)
+                    else: # Clear if primary period param not found for subsequent periods
+                        first_scenario[f'period{k_period}_duration_form'] = ''
+                        first_scenario[f'period{k_period}_r_form'] = ''
+                        first_scenario[f'period{k_period}_i_form'] = ''
+                # If multi-period, clear single period fields for this scenario
+                first_scenario['r_form'] = ''
+                first_scenario['i_form'] = ''
+                first_scenario['T_form'] = ''
+
+            if not is_multi_period:
+                # Populate single-period r, i, T if no multi-period data was found
+                first_scenario['r_form'] = request.args.get('r', first_scenario['r_form'])
+                first_scenario['i_form'] = request.args.get('i', first_scenario['i_form'])
+                first_scenario['T_form'] = request.args.get('T', first_scenario['T_form'])
+                # Clear multi-period fields if using single period
+                for k_period in range(1, 4):
+                    first_scenario[f'period{k_period}_duration_form'] = ''
+                    first_scenario[f'period{k_period}_r_form'] = ''
+                    first_scenario[f'period{k_period}_i_form'] = ''
+
+            # Ensure first scenario is enabled if any relevant query param was passed
+            # (It's enabled by default if n<=2, but this is an explicit thought)
+            # No specific action needed here as it's already enabled.
+
         return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None, current_year=datetime.datetime.now().year)
 
 @project_blueprint.route('/settings')
