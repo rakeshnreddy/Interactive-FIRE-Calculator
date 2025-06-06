@@ -230,39 +230,70 @@
           console.log('[CompareDebug] Response combined_withdrawal HTML (first 100 chars):', response.combined_withdrawal ? response.combined_withdrawal.substring(0,100) : 'N/A');
           console.log('[CompareDebug] Response scenarios:', response.scenarios);
 
-          if(response.message && response.message.length > 0) {
-            $("#combinedGraphs").html("");
-            $("#summaryTable").html("");
-            // Display general message (e.g. "No valid scenarios to plot")
-            // This could be shown in a dedicated message area or as an alert
-            // For now, using an alert for general messages.
-            alert(response.message); // Already translated from backend
-          } else if (response.scenarios) {
-            $("#combinedGraphs").html(
-              "<h3>" + _("Combined Portfolio Balance") + "</h3>" +
-              (response.combined_balance || "<p>" + _("No balance graph data.") + "</p>") +
-              "<h3>" + _("Combined Annual Withdrawals") + "</h3>" +
-              (response.combined_withdrawal || "<p>" + _("No withdrawal graph data.") + "</p>")
-            );
+          if (response.message && response.message.length > 0) {
+              $("#combinedGraphs").html(""); // Clear graphs
+              $("#summaryTable").html("");   // Clear table
+              alert(response.message); // Already translated from backend
+              // Potentially clear individual scenario results if a global message indicates total failure
+               $(".scenario .result-section").remove();
+               $(".scenario .alert.alert-warning.error-message").remove();
+          } else if (response.scenarios && response.scenarios.length > 0) {
+              $("#combinedGraphs").html(''); // Clear previous graphs before adding new ones
+              try {
+                  const balanceContent = "<h3>" + _("Combined Portfolio Balance") + "</h3>" +
+                                     (response.combined_balance || "<p>" + _("No balance graph data.") + "</p>");
+                  $("#combinedGraphs").append(balanceContent);
+                  console.log('[CompareDebug] Updated combined balance graph section.');
+              } catch (e) {
+                  console.error('[CompareDebug] Error updating balance graph:', e);
+                  $("#combinedGraphs").append("<p class='text-danger'>" + _("Error displaying balance graph.") + "</p>");
+              }
+
+              try {
+                  const withdrawalContent = "<h3>" + _("Combined Annual Withdrawals") + "</h3>" +
+                                        (response.combined_withdrawal || "<p>" + _("No withdrawal graph data.") + "</p>");
+                  $("#combinedGraphs").append(withdrawalContent);
+                  console.log('[CompareDebug] Updated combined withdrawal graph section.');
+              } catch (e) {
+                  console.error('[CompareDebug] Error updating withdrawal graph:', e);
+                  $("#combinedGraphs").append("<p class='text-danger'>" + _("Error displaying withdrawal graph.") + "</p>");
+              }
           } else {
-             $("#combinedGraphs").html("<p>" + _("Error: Received unexpected response from server.") + "</p>");
-             $("#summaryTable").html("");
+              console.log('[CompareDebug] No message and no scenarios in response. Clearing graphs/table.');
+              $("#combinedGraphs").html("<p>" + _("No comparison data available or an unexpected error occurred.") + "</p>");
+              $("#summaryTable").html("");
           }
 
-          // Always update scenarios display (errors, results) and summary table
-          if(response.scenarios && Array.isArray(response.scenarios)){
-              updateSummaryTable(response.scenarios);
-              response.scenarios.forEach(function(sc, index) {
-                  var scenarioDiv = $("#scenario" + (sc.n || index + 1)); // Use sc.n if available
-                  scenarioDiv.find(".result-section").remove(); // Clear old results
-                  scenarioDiv.find(".error-message").remove(); // Clear old errors
-                  if(sc.error){
-                      scenarioDiv.append('<div class="alert alert-warning mt-2 p-2 error-message">' + sc.error + '</div>'); // Already translated
-                  } else if (sc.fire_number_display && sc.fire_number_display !== "N/A") {
-                      var resultHtml = '<div class="result-section mt-2"><p><strong>' + _("FIRE Number:") + '</strong> ' + sc.fire_number_display + '</p></div>';
-                      scenarioDiv.append(resultHtml);
-                  }
-              });
+          // Scenario details and summary table updates should always try to run if response.scenarios exists
+          if (response.scenarios && Array.isArray(response.scenarios)) {
+              try {
+                  updateSummaryTable(response.scenarios);
+                  console.log('[CompareDebug] Summary table update attempted.');
+              } catch (e) {
+                  console.error('[CompareDebug] Error calling updateSummaryTable:', e);
+                  $("#summaryTable").html("<p class='text-danger'>" + _("Error displaying summary table.") + "</p>");
+              }
+
+              try {
+                  response.scenarios.forEach(function(sc, index) {
+                      var scenarioDiv = $("#scenario" + (sc.n || index + 1));
+                      if (scenarioDiv.length === 0) {
+                          console.warn('[CompareDebug] Scenario div not found for scenario number:', (sc.n || index + 1));
+                          return;
+                      }
+                      scenarioDiv.find(".result-section").remove();
+                      scenarioDiv.find(".alert.alert-warning.error-message").remove(); // More specific selector
+                      if(sc.error){
+                          scenarioDiv.append('<div class="alert alert-warning mt-2 p-2 error-message">' + sc.error + '</div>');
+                      } else if (sc.fire_number_display && sc.fire_number_display !== "N/A") {
+                          var resultHtml = '<div class="result-section mt-2"><p><strong>' + _("FIRE Number:") + '</strong> ' + sc.fire_number_display + '</p></div>';
+                          scenarioDiv.append(resultHtml);
+                      }
+                  });
+                  console.log('[CompareDebug] Individual scenario updates attempted.');
+              } catch (e) {
+                  console.error('[CompareDebug] Error updating individual scenarios:', e);
+              }
           }
         },
         error: function(xhr, status, error) {
