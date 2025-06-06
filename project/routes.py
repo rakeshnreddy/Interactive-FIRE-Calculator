@@ -482,4 +482,4 @@ def register_app_routes(app_instance):
     app_instance.register_blueprint(project_blueprint)
     app_instance.logger.info("project_blueprint (with restored routes) registered.")
 
-[end of project/routes.py]
+#[end of project/routes.py]
