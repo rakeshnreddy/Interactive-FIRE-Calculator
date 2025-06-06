@@ -4,8 +4,8 @@ from babel.numbers import format_currency
 import numpy as np
 import plotly.graph_objects as go
 import plotly.offline as pyo
-import io # Keep for export_csv later, but not strictly needed by current active routes
-import csv # Keep for export_csv later
+import io
+import csv
 import datetime
 
 from .financial_calcs import annual_simulation, simulate_final_balance, find_required_portfolio, find_max_annual_expense
@@ -340,3 +340,5 @@ def register_app_routes(app_instance):
     app_instance.logger.info("Attempting to register project_blueprint (with restored routes).")
     app_instance.register_blueprint(project_blueprint)
     app_instance.logger.info("project_blueprint (with restored routes) registered.")
+
+[end of project/routes.py]
