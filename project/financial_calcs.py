@@ -3,7 +3,7 @@ from flask import current_app
 from flask_babel import gettext
 from .constants import TIME_START, TIME_END # TIME_END will be used by annual_simulation
 
-def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
+def annual_simulation(PV, W_initial, withdrawal_time, rates_periods, one_off_events=None):
     """
     Simulate the annual portfolio balance over T years with varying rates.
 
@@ -17,6 +17,9 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
     Returns:
         tuple: (years_array, balances_list, withdrawals_list)
     """
+    if one_off_events is None:
+        one_off_events = []
+
     if not rates_periods:
         raise ValueError(gettext("rates_periods list cannot be empty."))
 
@@ -51,12 +54,45 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
 
         if withdrawal_time == TIME_START:
             B -= current_annual_withdrawal
-            balances.append(B) # Balance after withdrawal, before growth
-            B *= (1 + r_current_period)
+            # Balance after withdrawal is recorded before one-off events and growth for this year
+            # However, the problem asks for one-off events *after* withdrawal and *before* growth.
+            # So, we'll append to balances *after* one-off events for TIME_START.
+            # B is now post-withdrawal.
         else: # TIME_END
             balances.append(B) # Balance before withdrawal and growth for this year
+            # For TIME_END, withdrawal happens after growth and one-off events.
+            # So, B is pre-withdrawal, pre-one-off, pre-growth here.
+
+        # Process one-off events for the current year (t_year_idx, which is year t_year_idx + 1)
+        # One-off events are processed *after* regular withdrawal (if TIME_START)
+        # and *before* growth.
+        # If TIME_END, they are processed *before* growth and *before* withdrawal.
+        # The chosen point: after withdrawal (if applicable), before growth.
+        for event in one_off_events:
+            # Assuming event['year'] is 1-based index. Simulation t_year_idx is 0-based.
+            if event.get('year') == (t_year_idx + 1):
+                B += event.get('amount', 0.0)
+
+        if withdrawal_time == TIME_START:
+            balances.append(B) # Balance after withdrawal and one-off events, before growth
             B *= (1 + r_current_period)
-            B -= current_annual_withdrawal
+        else: # TIME_END
+            # balances.append(B) was already done before one-offs for TIME_END if we want pre-withdrawal, pre-one-off, pre-growth
+            # However, to be consistent with the logic of "after withdrawal, before growth",
+            # for TIME_END, one-offs happen, then growth, then withdrawal.
+            # The current `balances.append(B)` for TIME_END captured B *before* one-offs and *before* growth.
+            # Let's adjust: For TIME_END, one-offs are applied, then growth, then withdrawal.
+            # The balance recorded for year t_year_idx should reflect state *before* withdrawal.
+            # So, for TIME_END, the sequence is:
+            # 1. B (start of year)
+            # 2. Apply one-off events to B
+            # 3. Apply growth to B -> B_after_growth
+            # 4. Subtract withdrawal from B_after_growth. This is the new B for end of year.
+            # The balance to save for year t_year_idx should be B *before* withdrawal.
+            # The `balances.append(B)` for TIME_END currently stores the balance *before* one-offs and growth. This is fine.
+            # The one-off events are now incorporated into B.
+            B *= (1 + r_current_period) # Growth applied to B (which includes one-off events)
+            B -= current_annual_withdrawal # Withdrawal at the end of the year
 
         # Inflate withdrawal for the *next* year using the current year's inflation
         current_annual_withdrawal *= (1 + i_current_period)
@@ -66,7 +102,7 @@ def annual_simulation(PV, W_initial, withdrawal_time, rates_periods):
     return years, balances, sim_withdrawals
 
 
-def simulate_final_balance(PV, W_initial, withdrawal_time, rates_periods, desired_final_value=0.0):
+def simulate_final_balance(PV, W_initial, withdrawal_time, rates_periods, desired_final_value=0.0, one_off_events=None):
     """
     Helper function to get the difference between the final balance after T years
     (with varying rates) and the desired_final_value.
@@ -77,15 +113,16 @@ def simulate_final_balance(PV, W_initial, withdrawal_time, rates_periods, desire
         withdrawal_time (str): "start" or "end".
         rates_periods (list of dicts): See annual_simulation docstring for structure.
         desired_final_value (float, optional): Target value. Defaults to 0.0.
+        one_off_events (list of dicts, optional): List of one-off income/expense events.
     """
     if not rates_periods: # Basic check, annual_simulation will also raise
         raise ValueError(gettext("rates_periods list cannot be empty for simulation."))
 
-    _, balances, _ = annual_simulation(PV, W_initial, withdrawal_time, rates_periods)
+    _, balances, _ = annual_simulation(PV, W_initial, withdrawal_time, rates_periods, one_off_events=one_off_events)
     actual_final_balance = balances[-1]
     return actual_final_balance - desired_final_value
 
-def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_final_value=0.0):
+def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_final_value=0.0, one_off_events=None):
     """
     Find the required initial portfolio (PV) to sustain withdrawals W_initial (with inflation)
     for the duration specified in rates_periods, aiming for a specific desired_final_value.
@@ -138,7 +175,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
     max_iterations_upper_bound = 100 # Safety break
 
     # We need simulate_final_balance to take W_initial, not W (which was the old param name)
-    while simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value) < 0:
+    while simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) < 0:
         iteration_count_upper_bound_search += 1
         if iteration_count_upper_bound_search > max_iterations_upper_bound:
             return float('inf') # Cannot find a suitable upper bound
@@ -152,12 +189,12 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
 
         if upper > current_app.config['PV_MAX_GUESS_LIMIT']:
             upper = current_app.config['PV_MAX_GUESS_LIMIT']
-            if simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value) < 0:
+            if simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) < 0:
                 return float('inf') # Even PV_MAX_GUESS_LIMIT is not enough
             break
 
     # If lower itself is sufficient
-    if simulate_final_balance(lower, W_initial, withdrawal_time, rates_periods, desired_final_value) >= 0:
+    if simulate_final_balance(lower, W_initial, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) >= 0:
          # And if the range is already very small
         if (upper == float('inf') and lower == float('inf')) or (upper - lower) <= current_app.config['DEFAULT_TOLERANCE']:
              return lower if lower != float('-inf') else 0.0
@@ -173,13 +210,13 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
         mid = (lower + upper) / 2.0
         if mid == lower or mid == upper or mid == float('inf'): break
 
-        if simulate_final_balance(mid, W_initial, withdrawal_time, rates_periods, desired_final_value) < 0:
+        if simulate_final_balance(mid, W_initial, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) < 0:
             lower = mid
         else:
             upper = mid
 
     # Final check on 'upper' as it's the one that should satisfy the condition or be very close
-    if simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value) < -current_app.config['DEFAULT_TOLERANCE']:
+    if simulate_final_balance(upper, W_initial, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) < -current_app.config['DEFAULT_TOLERANCE']:
         # If 'upper' significantly misses, and 'lower' (which was too low) is float('inf'), something is wrong.
         # This might indicate an unachievable scenario not caught by upper bound search.
         if lower == float('inf'): return float('inf')
@@ -195,7 +232,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
     return upper
 
 
-def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_value=0.0):
+def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_value=0.0, one_off_events=None):
     """
     Find the maximum initial annual withdrawal (W_initial) sustainable from portfolio P
     for the duration specified in rates_periods, aiming for a specific desired_final_value.
@@ -241,7 +278,7 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
 
     # If P is positive but upper is 0 (e.g. P_adjusted_for_dfv was negative), check if W=0 is valid
     if upper == 0.0 and P > 0:
-        if simulate_final_balance(P, 0, withdrawal_time, rates_periods, desired_final_value) >= 0:
+        if simulate_final_balance(P, 0, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) >= 0:
             return 0.0 # W=0 is sustainable
         # else: P is not enough even for W=0 to reach DFV, so need to find a negative W if that's allowed, or stick to 0.
         # Assuming W must be non-negative.
@@ -263,7 +300,7 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
 
         # If simulating with mid_W results in a final balance less than desired,
         # then mid_W is too high. So, new upper bound is mid_W.
-        if simulate_final_balance(P, mid_W, withdrawal_time, rates_periods, desired_final_value) < 0:
+        if simulate_final_balance(P, mid_W, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) < 0:
             upper = mid_W
         # Otherwise, mid_W is sustainable or more than sustainable.
         # So, new lower bound is mid_W, try for a higher W.
@@ -274,7 +311,7 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
     # Final check on 'lower' to ensure it's truly valid and non-negative.
     if lower < 0: return 0.0 # Should not happen if initial lower is 0.0
 
-    if simulate_final_balance(P, lower, withdrawal_time, rates_periods, desired_final_value) < -current_app.config['DEFAULT_TOLERANCE']:
+    if simulate_final_balance(P, lower, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) < -current_app.config['DEFAULT_TOLERANCE']:
         # If even 'lower' doesn't meet target (within tolerance), means no positive W could be found.
         return 0.0
 

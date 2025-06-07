@@ -28,6 +28,14 @@
         <p style="margin-bottom: 2px;">{{ p_input_period_summary }}</p>
         <p style="margin-bottom: 2px;">{{ _("Desired Final Portfolio:") }} <strong>{{ p_input_d }}</strong></p>
         <p style="margin-bottom: 2px;">{{ _("Withdrawal Timing:") }} <strong>{{ p_input_withdrawal_time }}</strong></p>
+        {% if one_off_events_input and one_off_events_input|length > 0 %}
+        <p style="margin-bottom: 2px;">{{ _("One-off Events:") }}</p>
+        <ul class="list-unstyled" style="font-size: 0.8em; margin-left: 15px;">
+            {% for event in one_off_events_input %}
+                <li>{{ _("Year:") }} {{ event.year }}, {{ _("Amount:") }} {{ event.formatted_amount }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
       </div>
     </div>
   </div>
