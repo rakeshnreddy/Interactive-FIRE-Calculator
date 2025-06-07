@@ -146,7 +146,7 @@ def find_required_portfolio(W_initial, withdrawal_time, rates_periods, desired_f
     if W_initial == 0 and desired_final_value == 0:
         return 0.0
 
-    lower = desired_final_value if desired_final_value > 0 else 0.0
+    lower = 0.0 # Changed this line as per instruction
 
     # Rough upper bound heuristic
     if W_initial > 0:
