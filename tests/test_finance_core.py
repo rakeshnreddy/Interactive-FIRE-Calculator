@@ -346,6 +346,159 @@ class TestOneOffEvents(unittest.TestCase):
         w_with_income = find_max_annual_expense(PV_val, TIME_END, rates, dfv, one_off_events=[{'year': 2, 'amount': 100000}])
         self.assertGreater(w_with_income, w_no_event)
 
+    # High DFV Scenarios
+    def test_find_required_portfolio_user_scenario_dfv_2M(self):
+        W = 80000.0
+        rates_periods = [{'duration': 30, 'r': 0.07, 'i': 0.03}]
+        dfv = 2000000.0
+        withdrawal_time = TIME_END
+        one_off_events = None # No one-off events for these DFV tests
+
+        pv_required = find_required_portfolio(W, withdrawal_time, rates_periods, dfv, one_off_events)
+        # User reported value was $2,000,000.01. Let's use a slightly wider delta for bisection results.
+        self.assertAlmostEqual(pv_required, 2000000.01, delta=self.app.config['DEFAULT_TOLERANCE'] * 10)
+
+        # Validate by running annual_simulation
+        _, balances, _ = annual_simulation(pv_required, W, withdrawal_time, rates_periods, one_off_events)
+        final_balance = balances[-1]
+        # The delta for final balance check should be tolerant of accumulated float errors
+        # Using a mix of absolute and relative tolerance for robustness
+        validation_delta = max(1.0, dfv * 0.00001) + self.app.config['DEFAULT_TOLERANCE'] * 10
+        self.assertAlmostEqual(final_balance, dfv, delta=validation_delta)
+
+    def test_find_required_portfolio_user_scenarios_various_dfv(self):
+        W = 80000.0
+        rates_periods = [{'duration': 30, 'r': 0.07, 'i': 0.03}]
+        withdrawal_time = TIME_END
+        one_off_events = None
+
+        scenarios = [
+            {"dfv": 0.0, "expected_pv": 1362275.06},
+            {"dfv": 100000.0, "expected_pv": 1375411.77},
+            {"dfv": 1000000.0, "expected_pv": 1493642.18},
+            {"dfv": 1500000.0, "expected_pv": 1559325.73},
+        ]
+
+        for scenario in scenarios:
+            with self.subTest(dfv=scenario["dfv"]):
+                dfv = scenario["dfv"]
+                expected_pv = scenario["expected_pv"]
+
+                pv_required = find_required_portfolio(W, withdrawal_time, rates_periods, dfv, one_off_events)
+                self.assertAlmostEqual(pv_required, expected_pv, delta=self.app.config['DEFAULT_TOLERANCE'] * 10 + 0.01)
+
+                _, balances, _ = annual_simulation(pv_required, W, withdrawal_time, rates_periods, one_off_events)
+                final_balance = balances[-1]
+                validation_delta = max(1.0, dfv * 0.00001 if dfv > 0 else 1.0) + self.app.config['DEFAULT_TOLERANCE'] * 10
+                self.assertAlmostEqual(final_balance, dfv, delta=validation_delta)
+
+    def test_find_required_portfolio_zero_withdrawal_high_dfv(self):
+        W = 0.0
+        rates_periods = [{'duration': 30, 'r': 0.07, 'i': 0.03}] # i is irrelevant for W=0 withdrawal calculation
+        dfv = 1000000.0
+        withdrawal_time = TIME_END
+        one_off_events = None
+
+        # Expected PV = DFV / (1+r)^T
+        expected_pv = dfv / ((1 + rates_periods[0]['r']) ** rates_periods[0]['duration']) # Approx 131367.07
+        self.assertAlmostEqual(expected_pv, 131367.07, delta=0.01) # Check my formula calculation first
+
+        pv_required = find_required_portfolio(W, withdrawal_time, rates_periods, dfv, one_off_events)
+        # For W=0, the bisection might hit slightly different due to how it searches, allow a bit more tolerance
+        self.assertAlmostEqual(pv_required, expected_pv, delta=self.app.config['DEFAULT_TOLERANCE'] * 100 + 0.1)
+
+
+        _, balances, _ = annual_simulation(pv_required, W, withdrawal_time, rates_periods, one_off_events)
+        final_balance = balances[-1]
+        validation_delta = max(1.0, dfv * 0.00001) + self.app.config['DEFAULT_TOLERANCE'] * 100
+        self.assertAlmostEqual(final_balance, dfv, delta=validation_delta)
+
+    # Further Robustness Tests for High DFV
+    def test_frp_high_dfv_low_withdrawal_varied_returns(self):
+        DFV = 1000000.0
+        W_initial = 10000.0
+        T = 20
+        withdrawal_time = TIME_END
+        one_off_events = None
+
+        rate_scenarios = [
+            {'name': 'High Real Return', 'rates_periods': [{'duration': T, 'r': 0.08, 'i': 0.02}]}, # 6% real
+            {'name': 'Moderate Real Return', 'rates_periods': [{'duration': T, 'r': 0.05, 'i': 0.02}]}, # 3% real
+            {'name': 'Low/Zero Real Return', 'rates_periods': [{'duration': T, 'r': 0.02, 'i': 0.02}]}, # 0% real
+            {'name': 'Negative Real Return', 'rates_periods': [{'duration': T, 'r': 0.01, 'i': 0.03}]}, # -2% real
+        ]
+
+        for sc in rate_scenarios:
+            with self.subTest(name=sc['name']):
+                pv_required = find_required_portfolio(W_initial, withdrawal_time, sc['rates_periods'], DFV, one_off_events)
+                self.assertFalse(pv_required == float('inf'), f"PV should not be_inf for {sc['name']}")
+
+                _, balances, _ = annual_simulation(pv_required, W_initial, withdrawal_time, sc['rates_periods'], one_off_events)
+                final_balance = balances[-1]
+                validation_delta = max(1.0, DFV * 0.0001) + self.app.config['DEFAULT_TOLERANCE'] * 10
+                self.assertAlmostEqual(final_balance, DFV, delta=validation_delta)
+
+    def test_frp_high_dfv_high_withdrawal_varied_durations(self):
+        DFV = 500000.0
+        W_initial = 40000.0 # 8% of DFV
+        withdrawal_time = TIME_END
+        one_off_events = None
+        base_r = 0.06
+        base_i = 0.03
+
+        duration_scenarios = [10, 20, 30]
+
+        for T_val in duration_scenarios:
+            with self.subTest(duration=T_val):
+                rates_periods = [{'duration': T_val, 'r': base_r, 'i': base_i}]
+                pv_required = find_required_portfolio(W_initial, withdrawal_time, rates_periods, DFV, one_off_events)
+                self.assertFalse(pv_required == float('inf'), f"PV should not be_inf for T={T_val}")
+
+                _, balances, _ = annual_simulation(pv_required, W_initial, withdrawal_time, rates_periods, one_off_events)
+                final_balance = balances[-1]
+                validation_delta = max(1.0, DFV * 0.0001) + self.app.config['DEFAULT_TOLERANCE'] * 10
+                self.assertAlmostEqual(final_balance, DFV, delta=validation_delta)
+
+    def test_frp_high_dfv_zero_nominal_return(self):
+        DFV = 100000.0
+        W_initial = 5000.0
+        T = 10
+        rates_periods = [{'duration': T, 'r': 0.00, 'i': 0.00}] # r=0, i=0
+        withdrawal_time = TIME_END
+        one_off_events = None
+
+        # Expected PV = DFV + sum of (non-inflated) withdrawals because i=0
+        expected_pv = DFV + (W_initial * T) # 100000 + 5000*10 = 150000
+
+        pv_required = find_required_portfolio(W_initial, withdrawal_time, rates_periods, DFV, one_off_events)
+        # Delta can be tighter as this is a very predictable scenario
+        self.assertAlmostEqual(pv_required, expected_pv, delta=self.app.config['DEFAULT_TOLERANCE'] * 10 + 0.01)
+
+        _, balances, _ = annual_simulation(pv_required, W_initial, withdrawal_time, rates_periods, one_off_events)
+        final_balance = balances[-1]
+        validation_delta = max(1.0, DFV * 0.00001 if DFV > 0 else 1.0) + self.app.config['DEFAULT_TOLERANCE']*10
+        self.assertAlmostEqual(final_balance, DFV, delta=validation_delta)
+
+    def test_frp_very_high_dfv_zero_withdrawal_long_duration(self):
+        DFV = 10000000.0 # 10 Million
+        W_initial = 0.0
+        T = 50
+        r_rate = 0.05
+        rates_periods = [{'duration': T, 'r': r_rate, 'i': 0.02}] # inflation is irrelevant for W=0
+        withdrawal_time = TIME_END
+        one_off_events = None
+
+        expected_pv = DFV / ((1 + r_rate)**T) # Approx 872039.69
+
+        pv_required = find_required_portfolio(W_initial, withdrawal_time, rates_periods, DFV, one_off_events)
+        # Using a slightly larger delta due to potential extreme value in bisection or formula precision
+        self.assertAlmostEqual(pv_required, expected_pv, delta=max(1.0, expected_pv * 0.0001) + self.app.config['DEFAULT_TOLERANCE'] * 100)
+
+        _, balances, _ = annual_simulation(pv_required, W_initial, withdrawal_time, rates_periods, one_off_events)
+        final_balance = balances[-1]
+        validation_delta = max(1.0, DFV * 0.0001) + self.app.config['DEFAULT_TOLERANCE'] * 100
+        self.assertAlmostEqual(final_balance, DFV, delta=validation_delta)
+
 
 if __name__ == '__main__':
     unittest.main()
