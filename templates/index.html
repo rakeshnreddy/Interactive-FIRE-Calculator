@@ -52,6 +52,46 @@
       {% endfor %}
       <hr>
 
+      {# ONE-OFF EVENTS SECTION START #}
+      <hr>
+      <h3>{{ _("One-off Expenses/Incomes (Optional)") }}</h3>
+      <p><small class="form-text text-muted">{{ _("Add significant one-time expenses (negative values) or incomes (positive values) for specific years. Items with empty year or amount will be ignored by the calculation if not fully specified.") }}</small></p>
+      <div id="one_off_events_container">
+          {# Items rendered by Jinja on page load if form submitted with values #}
+          {% for k in range(1, 6) %} {# Max 5 items for index page (MAX_ONE_OFF_EVENTS_INDEX from Python, hardcoded here) #}
+              {% set year_val = request.form.get('one_off_'~k~'_year') or (defaults and defaults['one_off_'~k~'_year']) %}
+              {% set amount_val = request.form.get('one_off_'~k~'_amount') or (defaults and defaults['one_off_'~k~'_amount']) %}
+              {% if year_val or amount_val %} {# Only render if there's some data from previous submission or defaults #}
+              <div class="one-off-event-item row gx-2 mb-2" data-event-idx="{{ k }}">
+                  <div class="col-md-1 pt-md-4 text-md-end"> {# Adjusted for alignment #}
+                      <label class="form-label-sm">{{ _("Item") }} {{ k }}:</label>
+                  </div>
+                  <div class="col-md-3">
+                      <label for="one_off_{{ k }}_year" class="form-label form-label-sm">{{ _("Year") }}</label>
+                      <input type="number" name="one_off_{{ k }}_year" id="one_off_{{ k }}_year" class="form-control form-control-sm" value="{{ year_val if year_val is not none else '' }}" placeholder="{{ _('Year') }}" min="1" step="1">
+                  </div>
+                  <div class="col-md-4"> <!-- Wider for amount -->
+                      <label for="one_off_{{ k }}_amount" class="form-label form-label-sm">{{ _("Amount") }}</label>
+                      <input type="number" name="one_off_{{ k }}_amount" id="one_off_{{ k }}_amount" class="form-control form-control-sm" value="{{ amount_val if amount_val is not none else '' }}" placeholder="{{ _('Amount (Negative for Expense)') }}" step="any">
+                  </div>
+                  <div class="col-md-2 d-flex align-items-end"> <!-- Remove button column -->
+                      <button type="button" class="btn btn-sm btn-danger remove-one-off-event-item">{{ _("Remove") }}</button>
+                  </div>
+              </div>
+              {% endif %}
+          {% endfor %}
+      </div>
+      <button type="button" id="add_one_off_event_button" class="btn btn-sm btn-outline-secondary mt-2"
+              data-item-label="{{ _('Item') }}"
+              data-year-label="{{ _('Year') }}"
+              data-amount-label="{{ _('Amount') }}"
+              data-amount-placeholder="{{ _('Amount (Negative for Expense)') }}"
+              data-remove-label="{{ _('Remove') }}">
+          {{ _("Add One-off Item") }}
+      </button>
+      <hr class="mt-3">
+      {# ONE-OFF EVENTS SECTION END #}
+
       <div class="mb-3"> {# Changed from form-group radio-group #}
         <label class="form-label">{{ _("Withdrawal Timing:") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Choose whether withdrawals occur at the start or end of each year.") }}</span></span></label> {# Main label for the group #}
         <div class="form-check">
@@ -74,4 +114,123 @@
       <a href="{{ url_for('project.compare') }}" class="btn btn-secondary">{{ _("Compare Scenarios") }}</a>
     </div>
   </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('one_off_events_container');
+    const addButton = document.getElementById('add_one_off_event_button');
+    const maxEvents = 5; // Corresponds to MAX_ONE_OFF_EVENTS_INDEX
+
+    // Helper to get translations from button data attributes
+    const itemLabel = addButton.dataset.itemLabel;
+    const yearLabelText = addButton.dataset.yearLabel; // Renamed to avoid conflict with label element
+    const amountLabelText = addButton.dataset.amountLabel; // Renamed to avoid conflict
+    const amountPlaceholder = addButton.dataset.amountPlaceholder;
+    const removeButtonText = addButton.dataset.removeLabel;
+
+    function getVisibleEventCount() {
+        return container.querySelectorAll('.one-off-event-item:not(.d-none)').length;
+    }
+
+    function updateAddButtonVisibility() {
+        if (getVisibleEventCount() >= maxEvents) {
+            addButton.style.display = 'none';
+        } else {
+            addButton.style.display = '';
+        }
+    }
+
+    function getNextAvailableIndex() {
+        for (let i = 1; i <= maxEvents; i++) {
+            // Check if an item with this index exists AND is visible (not .d-none)
+            const existingItem = container.querySelector(`.one-off-event-item[data-event-idx="${i}"]`);
+            if (!existingItem || existingItem.classList.contains('d-none')) {
+                 // If it doesn't exist, or exists but is hidden, this index is available.
+                return i;
+            }
+        }
+        // This case should ideally not be reached if updateAddButtonVisibility works correctly,
+        // but as a fallback if all maxEvents slots are technically filled (even if some are hidden by direct manipulation not through remove button).
+        // However, the primary logic is to find the first slot that is either not there or is hidden.
+        // Let's refine: find first slot not present OR present and hidden.
+        // The logic in the loop already does this: if !existingItem (not present), return i.
+        // If existingItem.classList.contains('d-none') (present but hidden), return i.
+        // So, if the loop finishes, it means all slots 1 to maxEvents are present AND visible.
+        return null; // No available index if all are visible
+    }
+
+    function wireRemoveButton(eventItem) {
+        const removeButton = eventItem.querySelector('.remove-one-off-event-item');
+        removeButton.addEventListener('click', function () {
+            // Hide the item and clear its values. Backend will ignore items with no year/amount.
+            eventItem.classList.add('d-none');
+            const inputs = eventItem.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.value = '';
+                // input.dispatchEvent(new Event('input')); // Optional: if other JS relies on it
+            });
+            updateAddButtonVisibility();
+        });
+    }
+
+    addButton.addEventListener('click', function () {
+        const currentVisibleCount = getVisibleEventCount();
+        if (currentVisibleCount >= maxEvents) { // This check is belts and suspenders, updateAddButtonVisibility should handle it
+            return;
+        }
+
+        const nextIdx = getNextAvailableIndex();
+        if (nextIdx === null) { // All slots are filled and visible
+            updateAddButtonVisibility(); // Ensure button is hidden
+            return;
+        }
+
+        let eventItemDiv = container.querySelector(`.one-off-event-item[data-event-idx="${nextIdx}"]`);
+
+        if (eventItemDiv && eventItemDiv.classList.contains('d-none')) { // Item exists but was hidden
+            eventItemDiv.classList.remove('d-none');
+            // Ensure values are cleared (should be by remove logic, but good practice)
+            eventItemDiv.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+        } else if (!eventItemDiv) { // Item does not exist, create it
+            eventItemDiv = document.createElement('div');
+            eventItemDiv.classList.add('one-off-event-item', 'row', 'gx-2', 'mb-2');
+            eventItemDiv.setAttribute('data-event-idx', nextIdx);
+
+            eventItemDiv.innerHTML = `
+                <div class="col-md-1 pt-md-4 text-md-end">
+                    <label class="form-label-sm">${itemLabel} ${nextIdx}:</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="one_off_${nextIdx}_year" class="form-label form-label-sm">${yearLabelText}</label>
+                    <input type="number" name="one_off_${nextIdx}_year" id="one_off_${nextIdx}_year" class="form-control form-control-sm" placeholder="${yearLabelText}" min="1" step="1">
+                </div>
+                <div class="col-md-4">
+                    <label for="one_off_${nextIdx}_amount" class="form-label form-label-sm">${amountLabelText}</label>
+                    <input type="number" name="one_off_${nextIdx}_amount" id="one_off_${nextIdx}_amount" class="form-control form-control-sm" placeholder="${amountPlaceholder}" step="any">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-sm btn-danger remove-one-off-event-item">${removeButtonText}</button>
+                </div>
+            `;
+            container.appendChild(eventItemDiv);
+            wireRemoveButton(eventItemDiv);
+        }
+
+        updateAddButtonVisibility();
+    });
+
+    // Wire remove buttons for items rendered by Jinja and not hidden by default
+    container.querySelectorAll('.one-off-event-item').forEach(item => {
+        // If an item is rendered by Jinja, it means it had data.
+        // We assume it should be visible unless specifically made d-none by some other logic (not the case here).
+        // The Jinja loop only renders items if year_val or amount_val is present.
+        // These rendered items should have their remove buttons wired.
+        if (!item.classList.contains('d-none')) { // Only wire for visible items
+             wireRemoveButton(item);
+        }
+    });
+
+    updateAddButtonVisibility(); // Initial check on page load
+});
+</script>
 {% endblock %}
