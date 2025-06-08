@@ -216,10 +216,7 @@ def wizard_calculate_step():
             error_message = "An unexpected error occurred during financial calculations."
             P_calculated_display = "Error"
 
-        # Clear session data for the wizard
-        session.pop('wizard_expenses', None)
-        session.pop('wizard_rates', None)
-        session.pop('wizard_one_offs', None)
+        # Session clearing moved further down to only occur on full success
 
         if error_message:
             flash(error_message, "error")
@@ -269,18 +266,39 @@ def wizard_calculate_step():
                 current_app.logger.error(f"Error generating withdrawal plot: {e_plot2}", exc_info=True)
 
         table_rows = []
-        if sim_years is not None and sim_balances is not None and sim_withdrawals is not None:
+        # Add defensive checks here:
+        if (sim_years is not None and
+            sim_balances is not None and
+            sim_withdrawals is not None and
+            len(sim_years) > 0 and
+            len(sim_balances) > len(sim_years) and  # Balances should have initial PV + end-of-year for each year
+            len(sim_withdrawals) >= len(sim_years)): # Withdrawals should cover each year in sim_years
+
             for i in range(len(sim_years)):
                 year = sim_years[i]
+                # sim_balances[0] is initial PV. sim_balances[i+1] is balance at end of sim_years[i].
                 balance = sim_balances[i+1]
-                withdrawal = sim_withdrawals[i] if i < len(sim_withdrawals) else 0
+                withdrawal = sim_withdrawals[i] # sim_withdrawals[i] corresponds to sim_years[i]
                 table_rows.append({
                     'year': year,
                     'balance': f"{balance:,.2f}",
                     'withdrawal': f"{withdrawal:,.2f}"
                 })
+        elif not error_message: # Only log if there wasn't a bigger calculation error already
+            current_app.logger.warning("Could not generate table_rows due to inconsistent simulation data shapes.")
+            current_app.logger.debug(f"sim_years len: {len(sim_years) if sim_years is not None else 'None'}, " +
+                                     f"sim_balances len: {len(sim_balances) if sim_balances is not None else 'None'}, " +
+                                     f"sim_withdrawals len: {len(sim_withdrawals) if sim_withdrawals is not None else 'None'}")
+
 
         W_display = f"{W:,.2f}"
+
+        # NOW, clear session as we are about to render a successful result
+        session.pop('wizard_expenses', None)
+        session.pop('wizard_rates', None)
+        session.pop('wizard_one_offs', None)
+        current_app.logger.debug("Wizard session data cleared after successful calculation.")
+
 
         return render_template('wizard_results.html',
                                title="Calculation Results",
