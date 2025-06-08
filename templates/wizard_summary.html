@@ -30,6 +30,9 @@
     <ul class="list-group list-group-flush">
       <li class="list-group-item"><strong>{{ _("Overall Portfolio Return Rate (%%):") }}</strong> {{ rates_data.return_rate | default(_('N/A')) }}</li>
       <li class="list-group-item"><strong>{{ _("Assumed Annual Inflation Rate (%%):") }}</strong> {{ rates_data.inflation_rate | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Total Duration (Fallback, if no periods):") }}</strong> {{ rates_data.total_duration_fallback | default(30) }} {{ _("years") }}</li>
+      <li class="list-group-item"><strong>{{ _("Desired Final Portfolio Value:") }}</strong> {{ rates_data.desired_final_value | default(0.0) }}</li>
+      <li class="list-group-item"><strong>{{ _("Withdrawal Timing:") }}</strong> {{ rates_data.withdrawal_time | capitalize | default(_('End of Year')) }}</li>
       {% if rates_data.period_rates %}
         <li class="list-group-item"><strong>{{ _("Period-Specific Return Rates:") }}</strong></li>
         {% for period in rates_data.period_rates %}
@@ -77,10 +80,12 @@
   </div>
 
   <div class="mt-4">
-    {# TODO: Add a button/link to "Edit" previous steps, possibly by linking to wizard_bp.wizard_expenses_step etc. #}
-    {# TODO: Add a button/form to "Calculate" or "Finalize" which would POST this data (or trigger calculation) #}
     <a href="{{ url_for('wizard_bp.wizard_one_offs_step') }}" class="btn btn-secondary">{{ _("Back to One-Offs") }}</a>
-    <a href="{{ url_for('project.index') }}" class="btn btn-primary">{{ _("Calculate with this Data (Placeholder)") }}</a>
-     <p class="mt-2"><small>{{_("Note: The 'Calculate' button is a placeholder. Functionality to use this data for calculation will be added later.")}}</small></p>
+    {# TODO: Add a button/link to "Edit" previous steps #}
+    <form method="POST" action="{{ url_for('wizard_bp.wizard_calculate_step') }}" class="d-inline ms-2">
+      {{ csrf_token() }} {# Requires app context for csrf_token() to work #}
+      <button type="submit" class="btn btn-primary">{{ _("Calculate with this Data") }}</button>
+    </form>
+    <p class="mt-2"><small>{{_("Note: Calculation will use the data summarized above and will clear the wizard session.")}}</small></p>
   </div>
 {% endblock %}

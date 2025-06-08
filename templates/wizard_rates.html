@@ -13,6 +13,26 @@
       {{ render_field(form.return_rate, class="form-control", placeholder=_("e.g., 7")) }}
       {{ render_field(form.inflation_rate, class="form-control", placeholder=_("e.g., 2.5")) }}
 
+      {{ render_field(form.total_duration_fallback, class="form-control", placeholder=_("e.g., 30")) }}
+      {{ render_field(form.desired_final_value, class="form-control", placeholder=_("e.g., 0")) }}
+
+      <div class="mb-3">
+        {{ form.withdrawal_time.label(class="form-label") }}
+        {% for subfield in form.withdrawal_time %}
+          <div class="form-check">
+            {{ subfield(class="form-check-input") }}
+            {{ subfield.label(class="form-check-label") }}
+          </div>
+        {% endfor %}
+        {% if form.withdrawal_time.errors %}
+          <div class="invalid-feedback d-block">
+            {% for error in form.withdrawal_time.errors %}
+              <span>{{ error }}</span><br>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
       <h4 class="mt-4">{{ _("Period-Specific Return Rates (Optional)") }}</h4>
       <p><small>{{_("If you expect your investment return rate to change over time (e.g., lower returns in retirement), define those periods here. Otherwise, leave blank.")}}</small></p>
       <div id="period-rates-list">

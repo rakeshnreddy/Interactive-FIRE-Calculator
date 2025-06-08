@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from app import app # Import the Flask app instance
 from project.forms import ExpensesForm, RatesForm, OneOffsForm, PeriodRateForm, OneOffEntryForm
+from unittest.mock import patch # Added for new tests
 
 class TestWizardForms(unittest.TestCase):
     def setUp(self):
@@ -63,19 +64,33 @@ class TestWizardForms(unittest.TestCase):
 
     def test_rates_form_valid(self):
         with app.test_request_context('/'):
-            # For FieldList, WTForms expects data in a specific way when not from request.form
-            # It's often easier to test FieldLists via client posts or by constructing data carefully.
             form_wtforms_data = {
                 'return_rate': 7.0, 'inflation_rate': 2.5,
+                'total_duration_fallback': 25,
+                'desired_final_value': 10000.0,
+                'withdrawal_time': 'start',
                 'period_rates': [{'years': 10, 'rate': 5.0}]
             }
-            form = RatesForm(data=form_wtforms_data) # Using data= for this structure
+            form = RatesForm(data=form_wtforms_data)
             self.assertTrue(form.validate(), msg=form.errors)
 
-
-    def test_rates_form_invalid_range(self):
+    def test_rates_form_invalid_total_duration(self):
         with app.test_request_context('/'):
-            form_wtforms_data = {'return_rate': 200.0, 'inflation_rate': 2.5} # return_rate too high
+            form_wtforms_data = {'return_rate': 7.0, 'inflation_rate': 2.5, 'total_duration_fallback': 0, 'withdrawal_time': 'end'}
+            form = RatesForm(data=form_wtforms_data)
+            self.assertFalse(form.validate())
+            self.assertIn('total_duration_fallback', form.errors)
+
+    def test_rates_form_invalid_withdrawal_time(self):
+        with app.test_request_context('/'):
+            form_wtforms_data = {'return_rate': 7.0, 'inflation_rate': 2.5, 'withdrawal_time': 'middle', 'total_duration_fallback': 30}
+            form = RatesForm(data=form_wtforms_data)
+            self.assertFalse(form.validate())
+            self.assertIn('withdrawal_time', form.errors)
+
+    def test_rates_form_invalid_range(self): # Kept original invalid range test
+        with app.test_request_context('/'):
+            form_wtforms_data = {'return_rate': 200.0, 'inflation_rate': 2.5, 'total_duration_fallback': 30, 'withdrawal_time': 'end'}
             form = RatesForm(data=form_wtforms_data)
             self.assertFalse(form.validate())
             self.assertIn('return_rate', form.errors)
@@ -140,6 +155,54 @@ class TestWizardRoutes(unittest.TestCase):
         # Error messages are rendered by the _formhelpers.html macro
         self.assertIn(b"Number must be between 0 and", response.data) # Error message for annual_expenses
         self.assertIn(b"This field is required.", response.data) # Error for housing
+
+
+    def test_wizard_expenses_post_calculates_total_from_itemized(self):
+        data = {
+            # annual_expenses is omitted or empty
+            'housing': '15000', 'food': '6000', 'transportation': '5000',
+            'utilities': '3000', 'personal_care': '2000', 'entertainment': '4000',
+            'healthcare': '3000', 'other_expenses': '1000', # Sum = 39000
+            'submit': 'Next: Rates'
+        }
+        # Try with annual_expenses as empty string
+        data_empty_total = {**data, 'annual_expenses': ''}
+        response = self.client.post(url_for('wizard_bp.wizard_expenses_step'), data=data_empty_total, follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+        with self.client.session_transaction() as sess:
+            self.assertIn('wizard_expenses', sess)
+            self.assertEqual(sess['wizard_expenses']['annual_expenses'], 39000.0)
+
+        # Try with annual_expenses not present (should also work due to .get() on backend)
+        # To ensure data_empty_total is a new dict for this part of the test if it was modified above.
+        data_no_total_key = {
+            'housing': '15000', 'food': '6000', 'transportation': '5000',
+            'utilities': '3000', 'personal_care': '2000', 'entertainment': '4000',
+            'healthcare': '3000', 'other_expenses': '1000',
+            'submit': 'Next: Rates'
+        }
+        response = self.client.post(url_for('wizard_bp.wizard_expenses_step'), data=data_no_total_key, follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+        with self.client.session_transaction() as sess:
+            self.assertIn('wizard_expenses', sess)
+            self.assertEqual(sess['wizard_expenses']['annual_expenses'], 39000.0)
+
+
+    def test_wizard_expenses_post_uses_submitted_total_over_itemized(self):
+        data = {
+            'annual_expenses': '100000', # User-defined total
+            'housing': '15000', 'food': '6000', # Itemized sum to 21000, but total should override
+            'transportation': '0', 'utilities': '0', 'personal_care': '0',
+            'entertainment': '0', 'healthcare': '0', 'other_expenses': '0',
+            'submit': 'Next: Rates'
+        }
+        response = self.client.post(url_for('wizard_bp.wizard_expenses_step'), data=data, follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+        with self.client.session_transaction() as sess:
+            self.assertIn('wizard_expenses', sess)
+            self.assertEqual(sess['wizard_expenses']['annual_expenses'], 100000.0)
+            self.assertEqual(sess['wizard_expenses']['housing'], 15000.0)
+
 
     def test_wizard_rates_get_no_session_redirects_to_expenses(self):
         response = self.client.get(url_for('wizard_bp.wizard_rates_step'), follow_redirects=False)
@@ -264,6 +327,110 @@ class TestWizardRoutes(unittest.TestCase):
         self.assertIn(b"Wizard Summary", response.data)
         self.assertIn(b"50000", response.data)
         self.assertIn(b"5", response.data)
+
+
+    @patch('project.wizard_routes.find_required_portfolio')
+    @patch('project.wizard_routes.annual_simulation')
+    @patch('project.wizard_routes.to_html')
+    def test_wizard_calculate_step_success(self, mock_to_html, mock_annual_simulation, mock_find_portfolio):
+        mock_find_portfolio.return_value = 500000.0
+        mock_annual_simulation.return_value = (
+            list(range(1, 31)),
+            [500000 - i * 1000 for i in range(31)],
+            [20000] * 30
+        )
+        mock_to_html.return_value = "<div>Mocked Plot</div>"
+
+        with self.client.session_transaction() as sess:
+            sess['wizard_expenses'] = {'annual_expenses': 20000.0, 'housing': 10000.0, 'food':1.0, 'transportation':1.0, 'utilities':1.0, 'personal_care':1.0, 'entertainment':1.0, 'healthcare':1.0, 'other_expenses':1.0}
+            sess['wizard_rates'] = {
+                'return_rate': 7.0, 'inflation_rate': 3.0,
+                'total_duration_fallback': 30,
+                'desired_final_value': 0.0,
+                'withdrawal_time': 'end',
+                'period_rates': []
+            }
+            sess['wizard_one_offs'] = {'large_expenses': [], 'large_incomes': []}
+
+        response = self.client.post(url_for('wizard_bp.wizard_calculate_step'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Calculation Results", response.data)
+        self.assertIn(b"500,000.00", response.data)
+        self.assertIn(b"20,000.00", response.data)
+        self.assertIn(b"Mocked Plot", response.data)
+        mock_find_portfolio.assert_called_once()
+        mock_annual_simulation.assert_called_once()
+        self.assertEqual(mock_to_html.call_count, 2)
+
+        with self.client.session_transaction() as sess:
+            self.assertNotIn('wizard_expenses', sess)
+            self.assertNotIn('wizard_rates', sess)
+            self.assertNotIn('wizard_one_offs', sess)
+
+    @patch('project.wizard_routes.find_required_portfolio')
+    def test_wizard_calculate_step_portfolio_not_feasible(self, mock_find_portfolio):
+        mock_find_portfolio.return_value = float('inf')
+
+        with self.client.session_transaction() as sess:
+            sess['wizard_expenses'] = {'annual_expenses': 100000.0, 'housing': 1.0, 'food':1.0, 'transportation':1.0, 'utilities':1.0, 'personal_care':1.0, 'entertainment':1.0, 'healthcare':1.0, 'other_expenses':1.0}
+            sess['wizard_rates'] = {
+                'return_rate': 1.0, 'inflation_rate': 5.0,
+                'total_duration_fallback': 50,
+                'desired_final_value': 0.0,
+                'withdrawal_time': 'end', 'period_rates': []
+            }
+            sess['wizard_one_offs'] = {'large_expenses': [], 'large_incomes': []}
+
+        response = self.client.post(url_for('wizard_bp.wizard_calculate_step'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Calculation Error", response.data)
+        self.assertIn(b"Not Feasible", response.data)
+        self.assertIn(b"Could not calculate a suitable portfolio", response.data)
+
+    def test_wizard_calculate_step_incomplete_session(self):
+        with self.client.session_transaction() as sess:
+            sess['wizard_expenses'] = {'annual_expenses': 20000.0} # Missing other steps
+
+        response = self.client.post(url_for('wizard_bp.wizard_calculate_step'), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        # Should redirect to the first step of the wizard, which is expenses.
+        # The error message is flashed.
+        self.assertIn(b"Step 1: Your Expenses", response.data)
+        self.assertIn(b"Session data is incomplete. Please restart the wizard.", response.data)
+
+    @patch('project.wizard_routes.find_required_portfolio')
+    @patch('project.wizard_routes.annual_simulation')
+    @patch('project.wizard_routes.to_html')
+    def test_wizard_calculate_uses_period_rates_over_fallback_duration(self, mock_to_html, mock_annual_simulation, mock_find_portfolio):
+        mock_find_portfolio.return_value = 600000.0
+        mock_annual_simulation.return_value = (list(range(1, 21)), [600000]*21, [25000]*20)
+        mock_to_html.return_value = "<div>Mocked Plot With Periods</div>"
+
+        with self.client.session_transaction() as sess:
+            sess['wizard_expenses'] = {'annual_expenses': 25000.0, 'housing': 1.0, 'food':1.0, 'transportation':1.0, 'utilities':1.0, 'personal_care':1.0, 'entertainment':1.0, 'healthcare':1.0, 'other_expenses':1.0}
+            sess['wizard_rates'] = {
+                'return_rate': 8.0, 'inflation_rate': 2.0,
+                'total_duration_fallback': 30, # Should be ignored
+                'desired_final_value': 5000.0,
+                'withdrawal_time': 'start',
+                'period_rates': [{'years': 10, 'rate': 6.0}, {'years': 10, 'rate': 5.0}] # Total 20 years
+            }
+            sess['wizard_one_offs'] = {'large_expenses': [], 'large_incomes': []}
+
+        response = self.client.post(url_for('wizard_bp.wizard_calculate_step'))
+        self.assertEqual(response.status_code, 200)
+        mock_find_portfolio.assert_called_once()
+
+        args, kwargs = mock_find_portfolio.call_args
+        passed_rates_periods = kwargs.get('rates_periods')
+        self.assertIsNotNone(passed_rates_periods)
+        self.assertEqual(len(passed_rates_periods), 2)
+        self.assertEqual(passed_rates_periods[0]['duration'], 10)
+        self.assertEqual(passed_rates_periods[1]['duration'], 10)
+
+        # Check that the summary on results page shows total duration from periods
+        self.assertIn(b"Total Duration (from periods): 20 years", response.data)
+
 
 if __name__ == '__main__':
     unittest.main()
