@@ -329,7 +329,6 @@ def wizard_calculate_step():
                                table_rows=table_rows,
                                plot1_div=plot1_div,
                                plot2_div=plot2_div,
-                               W=W, # Raw W is already passed
                                r_overall_nominal=r_overall_nominal,
                                i_overall=i_overall,
                                rates_periods_summary=rates_periods,
