@@ -19,6 +19,24 @@
     <li>{{_("Desired Final Portfolio Value:")}} {{ desired_final_value | default(0) }}</li>
   </ul>
 
+  {% if itemized_expenses_summary and itemized_expenses_summary is mapping and itemized_expenses_summary.get('housing') is not none %} {# Check if data is available and seems like the dict #}
+  <div class="card mt-3 mb-3">
+    <div class="card-header">
+      <h4>{{ _("Itemized Expenses Breakdown (Input)") }}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+      {# Only display if value is not None; default to 0 if key exists but is None for display #}
+      {% set expense_keys = ['housing', 'food', 'transportation', 'utilities', 'personal_care', 'entertainment', 'healthcare', 'other_expenses'] %}
+      {% for key in expense_keys %}
+        {% if itemized_expenses_summary.get(key) is not none %}
+          <li class="list-group-item"><strong>{{ _(key.replace('_', ' ').title() + ":") }}</strong> {{ itemized_expenses_summary.get(key) | default(0.0) }}</li>
+        {% endif %}
+      {% endfor %}
+      {# The total 'annual_expenses' from this dict is already shown as W_display or W #}
+    </ul>
+  </div>
+  {% endif %}
+
   <h4>{{_("Rates Periods Used:")}}</h4>
   {% if rates_periods_summary %}
     <ul>

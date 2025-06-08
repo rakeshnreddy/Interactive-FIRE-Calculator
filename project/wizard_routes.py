@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, session, request, flash # Add flash
+from flask import Blueprint, render_template, redirect, url_for, session, request, flash, current_app # Add current_app
 from project.forms import ExpensesForm, RatesForm, OneOffsForm
 from project.constants import TIME_START, TIME_END # For withdrawal_time mapping
 # Assuming generate_plots and other calc functions are accessible or need to be imported
@@ -181,6 +181,10 @@ def wizard_calculate_step():
         # Or use from flask import current_app; current_app.logger
 
         try:
+            current_app.logger.debug(f"Calling find_required_portfolio with W_initial={W_actual_for_P_calc}, withdrawal_time={withdrawal_time}, desired_final_value={desired_final_value}")
+            current_app.logger.debug(f"rates_periods for find_required_portfolio: {rates_periods}")
+            current_app.logger.debug(f"one_off_events for find_required_portfolio: {one_off_events}")
+
             P_calculated = find_required_portfolio(
                 W_initial=W_actual_for_P_calc,
                 withdrawal_time=withdrawal_time,
@@ -194,6 +198,10 @@ def wizard_calculate_step():
                 P_calculated_display = "Not Feasible"
             else:
                 P_calculated_display = f"{P_calculated:,.2f}"
+                current_app.logger.debug(f"Calling annual_simulation with PV_initial={P_calculated}, W_initial={W_actual_for_P_calc}, withdrawal_time={withdrawal_time}, desired_final_value={desired_final_value}")
+                current_app.logger.debug(f"rates_periods for annual_simulation: {rates_periods}")
+                current_app.logger.debug(f"one_off_events for annual_simulation: {one_off_events}")
+
                 sim_years, sim_balances, sim_withdrawals = annual_simulation(
                     PV_initial=P_calculated,
                     W_initial=W_actual_for_P_calc,
@@ -204,8 +212,7 @@ def wizard_calculate_step():
                 )
 
         except Exception as e:
-            # app.logger.error(f"Error during financial calculation: {e}", exc_info=True)
-            print(f"Error during financial calculation: {e}", file=sys.stderr) # Keep temp print
+            current_app.logger.error(f"Error during financial calculation: {e}", exc_info=True)
             error_message = "An unexpected error occurred during financial calculations."
             P_calculated_display = "Error"
 
@@ -227,7 +234,8 @@ def wizard_calculate_step():
                                    total_duration_from_periods=total_duration_from_periods,
                                    one_off_events_summary=one_off_events,
                                    withdrawal_time_str=withdrawal_time_str,
-                                   desired_final_value=desired_final_value
+                                   desired_final_value=desired_final_value,
+                                   itemized_expenses_summary=expenses_data
                                   )
 
         # --- Plot Generation ---
@@ -249,8 +257,7 @@ def wizard_calculate_step():
                 fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend")
                 plot1_div = to_html(fig_balance, full_html=False, include_plotlyjs='cdn')
             except Exception as e_plot1:
-                # app.logger.error(f"Error generating balance plot: {e_plot1}", exc_info=True) # Prefer proper logging
-                print(f"Error generating balance plot: {e_plot1}", file=sys.stderr)
+                current_app.logger.error(f"Error generating balance plot: {e_plot1}", exc_info=True)
 
 
         if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
@@ -260,8 +267,7 @@ def wizard_calculate_step():
                 fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend")
                 plot2_div = to_html(fig_withdrawals, full_html=False, include_plotlyjs='cdn')
             except Exception as e_plot2:
-                # app.logger.error(f"Error generating withdrawal plot: {e_plot2}", exc_info=True) # Prefer proper logging
-                print(f"Error generating withdrawal plot: {e_plot2}", file=sys.stderr)
+                current_app.logger.error(f"Error generating withdrawal plot: {e_plot2}", exc_info=True)
 
         table_rows = []
         if sim_years is not None and sim_balances is not None and sim_withdrawals is not None:
@@ -294,12 +300,12 @@ def wizard_calculate_step():
                                total_duration_from_periods=total_duration_from_periods,
                                one_off_events_summary=one_off_events,
                                withdrawal_time_str=withdrawal_time_str,
-                               desired_final_value=desired_final_value
+                               desired_final_value=desired_final_value,
+                               itemized_expenses_summary=expenses_data
                               )
 
     except Exception as e:
         # This outer try-except catches errors in data transformation itself
-        # app.logger.error(f"Error during data transformation in wizard: {e}", exc_info=True)
-        print(f"Error during data transformation in wizard: {e}", file=sys.stderr) # Keep temp print
+        current_app.logger.error(f"Error during data transformation in wizard: {e}", exc_info=True)
         flash("An error occurred preparing data for calculation. Please check your inputs.", "error")
         return redirect(url_for('wizard_bp.wizard_summary_step'))
