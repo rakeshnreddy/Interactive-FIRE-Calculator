@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field, render_submit_field, render_field_list_item %}
+
+{% block title %}{{ title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+  <h2>{{ title }}</h2>
+  <p>{{ _("List any significant one-time expenses (e.g., buying a car, wedding) or incomes (e.g., inheritance, sale of asset) you anticipate.") }}</p>
+  <form method="POST" action="{{ url_for('wizard_bp.wizard_one_offs_step') }}" novalidate>
+    {{ form.csrf_token }}
+
+    <fieldset class="mb-3">
+      <legend>{{ _("Large One-Off Expenses") }}</legend>
+      <div id="large-expenses-list">
+        {% for expense_form in form.large_expenses %}
+         {{ render_field_list_item(expense_form, loop.index0, 'large_expenses', ['year', 'amount', 'description']) }}
+        {% endfor %}
+      </div>
+      {{ render_submit_field(form.submit_add_expense, class="btn btn-secondary btn-sm mt-2", formnovalidate=True) }}
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ _("Large One-Off Incomes") }}</legend>
+      <div id="large-incomes-list">
+        {% for income_form in form.large_incomes %}
+          {{ render_field_list_item(income_form, loop.index0, 'large_incomes', ['year', 'amount', 'description']) }}
+        {% endfor %}
+      </div>
+      {{ render_submit_field(form.submit_add_income, class="btn btn-secondary btn-sm mt-2", formnovalidate=True) }}
+    </fieldset>
+
+    {{ render_submit_field(form.submit, class="btn btn-primary mt-4") }}
+  </form>
+{% endblock %}

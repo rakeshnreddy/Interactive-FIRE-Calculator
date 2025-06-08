@@ -1,0 +1,32 @@
+{% macro render_field(field, class="form-control", placeholder="") %}
+  <div class="mb-3">
+    {{ field.label(class="form-label") }}
+    {{ field(class=class ~ (' is-invalid' if field.errors else ''), placeholder=placeholder, **kwargs) }}
+    {% if field.errors %}
+      <div class="invalid-feedback">
+        {% for error in field.errors %}
+          <span>{{ error }}</span><br>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if field.description %}
+      <small class="form-text text-muted">{{ field.description }}</small>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% macro render_submit_field(field, class="btn btn-primary", formnovalidate=False) %}
+  {{ field(class=class, formnovalidate=formnovalidate if formnovalidate else None) }}
+{% endmacro %}
+
+{% macro render_field_list_item(form_entry, index, list_name, field_names) %}
+<div class="border p-3 mb-3 rounded list-item-entry">
+    <h5>{{ list_name.replace('_', ' ').title() }} #{{ index + 1 }}</h5>
+    <input type="hidden" name="{{ list_name }}-{{ index }}-csrf_token" value="{{ form_entry.csrf_token.current_token }}">
+    {% for field_name in field_names %}
+        {% set field = form_entry[field_name] %}
+        {{ render_field(field, class="form-control form-control-sm", placeholder=field.label.text) }}
+    {% endfor %}
+    {# You could add a remove button here if implementing dynamic removal #}
+</div>
+{% endmacro %}

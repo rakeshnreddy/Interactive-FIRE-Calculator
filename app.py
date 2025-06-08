@@ -1,12 +1,14 @@
 import os
 import logging # Make sure logging is imported
 from flask import Flask, request # request for get_locale_selector
+from flask_wtf.csrf import CSRFProtect
 from flask_babel import Babel, get_locale as flask_babel_get_locale
 from babel.numbers import format_currency
 
 # Create the Flask app instance
 app = Flask(__name__)
 app.testing = True # Ensure testing mode is enabled when app is imported
+csrf = CSRFProtect(app)
 
 # Basic app logging
 if not app.debug:
@@ -54,8 +56,11 @@ app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
 
 # --- Register Routes ---
 from project.routes import register_app_routes
+from project.wizard_routes import wizard_bp # <--- ADD THIS IMPORT
+
 register_app_routes(app)
-app.logger.info("Application routes registered.")
+app.register_blueprint(wizard_bp) # <--- ADD THIS LINE TO REGISTER THE BLUEPRINT
+app.logger.info("Application routes and wizard blueprint registered.") # Update log message
 
 # Make format_currency, get_locale, and DEFAULT_CURRENCY available in Jinja templates
 app.jinja_env.globals['format_currency'] = format_currency
