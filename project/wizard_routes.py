@@ -249,7 +249,7 @@ def wizard_calculate_step():
         if sim_years is not None and sim_balances is not None and len(sim_years) > 0:
             try:
                 fig_balance = go.Figure()
-                fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance"))
+                fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance", line=dict(color='blue')))
                 for event in one_off_events: # one_off_events is already available from transformation
                     if event['year'] <= sim_years[-1]:
                         event_y_approx = sim_balances[min(event['year'], len(sim_balances)-1)] # Approximate y for marker
@@ -258,7 +258,7 @@ def wizard_calculate_step():
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
                             name=f"One-off: {event['amount']:.0f}"
                         ))
-                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend")
+                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend") # Original titles are fine
                 plot1_div = to_html(fig_balance, full_html=False, include_plotlyjs='cdn')
             except Exception as e_plot1:
                 current_app.logger.error(f"Error generating balance plot: {e_plot1}", exc_info=True)
@@ -267,8 +267,8 @@ def wizard_calculate_step():
         if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
             try:
                 fig_withdrawals = go.Figure()
-                fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal"))
-                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend")
+                fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal", line=dict(color='blue')))
+                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend") # Original titles are fine
                 plot2_div = to_html(fig_withdrawals, full_html=False, include_plotlyjs='cdn')
             except Exception as e_plot2:
                 current_app.logger.error(f"Error generating withdrawal plot: {e_plot2}", exc_info=True)
@@ -437,16 +437,16 @@ def wizard_recalculate_interactive():
         if sim_years is not None and sim_balances is not None and len(sim_years) > 0 :
             try:
                 fig_balance = go.Figure()
-                fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance"))
+                fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance (What-If)", line=dict(color='green')))
                 for event in one_off_events_for_calc:
                     if event['year'] <= sim_years[-1]:
                         event_y_approx = sim_balances[min(event['year'], len(sim_balances)-1)]
                         fig_balance.add_trace(go.Scatter(
                             x=[event['year']], y=[event_y_approx], mode='markers',
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
-                            name=f"One-off: {event['amount']:.0f}"
+                            name=f"One-off: {event['amount']:.0f}" # One-off event names can remain same
                         ))
-                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance")
+                fig_balance.update_layout(title="Portfolio Balance Over Time (What-If)", xaxis_title="Year", yaxis_title="Portfolio Balance")
                 plot1_div_html = to_html(fig_balance, full_html=False, include_plotlyjs='cdn')
             except Exception as e_plot1:
                 current_app.logger.error(f"Error generating balance plot for AJAX: {e_plot1}", exc_info=True)
@@ -454,8 +454,8 @@ def wizard_recalculate_interactive():
         if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
             try:
                 fig_withdrawals = go.Figure()
-                fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal"))
-                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount")
+                fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal (What-If)", line=dict(color='green')))
+                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time (What-If)", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount")
                 plot2_div_html = to_html(fig_withdrawals, full_html=False, include_plotlyjs='cdn')
             except Exception as e_plot2:
                 current_app.logger.error(f"Error generating withdrawal plot for AJAX: {e_plot2}", exc_info=True)
