@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field, render_submit_field %}
+
+{% block title %}{{ title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+  <h2>{{ title }}</h2>
+  <p>{{ _("Please enter your current annual expenses. This will help us understand your baseline financial needs.") }}</p>
+  <form method="POST" action="{{ url_for('wizard_bp.wizard_expenses_step') }}" novalidate>
+    {{ form.csrf_token }}
+    <fieldset>
+      <legend class="visually-hidden">{{ _("Expenses Form") }}</legend>
+      {{ render_field(form.annual_expenses, class="form-control", placeholder=_("e.g., 50000")) }}
+      {{ render_field(form.housing, class="form-control", placeholder=_("e.g., 15000")) }}
+      {{ render_field(form.food, class="form-control", placeholder=_("e.g., 6000")) }}
+      {{ render_field(form.transportation, class="form-control", placeholder=_("e.g., 5000")) }}
+      {{ render_field(form.utilities, class="form-control", placeholder=_("e.g., 3000")) }}
+      {{ render_field(form.personal_care, class="form-control", placeholder=_("e.g., 2000")) }}
+      {{ render_field(form.entertainment, class="form-control", placeholder=_("e.g., 4000")) }}
+      {{ render_field(form.healthcare, class="form-control", placeholder=_("e.g., 3000")) }}
+      {{ render_field(form.other_expenses, class="form-control", placeholder=_("e.g., 1000")) }}
+    </fieldset>
+    {{ render_submit_field(form.submit, class="btn btn-primary mt-3") }}
+  </form>
+{% endblock %}

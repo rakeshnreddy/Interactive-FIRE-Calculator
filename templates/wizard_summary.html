@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+  <h2>{{ title }}</h2>
+  <p>{{ _("Please review the information you've provided. If everything is correct, you can proceed to calculate your FIRE projection.") }}</p>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h4>{{ _("Expenses Summary") }}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><strong>{{ _("Total Annual Expenses:") }}</strong> {{ expenses_data.annual_expenses | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Housing:") }}</strong> {{ expenses_data.housing | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Food:") }}</strong> {{ expenses_data.food | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Transportation:") }}</strong> {{ expenses_data.transportation | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Utilities:") }}</strong> {{ expenses_data.utilities | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Personal Care:") }}</strong> {{ expenses_data.personal_care | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Entertainment:") }}</strong> {{ expenses_data.entertainment | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Healthcare:") }}</strong> {{ expenses_data.healthcare | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Other Expenses:") }}</strong> {{ expenses_data.other_expenses | default(_('N/A')) }}</li>
+    </ul>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h4>{{ _("Rates Summary") }}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><strong>{{ _("Overall Portfolio Return Rate (%):") }}</strong> {{ rates_data.return_rate | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Assumed Annual Inflation Rate (%):") }}</strong> {{ rates_data.inflation_rate | default(_('N/A')) }}</li>
+      {% if rates_data.period_rates %}
+        <li class="list-group-item"><strong>{{ _("Period-Specific Return Rates:") }}</strong></li>
+        {% for period in rates_data.period_rates %}
+          {% if period.years and period.rate is not none %} {# Check if period has data #}
+            <li class="list-group-item ms-3">&bull; {{ _("Years:") }} {{ period.years }}, {{ _("Rate:") }} {{ period.rate }}%</li>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <h4>{{ _("One-Off Events Summary") }}</h4>
+    </div>
+    {% if one_offs_data.large_expenses %}
+      <div class="card-body">
+        <h5>{{ _("Large One-Off Expenses:") }}</h5>
+        <ul class="list-group">
+          {% for expense in one_offs_data.large_expenses %}
+            {% if expense.year is not none and expense.amount is not none %} {# Check if expense has data #}
+              <li class="list-group-item">{{ _("Year:") }} {{ expense.year }}, {{ _("Amount:") }} {{ expense.amount }}{% if expense.description %}, {{ _("Desc:") }} {{ expense.description }}{% endif %}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    {% if one_offs_data.large_incomes %}
+      <div class="card-body">
+        <h5>{{ _("Large One-Off Incomes:") }}</h5>
+        <ul class="list-group">
+          {% for income in one_offs_data.large_incomes %}
+            {% if income.year is not none and income.amount is not none %} {# Check if income has data #}
+              <li class="list-group-item">{{ _("Year:") }} {{ income.year }}, {{ _("Amount:") }} {{ income.amount }}{% if income.description %}, {{ _("Desc:") }} {{ income.description }}{% endif %}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    {% if not one_offs_data.large_expenses and not one_offs_data.large_incomes %}
+        <div class="card-body">
+            <p>{{_("No one-off events were specified.")}}</p>
+        </div>
+    {% endif %}
+  </div>
+
+  <div class="mt-4">
+    {# TODO: Add a button/link to "Edit" previous steps, possibly by linking to wizard_bp.wizard_expenses_step etc. #}
+    {# TODO: Add a button/form to "Calculate" or "Finalize" which would POST this data (or trigger calculation) #}
+    <a href="{{ url_for('wizard_bp.wizard_one_offs_step') }}" class="btn btn-secondary">{{ _("Back to One-Offs") }}</a>
+    <a href="{{ url_for('project.index') }}" class="btn btn-primary">{{ _("Calculate with this Data (Placeholder)") }}</a>
+     <p class="mt-2"><small>{{_("Note: The 'Calculate' button is a placeholder. Functionality to use this data for calculation will be added later.")}}</small></p>
+  </div>
+{% endblock %}

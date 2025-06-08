@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field, render_submit_field, render_field_list_item %}
+
+{% block title %}{{ title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+  <h2>{{ title }}</h2>
+  <p>{{ _("Define your expected investment returns and inflation. You can also specify different return rates for distinct periods if needed.") }}</p>
+  <form method="POST" action="{{ url_for('wizard_bp.wizard_rates_step') }}" novalidate>
+    {{ form.csrf_token }}
+    <fieldset>
+      <legend class="visually-hidden">{{ _("Rates Form") }}</legend>
+      {{ render_field(form.return_rate, class="form-control", placeholder=_("e.g., 7")) }}
+      {{ render_field(form.inflation_rate, class="form-control", placeholder=_("e.g., 2.5")) }}
+
+      <h4 class="mt-4">{{ _("Period-Specific Return Rates (Optional)") }}</h4>
+      <p><small>{{_("If you expect your investment return rate to change over time (e.g., lower returns in retirement), define those periods here. Otherwise, leave blank.")}}</small></p>
+      <div id="period-rates-list">
+        {% for period_form in form.period_rates %}
+          {{ render_field_list_item(period_form, loop.index0, 'period_rates', ['years', 'rate']) }}
+        {% endfor %}
+      </div>
+      {{ render_submit_field(form.submit_add_period, class="btn btn-secondary btn-sm mt-2", formnovalidate=True) }}
+    </fieldset>
+    {{ render_submit_field(form.submit, class="btn btn-primary mt-3") }}
+  </form>
+{% endblock %}
