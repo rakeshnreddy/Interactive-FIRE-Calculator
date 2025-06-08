@@ -65,12 +65,8 @@
   <h3 class="mt-4 mb-3 text-center">{{_("Original Calculation Plots")}}</h3>
   {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
     <div class="row">
-      <div id="original_plot1_container" class="col-md-6 mb-3">
-        {{ plot1_div | safe }} {# This is the original plot1_div from wizard_calculate_step #}
-      </div>
-      <div id="original_plot2_container" class="col-md-6 mb-3">
-        {{ plot2_div | safe }} {# This is the original plot2_div from wizard_calculate_step #}
-      </div>
+      <div id="original_plot1_container" class="col-md-6 mb-3"></div>
+      <div id="original_plot2_container" class="col-md-6 mb-3"></div>
     </div>
   {% else %}
     <p class="text-center">{{_("Original plots not available due to calculation error or infeasible scenario.")}}</p>
@@ -112,12 +108,8 @@
 
       {# New Plot Containers for Interactive Analysis (Side-by-Side) #}
       <div class="row mt-4">
-        <div id="interactive_plot1_container" class="col-md-6 mb-3" style="min-height: 400px; border: 2px dashed red; padding: 5px; margin-top: 10px;">
-          <p>{{_("Interactive plots will appear here after adjustment.")}}</p>
-        </div>
-        <div id="interactive_plot2_container" class="col-md-6 mb-3" style="min-height: 400px; border: 2px dashed blue; padding: 5px; margin-top: 10px;">
-          {# This will be populated by JS. #}
-        </div>
+        <div id="interactive_plot1_container" class="col-md-6 mb-3"></div>
+        <div id="interactive_plot2_container" class="col-md-6 mb-3"></div>
       </div>
     </div>
   </div>
@@ -130,6 +122,8 @@
   <input type="hidden" id="initial_desired_final_value" value="{{ desired_final_value | default(0.0) }}">
   <script id="initial-rates-periods-data" type="application/json">{{ rates_periods_summary | default([]) | tojson | safe }}</script>
   <script id="initial-one-off-events-data" type="application/json">{{ one_off_events_summary | default([]) | tojson | safe }}</script>
+  <script id="original-plot1-spec-data" type="application/json">{{ original_plot1_spec | default({}) | tojson | safe }}</script>
+  <script id="original-plot2-spec-data" type="application/json">{{ original_plot2_spec | default({}) | tojson | safe }}</script>
 
   <div class="mt-4 text-center">
     <a href="{{ url_for('wizard_bp.wizard_expenses_step') }}" class="btn btn-secondary">{{ _("Start New Wizard") }}</a>
@@ -152,18 +146,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function logDebug(message) {
         if (debugOutputDiv) {
-            // Sanitize message before adding to innerHTML to prevent XSS if message could ever contain user input
             const p = document.createElement('p');
             p.textContent = message;
-            p.style.margin = '2px 0'; // Add some minimal styling for readability
+            p.style.margin = '2px 0';
             debugOutputDiv.appendChild(p);
             debugOutputDiv.scrollTop = debugOutputDiv.scrollHeight;
         }
-        console.log(message); // Also log to browser console
+        console.log(message);
     }
 
     logDebug("DOMContentLoaded: Script started.");
 
+    // Retrieve initial parameters
     const initialROverallNominal = parseFloat(document.getElementById('initial_r_overall_nominal').value);
     const initialIOverall = parseFloat(document.getElementById('initial_i_overall').value);
     const initialTotalDuration = parseInt(document.getElementById('initial_total_duration_from_periods').value);
@@ -176,9 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (initialRatesPeriodsElem && initialRatesPeriodsElem.textContent) {
             initialRatesPeriods = JSON.parse(initialRatesPeriodsElem.textContent);
         }
-    } catch (e) {
-        logDebug("Error parsing initial rates periods: " + e);
-    }
+    } catch (e) { logDebug("Error parsing initial rates periods: " + e); }
 
     let initialOneOffEvents = [];
     try {
@@ -186,9 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (initialOneOffEventsElem && initialOneOffEventsElem.textContent) {
             initialOneOffEvents = JSON.parse(initialOneOffEventsElem.textContent);
         }
-    } catch (e) {
-        logDebug("Error parsing initial one-off events: " + e);
-    }
+    } catch (e) { logDebug("Error parsing initial one-off events: " + e); }
 
     const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
@@ -198,7 +188,43 @@ document.addEventListener('DOMContentLoaded', function() {
     logDebug("Initial W field value: " + (interactiveWField ? interactiveWField.value : "N/A"));
     logDebug("Initial P field value: "  + (interactivePField ? interactivePField.value : "N/A"));
 
+    // Retrieve and render initial plot specs
+    let originalPlot1Spec = null;
+    let originalPlot2Spec = null;
+    try {
+        const plot1SpecEl = document.getElementById('original-plot1-spec-data');
+        if (plot1SpecEl && plot1SpecEl.textContent) {
+            originalPlot1Spec = JSON.parse(plot1SpecEl.textContent);
+            logDebug("Original Plot 1 Spec loaded.");
+        } else { logDebug("Original Plot 1 Spec data script tag not found or empty."); }
 
+        const plot2SpecEl = document.getElementById('original-plot2-spec-data');
+        if (plot2SpecEl && plot2SpecEl.textContent) {
+            originalPlot2Spec = JSON.parse(plot2SpecEl.textContent);
+            logDebug("Original Plot 2 Spec loaded.");
+        } else { logDebug("Original Plot 2 Spec data script tag not found or empty."); }
+    } catch (e) { logDebug("Error parsing initial plot spec JSON: " + e); }
+
+    const originalPlot1Container = document.getElementById('original_plot1_container');
+    const originalPlot2Container = document.getElementById('original_plot2_container');
+
+    if (originalPlot1Spec && originalPlot1Spec.data && originalPlot1Spec.layout && originalPlot1Container) {
+        Plotly.newPlot('original_plot1_container', originalPlot1Spec.data, originalPlot1Spec.layout, {responsive: true});
+        logDebug("Original plot 1 rendered.");
+    } else if (originalPlot1Container) {
+        originalPlot1Container.innerHTML = "<p>{{_('Original balance plot data not available.')}}</p>";
+        logDebug("Original plot 1 data/spec missing or container not found.");
+    }
+
+    if (originalPlot2Spec && originalPlot2Spec.data && originalPlot2Spec.layout && originalPlot2Container) {
+        Plotly.newPlot('original_plot2_container', originalPlot2Spec.data, originalPlot2Spec.layout, {responsive: true});
+        logDebug("Original plot 2 rendered.");
+    } else if (originalPlot2Container) {
+        originalPlot2Container.innerHTML = "<p>{{_('Original withdrawal plot data not available.')}}</p>";
+        logDebug("Original plot 2 data/spec missing or container not found.");
+    }
+
+    // Helper function to update a slider's max value if needed, and sync input
     function updateSliderMaxIfNeeded(inputElement, sliderElement) {
         if (!inputElement || !sliderElement) {
             logDebug("updateSliderMaxIfNeeded: input or slider element missing.");
@@ -223,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Actual AJAX call logic
     function performAjaxCalculation(changedParamType) {
         logDebug(`performAjaxCalculation called. Changed: ${changedParamType}`);
         const wValue = parseFloat(interactiveWField.value) || 0;
@@ -276,19 +303,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(sliderW && interactiveWField) updateSliderMaxIfNeeded(interactiveWField, sliderW);
                 }
 
-                if (interactivePlot1Container && data.plot1_div_html) {
-                    logDebug("Updating interactive plot 1 container.");
-                    interactivePlot1Container.innerHTML = data.plot1_div_html;
+                // Update interactive plots using Plotly.react or Plotly.newPlot
+                if (interactivePlot1Container && data.plot1_spec && data.plot1_spec.data && data.plot1_spec.layout) {
+                    Plotly.react('interactive_plot1_container', data.plot1_spec.data, data.plot1_spec.layout, {responsive: true});
+                    logDebug("Interactive plot 1 updated via Plotly.react().");
                 } else if (interactivePlot1Container) {
-                    logDebug("Interactive plot 1 container present, but no data.plot1_div_html.");
-                    interactivePlot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
+                    interactivePlot1Container.innerHTML = "<p>{{_('Interactive balance plot data not available.')}}</p>";
+                    logDebug("Interactive plot 1 spec missing in AJAX response or container error.");
                 }
-                if (interactivePlot2Container && data.plot2_div_html) {
-                    logDebug("Updating interactive plot 2 container.");
-                    interactivePlot2Container.innerHTML = data.plot2_div_html;
+
+                if (interactivePlot2Container && data.plot2_spec && data.plot2_spec.data && data.plot2_spec.layout) {
+                    Plotly.react('interactive_plot2_container', data.plot2_spec.data, data.plot2_spec.layout, {responsive: true});
+                    logDebug("Interactive plot 2 updated via Plotly.react().");
                 } else if (interactivePlot2Container) {
-                    logDebug("Interactive plot 2 container present, but no data.plot2_div_html.");
-                    interactivePlot2Container.innerHTML = "";
+                    interactivePlot2Container.innerHTML = "<p>{{_('Interactive withdrawal plot data not available.')}}</p>";
+                    logDebug("Interactive plot 2 spec missing in AJAX response or container error.");
                 }
                 logDebug("Interactive plots update attempt finished.");
             }
@@ -312,12 +341,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (interactiveWField && sliderW) {
         interactiveWField.addEventListener('input', function() { updateSliderMaxIfNeeded(this, sliderW); makeAjaxCall('W'); });
-        sliderW.addEventListener('input', function() { interactiveWField.value = this.value; makeAjaxCall('W'); });
+        sliderW.addEventListener('input', function() { if (interactiveWField) interactiveWField.value = this.value; makeAjaxCall('W'); });
     } else { logDebug("W input field or slider not found for event listener setup."); }
 
     if (interactivePField && sliderP) {
         interactivePField.addEventListener('input', function() { updateSliderMaxIfNeeded(this, sliderP); makeAjaxCall('P'); });
-        sliderP.addEventListener('input', function() { interactivePField.value = this.value; makeAjaxCall('P'); });
+        sliderP.addEventListener('input', function() { if (interactivePField) interactivePField.value = this.value; makeAjaxCall('P'); });
     } else { logDebug("P input field or slider not found for event listener setup."); }
 
     const initialErrorMessage = {{ error_message | default('') | tojson | safe }};
