@@ -8,6 +8,7 @@ from project.financial_calcs import annual_simulation, find_required_portfolio
 import plotly.graph_objects as go
 from plotly.io import to_html
 import sys # For stderr
+from flask_wtf.csrf import generate_csrf
 # Import generate_plots if it's refactored to be callable with data.
 # For now, let's try to replicate the core logic that was in project.routes.index for generate_plots.
 
@@ -104,11 +105,14 @@ def wizard_summary_step():
     # session.pop('wizard_rates', None)
     # session.pop('wizard_one_offs', None)
 
+    csrf_token_value = generate_csrf()
+
     return render_template('wizard_summary.html',
                            title='Wizard Summary',
                            expenses_data=expenses_data,
                            rates_data=rates_data,
-                           one_offs_data=one_offs_data)
+                           one_offs_data=one_offs_data,
+                           csrf_token_value=csrf_token_value)
 
 
 @wizard_bp.route('/calculate', methods=['POST'])

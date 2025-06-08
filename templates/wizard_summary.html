@@ -83,7 +83,7 @@
     <a href="{{ url_for('wizard_bp.wizard_one_offs_step') }}" class="btn btn-secondary">{{ _("Back to One-Offs") }}</a>
     {# TODO: Add a button/link to "Edit" previous steps #}
     <form method="POST" action="{{ url_for('wizard_bp.wizard_calculate_step') }}" class="d-inline ms-2">
-      {{ csrf_token() }} {# Requires app context for csrf_token() to work #}
+      <input type="hidden" name="csrf_token" value="{{ csrf_token_value }}">
       <button type="submit" class="btn btn-primary">{{ _("Calculate with this Data") }}</button>
     </form>
     <p class="mt-2"><small>{{_("Note: Calculation will use the data summarized above and will clear the wizard session.")}}</small></p>
