@@ -142,9 +142,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const interactiveWField = document.getElementById('interactive_w');
     const interactivePField = document.getElementById('interactive_p');
+    const sliderW = document.getElementById('slider_w');
+    const sliderP = document.getElementById('slider_p');
 
-    const plot1Container = document.getElementById('interactive_plot1_container'); // Target new interactive plot container
-    const plot2Container = document.getElementById('interactive_plot2_container'); // Target new interactive plot container
+    const plot1Container = document.getElementById('interactive_plot1_container');
+    const plot2Container = document.getElementById('interactive_plot2_container');
 
     const initialROverallNominal = parseFloat(document.getElementById('initial_r_overall_nominal').value);
     const initialIOverall = parseFloat(document.getElementById('initial_i_overall').value);
@@ -178,221 +180,133 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('CSRF token not found!');
     }
 
-    let debounceTimer;
-
-    function handleInputChange(event) {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const changedElement = event.target;
-            const changed_input_type = changedElement.dataset.changed; // 'W' or 'P' from number input, or undefined for slider
-
-            if (!changed_input_type && !changedElement.classList.contains('interactive-slider')) return;
-
-            let wValue = parseFloat(interactiveWField.value) || 0;
-            let pValue = parseFloat(interactivePField.value) || 0;
-            let final_changed_type = changed_input_type;
-
-            if (changedElement.classList.contains('interactive-slider')) {
-                const targetInputId = changedElement.dataset.target;
-                const targetInput = document.getElementById(targetInputId);
-                if (targetInput) {
-                    targetInput.value = changedElement.value; // Sync slider to text input
-                    if (targetInputId === 'interactive_w') {
-                        wValue = parseFloat(targetInput.value) || 0;
-                        final_changed_type = 'W';
-                    } else if (targetInputId === 'interactive_p') {
-                        pValue = parseFloat(targetInput.value) || 0;
-                        final_changed_type = 'P';
-                    }
-                }
-            } else if (changedElement.classList.contains('interactive-input')) {
-                // Sync text input to slider
-                const sliderId = "slider_" + changed_input_type.toLowerCase();
-                const slider = document.getElementById(sliderId);
-                if (slider) {
-                    slider.value = changedElement.value;
-                }
-                final_changed_type = changed_input_type;
-            }
-
-            if (!final_changed_type) return;
-
-
-            const payload = {
-                changed_input: final_changed_type,
-                W_value: wValue,
-                P_value: pValue,
-                r_overall_nominal: initialROverallNominal,
-                i_overall: initialIOverall,
-                total_duration_from_periods: initialTotalDuration,
-                withdrawal_time_str: initialWithdrawalTimeStr,
-                fixed_desired_final_value: initialDesiredFinalValue,
-                rates_periods_summary: initialRatesPeriods,
-                one_off_events_summary: initialOneOffEvents
-            };
-
-            fetch("{{ url_for('wizard_bp.wizard_recalculate_interactive') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert("Recalculation Error: " + data.error);
-                    // Reset the field that was just changed by user, or the one that was supposed to be calculated
-                    if (final_changed_type === 'W') { // W was changed, P was expected
-                        interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : pValue.toFixed(0);
-                        if(document.getElementById('slider_p')) document.getElementById('slider_p').value = interactivePField.value;
-                    } else if (final_changed_type === 'P') { // P was changed, W was expected
-                        interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : wValue.toFixed(0);
-                        if(document.getElementById('slider_w')) document.getElementById('slider_w').value = interactiveWField.value;
-                    }
-                } else {
-                    if (final_changed_type === 'W') {
-                        interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : '';
-                        if(document.getElementById('slider_p')) document.getElementById('slider_p').value = interactivePField.value;
-                    } else if (final_changed_type === 'P') {
-                        interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : '';
-                        if(document.getElementById('slider_w')) document.getElementById('slider_w').value = interactiveWField.value;
-                    }
-
-                    if (plot1Container && data.plot1_div_html) {
-                        plot1Container.innerHTML = data.plot1_div_html;
-                    } else if (plot1Container) {
-                        plot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
-                    }
-                    if (plot2Container && data.plot2_div_html) {
-                        plot2Container.innerHTML = data.plot2_div_html;
-                    } else if (plot2Container) {
-                        plot2Container.innerHTML = ""; // Or some other placeholder
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error during interactive recalculation:', error);
-                alert('An error occurred while recalculating. Please check the console.');
-            });
-        }, 750);
-    }
-
     // Helper function to update a slider's max value if needed, and sync input
     function updateSliderMaxIfNeeded(inputElement, sliderElement) {
+        if (!inputElement || !sliderElement) return; // Defensive check
         const numericValue = parseFloat(inputElement.value);
         if (!isNaN(numericValue)) {
-            // Adjust min if value goes below (though our inputs have min="0")
             if (numericValue < parseFloat(sliderElement.min)) {
                 inputElement.value = sliderElement.min;
-                sliderElement.value = sliderElement.min; // Sync slider to corrected input
-                // No further max adjustment needed if value was clamped to min
+                sliderElement.value = sliderElement.min;
                 return;
             }
-            // Adjust max if value goes above
             if (numericValue > parseFloat(sliderElement.max)) {
-                sliderElement.max = Math.ceil(numericValue * 1.2 / (sliderElement.step || 1)) * (sliderElement.step || 1);
+                sliderElement.max = Math.ceil(numericValue * 1.2 / (parseInt(sliderElement.step) || 1)) * (parseInt(sliderElement.step) || 1);
             }
-            // Sync slider to current input value (which might have been clamped or is within new max)
             sliderElement.value = inputElement.value;
         }
     }
 
+    // Actual AJAX call logic
+    function performAjaxCalculation(changedParamType) {
+        const wValue = parseFloat(interactiveWField.value) || 0;
+        const pValue = parseFloat(interactivePField.value) || 0;
+
+        const payload = {
+            changed_input: changedParamType,
+            W_value: wValue,
+            P_value: pValue,
+            r_overall_nominal: initialROverallNominal,
+            i_overall: initialIOverall,
+            total_duration_from_periods: initialTotalDuration,
+            withdrawal_time_str: initialWithdrawalTimeStr,
+            fixed_desired_final_value: initialDesiredFinalValue,
+            rates_periods_summary: initialRatesPeriods,
+            one_off_events_summary: initialOneOffEvents
+        };
+
+        const currentCsrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch("{{ url_for('wizard_bp.wizard_recalculate_interactive') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': currentCsrfToken },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error("Interactive plot calculation error: " + data.error);
+                if(plot1Container) plot1Container.innerHTML = `<p class='text-danger'>Error: ${data.error}</p>`;
+                if(plot2Container) plot2Container.innerHTML = '';
+
+                if (changedParamType === 'W' && interactivePField) {
+                    interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : (document.getElementById('interactive_p').getAttribute('value') || '0');
+                    if(sliderP) updateSliderMaxIfNeeded(interactivePField, sliderP);
+                } else if (changedParamType === 'P' && interactiveWField) {
+                    interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : (document.getElementById('interactive_w').getAttribute('value') || '0');
+                    if(sliderW) updateSliderMaxIfNeeded(interactiveWField, sliderW);
+                }
+            } else {
+                if (changedParamType === 'W') {
+                    if(interactivePField) interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : '';
+                    if(sliderP && interactivePField) updateSliderMaxIfNeeded(interactivePField, sliderP);
+                } else if (changedParamType === 'P') {
+                    if(interactiveWField) interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : '';
+                    if(sliderW && interactiveWField) updateSliderMaxIfNeeded(interactiveWField, sliderW);
+                }
+
+                if (plot1Container && data.plot1_div_html) plot1Container.innerHTML = data.plot1_div_html;
+                else if (plot1Container) plot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
+
+                if (plot2Container && data.plot2_div_html) plot2Container.innerHTML = data.plot2_div_html;
+                else if (plot2Container) plot2Container.innerHTML = "";
+            }
+        })
+        .catch(error => {
+            console.error('Error during interactive recalculation:', error);
+            if(plot1Container) plot1Container.innerHTML = "<p class='text-danger'>Error loading plots.</p>";
+            if(plot2Container) plot2Container.innerHTML = "";
+        });
+    }
+
     // Debounced AJAX call logic
-    function makeAjaxCall(changedParamType) { // changedParamType is 'W' or 'P'
+    let debounceTimer;
+    function makeAjaxCall(changedParamType) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-            const wValue = parseFloat(interactiveWField.value) || 0;
-            const pValue = parseFloat(interactivePField.value) || 0;
-
-            const payload = {
-                changed_input: changedParamType,
-                W_value: wValue,
-                P_value: pValue,
-                r_overall_nominal: initialROverallNominal,
-                i_overall: initialIOverall,
-                total_duration_from_periods: initialTotalDuration,
-                withdrawal_time_str: initialWithdrawalTimeStr,
-                fixed_desired_final_value: initialDesiredFinalValue,
-                rates_periods_summary: initialRatesPeriods,
-                one_off_events_summary: initialOneOffEvents
-            };
-
-            fetch("{{ url_for('wizard_bp.wizard_recalculate_interactive') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert("Recalculation Error: " + data.error);
-                    // Reset the field that was supposed to be calculated, to the value sent by server (original value)
-                    if (changedParamType === 'W' && data.new_P !== undefined) {
-                         interactivePField.value = parseFloat(data.new_P).toFixed(0);
-                         updateSliderMaxIfNeeded(interactivePField, sliderP); // Update max just in case
-                    } else if (changedParamType === 'P' && data.new_W !== undefined) {
-                         interactiveWField.value = parseFloat(data.new_W).toFixed(0);
-                         updateSliderMaxIfNeeded(interactiveWField, sliderW);
-                    }
-                } else {
-                    // Update the OTHER input field and its slider's max if needed
-                    if (changedParamType === 'W') { // W was sent, P is new
-                        interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : '';
-                        updateSliderMaxIfNeeded(interactivePField, sliderP);
-                    } else if (changedParamType === 'P') { // P was sent, W is new
-                        interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : '';
-                        updateSliderMaxIfNeeded(interactiveWField, sliderW);
-                    }
-
-                    // Update plots
-                    if (plot1Container && data.plot1_div_html) {
-                        plot1Container.innerHTML = data.plot1_div_html;
-                    } else if (plot1Container) {
-                        plot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
-                    }
-                    if (plot2Container && data.plot2_div_html) {
-                        plot2Container.innerHTML = data.plot2_div_html;
-                    } else if (plot2Container) {
-                        plot2Container.innerHTML = "";
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error during interactive recalculation:', error);
-                alert('An error occurred while recalculating. Please check the console.');
-            });
+            performAjaxCalculation(changedParamType);
         }, 750);
     }
 
-    const sliderW = document.getElementById('slider_w');
-    const sliderP = document.getElementById('slider_p');
+    if (interactiveWField) {
+        interactiveWField.addEventListener('input', function() {
+            if (sliderW) updateSliderMaxIfNeeded(this, sliderW);
+            makeAjaxCall('W');
+        });
+    }
+    if (sliderW) {
+        sliderW.addEventListener('input', function() {
+            if (interactiveWField) interactiveWField.value = this.value;
+            makeAjaxCall('W');
+        });
+    }
 
-    interactiveWField.addEventListener('input', function() {
-        updateSliderMaxIfNeeded(this, sliderW); // Update slider max based on input, and sync its value
-        makeAjaxCall('W');
-    });
-    sliderW.addEventListener('input', function() {
-        interactiveWField.value = this.value; // Sync input to this slider
-        // No need to call updateSliderMaxIfNeeded from slider input, as slider is bound by its own max
-        makeAjaxCall('W');
-    });
+    if (interactivePField) {
+        interactivePField.addEventListener('input', function() {
+            if (sliderP) updateSliderMaxIfNeeded(this, sliderP);
+            makeAjaxCall('P');
+        });
+    }
+    if (sliderP) {
+        sliderP.addEventListener('input', function() {
+            if (interactivePField) interactivePField.value = this.value;
+            makeAjaxCall('P');
+        });
+    }
 
-    interactivePField.addEventListener('input', function() {
-        updateSliderMaxIfNeeded(this, sliderP); // Update slider max based on input, and sync its value
-        makeAjaxCall('P');
-    });
-    sliderP.addEventListener('input', function() {
-        interactivePField.value = this.value; // Sync input to this slider
-        makeAjaxCall('P');
-    });
+    // Initial call to populate interactive plots if core elements are present
+    // and no initial server-side error prevented results.
+    if (interactiveWField && interactivePField && plot1Container && plot2Container) {
+        const initialPDisplayElement = document.getElementById('display_p');
+        const initialPDisplayText = initialPDisplayElement ? initialPDisplayElement.textContent : "";
+        const generalErrorExists = document.querySelector('.alert.alert-danger h4'); // Check for initial calc error
 
-    // Initial console log for debugging data availability
-    // console.log("Fixed params for JS:", {initialROverallNominal, initialIOverall, initialTotalDuration, initialWithdrawalTimeStr, initialDesiredFinalValue, initialRatesPeriods, initialOneOffEvents, csrfToken});
+        if (!generalErrorExists && initialPDisplayText && initialPDisplayText !== "Error" && initialPDisplayText !== "Not Feasible") {
+             performAjaxCalculation('W'); // Initial load based on W; P will be calculated by server if needed, but here W & P are from initial load.
+        } else {
+            if(plot1Container) plot1Container.innerHTML = "<p>{{_('Interactive plots not loaded due to initial calculation error or infeasible scenario.')}}</p>";
+        }
+    }
 });
 </script>
 {% endblock %}
