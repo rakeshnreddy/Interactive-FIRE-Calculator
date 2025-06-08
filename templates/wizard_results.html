@@ -23,25 +23,22 @@
       {{_("Calculation Summary")}}
     </div>
     <div class="card-body">
-      {# Prominent Main Result #}
       {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
         <h3 class="card-title">{{_("Your Calculated FIRE Number:")}}</h3>
-        <p class="display-4 fw-bold text-success">{{ P_calculated_display }}</p>
+        <p id="display_p" class="display-4 fw-bold text-success">{{ P_calculated_display }}</p> {# Static Original P #}
         <hr>
         <h5 class="card-title mt-3">{{_("Based on:")}}</h5>
-        <p class="card-text fs-5 mb-1">
+        <p id="display_w" class="card-text fs-5 mb-1"> {# Static Original W #}
           {{_("Input Annual Expenses (W):")}} <strong>{{ W_display }}</strong>
         </p>
       {% elif P_calculated_display %}
-        <div class="alert alert-warning" role="alert"> {# Changed to alert instead of separate card for error case display #}
+        <div class="alert alert-warning" role="alert">
             <h4 class="alert-heading">{{_("Calculation Outcome")}}</h4>
-            <p class="fs-5">{{_("Calculated Required Initial Portfolio (FIRE Number):")}} <strong>{{ P_calculated_display }}</strong></p>
+            <p class="fs-5">{{_("Calculated Required Initial Portfolio (FIRE Number):")}} <strong id="display_p">{{ P_calculated_display }}</strong></p>
             <hr>
-            <p class="mb-0">{{_("Based on Input Annual Expenses (W):")}} <strong>{{ W_display | default(W) }}</strong></p>
+            <p class="mb-0">{{_("Based on Input Annual Expenses (W):")}} <strong id="display_w">{{ W_display | default(W) }}</strong></p>
         </div>
       {% endif %}
-
-      {# Consolidated Fixed Inputs - made more concise #}
       <div class="mt-3 text-muted small">
         <p class="mb-1">
           {{_("Overall Nominal Return:")}} {{ (r_overall_nominal * 100) | round(2) }}% |
@@ -62,72 +59,69 @@
         {% endif %}
       </div>
     </div>
-  </div>{# End of Main Key Results & Consolidated Fixed Inputs Card #}
+  </div>
 
-  {# --- Interactive What-If Analysis (Moved Here) --- #}
-  <div class="card text-center mb-4">
+  {# --- Static Original Calculation Plots (Side-by-Side) --- #}
+  <h3 class="mt-4 mb-3 text-center">{{_("Original Calculation Plots")}}</h3>
+  {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
+    <div class="row">
+      <div id="original_plot1_container" class="col-md-6 mb-3">
+        {{ plot1_div | safe }} {# This is the original plot1_div from wizard_calculate_step #}
+      </div>
+      <div id="original_plot2_container" class="col-md-6 mb-3">
+        {{ plot2_div | safe }} {# This is the original plot2_div from wizard_calculate_step #}
+      </div>
+    </div>
+  {% else %}
+    <p class="text-center">{{_("Original plots not available due to calculation error or infeasible scenario.")}}</p>
+  {% endif %}
+
+  {# --- Interactive What-If Analysis (Card with Sliders and its own Plots) --- #}
+  <div class="card text-center mb-4 mt-5">
     <div class="card-header">
       {{_("Interactive What-If Analysis")}}
     </div>
     <div class="card-body">
-      <div class="row g-3 align-items-center justify-content-center">
-        <div class="col-auto">
+      {# Row for W input and slider #}
+      <div class="row g-3 align-items-center justify-content-center mb-3">
+        <div class="col-md-3 text-md-end">
           <label for="interactive_w" class="col-form-label">{{_("Adjust Annual Expenses (W):")}}</label>
         </div>
-        <div class="col-auto">
-          <input type="number" id="interactive_w" class="form-control" value="{{ W | default(0.0) }}" step="1000">
+        <div class="col-md-3">
+          <input type="number" id="interactive_w" class="form-control interactive-input" data-changed="W" value="{{ W | default(0.0) }}" step="1000" min="0">
         </div>
-        <div class="col-auto p-3">
-            <i class="fas fa-exchange-alt fa-2x"></i> {# Placeholder for arrows or visual cue - FontAwesome needed #}
+        <div class="col-md-6">
+          <input type="range" id="slider_w" class="form-range interactive-slider" data-target="interactive_w" value="{{ W | default(0.0) }}" min="0" max="{{ (W * 2) | default(100000) | int }}" step="1000">
         </div>
-        <div class="col-auto">
+      </div>
+
+      {# Row for P input and slider #}
+      <div class="row g-3 align-items-center justify-content-center mb-3">
+        <div class="col-md-3 text-md-end">
           <label for="interactive_p" class="col-form-label">{{_("Adjust Target Portfolio (P):")}}</label>
         </div>
-        <div class="col-auto">
-          <input type="number" id="interactive_p" class="form-control" value="{{ P_raw | default(0.0) }}" step="10000">
+        <div class="col-md-3">
+          <input type="number" id="interactive_p" class="form-control interactive-input" data-changed="P" value="{{ P_raw | default(0.0) }}" step="10000" min="0">
+        </div>
+        <div class="col-md-6">
+          <input type="range" id="slider_p" class="form-range interactive-slider" data-target="interactive_p" value="{{ P_raw | default(0.0) }}" min="0" max="{{ (P_raw * 2) | default(2000000) | int }}" step="10000">
         </div>
       </div>
-       <small class="form-text text-muted mt-2">{{_("Change one value to see how it impacts the other. Other parameters (rates, duration) remain fixed as per your wizard inputs.")}}</small>
-    </div>
-  </div> {# End of Interactive Analysis Card #}
+      <small class="form-text text-muted mt-2">{{_("Change one value or use slider to see how it impacts the other. Plots below will update.")}}</small>
 
-  {# Prominent Results Display for Interactive changes (dynamic) - This div is distinct from the initial result display #}
-  {# The initial display is now part of the "Calculation Summary" card when P_calculated_display is valid #}
-  {# This #dynamic-results-display div is for JS to update the main P and W numbers if needed, or can be removed if inputs directly reflect the state #}
-  {# Based on current JS, only input fields and plots are updated. So, the static display in "Calculation Summary" remains the reference from initial calculation. #}
-  {# The prompt asked for a section with id="dynamic-results-display" to be populated by JS. #}
-  {# Let's make it clearer: the initial display is in the summary card. JS updates interactive inputs and plots. #}
-  {# The div below can be a target for JS to write *newly calculated* P and W if we want them displayed outside inputs. #}
-  {# For now, current JS updates input fields and plots, not separate static text. #}
-  {# The original plan had a display section: #}
-  <!--
-  <div id="dynamic-results-display" class="text-center mb-4">
-    <h3 class="card-title">{{_("Calculated FIRE Number:")}}</h3>
-    <p id="display_p" class="display-4 fw-bold text-success">{{ P_calculated_display }}</p>
-    <hr>
-    <h5 class="card-title mt-3">{{_("Sustainable Annual Expenses:")}}</h5>
-    <p id="display_w" class="fs-5 card-text"><strong>{{ W_display }}</strong></p>
+      {# New Plot Containers for Interactive Analysis (Side-by-Side) #}
+      <div class="row mt-4">
+        <div id="interactive_plot1_container" class="col-md-6 mb-3">
+          <p>{{_("Interactive plots will appear here after adjustment.")}}</p>
+        </div>
+        <div id="interactive_plot2_container" class="col-md-6 mb-3">
+          {# This will be populated by JS. #}
+        </div>
+      </div>
+    </div>
   </div>
-  -->
-  {# This section was part of the previous HTML structure. The current JS updates interactive_w/p fields and plots. #}
-  {# If a separate static display is still desired for interactive updates, JS needs to target it. #}
-  {# For now, I'm removing this duplicate static display as the interactive fields themselves show the current values. #}
-  {# The "Key Results" section already displays the initial calculation. #}
 
-
-  {# --- Plots (Now After Interactive Card) --- #}
-  {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
-    <div class="row">
-      <div id="plot1_container" class="col-md-12 mb-3">
-        {{ plot1_div | safe }}
-      </div>
-      <div id="plot2_container" class="col-md-12">
-        {{ plot2_div | safe }}
-      </div>
-    </div>
-  {% endif %}
-
-  {# Hidden fields/script tags for fixed parameters (can remain at top or bottom of content block) #}
+  {# Hidden fields/script tags for fixed parameters #}
   <input type="hidden" id="initial_r_overall_nominal" value="{{ r_overall_nominal | default(0.0) }}">
   <input type="hidden" id="initial_i_overall" value="{{ i_overall | default(0.0) }}">
   <input type="hidden" id="initial_total_duration_from_periods" value="{{ total_duration_from_periods | default(30) }}">
@@ -148,11 +142,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const interactiveWField = document.getElementById('interactive_w');
     const interactivePField = document.getElementById('interactive_p');
-    // const displayPElement = document.getElementById('display_p'); // Not updated by this JS
-    // const displayWElement = document.getElementById('display_w'); // Not updated by this JS
 
-    const plot1Container = document.getElementById('plot1_container');
-    const plot2Container = document.getElementById('plot2_container');
+    const plot1Container = document.getElementById('interactive_plot1_container'); // Target new interactive plot container
+    const plot2Container = document.getElementById('interactive_plot2_container'); // Target new interactive plot container
 
     const initialROverallNominal = parseFloat(document.getElementById('initial_r_overall_nominal').value);
     const initialIOverall = parseFloat(document.getElementById('initial_i_overall').value);
@@ -186,27 +178,48 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('CSRF token not found!');
     }
 
-
     let debounceTimer;
 
     function handleInputChange(event) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-            const changedInputId = event.target.id;
-            let changed_input_type = '';
-            if (changedInputId === 'interactive_w') {
-                changed_input_type = 'W';
-            } else if (changedInputId === 'interactive_p') {
-                changed_input_type = 'P';
-            } else {
-                return;
+            const changedElement = event.target;
+            const changed_input_type = changedElement.dataset.changed; // 'W' or 'P' from number input, or undefined for slider
+
+            if (!changed_input_type && !changedElement.classList.contains('interactive-slider')) return;
+
+            let wValue = parseFloat(interactiveWField.value) || 0;
+            let pValue = parseFloat(interactivePField.value) || 0;
+            let final_changed_type = changed_input_type;
+
+            if (changedElement.classList.contains('interactive-slider')) {
+                const targetInputId = changedElement.dataset.target;
+                const targetInput = document.getElementById(targetInputId);
+                if (targetInput) {
+                    targetInput.value = changedElement.value; // Sync slider to text input
+                    if (targetInputId === 'interactive_w') {
+                        wValue = parseFloat(targetInput.value) || 0;
+                        final_changed_type = 'W';
+                    } else if (targetInputId === 'interactive_p') {
+                        pValue = parseFloat(targetInput.value) || 0;
+                        final_changed_type = 'P';
+                    }
+                }
+            } else if (changedElement.classList.contains('interactive-input')) {
+                // Sync text input to slider
+                const sliderId = "slider_" + changed_input_type.toLowerCase();
+                const slider = document.getElementById(sliderId);
+                if (slider) {
+                    slider.value = changedElement.value;
+                }
+                final_changed_type = changed_input_type;
             }
 
-            const wValue = parseFloat(interactiveWField.value) || 0;
-            const pValue = parseFloat(interactivePField.value) || 0;
+            if (!final_changed_type) return;
+
 
             const payload = {
-                changed_input: changed_input_type,
+                changed_input: final_changed_type,
                 W_value: wValue,
                 P_value: pValue,
                 r_overall_nominal: initialROverallNominal,
@@ -230,20 +243,32 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.error) {
                     alert("Recalculation Error: " + data.error);
-                    if (changed_input_type === 'W' && data.new_P !== undefined) interactivePField.value = data.new_P.toFixed(0); else if (changed_input_type === 'W') interactivePField.value = pValue.toFixed(0);
-                    if (changed_input_type === 'P' && data.new_W !== undefined) interactiveWField.value = data.new_W.toFixed(0); else if (changed_input_type === 'P') interactiveWField.value = wValue.toFixed(0);
+                    // Reset the field that was just changed by user, or the one that was supposed to be calculated
+                    if (final_changed_type === 'W') { // W was changed, P was expected
+                        interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : pValue.toFixed(0);
+                        if(document.getElementById('slider_p')) document.getElementById('slider_p').value = interactivePField.value;
+                    } else if (final_changed_type === 'P') { // P was changed, W was expected
+                        interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : wValue.toFixed(0);
+                        if(document.getElementById('slider_w')) document.getElementById('slider_w').value = interactiveWField.value;
+                    }
                 } else {
-                    if (changed_input_type === 'W') {
-                        interactivePField.value = data.new_P !== undefined ? data.new_P.toFixed(0) : '';
-                    } else if (changed_input_type === 'P') {
-                        interactiveWField.value = data.new_W !== undefined ? data.new_W.toFixed(0) : '';
+                    if (final_changed_type === 'W') {
+                        interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : '';
+                        if(document.getElementById('slider_p')) document.getElementById('slider_p').value = interactivePField.value;
+                    } else if (final_changed_type === 'P') {
+                        interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : '';
+                        if(document.getElementById('slider_w')) document.getElementById('slider_w').value = interactiveWField.value;
                     }
 
                     if (plot1Container && data.plot1_div_html) {
                         plot1Container.innerHTML = data.plot1_div_html;
+                    } else if (plot1Container) {
+                        plot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
                     }
                     if (plot2Container && data.plot2_div_html) {
                         plot2Container.innerHTML = data.plot2_div_html;
+                    } else if (plot2Container) {
+                        plot2Container.innerHTML = ""; // Or some other placeholder
                     }
                 }
             })
@@ -254,8 +279,117 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 750);
     }
 
-    if (interactiveWField) interactiveWField.addEventListener('input', handleInputChange);
-    if (interactivePField) interactivePField.addEventListener('input', handleInputChange);
+    // Helper function to update a slider's max value if needed, and sync input
+    function updateSliderMaxIfNeeded(inputElement, sliderElement) {
+        const numericValue = parseFloat(inputElement.value);
+        if (!isNaN(numericValue)) {
+            // Adjust min if value goes below (though our inputs have min="0")
+            if (numericValue < parseFloat(sliderElement.min)) {
+                inputElement.value = sliderElement.min;
+                sliderElement.value = sliderElement.min; // Sync slider to corrected input
+                // No further max adjustment needed if value was clamped to min
+                return;
+            }
+            // Adjust max if value goes above
+            if (numericValue > parseFloat(sliderElement.max)) {
+                sliderElement.max = Math.ceil(numericValue * 1.2 / (sliderElement.step || 1)) * (sliderElement.step || 1);
+            }
+            // Sync slider to current input value (which might have been clamped or is within new max)
+            sliderElement.value = inputElement.value;
+        }
+    }
+
+    // Debounced AJAX call logic
+    function makeAjaxCall(changedParamType) { // changedParamType is 'W' or 'P'
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const wValue = parseFloat(interactiveWField.value) || 0;
+            const pValue = parseFloat(interactivePField.value) || 0;
+
+            const payload = {
+                changed_input: changedParamType,
+                W_value: wValue,
+                P_value: pValue,
+                r_overall_nominal: initialROverallNominal,
+                i_overall: initialIOverall,
+                total_duration_from_periods: initialTotalDuration,
+                withdrawal_time_str: initialWithdrawalTimeStr,
+                fixed_desired_final_value: initialDesiredFinalValue,
+                rates_periods_summary: initialRatesPeriods,
+                one_off_events_summary: initialOneOffEvents
+            };
+
+            fetch("{{ url_for('wizard_bp.wizard_recalculate_interactive') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Recalculation Error: " + data.error);
+                    // Reset the field that was supposed to be calculated, to the value sent by server (original value)
+                    if (changedParamType === 'W' && data.new_P !== undefined) {
+                         interactivePField.value = parseFloat(data.new_P).toFixed(0);
+                         updateSliderMaxIfNeeded(interactivePField, sliderP); // Update max just in case
+                    } else if (changedParamType === 'P' && data.new_W !== undefined) {
+                         interactiveWField.value = parseFloat(data.new_W).toFixed(0);
+                         updateSliderMaxIfNeeded(interactiveWField, sliderW);
+                    }
+                } else {
+                    // Update the OTHER input field and its slider's max if needed
+                    if (changedParamType === 'W') { // W was sent, P is new
+                        interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : '';
+                        updateSliderMaxIfNeeded(interactivePField, sliderP);
+                    } else if (changedParamType === 'P') { // P was sent, W is new
+                        interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : '';
+                        updateSliderMaxIfNeeded(interactiveWField, sliderW);
+                    }
+
+                    // Update plots
+                    if (plot1Container && data.plot1_div_html) {
+                        plot1Container.innerHTML = data.plot1_div_html;
+                    } else if (plot1Container) {
+                        plot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
+                    }
+                    if (plot2Container && data.plot2_div_html) {
+                        plot2Container.innerHTML = data.plot2_div_html;
+                    } else if (plot2Container) {
+                        plot2Container.innerHTML = "";
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error during interactive recalculation:', error);
+                alert('An error occurred while recalculating. Please check the console.');
+            });
+        }, 750);
+    }
+
+    const sliderW = document.getElementById('slider_w');
+    const sliderP = document.getElementById('slider_p');
+
+    interactiveWField.addEventListener('input', function() {
+        updateSliderMaxIfNeeded(this, sliderW); // Update slider max based on input, and sync its value
+        makeAjaxCall('W');
+    });
+    sliderW.addEventListener('input', function() {
+        interactiveWField.value = this.value; // Sync input to this slider
+        // No need to call updateSliderMaxIfNeeded from slider input, as slider is bound by its own max
+        makeAjaxCall('W');
+    });
+
+    interactivePField.addEventListener('input', function() {
+        updateSliderMaxIfNeeded(this, sliderP); // Update slider max based on input, and sync its value
+        makeAjaxCall('P');
+    });
+    sliderP.addEventListener('input', function() {
+        interactivePField.value = this.value; // Sync input to this slider
+        makeAjaxCall('P');
+    });
 
     // Initial console log for debugging data availability
     // console.log("Fixed params for JS:", {initialROverallNominal, initialIOverall, initialTotalDuration, initialWithdrawalTimeStr, initialDesiredFinalValue, initialRatesPeriods, initialOneOffEvents, csrfToken});

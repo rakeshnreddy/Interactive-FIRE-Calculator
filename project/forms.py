@@ -16,14 +16,14 @@ class OneOffEntryForm(FlaskForm):
 class ExpensesForm(FlaskForm):
     '''Form for capturing all annual expenses.'''
     annual_expenses = FloatField('Total Current Annual Expenses', validators=[DataRequired(), NumberRange(min=0)])
-    housing = FloatField('Housing (e.g., rent/mortgage, property tax, insurance)', validators=[DataRequired(), NumberRange(min=0)])
-    food = FloatField('Food (groceries, dining out)', validators=[DataRequired(), NumberRange(min=0)])
-    transportation = FloatField('Transportation (car payments, fuel, public transport, maintenance)', validators=[DataRequired(), NumberRange(min=0)])
-    utilities = FloatField('Utilities (electricity, water, gas, internet, phone)', validators=[DataRequired(), NumberRange(min=0)])
-    personal_care = FloatField('Personal Care (haircuts, toiletries, gym)', validators=[DataRequired(), NumberRange(min=0)])
-    entertainment = FloatField('Entertainment (hobbies, subscriptions, travel)', validators=[DataRequired(), NumberRange(min=0)])
-    healthcare = FloatField('Healthcare (insurance premiums, medical expenses)', validators=[DataRequired(), NumberRange(min=0)])
-    other_expenses = FloatField('Other Miscellaneous Expenses', validators=[DataRequired(), NumberRange(min=0)])
+    housing = FloatField('Housing (e.g., rent/mortgage, property tax, insurance)', validators=[Optional(), NumberRange(min=0)])
+    food = FloatField('Food (groceries, dining out)', validators=[Optional(), NumberRange(min=0)])
+    transportation = FloatField('Transportation (car payments, fuel, public transport, maintenance)', validators=[Optional(), NumberRange(min=0)])
+    utilities = FloatField('Utilities (electricity, water, gas, internet, phone)', validators=[Optional(), NumberRange(min=0)])
+    personal_care = FloatField('Personal Care (haircuts, toiletries, gym)', validators=[Optional(), NumberRange(min=0)])
+    entertainment = FloatField('Entertainment (hobbies, subscriptions, travel)', validators=[Optional(), NumberRange(min=0)])
+    healthcare = FloatField('Healthcare (insurance premiums, medical expenses)', validators=[Optional(), NumberRange(min=0)])
+    other_expenses = FloatField('Other Miscellaneous Expenses', validators=[Optional(), NumberRange(min=0)])
     submit = SubmitField('Next: Rates')
 
 class RatesForm(FlaskForm):

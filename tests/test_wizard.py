@@ -95,7 +95,50 @@ class TestWizardForms(unittest.TestCase):
             self.assertFalse(form.validate())
             self.assertIn('return_rate', form.errors)
 
-    def test_one_offs_form_valid(self):
+
+    # This test was for when itemized fields were DataRequired. Now they are Optional.
+    # Renaming and adapting to test that annual_expenses is still DataRequired.
+    def test_expenses_form_invalid_missing_annual_expenses(self): # Renamed
+        with app.test_request_context('/'):
+            from werkzeug.datastructures import MultiDict
+            form_data = {
+                # 'annual_expenses' is missing
+                'housing': '15000', 'food': '6000',
+                'transportation': '5000', 'utilities': '3000', 'personal_care': '2000',
+                'entertainment': '4000', 'healthcare': '3000', 'other_expenses': '1000'
+            }
+            form = ExpensesForm(formdata=MultiDict(form_data)) # Using formdata for MultiDict
+            self.assertFalse(form.validate())
+            self.assertIn('annual_expenses', form.errors)
+
+    def test_expenses_form_valid_with_only_annual_expenses(self):
+        with app.test_request_context('/'):
+            from werkzeug.datastructures import MultiDict
+            form_data = {
+                'annual_expenses': '50000',
+                'housing': '',
+                'food': None,
+                # other itemized fields omitted
+            }
+            form = ExpensesForm(formdata=MultiDict(form_data)) # Using formdata for MultiDict
+            self.assertTrue(form.validate(), msg=form.errors)
+
+    # Original test_expenses_form_invalid_number_range might have tested annual_expenses.
+    # Let's keep it if it did, or ensure one exists for annual_expenses.
+    # This one will specifically test an itemized field's number range.
+    def test_expenses_form_invalid_itemized_number_range(self):
+        with app.test_request_context('/'):
+            from werkzeug.datastructures import MultiDict
+            form_data = {
+                'annual_expenses': '50000',
+                'housing': '-100',
+            }
+            form = ExpensesForm(formdata=MultiDict(form_data))
+            self.assertFalse(form.validate())
+            self.assertIn('housing', form.errors)
+
+
+    def test_rates_form_valid_with_new_fields(self): # Renamed from test_rates_form_valid
         with app.test_request_context('/'):
             form_wtforms_data = {
                 'large_expenses': [{'year': 2025, 'amount': 10000.0, 'description': 'Car'}],
