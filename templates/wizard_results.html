@@ -82,6 +82,7 @@
       {{_("Interactive What-If Analysis")}}
     </div>
     <div class="card-body">
+      <div id="interactive_debug_output" style="font-size:0.8em; text-align:left; max-height:150px; overflow-y:scroll; border:1px solid #ccc; background:#f0f0f0; padding:5px; margin-bottom:15px;"></div>
       {# Row for W input and slider #}
       <div class="row g-3 align-items-center justify-content-center mb-3">
         <div class="col-md-3 text-md-end">
@@ -145,8 +146,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const sliderW = document.getElementById('slider_w');
     const sliderP = document.getElementById('slider_p');
 
-    const plot1Container = document.getElementById('interactive_plot1_container');
-    const plot2Container = document.getElementById('interactive_plot2_container');
+    const interactivePlot1Container = document.getElementById('interactive_plot1_container');
+    const interactivePlot2Container = document.getElementById('interactive_plot2_container');
+    const debugOutputDiv = document.getElementById('interactive_debug_output');
+
+    function logDebug(message) {
+        if (debugOutputDiv) {
+            // Sanitize message before adding to innerHTML to prevent XSS if message could ever contain user input
+            const p = document.createElement('p');
+            p.textContent = message;
+            p.style.margin = '2px 0'; // Add some minimal styling for readability
+            debugOutputDiv.appendChild(p);
+            debugOutputDiv.scrollTop = debugOutputDiv.scrollHeight;
+        }
+        console.log(message); // Also log to browser console
+    }
+
+    logDebug("DOMContentLoaded: Script started.");
 
     const initialROverallNominal = parseFloat(document.getElementById('initial_r_overall_nominal').value);
     const initialIOverall = parseFloat(document.getElementById('initial_i_overall').value);
@@ -161,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
             initialRatesPeriods = JSON.parse(initialRatesPeriodsElem.textContent);
         }
     } catch (e) {
-        console.error("Error parsing initial rates periods data:", e);
+        logDebug("Error parsing initial rates periods: " + e);
     }
 
     let initialOneOffEvents = [];
@@ -171,72 +187,87 @@ document.addEventListener('DOMContentLoaded', function() {
             initialOneOffEvents = JSON.parse(initialOneOffEventsElem.textContent);
         }
     } catch (e) {
-        console.error("Error parsing initial one-off events data:", e);
+        logDebug("Error parsing initial one-off events: " + e);
     }
 
     const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
-    if (!csrfToken) {
-        console.error('CSRF token not found!');
-    }
+    logDebug("CSRF Token: " + (csrfToken ? "Loaded" : "Not Found!"));
+    if (!csrfToken) { console.error('CSRF token not found!'); }
 
-    // Helper function to update a slider's max value if needed, and sync input
+    logDebug("Initial W field value: " + (interactiveWField ? interactiveWField.value : "N/A"));
+    logDebug("Initial P field value: "  + (interactivePField ? interactivePField.value : "N/A"));
+
+
     function updateSliderMaxIfNeeded(inputElement, sliderElement) {
-        if (!inputElement || !sliderElement) return; // Defensive check
+        if (!inputElement || !sliderElement) {
+            logDebug("updateSliderMaxIfNeeded: input or slider element missing.");
+            return;
+        }
         const numericValue = parseFloat(inputElement.value);
         if (!isNaN(numericValue)) {
             if (numericValue < parseFloat(sliderElement.min)) {
+                logDebug(`Value ${numericValue} for ${inputElement.id} is less than slider min ${sliderElement.min}. Clamping.`);
                 inputElement.value = sliderElement.min;
                 sliderElement.value = sliderElement.min;
                 return;
             }
             if (numericValue > parseFloat(sliderElement.max)) {
-                sliderElement.max = Math.ceil(numericValue * 1.2 / (parseInt(sliderElement.step) || 1)) * (parseInt(sliderElement.step) || 1);
+                const newMax = Math.ceil(numericValue * 1.2 / (parseInt(sliderElement.step) || 1)) * (parseInt(sliderElement.step) || 1);
+                logDebug(`Value ${numericValue} for ${inputElement.id} is greater than slider max ${sliderElement.max}. New max: ${newMax}`);
+                sliderElement.max = newMax;
             }
             sliderElement.value = inputElement.value;
+        } else {
+            logDebug(`updateSliderMaxIfNeeded: value for ${inputElement.id} is NaN.`);
         }
     }
 
-    // Actual AJAX call logic
     function performAjaxCalculation(changedParamType) {
+        logDebug(`performAjaxCalculation called. Changed: ${changedParamType}`);
         const wValue = parseFloat(interactiveWField.value) || 0;
         const pValue = parseFloat(interactivePField.value) || 0;
+        logDebug(`W Value for AJAX: ${wValue}, P Value for AJAX: ${pValue}`);
 
         const payload = {
-            changed_input: changedParamType,
-            W_value: wValue,
-            P_value: pValue,
-            r_overall_nominal: initialROverallNominal,
-            i_overall: initialIOverall,
+            changed_input: changedParamType, W_value: wValue, P_value: pValue,
+            r_overall_nominal: initialROverallNominal, i_overall: initialIOverall,
             total_duration_from_periods: initialTotalDuration,
-            withdrawal_time_str: initialWithdrawalTimeStr,
-            fixed_desired_final_value: initialDesiredFinalValue,
-            rates_periods_summary: initialRatesPeriods,
-            one_off_events_summary: initialOneOffEvents
+            withdrawal_time_str: initialWithdrawalTimeStr, fixed_desired_final_value: initialDesiredFinalValue,
+            rates_periods_summary: initialRatesPeriods, one_off_events_summary: initialOneOffEvents
         };
+        logDebug("AJAX Payload (first 300 chars): " + JSON.stringify(payload).substring(0, 300) + "...");
 
         const currentCsrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         fetch("{{ url_for('wizard_bp.wizard_recalculate_interactive') }}", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': currentCsrfToken },
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRFToken': currentCsrfToken },
             body: JSON.stringify(payload)
         })
-        .then(response => response.json())
+        .then(response => {
+            logDebug("AJAX response received. Status: " + response.status);
+            if (!response.ok) {
+                logDebug("AJAX response not OK. Status text: " + response.statusText);
+                return response.text().then(text => { throw new Error("Server error: " + response.status + " " + response.statusText + " Body: " + text.substring(0,200)); });
+            }
+            return response.json();
+        })
         .then(data => {
+            logDebug("AJAX response JSON parsed. Data (first 300 chars): " + JSON.stringify(data).substring(0, 300) + "...");
             if (data.error) {
-                console.error("Interactive plot calculation error: " + data.error);
-                if(plot1Container) plot1Container.innerHTML = `<p class='text-danger'>Error: ${data.error}</p>`;
-                if(plot2Container) plot2Container.innerHTML = '';
+                logDebug("AJAX data.error: " + data.error);
+                if(interactivePlot1Container) interactivePlot1Container.innerHTML = `<p class='text-danger'>Error: ${data.error}</p>`;
+                if(interactivePlot2Container) interactivePlot2Container.innerHTML = '';
 
-                if (changedParamType === 'W' && interactivePField) {
-                    interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : (document.getElementById('interactive_p').getAttribute('value') || '0');
+                if (changedParamType === 'W' && interactivePField && data.new_P !== undefined) {
+                    interactivePField.value = parseFloat(data.new_P).toFixed(0);
                     if(sliderP) updateSliderMaxIfNeeded(interactivePField, sliderP);
-                } else if (changedParamType === 'P' && interactiveWField) {
-                    interactiveWField.value = data.new_W !== undefined ? parseFloat(data.new_W).toFixed(0) : (document.getElementById('interactive_w').getAttribute('value') || '0');
+                } else if (changedParamType === 'P' && interactiveWField && data.new_W !== undefined) {
+                    interactiveWField.value = parseFloat(data.new_W).toFixed(0);
                     if(sliderW) updateSliderMaxIfNeeded(interactiveWField, sliderW);
                 }
             } else {
+                logDebug("AJAX success. Updating fields and plots.");
                 if (changedParamType === 'W') {
                     if(interactivePField) interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : '';
                     if(sliderP && interactivePField) updateSliderMaxIfNeeded(interactivePField, sliderP);
@@ -245,66 +276,63 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(sliderW && interactiveWField) updateSliderMaxIfNeeded(interactiveWField, sliderW);
                 }
 
-                if (plot1Container && data.plot1_div_html) plot1Container.innerHTML = data.plot1_div_html;
-                else if (plot1Container) plot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
-
-                if (plot2Container && data.plot2_div_html) plot2Container.innerHTML = data.plot2_div_html;
-                else if (plot2Container) plot2Container.innerHTML = "";
+                if (interactivePlot1Container && data.plot1_div_html) {
+                    logDebug("Updating interactive plot 1 container.");
+                    interactivePlot1Container.innerHTML = data.plot1_div_html;
+                } else if (interactivePlot1Container) {
+                    logDebug("Interactive plot 1 container present, but no data.plot1_div_html.");
+                    interactivePlot1Container.innerHTML = "<p>{{_('Plot data not available.')}}</p>";
+                }
+                if (interactivePlot2Container && data.plot2_div_html) {
+                    logDebug("Updating interactive plot 2 container.");
+                    interactivePlot2Container.innerHTML = data.plot2_div_html;
+                } else if (interactivePlot2Container) {
+                    logDebug("Interactive plot 2 container present, but no data.plot2_div_html.");
+                    interactivePlot2Container.innerHTML = "";
+                }
+                logDebug("Interactive plots update attempt finished.");
             }
         })
         .catch(error => {
-            console.error('Error during interactive recalculation:', error);
-            if(plot1Container) plot1Container.innerHTML = "<p class='text-danger'>Error loading plots.</p>";
-            if(plot2Container) plot2Container.innerHTML = "";
+            logDebug("AJAX fetch failed or error in processing. Error: " + error);
+            if(interactivePlot1Container) interactivePlot1Container.innerHTML = "<p class='text-danger'>Error loading plots via AJAX: " + error + "</p>";
+            if(interactivePlot2Container) interactivePlot2Container.innerHTML = "";
         });
     }
 
-    // Debounced AJAX call logic
     let debounceTimer;
     function makeAjaxCall(changedParamType) {
         clearTimeout(debounceTimer);
+        logDebug(`makeAjaxCall (debounced) for: ${changedParamType}. Setting timeout.`);
         debounceTimer = setTimeout(() => {
+            logDebug(`Debounced AJAX call executing for: ${changedParamType}`);
             performAjaxCalculation(changedParamType);
         }, 750);
     }
 
-    if (interactiveWField) {
-        interactiveWField.addEventListener('input', function() {
-            if (sliderW) updateSliderMaxIfNeeded(this, sliderW);
-            makeAjaxCall('W');
-        });
-    }
-    if (sliderW) {
-        sliderW.addEventListener('input', function() {
-            if (interactiveWField) interactiveWField.value = this.value;
-            makeAjaxCall('W');
-        });
-    }
+    if (interactiveWField && sliderW) {
+        interactiveWField.addEventListener('input', function() { updateSliderMaxIfNeeded(this, sliderW); makeAjaxCall('W'); });
+        sliderW.addEventListener('input', function() { interactiveWField.value = this.value; makeAjaxCall('W'); });
+    } else { logDebug("W input field or slider not found for event listener setup."); }
 
-    if (interactivePField) {
-        interactivePField.addEventListener('input', function() {
-            if (sliderP) updateSliderMaxIfNeeded(this, sliderP);
-            makeAjaxCall('P');
-        });
-    }
-    if (sliderP) {
-        sliderP.addEventListener('input', function() {
-            if (interactivePField) interactivePField.value = this.value;
-            makeAjaxCall('P');
-        });
-    }
+    if (interactivePField && sliderP) {
+        interactivePField.addEventListener('input', function() { updateSliderMaxIfNeeded(this, sliderP); makeAjaxCall('P'); });
+        sliderP.addEventListener('input', function() { interactivePField.value = this.value; makeAjaxCall('P'); });
+    } else { logDebug("P input field or slider not found for event listener setup."); }
 
-    // Initial call to populate interactive plots if core elements are present
-    // and no initial server-side error prevented results.
-    if (interactiveWField && interactivePField && plot1Container && plot2Container) {
-        const initialPDisplayElement = document.getElementById('display_p');
-        const initialPDisplayText = initialPDisplayElement ? initialPDisplayElement.textContent : "";
-        const generalErrorExists = document.querySelector('.alert.alert-danger h4'); // Check for initial calc error
+    const initialErrorMessage = "{{ error_message | default('') | escapejs }}";
+    const initialPDisplay = "{{ P_calculated_display | default('') | escapejs }}";
+    logDebug(`Initial page error_message: '${initialErrorMessage}'`);
+    logDebug(`Initial P_calculated_display: '${initialPDisplay}'`);
 
-        if (!generalErrorExists && initialPDisplayText && initialPDisplayText !== "Error" && initialPDisplayText !== "Not Feasible") {
-             performAjaxCalculation('W'); // Initial load based on W; P will be calculated by server if needed, but here W & P are from initial load.
-        } else {
-            if(plot1Container) plot1Container.innerHTML = "<p>{{_('Interactive plots not loaded due to initial calculation error or infeasible scenario.')}}</p>";
+    if (initialErrorMessage === '' && initialPDisplay !== 'Error' && initialPDisplay !== 'Not Feasible' && initialPDisplay !== '') {
+        logDebug("Conditions met for initial AJAX call to populate interactive plots.");
+        if (interactivePlot1Container) interactivePlot1Container.innerHTML = '<p>Loading initial interactive plots...</p>';
+        performAjaxCalculation('W');
+    } else {
+        logDebug("Conditions NOT met for initial AJAX call. Interactive plots will not be pre-loaded.");
+        if (interactivePlot1Container) {
+            interactivePlot1Container.innerHTML = '<p>{{_("Interactive plots not loaded due to initial calculation error or infeasible scenario.")}}</p>';
         }
     }
 });
