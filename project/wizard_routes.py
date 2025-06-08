@@ -409,7 +409,8 @@ def wizard_recalculate_interactive():
         elif changed_input == 'P':
             P_to_use = P_input_val
             W_recalculated = find_max_annual_expense(
-                PV=P_to_use, withdrawal_time=withdrawal_time, # PV instead of P for find_max_annual_expense
+                P=P_to_use, # <--- Changed PV to P
+                withdrawal_time=withdrawal_time,
                 rates_periods=rates_periods_for_calc, desired_final_value=desired_final_value_for_calc,
                 one_off_events=one_off_events_for_calc
             )
