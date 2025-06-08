@@ -28,8 +28,8 @@
       <h4>{{ _("Rates Summary") }}</h4>
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item"><strong>{{ _("Overall Portfolio Return Rate (%):") }}</strong> {{ rates_data.return_rate | default(_('N/A')) }}</li>
-      <li class="list-group-item"><strong>{{ _("Assumed Annual Inflation Rate (%):") }}</strong> {{ rates_data.inflation_rate | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Overall Portfolio Return Rate (%%):") }}</strong> {{ rates_data.return_rate | default(_('N/A')) }}</li>
+      <li class="list-group-item"><strong>{{ _("Assumed Annual Inflation Rate (%%):") }}</strong> {{ rates_data.inflation_rate | default(_('N/A')) }}</li>
       {% if rates_data.period_rates %}
         <li class="list-group-item"><strong>{{ _("Period-Specific Return Rates:") }}</strong></li>
         {% for period in rates_data.period_rates %}
