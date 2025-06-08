@@ -3,3 +3,4 @@ numpy
 plotly
 gunicorn
 Flask-Babel
+Flask-WTF
