@@ -320,8 +320,8 @@ document.addEventListener('DOMContentLoaded', function() {
         sliderP.addEventListener('input', function() { interactivePField.value = this.value; makeAjaxCall('P'); });
     } else { logDebug("P input field or slider not found for event listener setup."); }
 
-    const initialErrorMessage = "{{ error_message | default('') | escapejs }}";
-    const initialPDisplay = "{{ P_calculated_display | default('') | escapejs }}";
+    const initialErrorMessage = {{ error_message | default('') | tojson | safe }};
+    const initialPDisplay = {{ P_calculated_display | default('') | tojson | safe }};
     logDebug(`Initial page error_message: '${initialErrorMessage}'`);
     logDebug(`Initial P_calculated_display: '${initialPDisplay}'`);
 
