@@ -432,5 +432,150 @@ class TestWizardRoutes(unittest.TestCase):
         self.assertIn(b"Total Duration (from periods): 20 years", response.data)
 
 
+    @patch('project.wizard_routes.find_required_portfolio')
+    @patch('project.wizard_routes.annual_simulation')
+    @patch('project.wizard_routes.to_html')
+    def test_recalculate_interactive_changed_w_success(self, mock_to_html, mock_annual_simulation, mock_find_portfolio):
+        mock_find_portfolio.return_value = 600000.0  # New P
+        mock_annual_simulation.return_value = ([1,2], [600000, 580000], [25000, 25000]) # Dummy sim data
+        mock_to_html.return_value = "<div>Mocked Plot HTML</div>"
+
+        payload = {
+            'changed_input': 'W',
+            'W_value': 25000.0,
+            'P_value': 500000.0, # Original P
+            'r_overall_nominal': 0.07,
+            'i_overall': 0.03,
+            'total_duration_from_periods': 30,
+            'withdrawal_time_str': 'end',
+            'fixed_desired_final_value': 0.0,
+            'rates_periods_summary': [{'duration': 30, 'r': 0.07, 'i': 0.03}],
+            'one_off_events_summary': []
+        }
+        response = self.client.post(url_for('wizard_bp.wizard_recalculate_interactive'), json=payload)
+
+        self.assertEqual(response.status_code, 200)
+        json_data = response.get_json()
+
+        self.assertNotIn('error', json_data)
+        self.assertAlmostEqual(json_data['new_W'], 25000.0)
+        self.assertAlmostEqual(json_data['new_P'], 600000.0)
+        self.assertEqual(json_data['plot1_div_html'], "<div>Mocked Plot HTML</div>")
+        self.assertEqual(json_data['plot2_div_html'], "<div>Mocked Plot HTML</div>")
+
+        mock_find_portfolio.assert_called_once()
+        mock_annual_simulation.assert_called_once()
+        self.assertEqual(mock_to_html.call_count, 2)
+
+    @patch('project.wizard_routes.find_max_annual_expense')
+    @patch('project.wizard_routes.annual_simulation')
+    @patch('project.wizard_routes.to_html')
+    def test_recalculate_interactive_changed_p_success(self, mock_to_html, mock_annual_simulation, mock_find_max_expense):
+        mock_find_max_expense.return_value = 28000.0  # New W
+        mock_annual_simulation.return_value = ([1,2], [700000, 680000], [28000, 28000])
+        mock_to_html.return_value = "<div>Mocked Plot P Change</div>"
+
+        payload = {
+            'changed_input': 'P',
+            'W_value': 25000.0,
+            'P_value': 700000.0,
+            'r_overall_nominal': 0.07,
+            'i_overall': 0.03,
+            'total_duration_from_periods': 30,
+            'withdrawal_time_str': 'end',
+            'fixed_desired_final_value': 0.0,
+            'rates_periods_summary': [{'duration': 30, 'r': 0.07, 'i': 0.03}],
+            'one_off_events_summary': []
+        }
+        response = self.client.post(url_for('wizard_bp.wizard_recalculate_interactive'), json=payload)
+
+        self.assertEqual(response.status_code, 200)
+        json_data = response.get_json()
+
+        self.assertNotIn('error', json_data)
+        self.assertAlmostEqual(json_data['new_W'], 28000.0)
+        self.assertAlmostEqual(json_data['new_P'], 700000.0)
+        self.assertEqual(json_data['plot1_div_html'], "<div>Mocked Plot P Change</div>")
+
+        mock_find_max_expense.assert_called_once()
+        mock_annual_simulation.assert_called_once()
+        self.assertEqual(mock_to_html.call_count, 2)
+
+    def test_recalculate_interactive_invalid_changed_input(self):
+        payload = {'changed_input': 'X', 'W_value': 25000, 'P_value': 500000}
+        response = self.client.post(url_for('wizard_bp.wizard_recalculate_interactive'), json=payload)
+        self.assertEqual(response.status_code, 400)
+        json_data = response.get_json()
+        self.assertIn('error', json_data)
+        self.assertEqual(json_data['error'], 'Invalid changed_input value.')
+
+    def test_recalculate_interactive_missing_payload_no_json_content_type(self):
+        # Test when data is not JSON and Content-Type is not application/json
+        response = self.client.post(url_for('wizard_bp.wizard_recalculate_interactive'), data="not json")
+        self.assertEqual(response.status_code, 400) # request.get_json() returns None
+        json_data = response.get_json()
+        self.assertIn('error', json_data)
+        self.assertEqual(json_data['error'], 'Invalid request: No JSON data received.')
+
+    def test_recalculate_interactive_malformed_json(self):
+        response = self.client.post(
+            url_for('wizard_bp.wizard_recalculate_interactive'),
+            data="{malformed_json_string",
+            content_type='application/json'
+        )
+        # This will be caught by the main try-except in the route if get_json(silent=False) which is default
+        self.assertEqual(response.status_code, 500)
+        json_data = response.get_json()
+        self.assertIn('error', json_data)
+        self.assertEqual(json_data['error'], 'An unexpected server error occurred.')
+
+
+    @patch('project.wizard_routes.find_required_portfolio')
+    def test_recalculate_interactive_changed_w_calculation_fails(self, mock_find_portfolio):
+        mock_find_portfolio.return_value = float('inf')
+
+        payload = {
+            'changed_input': 'W',
+            'W_value': 100000.0,
+            'P_value': 100000.0,
+            'r_overall_nominal': 0.01, 'i_overall': 0.05,
+            'total_duration_from_periods': 30, 'withdrawal_time_str': 'end',
+            'fixed_desired_final_value': 0.0,
+            'rates_periods_summary': [{'duration': 30, 'r': 0.01, 'i': 0.05}],
+            'one_off_events_summary': []
+        }
+        response = self.client.post(url_for('wizard_bp.wizard_recalculate_interactive'), json=payload)
+        self.assertEqual(response.status_code, 200)
+        json_data = response.get_json()
+
+        self.assertIn('error', json_data)
+        self.assertEqual(json_data['error'], "Could not calculate a suitable portfolio for the new expenses.")
+        self.assertAlmostEqual(json_data['new_W'], 100000.0)
+        self.assertAlmostEqual(json_data['new_P'], 100000.0)
+
+    @patch('project.wizard_routes.find_max_annual_expense')
+    def test_recalculate_interactive_changed_p_calculation_fails(self, mock_find_max_expense):
+        mock_find_max_expense.return_value = -1
+
+        payload = {
+            'changed_input': 'P',
+            'W_value': 20000.0,
+            'P_value': 100.0,
+            'r_overall_nominal': 0.07, 'i_overall': 0.03,
+            'total_duration_from_periods': 30, 'withdrawal_time_str': 'end',
+            'fixed_desired_final_value': 1000000.0,
+            'rates_periods_summary': [{'duration': 30, 'r': 0.07, 'i': 0.03}],
+            'one_off_events_summary': []
+        }
+        response = self.client.post(url_for('wizard_bp.wizard_recalculate_interactive'), json=payload)
+        self.assertEqual(response.status_code, 200)
+        json_data = response.get_json()
+
+        self.assertIn('error', json_data)
+        self.assertEqual(json_data['error'], "Could not calculate a sustainable withdrawal for the new portfolio.")
+        self.assertAlmostEqual(json_data['new_W'], 20000.0)
+        self.assertAlmostEqual(json_data['new_P'], 100.0)
+
+
 if __name__ == '__main__':
     unittest.main()

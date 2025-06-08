@@ -2,62 +2,94 @@
 
 {% block title %}{{ title }} - {{ super() }}{% endblock %}
 
+{% block head_extra %}
+    <meta name="csrf-token" content="{{ csrf_token_for_ajax }}"> {# For JS to fetch for AJAX headers #}
+{% endblock %}
+
 {% block content %}
   <h2>{{ title }}</h2>
 
-  {# Display general error message if any from calculation #}
+  {# Display general error message if any from initial calculation #}
   {% if error_message %}
     <div class="alert alert-danger" role="alert">
-      <h4>{{_("Calculation Error")}}</h4>
+      <h4>{{_("Initial Calculation Error")}}</h4>
       <p>{{ error_message }}</p>
     </div>
   {% endif %}
 
-  {# Prominent Results Section #}
-  {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
+  {# Store fixed parameters for JS - these come from the initial wizard run #}
+  <input type="hidden" id="initial_r_overall_nominal" value="{{ r_overall_nominal | default(0.0) }}">
+  <input type="hidden" id="initial_i_overall" value="{{ i_overall | default(0.0) }}">
+  <input type="hidden" id="initial_total_duration_from_periods" value="{{ total_duration_from_periods | default(30) }}">
+  <input type="hidden" id="initial_withdrawal_time_str" value="{{ withdrawal_time_str | default('end') }}">
+  <input type="hidden" id="initial_desired_final_value" value="{{ desired_final_value | default(0.0) }}">
+
+  <script id="initial-rates-periods-data" type="application/json">{{ rates_periods_summary | default([]) | tojson | safe }}</script>
+  <script id="initial-one-off-events-data" type="application/json">{{ one_off_events_summary | default([]) | tojson | safe }}</script>
+
+  {# Interactive Analysis Section #}
   <div class="card text-center mb-4">
     <div class="card-header">
-      {{_("Key Results")}}
+      {{_("Interactive What-If Analysis")}}
     </div>
     <div class="card-body">
-      <h3 class="card-title">{{_("Your Calculated FIRE Number:")}}</h3>
-      <p class="display-4 fw-bold text-success">{{ P_calculated_display }}</p>
-      <hr>
-      <h5 class="card-title mt-3">{{_("Based on:")}}</h5>
-      <p class="card-text fs-5">
-        {{_("Input Annual Expenses (W):")}} <strong>{{ W_display }}</strong>
-      </p>
+      <div class="row g-3 align-items-center justify-content-center">
+        <div class="col-auto">
+          <label for="interactive_w" class="col-form-label">{{_("Adjust Annual Expenses (W):")}}</label>
+        </div>
+        <div class="col-auto">
+          <input type="number" id="interactive_w" class="form-control" value="{{ W | default(0.0) }}" step="1000">
+        </div>
+        <div class="col-auto p-3">
+            <i class="fas fa-exchange-alt fa-2x"></i> {# Placeholder for arrows or visual cue - FontAwesome needed #}
+        </div>
+        <div class="col-auto">
+          <label for="interactive_p" class="col-form-label">{{_("Adjust Target Portfolio (P):")}}</label>
+        </div>
+        <div class="col-auto">
+          <input type="number" id="interactive_p" class="form-control" value="{{ P_raw | default(0.0) }}" step="10000">
+        </div>
+      </div>
+       <small class="form-text text-muted mt-2">{{_("Change one value to see how it impacts the other. Other parameters (rates, duration) remain fixed as per your wizard inputs.")}}</small>
     </div>
   </div>
-  {% elif P_calculated_display %}
-    {# Case where calculation resulted in "Error" or "Not Feasible" but no flash error_message #}
-    <div class="alert alert-warning text-center mb-4" role="alert">
-        <h4 class="alert-heading">{{_("Calculation Outcome")}}</h4>
-        <p class="fs-5">{{_("Calculated Required Initial Portfolio (FIRE Number):")}} <strong>{{ P_calculated_display }}</strong></p>
+
+  {# Prominent Results Display (will be updated by JS) #}
+  <div id="dynamic-results-display" class="text-center mb-4">
+    {# Initial state shows values from the first server-side calculation #}
+    {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
+        <h3 class="card-title">{{_("Calculated FIRE Number:")}}</h3>
+        <p id="display_p" class="display-4 fw-bold text-success">{{ P_calculated_display }}</p>
         <hr>
-        <p class="mb-0">{{_("Based on Input Annual Expenses (W):")}} <strong>{{ W_display | default(W) }}</strong></p>
-    </div>
-  {% endif %}
+        <h5 class="card-title mt-3">{{_("Based on Annual Expenses:")}}</h5>
+        <p id="display_w" class="fs-5 card-text"><strong>{{ W_display }}</strong></p>
+    {% elif P_calculated_display %}
+        {# Case where calculation resulted in "Error" or "Not Feasible" #}
+        <h4 class="alert-heading">{{_("Calculation Outcome")}}</h4>
+        <p id="display_p" class="fs-5">{{_("Calculated Required Initial Portfolio (FIRE Number):")}} <strong>{{ P_calculated_display }}</strong></p>
+        <hr>
+        <p id="display_w" class="mb-0">{{_("Based on Input Annual Expenses (W):")}} <strong>{{ W_display | default(W) }}</strong></p>
+    {% endif %}
+  </div>
 
-
-  {# Detailed Summary of Inputs Used #}
+  {# Detailed Summary of Fixed Inputs Used (from initial wizard run) #}
   <div class="card mb-4">
     <div class="card-header">
-      {{_("Summary of Inputs Used for Calculation")}}
+      {{_("Fixed Parameters for What-If Analysis (from Wizard)")}}
     </div>
     <ul class="list-group list-group-flush">
       <li class="list-group-item">{{_("Overall Nominal Return Rate:")}} {{ (r_overall_nominal * 100) | round(2) }}%</li>
       <li class="list-group-item">{{_("Overall Inflation Rate:")}} {{ (i_overall * 100) | round(2) }}%</li>
-      <li class="list-group-item">{{_("Total Duration (from periods):")}} {{ total_duration_from_periods }} {{_("years")}}</li>
+      <li class="list-group-item">{{_("Total Duration:")}} {{ total_duration_from_periods }} {{_("years")}}</li>
       <li class="list-group-item">{{_("Withdrawal Timing:")}} {{ withdrawal_time_str | capitalize }}</li>
-      <li class="list-group-item">{{_("Desired Final Portfolio Value:")}} {{ desired_final_value }}</li>
+      <li class="list-group-item">{{_("Original Desired Final Portfolio Value (for FIRE Number calc):")}} {{ desired_final_value }}</li>
     </ul>
   </div>
 
-  {# Rates Periods Used (if any) #}
+  {# Rates Periods Used (if any) from initial wizard run #}
   {% if rates_periods_summary %}
     <div class="card mb-4">
-      <div class="card-header">{{_("Rates Periods Used:")}}</div>
+      <div class="card-header">{{_("Fixed Rates Periods Used:")}}</div>
       <ul class="list-group list-group-flush">
       {% for p in rates_periods_summary %}
         <li class="list-group-item">{{_("Duration:")}} {{ p.duration }} {{_("years")}}, {{_("Nominal Rate:")}} {{ (p.r * 100) | round(2) }}%, {{_("Inflation:")}} {{ (p.i * 100) | round(2) }}%</li>
@@ -66,10 +98,10 @@
     </div>
   {% endif %}
 
-  {# One-Off Events Considered (if any) #}
+  {# One-Off Events Considered (if any) from initial wizard run #}
   {% if one_off_events_summary %}
     <div class="card mb-4">
-      <div class="card-header">{{_("One-Off Events Considered:")}}</div>
+      <div class="card-header">{{_("Fixed One-Off Events Considered:")}}</div>
       <ul class="list-group list-group-flush">
       {% for e in one_off_events_summary %}
         <li class="list-group-item">{{_("Year:")}} {{ e.year }}, {{_("Amount:")}} {{ e.amount }}</li>
@@ -78,54 +110,148 @@
     </div>
   {% else %}
     <div class="card mb-4">
-        <div class="card-header">{{_("One-Off Events Considered:")}}</div>
+        <div class="card-header">{{_("Fixed One-Off Events Considered:")}}</div>
         <div class="card-body"><p>{{_("No one-off events.")}}</p></div>
     </div>
   {% endif %}
 
-  {# Plots #}
+  {# Plots (will be updated by JS) #}
   {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
     <div class="row">
-      <div class="col-md-12 mb-3">
+      <div id="plot1_container" class="col-md-12 mb-3">
         {{ plot1_div | safe }}
       </div>
-      <div class="col-md-12">
+      <div id="plot2_container" class="col-md-12">
         {{ plot2_div | safe }}
       </div>
     </div>
   {% endif %}
 
-  {# Year-by-Year Simulation Table #}
-  {% if table_rows and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
-    <h4 class="mt-4">{{_("Year-by-Year Simulation:")}}</h4>
-    <div class="mt-3 table-responsive">
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>{{_("Year")}}</th>
-            <th>{{_("End of Year Portfolio Balance")}}</th>
-            <th>{{_("Annual Withdrawal")}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in table_rows %}
-          <tr>
-            <td>{{ row.year }}</td>
-            <td>{{ row.balance }}</td>
-            <td>{{ row.withdrawal }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  {% elif not error_message and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
-    <h4 class="mt-4">{{_("Year-by-Year Simulation:")}}</h4>
-    <p>{{_("Simulation data not available.")}}</p>
-  {% endif %}
+  {# Year-by-Year Simulation Table Section has been REMOVED #}
 
   <div class="mt-4 text-center">
     <a href="{{ url_for('wizard_bp.wizard_expenses_step') }}" class="btn btn-secondary">{{ _("Start New Wizard") }}</a>
     <a href="{{ url_for('project.index') }}" class="btn btn-info">{{ _("Back to Home") }}</a>
   </div>
 
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const interactiveWField = document.getElementById('interactive_w');
+    const interactivePField = document.getElementById('interactive_p');
+    // const displayPElement = document.getElementById('display_p'); // Not updated by this JS
+    // const displayWElement = document.getElementById('display_w'); // Not updated by this JS
+
+    const plot1Container = document.getElementById('plot1_container');
+    const plot2Container = document.getElementById('plot2_container');
+
+    const initialROverallNominal = parseFloat(document.getElementById('initial_r_overall_nominal').value);
+    const initialIOverall = parseFloat(document.getElementById('initial_i_overall').value);
+    const initialTotalDuration = parseInt(document.getElementById('initial_total_duration_from_periods').value);
+    const initialWithdrawalTimeStr = document.getElementById('initial_withdrawal_time_str').value;
+    const initialDesiredFinalValue = parseFloat(document.getElementById('initial_desired_final_value').value);
+
+    let initialRatesPeriods = [];
+    try {
+        const initialRatesPeriodsElem = document.getElementById('initial-rates-periods-data');
+        if (initialRatesPeriodsElem && initialRatesPeriodsElem.textContent) {
+            initialRatesPeriods = JSON.parse(initialRatesPeriodsElem.textContent);
+        }
+    } catch (e) {
+        console.error("Error parsing initial rates periods data:", e);
+    }
+
+    let initialOneOffEvents = [];
+    try {
+        const initialOneOffEventsElem = document.getElementById('initial-one-off-events-data');
+        if (initialOneOffEventsElem && initialOneOffEventsElem.textContent) {
+            initialOneOffEvents = JSON.parse(initialOneOffEventsElem.textContent);
+        }
+    } catch (e) {
+        console.error("Error parsing initial one-off events data:", e);
+    }
+
+    const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
+    if (!csrfToken) {
+        console.error('CSRF token not found!');
+    }
+
+
+    let debounceTimer;
+
+    function handleInputChange(event) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const changedInputId = event.target.id;
+            let changed_input_type = '';
+            if (changedInputId === 'interactive_w') {
+                changed_input_type = 'W';
+            } else if (changedInputId === 'interactive_p') {
+                changed_input_type = 'P';
+            } else {
+                return;
+            }
+
+            const wValue = parseFloat(interactiveWField.value) || 0;
+            const pValue = parseFloat(interactivePField.value) || 0;
+
+            const payload = {
+                changed_input: changed_input_type,
+                W_value: wValue,
+                P_value: pValue,
+                r_overall_nominal: initialROverallNominal,
+                i_overall: initialIOverall,
+                total_duration_from_periods: initialTotalDuration,
+                withdrawal_time_str: initialWithdrawalTimeStr,
+                fixed_desired_final_value: initialDesiredFinalValue,
+                rates_periods_summary: initialRatesPeriods,
+                one_off_events_summary: initialOneOffEvents
+            };
+
+            fetch("{{ url_for('wizard_bp.wizard_recalculate_interactive') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Recalculation Error: " + data.error);
+                    if (changed_input_type === 'W' && data.new_P !== undefined) interactivePField.value = data.new_P.toFixed(0); else if (changed_input_type === 'W') interactivePField.value = pValue.toFixed(0);
+                    if (changed_input_type === 'P' && data.new_W !== undefined) interactiveWField.value = data.new_W.toFixed(0); else if (changed_input_type === 'P') interactiveWField.value = wValue.toFixed(0);
+                } else {
+                    if (changed_input_type === 'W') {
+                        interactivePField.value = data.new_P !== undefined ? data.new_P.toFixed(0) : '';
+                    } else if (changed_input_type === 'P') {
+                        interactiveWField.value = data.new_W !== undefined ? data.new_W.toFixed(0) : '';
+                    }
+
+                    if (plot1Container && data.plot1_div_html) {
+                        plot1Container.innerHTML = data.plot1_div_html;
+                    }
+                    if (plot2Container && data.plot2_div_html) {
+                        plot2Container.innerHTML = data.plot2_div_html;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error during interactive recalculation:', error);
+                alert('An error occurred while recalculating. Please check the console.');
+            });
+        }, 750);
+    }
+
+    if (interactiveWField) interactiveWField.addEventListener('input', handleInputChange);
+    if (interactivePField) interactivePField.addEventListener('input', handleInputChange);
+
+    // Initial console log for debugging data availability
+    // console.log("Fixed params for JS:", {initialROverallNominal, initialIOverall, initialTotalDuration, initialWithdrawalTimeStr, initialDesiredFinalValue, initialRatesPeriods, initialOneOffEvents, csrfToken});
+});
+</script>,
 {% endblock %}
