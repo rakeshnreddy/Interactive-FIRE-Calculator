@@ -6,7 +6,7 @@ from project.constants import TIME_START, TIME_END # For withdrawal_time mapping
 # For now, let's assume we'll call a refactored version or directly use financial_calcs
 from project.financial_calcs import annual_simulation, find_required_portfolio
 import plotly.graph_objects as go
-from plotly.io import to_html
+# from plotly.io import to_html # No longer needed for this approach
 import sys # For stderr
 from flask_wtf.csrf import generate_csrf
 # Import generate_plots if it's refactored to be callable with data.
@@ -239,39 +239,40 @@ def wizard_calculate_step():
                                    one_off_events_summary=one_off_events,
                                    withdrawal_time_str=withdrawal_time_str,
                                    desired_final_value=desired_final_value,
-                                   csrf_token_for_ajax=generate_csrf() # Added for AJAX on results page
+                                   original_plot1_spec=None, # Pass None for plots on error
+                                   original_plot2_spec=None,
+                                   csrf_token_for_ajax=generate_csrf()
                                   )
 
-        # --- Plot Generation ---
-        plot1_div = "<div>Plotting error or no data for portfolio balance.</div>"
-        plot2_div = "<div>Plotting error or no data for withdrawals.</div>"
+        # --- Plot Generation (Specs) ---
+        plot1_spec = None
+        plot2_spec = None
 
         if sim_years is not None and sim_balances is not None and len(sim_years) > 0:
             try:
                 fig_balance = go.Figure()
                 fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance", line=dict(color='blue')))
-                for event in one_off_events: # one_off_events is already available from transformation
+                for event in one_off_events:
                     if event['year'] <= sim_years[-1]:
-                        event_y_approx = sim_balances[min(event['year'], len(sim_balances)-1)] # Approximate y for marker
+                        event_y_approx = sim_balances[min(event['year'], len(sim_balances)-1)]
                         fig_balance.add_trace(go.Scatter(
                             x=[event['year']], y=[event_y_approx], mode='markers',
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
                             name=f"One-off: {event['amount']:.0f}"
                         ))
-                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend") # Original titles are fine
-                plot1_div = to_html(fig_balance, full_html=False, include_plotlyjs='cdn')
+                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend")
+                plot1_spec = {'data': [trace.to_plotly_json() for trace in fig_balance.data], 'layout': fig_balance.layout.to_plotly_json()}
             except Exception as e_plot1:
-                current_app.logger.error(f"Error generating balance plot: {e_plot1}", exc_info=True)
-
+                current_app.logger.error(f"Error generating balance plot spec: {e_plot1}", exc_info=True)
 
         if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
             try:
                 fig_withdrawals = go.Figure()
                 fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal", line=dict(color='blue')))
-                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend") # Original titles are fine
-                plot2_div = to_html(fig_withdrawals, full_html=False, include_plotlyjs='cdn')
+                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend")
+                plot2_spec = {'data': [trace.to_plotly_json() for trace in fig_withdrawals.data], 'layout': fig_withdrawals.layout.to_plotly_json()}
             except Exception as e_plot2:
-                current_app.logger.error(f"Error generating withdrawal plot: {e_plot2}", exc_info=True)
+                current_app.logger.error(f"Error generating withdrawal plot spec: {e_plot2}", exc_info=True)
 
         table_rows = []
         if sim_withdrawals is not None and len(sim_withdrawals) > 0:
@@ -327,8 +328,8 @@ def wizard_calculate_step():
                                sim_balances=sim_balances,
                                sim_withdrawals=sim_withdrawals,
                                table_rows=table_rows,
-                               plot1_div=plot1_div,
-                               plot2_div=plot2_div,
+                               original_plot1_spec=plot1_spec,
+                               original_plot2_spec=plot2_spec,
                                r_overall_nominal=r_overall_nominal,
                                i_overall=i_overall,
                                rates_periods_summary=rates_periods,
@@ -429,10 +430,10 @@ def wizard_recalculate_interactive():
             return jsonify({'error': 'Invalid changed_input value.'}), 400
 
         if error_msg_recalc:
-            return jsonify({'error': error_msg_recalc, 'new_W': new_W_calculated, 'new_P': new_P_calculated}), 200
+            return jsonify({'error': error_msg_recalc, 'new_W': new_W_calculated, 'new_P': new_P_calculated, 'plot1_spec': None, 'plot2_spec': None }), 200
 
-        plot1_div_html = "<div>Plotting error or no data for portfolio balance.</div>"
-        plot2_div_html = "<div>Plotting error or no data for withdrawals.</div>"
+        plot1_spec_interactive = None
+        plot2_spec_interactive = None
 
         if sim_years is not None and sim_balances is not None and len(sim_years) > 0 :
             try:
@@ -444,27 +445,27 @@ def wizard_recalculate_interactive():
                         fig_balance.add_trace(go.Scatter(
                             x=[event['year']], y=[event_y_approx], mode='markers',
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
-                            name=f"One-off: {event['amount']:.0f}" # One-off event names can remain same
+                            name=f"One-off: {event['amount']:.0f}"
                         ))
                 fig_balance.update_layout(title="Portfolio Balance Over Time (What-If)", xaxis_title="Year", yaxis_title="Portfolio Balance")
-                plot1_div_html = to_html(fig_balance, full_html=False, include_plotlyjs='cdn')
-            except Exception as e_plot1:
-                current_app.logger.error(f"Error generating balance plot for AJAX: {e_plot1}", exc_info=True)
+                plot1_spec_interactive = {'data': [trace.to_plotly_json() for trace in fig_balance.data], 'layout': fig_balance.layout.to_plotly_json()}
+            except Exception as e_plot1_ia:
+                current_app.logger.error(f"Error generating interactive balance plot spec: {e_plot1_ia}", exc_info=True)
 
         if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
             try:
                 fig_withdrawals = go.Figure()
                 fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal (What-If)", line=dict(color='green')))
                 fig_withdrawals.update_layout(title="Annual Withdrawals Over Time (What-If)", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount")
-                plot2_div_html = to_html(fig_withdrawals, full_html=False, include_plotlyjs='cdn')
-            except Exception as e_plot2:
-                current_app.logger.error(f"Error generating withdrawal plot for AJAX: {e_plot2}", exc_info=True)
+                plot2_spec_interactive = {'data': [trace.to_plotly_json() for trace in fig_withdrawals.data], 'layout': fig_withdrawals.layout.to_plotly_json()}
+            except Exception as e_plot2_ia:
+                current_app.logger.error(f"Error generating interactive withdrawal plot spec: {e_plot2_ia}", exc_info=True)
 
         return jsonify({
             'new_W': new_W_calculated,
             'new_P': new_P_calculated,
-            'plot1_div_html': plot1_div_html,
-            'plot2_div_html': plot2_div_html
+            'plot1_spec': plot1_spec_interactive,
+            'plot2_spec': plot2_spec_interactive
         })
 
     except Exception as e:
