@@ -15,7 +15,7 @@ from flask_wtf.csrf import generate_csrf
 
 wizard_bp = Blueprint('wizard_bp', __name__, template_folder='../templates', url_prefix='/wizard') # Added url_prefix
 
-@wizard_bp.route('/wizard/expenses', methods=['GET', 'POST'])
+@wizard_bp.route('/expenses', methods=['GET', 'POST'])
 def wizard_expenses_step():
     form = ExpensesForm(request.form if request.method == 'POST' else None)
     if form.validate_on_submit():
@@ -41,7 +41,7 @@ def wizard_expenses_step():
         form = ExpensesForm(data=session['wizard_expenses'])
     return render_template('wizard_expenses.html', form=form, title='Step 1: Your Expenses')
 
-@wizard_bp.route('/wizard/rates', methods=['GET', 'POST'])
+@wizard_bp.route('/rates', methods=['GET', 'POST'])
 def wizard_rates_step():
     # Ensure previous step is done, or redirect back
     if 'wizard_expenses' not in session:
@@ -60,7 +60,7 @@ def wizard_rates_step():
         form = RatesForm(data=session['wizard_rates'])
     return render_template('wizard_rates.html', form=form, title='Step 2: Rates & Inflation')
 
-@wizard_bp.route('/wizard/one_offs', methods=['GET', 'POST'])
+@wizard_bp.route('/one_offs', methods=['GET', 'POST'])
 def wizard_one_offs_step():
     # Ensure previous step is done
     if 'wizard_rates' not in session:
@@ -83,7 +83,7 @@ def wizard_one_offs_step():
     return render_template('wizard_one_offs.html', form=form, title='Step 3: One-Off Events')
 
 
-@wizard_bp.route('/wizard/summary', methods=['GET'])
+@wizard_bp.route('/summary', methods=['GET'])
 def wizard_summary_step():
     # Ensure all previous steps are done, or redirect back to the earliest incomplete step
     if 'wizard_one_offs' not in session:
@@ -203,12 +203,12 @@ def wizard_calculate_step():
                 current_app.logger.debug(f"one_off_events for annual_simulation: {one_off_events}")
 
                 sim_years, sim_balances, sim_withdrawals = annual_simulation(
-                    PV_initial=P_calculated,
+                    PV=P_calculated, # <--- Changed PV_initial to PV
                     W_initial=W_actual_for_P_calc,
                     withdrawal_time=withdrawal_time,
                     rates_periods=rates_periods,
-                    one_off_events=one_off_events,
-                    desired_final_value=desired_final_value
+                    one_off_events=one_off_events
+                    # desired_final_value is NOT a direct parameter of annual_simulation
                 )
 
         except Exception as e:
@@ -234,8 +234,7 @@ def wizard_calculate_step():
                                    total_duration_from_periods=total_duration_from_periods,
                                    one_off_events_summary=one_off_events,
                                    withdrawal_time_str=withdrawal_time_str,
-                                   desired_final_value=desired_final_value,
-                                   itemized_expenses_summary=expenses_data
+                                   desired_final_value=desired_final_value
                                   )
 
         # --- Plot Generation ---
@@ -300,8 +299,7 @@ def wizard_calculate_step():
                                total_duration_from_periods=total_duration_from_periods,
                                one_off_events_summary=one_off_events,
                                withdrawal_time_str=withdrawal_time_str,
-                               desired_final_value=desired_final_value,
-                               itemized_expenses_summary=expenses_data
+                               desired_final_value=desired_final_value
                               )
 
     except Exception as e:
