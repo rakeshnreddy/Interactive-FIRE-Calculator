@@ -23,3 +23,76 @@
     {{ render_submit_field(form.submit, class="btn btn-primary mt-3") }}
   </form>
 {% endblock %}
+
+{% block scripts_extra %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const annualExpensesField = document.getElementById('annual_expenses');
+    const itemizedFields = [
+        document.getElementById('housing'),
+        document.getElementById('food'),
+        document.getElementById('transportation'),
+        document.getElementById('utilities'),
+        document.getElementById('personal_care'),
+        document.getElementById('entertainment'),
+        document.getElementById('healthcare'),
+        document.getElementById('other_expenses')
+    ];
+
+    let userManuallyEditedTotal = false;
+
+    // Check if annual_expenses initially has a value; if so, assume manual entry or prefill
+    if (annualExpensesField.value.trim() !== '' && parseFloat(annualExpensesField.value) > 0) {
+        userManuallyEditedTotal = true;
+    }
+
+    function calculateItemizedSum() {
+        let sum = 0;
+        itemizedFields.forEach(function(field) {
+            if (field && field.value) {
+                const val = parseFloat(field.value);
+                if (!isNaN(val)) {
+                    sum += val;
+                }
+            }
+        });
+        return sum;
+    }
+
+    function updateAnnualExpenses() {
+        const sum = calculateItemizedSum();
+        if (!userManuallyEditedTotal || annualExpensesField.value.trim() === '' || parseFloat(annualExpensesField.value) === 0) {
+            // If user hasn't manually edited, or if they cleared it, or it's zero, then update.
+            if (sum > 0) {
+                annualExpensesField.value = sum.toFixed(2);
+            } else if (!userManuallyEditedTotal) {
+                // if sum is 0 and user hasn't touched total field, clear it
+                annualExpensesField.value = '';
+            }
+        }
+    }
+
+    itemizedFields.forEach(function(field) {
+        if (field) {
+            field.addEventListener('input', function() {
+                updateAnnualExpenses();
+            });
+        }
+    });
+
+    annualExpensesField.addEventListener('input', function() {
+        const manualValue = annualExpensesField.value.trim();
+        if (manualValue !== '' && parseFloat(manualValue) > 0) {
+            userManuallyEditedTotal = true;
+        } else {
+            // If user clears the total field or sets it to 0, allow itemized sum to repopulate it.
+            userManuallyEditedTotal = false;
+            updateAnnualExpenses(); // Recalculate and potentially fill if itemized sum > 0
+        }
+    });
+
+    // Initial calculation on page load, in case of pre-filled itemized fields (e.g., from session)
+    updateAnnualExpenses();
+});
+</script>
+{% endblock %}

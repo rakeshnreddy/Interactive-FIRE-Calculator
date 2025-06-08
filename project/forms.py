@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, IntegerField, FieldList, FormField, SubmitField, TextAreaField
+from wtforms import StringField, FloatField, IntegerField, FieldList, FormField, SubmitField, TextAreaField, RadioField # Add RadioField
 from wtforms.validators import DataRequired, NumberRange, Optional
 
 class PeriodRateForm(FlaskForm):
@@ -30,9 +30,23 @@ class RatesForm(FlaskForm):
     '''Form for capturing investment return rates and inflation.'''
     return_rate = FloatField('Overall Portfolio Return Rate (%, nominal)', validators=[DataRequired(), NumberRange(min=-50, max=100)])
     inflation_rate = FloatField('Assumed Annual Inflation Rate (%)', validators=[DataRequired(), NumberRange(min=-10, max=50)])
+
+    total_duration_fallback = IntegerField(
+        'Total Duration (years, if no specific periods defined below)',
+        default=30,
+        validators=[Optional(), NumberRange(min=1, max=100)]
+    )
+
+    desired_final_value = FloatField('Desired Final Portfolio Value (Optional)', default=0.0, validators=[Optional(), NumberRange(min=0)])
+    withdrawal_time = RadioField(
+        'Withdrawal Timing',
+        choices=[('start', 'Start of Year'), ('end', 'End of Year')],
+        default='end',
+        validators=[DataRequired()]
+    )
+
     period_rates = FieldList(FormField(PeriodRateForm), min_entries=0)
-    # It might be good to have a button to dynamically add more period_rates in the template
-    submit_add_period = SubmitField('Add Period Rate') # For dynamically adding more periods
+    submit_add_period = SubmitField('Add Period Rate')
     submit = SubmitField('Next: One-Offs')
 
 class OneOffsForm(FlaskForm):

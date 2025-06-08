@@ -1,13 +1,39 @@
-from flask import Blueprint, render_template, redirect, url_for, session, request
-from project.forms import ExpensesForm, RatesForm, OneOffsForm # Assuming forms are in project.forms
+from flask import Blueprint, render_template, redirect, url_for, session, request, flash # Add flash
+from project.forms import ExpensesForm, RatesForm, OneOffsForm
+from project.constants import TIME_START, TIME_END # For withdrawal_time mapping
+# Assuming generate_plots and other calc functions are accessible or need to be imported
+# from project.routes import generate_plots # Or from project.financial_calcs
+# For now, let's assume we'll call a refactored version or directly use financial_calcs
+from project.financial_calcs import annual_simulation, find_required_portfolio
+import plotly.graph_objects as go
+from plotly.io import to_html
+import sys # For stderr
+# Import generate_plots if it's refactored to be callable with data.
+# For now, let's try to replicate the core logic that was in project.routes.index for generate_plots.
 
-wizard_bp = Blueprint('wizard_bp', __name__, template_folder='../templates')
+
+wizard_bp = Blueprint('wizard_bp', __name__, template_folder='../templates', url_prefix='/wizard') # Added url_prefix
 
 @wizard_bp.route('/wizard/expenses', methods=['GET', 'POST'])
 def wizard_expenses_step():
     form = ExpensesForm(request.form if request.method == 'POST' else None)
     if form.validate_on_submit():
-        session['wizard_expenses'] = form.data
+        form_data = form.data.copy() # Get a mutable copy
+
+        # Calculate sum of itemized expenses
+        itemized_sum = sum(
+            form_data.get(key, 0) or 0 for key in
+            ['housing', 'food', 'transportation', 'utilities',
+             'personal_care', 'entertainment', 'healthcare', 'other_expenses']
+        )
+
+        submitted_annual_expenses = form_data.get('annual_expenses')
+
+        if (submitted_annual_expenses is None or submitted_annual_expenses == 0) and itemized_sum > 0:
+            form_data['annual_expenses'] = itemized_sum
+        # Else, use the user-submitted annual_expenses (even if it's 0 and itemized_sum is also 0)
+
+        session['wizard_expenses'] = form_data
         return redirect(url_for('wizard_bp.wizard_rates_step'))
     # Pre-fill form if data already in session (e.g., user went back)
     elif request.method == 'GET' and 'wizard_expenses' in session:
@@ -83,3 +109,193 @@ def wizard_summary_step():
                            expenses_data=expenses_data,
                            rates_data=rates_data,
                            one_offs_data=one_offs_data)
+
+
+@wizard_bp.route('/calculate', methods=['POST'])
+def wizard_calculate_step():
+    # Ensure all wizard data is in session
+    if not all(key in session for key in ['wizard_expenses', 'wizard_rates', 'wizard_one_offs']):
+        flash("Session data is incomplete. Please restart the wizard.", "error") # Using Flask's _gettext
+        return redirect(url_for('wizard_bp.wizard_expenses_step'))
+
+    expenses_data = session.get('wizard_expenses', {})
+    rates_data = session.get('wizard_rates', {})
+    one_offs_data = session.get('wizard_one_offs', {})
+
+    # --- Data Transformation ---
+    try:
+        W = float(expenses_data.get('annual_expenses', 0))
+
+        # Rates and Periods
+        r_overall_nominal = float(rates_data.get('return_rate', 0)) / 100.0
+        i_overall = float(rates_data.get('inflation_rate', 0)) / 100.0
+
+        rates_periods = []
+        if rates_data.get('period_rates'):
+            for period in rates_data['period_rates']:
+                if period.get('years') and period.get('rate') is not None:
+                    rates_periods.append({
+                        'duration': int(period['years']),
+                        'r': float(period['rate']) / 100.0,
+                        'i': i_overall
+                    })
+
+        total_duration_from_periods = sum(p['duration'] for p in rates_periods) if rates_periods else 0
+
+        if not rates_periods:
+            # T_fallback_from_form will be an int due to IntegerField, or None if not provided AND no default
+            # Since we have a default in the form, it should always be present in form.data
+            T_fallback = int(rates_data.get('total_duration_fallback', 30)) # Defaulting to 30 if key somehow missing from session
+
+            rates_periods.append({'duration': T_fallback, 'r': r_overall_nominal, 'i': i_overall})
+            total_duration_from_periods = T_fallback
+
+        # One-off events
+        one_off_events = []
+        for exp in one_offs_data.get('large_expenses', []):
+            if exp.get('year') is not None and exp.get('amount') is not None:
+                one_off_events.append({'year': int(exp['year']), 'amount': -float(exp['amount'])})
+        for inc in one_offs_data.get('large_incomes', []):
+            if inc.get('year') is not None and inc.get('amount') is not None:
+                one_off_events.append({'year': int(inc['year']), 'amount': float(inc['amount'])})
+
+        one_off_events.sort(key=lambda x: x['year'])
+
+        withdrawal_time_str = rates_data.get('withdrawal_time', 'end')
+        withdrawal_time = TIME_START if withdrawal_time_str == 'start' else TIME_END
+
+        desired_final_value = float(rates_data.get('desired_final_value', 0))
+
+        # --- Actual Calculation ---
+        P_calculated = None
+        W_actual_for_P_calc = W # This is W_initial for find_required_portfolio
+        sim_years, sim_balances, sim_withdrawals = [], [], []
+        error_message = None
+
+        # Assuming 'app' is imported and available for app.logger
+        # from app import app # Would be needed if not already available globally
+        # Or use from flask import current_app; current_app.logger
+
+        try:
+            P_calculated = find_required_portfolio(
+                W_initial=W_actual_for_P_calc,
+                withdrawal_time=withdrawal_time,
+                rates_periods=rates_periods,
+                desired_final_value=desired_final_value,
+                one_off_events=one_off_events
+            )
+
+            if P_calculated is None or P_calculated == float('inf') or P_calculated < 0:
+                error_message = "Could not calculate a suitable portfolio (FIRE number) for the given expenses and market conditions. Inputs may be unrealistic (e.g., expenses too high, returns too low for the duration)." # Flask's _gettext will handle this
+                P_calculated_display = "Not Feasible"
+            else:
+                P_calculated_display = f"{P_calculated:,.2f}"
+                sim_years, sim_balances, sim_withdrawals = annual_simulation(
+                    PV_initial=P_calculated,
+                    W_initial=W_actual_for_P_calc,
+                    withdrawal_time=withdrawal_time,
+                    rates_periods=rates_periods,
+                    one_off_events=one_off_events,
+                    desired_final_value=desired_final_value
+                )
+
+        except Exception as e:
+            # app.logger.error(f"Error during financial calculation: {e}", exc_info=True)
+            print(f"Error during financial calculation: {e}", file=sys.stderr) # Keep temp print
+            error_message = "An unexpected error occurred during financial calculations."
+            P_calculated_display = "Error"
+
+        # Clear session data for the wizard
+        session.pop('wizard_expenses', None)
+        session.pop('wizard_rates', None)
+        session.pop('wizard_one_offs', None)
+
+        if error_message:
+            flash(error_message, "error")
+            return render_template('wizard_results.html',
+                                   title="Calculation Error",
+                                   error_message=error_message,
+                                   P_calculated_display=P_calculated_display,
+                                   W=W,
+                                   r_overall_nominal=r_overall_nominal,
+                                   i_overall=i_overall,
+                                   rates_periods_summary=rates_periods,
+                                   total_duration_from_periods=total_duration_from_periods,
+                                   one_off_events_summary=one_off_events,
+                                   withdrawal_time_str=withdrawal_time_str,
+                                   desired_final_value=desired_final_value
+                                  )
+
+        # --- Plot Generation ---
+        plot1_div = "<div>Plotting error or no data for portfolio balance.</div>"
+        plot2_div = "<div>Plotting error or no data for withdrawals.</div>"
+
+        if sim_years is not None and sim_balances is not None and len(sim_years) > 0:
+            try:
+                fig_balance = go.Figure()
+                fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance"))
+                for event in one_off_events: # one_off_events is already available from transformation
+                    if event['year'] <= sim_years[-1]:
+                        event_y_approx = sim_balances[min(event['year'], len(sim_balances)-1)] # Approximate y for marker
+                        fig_balance.add_trace(go.Scatter(
+                            x=[event['year']], y=[event_y_approx], mode='markers',
+                            marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
+                            name=f"One-off: {event['amount']:.0f}"
+                        ))
+                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend")
+                plot1_div = to_html(fig_balance, full_html=False, include_plotlyjs='cdn')
+            except Exception as e_plot1:
+                # app.logger.error(f"Error generating balance plot: {e_plot1}", exc_info=True) # Prefer proper logging
+                print(f"Error generating balance plot: {e_plot1}", file=sys.stderr)
+
+
+        if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
+            try:
+                fig_withdrawals = go.Figure()
+                fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal"))
+                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend")
+                plot2_div = to_html(fig_withdrawals, full_html=False, include_plotlyjs='cdn')
+            except Exception as e_plot2:
+                # app.logger.error(f"Error generating withdrawal plot: {e_plot2}", exc_info=True) # Prefer proper logging
+                print(f"Error generating withdrawal plot: {e_plot2}", file=sys.stderr)
+
+        table_rows = []
+        if sim_years is not None and sim_balances is not None and sim_withdrawals is not None:
+            for i in range(len(sim_years)):
+                year = sim_years[i]
+                balance = sim_balances[i+1]
+                withdrawal = sim_withdrawals[i] if i < len(sim_withdrawals) else 0
+                table_rows.append({
+                    'year': year,
+                    'balance': f"{balance:,.2f}",
+                    'withdrawal': f"{withdrawal:,.2f}"
+                })
+
+        W_display = f"{W:,.2f}"
+
+        return render_template('wizard_results.html',
+                               title="Calculation Results",
+                               P_calculated_display=P_calculated_display,
+                               W_display=W_display,
+                               sim_years=sim_years,
+                               sim_balances=sim_balances,
+                               sim_withdrawals=sim_withdrawals,
+                               table_rows=table_rows,
+                               plot1_div=plot1_div,
+                               plot2_div=plot2_div,
+                               W=W,
+                               r_overall_nominal=r_overall_nominal,
+                               i_overall=i_overall,
+                               rates_periods_summary=rates_periods,
+                               total_duration_from_periods=total_duration_from_periods,
+                               one_off_events_summary=one_off_events,
+                               withdrawal_time_str=withdrawal_time_str,
+                               desired_final_value=desired_final_value
+                              )
+
+    except Exception as e:
+        # This outer try-except catches errors in data transformation itself
+        # app.logger.error(f"Error during data transformation in wizard: {e}", exc_info=True)
+        print(f"Error during data transformation in wizard: {e}", file=sys.stderr) # Keep temp print
+        flash("An error occurred preparing data for calculation. Please check your inputs.", "error")
+        return redirect(url_for('wizard_bp.wizard_summary_step'))
