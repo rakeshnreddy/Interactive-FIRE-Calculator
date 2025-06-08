@@ -210,6 +210,10 @@ def wizard_calculate_step():
                     one_off_events=one_off_events
                     # desired_final_value is NOT a direct parameter of annual_simulation
                 )
+                # ADD DETAILED LOGGING HERE:
+                current_app.logger.debug(f"annual_simulation returned: sim_years (type: {type(sim_years)}, len: {len(sim_years) if sim_years is not None else 'None'}): {str(sim_years)[:200]}")
+                current_app.logger.debug(f"annual_simulation returned: sim_balances (type: {type(sim_balances)}, len: {len(sim_balances) if sim_balances is not None else 'None'}): {str(sim_balances)[:200]}")
+                current_app.logger.debug(f"annual_simulation returned: sim_withdrawals (type: {type(sim_withdrawals)}, len: {len(sim_withdrawals) if sim_withdrawals is not None else 'None'}): {str(sim_withdrawals)[:200]}")
 
         except Exception as e:
             current_app.logger.error(f"Error during financial calculation: {e}", exc_info=True)
@@ -266,29 +270,38 @@ def wizard_calculate_step():
                 current_app.logger.error(f"Error generating withdrawal plot: {e_plot2}", exc_info=True)
 
         table_rows = []
-        # Add defensive checks here:
-        if (sim_years is not None and
-            sim_balances is not None and
-            sim_withdrawals is not None and
-            len(sim_years) > 0 and
-            len(sim_balances) > len(sim_years) and  # Balances should have initial PV + end-of-year for each year
-            len(sim_withdrawals) >= len(sim_years)): # Withdrawals should cover each year in sim_years
+        if sim_withdrawals is not None and len(sim_withdrawals) > 0:
+            total_T_from_sim = len(sim_withdrawals) # This is the number of years with withdrawals
 
-            for i in range(len(sim_years)):
-                year = sim_years[i]
-                # sim_balances[0] is initial PV. sim_balances[i+1] is balance at end of sim_years[i].
-                balance = sim_balances[i+1]
-                withdrawal = sim_withdrawals[i] # sim_withdrawals[i] corresponds to sim_years[i]
-                table_rows.append({
-                    'year': year,
-                    'balance': f"{balance:,.2f}",
-                    'withdrawal': f"{withdrawal:,.2f}"
-                })
-        elif not error_message: # Only log if there wasn't a bigger calculation error already
-            current_app.logger.warning("Could not generate table_rows due to inconsistent simulation data shapes.")
-            current_app.logger.debug(f"sim_years len: {len(sim_years) if sim_years is not None else 'None'}, " +
-                                     f"sim_balances len: {len(sim_balances) if sim_balances is not None else 'None'}, " +
-                                     f"sim_withdrawals len: {len(sim_withdrawals) if sim_withdrawals is not None else 'None'}")
+            # Check consistency with other arrays based on total_T_from_sim
+            if (sim_years is not None and len(sim_years) == (total_T_from_sim + 1) and
+                sim_balances is not None and len(sim_balances) == (total_T_from_sim + 1)):
+
+                for i in range(total_T_from_sim): # Loop from 0 to total_T - 1
+                    year_display = sim_years[i+1] # Year 1, 2, ..., total_T
+                    # sim_balances[0] is initial PV.
+                    # sim_balances[i+1] is balance at end of year_display.
+                    balance = sim_balances[i+1]
+                    # sim_withdrawals[i] is withdrawal during year_display.
+                    withdrawal = sim_withdrawals[i]
+
+                    table_rows.append({
+                        'year': int(year_display), # Ensure year is int for display
+                        'balance': f"{balance:,.2f}",
+                        'withdrawal': f"{withdrawal:,.2f}"
+                    })
+            elif not error_message: # Only log if there wasn't a bigger calculation error
+                current_app.logger.warning(
+                    "Could not generate table_rows due to inconsistent simulation data shapes " +
+                    "relative to sim_withdrawals length."
+                )
+                current_app.logger.debug(
+                    f"sim_years (len: {len(sim_years) if sim_years is not None else 'None'}), " +
+                    f"sim_balances (len: {len(sim_balances) if sim_balances is not None else 'None'}), " +
+                    f"sim_withdrawals (len: {len(sim_withdrawals) if sim_withdrawals is not None else 'None'})"
+                )
+        elif not error_message: # sim_withdrawals is None or empty
+             current_app.logger.info("No withdrawal data from simulation to generate table rows (e.g., T=0).")
 
 
         W_display = f"{W:,.2f}"
