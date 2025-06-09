@@ -463,5 +463,3 @@ def export_csv():
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment;filename=fire_calculation_results.csv"}
     )
-
-[end of project/wizard_routes.py]
