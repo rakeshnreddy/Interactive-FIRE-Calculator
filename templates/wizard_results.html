@@ -170,12 +170,12 @@
       {# Add periodic rates or fallback single period rates #}
       {% if rates_periods_summary and rates_periods_summary|length == 1 and rates_periods_summary[0].r == r_overall_nominal and rates_periods_summary[0].i == i_overall and rates_periods_summary[0].duration == total_duration_from_periods %}
         {# It's the fallback single period that matches overall rates and total duration #}
-        {%-set _ = query_params.update({'r': (r_overall_nominal * 100), 'i': (i_overall * 100), 'T': total_duration_from_periods}) %}
+        {%- do query_params.update({'r': (r_overall_nominal * 100), 'i': (i_overall * 100), 'T': total_duration_from_periods}) %}
       {% elif rates_periods_summary %}
         {# It's custom periods or a single period that doesn't match the exact fallback criteria #}
         {% for p_idx in range(rates_periods_summary|length) %}
           {% if p_idx < 3 %} {# Compare page supports up to 3 periods #}
-            {%-set _ = query_params.update({
+            {%- do query_params.update({
               ('period' + (p_idx+1)|string + '_duration'): rates_periods_summary[p_idx].duration,
               ('period' + (p_idx+1)|string + '_r'): (rates_periods_summary[p_idx].r * 100),
               ('period' + (p_idx+1)|string + '_i'): (rates_periods_summary[p_idx].i * 100)
@@ -184,14 +184,14 @@
         {% endfor %}
       {% else %}
         {# No rates_periods_summary, but we have overall rates and total_duration_from_periods (which would be the fallback T) #}
-        {%-set _ = query_params.update({'r': (r_overall_nominal * 100), 'i': (i_overall * 100), 'T': total_duration_from_periods}) %}
+        {%- do query_params.update({'r': (r_overall_nominal * 100), 'i': (i_overall * 100), 'T': total_duration_from_periods}) %}
       {% endif %}
 
       {# Add one-off events #}
       {% if one_off_events_summary %}
         {% for e_idx in range(one_off_events_summary|length) %}
           {% if e_idx < 3 %} {# Compare page supports up to 3 one-offs #}
-            {%-set _ = query_params.update({
+            {%- do query_params.update({
               ('one_off_' + (e_idx+1)|string + '_year'): one_off_events_summary[e_idx].year,
               ('one_off_' + (e_idx+1)|string + '_amount'): one_off_events_summary[e_idx].amount
             }) %}
