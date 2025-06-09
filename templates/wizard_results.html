@@ -78,7 +78,9 @@
       {{_("Interactive What-If Analysis")}}
     </div>
     <div class="card-body">
-      <div id="interactive_debug_output" style="font-size:0.8em; text-align:left; max-height:150px; overflow-y:scroll; border:1px solid #ccc; background:#f0f0f0; padding:5px; margin-bottom:15px;"></div>
+      <p class="text-muted small mb-3">
+        {{_("Adjust the 'Annual Expenses' or 'Target Portfolio' values below using the input fields or sliders. The other value and the plots in this section will update automatically to reflect your changes. All other parameters (rates, duration, etc.) remain fixed based on your initial wizard inputs.")}}
+      </p>
       {# Row for W input and slider #}
       <div class="row g-3 align-items-center justify-content-center mb-3">
         <div class="col-md-3 text-md-end">
@@ -104,7 +106,7 @@
           <input type="range" id="slider_p" class="form-range interactive-slider" data-target="interactive_p" value="{{ P_raw | default(0.0) }}" min="0" max="{{ (P_raw * 2) | default(2000000) | int }}" step="10000">
         </div>
       </div>
-      <small class="form-text text-muted mt-2">{{_("Change one value or use slider to see how it impacts the other. Plots below will update.")}}</small>
+      {# The old <small> text was here, now removed. #}
 
       {# New Plot Containers for Interactive Analysis (Side-by-Side) #}
       <div class="row mt-4">
@@ -142,20 +144,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const interactivePlot1Container = document.getElementById('interactive_plot1_container');
     const interactivePlot2Container = document.getElementById('interactive_plot2_container');
-    const debugOutputDiv = document.getElementById('interactive_debug_output');
+    // const debugOutputDiv = document.getElementById('interactive_debug_output'); // Removed
 
-    function logDebug(message) {
-        if (debugOutputDiv) {
-            const p = document.createElement('p');
-            p.textContent = message;
-            p.style.margin = '2px 0';
-            debugOutputDiv.appendChild(p);
-            debugOutputDiv.scrollTop = debugOutputDiv.scrollHeight;
-        }
-        console.log(message);
-    }
-
-    logDebug("DOMContentLoaded: Script started.");
+    // console.log("DOMContentLoaded: Script started."); // Standard console log
 
     // Retrieve initial parameters
     const initialROverallNominal = parseFloat(document.getElementById('initial_r_overall_nominal').value);
@@ -170,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (initialRatesPeriodsElem && initialRatesPeriodsElem.textContent) {
             initialRatesPeriods = JSON.parse(initialRatesPeriodsElem.textContent);
         }
-    } catch (e) { logDebug("Error parsing initial rates periods: " + e); }
+    } catch (e) { console.error("Error parsing initial rates periods: " + e); }
 
     let initialOneOffEvents = [];
     try {
@@ -178,15 +169,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (initialOneOffEventsElem && initialOneOffEventsElem.textContent) {
             initialOneOffEvents = JSON.parse(initialOneOffEventsElem.textContent);
         }
-    } catch (e) { logDebug("Error parsing initial one-off events: " + e); }
+    } catch (e) { console.error("Error parsing initial one-off events: " + e); }
 
     const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
-    logDebug("CSRF Token: " + (csrfToken ? "Loaded" : "Not Found!"));
+    // console.log("CSRF Token: " + (csrfToken ? "Loaded" : "Not Found!"));
     if (!csrfToken) { console.error('CSRF token not found!'); }
 
-    logDebug("Initial W field value: " + (interactiveWField ? interactiveWField.value : "N/A"));
-    logDebug("Initial P field value: "  + (interactivePField ? interactivePField.value : "N/A"));
+    // console.log("Initial W field value: " + (interactiveWField ? interactiveWField.value : "N/A"));
+    // console.log("Initial P field value: "  + (interactivePField ? interactivePField.value : "N/A"));
 
     // Retrieve and render initial plot specs
     let originalPlot1Spec = null;
@@ -195,66 +186,50 @@ document.addEventListener('DOMContentLoaded', function() {
         const plot1SpecEl = document.getElementById('original-plot1-spec-data');
         if (plot1SpecEl && plot1SpecEl.textContent) {
             originalPlot1Spec = JSON.parse(plot1SpecEl.textContent);
-            logDebug("Original Plot 1 Spec loaded.");
-        } else { logDebug("Original Plot 1 Spec data script tag not found or empty."); }
+        } else { console.warn("Original Plot 1 Spec data script tag not found or empty."); }
 
         const plot2SpecEl = document.getElementById('original-plot2-spec-data');
         if (plot2SpecEl && plot2SpecEl.textContent) {
             originalPlot2Spec = JSON.parse(plot2SpecEl.textContent);
-            logDebug("Original Plot 2 Spec loaded.");
-        } else { logDebug("Original Plot 2 Spec data script tag not found or empty."); }
-    } catch (e) { logDebug("Error parsing initial plot spec JSON: " + e); }
+        } else { console.warn("Original Plot 2 Spec data script tag not found or empty."); }
+    } catch (e) { console.error("Error parsing initial plot spec JSON: " + e); }
 
     const originalPlot1Container = document.getElementById('original_plot1_container');
     const originalPlot2Container = document.getElementById('original_plot2_container');
 
     if (originalPlot1Spec && originalPlot1Spec.data && originalPlot1Spec.layout && originalPlot1Container) {
         Plotly.newPlot('original_plot1_container', originalPlot1Spec.data, originalPlot1Spec.layout, {responsive: true});
-        logDebug("Original plot 1 rendered.");
     } else if (originalPlot1Container) {
         originalPlot1Container.innerHTML = "<p>{{_('Original balance plot data not available.')}}</p>";
-        logDebug("Original plot 1 data/spec missing or container not found.");
     }
 
     if (originalPlot2Spec && originalPlot2Spec.data && originalPlot2Spec.layout && originalPlot2Container) {
         Plotly.newPlot('original_plot2_container', originalPlot2Spec.data, originalPlot2Spec.layout, {responsive: true});
-        logDebug("Original plot 2 rendered.");
     } else if (originalPlot2Container) {
         originalPlot2Container.innerHTML = "<p>{{_('Original withdrawal plot data not available.')}}</p>";
-        logDebug("Original plot 2 data/spec missing or container not found.");
     }
 
-    // Helper function to update a slider's max value if needed, and sync input
     function updateSliderMaxIfNeeded(inputElement, sliderElement) {
         if (!inputElement || !sliderElement) {
-            logDebug("updateSliderMaxIfNeeded: input or slider element missing.");
             return;
         }
         const numericValue = parseFloat(inputElement.value);
         if (!isNaN(numericValue)) {
             if (numericValue < parseFloat(sliderElement.min)) {
-                logDebug(`Value ${numericValue} for ${inputElement.id} is less than slider min ${sliderElement.min}. Clamping.`);
                 inputElement.value = sliderElement.min;
                 sliderElement.value = sliderElement.min;
                 return;
             }
             if (numericValue > parseFloat(sliderElement.max)) {
-                const newMax = Math.ceil(numericValue * 1.2 / (parseInt(sliderElement.step) || 1)) * (parseInt(sliderElement.step) || 1);
-                logDebug(`Value ${numericValue} for ${inputElement.id} is greater than slider max ${sliderElement.max}. New max: ${newMax}`);
-                sliderElement.max = newMax;
+                sliderElement.max = Math.ceil(numericValue * 1.2 / (parseInt(sliderElement.step) || 1)) * (parseInt(sliderElement.step) || 1);
             }
             sliderElement.value = inputElement.value;
-        } else {
-            logDebug(`updateSliderMaxIfNeeded: value for ${inputElement.id} is NaN.`);
         }
     }
 
-    // Actual AJAX call logic
     function performAjaxCalculation(changedParamType) {
-        logDebug(`performAjaxCalculation called. Changed: ${changedParamType}`);
         const wValue = parseFloat(interactiveWField.value) || 0;
         const pValue = parseFloat(interactivePField.value) || 0;
-        logDebug(`W Value for AJAX: ${wValue}, P Value for AJAX: ${pValue}`);
 
         const payload = {
             changed_input: changedParamType, W_value: wValue, P_value: pValue,
@@ -263,7 +238,6 @@ document.addEventListener('DOMContentLoaded', function() {
             withdrawal_time_str: initialWithdrawalTimeStr, fixed_desired_final_value: initialDesiredFinalValue,
             rates_periods_summary: initialRatesPeriods, one_off_events_summary: initialOneOffEvents
         };
-        logDebug("AJAX Payload (first 300 chars): " + JSON.stringify(payload).substring(0, 300) + "...");
 
         const currentCsrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -272,17 +246,13 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify(payload)
         })
         .then(response => {
-            logDebug("AJAX response received. Status: " + response.status);
             if (!response.ok) {
-                logDebug("AJAX response not OK. Status text: " + response.statusText);
                 return response.text().then(text => { throw new Error("Server error: " + response.status + " " + response.statusText + " Body: " + text.substring(0,200)); });
             }
             return response.json();
         })
         .then(data => {
-            logDebug("AJAX response JSON parsed. Data (first 300 chars): " + JSON.stringify(data).substring(0, 300) + "...");
             if (data.error) {
-                logDebug("AJAX data.error: " + data.error);
                 if(interactivePlot1Container) interactivePlot1Container.innerHTML = `<p class='text-danger'>Error: ${data.error}</p>`;
                 if(interactivePlot2Container) interactivePlot2Container.innerHTML = '';
 
@@ -294,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(sliderW) updateSliderMaxIfNeeded(interactiveWField, sliderW);
                 }
             } else {
-                logDebug("AJAX success. Updating fields and plots.");
                 if (changedParamType === 'W') {
                     if(interactivePField) interactivePField.value = data.new_P !== undefined ? parseFloat(data.new_P).toFixed(0) : '';
                     if(sliderP && interactivePField) updateSliderMaxIfNeeded(interactivePField, sliderP);
@@ -303,27 +272,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     if(sliderW && interactiveWField) updateSliderMaxIfNeeded(interactiveWField, sliderW);
                 }
 
-                // Update interactive plots using Plotly.react or Plotly.newPlot
                 if (interactivePlot1Container && data.plot1_spec && data.plot1_spec.data && data.plot1_spec.layout) {
                     Plotly.react('interactive_plot1_container', data.plot1_spec.data, data.plot1_spec.layout, {responsive: true});
-                    logDebug("Interactive plot 1 updated via Plotly.react().");
                 } else if (interactivePlot1Container) {
                     interactivePlot1Container.innerHTML = "<p>{{_('Interactive balance plot data not available.')}}</p>";
-                    logDebug("Interactive plot 1 spec missing in AJAX response or container error.");
                 }
 
                 if (interactivePlot2Container && data.plot2_spec && data.plot2_spec.data && data.plot2_spec.layout) {
                     Plotly.react('interactive_plot2_container', data.plot2_spec.data, data.plot2_spec.layout, {responsive: true});
-                    logDebug("Interactive plot 2 updated via Plotly.react().");
                 } else if (interactivePlot2Container) {
-                    interactivePlot2Container.innerHTML = "<p>{{_('Interactive withdrawal plot data not available.')}}</p>";
-                    logDebug("Interactive plot 2 spec missing in AJAX response or container error.");
+                    interactivePlot2Container.innerHTML = "";
                 }
-                logDebug("Interactive plots update attempt finished.");
             }
         })
         .catch(error => {
-            logDebug("AJAX fetch failed or error in processing. Error: " + error);
+            console.error("AJAX fetch failed or error in processing. Error: " + error);
             if(interactivePlot1Container) interactivePlot1Container.innerHTML = "<p class='text-danger'>Error loading plots via AJAX: " + error + "</p>";
             if(interactivePlot2Container) interactivePlot2Container.innerHTML = "";
         });
@@ -332,9 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let debounceTimer;
     function makeAjaxCall(changedParamType) {
         clearTimeout(debounceTimer);
-        // logDebug(`makeAjaxCall (debounced) for: ${changedParamType}. Setting timeout.`); // Removed for less verbosity
         debounceTimer = setTimeout(() => {
-            logDebug(`Debounced AJAX call executing for: ${changedParamType}`);
             performAjaxCalculation(changedParamType);
         }, 750);
     }
@@ -342,24 +303,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (interactiveWField && sliderW) {
         interactiveWField.addEventListener('input', function() { updateSliderMaxIfNeeded(this, sliderW); makeAjaxCall('W'); });
         sliderW.addEventListener('input', function() { if (interactiveWField) interactiveWField.value = this.value; makeAjaxCall('W'); });
-    } else { logDebug("W input field or slider not found for event listener setup."); }
+    } else { console.warn("W input field or slider not found for event listener setup."); }
 
     if (interactivePField && sliderP) {
         interactivePField.addEventListener('input', function() { updateSliderMaxIfNeeded(this, sliderP); makeAjaxCall('P'); });
         sliderP.addEventListener('input', function() { if (interactivePField) interactivePField.value = this.value; makeAjaxCall('P'); });
-    } else { logDebug("P input field or slider not found for event listener setup."); }
+    } else { console.warn("P input field or slider not found for event listener setup."); }
 
     const initialErrorMessage = {{ error_message | default('') | tojson | safe }};
     const initialPDisplay = {{ P_calculated_display | default('') | tojson | safe }};
-    logDebug(`Initial page error_message: '${initialErrorMessage}'`);
-    logDebug(`Initial P_calculated_display: '${initialPDisplay}'`);
 
     if (initialErrorMessage === '' && initialPDisplay !== 'Error' && initialPDisplay !== 'Not Feasible' && initialPDisplay !== '') {
-        logDebug("Conditions met for initial AJAX call to populate interactive plots.");
         if (interactivePlot1Container) interactivePlot1Container.innerHTML = '<p>Loading initial interactive plots...</p>';
         performAjaxCalculation('W');
     } else {
-        logDebug("Conditions NOT met for initial AJAX call. Interactive plots will not be pre-loaded.");
         if (interactivePlot1Container) {
             interactivePlot1Container.innerHTML = '<p>{{_("Interactive plots not loaded due to initial calculation error or infeasible scenario.")}}</p>';
         }
