@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let debounceTimer;
     function makeAjaxCall(changedParamType) {
         clearTimeout(debounceTimer);
-        logDebug(`makeAjaxCall (debounced) for: ${changedParamType}. Setting timeout.`);
+        // logDebug(`makeAjaxCall (debounced) for: ${changedParamType}. Setting timeout.`); // Removed for less verbosity
         debounceTimer = setTimeout(() => {
             logDebug(`Debounced AJAX call executing for: ${changedParamType}`);
             performAjaxCalculation(changedParamType);
