@@ -9,6 +9,7 @@ from babel.numbers import format_currency
 app = Flask(__name__)
 app.testing = True # Ensure testing mode is enabled when app is imported
 csrf = CSRFProtect(app)
+app.jinja_env.add_extension('jinja2.ext.do') # <-- ADD THIS LINE
 
 # Basic app logging
 if not app.debug:
