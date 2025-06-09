@@ -24,14 +24,10 @@ def generate_html_table(years, balances, withdrawals):
              "</th><th>" + gettext("Annual Withdrawal ({currency})").format(currency=DEFAULT_CURRENCY) + \
              "</th></tr></thead>"
     body_rows = []
-    # Ensure withdrawals is not empty and its length matches expectations for indexing years.
-    # Balances has T+1 items, withdrawals has T items. Loop T times.
-    for t_idx in range(len(withdrawals)): # withdrawals has T items
-        # years[t_idx] is the start of the year, e.g. 0, 1, ..., T-1
-        # year_display should be t_idx + 1
-        year_display = int(years[t_idx] + 1) # Correctly maps 0-indexed t_idx to 1-based year
-        balance_at_year_end_or_start = balances[t_idx+1] # balances[0] is PV, balances[1] is after year 1
-        withdrawal_for_year = withdrawals[t_idx] # withdrawals[0] is for year 1 (index 0)
+    for t_idx in range(len(withdrawals)):
+        year_display = int(years[t_idx] + 1)
+        balance_at_year_end_or_start = balances[t_idx+1]
+        withdrawal_for_year = withdrawals[t_idx]
 
         formatted_balance = format_currency(balance_at_year_end_or_start, DEFAULT_CURRENCY, locale=locale_str)
         formatted_withdrawal = format_currency(withdrawal_for_year, DEFAULT_CURRENCY, locale=locale_str)
@@ -62,8 +58,8 @@ def generate_plots(W, withdrawal_time, mode, rates_periods, P_value=None, desire
     formatted_balances_hover = [format_currency(b, DEFAULT_CURRENCY, locale=locale_str) for b in balances]
     fig1.add_trace(go.Scatter(
         x=years, y=balances, mode='lines+markers', name=gettext('Portfolio Balance'),
-        customdata=[(fb,) for fb in formatted_balances_hover], # Keep hover data simple string
-        hovertemplate=gettext('Year: %{x}<br>Balance: %{customdata[0]}<extra></extra>') # %{y} could be used if not for formatting
+        customdata=[(fb,) for fb in formatted_balances_hover],
+        hovertemplate=gettext('Year: %{x}<br>Balance: %{customdata[0]}<extra></extra>')
     ))
     fig1.update_layout(
         title=gettext('Portfolio Balance (Withdrawals at %(withdrawal_time)s)', withdrawal_time=withdrawal_time.capitalize()),
@@ -74,16 +70,16 @@ def generate_plots(W, withdrawal_time, mode, rates_periods, P_value=None, desire
     formatted_withdrawals_hover = [format_currency(w, DEFAULT_CURRENCY, locale=locale_str) for w in sim_withdrawals]
     fig2.add_trace(go.Scatter(
         x=years[:-1], y=sim_withdrawals, mode='lines+markers', name=gettext('Annual Withdrawal'),
-        marker_color='orange', customdata=[(fw,) for fw in formatted_withdrawals_hover], # Keep hover data simple string
-        hovertemplate=gettext('Year: %{x}<br>Withdrawal: %{customdata[0]}<extra></extra>'), # %{y} could be used if not for formatting
-        uid="unique_withdrawal" # Ensure UID is unique if multiple plots are on one page and need distinct states
+        marker_color='orange', customdata=[(fw,) for fw in formatted_withdrawals_hover],
+        hovertemplate=gettext('Year: %{x}<br>Withdrawal: %{customdata[0]}<extra></extra>'),
+        uid="unique_withdrawal"
     ))
     fig2.update_layout(
         title=gettext('Annual Withdrawals'), xaxis_title=gettext('Years'),
         yaxis_title=gettext('Withdrawal ({currency})').format(currency=DEFAULT_CURRENCY)
     )
     withdrawal_plot = pyo.plot(fig2, include_plotlyjs=False, output_type='div', config=plot_config)
-    table_html = generate_html_table(years, balances, sim_withdrawals) # years, balances, sim_withdrawals are direct from annual_simulation
+    table_html = generate_html_table(years, balances, sim_withdrawals)
     return required_portfolio, calculated_W, portfolio_plot, withdrawal_plot, table_html
 
 MAX_ONE_OFF_EVENTS_INDEX = 5
@@ -103,7 +99,6 @@ def index():
             'period2_duration': form_data.get('period2_duration', ''), 'period2_r': form_data.get('period2_r', ''), 'period2_i': form_data.get('period2_i', ''),
             'period3_duration': form_data.get('period3_duration', ''), 'period3_r': form_data.get('period3_r', ''), 'period3_i': form_data.get('period3_i', ''),
         }
-        # Add one-off event form fields to form_params_for_result_page for repopulating the form
         for k_event in range(1, MAX_ONE_OFF_EVENTS_INDEX + 1):
             form_params_for_result_page[f'one_off_{k_event}_year'] = form_data.get(f'one_off_{k_event}_year', '')
             form_params_for_result_page[f'one_off_{k_event}_amount'] = form_data.get(f'one_off_{k_event}_amount', '')
@@ -148,20 +143,14 @@ def index():
             for k_event in range(1, MAX_ONE_OFF_EVENTS_INDEX + 1):
                 year_str = form_data.get(f'one_off_{k_event}_year')
                 amount_str = form_data.get(f'one_off_{k_event}_amount')
-                if year_str and amount_str: # Both must be present
+                if year_str and amount_str:
                     try:
                         year_val = int(year_str)
                         amount_val = float(amount_str)
                         if year_val <= 0:
-                            # Silently ignore or raise error? Problem says "ignore if year or amount is missing"
-                            # "valid (year is a positive integer)" -> implies error if not positive
-                            # Let's make it an error for now, can be relaxed.
                             raise ValueError(gettext("One-off event year must be a positive integer."))
                         one_off_events_data.append({'year': year_val, 'amount': amount_val})
                     except ValueError:
-                        # If parsing fails, this specific event is skipped as per "Handle potential ValueError"
-                        # Or, we can raise an error to the user.
-                        # For now, let's raise an error to make user aware of bad input.
                         raise ValueError(gettext("Invalid year or amount for one-off event #%(event_num)d.", event_num=k_event))
         except ValueError as e:
             current_app.logger.error(f"Invalid input in index route: {e} - Form data: {form_data}")
@@ -176,35 +165,32 @@ def index():
                 return render_template('index.html', error=gettext("Cannot find a suitable portfolio for the given withdrawal. Inputs may be unrealistic."), defaults=form_params_for_result_page, current_year=datetime.datetime.now().year)
             calculated_P_output, initial_W_input_for_fire_mode, portfolio_plot_W_mode, withdrawal_plot_W_mode, table_data_W_mode_html = P_calc_primary, W_actual_primary, p_plot_w, w_plot_w, table_w
             initial_P_input_for_expense_mode_raw = P_calc_primary
-            # Note: Passing one_off_events_data to the secondary plot generation as well
             _, W_calc_secondary, p_plot_p, w_plot_w_secondary, table_p = generate_plots(initial_W_input_for_fire_mode, withdrawal_time_form, MODE_PORTFOLIO, rates_periods_data, initial_P_input_for_expense_mode_raw, D_form, one_off_events=one_off_events_data)
             calculated_W_output_for_expense_mode, portfolio_plot_P_mode, withdrawal_plot_P_mode, table_data_P_mode_html = W_calc_secondary, p_plot_p, w_plot_w_secondary, table_p
         elif mode_form == MODE_PORTFOLIO:
             P_actual_primary, W_calc_primary, p_plot_p, w_plot_w, table_p = generate_plots(W_form, withdrawal_time_form, MODE_PORTFOLIO, rates_periods_data, P_value_form, D_form, one_off_events=one_off_events_data)
             initial_P_input_for_expense_mode_raw, calculated_W_output_for_expense_mode, portfolio_plot_P_mode, withdrawal_plot_P_mode, table_data_P_mode_html = P_actual_primary, W_calc_primary, p_plot_p, w_plot_w, table_p
             initial_W_input_for_fire_mode = W_calc_primary
-            # Note: Passing one_off_events_data to the secondary plot generation
             P_calc_secondary, _, p_plot_w_secondary, w_plot_w_secondary, table_w = generate_plots(initial_W_input_for_fire_mode, withdrawal_time_form, MODE_WITHDRAWAL, rates_periods_data, None, D_form, one_off_events=one_off_events_data)
             calculated_P_output, portfolio_plot_W_mode, withdrawal_plot_W_mode, table_data_W_mode_html = P_calc_secondary, p_plot_w_secondary, w_plot_w_secondary, table_w
 
-        # Determine primary result based on the initial mode
         primary_result_label = ""
         primary_result_value_formatted = gettext("N/A")
         locale_str = get_locale().language if get_locale() else 'en_US'
 
-        if mode_form == MODE_WITHDRAWAL: # Expense mode was primary
+        if mode_form == MODE_WITHDRAWAL:
             primary_result_label = gettext("Your Calculated FIRE Number:")
             if isinstance(calculated_P_output, (int, float)) and calculated_P_output != float('inf'):
                 primary_result_value_formatted = format_currency(calculated_P_output, DEFAULT_CURRENCY, locale=locale_str)
             else:
                 primary_result_value_formatted = gettext("N/A")
-        elif mode_form == MODE_PORTFOLIO: # FIRE mode was primary
+        elif mode_form == MODE_PORTFOLIO:
             primary_result_label = gettext("Your Max Sustainable Annual Expense:")
             if isinstance(calculated_W_output_for_expense_mode, (int, float)) and calculated_W_output_for_expense_mode != float('inf'):
                 primary_result_value_formatted = format_currency(calculated_W_output_for_expense_mode, DEFAULT_CURRENCY, locale=locale_str)
             else:
                 primary_result_value_formatted = gettext("N/A")
-        else: # Fallback
+        else:
             primary_result_label = gettext("Result:")
             primary_result_value_formatted = gettext("N/A")
 
@@ -215,74 +201,63 @@ def index():
         P_for_js = P_value_form if mode_form == MODE_PORTFOLIO and P_value_form is not None else (calculated_P_output if mode_form == MODE_WITHDRAWAL and isinstance(calculated_P_output, (int, float)) else 0.0)
         form_params_for_result_page.update({'P_input_raw_for_js': P_for_js, 'TIME_END_const': TIME_END, 'MODE_WITHDRAWAL_const': MODE_WITHDRAWAL})
 
-        # Prepare one_off_events_data with formatted amounts for the template
         one_off_events_for_template = []
-        if one_off_events_data: # Check if list is not empty
+        if one_off_events_data:
             for event in one_off_events_data:
                 one_off_events_for_template.append({
                     'year': event['year'],
-                    'amount': event['amount'], # Keep raw amount if needed
+                    'amount': event['amount'],
                     'formatted_amount': format_currency(event['amount'], DEFAULT_CURRENCY, locale=locale_str)
                 })
 
         template_context = {
-            **form_params_for_result_page, # Includes D_form_val, withdrawal_time_form_val, initial_mode_from_index etc.
+            **form_params_for_result_page,
             'primary_result_label': primary_result_label,
             'primary_result_value_formatted': primary_result_value_formatted,
-            'fire_W_input_val': initial_W_input_for_fire_mode, # This is W_form or calculated W from P mode
+            'fire_W_input_val': initial_W_input_for_fire_mode,
             'fire_P_calculated_val': format_currency(calculated_P_output, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_P_output, (int, float)) and calculated_P_output != float('inf') else gettext("N/A"),
             'portfolio_plot_fire': portfolio_plot_W_mode, 'withdrawal_plot_fire': withdrawal_plot_W_mode, 'table_data_fire_html': table_data_W_mode_html,
-            'expense_P_input_val': initial_P_input_for_expense_mode_template, # This is P_value_form or calculated P from W mode
+            'expense_P_input_val': initial_P_input_for_expense_mode_template,
             'expense_W_calculated_val': format_currency(calculated_W_output_for_expense_mode, DEFAULT_CURRENCY, locale=locale_str) if isinstance(calculated_W_output_for_expense_mode, (int, float)) and calculated_W_output_for_expense_mode != float('inf') else gettext("N/A"),
             'portfolio_plot_expense': portfolio_plot_P_mode, 'withdrawal_plot_expense': withdrawal_plot_P_mode, 'table_data_expense_html': table_data_P_mode_html,
-            'rates_periods_info_json': rates_periods_data, # This is the structured data used for calculations
-            'one_off_events_input': one_off_events_for_template # Pass formatted data for display
+            'rates_periods_info_json': rates_periods_data,
+            'one_off_events_input': one_off_events_for_template
         }
 
-        # Explicitly set p_input_ fields for the "Calculation based on:" section
         template_context['p_initial_mode'] = mode_form
 
         if mode_form == MODE_WITHDRAWAL:
-            # W_form is the user's input for annual expenses.
-            # This is the value we want to display as "Input Annual Expenses".
             template_context['p_input_w'] = format_currency(W_form, DEFAULT_CURRENCY, locale=locale_str)
             template_context['p_input_p'] = gettext("N/A")
         elif mode_form == MODE_PORTFOLIO:
             template_context['p_input_w'] = gettext("N/A")
             if P_value_form is not None:
-                # P_value_form is the user's input for the portfolio.
-                # This is the value we want to display as "Input Target Portfolio".
                 template_context['p_input_p'] = format_currency(P_value_form, DEFAULT_CURRENCY, locale=locale_str)
             else:
-                template_context['p_input_p'] = gettext("Not provided (Error)") # Should ideally not happen
+                template_context['p_input_p'] = gettext("Not provided (Error)")
         else:
             template_context['p_input_w'] = gettext("N/A")
             template_context['p_input_p'] = gettext("N/A")
 
-        # Re-confirm other p_input_* variables for "Calculation based on:" section
-        if D_form > 0: # D_form is a float
+        if D_form > 0:
             template_context['p_input_d'] = format_currency(D_form, DEFAULT_CURRENCY, locale=locale_str)
         else:
             template_context['p_input_d'] = gettext("Not specified")
 
-        if withdrawal_time_form == TIME_START: # TIME_START is a constant
+        if withdrawal_time_form == TIME_START:
             template_context['p_input_withdrawal_time'] = gettext("Start of Year")
-        else: # Default to End of Year if not TIME_START or if value is different
+        else:
             template_context['p_input_withdrawal_time'] = gettext("End of Year")
 
-        # Logic for p_input_period_summary
-        # Check if actual multi-period fields from form_data were used
         if form_data.get('period1_duration') and form_data.get('period1_r') and form_data.get('period1_i'):
             num_stages = len(rates_periods_data) if rates_periods_data else 0
             template_context['p_input_period_summary'] = gettext("Multi-period: %(num)d stage(s) defined", num=num_stages)
         else:
-            # Fallback to single period summary using r, i, T from form_data
             r_from_form = float(form_data.get('r', '0'))
             i_from_form = float(form_data.get('i', '0'))
             T_from_form = int(form_data.get('T', '0'))
             template_context['p_input_period_summary'] = gettext("Return: %(r).1f%%, Inflation: %(i).1f%%, Duration: %(T)d years", r=r_from_form, i=i_from_form, T=T_from_form)
 
-        # Add new logging for these specific context variables
         current_app.logger.info(f"[PrimaryDisplayDebug] Context for result.html: p_initial_mode='{template_context.get('p_initial_mode')}', p_input_w='{template_context.get('p_input_w')}', p_input_p='{template_context.get('p_input_p')}'")
         current_app.logger.info(f"[PrimaryDisplayDebug] Context for result.html: p_input_d='{template_context.get('p_input_d')}', p_input_withdrawal_time='{template_context.get('p_input_withdrawal_time')}', p_input_period_summary='{template_context.get('p_input_period_summary')}'")
 
@@ -298,7 +273,6 @@ def index():
             'period2_duration': '', 'period2_r': '', 'period2_i': '',
             'period3_duration': '', 'period3_r': '', 'period3_i': '',
         }
-        # Add default empty one-off event fields for GET request
         for k_event in range(1, MAX_ONE_OFF_EVENTS_INDEX + 1):
             default_form_data[f'one_off_{k_event}_year'] = ''
             default_form_data[f'one_off_{k_event}_amount'] = ''
@@ -318,7 +292,7 @@ def update():
         if D_form < 0: raise ValueError(gettext("Desired final portfolio value (D) cannot be negative."))
         if P_value < 0: raise ValueError(gettext("Initial Portfolio (P) must be >= 0."))
 
-        rates_periods_data = [] # Moved initialization earlier
+        rates_periods_data = []
         for k in range(1, 4):
             dur_str, r_str, i_str = form_data.get(f'period{k}_duration'), form_data.get(f'period{k}_r'), form_data.get(f'period{k}_i')
             if dur_str and r_str and i_str:
@@ -338,7 +312,7 @@ def update():
             rates_periods_data.append({'duration': T_form, 'r': r_perc_form / 100, 'i': i_perc_form / 100})
 
         one_off_events_data = []
-        for k_event in range(1, MAX_ONE_OFF_EVENTS_INDEX + 1): # Using same max as index page
+        for k_event in range(1, MAX_ONE_OFF_EVENTS_INDEX + 1):
             year_str = form_data.get(f'one_off_{k_event}_year')
             amount_str = form_data.get(f'one_off_{k_event}_amount')
             if year_str and amount_str:
@@ -363,7 +337,7 @@ def update():
     return jsonify({
         'fire_number_W': format_currency(required_portfolio_W, DEFAULT_CURRENCY, locale=locale_str_update) if required_portfolio_W != float('inf') else gettext("N/A"),
         'raw_fire_number_W': required_portfolio_W if required_portfolio_W != float('inf') else None,
-        'annual_expense_W': format_currency(actual_W_for_mode_W, DEFAULT_CURRENCY, locale=locale_str_update) if actual_W_for_mode_W is not None and actual_W_for_mode_W != float('inf') else gettext("N/A"), # Assuming actual_W_for_mode_W can be None if W_form was invalid before generate_plots, or if calculated_W in generate_plots becomes None
+        'annual_expense_W': format_currency(actual_W_for_mode_W, DEFAULT_CURRENCY, locale=locale_str_update) if actual_W_for_mode_W is not None and actual_W_for_mode_W != float('inf') else gettext("N/A"),
         'raw_annual_expense_W': actual_W_for_mode_W if actual_W_for_mode_W is not None and actual_W_for_mode_W != float('inf') else None,
         'portfolio_plot_W': portfolio_plot_W, 'withdrawal_plot_W': withdrawal_plot_W, 'table_data_W_html': table_data_W_html,
         'fire_number_P': format_currency(input_P_for_mode_P, DEFAULT_CURRENCY, locale=locale_str_update) if input_P_for_mode_P != float('inf') else gettext("N/A"),
@@ -382,15 +356,12 @@ def compare():
         scenarios_data_for_template = []
         for n in range(1, MAX_SCENARIOS_COMPARE + 1):
             scenario_input = {'n': n, 'enabled': form_data.get(f"scenario{n}_enabled") == "on"}
-            # Populate basic form fields
             for k_form_field in ['W_form', 'r_form', 'i_form', 'T_form', 'D_form', 'withdrawal_time_form']:
-                scenario_input[k_form_field] = form_data.get(f"scenario{n}_{k_form_field.split('_form')[0]}", "") # Use actual field name from form
-            # Populate period fields
-            for p_num in range(1, 4): # Assuming max 3 periods
+                scenario_input[k_form_field] = form_data.get(f"scenario{n}_{k_form_field.split('_form')[0]}", "")
+            for p_num in range(1, 4):
                 for field in ['duration', 'r', 'i']:
                     scenario_input[f'period{p_num}_{field}_form'] = form_data.get(f"scenario{n}_period{p_num}_{field}", "")
-            # Populate one-off event form fields for template re-rendering (even if not used in calc if invalid)
-            scenario_input['one_off_events_form_values'] = [] # To store raw form values for re-rendering
+            scenario_input['one_off_events_form_values'] = []
             for k_event in range(1, MAX_ONE_OFF_EVENTS_COMPARE + 1):
                 year_form_val = form_data.get(f"scenario{n}_one_off_{k_event}_year", "")
                 amount_form_val = form_data.get(f"scenario{n}_one_off_{k_event}_amount", "")
@@ -437,8 +408,7 @@ def compare():
                         except ValueError:
                             raise ValueError(gettext("Scenario %(n)s: Invalid year or amount for one-off event #%(event_num)d.", n=n, event_num=k_event))
 
-                scenario_input['one_off_events_data'] = scenario_one_off_events # Store parsed events
-
+                scenario_input['one_off_events_data'] = scenario_one_off_events
                 current_app.logger.info(f"[CompareDebug] Scenario {n} calc params: W={W_val}, D={D_val}, time={withdrawal_time_val}, rates={scenario_rates_periods}, one_offs={scenario_one_off_events}")
                 scenario_input['rates_periods_data'] = scenario_rates_periods
 
@@ -486,62 +456,56 @@ def compare():
         for n in range(1, MAX_SCENARIOS_COMPARE + 1):
             sc = {'n': n, 'enabled': (n <=2), 'W_form': '', 'r_form': '', 'i_form': '', 'T_form': '', 'D_form': '0.0', 'withdrawal_time_form': TIME_END}
             for p_num in range(1,4): sc.update({f'period{p_num}_{field}_form': '' for field in ['duration', 'r', 'i']})
-            # Initialize one-off event form fields for GET
             for k_event in range(1, MAX_ONE_OFF_EVENTS_COMPARE + 1):
                 sc[f'one_off_{k_event}_year_form'] = ''
                 sc[f'one_off_{k_event}_amount_form'] = ''
             default_scenarios_for_template.append(sc)
 
-        # Pre-fill first scenario from query parameters
         if default_scenarios_for_template:
             first_scenario = default_scenarios_for_template[0]
             first_scenario['W_form'] = request.args.get('W', first_scenario['W_form'])
             first_scenario['D_form'] = request.args.get('D', first_scenario['D_form'])
             first_scenario['withdrawal_time_form'] = request.args.get('withdrawal_time', first_scenario['withdrawal_time_form'])
-            # Pre-fill one-off events for the first scenario from query parameters (basic support for first event)
-            first_scenario['one_off_1_year_form'] = request.args.get('one_off_1_year', first_scenario.get('one_off_1_year_form',''))
-            first_scenario['one_off_1_amount_form'] = request.args.get('one_off_1_amount', first_scenario.get('one_off_1_amount_form',''))
-            # Clear other one-off event fields if only first is pre-filled via GET
-            for k_event in range(2, MAX_ONE_OFF_EVENTS_COMPARE + 1):
-                 first_scenario[f'one_off_{k_event}_year_form'] = ''
-                 first_scenario[f'one_off_{k_event}_amount_form'] = ''
 
-
-            # Check for multi-period parameters first
-            is_multi_period = False
+            is_multi_period_from_query = False
+            # Check if the first period's duration is provided, indicating multi-period data
             if request.args.get('period1_duration'):
-                is_multi_period = True
-                for k_period in range(1, 4): # Assuming max 3 periods as per form structure
+                is_multi_period_from_query = True
+
+            if is_multi_period_from_query:
+                for k_period in range(1, 4):
                     dur_param = f'period{k_period}_duration'
                     r_param = f'period{k_period}_r'
                     i_param = f'period{k_period}_i'
+                    # Only populate if duration for this specific period is present
                     if request.args.get(dur_param):
-                        first_scenario[f'period{k_period}_duration_form'] = request.args.get(dur_param)
-                        first_scenario[f'period{k_period}_r_form'] = request.args.get(r_param)
-                        first_scenario[f'period{k_period}_i_form'] = request.args.get(i_param)
-                    else: # Clear if primary period param not found for subsequent periods
+                        first_scenario[f'period{k_period}_duration_form'] = request.args.get(dur_param, '')
+                        first_scenario[f'period{k_period}_r_form'] = request.args.get(r_param, '')
+                        first_scenario[f'period{k_period}_i_form'] = request.args.get(i_param, '')
+                    else: # Clear subsequent period fields if not provided
                         first_scenario[f'period{k_period}_duration_form'] = ''
                         first_scenario[f'period{k_period}_r_form'] = ''
                         first_scenario[f'period{k_period}_i_form'] = ''
-                # If multi-period, clear single period fields for this scenario
                 first_scenario['r_form'] = ''
                 first_scenario['i_form'] = ''
                 first_scenario['T_form'] = ''
-
-            if not is_multi_period:
-                # Populate single-period r, i, T if no multi-period data was found
+            else:
                 first_scenario['r_form'] = request.args.get('r', first_scenario['r_form'])
                 first_scenario['i_form'] = request.args.get('i', first_scenario['i_form'])
                 first_scenario['T_form'] = request.args.get('T', first_scenario['T_form'])
-                # Clear multi-period fields if using single period
-                for k_period in range(1, 4):
+                for k_period in range(1, 4): # Clear multi-period fields if using single period
                     first_scenario[f'period{k_period}_duration_form'] = ''
                     first_scenario[f'period{k_period}_r_form'] = ''
                     first_scenario[f'period{k_period}_i_form'] = ''
 
-            # Ensure first scenario is enabled if any relevant query param was passed
-            # (It's enabled by default if n<=2, but this is an explicit thought)
-            # No specific action needed here as it's already enabled.
+            for k_event in range(1, MAX_ONE_OFF_EVENTS_COMPARE + 1):
+                year_key = f'one_off_{k_event}_year'
+                amount_key = f'one_off_{k_event}_amount'
+                first_scenario[f'one_off_{k_event}_year_form'] = request.args.get(year_key, '')
+                first_scenario[f'one_off_{k_event}_amount_form'] = request.args.get(amount_key, '')
+
+            if request.args.get('W'):
+                 first_scenario['enabled'] = True
 
         return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None, current_year=datetime.datetime.now().year)
 
@@ -554,21 +518,7 @@ def settings():
 @project_blueprint.route('/export_csv')
 def export_csv():
     current_app.logger.info(f"Export CSV route called (minimal). Args: {request.args}")
-    # This is a stub. The full implementation will be restored later.
-    # For now, ensure it doesn't cause errors if called.
-    # Minimal valid response:
     return f"Export CSV route reached successfully (minimal). Args: {request.args}"
-    # OR, if it must return a CSV-like response even as a stub:
-    # output = io.StringIO()
-    # writer = csv.writer(output)
-    # writer.writerow(['Stub CSV Header'])
-    # writer.writerow(['This is a stub response. Full functionality coming soon.'])
-    # csv_string = output.getvalue()
-    # return Response(
-    #     csv_string,
-    #     mimetype='text/csv',
-    #     headers={'Content-Disposition': 'attachment;filename=stub_results.csv'}
-    # )
 
 @project_blueprint.route('/about')
 def about():

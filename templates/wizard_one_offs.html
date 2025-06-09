@@ -32,3 +32,25 @@
     {{ render_submit_field(form.submit, class="btn btn-primary mt-4") }}
   </form>
 {% endblock %}
+
+{% block scripts_extra %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.remove-list-item-btn').forEach(function(button) {
+        button.addEventListener('click', function () {
+            const entryId = this.dataset.entryId;
+            const entryElement = document.getElementById(entryId);
+            if (entryElement) {
+                // Hide the element visually
+                entryElement.style.display = 'none';
+
+                // Disable all input, select, textarea fields within this entry
+                entryElement.querySelectorAll('input, select, textarea').forEach(function(field) {
+                    field.disabled = true;
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
