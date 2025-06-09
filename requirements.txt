@@ -4,3 +4,4 @@ plotly
 gunicorn
 Flask-Babel
 Flask-WTF
+fpdf2
