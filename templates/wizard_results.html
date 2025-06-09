@@ -64,9 +64,23 @@
   {# --- Static Original Calculation Plots (Side-by-Side) --- #}
   <h3 class="mt-4 mb-3 text-center">{{_("Original Calculation Plots")}}</h3>
   {% if P_calculated_display and P_calculated_display != "Error" and P_calculated_display != "Not Feasible" %}
-    <div class="row">
-      <div id="original_plot1_container" class="col-md-6 mb-3" style="min-height: 400px; border: 1px solid #eee;"></div>
-      <div id="original_plot2_container" class="col-md-6 mb-3" style="min-height: 400px; border: 1px solid #eee;"></div>
+    <div class="row mb-4"> {# Row for the pair of original plot panels #}
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{_("Original Portfolio Balance")}}</h5>
+            <div id="original_plot1_container" style="min-height: 350px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{_("Original Annual Withdrawals")}}</h5>
+            <div id="original_plot2_container" style="min-height: 350px;"></div>
+          </div>
+        </div>
+      </div>
     </div>
   {% else %}
     <p class="text-center">{{_("Original plots not available due to calculation error or infeasible scenario.")}}</p>
@@ -109,9 +123,23 @@
       {# The old <small> text was here, now removed. #}
 
       {# New Plot Containers for Interactive Analysis (Side-by-Side) #}
-      <div class="row mt-4">
-        <div id="interactive_plot1_container" class="col-md-6 mb-3" style="min-height: 400px; border: 1px solid #eee;"></div>
-        <div id="interactive_plot2_container" class="col-md-6 mb-3" style="min-height: 400px; border: 1px solid #eee;"></div>
+      <div class="row mt-4"> {# Row for the pair of interactive plot panels #}
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{_("Interactive Portfolio Balance")}}</h5>
+              <div id="interactive_plot1_container" style="min-height: 350px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{_("Interactive Annual Withdrawals")}}</h5>
+              <div id="interactive_plot2_container" style="min-height: 350px;"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
