@@ -1,68 +1,68 @@
-// static/js/theme.js
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsButton = document.getElementById('settings-button');
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsCloseButton = document.getElementById('settings-close-button');
+    const themeSelector = document.getElementById('theme-selector');
+    const modeToggle = document.getElementById('mode-toggle');
+    const modeToggleCircle = document.getElementById('mode-toggle-circle');
+    const root = document.documentElement;
 
-// Store the media query globally to easily add/remove listener
-const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const themes = [
+        { name: 'default', label: 'Default' }, { name: 'oceanic', label: 'Oceanic' }, { name: 'forest', label: 'Forest' }, { name: 'sunrise', label: 'Sunrise' }, { name: 'maroon', label: 'Maroon' }, { name: 'amethyst', label: 'Amethyst' }, { name: 'emerald', label: 'Emerald' }, { name: 'slate', label: 'Slate' }, { name: 'tangerine', label: 'Tangerine' }, { name: 'rose', label: 'Rose' }
+    ];
 
-function getActualTheme(storedTheme) {
-  if (storedTheme === 'system') {
-    return prefersDarkScheme.matches ? 'dark' : 'light';
-  }
-  // Default to 'light' if storedTheme is null, undefined, or not 'dark' (e.g. old invalid values)
-  return (storedTheme === 'dark') ? 'dark' : 'light'; 
-}
+    const applySettings = (themeName, modeName) => {
+        root.dataset.theme = themeName;
+        root.dataset.mode = modeName;
+        localStorage.setItem('fire-calc-theme', themeName);
+        localStorage.setItem('fire-calc-mode', modeName);
 
-function applyTheme() {
-  let storedTheme = localStorage.getItem('theme'); // Can be 'light', 'dark', or 'system'
-  if (storedTheme === null) {
-      // If no theme is stored (e.g., first visit), default to 'system'.
-      storedTheme = 'system';
-      // Optionally, save 'system' to localStorage so this becomes the persistent choice
-      // until the user manually changes it via the toggle.
-      localStorage.setItem('theme', 'system');
-  }
-  
-  const actualThemeToApply = getActualTheme(storedTheme);
+        document.querySelectorAll('.theme-button').forEach(btn => {
+            btn.classList.toggle('ring-2', btn.dataset.theme === themeName);
+            btn.classList.toggle('ring-[var(--accent-color)]', btn.dataset.theme === themeName);
+        });
 
-  document.documentElement.setAttribute('data-bs-theme', actualThemeToApply);
-  document.documentElement.style.colorScheme = actualThemeToApply;
+        const isDark = modeName === 'dark';
+        modeToggle.classList.toggle('dark', isDark);
+        modeToggleCircle.classList.toggle('translate-x-5', isDark);
+    };
 
-  // Manage system theme listener
-  if (storedTheme === 'system') {
-    // Add listener only if it's not already there (though modern browsers handle duplicates)
-    prefersDarkScheme.removeEventListener('change', handleSystemThemeChange); // Remove first to avoid duplicates if logic is complex
-    prefersDarkScheme.addEventListener('change', handleSystemThemeChange);
-  } else {
-    prefersDarkScheme.removeEventListener('change', handleSystemThemeChange);
-  }
+    themes.forEach(theme => {
+        const button = document.createElement('button');
+        button.textContent = theme.label;
+        button.dataset.theme = theme.name;
+        button.className = 'theme-button w-full text-left p-3 rounded-lg border border-opacity-50 transition-all';
+        button.addEventListener('click', () => {
+            const currentMode = root.dataset.mode;
+            applySettings(theme.name, currentMode);
+        });
+        themeSelector.appendChild(button);
+    });
 
-  // Apply other visual settings from fireSettings if they exist
-  const fireSettingsSaved = localStorage.getItem("fireSettings");
-  if (fireSettingsSaved) {
-     const settings = JSON.parse(fireSettingsSaved);
-     if (settings.fontSize) {
-         document.documentElement.style.setProperty("--font-size", settings.fontSize + "px");
-         // For Bootstrap 5 body font size, if you transition to this:
-         // document.documentElement.style.setProperty("--bs-body-font-size", (parseInt(settings.fontSize) / 16) + "rem");
-     }
-     if (settings.panelOpacity) {
-         // This assumes your CSS uses --panel-alpha for opacity in panel backgrounds
-         document.documentElement.style.setProperty("--panel-alpha", settings.panelOpacity);
-     }
-  }
-}
+    modeToggle.addEventListener('click', () => {
+        const newMode = root.dataset.mode === 'light' ? 'dark' : 'light';
+        const currentTheme = root.dataset.theme;
+        applySettings(currentTheme, newMode);
+    });
 
-function handleSystemThemeChange() {
-  // This function is called when the system theme changes AND 'system' is the selected theme.
-  applyTheme(); // Re-apply based on the new system preference
-}
+    const savedTheme = localStorage.getItem('fire-calc-theme') || 'default';
+    const savedMode = localStorage.getItem('fire-calc-mode') || 'light';
+    applySettings(savedTheme, savedMode);
 
-function toggleTheme() {
-  // When toggling, explicitly set to light or dark, effectively overriding 'system' preference.
-  let currentAppliedTheme = document.documentElement.getAttribute('data-bs-theme');
-  const newTheme = currentAppliedTheme === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('theme', newTheme); // Save the explicit choice
-  applyTheme(); // This will also remove the system listener if it was active.
-}
-
-// Initial theme application when the script loads
-applyTheme();
+    // Check if settingsButton exists before adding event listener
+    if (settingsButton) {
+        settingsButton.addEventListener('click', () => settingsModal.classList.add('is-open'));
+    }
+    // Check if settingsCloseButton exists
+    if (settingsCloseButton) {
+        settingsCloseButton.addEventListener('click', () => settingsModal.classList.remove('is-open'));
+    }
+    // Check if settingsModal exists
+    if (settingsModal) {
+        settingsModal.addEventListener('click', (event) => {
+            if (event.target === settingsModal) {
+                settingsModal.classList.remove('is-open');
+            }
+        });
+    }
+});

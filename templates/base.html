@@ -1,30 +1,21 @@
 <!doctype html>
-<html lang="en" data-bs-theme="light"> {# Default to light theme for Bootstrap #}
+<html lang="en" data-theme="default" data-mode="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ _("FIRE Calculator") }}{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <header class="container mt-3 mb-3 text-center">
-    <h1>
-      <span class="title-tooltip-container">
-        <a class="text-decoration-none" href="{{ url_for('project.index') }}">{{ _("FIRE Calculator") }}</a>
-        <span class="tooltip-text main-title-tooltip">{{ _("Financial Independence, Retire Early: A movement dedicated to a program of extreme savings and investment that aims to allow proponents to retire far earlier than traditional budgets and retirement plans would permit.") }}</span>
-      </span>
-    </h1>
-    <div class="sub-nav">
-      <a href="{{ url_for('project.index') }}" class="sub-nav-item {% if request.endpoint == 'project.index' %}active{% endif %}">{{ _("Home") }}</a>
-      <a href="{{ url_for('project.compare') }}" class="sub-nav-item {% if request.endpoint == 'project.compare' %}active{% endif %}">{{ _("Compare") }}</a>
-      <a href="{{ url_for('project.settings') }}" class="sub-nav-item {% if request.endpoint == 'project.settings' %}active{% endif %}">{{ _("Settings") }}</a>
-      <button class="btn btn-sm btn-outline-secondary sub-nav-item" onclick="toggleTheme()">{{ _("Toggle Theme") }}</button>
-    </div>
-  </header>
+  <nav class="nav glassmorphic sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between items-center h-16"><div class="flex-shrink-0"><a href="{{ url_for('project.index') }}" class="text-2xl font-bold text-primary"><span style="color: var(--accent-color);">FIRE</span>Calc</a></div><div class="hidden md:flex items-center space-x-4"><a href="{{ url_for('project.index') }}" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Calculator</a><a href="{{ url_for('project.compare') }}" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Compare</a><a href="{{ url_for('project.faq') }}" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">FAQ</a><a href="{{ url_for('project.about') }}" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">About</a><button id="settings-button" class="p-2 rounded-md text-secondary hover:text-primary"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></button></div></div></div>
+  </nav>
 
-  <main class="container mt-4">
+  <main class="py-12 md:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -36,22 +27,19 @@
       {% endif %}
     {% endwith %}
     {% block content %}{% endblock %}
+    </div>
   </main>
 
-  <footer class="container mt-5 py-3 text-center text-muted">
-    <p>&copy; {{ _("FIRE Calculator") }} {% block year %}{{ current_year }}{% endblock %} |
-      <a href="{{ url_for('project.about') }}" class="text-muted">{{ _("About") }}</a> |
-      <a href="{{ url_for('project.faq') }}" class="text-muted">{{ _("FAQ") }}</a>
-    </p>
+  <footer class="mt-20 bg-black bg-opacity-20 text-white p-8">
+      <div class="text-center text-gray-300">
+          <p>&copy; 2024 FIRECalc. All rights reserved.</p>
+      </div>
   </footer>
+
+  <div id="settings-modal" class="settings-modal"><div class="settings-modal-content glassmorphic"><div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary">Settings</h3><button id="settings-close-button" class="p-2 text-secondary hover:text-primary">&times;</button></div><div><h4 class="text-lg font-semibold text-primary mb-4">Color Theme</h4><div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div><hr class="my-6" style="border-color: rgba(var(--border-color), 0.3);"><h4 class="text-lg font-semibold text-primary mb-4">Mode</h4><div class="flex items-center justify-between"><span class="text-secondary">Light</span><button id="mode-toggle" class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors mode-toggle-bg"><span id="mode-toggle-circle" class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform translate-x-1"></span></button><span class="text-secondary">Dark</span></div></div></div></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-  <script>
-    // Ensure applyTheme is called to initialize theme based on localStorage
-    // This might be slightly adjusted depending on theme.js and Bootstrap theme integration
-    applyTheme();
-  </script>
   <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
   <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
   {% block scripts_extra %}{% endblock %}
