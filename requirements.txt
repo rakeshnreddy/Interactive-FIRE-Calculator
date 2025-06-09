@@ -5,3 +5,4 @@ gunicorn
 Flask-Babel
 Flask-WTF
 fpdf2
+kaleido
