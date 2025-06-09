@@ -619,7 +619,7 @@ def export_pdf():
         pdf.cell(0, 7, gettext("N/A - No simulation years to display or data inconsistent."), 1, 1, "C") # Changed
 
     return Response(
-        pdf.output(dest='S').encode('latin-1'),
+        pdf.output(dest='S'), # FPDF.output(dest='S') returns bytes
         mimetype='application/pdf',
         headers={'Content-Disposition': 'attachment;filename=fire_calculation_results.pdf'}
     )
