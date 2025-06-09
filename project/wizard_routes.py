@@ -265,7 +265,7 @@ def wizard_calculate_step():
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
                             name=f"One-off: {event['amount']:.0f}"
                         ))
-                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend")
+                fig_balance.update_layout(title="Portfolio Balance Over Time", xaxis_title="Year", yaxis_title="Portfolio Balance", legend_title_text="Legend", autosize=True)
                 plot1_spec = {'data': [trace.to_plotly_json() for trace in fig_balance.data], 'layout': fig_balance.layout.to_plotly_json()}
             except Exception as e_plot1:
                 current_app.logger.error(f"Error generating balance plot spec: {e_plot1}", exc_info=True)
@@ -285,7 +285,7 @@ def wizard_calculate_step():
                     if total_T_sim > 0: # Log only if there was an actual mismatch with expected withdrawals
                          current_app.logger.warning(f"Original withdrawal plot data length mismatch: x_data (len {len(x_withdraw_years)} based on sim_years), y_data (len {total_T_sim} from sim_withdrawals)")
 
-                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend")
+                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend", autosize=True)
                 plot2_spec = {'data': [trace.to_plotly_json() for trace in fig_withdrawals.data], 'layout': fig_withdrawals.layout.to_plotly_json()}
             except Exception as e_plot2:
                 current_app.logger.error(f"Error generating withdrawal plot spec: {e_plot2}", exc_info=True)
@@ -468,7 +468,7 @@ def wizard_recalculate_interactive():
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
                             name=f"One-off: {event['amount']:.0f}"
                         ))
-                fig_balance.update_layout(title="Portfolio Balance Over Time (What-If)", xaxis_title="Year", yaxis_title="Portfolio Balance")
+                fig_balance.update_layout(title="Portfolio Balance Over Time (What-If)", xaxis_title="Year", yaxis_title="Portfolio Balance", autosize=True)
                 plot1_spec_interactive = {'data': [trace.to_plotly_json() for trace in fig_balance.data], 'layout': fig_balance.layout.to_plotly_json()}
             except Exception as e_plot1_ia:
                 current_app.logger.error(f"Error generating interactive balance plot spec: {e_plot1_ia}", exc_info=True)
@@ -487,7 +487,7 @@ def wizard_recalculate_interactive():
                     if total_T_sim_ia > 0:
                          current_app.logger.warning(f"Interactive withdrawal plot data length mismatch: x_data (len {len(x_withdraw_years_ia)} based on sim_years), y_data (len {total_T_sim_ia} from sim_withdrawals)")
 
-                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time (What-If)", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount")
+                fig_withdrawals.update_layout(title="Annual Withdrawals Over Time (What-If)", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", autosize=True)
                 plot2_spec_interactive = {'data': [trace.to_plotly_json() for trace in fig_withdrawals.data], 'layout': fig_withdrawals.layout.to_plotly_json()}
             except Exception as e_plot2_ia:
                 current_app.logger.error(f"Error generating interactive withdrawal plot spec: {e_plot2_ia}", exc_info=True)
