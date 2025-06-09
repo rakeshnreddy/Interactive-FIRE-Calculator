@@ -142,6 +142,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sliderW = document.getElementById('slider_w');
     const sliderP = document.getElementById('slider_p');
 
+    const originalPlot1Container = document.getElementById('original_plot1_container');
+    const originalPlot2Container = document.getElementById('original_plot2_container');
     const interactivePlot1Container = document.getElementById('interactive_plot1_container');
     const interactivePlot2Container = document.getElementById('interactive_plot2_container');
     // const debugOutputDiv = document.getElementById('interactive_debug_output'); // Removed
@@ -173,11 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
-    // console.log("CSRF Token: " + (csrfToken ? "Loaded" : "Not Found!"));
     if (!csrfToken) { console.error('CSRF token not found!'); }
-
-    // console.log("Initial W field value: " + (interactiveWField ? interactiveWField.value : "N/A"));
-    // console.log("Initial P field value: "  + (interactivePField ? interactivePField.value : "N/A"));
 
     // Retrieve and render initial plot specs
     let originalPlot1Spec = null;
@@ -194,17 +192,16 @@ document.addEventListener('DOMContentLoaded', function() {
         } else { console.warn("Original Plot 2 Spec data script tag not found or empty."); }
     } catch (e) { console.error("Error parsing initial plot spec JSON: " + e); }
 
-    const originalPlot1Container = document.getElementById('original_plot1_container');
-    const originalPlot2Container = document.getElementById('original_plot2_container');
-
     if (originalPlot1Spec && originalPlot1Spec.data && originalPlot1Spec.layout && originalPlot1Container) {
         Plotly.newPlot('original_plot1_container', originalPlot1Spec.data, originalPlot1Spec.layout, {responsive: true});
+        Plotly.Plots.resize(originalPlot1Container);
     } else if (originalPlot1Container) {
         originalPlot1Container.innerHTML = "<p>{{_('Original balance plot data not available.')}}</p>";
     }
 
     if (originalPlot2Spec && originalPlot2Spec.data && originalPlot2Spec.layout && originalPlot2Container) {
         Plotly.newPlot('original_plot2_container', originalPlot2Spec.data, originalPlot2Spec.layout, {responsive: true});
+        Plotly.Plots.resize(originalPlot2Container);
     } else if (originalPlot2Container) {
         originalPlot2Container.innerHTML = "<p>{{_('Original withdrawal plot data not available.')}}</p>";
     }
@@ -274,12 +271,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (interactivePlot1Container && data.plot1_spec && data.plot1_spec.data && data.plot1_spec.layout) {
                     Plotly.react('interactive_plot1_container', data.plot1_spec.data, data.plot1_spec.layout, {responsive: true});
+                    Plotly.Plots.resize(interactivePlot1Container);
                 } else if (interactivePlot1Container) {
                     interactivePlot1Container.innerHTML = "<p>{{_('Interactive balance plot data not available.')}}</p>";
                 }
 
                 if (interactivePlot2Container && data.plot2_spec && data.plot2_spec.data && data.plot2_spec.layout) {
                     Plotly.react('interactive_plot2_container', data.plot2_spec.data, data.plot2_spec.layout, {responsive: true});
+                    Plotly.Plots.resize(interactivePlot2Container);
                 } else if (interactivePlot2Container) {
                     interactivePlot2Container.innerHTML = "";
                 }
@@ -321,6 +320,26 @@ document.addEventListener('DOMContentLoaded', function() {
             interactivePlot1Container.innerHTML = '<p>{{_("Interactive plots not loaded due to initial calculation error or infeasible scenario.")}}</p>';
         }
     }
+
+    let resizeDebounceTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeDebounceTimer);
+        resizeDebounceTimer = setTimeout(function() {
+            // console.log("Window resized, attempting to resize plots.");
+            if (originalPlot1Container && originalPlot1Container.children.length > 0 && typeof Plotly !== 'undefined') {
+                Plotly.Plots.resize(originalPlot1Container);
+            }
+            if (originalPlot2Container && originalPlot2Container.children.length > 0 && typeof Plotly !== 'undefined') {
+                Plotly.Plots.resize(originalPlot2Container);
+            }
+            if (interactivePlot1Container && interactivePlot1Container.children.length > 0 && typeof Plotly !== 'undefined') {
+                Plotly.Plots.resize(interactivePlot1Container);
+            }
+            if (interactivePlot2Container && interactivePlot2Container.children.length > 0 && typeof Plotly !== 'undefined') {
+                Plotly.Plots.resize(interactivePlot2Container);
+            }
+        }, 250);
+    });
 });
 </script>
 {% endblock %}
