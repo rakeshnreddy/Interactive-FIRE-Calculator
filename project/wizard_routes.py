@@ -9,9 +9,9 @@ from project.financial_calcs import find_max_annual_expense
 from flask import jsonify, Response
 import csv
 import io
-from fpdf import FPDF # Added for PDF export
-import tempfile       # Added for PDF export
-import os             # Added for PDF export
+from fpdf import FPDF
+import tempfile
+import os
 
 
 wizard_bp = Blueprint('wizard_bp', __name__, template_folder='../templates', url_prefix='/wizard')
@@ -237,16 +237,31 @@ def wizard_calculate_step():
 
         W_display = f"{W:,.2f}"
 
+        # Ensure all numeric data for session is Python native type
+        py_W = float(W)
+        py_P_calculated = float(P_calculated) if isinstance(P_calculated, (int, float)) and P_calculated is not None and P_calculated != float('inf') else None
+        py_r_overall_nominal = float(r_overall_nominal)
+        py_i_overall = float(i_overall)
+        py_total_duration_from_periods = int(total_duration_from_periods)
+        py_desired_final_value = float(desired_final_value)
+
+        py_sim_years = [int(y) for y in sim_years] if sim_years is not None else []
+        py_sim_balances = [float(b) for b in sim_balances] if sim_balances is not None else []
+        py_sim_withdrawals = [float(w) for w in sim_withdrawals] if sim_withdrawals is not None else []
+
         export_data = {
-            'W': W,
-            'P_calculated': P_calculated if P_calculated is not None and P_calculated != float('inf') else None,
-            'r_overall_nominal': r_overall_nominal, 'i_overall': i_overall,
-            'total_duration_from_periods': total_duration_from_periods,
-            'withdrawal_time_str': withdrawal_time_str, 'desired_final_value': desired_final_value,
-            'rates_periods_summary': rates_periods, 'one_off_events_summary': one_off_events,
-            'sim_years': list(sim_years) if sim_years is not None else [],
-            'sim_balances': list(sim_balances) if sim_balances is not None else [],
-            'sim_withdrawals': list(sim_withdrawals) if sim_withdrawals is not None else []
+            'W': py_W,
+            'P_calculated': py_P_calculated,
+            'r_overall_nominal': py_r_overall_nominal,
+            'i_overall': py_i_overall,
+            'total_duration_from_periods': py_total_duration_from_periods,
+            'withdrawal_time_str': withdrawal_time_str, # String, already fine
+            'desired_final_value': py_desired_final_value,
+            'rates_periods_summary': rates_periods, # Assumed list of dicts with Python types
+            'one_off_events_summary': one_off_events, # Assumed list of dicts with Python types
+            'sim_years': py_sim_years,
+            'sim_balances': py_sim_balances,
+            'sim_withdrawals': py_sim_withdrawals
         }
         session['last_calc_export_data'] = export_data
 
@@ -382,7 +397,7 @@ def wizard_recalculate_interactive():
                     if total_T_sim_ia > 0:
                          current_app.logger.warning(f"Interactive withdrawal plot data length mismatch: x_data (len {len(x_withdraw_years_ia)}), y_data (len {total_T_sim_ia})")
                 fig_withdrawals.update_layout(title="Annual Withdrawals Over Time (What-If)", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", autosize=True, margin=dict(l=30, r=20, t=40, b=40, pad=2))
-                plot2_spec_interactive = {'data': [trace.to_plotly_json() for trace in fig_withdrawals.data], 'layout': fig_withdrawals.layout.to_plotly_json()}
+                plot2_spec_interactive = {'data': [trace.to_plotly_json() for trace in fig_balance.data], 'layout': fig_withdrawals.layout.to_plotly_json()} # Corrected: fig_withdrawals.data
             except Exception as e_plot2_ia:
                 current_app.logger.error(f"Error generating interactive withdrawal plot spec: {e_plot2_ia}", exc_info=True)
 
@@ -407,39 +422,40 @@ def export_csv():
 
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["FIRE Calculation Summary"])
+    # Use gettext for CSV headers
+    writer.writerow([current_app.extensions['babel'].gettext("FIRE Calculation Summary")])
     writer.writerow([])
-    writer.writerow(["Input Annual Expenses (W)", export_data.get('W')])
-    writer.writerow(["Calculated FIRE Number (P)", export_data.get('P_calculated')])
-    writer.writerow(["Overall Nominal Return Rate (%)", export_data.get('r_overall_nominal') * 100 if export_data.get('r_overall_nominal') is not None else 'N/A'])
-    writer.writerow(["Overall Inflation Rate (%)", export_data.get('i_overall') * 100 if export_data.get('i_overall') is not None else 'N/A'])
-    writer.writerow(["Total Duration (years)", export_data.get('total_duration_from_periods')])
-    writer.writerow(["Withdrawal Timing", export_data.get('withdrawal_time_str', '').capitalize()])
-    writer.writerow(["Desired Final Portfolio Value", export_data.get('desired_final_value')])
+    writer.writerow([current_app.extensions['babel'].gettext("Input Annual Expenses (W)"), export_data.get('W')])
+    writer.writerow([current_app.extensions['babel'].gettext("Calculated FIRE Number (P)"), export_data.get('P_calculated')])
+    writer.writerow([current_app.extensions['babel'].gettext("Overall Nominal Return Rate (%)"), export_data.get('r_overall_nominal') * 100 if export_data.get('r_overall_nominal') is not None else 'N/A'])
+    writer.writerow([current_app.extensions['babel'].gettext("Overall Inflation Rate (%)"), export_data.get('i_overall') * 100 if export_data.get('i_overall') is not None else 'N/A'])
+    writer.writerow([current_app.extensions['babel'].gettext("Total Duration (years)"), export_data.get('total_duration_from_periods')])
+    writer.writerow([current_app.extensions['babel'].gettext("Withdrawal Timing"), str(export_data.get('withdrawal_time_str', '')).capitalize()])
+    writer.writerow([current_app.extensions['babel'].gettext("Desired Final Portfolio Value"), export_data.get('desired_final_value')])
 
     writer.writerow([])
-    writer.writerow(["Rate Periods Applied:"])
+    writer.writerow([current_app.extensions['babel'].gettext("Rate Periods Applied:")])
     rates_p = export_data.get('rates_periods_summary', [])
     if rates_p:
-        writer.writerow(["Period Duration (Yrs)", "Nominal Return Rate (%)", "Inflation Rate (%) Used"])
+        writer.writerow([current_app.extensions['babel'].gettext("Period Duration (Yrs)"), current_app.extensions['babel'].gettext("Nominal Return Rate (%)"), current_app.extensions['babel'].gettext("Inflation Rate (%) Used")])
         for p in rates_p:
             writer.writerow([p.get('duration'), p.get('r') * 100 if p.get('r') is not None else 'N/A', p.get('i') * 100 if p.get('i') is not None else 'N/A'])
     else:
-        writer.writerow(["N/A (Used overall rates for total duration)"])
+        writer.writerow([current_app.extensions['babel'].gettext("N/A (Used overall rates for total duration)")])
 
     writer.writerow([])
-    writer.writerow(["One-Off Events Considered:"])
+    writer.writerow([current_app.extensions['babel'].gettext("One-Off Events Considered:")])
     one_offs = export_data.get('one_off_events_summary', [])
     if one_offs:
-        writer.writerow(["Year", "Amount"])
+        writer.writerow([current_app.extensions['babel'].gettext("Year"), current_app.extensions['babel'].gettext("Amount")])
         for event in one_offs:
             writer.writerow([event.get('year'), event.get('amount')])
     else:
-        writer.writerow(["None"])
+        writer.writerow([current_app.extensions['babel'].gettext("None")])
 
     writer.writerow([])
-    writer.writerow(["Year-by-Year Simulation"])
-    writer.writerow(["Year", "Portfolio Balance (End of Year)", "Annual Withdrawal"])
+    writer.writerow([current_app.extensions['babel'].gettext("Year-by-Year Simulation")])
+    writer.writerow([current_app.extensions['babel'].gettext("Year"), current_app.extensions['babel'].gettext("Portfolio Balance (End of Year)"), current_app.extensions['babel'].gettext("Annual Withdrawal")])
 
     sim_years_exp = export_data.get('sim_years', [])
     sim_balances_exp = export_data.get('sim_balances', [])
@@ -453,9 +469,9 @@ def export_csv():
             withdrawal = sim_withdrawals_exp[i]
             writer.writerow([int(year_display), f"{balance:.2f}", f"{withdrawal:.2f}"])
     elif not sim_years_exp and not sim_balances_exp and not sim_withdrawals_exp :
-          writer.writerow(["N/A - No simulation years to display (e.g., T=0 or calculation issue)."])
+          writer.writerow([current_app.extensions['babel'].gettext("N/A - No simulation years to display (e.g., T=0 or calculation issue).")])
     else:
-          writer.writerow(["N/A - Simulation data inconsistent or unavailable for table."])
+          writer.writerow([current_app.extensions['babel'].gettext("N/A - Simulation data inconsistent or unavailable for table.")])
 
     output.seek(0)
     return Response(
@@ -463,3 +479,157 @@ def export_csv():
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment;filename=fire_calculation_results.csv"}
     )
+
+@wizard_bp.route('/export/pdf', methods=['GET'])
+def export_pdf():
+    export_data = session.get('last_calc_export_data')
+    if not export_data:
+        flash(current_app.extensions['babel'].gettext("No calculation data available to export. Please perform a calculation first."), "error")
+        return redirect(url_for('wizard_bp.wizard_summary_step'))
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+
+    pdf.cell(0, 10, current_app.extensions['babel'].gettext("FIRE Calculation Results"), 0, 1, "C")
+    pdf.ln(5)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, current_app.extensions['babel'].gettext("Summary of Inputs & Key Results:"), 0, 1)
+    pdf.set_font("Arial", "", 10)
+
+    input_summary = [
+        (current_app.extensions['babel'].gettext("Input Annual Expenses (W)"), export_data.get('W')),
+        (current_app.extensions['babel'].gettext("Calculated FIRE Number (P)"), export_data.get('P_calculated')),
+        (current_app.extensions['babel'].gettext("Overall Nominal Return Rate (%)"), f"{export_data.get('r_overall_nominal', 0) * 100:.2f}%"),
+        (current_app.extensions['babel'].gettext("Overall Inflation Rate (%)"), f"{export_data.get('i_overall', 0) * 100:.2f}%"),
+        (current_app.extensions['babel'].gettext("Total Duration (years)"), export_data.get('total_duration_from_periods')),
+        (current_app.extensions['babel'].gettext("Withdrawal Timing"), str(export_data.get('withdrawal_time_str', '')).capitalize()),
+        (current_app.extensions['babel'].gettext("Desired Final Portfolio Value"), export_data.get('desired_final_value')),
+    ]
+    for key, val in input_summary:
+        pdf.cell(90, 7, str(key), 0, 0)
+        pdf.cell(0, 7, str(val if val is not None else 'N/A'), 0, 1)
+    pdf.ln(3)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, current_app.extensions['babel'].gettext("Rate Periods Applied:"), 0, 1)
+    pdf.set_font("Arial", "", 10)
+    rates_p = export_data.get('rates_periods_summary', [])
+    if rates_p:
+        pdf.set_font("Arial", "B", 10)
+        pdf.cell(40, 7, current_app.extensions['babel'].gettext("Duration (Yrs)"), 1, 0, "C")
+        pdf.cell(60, 7, current_app.extensions['babel'].gettext("Nominal Return (%)"), 1, 0, "C")
+        pdf.cell(60, 7, current_app.extensions['babel'].gettext("Inflation Used (%)"), 1, 1, "C")
+        pdf.set_font("Arial", "", 10)
+        for p_item in rates_p: # Renamed p to p_item
+            pdf.cell(40, 7, str(p_item.get('duration')), 1, 0, "C")
+            pdf.cell(60, 7, f"{p_item.get('r',0)*100:.2f}", 1, 0, "C")
+            pdf.cell(60, 7, f"{p_item.get('i',0)*100:.2f}", 1, 1, "C")
+    else:
+        pdf.cell(0, 7, current_app.extensions['babel'].gettext("N/A (Used overall rates for total duration)"), 0, 1)
+    pdf.ln(3)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, current_app.extensions['babel'].gettext("One-Off Events Considered:"), 0, 1)
+    pdf.set_font("Arial", "", 10)
+    one_offs = export_data.get('one_off_events_summary', [])
+    if one_offs:
+        pdf.set_font("Arial", "B", 10)
+        pdf.cell(40, 7, current_app.extensions['babel'].gettext("Year"), 1, 0, "C")
+        pdf.cell(60, 7, current_app.extensions['babel'].gettext("Amount"), 1, 1, "C")
+        pdf.set_font("Arial", "", 10)
+        for event_item in one_offs: # Renamed event to event_item
+            pdf.cell(40, 7, str(event_item.get('year')), 1, 0, "C")
+            pdf.cell(60, 7, f"{event_item.get('amount', 0):.2f}", 1, 1, "C")
+    else:
+        pdf.cell(0, 7, current_app.extensions['babel'].gettext("None"), 0, 1)
+    pdf.ln(5)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, current_app.extensions['babel'].gettext("Charts:"), 0, 1)
+    pdf.set_font("Arial", "", 10)
+
+    plot_temp_files = []
+    try:
+        sim_years_list = export_data.get('sim_years', [])
+        sim_balances_list = export_data.get('sim_balances', [])
+        sim_withdrawals_list = export_data.get('sim_withdrawals', [])
+        one_off_events_for_plot = export_data.get('one_off_events_summary', [])
+
+        if sim_years_list and sim_balances_list:
+            fig_balance_pdf = go.Figure() # Renamed fig_balance to fig_balance_pdf
+            fig_balance_pdf.add_trace(go.Scatter(x=sim_years_list, y=sim_balances_list, mode='lines+markers', name=current_app.extensions['babel'].gettext('Portfolio Balance')))
+            for event_pdf in one_off_events_for_plot: # Renamed event to event_pdf
+                if 0 <= event_pdf['year'] < len(sim_balances_list):
+                    event_y_approx = sim_balances_list[event_pdf['year']]
+                    fig_balance_pdf.add_trace(go.Scatter(x=[event_pdf['year']], y=[float(event_y_approx)], mode='markers',
+                                                         marker=dict(size=8, color='red' if event_pdf['amount'] < 0 else 'green'), name=f"Event: {event_pdf['amount']:.0f}"))
+            fig_balance_pdf.update_layout(title=current_app.extensions['babel'].gettext('Portfolio Balance Over Time'), autosize=False, width=500, height=350, margin=dict(l=30,r=20,t=40,b=30))
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file_bal:
+                try:
+                    fig_balance_pdf.write_image(tmp_file_bal.name, format='png', scale=2)
+                    pdf.image(tmp_file_bal.name, x=10, w=pdf.w - 20)
+                    plot_temp_files.append(tmp_file_bal.name)
+                except Exception as e_img_bal:
+                    current_app.logger.error(f"Failed to write balance plot image: {e_img_bal}")
+                    pdf.cell(0, 7, current_app.extensions['babel'].gettext("Portfolio balance plot could not be generated."), 0, 1)
+            pdf.ln(3)
+
+        if sim_years_list and sim_withdrawals_list:
+            total_T_sim_pdf = len(sim_withdrawals_list) # Renamed total_T_sim
+            x_withdraw_years_pdf = sim_years_list[1:total_T_sim_pdf+1] if len(sim_years_list) > total_T_sim_pdf else [] # Renamed x_withdraw_years
+            if len(x_withdraw_years_pdf) == total_T_sim_pdf and total_T_sim_pdf > 0:
+                fig_withdrawals_pdf = go.Figure() # Renamed fig_withdrawals
+                fig_withdrawals_pdf.add_trace(go.Scatter(x=x_withdraw_years_pdf, y=sim_withdrawals_list, mode='lines+markers', name=current_app.extensions['babel'].gettext('Annual Withdrawal')))
+                fig_withdrawals_pdf.update_layout(title=current_app.extensions['babel'].gettext('Annual Withdrawals Over Time'), autosize=False, width=500, height=350, margin=dict(l=30,r=20,t=40,b=30))
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp_file_wd:
+                    try:
+                        fig_withdrawals_pdf.write_image(tmp_file_wd.name, format='png', scale=2)
+                        pdf.image(tmp_file_wd.name, x=10, w=pdf.w - 20)
+                        plot_temp_files.append(tmp_file_wd.name)
+                    except Exception as e_img_wd:
+                        current_app.logger.error(f"Failed to write withdrawal plot image: {e_img_wd}")
+                        pdf.cell(0, 7, current_app.extensions['babel'].gettext("Annual withdrawal plot could not be generated."), 0, 1)
+            elif total_T_sim_pdf == 0:
+                 pdf.cell(0, 7, current_app.extensions['babel'].gettext("No withdrawal data to plot (e.g. T=0)."), 0, 1)
+    except Exception as e_plots:
+        current_app.logger.error(f"Error during plot generation for PDF: {e_plots}")
+        pdf.cell(0, 7, current_app.extensions['babel'].gettext("Plots could not be generated due to an error."), 0, 1)
+    finally:
+        for temp_file_path in plot_temp_files:
+            try:
+                os.remove(temp_file_path)
+            except OSError:
+                current_app.logger.error(f"Error removing temporary plot file: {temp_file_path}")
+    pdf.ln(5)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, current_app.extensions['babel'].gettext("Year-by-Year Simulation:"), 0, 1)
+    pdf.set_font("Arial", "B", 10)
+    pdf.cell(40, 7, current_app.extensions['babel'].gettext("Year"), 1, 0, "C")
+    pdf.cell(75, 7, current_app.extensions['babel'].gettext("Portfolio Balance (End)"), 1, 0, "C")
+    pdf.cell(75, 7, current_app.extensions['babel'].gettext("Annual Withdrawal"), 1, 1, "C")
+    pdf.set_font("Arial", "", 10)
+
+    sim_years_pdf_table = export_data.get('sim_years', []) # Renamed for clarity
+    sim_balances_pdf_table = export_data.get('sim_balances', [])
+    sim_withdrawals_pdf_table = export_data.get('sim_withdrawals', [])
+    total_T_sim_pdf_table = len(sim_withdrawals_pdf_table)
+
+    if total_T_sim_pdf_table > 0 and len(sim_years_pdf_table) == (total_T_sim_pdf_table + 1) and len(sim_balances_pdf_table) == (total_T_sim_pdf_table + 1):
+        for i in range(total_T_sim_pdf_table):
+            pdf.cell(40, 7, str(int(sim_years_pdf_table[i+1])), 1, 0, "C")
+            pdf.cell(75, 7, f"{sim_balances_pdf_table[i+1]:.2f}", 1, 0, "R")
+            pdf.cell(75, 7, f"{sim_withdrawals_pdf_table[i]:.2f}", 1, 1, "R")
+    else:
+        pdf.cell(0, 7, current_app.extensions['babel'].gettext("N/A - No simulation years to display or data inconsistent."), 1, 1, "C")
+
+    return Response(
+        pdf.output(dest='S').encode('latin-1'),
+        mimetype='application/pdf',
+        headers={'Content-Disposition': 'attachment;filename=fire_calculation_results.pdf'}
+    )
+
+[end of project/wizard_routes.py]
