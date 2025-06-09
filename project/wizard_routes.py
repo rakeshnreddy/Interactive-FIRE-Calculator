@@ -251,12 +251,17 @@ def wizard_calculate_step():
         if sim_years is not None and sim_balances is not None and len(sim_years) > 0:
             try:
                 fig_balance = go.Figure()
-                fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance", line=dict(color='blue')))
+                x_balance_years = list(sim_years) # sim_years is 0..T
+                y_balances = list(sim_balances)   # sim_balances is value at point 0..T
+                fig_balance.add_trace(go.Scatter(x=x_balance_years, y=y_balances, mode='lines+markers', name="Portfolio Balance", line=dict(color='blue')))
+
+                sim_balances_list = list(sim_balances) # Ensure it's a list for consistent indexing
                 for event in one_off_events:
-                    if event['year'] <= sim_years[-1]:
-                        event_y_approx = sim_balances[min(event['year'], len(sim_balances)-1)]
+                    if event['year'] <= (x_balance_years[-1] if x_balance_years else 0):
+                        actual_idx = min(event['year'], len(sim_balances_list)-1) # event['year'] is 1-based for event timing, maps to index
+                        event_y_approx = sim_balances_list[actual_idx]
                         fig_balance.add_trace(go.Scatter(
-                            x=[event['year']], y=[event_y_approx], mode='markers',
+                            x=[event['year']], y=[float(event_y_approx)], mode='markers',
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
                             name=f"One-off: {event['amount']:.0f}"
                         ))
@@ -265,10 +270,21 @@ def wizard_calculate_step():
             except Exception as e_plot1:
                 current_app.logger.error(f"Error generating balance plot spec: {e_plot1}", exc_info=True)
 
-        if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
+        if sim_years is not None and sim_withdrawals is not None: # Check sim_withdrawals length later
             try:
                 fig_withdrawals = go.Figure()
-                fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal", line=dict(color='blue')))
+                total_T_sim = len(sim_withdrawals)
+                # sim_years is 0..T. We need 1..T for x-axis if total_T_sim > 0
+                x_withdraw_years = list(sim_years[1 : total_T_sim + 1]) if total_T_sim > 0 and len(sim_years) > total_T_sim else []
+                y_withdrawals = list(sim_withdrawals)
+
+                if total_T_sim > 0 and len(x_withdraw_years) == total_T_sim :
+                    fig_withdrawals.add_trace(go.Scatter(x=x_withdraw_years, y=y_withdrawals, mode='lines+markers', name="Annual Withdrawal", line=dict(color='blue')))
+                else: # Handles T=0 or length mismatch by plotting empty or logging
+                    fig_withdrawals.add_trace(go.Scatter(x=[], y=[], mode='lines+markers', name="Annual Withdrawal", line=dict(color='blue')))
+                    if total_T_sim > 0: # Log only if there was an actual mismatch with expected withdrawals
+                         current_app.logger.warning(f"Original withdrawal plot data length mismatch: x_data (len {len(x_withdraw_years)} based on sim_years), y_data (len {total_T_sim} from sim_withdrawals)")
+
                 fig_withdrawals.update_layout(title="Annual Withdrawals Over Time", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount", legend_title_text="Legend")
                 plot2_spec = {'data': [trace.to_plotly_json() for trace in fig_withdrawals.data], 'layout': fig_withdrawals.layout.to_plotly_json()}
             except Exception as e_plot2:
@@ -435,15 +451,20 @@ def wizard_recalculate_interactive():
         plot1_spec_interactive = None
         plot2_spec_interactive = None
 
-        if sim_years is not None and sim_balances is not None and len(sim_years) > 0 :
+        if sim_years is not None and sim_balances is not None and len(sim_years) > 0:
             try:
                 fig_balance = go.Figure()
-                fig_balance.add_trace(go.Scatter(x=sim_years, y=sim_balances[1:], mode='lines+markers', name="Portfolio Balance (What-If)", line=dict(color='green')))
+                x_balance_years_ia = list(sim_years)
+                y_balances_ia = list(sim_balances)
+                fig_balance.add_trace(go.Scatter(x=x_balance_years_ia, y=y_balances_ia, mode='lines+markers', name="Portfolio Balance (What-If)", line=dict(color='green')))
+
+                sim_balances_list_ia = list(sim_balances)
                 for event in one_off_events_for_calc:
-                    if event['year'] <= sim_years[-1]:
-                        event_y_approx = sim_balances[min(event['year'], len(sim_balances)-1)]
+                    if event['year'] <= (x_balance_years_ia[-1] if x_balance_years_ia else 0):
+                        actual_idx = min(event['year'], len(sim_balances_list_ia)-1)
+                        event_y_approx = sim_balances_list_ia[actual_idx]
                         fig_balance.add_trace(go.Scatter(
-                            x=[event['year']], y=[event_y_approx], mode='markers',
+                            x=[event['year']], y=[float(event_y_approx)], mode='markers',
                             marker=dict(size=10, color='red' if event['amount'] < 0 else 'green', symbol='triangle-down' if event['amount'] < 0 else 'triangle-up'),
                             name=f"One-off: {event['amount']:.0f}"
                         ))
@@ -452,10 +473,20 @@ def wizard_recalculate_interactive():
             except Exception as e_plot1_ia:
                 current_app.logger.error(f"Error generating interactive balance plot spec: {e_plot1_ia}", exc_info=True)
 
-        if sim_years is not None and sim_withdrawals is not None and len(sim_years) > 0:
+        if sim_years is not None and sim_withdrawals is not None: # Check sim_withdrawals length later
             try:
                 fig_withdrawals = go.Figure()
-                fig_withdrawals.add_trace(go.Scatter(x=sim_years, y=sim_withdrawals, mode='lines+markers', name="Annual Withdrawal (What-If)", line=dict(color='green')))
+                total_T_sim_ia = len(sim_withdrawals)
+                x_withdraw_years_ia = list(sim_years[1 : total_T_sim_ia + 1]) if total_T_sim_ia > 0 and len(sim_years) > total_T_sim_ia else []
+                y_withdrawals_ia = list(sim_withdrawals)
+
+                if total_T_sim_ia > 0 and len(x_withdraw_years_ia) == total_T_sim_ia:
+                    fig_withdrawals.add_trace(go.Scatter(x=x_withdraw_years_ia, y=y_withdrawals_ia, mode='lines+markers', name="Annual Withdrawal (What-If)", line=dict(color='green')))
+                else:
+                    fig_withdrawals.add_trace(go.Scatter(x=[], y=[], mode='lines+markers', name="Annual Withdrawal (What-If)", line=dict(color='green')))
+                    if total_T_sim_ia > 0:
+                         current_app.logger.warning(f"Interactive withdrawal plot data length mismatch: x_data (len {len(x_withdraw_years_ia)} based on sim_years), y_data (len {total_T_sim_ia} from sim_withdrawals)")
+
                 fig_withdrawals.update_layout(title="Annual Withdrawals Over Time (What-If)", xaxis_title="Year", yaxis_title="Annual Withdrawal Amount")
                 plot2_spec_interactive = {'data': [trace.to_plotly_json() for trace in fig_withdrawals.data], 'layout': fig_withdrawals.layout.to_plotly_json()}
             except Exception as e_plot2_ia:
