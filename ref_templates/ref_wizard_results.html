@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-mode="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRE Calculator Wizard - Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --transition-speed: 0.4s;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: var(--hero-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* --- Theme & Mode Definitions --- */
+        [data-theme='default'][data-mode='light'] { --bg-primary-rgb: 248, 249, 250; --bg-secondary-rgb: 255, 255, 255; --text-primary: #212529; --text-secondary: #6c757d; --border-color: #ced4da; --shadow-color: rgb(0 0 0 / 0.1); --hero-gradient: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); --accent-color: #007bff; --accent-hover: #0056b3; --accent-text: #ffffff; }
+        [data-theme='default'][data-mode='dark'] { --bg-primary-rgb: 18, 18, 18; --bg-secondary-rgb: 30, 30, 30; --text-primary: #e9ecef; --text-secondary: #adb5bd; --border-color: #495057; --shadow-color: rgb(0 0 0 / 0.4); --hero-gradient: linear-gradient(120deg, #023e8a 0%, #0077b6 100%); --accent-color: #0d6efd; --accent-hover: #3b82f6; --accent-text: #ffffff; }
+        [data-theme='oceanic'][data-mode='light'] { --bg-primary-rgb: 240, 247, 255; --bg-secondary-rgb: 255, 255, 255; --text-primary: #0a3d62; --text-secondary: #3c6382; --border-color: #a7c5eb; --shadow-color: rgb(60 99 130 / 0.15); --hero-gradient: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); --accent-color: #0c7b93; --accent-hover: #1491a9; --accent-text: #ffffff; }
+        [data-theme='oceanic'][data-mode='dark'] { --bg-primary-rgb: 15, 23, 42; --bg-secondary-rgb: 30, 41, 59; --text-primary: #e0f2fe; --text-secondary: #94a3b8; --border-color: #334155; --shadow-color: rgb(15 23 42 / 0.5); --hero-gradient: linear-gradient(120deg, #1d2b64 0%, #f8cdda 100%); --accent-color: #22d3ee; --accent-hover: #67e8f9; --accent-text: #111827; }
+        [data-theme='forest'][data-mode='light'] { --bg-primary-rgb: 244, 246, 240; --bg-secondary-rgb: 255, 255, 255; --text-primary: #2d382c; --text-secondary: #515e4f; --border-color: #c8d3c5; --shadow-color: rgb(45 56 44 / 0.1); --hero-gradient: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); --accent-color: #4a7c59; --accent-hover: #5a936a; --accent-text: #ffffff; }
+        [data-theme='forest'][data-mode='dark'] { --bg-primary-rgb: 26, 32, 26; --bg-secondary-rgb: 41, 50, 42; --text-primary: #f0f6f0; --text-secondary: #a8b8a8; --border-color: #404a40; --shadow-color: rgb(26 32 26 / 0.5); --hero-gradient: linear-gradient(120deg, #087f5b 0%, #173d32 100%); --accent-color: #4ade80; --accent-hover: #86efac; --accent-text: #1a201a; }
+        [data-theme='sunrise'][data-mode='light'] { --bg-primary-rgb: 255, 248, 240; --bg-secondary-rgb: 255, 255, 255; --text-primary: #5c3d1e; --text-secondary: #8c6d46; --border-color: #f7d9aa; --shadow-color: rgb(247 217 170 / 0.2); --hero-gradient: linear-gradient(120deg, #f6d365 0%, #fda085 100%); --accent-color: #ff8c42; --accent-hover: #ffa263; --accent-text: #ffffff; }
+        [data-theme='sunrise'][data-mode='dark'] { --bg-primary-rgb: 40, 28, 13; --bg-secondary-rgb: 66, 45, 22; --text-primary: #fffbeb; --text-secondary: #d7c6b0; --border-color: #5c3d1e; --shadow-color: rgb(40 28 13 / 0.5); --hero-gradient: linear-gradient(120deg, #b22a00 0%, #ff8c42 100%); --accent-color: #fb923c; --accent-hover: #fdba74; --accent-text: #422d16; }
+        [data-theme='maroon'][data-mode='light'] { --bg-primary-rgb: 253, 242, 242; --bg-secondary-rgb: 255, 255, 255; --text-primary: #5c0000; --text-secondary: #804040; --border-color: #e6c0c0; --shadow-color: rgb(92 0 0 / 0.1); --hero-gradient: linear-gradient(120deg, #f093fb 0%, #f5576c 100%); --accent-color: #800000; --accent-hover: #a00000; --accent-text: #ffffff; }
+        [data-theme='maroon'][data-mode='dark'] { --bg-primary-rgb: 26, 18, 18; --bg-secondary-rgb: 42, 32, 32; --text-primary: #fde8e8; --text-secondary: #c9b8b8; --border-color: #5c2020; --shadow-color: rgb(26 18 18 / 0.5); --hero-gradient: linear-gradient(120deg, #870000 0%, #190a05 100%); --accent-color: #c04040; --accent-hover: #e06060; --accent-text: #fde8e8; }
+        [data-theme='amethyst'][data-mode='light'] { --bg-primary-rgb: 250, 245, 255; --bg-secondary-rgb: 255, 255, 255; --text-primary: #4c1d95; --text-secondary: #6d28d9; --border-color: #d8b4fe; --shadow-color: rgb(76 29 149 / 0.1); --hero-gradient: linear-gradient(120deg, #d299c2 0%, #fef9d7 100%); --accent-color: #8b5cf6; --accent-hover: #a78bfa; --accent-text: #ffffff; }
+        [data-theme='amethyst'][data-mode='dark'] { --bg-primary-rgb: 24, 18, 43; --bg-secondary-rgb: 41, 32, 62; --text-primary: #f5d0fe; --text-secondary: #e9d5ff; --border-color: #581c87; --shadow-color: rgb(24 18 43 / 0.5); --hero-gradient: linear-gradient(120deg, #371060 0%, #c026d3 100%); --accent-color: #c084fc; --accent-hover: #d8b4fe; --accent-text: #27123A; }
+        [data-theme='emerald'][data-mode='light'] { --bg-primary-rgb: 240, 253, 244; --bg-secondary-rgb: 255, 255, 255; --text-primary: #047857; --text-secondary: #059669; --border-color: #a7f3d0; --shadow-color: rgb(4 120 87 / 0.1); --hero-gradient: linear-gradient(120deg, #5ee7df 0%, #b490ca 100%); --accent-color: #10b981; --accent-hover: #34d399; --accent-text: #ffffff; }
+        [data-theme='emerald'][data-mode='dark'] { --bg-primary-rgb: 12, 35, 23; --bg-secondary-rgb: 19, 58, 41; --text-primary: #d1fae5; --text-secondary: #a7f3d0; --border-color: #065f46; --shadow-color: rgb(12 35 23 / 0.5); --hero-gradient: linear-gradient(120deg, #004643 0%, #0c7489 100%); --accent-color: #34d399; --accent-hover: #6ee7b7; --accent-text: #064E3B; }
+        [data-theme='slate'][data-mode='light'] { --bg-primary-rgb: 241, 245, 249; --bg-secondary-rgb: 255, 255, 255; --text-primary: #334155; --text-secondary: #64748b; --border-color: #cbd5e1; --shadow-color: rgb(51 65 85 / 0.1); --hero-gradient: linear-gradient(120deg, #d3cce3 0%, #e9e4f0 100%); --accent-color: #475569; --accent-hover: #64748b; --accent-text: #ffffff; }
+        [data-theme='slate'][data-mode='dark'] { --bg-primary-rgb: 15, 23, 42; --bg-secondary-rgb: 30, 41, 59; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border-color: #475569; --shadow-color: rgb(15 23 42 / 0.5); --hero-gradient: linear-gradient(120deg, #2c3e50 0%, #4ca1af 100%); --accent-color: #94a3b8; --accent-hover: #cbd5e1; --accent-text: #0f172a; }
+        [data-theme='tangerine'][data-mode='light'] { --bg-primary-rgb: 255, 247, 237; --bg-secondary-rgb: 255, 255, 255; --text-primary: #c2410c; --text-secondary: #ea580c; --border-color: #fed7aa; --shadow-color: rgb(194 65 12 / 0.1); --hero-gradient: linear-gradient(120deg, #f83600 0%, #f9d423 100%); --accent-color: #f97316; --accent-hover: #fb923c; --accent-text: #ffffff; }
+        [data-theme='tangerine'][data-mode='dark'] { --bg-primary-rgb: 36, 19, 3; --bg-secondary-rgb: 60, 31, 6; --text-primary: #ffedd5; --text-secondary: #fed7aa; --border-color: #9a3412; --shadow-color: rgb(36 19 3 / 0.5); --hero-gradient: linear-gradient(120deg, #dd2476 0%, #ff512f 100%); --accent-color: #fb923c; --accent-hover: #fdba74; --accent-text: #78350F; }
+        [data-theme='rose'][data-mode='light'] { --bg-primary-rgb: 255, 241, 242; --bg-secondary-rgb: 255, 255, 255; --text-primary: #be123c; --text-secondary: #e11d48; --border-color: #fecdd3; --shadow-color: rgb(190 18 60 / 0.1); --hero-gradient: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%); --accent-color: #f43f5e; --accent-hover: #fb7185; --accent-text: #ffffff; }
+        [data-theme='rose'][data-mode='dark'] { --bg-primary-rgb: 39, 13, 19; --bg-secondary-rgb: 64, 21, 31; --text-primary: #fff1f2; --text-secondary: #fecdd3; --border-color: #be123c; --shadow-color: rgb(39 13 19 / 0.5); --hero-gradient: linear-gradient(120deg, #ff0844 0%, #ffb199 100%); --accent-color: #fb7185; --accent-hover: #fca5a5; --accent-text: #881337; }
+
+        /* --- Component Styling with Glassmorphism --- */
+        .glassmorphic {
+            background-color: rgba(var(--bg-secondary-rgb), 0.65);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid rgba(var(--border-color), 0.3);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+        .nav { transition: background-color var(--transition-speed) ease; border-bottom: 1px solid rgba(var(--border-color), 0.2); }
+        .btn-primary { background-color: var(--accent-color); color: var(--accent-text); transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-secondary { background-color: rgba(var(--bg-secondary-rgb), 0.3); color: var(--text-primary); border: 1px solid rgba(var(--border-color), 0.5); }
+        .btn-secondary:hover { background-color: rgba(var(--bg-secondary-rgb), 0.5); }
+        .text-primary { color: var(--text-primary); }
+        .text-secondary { color: var(--text-secondary); }
+        .settings-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .settings-modal.is-open { opacity: 1; visibility: visible; }
+        .mode-toggle-bg { background-color: color-mix(in srgb, var(--border-color) 50%, transparent); }
+        .mode-toggle-bg.dark { background-color: var(--accent-color); }
+        .results-table th { background-color: rgba(var(--bg-secondary-rgb), 0.5); }
+        .results-table tr:nth-child(even) { background-color: rgba(var(--bg-secondary-rgb), 0.2); }
+    </style>
+</head>
+<body>
+    <nav class="nav glassmorphic sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between items-center h-16"><div class="flex-shrink-0"><a href="#" class="text-2xl font-bold text-primary"><span style="color: var(--accent-color);">FIRE</span>Calc</a></div><div class="hidden md:flex items-center space-x-4"><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Calculator</a><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Compare</a><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">FAQ</a><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">About</a><button id="settings-button" class="p-2 rounded-md text-secondary hover:text-primary"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></button></div></div></div>
+    </nav>
+    <div id="settings-modal" class="settings-modal"><div class="settings-modal-content glassmorphic"><div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary">Settings</h3><button id="settings-close-button" class="p-2 text-secondary hover:text-primary">&times;</button></div><div><h4 class="text-lg font-semibold text-primary mb-4">Color Theme</h4><div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div><hr class="my-6" style="border-color: rgba(var(--border-color), 0.3);"><h4 class="text-lg font-semibold text-primary mb-4">Mode</h4><div class="flex items-center justify-between"><span class="text-secondary">Light</span><button id="mode-toggle" class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors mode-toggle-bg"><span id="mode-toggle-circle" class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform translate-x-1"></span></button><span class="text-secondary">Dark</span></div></div></div></div>
+    
+    <main class="py-12 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <header class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">Congratulations! Here is your projection.</h1>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-secondary">You've completed the wizard. Explore your path to financial independence below.</p>
+            </header>
+
+            <!-- Key Metrics -->
+            <section id="key-metrics" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
+                <div class="glassmorphic rounded-2xl p-6 text-center">
+                    <h3 class="text-lg font-semibold text-secondary">Your FIRE Number</h3>
+                    <p class="text-5xl font-bold text-primary mt-2" style="color: var(--accent-color);">$1,250,000</p>
+                </div>
+                 <div class="glassmorphic rounded-2xl p-6 text-center">
+                    <h3 class="text-lg font-semibold text-secondary">Projected Retirement Age</h3>
+                    <p class="text-5xl font-bold text-primary mt-2" style="color: var(--accent-color);">45</p>
+                </div>
+                 <div class="glassmorphic rounded-2xl p-6 text-center">
+                    <h3 class="text-lg font-semibold text-secondary">Years to FIRE</h3>
+                    <p class="text-5xl font-bold text-primary mt-2" style="color: var(--accent-color);">15</p>
+                </div>
+            </section>
+
+            <!-- Chart Section -->
+            <section id="chart-section" class="glassmorphic rounded-2xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold text-primary mb-4">Portfolio Growth Over Time</h3>
+                <div class="h-96 flex items-center justify-center text-secondary">
+                    [Chart showing portfolio growth will be displayed here]
+                </div>
+            </section>
+
+            <!-- Data Table Section -->
+            <section id="data-table" class="mb-12">
+                 <h3 class="text-2xl font-bold text-primary mb-4 text-center">Year-by-Year Breakdown</h3>
+                 <div class="overflow-x-auto glassmorphic rounded-2xl p-2">
+                    <table class="w-full text-left results-table">
+                        <thead>
+                            <tr>
+                                <th class="p-4 font-semibold text-primary">Year</th>
+                                <th class="p-4 font-semibold text-primary">Age</th>
+                                <th class="p-4 font-semibold text-primary">Starting Balance</th>
+                                <th class="p-4 font-semibold text-primary">Contributions</th>
+                                <th class="p-4 font-semibold text-primary">Investment Gains</th>
+                                <th class="p-4 font-semibold text-primary">Ending Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-secondary">
+                            <tr>
+                                <td class="p-4">2025</td><td class="p-4">31</td><td class="p-4">$50,000</td><td class="p-4">$18,000</td><td class="p-4">$4,760</td><td class="p-4 font-medium text-primary">$72,760</td>
+                            </tr>
+                             <tr>
+                                <td class="p-4">2026</td><td class="p-4">32</td><td class="p-4">$72,760</td><td class="p-4">$18,000</td><td class="p-4">$6,353</td><td class="p-4 font-medium text-primary">$97,113</td>
+                            </tr>
+                             <tr>
+                                <td class="p-4">2027</td><td class="p-4">33</td><td class="p-4">$97,113</td><td class="p-4">$18,000</td><td class="p-4">$8,058</td><td class="p-4 font-medium text-primary">$123,171</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                 </div>
+            </section>
+            
+            <!-- Actions Section -->
+            <section class="text-center">
+                 <div class="flex flex-wrap justify-center gap-4">
+                    <button class="btn-primary py-3 px-6 rounded-md font-semibold">Save Scenario</button>
+                    <button class="btn-secondary py-3 px-6 rounded-md font-semibold">Compare Scenarios</button>
+                    <button class="btn-secondary py-3 px-6 rounded-md font-semibold">Start Over</button>
+                 </div>
+            </section>
+
+        </div>
+    </main>
+    
+    <footer class="mt-20 bg-black bg-opacity-20 text-white p-8">
+        <div class="text-center text-gray-300">
+            <p>&copy; 2024 FIRECalc. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsButton = document.getElementById('settings-button');
+            const settingsModal = document.getElementById('settings-modal');
+            const settingsCloseButton = document.getElementById('settings-close-button');
+            const themeSelector = document.getElementById('theme-selector');
+            const modeToggle = document.getElementById('mode-toggle');
+            const modeToggleCircle = document.getElementById('mode-toggle-circle');
+            const root = document.documentElement;
+
+            const themes = [
+                { name: 'default', label: 'Default' }, { name: 'oceanic', label: 'Oceanic' }, { name: 'forest', label: 'Forest' }, { name: 'sunrise', label: 'Sunrise' }, { name: 'maroon', label: 'Maroon' }, { name: 'amethyst', label: 'Amethyst' }, { name: 'emerald', label: 'Emerald' }, { name: 'slate', label: 'Slate' }, { name: 'tangerine', label: 'Tangerine' }, { name: 'rose', label: 'Rose' }
+            ];
+
+            const applySettings = (themeName, modeName) => {
+                root.dataset.theme = themeName;
+                root.dataset.mode = modeName;
+                localStorage.setItem('fire-calc-theme', themeName);
+                localStorage.setItem('fire-calc-mode', modeName);
+                
+                document.querySelectorAll('.theme-button').forEach(btn => {
+                    btn.classList.toggle('ring-2', btn.dataset.theme === themeName);
+                    btn.classList.toggle('ring-[var(--accent-color)]', btn.dataset.theme === themeName);
+                });
+
+                const isDark = modeName === 'dark';
+                modeToggle.classList.toggle('dark', isDark);
+                modeToggleCircle.classList.toggle('translate-x-5', isDark);
+            };
+
+            themes.forEach(theme => {
+                const button = document.createElement('button');
+                button.textContent = theme.label;
+                button.dataset.theme = theme.name;
+                button.className = 'theme-button w-full text-left p-3 rounded-lg border border-opacity-50 transition-all';
+                button.addEventListener('click', () => {
+                    const currentMode = root.dataset.mode;
+                    applySettings(theme.name, currentMode);
+                });
+                themeSelector.appendChild(button);
+            });
+            
+            modeToggle.addEventListener('click', () => {
+                const newMode = root.dataset.mode === 'light' ? 'dark' : 'light';
+                const currentTheme = root.dataset.theme;
+                applySettings(currentTheme, newMode);
+            });
+
+            const savedTheme = localStorage.getItem('fire-calc-theme') || 'default';
+            const savedMode = localStorage.getItem('fire-calc-mode') || 'light';
+            applySettings(savedTheme, savedMode);
+
+            settingsButton.addEventListener('click', () => settingsModal.classList.add('is-open'));
+            const closeModal = () => settingsModal.classList.remove('is-open');
+            settingsCloseButton.addEventListener('click', closeModal);
+            settingsModal.addEventListener('click', (event) => { if (event.target === settingsModal) closeModal(); });
+        });
+    </script>
+</body>
+</html>
