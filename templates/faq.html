@@ -3,8 +3,8 @@
 {% block title %}{{ _("FAQ - FIRE Calculator") }}{% endblock %}
 
 {% block content %}
-<div class="container content-page">
-  <h2>{{ _("Frequently Asked Questions (FAQ)") }}</h2>
+<div class="glassmorphic rounded-2xl p-6 md:p-10 shadow-xl mx-auto max-w-3xl text-secondary">
+  <h1 class="text-3xl md:text-4xl font-bold text-primary text-center mb-8">{{ _("Frequently Asked Questions (FAQ)") }}</h1>
 
   <div class="accordion" id="faqAccordion">
     <div class="accordion-item">
@@ -59,8 +59,8 @@
       </div>
     </div>
   </div>
-  <div class="mt-4">
-    <a href="{{ url_for('project.index') }}" class="btn btn-outline-secondary">{{ _("← Back to Calculator") }}</a>
+  <div class="text-center mt-8">
+    <a href="{{ url_for('project.index') }}" class="btn-secondary py-2 px-4 rounded-md font-semibold text-sm inline-block">{{ _("← Back to Calculator") }}</a>
   </div>
 </div>
 {% endblock %}
