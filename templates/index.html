@@ -17,14 +17,81 @@
     </a>
 
     <p class="text-secondary mt-4 max-w-xl mx-auto">{{ _("The wizard makes it easier to enter your details and ensures everything is validated along the way. Get started on your path to FIRE today!") }}</p>
+    {# The HR and "Other Tools" section related to the old Compare Scenarios link are removed. #}
+</div>
 
-    <hr class="my-8 border-t" style="border-color: rgba(var(--border-color), 0.3);">
+{# New sections for Scenario Comparison from ref_templates/ref_index.html #}
+<header class="text-center mb-12 mt-20"> {# Added mt-20 for spacing #}
+    <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">{{ _("Compare Scenarios") }}</h1>
+    <p class="mt-4 max-w-2xl mx-auto text-lg text-secondary">{{ _("See how different choices impact your journey to financial independence.") }}</p>
+</header>
 
-    <h2 class="text-2xl font-bold text-primary mt-8 mb-4">{{ _("Other Tools") }}</h2>
-    <div class="mt-3">
-      <a href="{{ url_for('project.compare') }}" class="text-accent-color hover:underline font-medium text-lg">{{ _("Compare Scenarios") }}</a>
-      {# Add other links here if necessary #}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Scenario A -->
+    <div class="glassmorphic rounded-2xl p-6 md:p-8">
+        <h2 class="text-3xl font-bold text-primary mb-6">{{ _("Scenario A") }}</h2>
+        <div class="space-y-4">
+            <div>
+                <p class="text-sm font-medium text-secondary">{{ _("FIRE Number") }}</p>
+                <p class="text-2xl font-bold text-accent-color">{{ _("$1,250,000") }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-secondary">{{ _("Retirement Age") }}</p>
+                <p class="text-2xl font-bold text-accent-color">{{ _("45") }}</p>
+            </div>
+            <hr class="hr-themed">
+            <div class="text-secondary space-y-2">
+                <p class="flex justify-between"><span>{{ _("Monthly Contribution:") }}</span><span class="font-medium text-primary">{{ _("$1,500") }}</span></p>
+                <p class="flex justify-between"><span>{{ _("Annual Return:") }}</span><span class="font-medium text-primary">{{ _("7%") }}</span></p>
+                <p class="flex justify-between"><span>{{ _("Retirement Spending:") }}</span><span class="font-medium text-primary">{{ _("$50,000 / year") }}</span></p>
+            </div>
+            <div class="pt-4">
+                 <a href="{{ url_for('project.compare') }}" class="w-full btn-primary py-2 px-4 rounded-md font-semibold">{{ _("Load Scenario A") }}</a>
+            </div>
+        </div>
     </div>
 
+    <!-- Scenario B -->
+    <div class="glassmorphic rounded-2xl p-6 md:p-8">
+        <h2 class="text-3xl font-bold text-primary mb-6">{{ _("Scenario B") }}</h2>
+         <div class="space-y-4">
+            <div>
+                <p class="text-sm font-medium text-secondary">{{ _("FIRE Number") }}</p>
+                <p class="text-2xl font-bold text-accent-color">{{ _("$1,125,000") }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-secondary">{{ _("Retirement Age") }}</p>
+                <p class="text-2xl font-bold text-accent-color">{{ _("43") }}</p>
+            </div>
+            <hr class="hr-themed">
+            <div class="text-secondary space-y-2">
+                <p class="flex justify-between"><span>{{ _("Monthly Contribution:") }}</span><span class="font-medium text-primary">{{ _("$1,800") }}</span></p>
+                <p class="flex justify-between"><span>{{ _("Annual Return:") }}</span><span class="font-medium text-primary">{{ _("7%") }}</span></p>
+                <p class="flex justify-between"><span>{{ _("Retirement Spending:") }}</span><span class="font-medium text-primary">{{ _("$45,000 / year") }}</span></p>
+            </div>
+            <div class="pt-4">
+                 <a href="{{ url_for('project.compare') }}" class="w-full btn-primary py-2 px-4 rounded-md font-semibold">{{ _("Load Scenario B") }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Difference Summary -->
+<div class="mt-12 glassmorphic rounded-2xl p-6 md:p-8">
+    <h2 class="text-2xl font-bold text-primary text-center mb-6">{{ _("Key Differences") }}</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+        <div>
+            <p class="text-lg font-medium text-secondary">{{ _("Retire Earlier") }}</p>
+            <p class="text-4xl font-bold mt-1 text-accent-color">{{ _("2 Years") }}</p>
+        </div>
+         <div>
+            <p class="text-lg font-medium text-secondary">{{ _("Lower FIRE Number") }}</p>
+            <p class="text-4xl font-bold mt-1 text-accent-color">{{ _("$125,000") }}</p>
+        </div>
+         <div>
+            <p class="text-lg font-medium text-secondary">{{ _("Increased Contribution") }}</p>
+            <p class="text-4xl font-bold mt-1 text-accent-color">{{ _("$300/mo") }}</p>
+        </div>
+    </div>
 </div>
 {% endblock %}
