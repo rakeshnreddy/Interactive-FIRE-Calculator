@@ -1,9 +1,9 @@
 {% macro render_field(field, class="form-control", placeholder="") %}
   <div class="mb-3">
-    {{ field.label(class="form-label") }}
-    {{ field(class=class ~ (' is-invalid' if field.errors else ''), placeholder=placeholder, **kwargs) }}
+    {{ field.label(class="text-sm font-medium text-secondary block mb-1") }}
+    {{ field(class=(class if class != "form-control" else "themed-input") ~ (' is-invalid' if field.errors else ''), placeholder=placeholder, **kwargs) }}
     {% if field.errors %}
-      <div class="invalid-feedback">
+      <div class="text-red-500 text-xs mt-1">
         {% for error in field.errors %}
           <span>{{ error }}</span><br>
         {% endfor %}
@@ -15,20 +15,20 @@
   </div>
 {% endmacro %}
 
-{% macro render_submit_field(field, class="btn btn-primary", formnovalidate=False) %}
+{% macro render_submit_field(field, class="btn-primary py-2 px-5 rounded-md font-semibold text-base", formnovalidate=False) %}
   {{ field(class=class, formnovalidate=formnovalidate if formnovalidate else None) }}
 {% endmacro %}
 
 {% macro render_field_list_item(form_entry, index, list_name, field_names) %}
-<div class="border p-3 mb-3 rounded list-item-entry" id="{{ list_name }}-{{ index }}-entry">
+<div class="bg-white/5 p-4 mb-3 rounded-lg border border-[rgba(var(--border-color),0.2)] list-item-entry shadow-sm" id="{{ list_name }}-{{ index }}-entry">
     <div class="d-flex justify-content-between align-items-center">
         <h5>{{ list_name.replace('_', ' ').title() }} #{{ index + 1 }}</h5>
-        <button type="button" class="btn btn-danger btn-sm remove-list-item-btn" data-entry-id="{{ list_name }}-{{ index }}-entry" aria-label="{{ _('Remove this item') }}">&times;</button>
+        <button type="button" class="btn-secondary text-xs py-1 px-2 rounded-md font-semibold remove-list-item-btn" data-entry-id="{{ list_name }}-{{ index }}-entry" aria-label="{{ _('Remove this item') }}">&times;</button>
     </div>
     <input type="hidden" name="{{ list_name }}-{{ index }}-csrf_token" value="{{ form_entry.csrf_token.current_token }}">
     {% for field_name in field_names %}
         {% set field = form_entry[field_name] %}
-        {{ render_field(field, class="form-control form-control-sm", placeholder=field.label.text) }}
+        {{ render_field(field, class="themed-input text-sm p-1.5", placeholder=field.label.text) }}
     {% endfor %}
 </div>
 {% endmacro %}

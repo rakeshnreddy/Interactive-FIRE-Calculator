@@ -4,33 +4,53 @@
 {% block title %}{{ title }} - {{ super() }}{% endblock %}
 
 {% block content %}
-  <h2>{{ title }}</h2>
-  <p>{{ _("List any significant one-time expenses (e.g., buying a car, wedding) or incomes (e.g., inheritance, sale of asset) you anticipate.") }}</p>
-  <form method="POST" action="{{ url_for('wizard_bp.wizard_one_offs_step') }}" novalidate>
-    {{ form.csrf_token }}
+<div class="mb-12 max-w-3xl mx-auto">
+    <h2 class="text-center text-2xl md:text-3xl font-bold text-primary mb-2">{{ _("Calculation Wizard") }}</h2>
+    <p class="text-center text-secondary mb-6">{{ _("Follow the steps to get your FIRE projection.") }}</p>
+    <div class="w-full glassmorphic rounded-full h-2.5 p-0.5">
+        <div class="h-full rounded-full" style="width: 60%; background-color: var(--accent-color);"></div> {# Step 3 of 5 = 60% #}
+    </div>
+    <ol class="flex justify-between text-sm mt-2 px-1">
+        <li class="text-secondary">{{ _("Expenses") }}</li>
+        <li class="text-secondary">{{ _("Rates") }}</li>
+        <li class="font-bold text-primary">{{ _("One-Offs") }}</li>
+        <li class="text-secondary">{{ _("Results") }}</li>
+        <li class="text-secondary">{{ _("Summary") }}</li>
+    </ol>
+</div>
 
-    <fieldset class="mb-3">
-      <legend>{{ _("Large One-Off Expenses") }}</legend>
-      <div id="large-expenses-list">
-        {% for expense_form in form.large_expenses %}
-         {{ render_field_list_item(expense_form, loop.index0, 'large_expenses', ['year', 'amount', 'description']) }}
-        {% endfor %}
-      </div>
-      {{ render_submit_field(form.submit_add_expense, class="btn btn-secondary btn-sm mt-2", formnovalidate=True) }}
-    </fieldset>
+<div class="glassmorphic p-6 md:p-10 rounded-2xl shadow-xl mx-auto max-w-3xl">
+    <h3 class="text-2xl md:text-3xl font-bold text-primary text-center mb-3">{{ title }}</h3>
+    <p class="text-secondary text-center mb-8">{{ _("List any significant one-time expenses (e.g., buying a car, wedding) or incomes (e.g., inheritance, sale of asset) you anticipate.") }}</p>
+    <form method="POST" action="{{ url_for('wizard_bp.wizard_one_offs_step') }}" novalidate class="space-y-8"> {# Increased spacing between fieldsets #}
+        {{ form.csrf_token }}
 
-    <fieldset>
-      <legend>{{ _("Large One-Off Incomes") }}</legend>
-      <div id="large-incomes-list">
-        {% for income_form in form.large_incomes %}
-          {{ render_field_list_item(income_form, loop.index0, 'large_incomes', ['year', 'amount', 'description']) }}
-        {% endfor %}
-      </div>
-      {{ render_submit_field(form.submit_add_income, class="btn btn-secondary btn-sm mt-2", formnovalidate=True) }}
-    </fieldset>
+        <fieldset> {# First fieldset, no top border needed #}
+          <legend class="text-xl font-semibold text-primary mb-4">{{ _("Large One-Off Expenses") }}</legend>
+          <div id="large-expenses-list" class="space-y-4"> {# Spacing for items #}
+            {% for expense_form in form.large_expenses %}
+             {{ render_field_list_item(expense_form, loop.index0, 'large_expenses', ['year', 'amount', 'description']) }}
+            {% endfor %}
+          </div>
+          {{ render_submit_field(form.submit_add_expense, class="btn-secondary text-sm py-1.5 px-4 rounded-md font-semibold mt-4", formnovalidate=True) }}
+        </fieldset>
 
-    {{ render_submit_field(form.submit, class="btn btn-primary mt-4") }}
-  </form>
+        <fieldset class="pt-6 border-t border-[rgba(var(--border-color),0.2)]"> {# Subsequent fieldsets get a top border #}
+          <legend class="text-xl font-semibold text-primary mb-4">{{ _("Large One-Off Incomes") }}</legend>
+          <div id="large-incomes-list" class="space-y-4"> {# Spacing for items #}
+            {% for income_form in form.large_incomes %}
+              {{ render_field_list_item(income_form, loop.index0, 'large_incomes', ['year', 'amount', 'description']) }}
+            {% endfor %}
+          </div>
+          {{ render_submit_field(form.submit_add_income, class="btn-secondary text-sm py-1.5 px-4 rounded-md font-semibold mt-4", formnovalidate=True) }}
+        </fieldset>
+
+        <div class="flex justify-between items-center pt-8 mt-8 border-t" style="border-color: rgba(var(--border-color), 0.3);">
+            <a href="{{ url_for('wizard_bp.wizard_rates_step') }}" class="btn-secondary py-2 px-5 rounded-md font-semibold text-base">{{ _("Previous") }}</a>
+            {{ render_submit_field(form.submit, class="btn-primary py-2 px-5 rounded-md font-semibold text-base") }}
+        </div>
+    </form>
+</div>
 {% endblock %}
 
 {% block scripts_extra %}
