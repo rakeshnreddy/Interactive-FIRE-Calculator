@@ -3,48 +3,57 @@
 {% block title %}{{ _("FIRE Calculator - Home") }}{% endblock %}
 
 {% block content %}
-<div class="glassmorphic rounded-2xl p-6 md:p-8 text-center">
-    <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight mb-4">{{ _("Plan Your Financial Independence") }}</h1>
-
-    {% if error %} {# Keep error display for any general messages if needed #}
-      <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-
-    <p class="mt-4 max-w-2xl mx-auto text-lg text-secondary">{{ _("Our step-by-step wizard will guide you through planning your expenses, income, and investments to achieve your financial goals.") }}</p>
-
-    <a href="{{ url_for('wizard_bp.wizard_expenses_step') }}" class="btn-primary py-3 px-6 rounded-lg font-semibold text-lg inline-block mt-8">
-      {{ _("Start the FIRE Wizard") }}
-    </a>
-
-    <p class="text-secondary mt-4 max-w-xl mx-auto">{{ _("The wizard makes it easier to enter your details and ensures everything is validated along the way. Get started on your path to FIRE today!") }}</p>
-    {# The HR and "Other Tools" section related to the old Compare Scenarios link are removed. #}
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-    <div class="glassmorphic rounded-2xl p-6 md:p-8">
-        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Why Use Our Calculator?") }}</h2>
-        <p class="text-secondary">{{ _("We provide powerful features in a simple, easy-to-use interface.") }}</p>
-    </div>
-
-    <div class="glassmorphic rounded-2xl p-6 md:p-8">
-        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Scenario Comparison") }}</h2>
-        <p class="text-secondary">{{ _("Compare different scenarios to see how choices impact your retirement timeline.") }}</p>
-    </div>
-
-    <div class="glassmorphic rounded-2xl p-6 md:p-8">
-        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Detailed Projections") }}</h2>
-        <p class="text-secondary">{{ _("Get year-by-year breakdowns of your savings growth.") }}</p>
-    </div>
-
-    <div class="glassmorphic rounded-2xl p-6 md:p-8">
-        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Informative Guides") }}</h2>
-        <p class="text-secondary">
-            {{ _("Access our") }}
-            <a href="{{ url_for('project.faq') }}" class="text-accent-color hover:underline">{{ _("FAQ") }}</a>
-            {{ _("and") }}
-            <a href="{{ url_for('project.about') }}" class="text-accent-color hover:underline">{{ _("About") }}</a>
-            {{ _("sections to learn more about the FIRE movement.") }}
+<header class="hero-bg">
+    <div class="max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary tracking-tight">
+            {{ _("Chart Your Path to Financial Independence.") }}
+        </h1>
+        <p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-secondary">
+            {{ _("Our powerful and intuitive calculator helps you visualize your journey to early retirement.") }}
         </p>
+        {% if error %} {# Keep error display for any general messages if needed #}
+          <div class="mt-4 alert alert-danger max-w-xl mx-auto">{{ error }}</div> {# Added mt-4 and centering for error #}
+        {% endif %}
+        <div class="mt-8">
+            <a href="{{ url_for('wizard_bp.wizard_expenses_step') }}" class="btn-primary inline-block px-8 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
+                {{ _("Start the FIRE Wizard") }}
+            </a>
+        </div>
+    </div> <!-- Closes max-w-7xl -->
+</header>
+
+<section id="features" class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-primary">{{ _("Why Use Our Calculator?") }}</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-secondary">{{ _("We provide powerful features in a simple, easy-to-use interface.") }}</p>
+        </div>
+
+        <div class="mt-16 grid md:grid-cols-3 gap-8">
+            <a href="{{ url_for('project.compare') }}" class="card glassmorphic p-8 text-center block hover:no-underline">
+                <div class="flex items-center justify-center h-12 w-12 rounded-full mx-auto icon-bg-accented">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6a2 2 0 100-4 2 2 0 000 4zm0 14a2 2 0 100-4 2 2 0 000 4z" /></svg>
+                </div>
+                <h3 class="mt-6 text-xl font-semibold text-primary">{{ _("Scenario Comparison") }}</h3>
+                <p class="mt-4 text-secondary">{{ _("Compare different scenarios to see how choices impact your retirement timeline.") }}</p>
+            </a>
+
+            <a href="#" class="card glassmorphic p-8 text-center block hover:no-underline">
+                <div class="flex items-center justify-center h-12 w-12 rounded-full mx-auto icon-bg-accented">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                </div>
+                <h3 class="mt-6 text-xl font-semibold text-primary">{{ _("Detailed Projections") }}</h3>
+                <p class="mt-4 text-secondary">{{ _("Get year-by-year breakdowns of your savings growth.") }}</p>
+            </a>
+
+            <a href="{{ url_for('project.faq') }}" class="card glassmorphic p-8 text-center block hover:no-underline">
+                <div class="flex items-center justify-center h-12 w-12 rounded-full mx-auto icon-bg-accented">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="mt-6 text-xl font-semibold text-primary">{{ _("Informative Guides") }}</h3>
+                <p class="mt-4 text-secondary">{{ _("Access our FAQ and About sections to learn more about the FIRE movement.") }}</p>
+            </a>
+        </div>
     </div>
-</div>
+</section>
 {% endblock %}
