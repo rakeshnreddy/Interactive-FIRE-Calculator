@@ -835,3 +835,189 @@ header h1 a:hover {
   visibility: visible;
   opacity: 1;
 }
+
+
+/* --- Themed Form Styles for Compare Page --- */
+.themed-input, .themed-select {
+    background-color: rgba(var(--bg-secondary-rgb), 0.2); /* Slightly more subtle background */
+    color: var(--text-primary);
+    border: 1px solid rgba(var(--border-color), 0.4);
+    border-radius: 0.375rem; /* Corresponds to rounded-md */
+    padding: 0.6rem 0.8rem; /* Adjusted padding */
+    width: 100%;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    font-size: 0.95rem; /* Slightly smaller font for inputs */
+}
+
+.themed-input:focus, .themed-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color) 30%, transparent);
+    outline: 0;
+    background-color: rgba(var(--bg-secondary-rgb), 0.3); /* Slightly darken on focus */
+}
+
+.themed-select {
+    appearance: none; /* Basic reset */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); /* Basic arrow, color needs to adapt */
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+/* Adapting select arrow color - this is tricky. The SVG fill needs to change. */
+/* For now, this might not perfectly theme the arrow color but is a start. */
+[data-mode='dark'] .themed-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cccccc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+
+.themed-radio, .themed-checkbox {
+    accent-color: var(--accent-color);
+    background-color: transparent;
+    border: 1px solid rgba(var(--border-color), 0.4);
+    width: 1.1em;
+    height: 1.1em;
+    vertical-align: middle;
+}
+.themed-radio:focus, .themed-checkbox:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* --- Themed Table Styles for Compare Page Summary --- */
+.compare-summary-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    margin-top: 1rem; /* Add some margin above the table */
+    font-size: 0.9rem;
+}
+
+.compare-summary-table th {
+    color: var(--text-secondary);
+    background-color: rgba(var(--bg-secondary-rgb), 0.05); /* Very subtle background for header */
+    padding: 0.8rem 1rem;
+    border-bottom: 2px solid var(--accent-color); /* Accent border for header bottom */
+    font-weight: 600; /* Semibold for headers */
+}
+
+.compare-summary-table td {
+    color: var(--text-primary);
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(var(--border-color), 0.2);
+}
+
+.compare-summary-table tbody tr:last-child td {
+    border-bottom: none; /* Remove border for the last row */
+}
+
+.compare-summary-table tbody tr:hover {
+    background-color: rgba(var(--bg-secondary-rgb), 0.1); /* Hover effect for rows */
+}
+
+/* --- Info Icon Tooltip Theming --- */
+.info-icon {
+    color: var(--text-secondary); /* Ensure info icon itself uses theme color */
+}
+
+.info-icon .tooltip-text {
+  background-color: var(--bg-secondary-rgb); /* Use a theme background */
+  color: var(--text-primary); /* Use theme text color */
+  border: 1px solid rgba(var(--border-color), 0.3);
+  box-shadow: 0 4px 12px rgba(var(--shadow-color), 0.2); /* Use theme shadow */
+  border-radius: 0.375rem; /* rounded-md */
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: normal; /* Explicitly set from bold in original */
+}
+
+/* Override Bootstrap's default form-control focus glow if still present on some elements accidentally */
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+/* Style for select elements used in scenario-header */
+.scenario-header select.form-select {
+    background-color: rgba(var(--bg-secondary-rgb), 0.2) !important; /* Important to override Bootstrap if needed */
+    color: var(--text-primary) !important;
+    border: 1px solid rgba(var(--border-color), 0.4) !important;
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem !important; /* Bootstrap default padding */
+}
+.scenario-header select.form-select:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color) 30%, transparent) !important;
+}
+
+/* Ensure .form-label in compare.html also uses themed text color */
+.form-label {
+    color: var(--text-secondary);
+}
+
+/* Styling for the periodic rate input groups to have less margin */
+.period-group.row {
+    margin-bottom: 0.5rem !important; /* Reduce default Bootstrap row margin */
+}
+.period-group .col {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}
+
+/* --- Secondary Button Style --- */
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid rgba(var(--border-color), 0.5);
+    padding: 0.5rem 1.25rem; /* Default padding */
+    border-radius: 0.375rem; /* rounded-md */
+    font-weight: 600; /* semibold */
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    display: inline-block; /* Ensure it behaves like a button */
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    border-color: var(--accent-color);
+}
+
+.btn-secondary.text-xs { /* For smaller secondary buttons like remove item */
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* --- Themed Range Slider --- */
+.themed-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 0.5rem; /* 8px */
+    border-radius: 0.25rem; /* rounded-sm */
+    background-color: rgba(var(--border-color), 0.3);
+    outline: none;
+    opacity: 0.9;
+    transition: opacity .15s ease-in-out;
+}
+.themed-range:hover {
+    opacity: 1;
+}
+.themed-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.25rem; /* 20px */
+    height: 1.25rem; /* 20px */
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    cursor: pointer;
+    border: 2px solid rgba(var(--bg-secondary-rgb),0.7); /* Light border for thumb */
+}
+.themed-range::-moz-range-thumb {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    cursor: pointer;
+    border: 2px solid rgba(var(--bg-secondary-rgb),0.7);
+}
