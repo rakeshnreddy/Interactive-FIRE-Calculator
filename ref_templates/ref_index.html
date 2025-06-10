@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="default" data-mode="light">
+<html lang="en" data-theme="default" data-mode="light"> <!-- Default theme & mode -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIRE Calculator - Compare Scenarios</title>
+    <title>FIRE Calculator - Glassmorphism & New Themes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -20,24 +20,44 @@
         }
 
         /* --- Theme & Mode Definitions --- */
+
+        /* Default (Light) */
         [data-theme='default'][data-mode='light'] { --bg-primary-rgb: 248, 249, 250; --bg-secondary-rgb: 255, 255, 255; --text-primary: #212529; --text-secondary: #6c757d; --border-color: #ced4da; --shadow-color: rgb(0 0 0 / 0.1); --hero-gradient: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); --accent-color: #007bff; --accent-hover: #0056b3; --accent-text: #ffffff; }
         [data-theme='default'][data-mode='dark'] { --bg-primary-rgb: 18, 18, 18; --bg-secondary-rgb: 30, 30, 30; --text-primary: #e9ecef; --text-secondary: #adb5bd; --border-color: #495057; --shadow-color: rgb(0 0 0 / 0.4); --hero-gradient: linear-gradient(120deg, #023e8a 0%, #0077b6 100%); --accent-color: #0d6efd; --accent-hover: #3b82f6; --accent-text: #ffffff; }
+
+        /* Oceanic */
         [data-theme='oceanic'][data-mode='light'] { --bg-primary-rgb: 240, 247, 255; --bg-secondary-rgb: 255, 255, 255; --text-primary: #0a3d62; --text-secondary: #3c6382; --border-color: #a7c5eb; --shadow-color: rgb(60 99 130 / 0.15); --hero-gradient: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); --accent-color: #0c7b93; --accent-hover: #1491a9; --accent-text: #ffffff; }
         [data-theme='oceanic'][data-mode='dark'] { --bg-primary-rgb: 15, 23, 42; --bg-secondary-rgb: 30, 41, 59; --text-primary: #e0f2fe; --text-secondary: #94a3b8; --border-color: #334155; --shadow-color: rgb(15 23 42 / 0.5); --hero-gradient: linear-gradient(120deg, #1d2b64 0%, #f8cdda 100%); --accent-color: #22d3ee; --accent-hover: #67e8f9; --accent-text: #111827; }
+
+        /* Forest */
         [data-theme='forest'][data-mode='light'] { --bg-primary-rgb: 244, 246, 240; --bg-secondary-rgb: 255, 255, 255; --text-primary: #2d382c; --text-secondary: #515e4f; --border-color: #c8d3c5; --shadow-color: rgb(45 56 44 / 0.1); --hero-gradient: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); --accent-color: #4a7c59; --accent-hover: #5a936a; --accent-text: #ffffff; }
         [data-theme='forest'][data-mode='dark'] { --bg-primary-rgb: 26, 32, 26; --bg-secondary-rgb: 41, 50, 42; --text-primary: #f0f6f0; --text-secondary: #a8b8a8; --border-color: #404a40; --shadow-color: rgb(26 32 26 / 0.5); --hero-gradient: linear-gradient(120deg, #087f5b 0%, #173d32 100%); --accent-color: #4ade80; --accent-hover: #86efac; --accent-text: #1a201a; }
+
+        /* Sunrise */
         [data-theme='sunrise'][data-mode='light'] { --bg-primary-rgb: 255, 248, 240; --bg-secondary-rgb: 255, 255, 255; --text-primary: #5c3d1e; --text-secondary: #8c6d46; --border-color: #f7d9aa; --shadow-color: rgb(247 217 170 / 0.2); --hero-gradient: linear-gradient(120deg, #f6d365 0%, #fda085 100%); --accent-color: #ff8c42; --accent-hover: #ffa263; --accent-text: #ffffff; }
         [data-theme='sunrise'][data-mode='dark'] { --bg-primary-rgb: 40, 28, 13; --bg-secondary-rgb: 66, 45, 22; --text-primary: #fffbeb; --text-secondary: #d7c6b0; --border-color: #5c3d1e; --shadow-color: rgb(40 28 13 / 0.5); --hero-gradient: linear-gradient(120deg, #b22a00 0%, #ff8c42 100%); --accent-color: #fb923c; --accent-hover: #fdba74; --accent-text: #422d16; }
+
+        /* Maroon */
         [data-theme='maroon'][data-mode='light'] { --bg-primary-rgb: 253, 242, 242; --bg-secondary-rgb: 255, 255, 255; --text-primary: #5c0000; --text-secondary: #804040; --border-color: #e6c0c0; --shadow-color: rgb(92 0 0 / 0.1); --hero-gradient: linear-gradient(120deg, #f093fb 0%, #f5576c 100%); --accent-color: #800000; --accent-hover: #a00000; --accent-text: #ffffff; }
         [data-theme='maroon'][data-mode='dark'] { --bg-primary-rgb: 26, 18, 18; --bg-secondary-rgb: 42, 32, 32; --text-primary: #fde8e8; --text-secondary: #c9b8b8; --border-color: #5c2020; --shadow-color: rgb(26 18 18 / 0.5); --hero-gradient: linear-gradient(120deg, #870000 0%, #190a05 100%); --accent-color: #c04040; --accent-hover: #e06060; --accent-text: #fde8e8; }
+        
+        /* Amethyst */
         [data-theme='amethyst'][data-mode='light'] { --bg-primary-rgb: 250, 245, 255; --bg-secondary-rgb: 255, 255, 255; --text-primary: #4c1d95; --text-secondary: #6d28d9; --border-color: #d8b4fe; --shadow-color: rgb(76 29 149 / 0.1); --hero-gradient: linear-gradient(120deg, #d299c2 0%, #fef9d7 100%); --accent-color: #8b5cf6; --accent-hover: #a78bfa; --accent-text: #ffffff; }
         [data-theme='amethyst'][data-mode='dark'] { --bg-primary-rgb: 24, 18, 43; --bg-secondary-rgb: 41, 32, 62; --text-primary: #f5d0fe; --text-secondary: #e9d5ff; --border-color: #581c87; --shadow-color: rgb(24 18 43 / 0.5); --hero-gradient: linear-gradient(120deg, #371060 0%, #c026d3 100%); --accent-color: #c084fc; --accent-hover: #d8b4fe; --accent-text: #27123A; }
+
+        /* Emerald */
         [data-theme='emerald'][data-mode='light'] { --bg-primary-rgb: 240, 253, 244; --bg-secondary-rgb: 255, 255, 255; --text-primary: #047857; --text-secondary: #059669; --border-color: #a7f3d0; --shadow-color: rgb(4 120 87 / 0.1); --hero-gradient: linear-gradient(120deg, #5ee7df 0%, #b490ca 100%); --accent-color: #10b981; --accent-hover: #34d399; --accent-text: #ffffff; }
-        [data-theme='emerald'][data-mode='dark'] { --bg-primary-rgb: 12, 35, 23; --bg-secondary-rgb: 19, 58, 41; --text-primary: #d1fae5; --text-secondary: #a7f3d0; --border-color: #065f46; --shadow-color: rgb(12 35 23 / 0.5); --hero-gradient: linear-gradient(120deg, #004643 0%, #0c7489 100%); --accent-color: #34d399; --accent-hover: #6ee7b7; --accent-text: #064E3B; }
+        [data-t'emerald'][data-mode='dark'] { --bg-primary-rgb: 12, 35, 23; --bg-secondary-rgb: 19, 58, 41; --text-primary: #d1fae5; --text-secondary: #a7f3d0; --border-color: #065f46; --shadow-color: rgb(12 35 23 / 0.5); --hero-gradient: linear-gradient(120deg, #004643 0%, #0c7489 100%); --accent-color: #34d399; --accent-hover: #6ee7b7; --accent-text: #064E3B; }
+
+        /* Slate */
         [data-theme='slate'][data-mode='light'] { --bg-primary-rgb: 241, 245, 249; --bg-secondary-rgb: 255, 255, 255; --text-primary: #334155; --text-secondary: #64748b; --border-color: #cbd5e1; --shadow-color: rgb(51 65 85 / 0.1); --hero-gradient: linear-gradient(120deg, #d3cce3 0%, #e9e4f0 100%); --accent-color: #475569; --accent-hover: #64748b; --accent-text: #ffffff; }
         [data-theme='slate'][data-mode='dark'] { --bg-primary-rgb: 15, 23, 42; --bg-secondary-rgb: 30, 41, 59; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border-color: #475569; --shadow-color: rgb(15 23 42 / 0.5); --hero-gradient: linear-gradient(120deg, #2c3e50 0%, #4ca1af 100%); --accent-color: #94a3b8; --accent-hover: #cbd5e1; --accent-text: #0f172a; }
+
+        /* Tangerine */
         [data-theme='tangerine'][data-mode='light'] { --bg-primary-rgb: 255, 247, 237; --bg-secondary-rgb: 255, 255, 255; --text-primary: #c2410c; --text-secondary: #ea580c; --border-color: #fed7aa; --shadow-color: rgb(194 65 12 / 0.1); --hero-gradient: linear-gradient(120deg, #f83600 0%, #f9d423 100%); --accent-color: #f97316; --accent-hover: #fb923c; --accent-text: #ffffff; }
         [data-theme='tangerine'][data-mode='dark'] { --bg-primary-rgb: 36, 19, 3; --bg-secondary-rgb: 60, 31, 6; --text-primary: #ffedd5; --text-secondary: #fed7aa; --border-color: #9a3412; --shadow-color: rgb(36 19 3 / 0.5); --hero-gradient: linear-gradient(120deg, #dd2476 0%, #ff512f 100%); --accent-color: #fb923c; --accent-hover: #fdba74; --accent-text: #78350F; }
+
+        /* Rose */
         [data-theme='rose'][data-mode='light'] { --bg-primary-rgb: 255, 241, 242; --bg-secondary-rgb: 255, 255, 255; --text-primary: #be123c; --text-secondary: #e11d48; --border-color: #fecdd3; --shadow-color: rgb(190 18 60 / 0.1); --hero-gradient: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%); --accent-color: #f43f5e; --accent-hover: #fb7185; --accent-text: #ffffff; }
         [data-theme='rose'][data-mode='dark'] { --bg-primary-rgb: 39, 13, 19; --bg-secondary-rgb: 64, 21, 31; --text-primary: #fff1f2; --text-secondary: #fecdd3; --border-color: #be123c; --shadow-color: rgb(39 13 19 / 0.5); --hero-gradient: linear-gradient(120deg, #ff0844 0%, #ffb199 100%); --accent-color: #fb7185; --accent-hover: #fca5a5; --accent-text: #881337; }
 
@@ -50,11 +70,19 @@
             box-shadow: 0 8px 32px 0 var(--shadow-color);
             transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
         }
+
         .nav { transition: background-color var(--transition-speed) ease; border-bottom: 1px solid rgba(var(--border-color), 0.2); }
-        .btn-primary { background-color: var(--accent-color); color: var(--accent-text); transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; }
-        .btn-primary:hover { background-color: var(--accent-hover); }
+        .hero-bg { transition: background var(--transition-speed) ease; }
         .text-primary { color: var(--text-primary); }
         .text-secondary { color: var(--text-secondary); }
+        .card:hover { transform: translateY(-5px); }
+        .btn-primary { background-color: var(--accent-color); color: var(--accent-text); transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .form-input { background-color: rgba(var(--bg-secondary-rgb), 0.2); border: 1px solid rgba(var(--border-color), 0.5); color: var(--text-primary); border-radius: 0.5rem; transition: all var(--transition-speed) ease; }
+        .form-input::placeholder { color: var(--text-secondary); opacity: 0.8; }
+        .form-input:focus { outline: 0; border-color: var(--accent-color); box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--accent-color) 25%, transparent); background-color: rgba(var(--bg-secondary-rgb), 0.5); }
+        
+        /* Settings Modal */
         .settings-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .settings-modal.is-open { opacity: 1; visibility: visible; }
         .mode-toggle-bg { background-color: color-mix(in srgb, var(--border-color) 50%, transparent); }
@@ -63,94 +91,13 @@
 </head>
 <body>
     <nav class="nav glassmorphic sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between items-center h-16"><div class="flex-shrink-0"><a href="#" class="text-2xl font-bold text-primary"><span style="color: var(--accent-color);">FIRE</span>Calc</a></div><div class="hidden md:flex items-center space-x-4"><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Calculator</a><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Compare</a><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">FAQ</a><a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">About</a><button id="settings-button" class="p-2 rounded-md text-secondary hover:text-primary"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></button></div></div></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between items-center h-16"><div class="flex-shrink-0"><a href="#" class="text-2xl font-bold text-primary"><span style="color: var(--accent-color);">FIRE</span>Calc</a></div><div class="hidden md:flex items-center space-x-4"><a href="#calculator" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Calculator</a><a href="#features" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Features</a><a href="#faq" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">FAQ</a><a href="#about" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">About</a><button id="settings-button" class="p-2 rounded-md text-secondary hover:text-primary"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></button></div></div></div>
     </nav>
     <div id="settings-modal" class="settings-modal"><div class="settings-modal-content glassmorphic"><div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-primary">Settings</h3><button id="settings-close-button" class="p-2 text-secondary hover:text-primary">&times;</button></div><div><h4 class="text-lg font-semibold text-primary mb-4">Color Theme</h4><div id="theme-selector" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div><hr class="my-6" style="border-color: rgba(var(--border-color), 0.3);"><h4 class="text-lg font-semibold text-primary mb-4">Mode</h4><div class="flex items-center justify-between"><span class="text-secondary">Light</span><button id="mode-toggle" class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors mode-toggle-bg"><span id="mode-toggle-circle" class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform translate-x-1"></span></button><span class="text-secondary">Dark</span></div></div></div></div>
-    
-    <main class="py-12 md:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <header class="text-center mb-12">
-                <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">Compare Scenarios</h1>
-                <p class="mt-4 max-w-2xl mx-auto text-lg text-secondary">See how different choices impact your journey to financial independence.</p>
-            </header>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Scenario A -->
-                <div class="glassmorphic rounded-2xl p-6 md:p-8">
-                    <h2 class="text-3xl font-bold text-primary mb-6">Scenario A</h2>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="text-sm font-medium text-secondary">FIRE Number</p>
-                            <p class="text-2xl font-bold" style="color: var(--accent-color);">$1,250,000</p>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-secondary">Retirement Age</p>
-                            <p class="text-2xl font-bold" style="color: var(--accent-color);">45</p>
-                        </div>
-                        <hr class="border-t" style="border-color: rgba(var(--border-color), 0.3);">
-                        <div class="text-secondary space-y-2">
-                            <p class="flex justify-between"><span>Monthly Contribution:</span><span class="font-medium text-primary">$1,500</span></p>
-                            <p class="flex justify-between"><span>Annual Return:</span><span class="font-medium text-primary">7%</span></p>
-                            <p class="flex justify-between"><span>Retirement Spending:</span><span class="font-medium text-primary">$50,000 / year</span></p>
-                        </div>
-                        <div class="pt-4">
-                             <button class="w-full btn-primary py-2 px-4 rounded-md font-semibold">Load Scenario A</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Scenario B -->
-                <div class="glassmorphic rounded-2xl p-6 md:p-8">
-                    <h2 class="text-3xl font-bold text-primary mb-6">Scenario B</h2>
-                     <div class="space-y-4">
-                        <div>
-                            <p class="text-sm font-medium text-secondary">FIRE Number</p>
-                            <p class="text-2xl font-bold" style="color: var(--accent-color);">$1,125,000</p>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-secondary">Retirement Age</p>
-                            <p class="text-2xl font-bold" style="color: var(--accent-color);">43</p>
-                        </div>
-                        <hr class="border-t" style="border-color: rgba(var(--border-color), 0.3);">
-                        <div class="text-secondary space-y-2">
-                            <p class="flex justify-between"><span>Monthly Contribution:</span><span class="font-medium text-primary">$1,800</span></p>
-                            <p class="flex justify-between"><span>Annual Return:</span><span class="font-medium text-primary">7%</span></p>
-                            <p class="flex justify-between"><span>Retirement Spending:</span><span class="font-medium text-primary">$45,000 / year</span></p>
-                        </div>
-                        <div class="pt-4">
-                             <button class="w-full btn-primary py-2 px-4 rounded-md font-semibold">Load Scenario B</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Difference Summary -->
-            <div class="mt-12 glassmorphic rounded-2xl p-6 md:p-8">
-                <h2 class="text-2xl font-bold text-primary text-center mb-6">Key Differences</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-                    <div>
-                        <p class="text-lg font-medium text-secondary">Retire Earlier</p>
-                        <p class="text-4xl font-bold mt-1" style="color: var(--accent-color);">2 Years</p>
-                    </div>
-                     <div>
-                        <p class="text-lg font-medium text-secondary">Lower FIRE Number</p>
-                        <p class="text-4xl font-bold mt-1" style="color: var(--accent-color);">$125,000</p>
-                    </div>
-                     <div>
-                        <p class="text-lg font-medium text-secondary">Increased Contribution</p>
-                        <p class="text-4xl font-bold mt-1" style="color: var(--accent-color);">$300/mo</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-    
-    <footer class="mt-20 bg-black bg-opacity-20 text-white p-8">
-        <div class="text-center text-gray-300">
-            <p>&copy; 2024 FIRECalc. All rights reserved.</p>
-        </div>
-    </footer>
+    <header class="hero-bg"><div class="max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center"><h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-primary tracking-tight">Chart Your Path to Financial Independence.</h1><p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-secondary">Our powerful and intuitive calculator helps you visualize your journey to early retirement.</p><div class="mt-8"><a href="#calculator" class="btn-primary inline-block px-8 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">Start Planning Now</a></div></div></header>
+    <main id="calculator" class="py-20"><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"><div class="calculator-section glassmorphic p-8 md:p-12 rounded-2xl"><h2 class="text-3xl font-bold text-center text-primary">FIRE Calculator</h2><p class="text-center mt-4 text-secondary">Enter your financial details to get started.</p><form class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8"><div><div class="mb-6"><label for="current_age" class="block text-sm font-medium text-secondary mb-2">Current Age</label><input type="number" id="current_age" class="form-input w-full p-3" placeholder="e.g., 30" required></div><div class="mb-6"><label for="retirement_age" class="block text-sm font-medium text-secondary mb-2">Target Retirement Age</label><input type="number" id="retirement_age" class="form-input w-full p-3" placeholder="e.g., 45" required></div><div class="mb-6"><label for="current_savings" class="block text-sm font-medium text-secondary mb-2">Current Savings / Investments ($)</label><input type="number" id="current_savings" class="form-input w-full p-3" placeholder="e.g., 50000" required></div><div class="mb-6"><label for="monthly_contribution" class="block text-sm font-medium text-secondary mb-2">Monthly Contribution ($)</label><input type="number" id="monthly_contribution" class="form-input w-full p-3" placeholder="e.g., 1500" required></div></div><div><div class="mb-6"><label for="annual_return" class="block text-sm font-medium text-secondary mb-2">Expected Annual Return (%)</label><input type="number" id="annual_return" class="form-input w-full p-3" value="7" required></div><div class="mb-6"><label for="inflation_rate" class="block text-sm font-medium text-secondary mb-2">Assumed Inflation Rate (%)</label><input type="number" id="inflation_rate" class="form-input w-full p-3" value="3" required></div><div class="mb-6"><label for="withdrawal_rate" class="block text-sm font-medium text-secondary mb-2">Safe Withdrawal Rate (%)</label><input type="number" id="withdrawal_rate" class="form-input w-full p-3" value="4" required></div><div class="mb-6"><label for="retirement_spending" class="block text-sm font-medium text-secondary mb-2">Desired Annual Retirement Spending ($)</label><input type="number" id="retirement_spending" class="form-input w-full p-3" placeholder="e.g., 60000" required></div></div><div class="md:col-span-2 text-center mt-4"><button type="submit" class="btn-primary w-full md:w-auto px-8 py-3 rounded-md font-semibold">Calculate My FIRE Number</button></div></form></div></div></main>
+    <section id="features" class="py-20"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center"><h2 class="text-3xl font-bold text-primary">Why Use Our Calculator?</h2><p class="mt-4 max-w-2xl mx-auto text-lg text-secondary">We provide powerful features in a simple, easy-to-use interface.</p></div><div class="mt-16 grid md:grid-cols-3 gap-8"><div class="card glassmorphic p-8 text-center"><div class="flex items-center justify-center h-12 w-12 rounded-full mx-auto" style="background-color: color-mix(in srgb, var(--accent-color) 15%, transparent); color: var(--accent-color);"><svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6a2 2 0 100-4 2 2 0 000 4zm0 14a2 2 0 100-4 2 2 0 000 4z" /></svg></div><h3 class="mt-6 text-xl font-semibold text-primary">Scenario Comparison</h3><p class="mt-4 text-secondary">Compare different scenarios to see how choices impact your retirement timeline.</p></div><div class="card glassmorphic p-8 text-center"><div class="flex items-center justify-center h-12 w-12 rounded-full mx-auto" style="background-color: color-mix(in srgb, var(--accent-color) 15%, transparent); color: var(--accent-color);"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg></div><h3 class="mt-6 text-xl font-semibold text-primary">Detailed Projections</h3><p class="mt-4 text-secondary">Get year-by-year breakdowns of your savings growth.</p></div><div class="card glassmorphic p-8 text-center"><div class="flex items-center justify-center h-12 w-12 rounded-full mx-auto" style="background-color: color-mix(in srgb, var(--accent-color) 15%, transparent); color: var(--accent-color);"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><h3 class="mt-6 text-xl font-semibold text-primary">Informative Guides</h3><p class="mt-4 text-secondary">Access our FAQ and About sections to learn more about the FIRE movement.</p></div></div></div></section>
+    <footer class="bg-black bg-opacity-20 text-white"></footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -208,6 +155,13 @@
             const closeModal = () => settingsModal.classList.remove('is-open');
             settingsCloseButton.addEventListener('click', closeModal);
             settingsModal.addEventListener('click', (event) => { if (event.target === settingsModal) closeModal(); });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
         });
     </script>
 </body>
