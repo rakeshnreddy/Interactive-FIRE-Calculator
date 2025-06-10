@@ -39,7 +39,11 @@
     <div class="glassmorphic rounded-2xl p-6 md:p-8">
         <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Informative Guides") }}</h2>
         <p class="text-secondary">
-            {{ _("Access our <a href=\"%s\" class=\"%s\">FAQ</a> and <a href=\"%s\" class=\"%s\">About</a> sections to learn more about the FIRE movement.")|safe|format(url_for('project.faq'), 'text-accent-color hover:underline', url_for('project.about'), 'text-accent-color hover:underline') }}
+            {{ _("Access our") }}
+            <a href="{{ url_for('project.faq') }}" class="text-accent-color hover:underline">{{ _("FAQ") }}</a>
+            {{ _("and") }}
+            <a href="{{ url_for('project.about') }}" class="text-accent-color hover:underline">{{ _("About") }}</a>
+            {{ _("sections to learn more about the FIRE movement.") }}
         </p>
     </div>
 </div>
