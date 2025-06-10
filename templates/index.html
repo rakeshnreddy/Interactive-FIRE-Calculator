@@ -20,78 +20,27 @@
     {# The HR and "Other Tools" section related to the old Compare Scenarios link are removed. #}
 </div>
 
-{# New sections for Scenario Comparison from ref_templates/ref_index.html #}
-<header class="text-center mb-12 mt-20"> {# Added mt-20 for spacing #}
-    <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">{{ _("Compare Scenarios") }}</h1>
-    <p class="mt-4 max-w-2xl mx-auto text-lg text-secondary">{{ _("See how different choices impact your journey to financial independence.") }}</p>
-</header>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- Scenario A -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
     <div class="glassmorphic rounded-2xl p-6 md:p-8">
-        <h2 class="text-3xl font-bold text-primary mb-6">{{ _("Scenario A") }}</h2>
-        <div class="space-y-4">
-            <div>
-                <p class="text-sm font-medium text-secondary">{{ _("FIRE Number") }}</p>
-                <p class="text-2xl font-bold text-accent-color">{{ _("$1,250,000") }}</p>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-secondary">{{ _("Retirement Age") }}</p>
-                <p class="text-2xl font-bold text-accent-color">{{ _("45") }}</p>
-            </div>
-            <hr class="hr-themed">
-            <div class="text-secondary space-y-2">
-                <p class="flex justify-between"><span>{{ _("Monthly Contribution:") }}</span><span class="font-medium text-primary">{{ _("$1,500") }}</span></p>
-                <p class="flex justify-between"><span>{{ _("Annual Return:") }}</span><span class="font-medium text-primary">{{ _("7%%") }}</span></p>
-                <p class="flex justify-between"><span>{{ _("Retirement Spending:") }}</span><span class="font-medium text-primary">{{ _("$50,000 / year") }}</span></p>
-            </div>
-            <div class="pt-4">
-                 <a href="{{ url_for('project.compare') }}" class="w-full btn-primary py-2 px-4 rounded-md font-semibold">{{ _("Load Scenario A") }}</a>
-            </div>
-        </div>
+        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Why Use Our Calculator?") }}</h2>
+        <p class="text-secondary">{{ _("We provide powerful features in a simple, easy-to-use interface.") }}</p>
     </div>
 
-    <!-- Scenario B -->
     <div class="glassmorphic rounded-2xl p-6 md:p-8">
-        <h2 class="text-3xl font-bold text-primary mb-6">{{ _("Scenario B") }}</h2>
-         <div class="space-y-4">
-            <div>
-                <p class="text-sm font-medium text-secondary">{{ _("FIRE Number") }}</p>
-                <p class="text-2xl font-bold text-accent-color">{{ _("$1,125,000") }}</p>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-secondary">{{ _("Retirement Age") }}</p>
-                <p class="text-2xl font-bold text-accent-color">{{ _("43") }}</p>
-            </div>
-            <hr class="hr-themed">
-            <div class="text-secondary space-y-2">
-                <p class="flex justify-between"><span>{{ _("Monthly Contribution:") }}</span><span class="font-medium text-primary">{{ _("$1,800") }}</span></p>
-                <p class="flex justify-between"><span>{{ _("Annual Return:") }}</span><span class="font-medium text-primary">{{ _("7%%") }}</span></p>
-                <p class="flex justify-between"><span>{{ _("Retirement Spending:") }}</span><span class="font-medium text-primary">{{ _("$45,000 / year") }}</span></p>
-            </div>
-            <div class="pt-4">
-                 <a href="{{ url_for('project.compare') }}" class="w-full btn-primary py-2 px-4 rounded-md font-semibold">{{ _("Load Scenario B") }}</a>
-            </div>
-        </div>
+        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Scenario Comparison") }}</h2>
+        <p class="text-secondary">{{ _("Compare different scenarios to see how choices impact your retirement timeline.") }}</p>
     </div>
-</div>
 
-<!-- Difference Summary -->
-<div class="mt-12 glassmorphic rounded-2xl p-6 md:p-8">
-    <h2 class="text-2xl font-bold text-primary text-center mb-6">{{ _("Key Differences") }}</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-        <div>
-            <p class="text-lg font-medium text-secondary">{{ _("Retire Earlier") }}</p>
-            <p class="text-4xl font-bold mt-1 text-accent-color">{{ _("2 Years") }}</p>
-        </div>
-         <div>
-            <p class="text-lg font-medium text-secondary">{{ _("Lower FIRE Number") }}</p>
-            <p class="text-4xl font-bold mt-1 text-accent-color">{{ _("$125,000") }}</p>
-        </div>
-         <div>
-            <p class="text-lg font-medium text-secondary">{{ _("Increased Contribution") }}</p>
-            <p class="text-4xl font-bold mt-1 text-accent-color">{{ _("$300/mo") }}</p>
-        </div>
+    <div class="glassmorphic rounded-2xl p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Detailed Projections") }}</h2>
+        <p class="text-secondary">{{ _("Get year-by-year breakdowns of your savings growth.") }}</p>
+    </div>
+
+    <div class="glassmorphic rounded-2xl p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-primary mb-4">{{ _("Informative Guides") }}</h2>
+        <p class="text-secondary">
+            {{ _("Access our <a href=\"%s\" class=\"%s\">FAQ</a> and <a href=\"%s\" class=\"%s\">About</a> sections to learn more about the FIRE movement.")|safe|format(url_for('project.faq'), 'text-accent-color hover:underline', url_for('project.about'), 'text-accent-color hover:underline') }}
+        </p>
     </div>
 </div>
 {% endblock %}
