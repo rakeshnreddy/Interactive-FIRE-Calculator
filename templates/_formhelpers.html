@@ -26,9 +26,25 @@
         <button type="button" class="btn-secondary text-xs py-1 px-2 rounded-md font-semibold remove-list-item-btn" data-entry-id="{{ list_name }}-{{ index }}-entry" aria-label="{{ _('Remove this item') }}">&times;</button>
     </div>
     <input type="hidden" name="{{ list_name }}-{{ index }}-csrf_token" value="{{ form_entry.csrf_token.current_token }}">
-    {% for field_name in field_names %}
-        {% set field = form_entry[field_name] %}
-        {{ render_field(field, class="themed-input text-sm p-1.5", placeholder=field.label.text) }}
-    {% endfor %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+        {% if 'year' in field_names and form_entry['year'] %}
+            {{ render_field(form_entry['year'], class="themed-input text-sm p-1.5", placeholder=form_entry['year'].label.text) }}
+        {% endif %}
+        {% if 'amount' in field_names and form_entry['amount'] %}
+            {{ render_field(form_entry['amount'], class="themed-input text-sm p-1.5", placeholder=form_entry['amount'].label.text) }}
+        {% endif %}
+    </div>
+    {% if 'description' in field_names and form_entry['description'] %}
+        {# Description field takes full width below year and amount #}
+        {{ render_field(form_entry['description'], class="themed-input text-sm p-1.5", placeholder=form_entry['description'].label.text) }}
+    {% endif %}
+    {# Consider a loop for any other fields if field_names can contain more than these three #}
+    {# For example, if other lists might use this macro with different/more fields:
+       {% set processed_fields = ['year', 'amount', 'description'] %}
+       {% for field_name in field_names if field_name not in processed_fields %}
+           {% set field = form_entry[field_name] %}
+           {{ render_field(field, class="themed-input text-sm p-1.5", placeholder=field.label.text) }}
+       {% endfor %}
+    #}
 </div>
 {% endmacro %}
