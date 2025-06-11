@@ -18,23 +18,28 @@
       <h3>{{ primary_result_label | default(_('Result:')) }}</h3>
       <p style="font-size: 1.5em; margin-top: 5px;"><strong>{{ primary_result_value_formatted | default(_('N/A')) }}</strong></p>
 
-      <div class="calculation-context mt-3" style="font-size: 0.9em; line-height: 1.4;">
-        <p style="margin-bottom: 2px;"><em>{{ _("Calculation based on:") }}</em></p>
-        {% if p_initial_mode == "W" %} {# Check against 'W' as confirmed from constants.py and logs #}
-          <p style="margin-bottom: 2px;">{{ _("Input Annual Expenses:") }} <strong>{{ p_input_w }}</strong></p>
-        {% elif p_initial_mode == "P" %} {# Check against 'P' as confirmed from constants.py #}
-          <p style="margin-bottom: 2px;">{{ _("Input Target Portfolio:") }} <strong>{{ p_input_p }}</strong></p>
-        {% endif %}
-        <p style="margin-bottom: 2px;">{{ p_input_period_summary }}</p>
-        <p style="margin-bottom: 2px;">{{ _("Desired Final Portfolio:") }} <strong>{{ p_input_d }}</strong></p>
-        <p style="margin-bottom: 2px;">{{ _("Withdrawal Timing:") }} <strong>{{ p_input_withdrawal_time }}</strong></p>
+      <div class="calculation-context mt-3 text-sm leading-snug"> {# MODIFIED HERE #}
+        <p class="mb-1"><em>{{ _("Calculation based on:") }}</em></p> {# MODIFIED HERE #}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> {# ADDED WRAPPER #}
+            {% if p_initial_mode == "W" %} {# Check against 'W' as confirmed from constants.py and logs #}
+              <p class="mb-1">{{ _("Input Annual Expenses:") }} <strong class="text-primary">{{ p_input_w }}</strong></p> {# MODIFIED HERE #}
+            {% elif p_initial_mode == "P" %} {# Check against 'P' as confirmed from constants.py #}
+              <p class="mb-1">{{ _("Input Target Portfolio:") }} <strong class="text-primary">{{ p_input_p }}</strong></p> {# MODIFIED HERE #}
+            {% endif %}
+            <p class="mb-1">{{ _("Desired Final Portfolio:") }} <strong class="text-primary">{{ p_input_d }}</strong></p> {# MODIFIED HERE #}
+            <p class="mb-1 md:col-span-2">{{ p_input_period_summary }}</p> {# MODIFIED HERE #}
+            <p class="mb-1">{{ _("Withdrawal Timing:") }} <strong class="text-primary">{{ p_input_withdrawal_time }}</strong></p> {# MODIFIED HERE #}
+        </div> {# END ADDED WRAPPER #}
+
         {% if one_off_events_input and one_off_events_input|length > 0 %}
-        <p style="margin-bottom: 2px;">{{ _("One-off Events:") }}</p>
-        <ul class="list-unstyled" style="font-size: 0.8em; margin-left: 15px;">
-            {% for event in one_off_events_input %}
-                <li>{{ _("Year:") }} {{ event.year }}, {{ _("Amount:") }} {{ event.formatted_amount }}</li>
-            {% endfor %}
-        </ul>
+        <div class="mt-2"> {# ADDED WRAPPER & CLASS #}
+            <p class="mb-1">{{ _("One-off Events:") }}</p> {# MODIFIED HERE #}
+            <ul class="list-none ml-4 text-xs"> {# MODIFIED HERE #}
+                {% for event in one_off_events_input %}
+                    <li>{{ _("Year:") }} {{ event.year }}, {{ _("Amount:") }} {{ event.formatted_amount }}</li>
+                {% endfor %}
+            </ul>
+        </div>
         {% endif %}
       </div>
     </div>
@@ -134,15 +139,21 @@
               {# For this display span, we should format it. #}
               <div class="row"><div class="col-8"><strong>{{ _("Your Annual Expense (Input):") }}</strong></div><div class="col-4 text-end"><span id="annual_expense_W_display">{{ format_currency(fire_W_input_val | default(0), DEFAULT_CURRENCY, locale=get_locale()) }}</span></div></div>
             </div>
-            <h3>{{ _("Portfolio Balance") }}</h3>
-            <div id="portfolio_plot_W" class="plot-container">
-              {{ portfolio_plot_fire | safe }}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-2">{{ _("Portfolio Balance") }}</h3>
+                    <div id="portfolio_plot_W" class="plot-container">
+                        {{ portfolio_plot_fire | safe }}
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-2">{{ _("Annual Withdrawals") }}</h3>
+                    <div id="withdrawal_plot_W" class="plot-container">
+                        {{ withdrawal_plot_fire | safe }}
+                    </div>
+                </div>
             </div>
-            <h3>{{ _("Annual Withdrawals") }}</h3>
-            <div id="withdrawal_plot_W" class="plot-container">
-              {{ withdrawal_plot_fire | safe }}
-            </div>
-            <h3>{{ _("Yearly Data") }}</h3>
+            <h3 class="mt-6 text-lg font-semibold text-primary mb-2">{{ _("Yearly Data") }}</h3> {# Added spacing and styling to this header #}
             <div id="table_data_W_container" class="table-container table-responsive"> {# Added table-responsive #}
               {{ table_data_fire_html | safe if table_data_fire_html else "<p>" + _("Yearly data table will appear here after calculation.") + "</p>" }}
             </div>
@@ -169,15 +180,21 @@
               <div class="row mb-1"><div class="col-8"><strong>{{ _("Your FIRE Number (Input):") }}</strong></div><div class="col-4 text-end"><span id="fire_number_P_display">{% if expense_P_input_val != 'N/A' and expense_P_input_val is not none %}{{ format_currency(expense_P_input_val, DEFAULT_CURRENCY, locale=get_locale()) }}{% else %}{{ expense_P_input_val | e }}{% endif %}</span></div></div>
               <div class="row"><div class="col-8"><strong>{{ _("Max Sustainable Annual Expense:") }}</strong></div><div class="col-4 text-end"><span id="annual_expense_P_display">{{ expense_W_calculated_val }}</span></div></div>
             </div>
-            <h3>{{ _("Portfolio Balance") }}</h3>
-            <div id="portfolio_plot_P" class="plot-container">
-              {{ portfolio_plot_expense | safe }}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-2">{{ _("Portfolio Balance") }}</h3>
+                    <div id="portfolio_plot_P" class="plot-container">
+                        {{ portfolio_plot_expense | safe }}
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-2">{{ _("Annual Withdrawals") }}</h3>
+                    <div id="withdrawal_plot_P" class="plot-container">
+                        {{ withdrawal_plot_expense | safe }}
+                    </div>
+                </div>
             </div>
-            <h3>{{ _("Annual Withdrawals") }}</h3>
-            <div id="withdrawal_plot_P" class="plot-container">
-              {{ withdrawal_plot_expense | safe }}
-            </div>
-            <h3>{{ _("Yearly Data") }}</h3>
+            <h3 class="mt-6 text-lg font-semibold text-primary mb-2">{{ _("Yearly Data") }}</h3> {# Added spacing and styling to this header #}
             <div id="table_data_P_container" class="table-container table-responsive"> {# Added table-responsive #}
               {{ table_data_expense_html | safe if table_data_expense_html else "<p>" + _("Yearly data table will appear here after calculation.") + "</p>" }}
             </div>
@@ -625,3 +642,1260 @@
   </script>
 {% endblock %}
 </html>
+
+[end of templates/result.html]
+
+[start of static/css/main.css]
+:root {
+    --transition-speed: 0.4s;
+    --tw-space-x-reverse: 0;
+    --tw-space-y-reverse: 0;
+}
+
+/* --- Theme & Mode Definitions --- */
+[data-theme='default'][data-mode='light'] { --bg-primary-rgb: 248, 249, 250; --bg-secondary-rgb: 255, 255, 255; --text-primary: #212529; --text-secondary: #6c757d; --border-color: #ced4da; --shadow-color: rgb(0 0 0 / 0.1); --hero-gradient: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); --accent-color: #007bff; --accent-hover: #0056b3; --accent-text: #ffffff; }
+[data-theme='default'][data-mode='dark'] { --bg-primary-rgb: 18, 18, 18; --bg-secondary-rgb: 30, 30, 30; --text-primary: #e9ecef; --text-secondary: #adb5bd; --border-color: #495057; --shadow-color: rgb(0 0 0 / 0.4); --hero-gradient: linear-gradient(120deg, #023e8a 0%, #0077b6 100%); --accent-color: #0d6efd; --accent-hover: #3b82f6; --accent-text: #ffffff; }
+[data-theme='oceanic'][data-mode='light'] { --bg-primary-rgb: 240, 247, 255; --bg-secondary-rgb: 255, 255, 255; --text-primary: #0a3d62; --text-secondary: #3c6382; --border-color: #a7c5eb; --shadow-color: rgb(60 99 130 / 0.15); --hero-gradient: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); --accent-color: #0c7b93; --accent-hover: #1491a9; --accent-text: #ffffff; }
+[data-theme='oceanic'][data-mode='dark'] { --bg-primary-rgb: 15, 23, 42; --bg-secondary-rgb: 30, 41, 59; --text-primary: #e0f2fe; --text-secondary: #94a3b8; --border-color: #334155; --shadow-color: rgb(15 23 42 / 0.5); --hero-gradient: linear-gradient(120deg, #1d2b64 0%, #f8cdda 100%); --accent-color: #22d3ee; --accent-hover: #67e8f9; --accent-text: #111827; }
+[data-theme='forest'][data-mode='light'] { --bg-primary-rgb: 244, 246, 240; --bg-secondary-rgb: 255, 255, 255; --text-primary: #2d382c; --text-secondary: #515e4f; --border-color: #c8d3c5; --shadow-color: rgb(45 56 44 / 0.1); --hero-gradient: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); --accent-color: #4a7c59; --accent-hover: #5a936a; --accent-text: #ffffff; }
+[data-theme='forest'][data-mode='dark'] { --bg-primary-rgb: 26, 32, 26; --bg-secondary-rgb: 41, 50, 42; --text-primary: #f0f6f0; --text-secondary: #a8b8a8; --border-color: #404a40; --shadow-color: rgb(26 32 26 / 0.5); --hero-gradient: linear-gradient(120deg, #087f5b 0%, #173d32 100%); --accent-color: #4ade80; --accent-hover: #86efac; --accent-text: #1a201a; }
+[data-theme='sunrise'][data-mode='light'] { --bg-primary-rgb: 255, 248, 240; --bg-secondary-rgb: 255, 255, 255; --text-primary: #5c3d1e; --text-secondary: #8c6d46; --border-color: #f7d9aa; --shadow-color: rgb(247 217 170 / 0.2); --hero-gradient: linear-gradient(120deg, #f6d365 0%, #fda085 100%); --accent-color: #ff8c42; --accent-hover: #ffa263; --accent-text: #ffffff; }
+[data-theme='sunrise'][data-mode='dark'] { --bg-primary-rgb: 40, 28, 13; --bg-secondary-rgb: 66, 45, 22; --text-primary: #fffbeb; --text-secondary: #d7c6b0; --border-color: #5c3d1e; --shadow-color: rgb(40 28 13 / 0.5); --hero-gradient: linear-gradient(120deg, #b22a00 0%, #ff8c42 100%); --accent-color: #fb923c; --accent-hover: #fdba74; --accent-text: #422d16; }
+[data-theme='maroon'][data-mode='light'] { --bg-primary-rgb: 253, 242, 242; --bg-secondary-rgb: 255, 255, 255; --text-primary: #5c0000; --text-secondary: #804040; --border-color: #e6c0c0; --shadow-color: rgb(92 0 0 / 0.1); --hero-gradient: linear-gradient(120deg, #f093fb 0%, #f5576c 100%); --accent-color: #800000; --accent-hover: #a00000; --accent-text: #ffffff; }
+[data-theme='maroon'][data-mode='dark'] { --bg-primary-rgb: 26, 18, 18; --bg-secondary-rgb: 42, 32, 32; --text-primary: #fde8e8; --text-secondary: #c9b8b8; --border-color: #5c2020; --shadow-color: rgb(26 18 18 / 0.5); --hero-gradient: linear-gradient(120deg, #870000 0%, #190a05 100%); --accent-color: #c04040; --accent-hover: #e06060; --accent-text: #fde8e8; }
+[data-theme='amethyst'][data-mode='light'] { --bg-primary-rgb: 250, 245, 255; --bg-secondary-rgb: 255, 255, 255; --text-primary: #4c1d95; --text-secondary: #6d28d9; --border-color: #d8b4fe; --shadow-color: rgb(76 29 149 / 0.1); --hero-gradient: linear-gradient(120deg, #d299c2 0%, #fef9d7 100%); --accent-color: #8b5cf6; --accent-hover: #a78bfa; --accent-text: #ffffff; }
+[data-theme='amethyst'][data-mode='dark'] { --bg-primary-rgb: 24, 18, 43; --bg-secondary-rgb: 41, 32, 62; --text-primary: #f5d0fe; --text-secondary: #e9d5ff; --border-color: #581c87; --shadow-color: rgb(24 18 43 / 0.5); --hero-gradient: linear-gradient(120deg, #371060 0%, #c026d3 100%); --accent-color: #c084fc; --accent-hover: #d8b4fe; --accent-text: #27123A; }
+[data-theme='emerald'][data-mode='light'] { --bg-primary-rgb: 240, 253, 244; --bg-secondary-rgb: 255, 255, 255; --text-primary: #047857; --text-secondary: #059669; --border-color: #a7f3d0; --shadow-color: rgb(4 120 87 / 0.1); --hero-gradient: linear-gradient(120deg, #5ee7df 0%, #b490ca 100%); --accent-color: #10b981; --accent-hover: #34d399; --accent-text: #ffffff; }
+[data-theme='emerald'][data-mode='dark'] { --bg-primary-rgb: 12, 35, 23; --bg-secondary-rgb: 19, 58, 41; --text-primary: #d1fae5; --text-secondary: #a7f3d0; --border-color: #065f46; --shadow-color: rgb(12 35 23 / 0.5); --hero-gradient: linear-gradient(120deg, #004643 0%, #0c7489 100%); --accent-color: #34d399; --accent-hover: #6ee7b7; --accent-text: #064E3B; }
+[data-theme='slate'][data-mode='light'] { --bg-primary-rgb: 241, 245, 249; --bg-secondary-rgb: 255, 255, 255; --text-primary: #334155; --text-secondary: #64748b; --border-color: #cbd5e1; --shadow-color: rgb(51 65 85 / 0.1); --hero-gradient: linear-gradient(120deg, #d3cce3 0%, #e9e4f0 100%); --accent-color: #475569; --accent-hover: #64748b; --accent-text: #ffffff; }
+[data-theme='slate'][data-mode='dark'] { --bg-primary-rgb: 15, 23, 42; --bg-secondary-rgb: 30, 41, 59; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border-color: #475569; --shadow-color: rgb(15 23 42 / 0.5); --hero-gradient: linear-gradient(120deg, #2c3e50 0%, #4ca1af 100%); --accent-color: #94a3b8; --accent-hover: #cbd5e1; --accent-text: #0f172a; }
+[data-theme='tangerine'][data-mode='light'] { --bg-primary-rgb: 255, 247, 237; --bg-secondary-rgb: 255, 255, 255; --text-primary: #c2410c; --text-secondary: #ea580c; --border-color: #fed7aa; --shadow-color: rgb(194 65 12 / 0.1); --hero-gradient: linear-gradient(120deg, #f83600 0%, #f9d423 100%); --accent-color: #f97316; --accent-hover: #fb923c; --accent-text: #ffffff; }
+[data-theme='tangerine'][data-mode='dark'] { --bg-primary-rgb: 36, 19, 3; --bg-secondary-rgb: 60, 31, 6; --text-primary: #ffedd5; --text-secondary: #fed7aa; --border-color: #9a3412; --shadow-color: rgb(36 19 3 / 0.5); --hero-gradient: linear-gradient(120deg, #dd2476 0%, #ff512f 100%); --accent-color: #fb923c; --accent-hover: #fdba74; --accent-text: #78350F; }
+[data-theme='rose'][data-mode='light'] { --bg-primary-rgb: 255, 241, 242; --bg-secondary-rgb: 255, 255, 255; --text-primary: #be123c; --text-secondary: #e11d48; --border-color: #fecdd3; --shadow-color: rgb(190 18 60 / 0.1); --hero-gradient: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%); --accent-color: #f43f5e; --accent-hover: #fb7185; --accent-text: #ffffff; }
+[data-theme='rose'][data-mode='dark'] { --bg-primary-rgb: 39, 13, 19; --bg-secondary-rgb: 64, 21, 31; --text-primary: #fff1f2; --text-secondary: #fecdd3; --border-color: #be123c; --shadow-color: rgb(39 13 19 / 0.5); --hero-gradient: linear-gradient(120deg, #ff0844 0%, #ffb199 100%); --accent-color: #fb7185; --accent-hover: #fca5a5; --accent-text: #881337; }
+
+/* --- Body Styling (Moved from base.html inline style) --- */
+body {
+  font-family: 'Inter', sans-serif;
+  background-image: var(--hero-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  transition: background-image var(--transition-speed) ease, color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+}
+
+/* --- Custom Components & Sections --- */
+.hero-bg {
+    /* The actual background (e.g., gradient) is applied via body or specific theme variables. */
+    /* This class can be used for other hero-specific styles if needed. */
+    transition: background var(--transition-speed) ease;
+}
+
+.card {
+    transition: transform var(--transition-speed) ease;
+    text-decoration: none;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.icon-bg-accented {
+    background-color: color-mix(in srgb, var(--accent-color) 15%, transparent);
+    color: var(--accent-color);
+}
+
+/* --- Component Styling with Glassmorphism (Already mostly present) --- */
+.glassmorphic {
+    background-color: rgba(var(--bg-secondary-rgb), 0.65);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(var(--border-color), 0.3);
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+/* --- Utility Styles (Some already present, adding more common ones) --- */
+.nav {
+    transition: background-color var(--transition-speed) ease;
+    border-bottom: 1px solid rgba(var(--border-color), 0.2);
+}
+.btn-primary {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+/* For new CTA button style */
+.btn-primary.px-8 { padding-left: 2rem; padding-right: 2rem; }
+.btn-primary.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.btn-primary.rounded-md { border-radius: 0.375rem; }
+.btn-primary.hover\:scale-105:hover { transform: scale(1.05); }
+
+
+.text-primary {
+    color: var(--text-primary);
+}
+.text-secondary {
+    color: var(--text-secondary);
+}
+.text-accent-color {
+    color: var(--accent-color);
+}
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.settings-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+.mode-toggle-bg {
+    background-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+}
+.mode-toggle-bg.dark {
+    background-color: var(--accent-color);
+}
+
+/* Added Tailwind-like Utilities */
+.sticky { position: sticky; }
+.top-0 { top: 0; }
+.z-50 { z-index: 50; }
+.max-w-xl { max-width: 36rem; }
+.max-w-2xl { max-width: 42rem; }
+.max-w-7xl { max-width: 80rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.px-8 { padding-left: 2rem; padding-right: 2rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.pt-4 { padding-top: 1rem; }
+.py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+.py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+.py-24 { padding-top: 6rem; padding-bottom: 6rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+
+
+.mt-1 { margin-top: 0.25rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mt-8 { margin-top: 2rem; }
+.mt-12 { margin-top: 3rem; }
+.mt-16 { margin-top: 4rem; }
+.mt-20 { margin-top: 5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.my-6 { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+.my-8 { margin-top: 2rem; margin-bottom: 2rem; }
+
+.block { display: block; }
+.flex { display: flex; }
+.hidden { display: none; }
+.inline-block { display: inline-block; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.items-center { align-items: center; }
+.flex-shrink-0 { flex-shrink: 0; }
+.space-x-4 > :not([hidden]) ~ :not([hidden]) { margin-left: calc(1rem * var(--tw-space-x-reverse)); margin-right: calc(1rem * calc(1 - var(--tw-space-x-reverse))); }
+.space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.5rem * var(--tw-space-y-reverse)); }
+.space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(1rem * var(--tw-space-y-reverse)); }
+
+
+.h-6 { height: 1.5rem; }
+.w-6 { width: 1.5rem; }
+.h-12 { height: 3rem; }
+.w-12 { width: 3rem; }
+.h-16 { height: 4rem; }
+.w-11 { width: 2.75rem; }
+.w-full { width: 100%; }
+
+.text-center { text-align: center; }
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.leading-snug { line-height: 1.375; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+.text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+.text-5xl { font-size: 3rem; line-height: 1; }
+.lg\:text-6xl { }
+
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+.tracking-tight { letter-spacing: -0.025em; }
+.rounded-md { border-radius: 0.375rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-2xl { border-radius: 1rem; }
+.rounded-full { border-radius: 9999px; }
+
+
+.border-t { border-top-width: 1px; }
+.hr-themed {
+    border-top-width: 1px;
+    border-color: rgba(var(--border-color), 0.3);
+}
+
+.hover\:text-primary:hover { color: var(--text-primary); }
+.hover\:underline:hover { text-decoration: underline; }
+.hover\:no-underline:hover { text-decoration: none; }
+.hover\:scale-105:hover { transform: scale(1.05); }
+
+
+/* For responsive design and pseudo-classes, Tailwind typically uses prefixes like sm:, md:, hover:, focus: */
+@media (min-width: 640px) { /* sm breakpoint */
+  .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 768px) { /* md breakpoint */
+  .md\:flex { display: flex; }
+  .md\:p-8 { padding: 2rem; }
+  .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+  .md\:text-5xl { font-size: 3rem; line-height: 1; }
+  .md\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:col-span-2 { grid-column: span 2 / span 2; }
+}
+@media (min-width: 1024px) { /* lg breakpoint */
+  .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+  .lg\:text-6xl { font-size: 3.75rem; line-height: 1; }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* Added */
+}
+
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+.gap-8 { gap: 2rem; }
+/* .gap-x-4 can be achieved by .gap-4 if row and col gap are same, or define specifically if needed */
+/* .gap-x-4 { column-gap: 1rem; } */
+
+
+/* Transform utilities for mode toggle circle */
+.transform { transform: var(--tw-transform, translate(0, 0) rotate(0) skewX(0) skewY(0) scaleX(1) scaleY(1)); }
+.transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+/* translate-x classes were for an old toggle, hover:scale-105 is more direct */
+
+/* Color Utilities */
+.bg-black { background-color: #000; }
+.bg-opacity-20 { background-color: rgba(0,0,0,0.2); }
+.text-white { color: #ffffff; }
+.text-gray-300 { color: #d1d5db; }
+
+/* List Utilities */
+.list-none { list-style-type: none; }
+.ml-4 { margin-left: 1rem; }
+
+
+/* --- Old Styles (To be reviewed/removed gradually) --- */
+/* ... (Original remaining CSS content) ... */
+/* static/css/main.css */
+
+/*
+header {
+  background: var(--panel-bg);
+  backdrop-filter: blur(10px);
+  color: var(--text-light);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 26px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background 0.5s, color 0.5s;
+  position: relative;
+}
+
+[data-bs-theme="dark"] header {
+  background: var(--panel-bg);
+  color: #e0e0e0;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.theme-toggle {
+  cursor: pointer;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+}
+
+[data-bs-theme="dark"] .theme-toggle {
+  color: #e0e0e0;
+}
+
+.settings-link {
+  text-decoration: none;
+  font-size: 24px;
+  color: var(--text-light);
+}
+*/
+
+/*
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 30px auto;
+  width: 90%;
+  justify-content: space-around;
+}
+*/
+
+/* Styles for settings.html and index.html containers */
+/* These create the "panel" look on specific pages. Ensure they are placed within a Bootstrap .container or .container-fluid */
+.container.settings-page, .container.index-page {
+  max-width: 700px; /* Adjusted max-width for these pages */
+  background: var(--panel-bg);
+  border-radius: 16px;
+  padding: 20px;
+  /* Ensure single column layout for form content */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Make children take full width */
+  margin: 30px auto; /* Ensure centering */
+  box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+  backdrop-filter: blur(8px);
+  transition: background 0.5s;
+}
+[data-bs-theme="dark"] .container.settings-page,
+[data-bs-theme="dark"] .container.index-page {
+  background: rgba(43, 43, 43, 0.85); /* #2b2b2b with opacity */
+  /* specific styling for dark mode panel */
+}
+
+/* .column and .layout-column-group are likely superseded by Bootstrap grid system (.row, .col-md-6 etc.) */
+/*
+.column {
+  flex: 1;
+  min-width: 320px;
+  max-width: 480px;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--panel-bg);
+  box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.layout-column-group {
+  flex: 1 1 480px;
+  min-width: 320px;
+  max-width: 500px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-column-group > .common-parameters-container,
+.layout-column-group > .export-button-container-above-fire,
+.layout-column-group > .column {
+  margin: 10px 0;
+  width: 100%;
+}
+*/
+
+
+.slider-container { /* For result.html - if still used with form-range, may need review */
+  margin: 15px 0; /* Bootstrap's mb-3 might replace this if form-group becomes mb-3 */
+}
+
+/*
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text-light);
+}
+*/
+
+/* .number-input is used on result.html for text inputs next to sliders. Bootstrap .form-control will style these. */
+/*
+.number-input {
+  width: 100%;
+  padding: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: right;
+  margin-top: 4px;
+}
+*/
+
+/* input[type=range] and its thumb styles are replaced by Bootstrap's .form-range */
+/*
+input[type=range] {
+  width: 100%;
+  margin: 8px 0;
+  -webkit-appearance: none;
+  background: var(--input-range-bg);
+  height: 6px;
+  border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: var(--thumb-bg);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--thumb-border);
+  margin-top: -7px;
+}
+*/
+
+.result-section { /* For result.html - specific panel styling */
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(var(--panel-rgb), 0.25); /* Use panel-rgb for theme consistency */
+  border-radius: 10px;
+  color: var(--text-light); /* Ensure text color contrasts with the semi-transparent background */
+}
+[data-bs-theme="dark"] .result-section {
+    background: rgba(var(--panel-rgb), 0.4); /* Darker, more opaque for dark theme */
+}
+
+
+/* General 'a' styling - replaced by Bootstrap defaults or .btn styling */
+/*
+a {
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-light);
+  font-weight: 500;
+  width: 200px;
+  padding: 10px;
+  background: var(--panel-bg);
+  border-radius: 30px;
+  transition: background 0.3s;
+}
+
+a:hover {
+  background: rgba(255,255,255,0.9);
+}
+[data-bs-theme="dark"] a:hover { /* This was body.dark a:hover */
+    background: rgba(70, 70, 70, 0.9);
+}
+*/
+
+/* .recalculate-btn, .export-btn, .collapsible-header are styled with Bootstrap .btn classes or card classes */
+/* Specific overrides can be kept if necessary, but base styling should come from Bootstrap */
+.recalculate-btn { /* Now primarily uses .btn .btn-primary */
+  display: block;
+  margin: 20px auto; /* Centered with some margin */
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-light);
+  background-color: var(--panel-bg);
+  border: 1px solid var(--thumb-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recalculate-btn:hover {
+  background-color: #A8E6CF; /* Light theme accent for hover */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+[data-bs-theme="dark"] .recalculate-btn {
+  background-color: #37474F; /* Darker button bg */
+  border-color: var(--thumb-border);
+  color: var(--text-light);
+}
+
+[data-bs-theme="dark"] .recalculate-btn:hover {
+  background-color: #4DB6AC;
+}
+
+.common-parameters-container {
+  /* Will behave like a column item now */
+  flex: 1;
+  min-width: 320px; /* Consistent with columns */
+  max-width: 480px; /* Consistent with columns */
+  margin: 20px;     /* Consistent with columns */
+  border-radius: 16px; /* Consistent with columns */
+  font-size: 0.85em;
+  border: 1px solid transparent; /* Placeholder for border on expand */
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.common-parameters-container.expanded { /* Styles for the main container when expanded */
+  background: var(--panel-bg);
+  box-shadow: 0 8px 32px rgba(31,38,135,0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.collapsible-header {
+  /* Styling to match .export-btn */
+  font-size: 15px; /* Matches .export-btn */
+  font-weight: 500; /* Less bold */
+  color: var(--text-light);
+  background-color: var(--panel-bg);
+  border: 1px solid var(--thumb-border);
+  border-radius: 8px;
+  padding: 10px 15px; /* Adjusted padding slightly for description + icon */
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s; /* For hover effect if added */
+}
+
+.collapsible-header:hover {
+    background-color: #A8E6CF; /* Light theme accent */
+}
+
+[data-bs-theme="dark"] .collapsible-header:hover {
+    background-color: #4DB6AC; /* Dark theme accent for hover */
+}
+
+.collapsible-header .toggle-icon {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  padding: 0 15px; /* Horizontal padding, vertical padding comes with max-height */
+}
+
+.common-parameters-container.expanded .collapsible-content {
+  max-height: 450px; /* Increased from 350px */
+  padding: 10px 15px; /* Add vertical padding when expanded */
+}
+
+.collapsible-header .description {
+  /* Description is now the main text of the header, so it inherits header styles */
+  flex-grow: 1; /* Allow description to take available space */
+  margin-right: 10px; /* Space before the toggle icon */
+  font-weight: 500; /* Match button text weight */
+}
+
+/* Keep existing styles for .slider-container, label, .number-input */
+.common-parameters-container .slider-container {
+  margin-bottom: 8px; /* Tighter spacing between sliders */
+}
+
+.export-btn {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-light);
+  background-color: var(--panel-bg);
+  border: 1px solid var(--thumb-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.export-btn:hover { /* Light theme hover */
+  background-color: #A8E6CF;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+[data-bs-theme="dark"] .export-btn {
+  background-color: #37474F; /* Darker button bg */
+  border-color: var(--thumb-border);
+  color: var(--text-light);
+}
+
+[data-bs-theme="dark"] .export-btn:hover {
+  background-color: #4DB6AC; /* Dark theme accent for hover */
+}
+
+.layout-column-group {
+  flex: 1 1 480px; /* Allow shrinking, prefer 480px basis */
+  min-width: 320px; /* Min width of a group */
+  max-width: 500px; /* Max width of a group, allowing some padding/margin */
+  margin: 10px;     /* Margin for the group itself */
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-column-group.row {
+  flex-direction: row !important;
+  max-width: none !important;
+}
+
+.export-button-container-above-fire {
+  /* Behaves like a column item */
+  flex: 1;
+  min-width: 320px;
+  max-width: 480px;
+  margin: 20px;
+  display: flex;
+  justify-content: center; /* Center the button within this container */
+  align-items: flex-start; /* Align button to the top */
+}
+
+/* Adjust margins for items when they are direct children of a layout-column-group */
+.layout-column-group > .common-parameters-container,
+.layout-column-group > .export-button-container-above-fire,
+.layout-column-group > .column {
+  margin: 10px 0; /* Vertical spacing, horizontal handled by item's own width/max-width and group's alignment */
+  width: 100%; /* Make items take full width of their group, respecting their own max-width */
+}
+
+.info-icon {
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--thumb-border);
+  cursor: help;
+  position: relative;
+  font-weight: bold;
+}
+
+.info-icon .tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 135%; /* Position above the icon */
+  left: 50%;
+  margin-left: -110px; /* Use half of the width to center */
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9rem; /* Changed from 0.9em to match sub-nav items */
+  font-weight: normal;
+}
+
+.table-container { /* Hide tables by default on screen */
+  display: none;
+}
+
+.info-icon:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Styles from index.html */
+.form-group {
+  margin: 15px 0;
+}
+input[type="number"] { /* General number input, might need more specific selectors if conflicts */
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+input[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-accent);
+  border: none;
+  color: var(--text-light);
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+input[type="submit"]:hover {
+  background: #8fd9b6; /* Consider using a CSS variable for hover */
+}
+[data-bs-theme="dark"] input[type="submit"] {
+    background: var(--thumb-border); /* Example dark theme submit button */
+}
+[data-bs-theme="dark"] input[type="submit"]:hover {
+    background: #4DB6AC;
+}
+
+/* Styles from settings.html */
+.container.settings-page h2 {
+  text-align: center;
+}
+.container.settings-page select,
+.container.settings-page input[type="range"],
+.container.settings-page input[type="number"] {
+  width: 100%;
+  margin-bottom: 12px;
+  box-sizing: border-box; /* Ensure padding/border doesn't expand width */
+}
+.container.settings-page button { /* Save settings button */
+  padding: 10px 20px;
+  background: var(--bg-accent);
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+[data-bs-theme="dark"] .container.settings-page button {
+    background: var(--thumb-border);
+}
+[data-bs-theme="dark"] .container.settings-page button:hover {
+    background: #4DB6AC;
+}
+
+
+/* Styles from compare.html */
+.container.compare-page {
+    /* Override general container flex behavior for this page */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Make children take full width */
+    margin: 30px auto; /* Ensure centering */
+    max-width: 900px;
+}
+[data-bs-theme="dark"] .container.compare-page {
+  background: rgba(43, 43, 43, 0.85);
+}
+*/
+.scenario-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.scenario-header label {
+  margin-right: 10px;
+}
+.scenario-container {
+  display: flex;
+  flex-wrap: nowrap; /* Allows horizontal scrolling if too many scenarios */
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto; /* Enable horizontal scroll for scenarios */
+}
+.scenario {
+  flex: 1 0 200px; /* Flex basis of 200px, can grow and shrink */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fff; /* Scenarios have their own background */
+  min-width: 200px; /* Min width for a scenario box */
+  cursor: move;
+}
+[data-bs-theme="dark"] .scenario { /* This specific .scenario might be a .card now */
+    background: #3a3a3a;
+    border-color: #555;
+}
+/*
+.scenario h3 {
+  margin-top: 0;
+  font-size: 16px;
+}
+.compare-page .form-group { /* Specific to compare page form groups */
+  margin: 8px 0;
+}
+.compare-page label {
+  margin-bottom: 4px;
+}
+.compare-page input[type="number"], /* Specific to compare page inputs */
+.compare-page input[type="range"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+.compare-page input[type="number"] {
+  padding: 6px;
+  margin-bottom: 6px;
+}
+.compare-page input[type="range"] {
+  margin-bottom: 4px;
+}
+.compare-page input[type="radio"] {
+  margin-right: 5px;
+}
+.compare-page input[type="submit"] { /* Compare scenarios button */
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-accent);
+  border: none;
+  color: var(--text-light);
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+.compare-page input[type="submit"]:hover {
+  background: #8fd9b6;
+}
+[data-bs-theme="dark"] .compare-page input[type="submit"] {
+    background: var(--thumb-border);
+}
+[data-bs-theme="dark"] .compare-page input[type="submit"]:hover {
+    background: #4DB6AC;
+}
+.compare-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.compare-page th, .compare-page td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+.compare-page th {
+  background: var(--bg-accent);
+  color: var(--text-light);
+}
+[data-bs-theme="dark"] .compare-page th {
+    background: var(--thumb-border);
+}
+[data-bs-theme="dark"] .compare-page td {
+    border-color: #555;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Mobile Responsiveness Fixes for index.html radio buttons */
+  .index-page .radio-group label[for="start"],
+  .index-page .radio-group label[for="end"] {
+    display: block; /* Stack the labels */
+    margin-left: 0; /* Reset any left margin */
+    margin-top: 5px; /* Space above label when stacked */
+    margin-bottom: 10px; /* Space below this radio/label pair */
+  }
+
+  .index-page .radio-group input[type="radio"] {
+    /* Ensure radio buttons align well when labels stack */
+    vertical-align: middle; /* Or adjust as needed */
+    margin-right: 5px;
+  }
+}
+
+@media (max-width: 480px) { /* From index.html and settings.html */
+  input[type="range"] { /* General, might need more specificity */
+    height: 12px;
+  }
+  /* General button/submit styling for small screens */
+  button, input[type="submit"], .export-btn, .recalculate-btn, .collapsible-header {
+    padding: 14px 24px;
+    font-size: 18px;
+  }
+  .container.settings-page select,
+  .container.settings-page input[type="range"],
+  .container.settings-page input[type="number"] {
+    font-size: 18px; /* From settings.html */
+  }
+}
+
+
+/* Print Styles */
+@media print {
+  body {
+    background: #fff !important; /* Ensure white background for print */
+    color: #000 !important; /* Ensure black text for print */
+    font-size: 10pt;
+    margin: 0; /* Remove default body margins for print */
+    padding: 0;
+    -webkit-print-color-adjust: exact !important; /* Ensure background colors and images print if needed, though we aim for white bg */
+    color-adjust: exact !important;
+    orphans: 3; /* Minimum lines at the bottom of a page before a break */
+    widows: 3;  /* Minimum lines at the top of a page after a break */
+  }
+  header,
+  .export-btn,
+  .recalculate-btn,
+  a[href="/"],
+  .common-parameters-container,
+  .theme-toggle,
+  .settings-link,
+  .info-icon.global-info,
+  div[style*="text-align: center; margin: 15px 0;"]
+   {
+    display: none !important;
+  }
+  .column {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    margin: 10px 0 !important;
+    padding: 15px !important;
+    width: 95% !important; /* Make columns take more width in print */
+    margin-top: 0 !important; /* Ensure columns start near top of page */
+    page-break-inside: avoid; /* Try to keep individual column content from splitting across pages */
+  }
+  .layout-column-group {
+    margin: 0 !important; /* Remove margin from the groups themselves */
+    padding: 0 !important;
+    page-break-inside: avoid; /* Try to keep groups from splitting if possible */
+  }
+  .container { /* The main container holding the columns */
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      display: block !important; /* Force block display for print to simplify flow */
+  }
+  .slider-container { display: none !important; } /* Hide all input sliders */
+  .result-section, .plot-container, .table-container { margin-top: 10px; }
+  h2, h3 { font-size: 14pt; margin-bottom: 5px; }
+  .js-plotly-plot .plotly, .js-plotly-plot {
+      max-width: 100% !important;
+      height: auto !important;
+  }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 9pt;}
+  .table-container { /* Make tables visible for print */
+      display: block !important;
+  }
+  th, td { border: 1px solid #ddd; padding: 4px; text-align: left; }
+  th { background-color: #f2f2f2; }
+}
+
+/* New styles for sub-navigation */
+.sub-nav {
+  margin-top: 0.5rem;
+  display: flex; /* Arrange items in a row */
+  justify-content: center; /* Center the items */
+  align-items: center; /* Align items vertically */
+  gap: 1rem; /* Space between items */
+}
+
+.sub-nav-item {
+  text-decoration: none;
+  color: var(--bs-secondary-color); /* Use Bootstrap's secondary text color */
+  font-size: 0.9rem; /* Slightly smaller than normal text */
+}
+
+.sub-nav-item.active {
+  font-weight: bold;
+  color: var(--bs-primary); /* Use Bootstrap's primary color for active link */
+}
+
+.sub-nav-item:hover {
+  color: var(--bs-primary);
+  text-decoration: underline;
+}
+
+/* Adjustments for the main heading link style */
+header h1 a {
+  color: var(--bs-body-color); /* Ensure heading link color matches body text */
+}
+
+header h1 a:hover {
+  /* color: var(--bs-body-color); Optional: prevent color change on hover for main title */
+  text-decoration: none; /* No underline for main title link */
+}
+
+/* Ensure the theme toggle button in sub-nav aligns well */
+.sub-nav .btn {
+   line-height: 1; /* Adjust line height for better vertical alignment if needed */
+}
+
+/* Tooltip for the main site title */
+.title-tooltip-container {
+  position: relative; /* Establishes a positioning context for the tooltip */
+  display: inline-block;
+  cursor: help;
+}
+
+.main-title-tooltip {
+  visibility: hidden;
+  width: 300px;
+  background-color: #555;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 100;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -150px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9rem; /* Match sub-nav item size */
+  font-weight: normal;
+  line-height: 1.4;
+}
+
+.title-tooltip-container:hover .main-title-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+/* --- Themed Form Styles for Compare Page --- */
+.themed-input {
+    background-color: rgba(var(--bg-secondary-rgb), 0.2);
+    border: 1px solid rgba(var(--border-color), 0.5); /* Updated opacity */
+    color: var(--text-primary);
+    border-radius: 0.5rem; /* Updated border-radius */
+    padding: 0.75rem 1rem; /* Standardized padding */
+    width: 100%;
+    font-size: 0.95rem;
+    transition: all var(--transition-speed) ease; /* Updated transition */
+    box-sizing: border-box; /* Added */
+}
+
+.themed-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* For Webkit browsers */
+.themed-input::-webkit-input-placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+/* For Mozilla Firefox 19+ */
+.themed-input::-moz-placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+/* For Microsoft Edge */
+.themed-input::-ms-input-placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+
+.themed-input:focus {
+    outline: 0;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--accent-color) 25%, transparent); /* Updated box-shadow */
+    background-color: rgba(var(--bg-secondary-rgb), 0.5); /* Updated background-color opacity */
+}
+
+.themed-select { /* Original .themed-select rule, separated from .themed-input */
+    background-color: rgba(var(--bg-secondary-rgb), 0.2);
+    color: var(--text-primary);
+    border: 1px solid rgba(var(--border-color), 0.4);
+    border-radius: 0.375rem;
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    font-size: 0.95rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+.themed-select:focus { /* Original .themed-select:focus rule, separated */
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color) 30%, transparent);
+    outline: 0;
+    background-color: rgba(var(--bg-secondary-rgb), 0.3);
+}
+
+/* The rest of .themed-select specific styles */
+.themed-select {
+    appearance: none; /* Basic reset */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); /* Basic arrow, color needs to adapt */
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+/* Adapting select arrow color - this is tricky. The SVG fill needs to change. */
+/* For now, this might not perfectly theme the arrow color but is a start. */
+[data-mode='dark'] .themed-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cccccc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+
+.themed-radio, .themed-checkbox {
+    accent-color: var(--accent-color);
+    background-color: transparent;
+    border: 1px solid rgba(var(--border-color), 0.4);
+    width: 1.1em;
+    height: 1.1em;
+    vertical-align: middle;
+}
+.themed-radio:focus, .themed-checkbox:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* --- Themed Table Styles for Compare Page Summary --- */
+.compare-summary-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    margin-top: 1rem; /* Add some margin above the table */
+    font-size: 0.9rem;
+}
+
+.compare-summary-table th {
+    color: var(--text-secondary);
+    background-color: rgba(var(--bg-secondary-rgb), 0.05); /* Very subtle background for header */
+    padding: 0.8rem 1rem;
+    border-bottom: 2px solid var(--accent-color); /* Accent border for header bottom */
+    font-weight: 600; /* Semibold for headers */
+}
+
+.compare-summary-table td {
+    color: var(--text-primary);
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(var(--border-color), 0.2);
+}
+
+.compare-summary-table tbody tr:last-child td {
+    border-bottom: none; /* Remove border for the last row */
+}
+
+.compare-summary-table tbody tr:hover {
+    background-color: rgba(var(--bg-secondary-rgb), 0.1); /* Hover effect for rows */
+}
+
+/* --- Info Icon Tooltip Theming --- */
+.info-icon {
+    color: var(--text-secondary); /* Ensure info icon itself uses theme color */
+}
+
+.info-icon .tooltip-text {
+  background-color: var(--bg-secondary-rgb); /* Use a theme background */
+  color: var(--text-primary); /* Use theme text color */
+  border: 1px solid rgba(var(--border-color), 0.3);
+  box-shadow: 0 4px 12px rgba(var(--shadow-color), 0.2); /* Use theme shadow */
+  border-radius: 0.375rem; /* rounded-md */
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: normal; /* Explicitly set from bold in original */
+}
+
+/* Override Bootstrap's default form-control focus glow if still present on some elements accidentally */
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+/* Style for select elements used in scenario-header */
+.scenario-header select.form-select {
+    background-color: rgba(var(--bg-secondary-rgb), 0.2) !important; /* Important to override Bootstrap if needed */
+    color: var(--text-primary) !important;
+    border: 1px solid rgba(var(--border-color), 0.4) !important;
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem !important; /* Bootstrap default padding */
+}
+.scenario-header select.form-select:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color) 30%, transparent) !important;
+}
+
+/* Ensure .form-label in compare.html also uses themed text color */
+.form-label {
+    color: var(--text-secondary);
+}
+
+/* Styling for the periodic rate input groups to have less margin */
+.period-group.row {
+    margin-bottom: 0.5rem !important; /* Reduce default Bootstrap row margin */
+}
+.period-group .col {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}
+
+/* --- Secondary Button Style --- */
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid rgba(var(--border-color), 0.5);
+    padding: 0.5rem 1.25rem; /* Default padding */
+    border-radius: 0.375rem; /* rounded-md */
+    font-weight: 600; /* semibold */
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    display: inline-block; /* Ensure it behaves like a button */
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: var(--accent-color);
+    color: var(--accent-text);
+    border-color: var(--accent-color);
+}
+
+.btn-secondary.text-xs { /* For smaller secondary buttons like remove item */
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* --- Themed Range Slider --- */
+.themed-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 0.5rem; /* 8px */
+    border-radius: 0.25rem; /* rounded-sm */
+    background-color: rgba(var(--border-color), 0.3);
+    outline: none;
+    opacity: 0.9;
+    transition: opacity .15s ease-in-out;
+}
+.themed-range:hover {
+    opacity: 1;
+}
+.themed-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.25rem; /* 20px */
+    height: 1.25rem; /* 20px */
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    cursor: pointer;
+    border: 2px solid rgba(var(--bg-secondary-rgb),0.7); /* Light border for thumb */
+}
+.themed-range::-moz-range-thumb {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    cursor: pointer;
+    border: 2px solid rgba(var(--bg-secondary-rgb),0.7);
+}
+
+[end of static/css/main.css]
