@@ -1,7 +1,7 @@
 :root {
     --transition-speed: 0.4s;
     --tw-space-x-reverse: 0;
-    --tw-space-y-reverse: 0; /* Added */
+    --tw-space-y-reverse: 0;
 }
 
 /* --- Theme & Mode Definitions --- */
@@ -44,7 +44,7 @@ body {
 
 .card {
     transition: transform var(--transition-speed) ease;
-    text-decoration: none; /* Add this line */
+    text-decoration: none;
 }
 .card:hover {
     transform: translateY(-5px);
@@ -73,21 +73,21 @@ body {
 .btn-primary {
     background-color: var(--accent-color);
     color: var(--accent-text);
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease; /* Added transform */
-    padding: 0.75rem 1.5rem; /* py-3 px-6 was from old button, new is px-8 py-3 */
-    border-radius: 0.5rem; /* rounded-lg, new is rounded-md */
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     display: inline-block;
     text-align: center;
-    font-weight: 600; /* font-semibold */
+    font-weight: 600;
 }
 .btn-primary:hover {
     background-color: var(--accent-hover);
 }
 /* For new CTA button style */
-.btn-primary.px-8 { padding-left: 2rem; padding-right: 2rem; } /* px-8 */
-.btn-primary.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; } /* py-3 */
-.btn-primary.rounded-md { border-radius: 0.375rem; } /* rounded-md */
+.btn-primary.px-8 { padding-left: 2rem; padding-right: 2rem; }
+.btn-primary.py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.btn-primary.rounded-md { border-radius: 0.375rem; }
 .btn-primary.hover\:scale-105:hover { transform: scale(1.05); }
 
 
@@ -153,6 +153,8 @@ body {
 
 
 .mt-1 { margin-top: 0.25rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
 .mt-3 { margin-top: 0.75rem; }
 .mt-4 { margin-top: 1rem; }
 .mt-6 { margin-top: 1.5rem; }
@@ -189,6 +191,7 @@ body {
 .text-center { text-align: center; }
 .text-xs { font-size: 0.75rem; line-height: 1rem; }
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.leading-snug { line-height: 1.375; }
 .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
 .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
 .text-2xl { font-size: 1.5rem; line-height: 2rem; }
@@ -233,11 +236,14 @@ body {
   .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
   .md\:text-5xl { font-size: 3rem; line-height: 1; }
   .md\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:col-span-2 { grid-column: span 2 / span 2; }
 }
 @media (min-width: 1024px) { /* lg breakpoint */
   .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
   .lg\:text-6xl { font-size: 3.75rem; line-height: 1; }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* Added */
 }
 
 .grid { display: grid; }
@@ -246,6 +252,9 @@ body {
 .gap-4 { gap: 1rem; }
 .gap-6 { gap: 1.5rem; }
 .gap-8 { gap: 2rem; }
+/* .gap-x-4 can be achieved by .gap-4 if row and col gap are same, or define specifically if needed */
+/* .gap-x-4 { column-gap: 1rem; } */
+
 
 /* Transform utilities for mode toggle circle */
 .transform { transform: var(--tw-transform, translate(0, 0) rotate(0) skewX(0) skewY(0) scaleX(1) scaleY(1)); }
@@ -254,9 +263,13 @@ body {
 
 /* Color Utilities */
 .bg-black { background-color: #000; }
-.bg-opacity-20 { background-color: rgba(0,0,0,0.2); } /* This will override bg-black if both are applied and this is defined later or is more specific */
+.bg-opacity-20 { background-color: rgba(0,0,0,0.2); }
 .text-white { color: #ffffff; }
-.text-gray-300 { color: #d1d5db; } /* Tailwind gray-300 */
+.text-gray-300 { color: #d1d5db; }
+
+/* List Utilities */
+.list-none { list-style-type: none; }
+.ml-4 { margin-left: 1rem; }
 
 
 /* --- Old Styles (To be reviewed/removed gradually) --- */
@@ -1236,5 +1249,9 @@ header h1 a:hover {
     cursor: pointer;
     border: 2px solid rgba(var(--bg-secondary-rgb),0.7);
 }
+
+[end of static/css/main.css]
+
+[end of static/css/main.css]
 
 [end of static/css/main.css]
