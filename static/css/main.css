@@ -1241,19 +1241,13 @@ header h1 a:hover {
     border: 2px solid rgba(var(--bg-secondary-rgb),0.7);
 }
 
-/* Responsive adjustments for compact periodic rates */
-@media (max-width: 480px) {
-  .period-group {
-    grid-template-columns: repeat(1, minmax(0, 1fr)); /* Stack to 1 column */
-    gap: 0.5rem; /* Adjust gap for stacked layout */
-  }
-  .period-group > div {
-    margin-bottom: 0.5rem; /* Add some space between stacked items */
-  }
-  .period-group > div:last-child {
-    margin-bottom: 0; /* No margin for the last item in the stacked group */
-  }
+/* Styling for vertical period groups */
+.period-group {
+    /* HTML uses mb-4 and pb-2 for spacing. This CSS rule is for the theme-aware border. */
+    border-bottom: 1px solid rgba(var(--border-color), 0.3);
 }
+/* Responsive media query for .period-group stacking is no longer needed as items stack by default. */
+
 
 /* Responsive Table Container */
 .table-responsive {
