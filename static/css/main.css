@@ -44,6 +44,7 @@ body {
 
 .card {
     transition: transform var(--transition-speed) ease;
+    text-decoration: none; /* Add this line */
 }
 .card:hover {
     transform: translateY(-5px);
@@ -1005,24 +1006,71 @@ header h1 a:hover {
 
 
 /* --- Themed Form Styles for Compare Page --- */
-.themed-input, .themed-select {
-    background-color: rgba(var(--bg-secondary-rgb), 0.2); /* Slightly more subtle background */
+.themed-input {
+    background-color: rgba(var(--bg-secondary-rgb), 0.2);
+    border: 1px solid rgba(var(--border-color), 0.5); /* Updated opacity */
     color: var(--text-primary);
-    border: 1px solid rgba(var(--border-color), 0.4);
-    border-radius: 0.375rem; /* Corresponds to rounded-md */
-    padding: 0.6rem 0.8rem; /* Adjusted padding */
+    border-radius: 0.5rem; /* Updated border-radius */
+    padding: 0.75rem 1rem; /* Standardized padding */
     width: 100%;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    font-size: 0.95rem; /* Slightly smaller font for inputs */
+    font-size: 0.95rem;
+    transition: all var(--transition-speed) ease; /* Updated transition */
+    box-sizing: border-box; /* Added */
 }
 
-.themed-input:focus, .themed-select:focus {
+.themed-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* For Webkit browsers */
+.themed-input::-webkit-input-placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+/* For Mozilla Firefox 19+ */
+.themed-input::-moz-placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+/* For Microsoft Edge */
+.themed-input::-ms-input-placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+
+.themed-input:focus {
+    outline: 0;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--accent-color) 25%, transparent); /* Updated box-shadow */
+    background-color: rgba(var(--bg-secondary-rgb), 0.5); /* Updated background-color opacity */
+}
+
+.themed-select { /* Original .themed-select rule, separated from .themed-input */
+    background-color: rgba(var(--bg-secondary-rgb), 0.2);
+    color: var(--text-primary);
+    border: 1px solid rgba(var(--border-color), 0.4);
+    border-radius: 0.375rem;
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    font-size: 0.95rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+.themed-select:focus { /* Original .themed-select:focus rule, separated */
     border-color: var(--accent-color);
     box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color) 30%, transparent);
     outline: 0;
-    background-color: rgba(var(--bg-secondary-rgb), 0.3); /* Slightly darken on focus */
+    background-color: rgba(var(--bg-secondary-rgb), 0.3);
 }
 
+/* The rest of .themed-select specific styles */
 .themed-select {
     appearance: none; /* Basic reset */
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); /* Basic arrow, color needs to adapt */

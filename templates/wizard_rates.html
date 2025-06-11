@@ -27,7 +27,7 @@
         <fieldset>
             <legend class="visually-hidden">{{ _("Rates Form") }}</legend>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {{ render_field(form.return_rate, placeholder=_("e.g., 7")) }}
                 {{ render_field(form.inflation_rate, placeholder=_("e.g., 2.5")) }}
                 {{ render_field(form.total_duration_fallback, placeholder=_("e.g., 30")) }}
