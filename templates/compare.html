@@ -32,7 +32,7 @@
 </div>
 
   <form method="post" action="{{ url_for('project.compare') }}" id="compareForm" class="space-y-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 scenario-container">
+    <div class="grid grid-cols-1 gap-y-8 scenario-container"> {# Removed md:grid-cols-2 and gap-x-8 for full vertical layout #}
       {# The scenarios variable is passed from the route #}
       {% for scenario in scenarios %}
       <div class="scenario glassmorphic rounded-2xl p-6 md:p-8 flex flex-col space-y-6" id="scenario{{scenario.n}}"{% if not scenario.enabled %}style="display:none;"{% endif %}>
