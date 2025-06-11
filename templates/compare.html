@@ -38,40 +38,40 @@
       <div class="scenario glassmorphic rounded-2xl p-6 md:p-8 flex flex-col space-y-6" id="scenario{{scenario.n}}"{% if not scenario.enabled %}style="display:none;"{% endif %}>
         <h3 class="text-3xl font-bold text-primary mb-4">Scenario {{ scenario.n }}</h3>
 
-        <!-- Compact General Inputs -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 mb-4">
-          <div>
+        <!-- Vertical General Inputs -->
+        <div class="space-y-4 mb-4"> {# Use space-y for vertical spacing between children #}
+          <div class="mb-3"> {# Added mb-3 for spacing, consistent with old single-column layout #}
             <label for="scenario{{scenario.n}}_W_input" class="text-sm font-medium text-secondary block mb-1">{{ _("Annual Expenses (W):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Your estimated current annual living expenses for this scenario.") }}</span></span></label>
             <input type="number" id="scenario{{scenario.n}}_W_input" class="themed-input form-input w-full p-2 rounded-md border bg-transparent text-primary border-gray-500 focus:ring-accent-color focus:border-accent-color" name="scenario{{scenario.n}}_W" value="{{ request.form.get('scenario{}__W'.format(scenario.n), scenario.W_form) }}" placeholder="{{ _('e.g., 50000') }}" required min="0">
           </div>
-          <div>
+          <div class="mb-3">
             <label for="scenario{{scenario.n}}_T_input" class="text-sm font-medium text-secondary block mb-1">{{ _("Total Duration (yrs) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("How many years retirement funds need to last for this scenario. Used if no specific periods are defined for this scenario.") }}</span></span></label>
             <input type="number" id="scenario{{scenario.n}}_T_input" class="themed-input form-input w-full p-2 rounded-md border bg-transparent text-primary border-gray-500 focus:ring-accent-color focus:border-accent-color" name="scenario{{scenario.n}}_T" value="{{ request.form.get('scenario{}__T'.format(scenario.n), scenario.T_form) }}" placeholder="{{ _('e.g., 30') }}" min="1" step="1">
           </div>
-          <div>
+          <div class="mb-3">
             <label for="scenario{{scenario.n}}_r_input" class="text-sm font-medium text-secondary block mb-1">{{ _("Overall Return (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return for this scenario. Used if no specific periods are defined for this scenario.") }}</span></span></label>
             <input type="number" id="scenario{{scenario.n}}_r_input" class="themed-input form-input w-full p-2 rounded-md border bg-transparent text-primary border-gray-500 focus:ring-accent-color focus:border-accent-color" name="scenario{{scenario.n}}_r" step="0.1" value="{{ request.form.get('scenario{}__r'.format(scenario.n), scenario.r_form) }}" placeholder="{{ _('e.g., 7') }}" min="-50" max="100">
           </div>
-          <div>
+          <div class="mb-3">
             <label for="scenario{{scenario.n}}_i_input" class="text-sm font-medium text-secondary block mb-1">{{ _("Overall Inflation (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate for this scenario. Used if no specific periods are defined for this scenario.") }}</span></span></label>
             <input type="number" id="scenario{{scenario.n}}_i_input" class="themed-input form-input w-full p-2 rounded-md border bg-transparent text-primary border-gray-500 focus:ring-accent-color focus:border-accent-color" name="scenario{{scenario.n}}_i" step="0.1" value="{{ request.form.get('scenario{}__i'.format(scenario.n), scenario.i_form) }}" placeholder="{{ _('e.g., 2') }}" min="-50" max="100">
           </div>
         </div>
 
-        <!-- Compact Periodic Rates -->
+        <!-- Vertical Periodic Rates -->
         <div class="periodic-rates-section mt-2 mb-4">
           <h5 class="text-lg font-semibold text-primary mb-3">{{ _("Periodic Rates (Optional for Scenario") }} {{scenario.n}})</h5>
           {% for k in range(1, 4) %}
-          <div class="period-group grid grid-cols-3 gap-x-2 mb-2 items-end">
-            <div>
+          <div class="period-group mb-4 pb-2"> {# Removed Tailwind border classes, pb-2 for padding before CSS border #}
+            <div class="mb-2"> {# Vertical spacing for each input field in the period #}
               <label for="scenario{{scenario.n}}_period{{k}}_duration" class="text-xs font-medium text-secondary block mb-0.5">{{ _("P") }}{{k}} {{ _("Dur (yr):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Duration (in years) for this specific period in this scenario.") }}</span></span></label>
               <input type="number" class="themed-input form-input w-full p-1 text-sm rounded border bg-transparent text-primary border-gray-500 focus:ring-accent-color focus:border-accent-color" name="scenario{{scenario.n}}_period{{k}}_duration" id="scenario{{scenario.n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(scenario.n, k), scenario.get('period{}_duration_form'.format(k), '')) }}" min="0" step="1" placeholder="{{ _('Years') }}">
             </div>
-            <div>
+            <div class="mb-2">
               <label for="scenario{{scenario.n}}_period{{k}}_r" class="text-xs font-medium text-secondary block mb-0.5">{{ _("P") }}{{k}} {{ _("Ret (%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected annual investment return for this period in this scenario.") }}</span></span></label>
               <input type="number" class="themed-input form-input w-full p-1 text-sm rounded border bg-transparent text-primary border-gray-500 focus:ring-accent-color focus:border-accent-color" name="scenario{{scenario.n}}_period{{k}}_r" id="scenario{{scenario.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario.n, k), scenario.get('period{}_r_form'.format(k), '')) }}" placeholder="%" min="-50" max="100">
             </div>
-            <div>
+            <div class="mb-2">
               <label for="scenario{{scenario.n}}_period{{k}}_i" class="text-xs font-medium text-secondary block mb-0.5">{{ _("P") }}{{k}} {{ _("Inf (%%):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected annual inflation rate for this period in this scenario.") }}</span></span></label>
               <input type="number" class="themed-input form-input w-full p-1 text-sm rounded border bg-transparent text-primary border-gray-500 focus:ring-accent-color focus:border-accent-color" name="scenario{{scenario.n}}_period{{k}}_i" id="scenario{{scenario.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario.n, k), scenario.get('period{}_i_form'.format(k), '')) }}" placeholder="%" min="-50" max="100">
             </div>
@@ -79,9 +79,9 @@
           {% endfor %}
         </div>
 
-        <!-- Withdrawal and Final Value -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 mb-4">
-          <div class="form-group">
+        <!-- Vertical Withdrawal and Final Value -->
+        <div class="space-y-4 mb-4"> {# Use space-y for vertical spacing #}
+          <div class="form-group mb-3"> {# Added mb-3 for spacing #}
             <label class="text-sm font-medium text-secondary block mb-1">{{ _("Withdrawal Timing:") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Choose withdrawal timing for this scenario.") }}</span></span></label>
             <div class="flex space-x-4"> {# Use flex for inline radio buttons #}
               <div class="form-check form-check-inline">
