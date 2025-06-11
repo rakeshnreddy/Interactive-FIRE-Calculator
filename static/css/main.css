@@ -759,25 +759,20 @@ input[type="submit"]:hover {
   margin-right: 10px;
 }
 .scenario-container {
-  display: flex;
-  flex-wrap: nowrap; /* Allows horizontal scrolling if too many scenarios */
-  gap: 10px;
-  margin-bottom: 20px;
-  overflow-x: auto; /* Enable horizontal scroll for scenarios */
+  /* display: flex; /* Overridden by Tailwind 'grid' */
+  /* flex-wrap: nowrap; /* Not relevant for grid / vertical stack */
+  /* gap: 10px; /* Replaced by Tailwind 'gap-y-8' in HTML */
+  /* margin-bottom: 20px; /* Handled by Tailwind on form or other elements */
+  /* overflow-x: auto; /* Not needed for vertical stack */
 }
 .scenario {
-  flex: 1 0 200px; /* Flex basis of 200px, can grow and shrink */
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px;
-  background: #fff; /* Scenarios have their own background */
-  min-width: 200px; /* Min width for a scenario box */
-  cursor: move;
+  /* flex: 1 0 200px; /* Not relevant for grid items in a single column */
+  /* border, padding, background, radius are handled by Tailwind & glassmorphic classes */
+  min-width: 200px; /* Retain min-width if desired, though grid items stretch */
+  cursor: move; /* For sortable functionality */
 }
-[data-bs-theme="dark"] .scenario { /* This specific .scenario might be a .card now */
-    background: #3a3a3a;
-    border-color: #555;
-}
+/* [data-bs-theme="dark"] .scenario styling is overridden by glassmorphic */
+
 /*
 .scenario h3 {
   margin-top: 0;
