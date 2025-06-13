@@ -1,458 +1,170 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _("Compare Financial Scenarios - Mockup Theme") }}{% endblock %}
+{% block title %}Compare Financial Scenarios - FIRE Calculator{% endblock %}
 
-{% block head_extra %}
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  {# Note: main.css is already in base.html, so not repeated here #}
+{% block head %}
+    {{ super() }}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--theme-bg-primary, #1f2937);
+            color: var(--theme-text-primary, #e5e7eb);
+        }
+        .form-input, .form-select {
+            background-color: var(--theme-input-bg, #374151);
+            border: 1px solid var(--theme-input-border, #4b5563);
+            border-radius: 0.375rem;
+            color: var(--theme-text-primary, #e5e7eb);
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--theme-accent-primary, #3b82f6);
+            box-shadow: 0 0 0 2px var(--theme-accent-primary-focus-shadow, rgba(59, 130, 246, 0.5));
+        }
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--theme-text-secondary, #9ca3af);
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .btn-accent {
+            background-color: var(--theme-accent-primary-semi-transparent, rgba(59,130,246,0.8));
+            color: var(--theme-button-text, #fff);
+        }
+        .btn-accent:hover {
+            background-color: var(--theme-accent-primary, #3b82f6);
+        }
+        .btn-primary-action {
+            background-color: var(--theme-accent-primary, #3b82f6);
+            color: var(--theme-button-text, #fff);
+        }
+        .btn-primary-action:hover {
+            background-color: var(--theme-accent-primary-hover, #2563eb);
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="bg-fire-dark text-fire-text-primary p-4 md:p-8 min-h-screen">
-  <header class="text-center mb-12">
-    <h1 class="text-4xl md:text-5xl font-bold text-white">{{ _("Compare Financial Scenarios") }}</h1>
-    <p class="mt-4 max-w-2xl mx-auto text-lg text-fire-text-secondary">{{ _("Enter parameters for different scenarios to see how they stack up and how different choices impact your journey to financial independence.") }}</p>
-  </header>
+    <div class="max-w-screen-2xl mx-auto p-4 md:p-8">
+        <main class="space-y-8">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-2" style="color: var(--theme-text-primary, #fff);">Compare Financial Scenarios</h1>
+                <p class="text-lg" style="color: var(--theme-text-secondary, #9ca3af);">Enter parameters for different scenarios to see how they stack up and how different choices impact your journey to financial independence.</p>
+            </header>
 
-  {# This form tag and its ID are from the original structure, might need to be removed or reconciled with mockup's "Run Comparison" button if it's not a submit #}
-  <form method="post" action="{{ url_for('project.compare') }}" id="compareForm" class="space-y-8">
-
-    <section id="inputs" class="bg-fire-dark-card rounded-xl shadow-lg p-6">
-      <div class="flex flex-wrap justify-between items-center mb-6 gap-4"> {# Added flex-wrap and gap-4 for responsiveness #}
-        <h2 class="text-2xl font-bold text-white">{{ _("Input Scenarios") }}</h2>
-        <div class="flex items-center space-x-2 md:space-x-4 flex-wrap gap-2">
-            <div>
-                <label for="scenarioCount" class="text-sm form-label text-fire-text-secondary mr-1">{{ _("Scenarios:") }}</label>
-                <select id="scenarioCount" name="scenarioCount_dropdown" class="mockup-form-select text-sm p-1" style="width: auto; display: inline-block;">
-                  <option value="1">1</option>
-                  <option value="2" selected>2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-            </div>
-            <button type="button" id="saveScenariosBtn" class="btn-fire-primary text-sm py-1 px-3" onclick="saveScenarios()">{{ _("Save Current") }}</button>
-            <div>
-                <label for="loadScenarioSelect" class="text-sm form-label text-fire-text-secondary mr-1">{{ _("Load Saved:") }}</label>
-                <select id="loadScenarioSelect" name="loadScenarioSelect_dropdown" class="mockup-form-select text-sm p-1" style="width: auto; display: inline-block;" onchange="loadScenario()">
-                    {# Options populated by JS - ensure loadScenarioOptions() is called #}
-                </select>
-            </div>
-        </div>
-      </div>
-
-      {# Container for scenario cards - This replaces the old .scenario-container #}
-      {# The outer grid for cards (md:grid-cols-2 lg:grid-cols-4) is from the mockup structure #}
-      {# The inner 'scenario_card_dynamic_container' helps manage scenarios with JS and keeps original responsive grid for scenarios #}
-      <div id="scenario_card_dynamic_container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        {# Loop to generate scenario cards with original application inputs but new mockup styling #}
-        {% for scenario_data in scenarios %} {# Using scenario_data to avoid conflict with 'scenario' in JS if it's still there #}
-        <div class="scenario-card bg-fire-dark p-4 rounded-lg border border-fire-input-border space-y-4 flex flex-col h-full" id="scenario{{ scenario_data.n }}" {% if not scenario_data.enabled %}style="display:none;"{% endif %}>
-          {# Card Header - Simplified to match old structure's directness, styled with mockup colors #}
-          <h3 class="text-xl font-bold mb-2 text-fire-text-primary"><span class="text-fire-accent">Scenario {{ scenario_data.n }}</span></h3>
-
-          {# General Inputs - Grid Layout #}
-          <div class="pt-2 border-t border-fire-input-border grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
-            {# Annual Expenses (W) #}
-            <div>
-              <label for="scenario{{scenario_data.n}}_W_input" class="form-label">{{ _("Annual Expenses (W):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Your estimated current annual living expenses for this scenario.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_W_input" name="scenario{{scenario_data.n}}_W" value="{{ request.form.get('scenario{}__W'.format(scenario_data.n), scenario_data.W_form) }}" placeholder="{{ _('e.g., 50000') }}" required min="0" class="form-input py-2 px-3">
-            </div>
-
-            {# Total Duration (T) (Fallback) #}
-            <div>
-              <label for="scenario{{scenario_data.n}}_T_input" class="form-label">{{ _("Total Duration (yrs) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("How many years retirement funds need to last. Used if no specific periods are defined.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_T_input" name="scenario{{scenario_data.n}}_T" value="{{ request.form.get('scenario{}__T'.format(scenario_data.n), scenario_data.T_form) }}" placeholder="{{ _('e.g., 30') }}" min="1" step="1" class="form-input py-2 px-3">
-            </div>
-
-            {# Overall Return (r) (Fallback) #}
-            <div>
-              <label for="scenario{{scenario_data.n}}_r_input" class="form-label">{{ _("Overall Return (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return. Used if no specific periods are defined.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_r_input" name="scenario{{scenario_data.n}}_r" step="0.1" value="{{ request.form.get('scenario{}__r'.format(scenario_data.n), scenario_data.r_form) }}" placeholder="{{ _('e.g., 7') }}" min="-50" max="100" class="form-input py-2 px-3">
-            </div>
-
-            {# Overall Inflation (i) (Fallback) #}
-            <div>
-              <label for="scenario{{scenario_data.n}}_i_input" class="form-label">{{ _("Overall Inflation (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate. Used if no specific periods are defined.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_i_input" name="scenario{{scenario_data.n}}_i" step="0.1" value="{{ request.form.get('scenario{}__i'.format(scenario_data.n), scenario_data.i_form) }}" placeholder="{{ _('e.g., 2') }}" min="-50" max="100" class="form-input py-2 px-3">
-            </div>
-          </div>
-
-          {# Periodic Rates Section #}
-          <div class="pt-2 border-t border-fire-input-border"> {# Changed classes #}
-            <h5 class="text-md font-semibold text-fire-text-primary mb-2">{{ _("Periodic Rates (Optional)") }}</h5> {# Changed classes #}
-            <div class="grid grid-cols-3 gap-2"> {# Changed classes #}
-              {% for k in range(1, 4) %}
-              <div class="space-y-1"> {# Changed classes #}
-                <p class="text-xs font-medium text-center text-fire-text-secondary">Period {{k}}</p> {# Changed classes, removed mb-1 #}
-                <div> {# Removed mb-2 #}
-                <label for="scenario{{scenario_data.n}}_period{{k}}_duration" class="form-label text-xs block mb-1">{{ _("Duration (yrs):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_duration" id="scenario{{scenario_data.n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(scenario_data.n, k), scenario_data.get('period{}_duration_form'.format(k), '')) }}" min="0" step="1" placeholder="{{ _('Yrs') }}" class="form-input p-1 text-sm"> {# Changed placeholder #}
-              </div>
-                <div> {# Removed mb-2 #}
-                <label for="scenario{{scenario_data.n}}_period{{k}}_r" class="form-label text-xs block mb-1">{{ _("Return (%%):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_r" id="scenario{{scenario_data.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario_data.n, k), scenario_data.get('period{}_r_form'.format(k), '')) }}" placeholder="{{ _('R%%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
-              </div>
-                <div> {# Removed mb-2 #}
-                <label for="scenario{{scenario_data.n}}_period{{k}}_i" class="form-label text-xs block mb-1">{{ _("Inflation (%%):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_i" id="scenario{{scenario_data.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario_data.n, k), scenario_data.get('period{}_i_form'.format(k), '')) }}" placeholder="{{ _('I%%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
-              </div>
+            <section id="inputs" class="rounded-xl shadow-lg p-6" style="background-color: var(--theme-bg-secondary, #2c3a4b);">
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold" style="color: var(--theme-text-primary, #fff);">Input Scenarios</h2>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div>
+                            <label for="scenarioCount" class="form-label">Scenarios:</label>
+                            <select id="scenarioCount" class="form-select text-sm p-1" style="width:auto;">
+                                <option>1</option><option selected>2</option><option>3</option><option>4</option>
+                            </select>
+                        </div>
+                        <button class="btn-accent font-semibold text-sm py-1.5 px-3 rounded-md">Save Current</button>
+                        <div>
+                            <label for="loadScenarioSelect" class="form-label">Load Saved:</label>
+                            <select id="loadScenarioSelect" class="form-select text-sm p-1" style="width:auto;">
+                                <option>Select to load...</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
 
-          {# Withdrawal Timing and Final Value #}
-          <div class="space-y-3 pt-2 mt-auto border-t border-fire-input-border"> {# Changed pt-4 mt-4 to pt-2 mt-auto #}
-            <div>
-              <label class="form-label">{{ _("Withdrawal Timing:") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Choose withdrawal timing for this scenario.") }}</span></span></label>
-              <div class="flex space-x-4 mt-1">
-                <div class="form-check form-check-inline">
-                    <input class="mockup-themed-radio" type="radio" name="scenario{{scenario_data.n}}_withdrawal_time" id="scenario{{scenario_data.n}}_withdrawal_time_start" value="start" {% if request.form.get('scenario{}withdrawal_time'.format(scenario_data.n), scenario_data.withdrawal_time_form) == 'start' %}checked{% endif %}>
-                    <label class="ml-1 form-label-radio-checkbox" for="scenario{{scenario_data.n}}_withdrawal_time_start">{{ _("Start") }}</label> {# Applied consistent label class #}
+                <!-- Responsive grid: 2 columns default, 3 on md, 4 on lg -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <script>
+                        const scenarios = [
+                            { n: 1, W: 50000, T: 30, r: 7, i: 2, D: 0, withdrawal_time: 'start' },
+                            { n: 2, W: 60000, T: 25, r: 6, i: 3, D: 100000, withdrawal_time: 'end' },
+                            { n: 3, W: 55000, T: 35, r: 8, i: 2.5, D: 0, withdrawal_time: 'start' },
+                            { n: 4, W: 50000, T: 30, r: 7, i: 2, D: 500000, withdrawal_time: 'start' }
+                        ];
+
+                        scenarios.forEach((s, i) => {
+                            document.write(`
+                                <div class="p-4 rounded-lg h-full" style="background-color: var(--theme-bg-primary, #1f2937); border:1px solid var(--theme-input-border, #4b5563);">
+                                    <h3 class="text-xl font-bold mb-4 text-center" style="color: var(--theme-text-primary, #fff);">Scenario <span style="color: var(--theme-accent-primary, #3b82f6);">${s.n}</span></h3>
+
+                                    <div class="flex flex-col space-y-3 mb-4">
+                                        <div>
+                                            <label class="form-label">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
+                                            <input type="number" class="form-input text-sm p-1" value="${s.W}" placeholder="e.g., 50000">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Duration (yrs):<span class="info-icon">&#9432;<span class="tooltip-text">How many years funds need to last.</span></span></label>
+                                            <input type="number" class="form-input text-sm p-1" value="${s.T}" placeholder="e.g., 30">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Expected Return (r %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return.</span></span></label>
+                                            <input type="number" class="form-input text-sm p-1" step="0.1" value="${s.r}" placeholder="e.g., 7">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Inflation Rate (i %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate.</span></span></label>
+                                            <input type="number" class="form-input text-sm p-1" step="0.1" value="${s.i}" placeholder="e.g., 2">
+                                        </div>
+                                    </div>
+
+                                    <div class="border-t pt-4 mb-4" style="border-color: var(--theme-input-border, #4b5563);">
+                                        <h5 class="font-semibold mb-2 text-sm" style="color: var(--theme-text-secondary, #9ca3af);">Periodic Rates (Optional)</h5>
+                                        <div class="flex space-x-4">
+                                            ${[1,2,3].map(k => `
+                                                <div class="flex-1 flex flex-col space-y-2">
+                                                    <label class="text-xs font-medium text-center" style="color: var(--theme-text-secondary, #9ca3af);">P${k}</label>
+                                                    <input type="number" placeholder="Yrs" class="form-input text-xs p-1">
+                                                    <input type="number" placeholder="R%" class="form-input text-xs p-1">
+                                                    <input type="number" placeholder="I%" class="form-input text-xs p-1">
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+
+                                    <div class="border-t pt-4 flex flex-col space-y-4 mb-4" style="border-color: var(--theme-input-border, #4b5563);">
+                                        <div>
+                                            <label class="form-label">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
+                                            <div class="flex space-x-4">
+                                                <label class="flex items-center"><input type="radio" class="form-radio" name="wt-${i}" ${s.withdrawal_time==='start'?'checked':''}><span class="ml-2 text-sm" style="color: var(--theme-text-primary);">Start</span></label>
+                                                <label class="flex items-center"><input type="radio" class="form-radio" name="wt-${i}" ${s.withdrawal_time==='end'?'checked':''}><span class="ml-2 text-sm" style="color: var(--theme-text-primary);">End</span></label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">Amount you wish to have remaining at the end.</span></span></label>
+                                            <input type="number" class="form-input text-sm p-1" min="0" value="${s.D}">
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="form-checkbox" checked><label class="ml-2 text-sm" style="color: var(--theme-text-primary);">Enable Scenario ${s.n}</label>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    </script>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="mockup-themed-radio" type="radio" name="scenario{{scenario_data.n}}_withdrawal_time" id="scenario{{scenario_data.n}}_withdrawal_time_end" value="end" {% if request.form.get('scenario{}withdrawal_time'.format(scenario_data.n), scenario_data.withdrawal_time_form) == 'end' %}checked{% endif %}>
-                    <label class="ml-1 form-label-radio-checkbox" for="scenario{{scenario_data.n}}_withdrawal_time_end">{{ _("End") }}</label> {# Applied consistent label class #}
+
+                <div class="mt-8 flex justify-center">
+                    <button id="runComparisonBtn" class="btn-primary-action font-bold text-lg py-2 px-8 rounded-lg shadow-lg">Compare Scenarios &rarr;</button>
                 </div>
-              </div>
-            </div>
-            <div>
-              <label for="scenario{{scenario_data.n}}_D" class="form-label">{{ _("Desired Final Portfolio Value ($):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("The amount you wish to have remaining at the end of the duration for this scenario. Default is $0.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_D" name="scenario{{scenario_data.n}}_D" value="{{ request.form.get('scenario{}__D'.format(scenario_data.n), scenario_data.D_form) }}" step="any" min="0" class="form-input py-2 px-3">
-            </div>
-            {# Enable Scenario Checkbox moved here and classes updated #}
-            <div class="flex items-center">
-              <input type="checkbox" class="mockup-themed-checkbox" name="scenario{{scenario_data.n}}_enabled" id="scenario{{scenario_data.n}}_enabled" {% if request.form.get('scenario{}enabled'.format(scenario_data.n)) == "on" or (not request.form and scenario_data.enabled) %}checked{% endif %}>
-              <label class="ml-1 form-label-radio-checkbox" for="scenario{{scenario_data.n}}_enabled">{{ _("Enable Scenario") }} {{ scenario_data.n }}</label>
-            </div>
-          </div>
+            </section>
 
-          {# Results Area - to be populated by JS #}
-          <div class="scenario-results-area mt-auto pt-3 text-sm">
-            {# JS will populate this based on AJAX response #}
-          </div>
-        </div>
-        {% endfor %}
-      </div>
+            <div id="results-wrapper" class="space-y-8" style="display:none;"></div>
+        </main>
+    </div>
 
-      <div class="mt-8 flex justify-center">
-        <button type="submit" id="runComparisonBtn" class="btn-fire-primary text-lg py-3 px-12">
-          {{ _("Compare Scenarios") }} &rarr;
-        </button>
-      </div>
-    </section>
-  </form> {# End of the form that wraps scenario inputs #}
-
-    {# At a Glance Summary Dashboard - structure from mockup #}
-    <section id="summary-dashboard" class="bg-fire-dark-card rounded-xl shadow-lg p-6">
-      <h2 class="text-2xl font-bold text-white mb-6">{{ _("Results: At a Glance") }}</h2>
-      <div id="summaryWidgetsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-        {# Placeholder content for summary widgets - will be populated by JS or if data is passed from backend #}
-        <div class="bg-fire-dark-alt p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">Metric 1</h3><p class="text-3xl font-bold text-white">-</p></div>
-        <div class="bg-fire-dark-alt p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">Metric 2</h3><p class="text-3xl font-bold text-white">-</p></div>
-        <div class="bg-fire-dark-alt p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">Metric 3</h3><p class="text-3xl font-bold text-white">-</p></div>
-        <div class="bg-fire-dark-alt p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">Metric 4</h3><p class="text-3xl font-bold text-white">-</p></div>
-      </div>
-    </section>
-
-    {# Portfolio Projections Visualization - structure from mockup #}
-    <section id="visualization" class="bg-fire-dark-card rounded-xl shadow-lg p-6">
-      <h2 class="text-2xl font-bold text-white mb-6">{{ _("Portfolio Projections") }}</h2>
-      {# Plotly charts will be injected here by JS into #combined_balance and #combined_withdrawal #}
-      {# Wrapper for Combined Portfolio Balance Plot #}
-      <div>
-        <h3 class="text-xl font-bold text-fire-text-primary mb-3">{{ _("Combined Portfolio Balance") }}</h3>
-        <div id="combined_balance" class="w-full min-h-[24rem] h-96 bg-fire-dark rounded-lg flex items-center justify-center p-4 text-fire-text-secondary mb-4">
-            {# Content injected by JS #}
-            {{ _("Portfolio Balance Plot Area") }}
-        </div>
-      </div>
-      {# Wrapper for Combined Annual Withdrawals Plot #}
-      <div>
-        <h3 class="text-xl font-bold text-fire-text-primary mb-3">{{ _("Combined Annual Withdrawals") }}</h3>
-        <div id="combined_withdrawal" class="w-full min-h-[24rem] h-96 bg-fire-dark rounded-lg flex items-center justify-center p-4 text-fire-text-secondary">
-            {# Content injected by JS #}
-            {{ _("Annual Withdrawals Plot Area") }}
-        </div>
-      </div>
-    </section>
-
-    {# Detailed Comparison Table - structure from mockup, summaryTable ID from old JS #}
-    <section id="detailed-comparison" class="bg-fire-dark-card rounded-xl shadow-lg p-6 overflow-hidden">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-white">{{ _("Detailed Comparison") }}</h2>
-        <div class="flex items-center">
-          <label for="highlightToggle" class="text-sm font-medium text-fire-text-primary mr-2">{{ _("Highlight Differences:") }}</label> {# Changed to text-fire-text-primary #}
-          <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-            <input type="checkbox" name="highlightToggle" id="highlightToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-            <label for="highlightToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-fire-dark-alt cursor-pointer"></label>
-          </div>
-        </div>
-      </div>
-      <div id="summaryTable" class="overflow-x-auto">
-        {# Table will be injected here by JS (updateSummaryTable function) #}
-        <p class="text-fire-text-secondary">{{ _("Summary table will appear here after running comparison.") }}</p>
-      </div>
-    </section>
-  </main>
-</div>
-{% endblock %}
-
-{% block scripts_extra %}
-  <script>
-    // JS for compare page interactivity (scenario count, sortable, save/load, AJAX update)
-    // This script was largely from the original file, adapted slightly.
-    // TODO: THIS SCRIPT NEEDS MAJOR REVIEW AND UPDATE TO MATCH NEW HTML IDs AND CLASSES
-    // For example, scenarioCountMockup vs scenarioCount, .scenario vs .scenario-card,
-    // .form-input vs .themed-input, etc.
-    // The AJAX success callback also needs to target the new plot placeholder IDs.
-
-    function updateScenarioDisplay() {
-      var count = parseInt($("#scenarioCount").val());
-      // var totalCards = $(".scenario-card").length; // Not strictly needed for this logic
-
-      $(".scenario-card").each(function(index) {
-          var scenarioNum = index + 1; // Scenario numbers are 1-based
-          var scenarioEnabledCheckbox = $(this).find("#scenario" + scenarioNum + "_enabled");
-
-          if (index < count) { // This scenario should be visible
-              $(this).show();
-              $(this).find("input, select, textarea").prop('disabled', false);
-              // Do not automatically check scenarioEnabledCheckbox here;
-              // its state should reflect user's choice or default from backend.
-              // The 'disabled', false above ensures the checkbox itself is usable.
-          } else { // This scenario should be hidden
-              $(this).hide();
-              $(this).find("input, select, textarea").prop('disabled', true);
-              // Also uncheck and disable the "Enable Scenario X" checkbox itself
-              // because if the card is hidden, this checkbox shouldn't be active or checked.
-              // Note: prop('disabled', true) on scenarioEnabledCheckbox is covered by the line above.
-              scenarioEnabledCheckbox.prop('checked', false);
-          }
-      });
-    }
-
-    // First $(document).ready() block removed, consolidated into the one below.
-
-    // saveScenarios and loadScenario functions from OLD structure.
-    // These will need significant rework if they are to be used with the new card structure
-    // and new field names/IDs. For now, they are kept but are likely non-functional
-    // with the current HTML for scenario cards.
-    function saveScenarios() {
-      // Needs to correctly serialize data from the new card structure
-      var data = $("#compareForm").serializeArray(); // This will pick up inputs from the new structure
-      var scenarioData = {};
-      data.forEach(function(item) {
-        scenarioData[item.name] = item.value;
-      });
-      var scenarioName = prompt("{{ _('Enter a name for this scenario configuration:') }}");
-      if(scenarioName) {
-        localStorage.setItem("compareScenario_" + scenarioName, JSON.stringify(scenarioData));
-        // loadScenarioOptions(); // This populates a select that may not exist/be correct
-        alert("{{ _('Scenario saved as') }} '" + scenarioName + "'.");
-      }
-    }
-
-    function loadScenarioOptions() {
-      // This populates a select element for loading scenarios.
-      // The select element from the old page (#loadScenarioSelect) is not in the new main content.
-      // If this functionality is needed, the select element must be re-added to the new HTML.
-      var loadSelect = $("#loadScenarioSelect"); // This ID is from the old HTML
-      if (!loadSelect.length) return;
-
-      var options = '<option value="">' + "{{ _('Load Saved...') }}" + '</option>';
-      for(var key in localStorage) {
-        if(key.startsWith("compareScenario_")) {
-          var name = key.replace("compareScenario_", "");
-          options += "<option value='" + key + "'>" + name + "</option>";
-        }
-      }
-      loadSelect.html(options);
-    }
-
-    function loadScenario() {
-      // This function needs to be completely adapted to populate the new card structure
-      // based on the `scenarios` data object used by the Jinja loop.
-      // It currently uses name attributes that match the old form structure.
-      var loadSelect = $("#loadScenarioSelect"); // This ID is from the old HTML
-      if (!loadSelect.length) return;
-      var key = loadSelect.val();
-
-      if(key) {
-        var data = JSON.parse(localStorage.getItem(key));
-        // This loop assumes form field names directly match keys in `data`.
-        // This will need to map to the new dynamic field names (e.g., scenario1_W, scenario2_W)
-        for(var prop in data) {
-          var field = $("[name='" + prop + "']"); // These names are from the OLD structure
-          if(field.is(":radio")) {
-            field.filter("[value='" + data[prop] + "']").prop("checked", true);
-          } else if(field.is(":checkbox")) {
-            field.prop("checked", data[prop] === "on");
-          } else {
-            field.val(data[prop]);
-          }
-        }
-        // After loading, might need to trigger an update of scenario display count
-        // and then call updateComparison if auto-calculate on load is desired.
-      }
-    }
-
-    function updateComparison() {
-      console.log('[CompareDebug] updateComparison() called.');
-      console.log('[CompareDebug] Form data being sent:', $("#compareForm").serialize());
-      $.ajax({
-        type: "POST",
-        url: "{{ url_for('project.compare') }}",
-        data: $("#compareForm").serialize(), // This will serialize data from the new form structure
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-        success: function(response) {
-          console.log('[CompareDebug] AJAX success. Raw response:', response);
-
-          if (response.message && response.message.length > 0) {
-              $("#combined_balance_plot").html('<p class="text-fire-text-secondary">' + response.message + '</p>');
-              $("#combined_withdrawal_plot").html('');
-              $("#summaryTable").html('');
-              // Consider a more integrated way to show messages than alert()
-              alert(response.message);
-              // Clear individual scenario results if any
-              $(".scenario-card .scenario-results-area").html('');
-          } else if (response.scenarios && response.scenarios.length > 0) {
-              if (response.combined_balance) {
-                  $("#combined_balance_plot").html(response.combined_balance);
-              } else {
-                  $("#combined_balance_plot").html('<h3 class="text-xl font-bold text-fire-text-primary mb-3">' + "{{ _('Combined Portfolio Balance') }}" + '</h3><p class="text-fire-text-secondary">' + "{{ _('No balance graph data.') }}" + '</p>');
-              }
-
-              if (response.combined_withdrawal) {
-                  $("#combined_withdrawal_plot").html(response.combined_withdrawal);
-              } else {
-                  $("#combined_withdrawal_plot").html('<h3 class="text-xl font-bold text-fire-text-primary mb-3">' + "{{ _('Combined Annual Withdrawals') }}" + '</h3><p class="text-fire-text-secondary">' + "{{ _('No withdrawal graph data.') }}"+ '</p>');
-              }
-          } else {
-              $("#combined_balance_plot").html('<h3 class="text-xl font-bold text-fire-text-primary mb-3">' + "{{ _('Combined Portfolio Balance') }}" + '</h3><p class="text-fire-text-secondary">' + "{{ _('No comparison data available or an unexpected error occurred.') }}" + '</p>');
-              $("#combined_withdrawal_plot").html('<h3 class="text-xl font-bold text-fire-text-primary mb-3">' + "{{ _('Combined Annual Withdrawals') }}" + '</h3><p class="text-fire-text-secondary">' + "{{ _('No comparison data available or an unexpected error occurred.') }}" + '</p>');
-              $("#summaryTable").html("");
-          }
-
-          if (response.scenarios && Array.isArray(response.scenarios)) {
-              updateSummaryTable(response.scenarios); // This function needs to be compatible
-
-              // Update individual scenario results (e.g., FIRE number or error within each card)
-              response.scenarios.forEach(function(sc, index) {
-                  // Assumes cards will be dynamically ID'd like "scenario1", "scenario2" etc.
-                  // The Jinja loop in the content block creates scenario cards with IDs like "scenarioX" (e.g., scenario1, scenario2)
-                  var scenarioCard = $("#scenario" + sc.n);
-                  if (scenarioCard.length === 0) {
-                      console.warn('[CompareDebug] Scenario card div not found for scenario number:', sc.n);
-                      return;
-                  }
-                  var resultsArea = scenarioCard.find(".scenario-results-area");
-                  resultsArea.html(''); // Clear previous results
-
-                  if(sc.error){
-                      resultsArea.append('<div class="text-sm p-2 rounded bg-fire-fail/20 text-fire-fail">' + sc.error + '</div>');
-                  } else if (sc.fire_number_display && sc.fire_number_display !== "N/A") {
-                      // This is just an example, the actual display might be more complex (e.g. success rate circle)
-                      var resultHtml = '<div><p class="text-xs text-fire-text-secondary">' + "{{ _('FIRE Number') }}" + '</p>' +
-                                       '<p class="text-lg font-bold text-fire-accent">' + sc.fire_number_display + '</p></div>';
-                      resultsArea.append(resultHtml);
-                  }
-              });
-          }
-        },
-        error: function(xhr, status, error) {
-          console.error('[CompareDebug] AJAX error. Status:', status, 'Error:', error, 'XHR:', xhr);
-          // Update placeholders to show error
-          $("#combined_balance_plot").html("<p class='text-fire-fail'>" + "{{ _('Error communicating with server. Please try again.') }}" + "</p>");
-          $("#combined_withdrawal_plot").html("<p class='text-fire-fail'>" + "{{ _('Error communicating with server. Please try again.') }}" + "</p>");
-          $("#summaryTable").html("");
-          alert("{{ _('Error: Could not update comparison. ') }}" + error);
-        }
-      });
-    }
-
-    // This function needs to be compatible with the new data structure (response.scenarios)
-    // and the new table classes if they differ from the old summary table.
-    // The mockup table structure is different, so this will need significant rework.
-    function updateSummaryTable(scenarios) {
-        console.log('[CompareDebug] updateSummaryTable() called with scenarios:', scenarios);
-        var tableContainer = $("#summaryTable");
-        tableContainer.html(''); // Clear previous table or placeholder text
-
-        if (!scenarios || scenarios.length === 0) {
-            tableContainer.html('<p class="text-fire-text-secondary text-center py-4">' + "{{ _('No scenario data to display.') }}" + '</p>');
-            return;
-        }
-
-        let enabledScenarios = scenarios.filter(sc => sc.enabled);
-        if (enabledScenarios.length === 0) {
-            tableContainer.html('<p class="text-fire-text-secondary text-center py-4">' + "{{ _('No enabled scenarios to display.') }}" + '</p>');
-            return;
-        }
-
-        var tableHtml = '<table class="compare-summary-table min-w-full">';
-        // Table Header
-        tableHtml += '<thead><tr>';
-        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Scenario") }}</th>';
-        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Annual Expenses (W)") }}</th>';
-        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Rates & Duration") }}</th>';
-        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Withdrawal Time") }}</th>';
-        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("FIRE Number / Success") }}</th>';
-        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Error") }}</th>';
-        tableHtml += '</tr></thead>';
-
-        // Table Body
-        tableHtml += '<tbody class="bg-fire-dark-card">'; // Mockup uses divide-y divide-fire-dark-alt, handled by CSS on .compare-summary-table
-
-        enabledScenarios.forEach(function(sc) {
-            let rates_display = "N/A";
-            if (Array.isArray(sc.rates_periods_data) && sc.rates_periods_data.length > 0) {
-                if (sc.rates_periods_data.length === 1 && sc.rates_periods_data[0].is_fallback) {
-                     rates_display = `R: ${parseFloat(sc.r_form).toFixed(1)}%, I: ${parseFloat(sc.i_form).toFixed(1)}%, T: ${sc.T_form}y (Fallback)`;
-                } else {
-                    rates_display = sc.rates_periods_data.map(p => `(R:${(p.r * 100).toFixed(1)}% I:${(p.i * 100).toFixed(1)}% D:${p.duration}y)`).join('<br>');
-                }
-            } else if (sc.r_form && sc.i_form && sc.T_form) {
-                 rates_display = `R: ${parseFloat(sc.r_form).toFixed(1)}%, I: ${parseFloat(sc.i_form).toFixed(1)}%, T: ${sc.T_form}y (Fallback)`;
-            }
-
-            tableHtml += '<tr>';
-            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-fire-text-primary">Scen. ' + sc.n + '</td>';
-            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm">' + (sc.W_form || 'N/A') + '</td>'; // Default text color from CSS
-            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm">' + rates_display + '</td>';
-            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm">' + (sc.withdrawal_time_form || 'N/A') + '</td>';
-            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ' + (sc.error ? 'text-fire-fail' : 'text-fire-accent') + '">' + (sc.fire_number_display || "N/A") + '</td>';
-            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm text-fire-fail">' + (sc.error || "") + '</td>';
-            tableHtml += '</tr>';
+    <script>
+        document.getElementById('runComparisonBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('results-wrapper').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('results-wrapper').offsetTop, behavior: 'smooth' });
         });
-
-        tableHtml += '</tbody></table>';
-        tableContainer.html(tableHtml);
-    }
-    
-    $(document).ready(function(){
-      updateScenarioDisplay(); // Initial call
-      $("#scenarioCount").on("change", updateScenarioDisplay); // Bind to dropdown
-
-      // Sortable functionality
-      if (typeof $.fn.sortable === 'function' && $("#scenario_card_dynamic_container").length) {
-        $("#scenario_card_dynamic_container").sortable({
-            placeholder: "scenario-card bg-fire-dark-alt border-2 border-dashed border-fire-accent p-4 rounded-lg",
-            forcePlaceholderSize: true,
-            axis: "y",
-        });
-      }
-
-      loadScenarioOptions(); // Populate "Load Saved" dropdown
-
-      $("#compareForm").on("submit", function(e){
-        console.log('[CompareDebug] Form submitted via #compareForm.');
-        e.preventDefault();
-        updateComparison();
-      });
-    });
-  </script>
+    </script>
 {% endblock %}
