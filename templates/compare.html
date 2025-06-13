@@ -45,10 +45,10 @@
       {# Container for scenario cards - This replaces the old .scenario-container #}
       {# The outer grid for cards (md:grid-cols-2 lg:grid-cols-4) is from the mockup structure #}
       {# The inner 'scenario_card_dynamic_container' helps manage scenarios with JS and keeps original responsive grid for scenarios #}
-      <div id="scenario_card_dynamic_container" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+      <div id="scenario_card_dynamic_container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {# Loop to generate scenario cards with original application inputs but new mockup styling #}
         {% for scenario_data in scenarios %} {# Using scenario_data to avoid conflict with 'scenario' in JS if it's still there #}
-        <div class="scenario-card bg-fire-dark p-4 rounded-lg border border-fire-input-border space-y-4 flex flex-col" id="scenario{{ scenario_data.n }}" {% if not scenario_data.enabled %}style="display:none;"{% endif %}>
+        <div class="scenario-card bg-fire-dark p-4 rounded-lg border border-fire-input-border space-y-4 flex flex-col h-full" id="scenario{{ scenario_data.n }}" {% if not scenario_data.enabled %}style="display:none;"{% endif %}>
           {# Card Header - Simplified to match old structure's directness, styled with mockup colors #}
           <h3 class="text-xl font-bold mb-2 text-fire-text-primary"><span class="text-fire-accent">Scenario {{ scenario_data.n }}</span></h3>
 
@@ -57,46 +57,46 @@
             {# Annual Expenses (W) #}
             <div>
               <label for="scenario{{scenario_data.n}}_W_input" class="form-label">{{ _("Annual Expenses (W):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Your estimated current annual living expenses for this scenario.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_W_input" name="scenario{{scenario_data.n}}_W" value="{{ request.form.get('scenario{}__W'.format(scenario_data.n), scenario_data.W_form) }}" placeholder="{{ _('e.g., 50000') }}" required min="0" class="form-input">
+              <input type="number" id="scenario{{scenario_data.n}}_W_input" name="scenario{{scenario_data.n}}_W" value="{{ request.form.get('scenario{}__W'.format(scenario_data.n), scenario_data.W_form) }}" placeholder="{{ _('e.g., 50000') }}" required min="0" class="form-input py-2 px-3">
             </div>
 
             {# Total Duration (T) (Fallback) #}
             <div>
               <label for="scenario{{scenario_data.n}}_T_input" class="form-label">{{ _("Total Duration (yrs) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("How many years retirement funds need to last. Used if no specific periods are defined.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_T_input" name="scenario{{scenario_data.n}}_T" value="{{ request.form.get('scenario{}__T'.format(scenario_data.n), scenario_data.T_form) }}" placeholder="{{ _('e.g., 30') }}" min="1" step="1" class="form-input">
+              <input type="number" id="scenario{{scenario_data.n}}_T_input" name="scenario{{scenario_data.n}}_T" value="{{ request.form.get('scenario{}__T'.format(scenario_data.n), scenario_data.T_form) }}" placeholder="{{ _('e.g., 30') }}" min="1" step="1" class="form-input py-2 px-3">
             </div>
 
             {# Overall Return (r) (Fallback) #}
             <div>
               <label for="scenario{{scenario_data.n}}_r_input" class="form-label">{{ _("Overall Return (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual investment return. Used if no specific periods are defined.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_r_input" name="scenario{{scenario_data.n}}_r" step="0.1" value="{{ request.form.get('scenario{}__r'.format(scenario_data.n), scenario_data.r_form) }}" placeholder="{{ _('e.g., 7') }}" min="-50" max="100" class="form-input">
+              <input type="number" id="scenario{{scenario_data.n}}_r_input" name="scenario{{scenario_data.n}}_r" step="0.1" value="{{ request.form.get('scenario{}__r'.format(scenario_data.n), scenario_data.r_form) }}" placeholder="{{ _('e.g., 7') }}" min="-50" max="100" class="form-input py-2 px-3">
             </div>
 
             {# Overall Inflation (i) (Fallback) #}
             <div>
               <label for="scenario{{scenario_data.n}}_i_input" class="form-label">{{ _("Overall Inflation (%%) (Fallback):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Expected average annual inflation rate. Used if no specific periods are defined.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_i_input" name="scenario{{scenario_data.n}}_i" step="0.1" value="{{ request.form.get('scenario{}__i'.format(scenario_data.n), scenario_data.i_form) }}" placeholder="{{ _('e.g., 2') }}" min="-50" max="100" class="form-input">
+              <input type="number" id="scenario{{scenario_data.n}}_i_input" name="scenario{{scenario_data.n}}_i" step="0.1" value="{{ request.form.get('scenario{}__i'.format(scenario_data.n), scenario_data.i_form) }}" placeholder="{{ _('e.g., 2') }}" min="-50" max="100" class="form-input py-2 px-3">
             </div>
           </div>
 
           {# Periodic Rates Section #}
-          <div class="periodic-rates-section mt-4 mb-4"> {# Added mt-4 for spacing from general inputs grid #}
-            <h5 class="text-lg font-semibold text-fire-text-primary mb-3">{{ _("Periodic Rates (Optional)") }}</h5>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-3"> {# Grid for P1, P2, P3 groups #}
+          <div class="pt-2 border-t border-fire-input-border"> {# Changed classes #}
+            <h5 class="text-md font-semibold text-fire-text-primary mb-2">{{ _("Periodic Rates (Optional)") }}</h5> {# Changed classes #}
+            <div class="grid grid-cols-3 gap-2"> {# Changed classes #}
               {% for k in range(1, 4) %}
-              <div class="period-group pt-2 border-t border-fire-input-border"> {# Removed mb-3 as gap is handled by parent grid #}
-                <p class="text-sm font-medium text-fire-text-secondary mb-1">Period {{k}}</p>
-                <div class="mb-2">
-                <label for="scenario{{scenario_data.n}}_period{{k}}_duration" class="form-label text-xs">{{ _("Duration (yrs):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_duration" id="scenario{{scenario_data.n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(scenario_data.n, k), scenario_data.get('period{}_duration_form'.format(k), '')) }}" min="0" step="1" placeholder="{{ _('Years') }}" class="form-input p-1 text-sm">
+              <div class="space-y-1"> {# Changed classes #}
+                <p class="text-xs font-medium text-center text-fire-text-secondary">Period {{k}}</p> {# Changed classes, removed mb-1 #}
+                <div> {# Removed mb-2 #}
+                <label for="scenario{{scenario_data.n}}_period{{k}}_duration" class="form-label text-xs block mb-1">{{ _("Duration (yrs):") }}</label>
+                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_duration" id="scenario{{scenario_data.n}}_period{{k}}_duration" value="{{ request.form.get('scenario{}period{}_duration'.format(scenario_data.n, k), scenario_data.get('period{}_duration_form'.format(k), '')) }}" min="0" step="1" placeholder="{{ _('Yrs') }}" class="form-input p-1 text-sm"> {# Changed placeholder #}
               </div>
-              <div class="mb-2">
-                <label for="scenario{{scenario_data.n}}_period{{k}}_r" class="form-label text-xs">{{ _("Return (%%):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_r" id="scenario{{scenario_data.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario_data.n, k), scenario_data.get('period{}_r_form'.format(k), '')) }}" placeholder="%" min="-50" max="100" class="form-input p-1 text-sm">
+                <div> {# Removed mb-2 #}
+                <label for="scenario{{scenario_data.n}}_period{{k}}_r" class="form-label text-xs block mb-1">{{ _("Return (%%):") }}</label>
+                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_r" id="scenario{{scenario_data.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario_data.n, k), scenario_data.get('period{}_r_form'.format(k), '')) }}" placeholder="{{ _('R%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
               </div>
-              <div class="mb-2">
-                <label for="scenario{{scenario_data.n}}_period{{k}}_i" class="form-label text-xs">{{ _("Inflation (%%):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_i" id="scenario{{scenario_data.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario_data.n, k), scenario_data.get('period{}_i_form'.format(k), '')) }}" placeholder="%" min="-50" max="100" class="form-input p-1 text-sm">
+                <div> {# Removed mb-2 #}
+                <label for="scenario{{scenario_data.n}}_period{{k}}_i" class="form-label text-xs block mb-1">{{ _("Inflation (%%):") }}</label>
+                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_i" id="scenario{{scenario_data.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario_data.n, k), scenario_data.get('period{}_i_form'.format(k), '')) }}" placeholder="{{ _('I%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
               </div>
                 </div>
               </div>
@@ -105,7 +105,7 @@
           </div>
 
           {# Withdrawal Timing and Final Value #}
-          <div class="space-y-3 pt-4 mt-4 border-t border-fire-input-border"> {# Added mt-4 for spacing #}
+          <div class="space-y-3 pt-2 mt-auto border-t border-fire-input-border"> {# Changed pt-4 mt-4 to pt-2 mt-auto #}
             <div>
               <label class="form-label">{{ _("Withdrawal Timing:") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("Choose withdrawal timing for this scenario.") }}</span></span></label>
               <div class="flex space-x-4 mt-1">
@@ -121,15 +121,13 @@
             </div>
             <div>
               <label for="scenario{{scenario_data.n}}_D" class="form-label">{{ _("Desired Final Portfolio Value ($):") }}<span class="info-icon">&#9432;<span class="tooltip-text">{{ _("The amount you wish to have remaining at the end of the duration for this scenario. Default is $0.") }}</span></span></label>
-              <input type="number" id="scenario{{scenario_data.n}}_D" name="scenario{{scenario_data.n}}_D" value="{{ request.form.get('scenario{}__D'.format(scenario_data.n), scenario_data.D_form) }}" step="any" min="0" class="form-input">
+              <input type="number" id="scenario{{scenario_data.n}}_D" name="scenario{{scenario_data.n}}_D" value="{{ request.form.get('scenario{}__D'.format(scenario_data.n), scenario_data.D_form) }}" step="any" min="0" class="form-input py-2 px-3">
             </div>
-          </div>
-
-          {# Enable Scenario Checkbox #}
-          <div class="form-check mt-3 pt-2 border-t border-fire-input-border">
-            {# The label for the checkbox group itself can be a form-label if needed, or rely on this one #}
-            <input type="checkbox" class="mockup-themed-checkbox" name="scenario{{scenario_data.n}}_enabled" id="scenario{{scenario_data.n}}_enabled" {% if request.form.get('scenario{}enabled'.format(scenario_data.n)) == "on" or (not request.form and scenario_data.enabled) %}checked{% endif %}>
-            <label class="ml-1 form-label-radio-checkbox" for="scenario{{scenario_data.n}}_enabled">{{ _("Enable Scenario") }} {{ scenario_data.n }}</label> {# Applied consistent label class #}
+            {# Enable Scenario Checkbox moved here and classes updated #}
+            <div class="flex items-center">
+              <input type="checkbox" class="mockup-themed-checkbox" name="scenario{{scenario_data.n}}_enabled" id="scenario{{scenario_data.n}}_enabled" {% if request.form.get('scenario{}enabled'.format(scenario_data.n)) == "on" or (not request.form and scenario_data.enabled) %}checked{% endif %}>
+              <label class="ml-1 form-label-radio-checkbox" for="scenario{{scenario_data.n}}_enabled">{{ _("Enable Scenario") }} {{ scenario_data.n }}</label>
+            </div>
           </div>
 
           {# Results Area - to be populated by JS #}
