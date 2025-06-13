@@ -214,61 +214,30 @@
 
     function updateScenarioDisplay() {
       var count = parseInt($("#scenarioCount").val());
-      var totalCards = $(".scenario-card").length; // Get total number of cards rendered by Jinja
+      // var totalCards = $(".scenario-card").length; // Not strictly needed for this logic
 
       $(".scenario-card").each(function(index) {
-        var scenarioNum = index + 1; // Scenario numbers are 1-based
-        var enabledCheckbox = $(this).find("#scenario" + scenarioNum + "_enabled");
+          var scenarioNum = index + 1; // Scenario numbers are 1-based
+          var scenarioEnabledCheckbox = $(this).find("#scenario" + scenarioNum + "_enabled");
 
-        if (index < count) {
-          $(this).show();
-          // If a card is shown by the dropdown, ensure its "enabled" checkbox is checked,
-          // UNLESS it's one of the extra cards beyond what Jinja initially rendered (though this case is less likely here).
-          // This part is tricky because we don't want to override a user's explicit unchecking if the card was already visible.
-          // A simpler approach: if showing, don't force enable. If hiding, force disable.
-          // if (!enabledCheckbox.prop('checked')) {
-          //    enabledCheckbox.prop('checked', true);
-          // }
-        } else {
-          $(this).hide();
-          // If a card is hidden by the dropdown, also uncheck its "enabled" checkbox
-          // so its data isn't processed by the backend.
-          if (enabledCheckbox.prop('checked')) {
-             enabledCheckbox.prop('checked', false);
+          if (index < count) { // This scenario should be visible
+              $(this).show();
+              $(this).find("input, select, textarea").prop('disabled', false);
+              // Do not automatically check scenarioEnabledCheckbox here;
+              // its state should reflect user's choice or default from backend.
+              // The 'disabled', false above ensures the checkbox itself is usable.
+          } else { // This scenario should be hidden
+              $(this).hide();
+              $(this).find("input, select, textarea").prop('disabled', true);
+              // Also uncheck and disable the "Enable Scenario X" checkbox itself
+              // because if the card is hidden, this checkbox shouldn't be active or checked.
+              // Note: prop('disabled', true) on scenarioEnabledCheckbox is covered by the line above.
+              scenarioEnabledCheckbox.prop('checked', false);
           }
-        }
       });
     }
 
-    $(document).ready(function(){
-      updateScenarioDisplay(); // Initial call to set visibility based on dropdown
-      $("#scenarioCount").on("change", updateScenarioDisplay); // Bind to dropdown change
-
-      // Sortable functionality
-      if (typeof $.fn.sortable === 'function' && $("#scenario_card_dynamic_container").length) {
-        $("#scenario_card_dynamic_container").sortable({
-            placeholder: "scenario-card bg-fire-dark-alt border-dashed border-fire-accent p-4 rounded-lg",
-            forcePlaceholderSize: true,
-            axis: "y"
-        });
-      }
-
-      loadScenarioOptions(); // Populate "Load Saved" dropdown
-
-      // The old form ID was #compareForm. The new structure has a form with this ID.
-      // The button is now #runComparisonBtn, not type=submit by default in mockup, but made it submit here.
-      $("#compareForm").on("submit", function(e){
-        console.log('[CompareDebug] Compare form submitted via #compareForm.');
-        e.preventDefault();
-        updateComparison(); // This function needs to be reviewed for new field names/IDs
-      });
-      // If #runComparisonBtn is not type=submit, it would need its own click handler:
-      // $("#runComparisonBtn").on("click", function(e){
-      //   console.log('[CompareDebug] Run Comparison button clicked.');
-      //   e.preventDefault();
-      //   updateComparison();
-      // });
-    });
+    // First $(document).ready() block removed, consolidated into the one below.
 
     // saveScenarios and loadScenario functions from OLD structure.
     // These will need significant rework if they are to be used with the new card structure
