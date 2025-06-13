@@ -92,11 +92,11 @@
               </div>
                 <div> {# Removed mb-2 #}
                 <label for="scenario{{scenario_data.n}}_period{{k}}_r" class="form-label text-xs block mb-1">{{ _("Return (%%):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_r" id="scenario{{scenario_data.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario_data.n, k), scenario_data.get('period{}_r_form'.format(k), '')) }}" placeholder="{{ _('R%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
+                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_r" id="scenario{{scenario_data.n}}_period{{k}}_r" step="0.1" value="{{ request.form.get('scenario{}period{}_r'.format(scenario_data.n, k), scenario_data.get('period{}_r_form'.format(k), '')) }}" placeholder="{{ _('R%%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
               </div>
                 <div> {# Removed mb-2 #}
                 <label for="scenario{{scenario_data.n}}_period{{k}}_i" class="form-label text-xs block mb-1">{{ _("Inflation (%%):") }}</label>
-                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_i" id="scenario{{scenario_data.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario_data.n, k), scenario_data.get('period{}_i_form'.format(k), '')) }}" placeholder="{{ _('I%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
+                <input type="number" name="scenario{{scenario_data.n}}_period{{k}}_i" id="scenario{{scenario_data.n}}_period{{k}}_i" step="0.1" value="{{ request.form.get('scenario{}period{}_i'.format(scenario_data.n, k), scenario_data.get('period{}_i_form'.format(k), '')) }}" placeholder="{{ _('I%%') }}" min="-50" max="100" class="form-input p-1 text-sm"> {# Changed placeholder #}
               </div>
                 </div>
               </div>
