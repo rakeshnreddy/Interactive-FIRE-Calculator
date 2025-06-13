@@ -389,7 +389,14 @@ def compare():
                             scenario_rates_periods.append({'duration': duration, 'r': r_perc / 100, 'i': i_perc / 100})
                         elif duration < 0: raise ValueError(gettext("Period %(p_num)s duration cannot be negative.", p_num=p_num))
                 if not scenario_rates_periods:
-                    r_perc_single, i_perc_single, T_single = float(scenario_input['r_form']), float(scenario_input['i_form']), int(scenario_input['T_form'])
+                    r_form_str = scenario_input.get('r_form')
+                    i_form_str = scenario_input.get('i_form')
+                    T_form_str = scenario_input.get('T_form')
+
+                    r_perc_single = float(r_form_str) if r_form_str else 0.0
+                    i_perc_single = float(i_form_str) if i_form_str else 0.0
+                    T_single = int(T_form_str) if T_form_str else 0
+
                     if T_single <= 0: raise ValueError(gettext("Time (T) must be > 0 for single period mode."))
                     if not (-50 <= r_perc_single <= 100): raise ValueError(gettext("Annual return (r) must be between -50% and 100%."))
                     if not (-50 <= i_perc_single <= 100): raise ValueError(gettext("Inflation rate (i) must be between -50% and 100%."))
