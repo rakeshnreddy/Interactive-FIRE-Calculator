@@ -6,74 +6,31 @@
     {{ super() }}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--theme-bg-primary, #1f2937);
-            color: var(--theme-text-primary, #e5e7eb);
-        }
-        .form-input, .form-select {
-            background-color: var(--theme-input-bg, #374151);
-            border: 1px solid var(--theme-input-border, #4b5563);
-            border-radius: 0.375rem;
-            color: var(--theme-text-primary, #e5e7eb);
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-        }
-        .form-input:focus, .form-select:focus {
-            outline: none;
-            border-color: var(--theme-accent-primary, #3b82f6);
-            box-shadow: 0 0 0 2px var(--theme-accent-primary-focus-shadow, rgba(59, 130, 246, 0.5));
-        }
-        .form-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--theme-text-secondary, #9ca3af);
-            margin-bottom: 0.25rem;
-            display: block;
-        }
-        .btn-accent {
-            background-color: var(--theme-accent-primary-semi-transparent, rgba(59,130,246,0.8));
-            color: var(--theme-button-text, #fff);
-        }
-        .btn-accent:hover {
-            background-color: var(--theme-accent-primary, #3b82f6);
-        }
-        .btn-primary-action {
-            background-color: var(--theme-accent-primary, #3b82f6);
-            color: var(--theme-button-text, #fff);
-        }
-        .btn-primary-action:hover {
-            background-color: var(--theme-accent-primary-hover, #2563eb);
-        }
-    </style>
 {% endblock %}
 
 {% block content %}
-    <div class="max-w-screen-2xl mx-auto p-4 md:p-8">
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
         <main class="space-y-8">
             <header class="text-center mb-8">
-                <h1 class="text-4xl md:text-5xl font-bold mb-2" style="color: var(--theme-text-primary, #fff);">Compare Financial Scenarios</h1>
-                <p class="text-lg" style="color: var(--theme-text-secondary, #9ca3af);">Enter parameters for different scenarios to see how they stack up and how different choices impact your journey to financial independence.</p>
+                <h1 class="text-primary text-4xl md:text-5xl font-bold mb-2">Compare Financial Scenarios</h1>
+                <p class="text-secondary text-lg">Enter parameters for different scenarios to see how they stack up and how different choices impact your journey to financial independence.</p>
             </header>
 
-            <section id="inputs" class="rounded-xl shadow-lg p-6" style="background-color: var(--theme-bg-secondary, #2c3a4b);">
+            <section id="inputs" class="glassmorphic p-6">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
-                    <h2 class="text-2xl font-bold" style="color: var(--theme-text-primary, #fff);">Input Scenarios</h2>
+                    <h2 class="text-2xl font-bold text-primary">Input Scenarios</h2>
                     <div class="flex flex-wrap items-center gap-4">
                         <div>
-                            <label for="scenarioCount" class="form-label">Scenarios:</label>
-                            <select id="scenarioCount" class="form-select text-sm p-1" style="width:auto;">
+                            <label for="scenarioCount" class="mockup-form-label">Scenarios:</label>
+                            <select id="scenarioCount" class="themed-select text-sm">
                                 <option>1</option><option selected>2</option><option>3</option><option>4</option>
                             </select>
                         </div>
-                        <button class="btn-accent font-semibold text-sm py-1.5 px-3 rounded-md">Save Current</button>
+                        <button class="btn-secondary font-semibold text-sm py-1 px-3 rounded-md">Save Current</button>
                         <div>
-                            <label for="loadScenarioSelect" class="form-label">Load Saved:</label>
-                            <select id="loadScenarioSelect" class="form-select text-sm p-1" style="width:auto;">
+                            <label for="loadScenarioSelect" class="mockup-form-label">Load Saved:</label>
+                            <select id="loadScenarioSelect" class="themed-select text-sm">
                                 <option>Select to load...</option>
                             </select>
                         </div>
@@ -81,7 +38,7 @@
                 </div>
 
                 <!-- Responsive grid: 2 columns default, 3 on md, 4 on lg -->
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <script>
                         const scenarios = [
                             { n: 1, W: 50000, T: 30, r: 7, i: 2, D: 0, withdrawal_time: 'start' },
@@ -92,58 +49,58 @@
 
                         scenarios.forEach((s, i) => {
                             document.write(`
-                                <div class="p-4 rounded-lg h-full" style="background-color: var(--theme-bg-primary, #1f2937); border:1px solid var(--theme-input-border, #4b5563);">
-                                    <h3 class="text-xl font-bold mb-4 text-center" style="color: var(--theme-text-primary, #fff);">Scenario <span style="color: var(--theme-accent-primary, #3b82f6);">${s.n}</span></h3>
+                                <div class="p-4 rounded-lg h-full bg-fire-dark-card border border-fire-input-border">
+                                    <h3 class="text-xl font-bold mb-4 text-center text-primary">Scenario <span class="text-accent-color">${s.n}</span></h3>
 
                                     <div class="flex flex-col space-y-3 mb-4">
                                         <div>
-                                            <label class="form-label">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
-                                            <input type="number" class="form-input text-sm p-1" value="${s.W}" placeholder="e.g., 50000">
+                                            <label class="mockup-form-label">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
+                                            <input type="number" class="mockup-form-input text-sm" value="${s.W}" placeholder="e.g., 50000">
                                         </div>
                                         <div>
-                                            <label class="form-label">Duration (yrs):<span class="info-icon">&#9432;<span class="tooltip-text">How many years funds need to last.</span></span></label>
-                                            <input type="number" class="form-input text-sm p-1" value="${s.T}" placeholder="e.g., 30">
+                                            <label class="mockup-form-label">Duration (yrs):<span class="info-icon">&#9432;<span class="tooltip-text">How many years funds need to last.</span></span></label>
+                                            <input type="number" class="mockup-form-input text-sm" value="${s.T}" placeholder="e.g., 30">
                                         </div>
                                         <div>
-                                            <label class="form-label">Expected Return (r %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return.</span></span></label>
-                                            <input type="number" class="form-input text-sm p-1" step="0.1" value="${s.r}" placeholder="e.g., 7">
+                                            <label class="mockup-form-label">Expected Return (r %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return.</span></span></label>
+                                            <input type="number" class="mockup-form-input text-sm" step="0.1" value="${s.r}" placeholder="e.g., 7">
                                         </div>
                                         <div>
-                                            <label class="form-label">Inflation Rate (i %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate.</span></span></label>
-                                            <input type="number" class="form-input text-sm p-1" step="0.1" value="${s.i}" placeholder="e.g., 2">
+                                            <label class="mockup-form-label">Inflation Rate (i %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate.</span></span></label>
+                                            <input type="number" class="mockup-form-input text-sm" step="0.1" value="${s.i}" placeholder="e.g., 2">
                                         </div>
                                     </div>
 
-                                    <div class="border-t pt-4 mb-4" style="border-color: var(--theme-input-border, #4b5563);">
-                                        <h5 class="font-semibold mb-2 text-sm" style="color: var(--theme-text-secondary, #9ca3af);">Periodic Rates (Optional)</h5>
+                                    <div class="border-t border-fire-input-border pt-4 mb-4">
+                                        <h5 class="font-semibold mb-2 text-sm text-secondary">Periodic Rates (Optional)</h5>
                                         <div class="flex space-x-4">
                                             ${[1,2,3].map(k => `
                                                 <div class="flex-1 flex flex-col space-y-2">
-                                                    <label class="text-xs font-medium text-center" style="color: var(--theme-text-secondary, #9ca3af);">P${k}</label>
-                                                    <input type="number" placeholder="Yrs" class="form-input text-xs p-1">
-                                                    <input type="number" placeholder="R%" class="form-input text-xs p-1">
-                                                    <input type="number" placeholder="I%" class="form-input text-xs p-1">
+                                                    <label class="text-xs font-medium text-center text-secondary">P${k}</label>
+                                                    <input type="number" placeholder="Yrs" class="mockup-form-input text-xs">
+                                                    <input type="number" placeholder="R%" class="mockup-form-input text-xs">
+                                                    <input type="number" placeholder="I%" class="mockup-form-input text-xs">
                                                 </div>
                                             `).join('')}
                                         </div>
                                     </div>
 
-                                    <div class="border-t pt-4 flex flex-col space-y-4 mb-4" style="border-color: var(--theme-input-border, #4b5563);">
+                                    <div class="border-t border-fire-input-border pt-4 flex flex-col space-y-4 mb-4">
                                         <div>
-                                            <label class="form-label">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
+                                            <label class="mockup-form-label">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
                                             <div class="flex space-x-4">
-                                                <label class="flex items-center"><input type="radio" class="form-radio" name="wt-${i}" ${s.withdrawal_time==='start'?'checked':''}><span class="ml-2 text-sm" style="color: var(--theme-text-primary);">Start</span></label>
-                                                <label class="flex items-center"><input type="radio" class="form-radio" name="wt-${i}" ${s.withdrawal_time==='end'?'checked':''}><span class="ml-2 text-sm" style="color: var(--theme-text-primary);">End</span></label>
+                                                <label class="flex items-center"><input type="radio" class="mockup-themed-radio" name="wt-${i}" ${s.withdrawal_time==='start'?'checked':''}><span class="ml-2 text-sm text-primary">Start</span></label>
+                                                <label class="flex items-center"><input type="radio" class="mockup-themed-radio" name="wt-${i}" ${s.withdrawal_time==='end'?'checked':''}><span class="ml-2 text-sm text-primary">End</span></label>
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="form-label">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">Amount you wish to have remaining at the end.</span></span></label>
-                                            <input type="number" class="form-input text-sm p-1" min="0" value="${s.D}">
+                                            <label class="mockup-form-label">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">Amount you wish to have remaining at the end.</span></span></label>
+                                            <input type="number" class="mockup-form-input text-sm" min="0" value="${s.D}">
                                         </div>
                                     </div>
 
                                     <div class="flex items-center">
-                                        <input type="checkbox" class="form-checkbox" checked><label class="ml-2 text-sm" style="color: var(--theme-text-primary);">Enable Scenario ${s.n}</label>
+                                        <input type="checkbox" class="mockup-themed-checkbox" checked><label class="ml-2 text-sm text-primary">Enable Scenario ${s.n}</label>
                                     </div>
                                 </div>
                             `);
@@ -152,7 +109,7 @@
                 </div>
 
                 <div class="mt-8 flex justify-center">
-                    <button id="runComparisonBtn" class="btn-primary-action font-bold text-lg py-2 px-8 rounded-lg shadow-lg">Compare Scenarios &rarr;</button>
+                    <button id="runComparisonBtn" class="btn-primary font-bold text-lg py-2 px-8 rounded-lg">Compare Scenarios &rarr;</button>
                 </div>
             </section>
 
