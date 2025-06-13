@@ -370,7 +370,7 @@
               // Update individual scenario results (e.g., FIRE number or error within each card)
               response.scenarios.forEach(function(sc, index) {
                   // Assumes cards will be dynamically ID'd like "scenario1", "scenario2" etc.
-                  // The Jinja loop now creates "scenario{{ scenario_data.n }}"
+                  // The Jinja loop in the content block creates scenario cards with IDs like "scenarioX" (e.g., scenario1, scenario2)
                   var scenarioCard = $("#scenario" + sc.n);
                   if (scenarioCard.length === 0) {
                       console.warn('[CompareDebug] Scenario card div not found for scenario number:', sc.n);
