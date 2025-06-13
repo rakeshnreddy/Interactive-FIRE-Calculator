@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRE Calculator - Compare Scenarios Mockup (Full Inputs)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                'fire-dark': '#1f2937',
+                'fire-dark-card': '#2c3a4b',
+                'fire-accent': '#3b82f6', 
+                'fire-accent-hover': '#2563eb',
+                'fire-text-primary': '#e5e7eb',
+                'fire-text-secondary': '#9ca3af',
+                'fire-success': '#22c55e',
+                'fire-fail': '#ef4444',
+                'fire-highlight': 'rgba(251, 191, 36, 0.15)',
+                'fire-highlight-text': '#f59e0b',
+                'fire-input-bg': '#374151',
+                'fire-input-border': '#4b5563',
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-link {
+            @apply text-fire-text-secondary hover:text-white transition-colors duration-200 font-medium;
+        }
+        .form-input, .form-select {
+            background-color: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 0.375rem;
+            color: #e5e7eb;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .info-icon {
+            @apply ml-1 text-fire-text-secondary cursor-help relative;
+        }
+        .tooltip-text {
+            @apply invisible absolute z-10 w-48 p-2 -mt-16 -ml-24 text-center text-xs text-white bg-gray-900 rounded-lg opacity-0 transition-opacity;
+        }
+        .info-icon:hover .tooltip-text {
+            @apply visible opacity-100;
+        }
+        .results-section {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-fire-dark text-fire-text-primary">
+
+    <!-- Header Navigation -->
+    <header class="bg-fire-dark-card/80 backdrop-blur-lg sticky top-0 z-50 shadow-md">
+        <nav class="max-w-screen-2xl mx-auto px-4 md:px-8 py-3 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-white">🔥 FIRECalc</a>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link text-white font-semibold">Compare</a>
+                <a href="#" class="nav-link">About</a>
+                <a href="#" class="nav-link">FAQ</a>
+                <a href="#" class="nav-link">Guide</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="text-fire-text-secondary hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 16v-2m8-6h-2M4 12H2m15.364 6.364l-1.414-1.414M6.05 18.394l-1.414 1.414M17.95 5.606l1.414-1.414M6.05 5.606l1.414 1.414" /></svg>
+                </button>
+                <button class="text-fire-text-secondary hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="max-w-screen-2xl mx-auto p-4 md:p-8">
+        <main class="space-y-8">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-white">Compare Financial Scenarios</h1>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-fire-text-secondary">Enter parameters for different scenarios to see how they stack up and how different choices impact your journey to financial independence.</p>
+            </header>
+
+            <section id="inputs" class="bg-fire-dark-card rounded-xl shadow-lg p-6">
+                 <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold text-white">Input Scenarios</h2>
+                    <div class="flex items-center space-x-2 md:space-x-4 flex-wrap gap-2">
+                        <div>
+                            <label for="scenarioCount" class="text-sm form-label text-fire-text-secondary mr-1">Scenarios:</label>
+                            <select id="scenarioCount" class="form-select text-sm p-1" style="width: auto; display: inline-block;">
+                                <option>1</option><option selected>2</option><option>3</option><option>4</option>
+                            </select>
+                        </div>
+                        <button class="bg-fire-accent/80 text-white font-semibold text-sm py-1.5 px-3 rounded-md hover:bg-fire-accent transition-colors">Save Current</button>
+                        <div>
+                            <label for="loadScenarioSelect" class="text-sm form-label text-fire-text-secondary mr-1">Load Saved:</label>
+                            <select id="loadScenarioSelect" class="form-select text-sm p-1" style="width: auto; display: inline-block;">
+                                <option>Select to load...</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
+                    <!-- Scenario Cards Script -->
+                    <script>
+                        const scenarios = [
+                            { n: 1, W: 50000, T: 30, r: 7, i: 2, D: 0, withdrawal_time: 'start' },
+                            { n: 2, W: 60000, T: 25, r: 6, i: 3, D: 100000, withdrawal_time: 'end' },
+                            { n: 3, W: 55000, T: 35, r: 8, i: 2.5, D: 0, withdrawal_time: 'start' },
+                            { n: 4, W: 50000, T: 30, r: 7, i: 2, D: 500000, withdrawal_time: 'start' },
+                        ];
+
+                        for(let i = 0; i < 4; i++) {
+                            const s = scenarios[i];
+                            document.write(`
+                                <div class="bg-fire-dark p-4 rounded-lg border border-fire-input-border space-y-4 flex flex-col h-full">
+                                    <h3 class="text-xl font-bold text-white"><span class="text-fire-accent">Scenario ${s.n}</span></h3>
+                                    
+                                    <div class="pt-2 border-t border-fire-input-border grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+                                        <div>
+                                            <label class="form-label">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
+                                            <input type="number" class="form-input" value="${s.W}" placeholder="e.g., 50000">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Duration (yrs) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">How many years funds need to last.</span></span></label>
+                                            <input type="number" class="form-input" value="${s.T}" placeholder="e.g., 30">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Return (%) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return.</span></span></label>
+                                            <input type="number" class="form-input" value="${s.r}" step="0.1" placeholder="e.g., 7">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Inflation (%) (Fallback):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate.</span></span></label>
+                                            <input type="number" class="form-input" value="${s.i}" step="0.1" placeholder="e.g., 2">
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-2 border-t border-fire-input-border">
+                                        <h5 class="text-md font-semibold text-fire-text-primary mb-2">Periodic Rates (Optional)</h5>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            ${[1,2,3].map(k => `
+                                                <div class="space-y-1">
+                                                     <p class="text-xs font-medium text-center text-fire-text-secondary">P${k}</p>
+                                                    <input type="number" placeholder="Yrs" class="form-input p-1 text-sm">
+                                                    <input type="number" placeholder="R%" class="form-input p-1 text-sm">
+                                                    <input type="number" placeholder="I%" class="form-input p-1 text-sm">
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="space-y-3 pt-2 mt-auto border-t border-fire-input-border">
+                                        <div>
+                                            <label class="form-label">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
+                                            <div class="flex space-x-4 mt-1"><label class="flex items-center"><input type="radio" name="wt-${i}" class="form-radio bg-fire-input-bg" ${s.withdrawal_time === 'start' ? 'checked' : ''}><span class="ml-2 text-sm">Start</span></label><label class="flex items-center"><input type="radio" name="wt-${i}" class="form-radio bg-fire-input-bg" ${s.withdrawal_time === 'end' ? 'checked' : ''}><span class="ml-2 text-sm">End</span></label></div>
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">Amount you wish to have remaining at the end.</span></span></label>
+                                            <input type="number" class="form-input" value="${s.D}" min="0">
+                                        </div>
+                                         <div class="flex items-center"><input type="checkbox" checked class="form-checkbox bg-fire-input-bg"><label class="ml-2 text-sm">Enable Scenario ${s.n}</label></div>
+                                    </div>
+                                </div>
+                            `);
+                        }
+                    </script>
+                </div>
+                <div class="mt-8 flex justify-center">
+                    <button id="runComparisonBtn" class="bg-fire-accent text-white font-bold text-lg py-3 px-12 rounded-lg shadow-lg hover:bg-fire-accent-hover transition-colors">
+                        Compare Scenarios &rarr;
+                    </button>
+                </div>
+            </section>
+            
+            <div id="results-wrapper" class="space-y-8" style="display: none;">
+                <section class="bg-fire-dark-card rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-6">Results: At a Glance</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                        <div class="bg-fire-dark p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">FIRE Number (Scen 1)</h3><p class="text-3xl font-bold text-fire-success">$1,428,571</p></div>
+                        <div class="bg-fire-dark p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">FIRE Number (Scen 2)</h3><p class="text-3xl font-bold text-fire-success">$1,895,320</p></div>
+                        <div class="bg-fire-dark p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">FIRE Number (Scen 3)</h3><p class="text-3xl font-bold text-fire-success">$1,500,000</p></div>
+                        <div class="bg-fire-dark p-4 rounded-lg"><h3 class="text-lg font-semibold text-fire-text-secondary">FIRE Number (Scen 4)</h3><p class="text-3xl font-bold text-fire-fail">Not Achievable</p></div>
+                    </div>
+                </section>
+
+                <section class="bg-fire-dark-card rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-6">Portfolio Projections</h2>
+                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                             <h3 class="text-xl font-bold text-fire-text-primary mb-3">Combined Portfolio Balance</h3>
+                             <div class="w-full h-96 bg-fire-dark rounded-lg flex items-center justify-center text-fire-text-secondary">Chart Placeholder</div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-fire-text-primary mb-3">Combined Annual Withdrawals</h3>
+                            <div class="w-full h-96 bg-fire-dark rounded-lg flex items-center justify-center text-fire-text-secondary">Chart Placeholder</div>
+                        </div>
+                     </div>
+                </section>
+
+                <section class="bg-fire-dark-card rounded-xl shadow-lg p-6 overflow-hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Detailed Comparison</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-fire-text-secondary">
+                            <thead class="text-xs text-fire-text-primary uppercase bg-fire-dark">
+                                <tr>
+                                    <th class="p-4">Metric</th>
+                                    <th class="p-4 text-center">Scenario 1</th>
+                                    <th class="p-4 text-center">Scenario 2</th>
+                                    <th class="p-4 text-center">Scenario 3</th>
+                                    <th class="p-4 text-center">Scenario 4</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-fire-input-border">
+                                <tr><td class="p-4 font-semibold text-fire-text-primary">FIRE Number</td><td class="p-4 text-center text-fire-success font-bold">$1,428,571</td><td class="p-4 text-center text-fire-success font-bold">$1,895,320</td><td class="p-4 text-center text-fire-success font-bold">$1,500,000</td><td class="p-4 text-center text-fire-fail font-bold">N/A</td></tr>
+                                <tr><td class="p-4 font-semibold text-fire-text-primary">Annual Expenses</td><td class="p-4 text-center">$50,000</td><td class="p-4 text-center">$60,000</td><td class="p-4 text-center">$55,000</td><td class="p-4 text-center">$50,000</td></tr>
+                                <tr><td class="p-4 font-semibold text-fire-text-primary">Rates (R%/I%/T)</td><td class="p-4 text-center">7/2/30 (Fallback)</td><td class="p-4 text-center">6/3/25 (Fallback)</td><td class="p-4 text-center">8/2.5/35 (Fallback)</td><td class="p-4 text-center">7/2/30 (Fallback)</td></tr>
+                                <tr><td class="p-4 font-semibold text-fire-text-primary">Withdrawal Timing</td><td class="p-4 text-center">Start</td><td class="p-4 text-center">End</td><td class="p-4 text-center">Start</td><td class="p-4 text-center">Start</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.getElementById('runComparisonBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('results-wrapper').style.display = 'block';
+            window.scrollTo({
+                top: document.getElementById('results-wrapper').offsetTop,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
