@@ -213,41 +213,47 @@
     // The AJAX success callback also needs to target the new plot placeholder IDs.
 
     function updateScenarioDisplay() {
-      // This function needs to be adapted to the new card structure if it's still used.
-      // Currently, it targets ".scenario" which might not exist or behave as expected.
-      // The new structure uses a Jinja loop to render cards based on the `scenarios` list from Python.
-      // Dynamic showing/hiding based on a dropdown might be handled differently or by re-rendering.
-      var count = parseInt($("#scenarioCount").val() || $("#scenarioCountMockup").val()); // Try to get count
+      var count = parseInt($("#scenarioCount").val());
+      var totalCards = $(".scenario-card").length; // Get total number of cards rendered by Jinja
 
-      // This part of the JS is from the OLD structure and will NOT work correctly
-      // with the new Jinja-looped scenario cards without significant rework.
-      // For now, the number of cards displayed will be determined by the `scenarios` list length from backend.
-      /*
-      $(".scenario-card").each(function(index) { // Assuming new cards will have .scenario-card
+      $(".scenario-card").each(function(index) {
+        var scenarioNum = index + 1; // Scenario numbers are 1-based
+        var enabledCheckbox = $(this).find("#scenario" + scenarioNum + "_enabled");
+
         if (index < count) {
           $(this).show();
+          // If a card is shown by the dropdown, ensure its "enabled" checkbox is checked,
+          // UNLESS it's one of the extra cards beyond what Jinja initially rendered (though this case is less likely here).
+          // This part is tricky because we don't want to override a user's explicit unchecking if the card was already visible.
+          // A simpler approach: if showing, don't force enable. If hiding, force disable.
+          // if (!enabledCheckbox.prop('checked')) {
+          //    enabledCheckbox.prop('checked', true);
+          // }
         } else {
           $(this).hide();
+          // If a card is hidden by the dropdown, also uncheck its "enabled" checkbox
+          // so its data isn't processed by the backend.
+          if (enabledCheckbox.prop('checked')) {
+             enabledCheckbox.prop('checked', false);
+          }
         }
       });
-      */
     }
 
     $(document).ready(function(){
-      // updateScenarioDisplay(); // Call might need to be re-evaluated based on new dynamic loading
-      // $("#scenarioCountMockup").on("change", updateScenarioDisplay); // Use new ID
+      updateScenarioDisplay(); // Initial call to set visibility based on dropdown
+      $("#scenarioCount").on("change", updateScenarioDisplay); // Bind to dropdown change
 
-      // Sortable functionality might need to target #scenario_card_dynamic_container
+      // Sortable functionality
       if (typeof $.fn.sortable === 'function' && $("#scenario_card_dynamic_container").length) {
         $("#scenario_card_dynamic_container").sortable({
-            placeholder: "scenario-card bg-fire-dark-alt border-dashed border-fire-accent p-4 rounded-lg", // Mockup-themed placeholder
+            placeholder: "scenario-card bg-fire-dark-alt border-dashed border-fire-accent p-4 rounded-lg",
             forcePlaceholderSize: true,
-            axis: "y" // Could be 'x' if cards are truly in a row and meant to be sortable that way
+            axis: "y"
         });
       }
 
-      // loadScenarioOptions(); // This populates a select that might not exist or is named differently.
-                              // The old select was #loadScenarioSelect. The new structure does not show it yet.
+      loadScenarioOptions(); // Populate "Load Saved" dropdown
 
       // The old form ID was #compareForm. The new structure has a form with this ID.
       // The button is now #runComparisonBtn, not type=submit by default in mockup, but made it submit here.
@@ -406,85 +412,74 @@
     // The mockup table structure is different, so this will need significant rework.
     function updateSummaryTable(scenarios) {
         console.log('[CompareDebug] updateSummaryTable() called with scenarios:', scenarios);
-        // Assuming the new table structure from mockup in section#detailed-comparison
-        var tableBody = $("#detailed-comparison tbody");
-        tableBody.html(''); // Clear previous rows
+        var tableContainer = $("#summaryTable");
+        tableContainer.html(''); // Clear previous table or placeholder text
 
         if (!scenarios || scenarios.length === 0) {
-            tableBody.append('<tr><td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-fire-text-secondary text-center">' + "{{ _('No scenario data to display.') }}" + '</td></tr>');
+            tableContainer.html('<p class="text-fire-text-secondary text-center py-4">' + "{{ _('No scenario data to display.') }}" + '</p>');
             return;
         }
 
-        // Example: Transposing data - features as rows, scenarios as columns
-        // This is a placeholder and needs to be adapted based on actual data structure and desired table format.
-        // For now, let's adapt the OLD summary table logic to the new scenario data keys.
-        // This will NOT match the new mockup table structure yet.
+        let enabledScenarios = scenarios.filter(sc => sc.enabled);
+        if (enabledScenarios.length === 0) {
+            tableContainer.html('<p class="text-fire-text-secondary text-center py-4">' + "{{ _('No enabled scenarios to display.') }}" + '</p>');
+            return;
+        }
 
-        var tableHtml = "";
-        scenarios.forEach(function(sc) {
-            if (!sc.enabled) return; // Skip disabled scenarios
+        var tableHtml = '<table class="compare-summary-table min-w-full">';
+        // Table Header
+        tableHtml += '<thead><tr>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Scenario") }}</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Annual Expenses (W)") }}</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Rates & Duration") }}</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Withdrawal Time") }}</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("FIRE Number / Success") }}</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">{{ _("Error") }}</th>';
+        tableHtml += '</tr></thead>';
 
+        // Table Body
+        tableHtml += '<tbody class="bg-fire-dark-card">'; // Mockup uses divide-y divide-fire-dark-alt, handled by CSS on .compare-summary-table
+
+        enabledScenarios.forEach(function(sc) {
             let rates_display = "N/A";
             if (Array.isArray(sc.rates_periods_data) && sc.rates_periods_data.length > 0) {
-                if (sc.rates_periods_data.length === 1 && sc.rates_periods_data[0].is_fallback) { // Check for fallback
+                if (sc.rates_periods_data.length === 1 && sc.rates_periods_data[0].is_fallback) {
                      rates_display = `R: ${parseFloat(sc.r_form).toFixed(1)}%, I: ${parseFloat(sc.i_form).toFixed(1)}%, T: ${sc.T_form}y (Fallback)`;
                 } else {
                     rates_display = sc.rates_periods_data.map(p => `(R:${(p.r * 100).toFixed(1)}% I:${(p.i * 100).toFixed(1)}% D:${p.duration}y)`).join('<br>');
                 }
-            } else if (sc.r_form && sc.i_form && sc.T_form) { // Fallback if rates_periods_data is empty but form values exist
+            } else if (sc.r_form && sc.i_form && sc.T_form) {
                  rates_display = `R: ${parseFloat(sc.r_form).toFixed(1)}%, I: ${parseFloat(sc.i_form).toFixed(1)}%, T: ${sc.T_form}y (Fallback)`;
             }
 
-
-            // This HTML structure is for the OLD summary table, not the new mockup one.
-            // For the new mockup table, we'd iterate through features, then scenarios for each feature.
-            // This is just to show *some* data for now.
-            tableHtml += "<tr>" +
-                         "<td class='px-6 py-4 whitespace-nowrap text-sm font-medium text-white'>Scen. " + sc.n + "</td>" + // Placeholder for feature name
-                         "<td class='px-6 py-4 whitespace-nowrap text-sm text-fire-text-primary'>" + (sc.W_form || 'N/A') + "</td>" +
-                         "<td class='px-6 py-4 whitespace-nowrap text-sm text-fire-text-primary'>" + rates_display + "</td>" +
-                         "<td class='px-6 py-4 whitespace-nowrap text-sm text-fire-text-primary'>" + (sc.withdrawal_time_form || 'N/A') + "</td>" +
-                         "<td class='px-6 py-4 whitespace-nowrap text-sm text-fire-text-primary'>" + (sc.fire_number_display || "N/A") + "</td>" +
-                         "<td class='px-6 py-4 whitespace-nowrap text-sm text-fire-fail'>" + (sc.error || "") + "</td>" +
-                         "</tr>";
+            tableHtml += '<tr>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-fire-text-primary">Scen. ' + sc.n + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm">' + (sc.W_form || 'N/A') + '</td>'; // Default text color from CSS
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm">' + rates_display + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm">' + (sc.withdrawal_time_form || 'N/A') + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ' + (sc.error ? 'text-fire-fail' : 'text-fire-accent') + '">' + (sc.fire_number_display || "N/A") + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm text-fire-fail">' + (sc.error || "") + '</td>';
+            tableHtml += '</tr>';
         });
 
-        // This injects into the OLD summary table structure, not the new one.
-        // The new one has a different thead.
-        // For now, I'll assume the JS is meant to populate the new table structure.
-        // This requires a total rewrite of updateSummaryTable for the new mockup.
-        // For this step, let's just clear it.
-        // $("#summaryTable").html("<table class='min-w-full divide-y divide-fire-dark-alt'><thead>...</thead><tbody>" + tableHtml + "</tbody></table>");
-        // For now, just log that it needs to be updated:
-         console.log("[CompareDebug] updateSummaryTable needs a complete rewrite for the new mockup table structure.");
-         if (scenarios && scenarios.length > 0) {
-             $("#summaryTable").html('<p class="text-fire-text-secondary">' + "{{ _('Summary table display logic needs update for new design.') }}" + '</p>');
-         } else {
-             $("#summaryTable").html('<p class="text-fire-text-secondary">' + "{{ _('No data for summary table.') }}" + '</p>');
-         }
-
+        tableHtml += '</tbody></table>';
+        tableContainer.html(tableHtml);
     }
     
     $(document).ready(function(){
-      // Initial setup calls
-      // updateScenarioDisplay(); // Re-evaluate if this is needed with Jinja loop
+      updateScenarioDisplay(); // Initial call
+      $("#scenarioCount").on("change", updateScenarioDisplay); // Bind to dropdown
 
-      // Use new scenarioCount ID if that's the one for the mockup
-      // $("#scenarioCountMockup").on("change", updateScenarioDisplay);
-
-      // The old sortable was on .scenario-container, the new one is #scenario_card_dynamic_container
+      // Sortable functionality
       if (typeof $.fn.sortable === 'function' && $("#scenario_card_dynamic_container").length) {
         $("#scenario_card_dynamic_container").sortable({
-            // Update placeholder class for new theme
             placeholder: "scenario-card bg-fire-dark-alt border-2 border-dashed border-fire-accent p-4 rounded-lg",
             forcePlaceholderSize: true,
-            // Consider if axis should change based on new layout (e.g. if cards can wrap)
-             axis: "y", // if main container is `md:grid-cols-2`, y-axis might be problematic for multi-column drag-n-drop
+            axis: "y",
         });
       }
 
-      // loadScenarioOptions(); // This needs to target a <select> element that exists in the new HTML.
-      // The old #loadScenarioSelect is not in the new HTML structure.
+      loadScenarioOptions(); // Populate "Load Saved" dropdown
 
       $("#compareForm").on("submit", function(e){
         console.log('[CompareDebug] Form submitted via #compareForm.');
