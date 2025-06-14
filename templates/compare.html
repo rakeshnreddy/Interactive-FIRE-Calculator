@@ -2,13 +2,10 @@
 
 {% block title %}Compare Financial Scenarios - FIRE Calculator{% endblock %}
 
-{% block head %}
-    {{ super() }}
-    <meta charset="UTF-8">
+{% block head_extra %}
     <meta name="csrf-token" content="{{ csrf_token_value }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- SortableJS will be moved to the end of the body -->
+    <!-- SortableJS is loaded at the end of the body -->
     <style>
         .sortable-ghost {
             opacity: 0.4;
@@ -23,7 +20,7 @@
              /* Usually no specific style needed here unless default SortableJS behavior is undesired */
         }
     </style>
-{% endblock %}
+{% endblock head_extra %}
 
 {% block content %}
     <div class="max-w-7xl mx-auto p-4 md:p-8">
