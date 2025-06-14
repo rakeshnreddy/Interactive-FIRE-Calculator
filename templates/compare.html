@@ -49,60 +49,63 @@
 
                         scenarios.forEach((s, i) => {
                             document.write(`
-                                <div class="p-4 rounded-lg h-full bg-fire-dark-card border border-fire-input-border">
+                                <section class="p-4 rounded-lg h-full bg-fire-dark-card border border-fire-input-border">
                                     <h3 class="text-xl font-bold mb-4 text-center text-primary">Scenario <span class="text-accent-color">${s.n}</span></h3>
 
+                                    <!-- Core Inputs -->
                                     <div class="flex flex-col space-y-3 mb-4">
                                         <div>
                                             <label class="mockup-form-label">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
-                                            <input type="number" class="mockup-form-input text-sm" value="${s.W}" placeholder="e.g., 50000">
+                                            <input type="number" class="mockup-form-input text-sm w-full" value="${s.W}" placeholder="e.g., 50000">
                                         </div>
                                         <div>
                                             <label class="mockup-form-label">Duration (yrs):<span class="info-icon">&#9432;<span class="tooltip-text">How many years funds need to last.</span></span></label>
-                                            <input type="number" class="mockup-form-input text-sm" value="${s.T}" placeholder="e.g., 30">
+                                            <input type="number" class="mockup-form-input text-sm w-full" value="${s.T}" placeholder="e.g., 30">
                                         </div>
                                         <div>
                                             <label class="mockup-form-label">Expected Return (r %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return.</span></span></label>
-                                            <input type="number" class="mockup-form-input text-sm" step="0.1" value="${s.r}" placeholder="e.g., 7">
+                                            <input type="number" class="mockup-form-input text-sm w-full" step="0.1" value="${s.r}" placeholder="e.g., 7">
                                         </div>
                                         <div>
                                             <label class="mockup-form-label">Inflation Rate (i %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate.</span></span></label>
-                                            <input type="number" class="mockup-form-input text-sm" step="0.1" value="${s.i}" placeholder="e.g., 2">
+                                            <input type="number" class="mockup-form-input text-sm w-full" step="0.1" value="${s.i}" placeholder="e.g., 2">
                                         </div>
                                     </div>
 
+                                    <!-- Periodic Rates -->
                                     <div class="border-t border-fire-input-border pt-4 mb-4">
-                                        <h5 class="font-semibold mb-2 text-sm text-secondary">Periodic Rates (Optional)</h5>
-                                        <div class="flex space-x-4">
-                                            ${[1,2,3].map(k => `
-                                                <div class="flex-1 flex flex-col space-y-2">
-                                                    <label class="text-xs font-medium text-center text-secondary">P${k}</label>
-                                                    <input type="number" placeholder="Yrs" class="mockup-form-input text-xs">
-                                                    <input type="number" placeholder="R%" class="mockup-form-input text-xs">
-                                                    <input type="number" placeholder="I%" class="mockup-form-input text-xs">
+                                        <label class="mockup-form-label mb-3">Periodic Rates (Optional):</label>
+                                        ${[1,2,3].map(k => `
+                                            <div class="mb-3">
+                                                <label class="mockup-form-label">P${k}:</label>
+                                                <div class="flex flex-col space-y-2 mt-1">
+                                                    <input type="number" placeholder="Yrs" class="mockup-form-input text-sm w-full">
+                                                    <input type="number" placeholder="R%" class="mockup-form-input text-sm w-full">
+                                                    <input type="number" placeholder="I%" class="mockup-form-input text-sm w-full">
                                                 </div>
-                                            `).join('')}
-                                        </div>
+                                            </div>
+                                        `).join('')}
                                     </div>
 
-                                    <div class="border-t border-fire-input-border pt-4 flex flex-col space-y-4 mb-4">
-                                        <div>
-                                            <label class="mockup-form-label">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
-                                            <div class="flex space-x-4">
-                                                <label class="flex items-center"><input type="radio" class="mockup-themed-radio" name="wt-${i}" ${s.withdrawal_time==='start'?'checked':''}><span class="ml-2 text-sm text-primary">Start</span></label>
-                                                <label class="flex items-center"><input type="radio" class="mockup-themed-radio" name="wt-${i}" ${s.withdrawal_time==='end'?'checked':''}><span class="ml-2 text-sm text-primary">End</span></label>
-                                            </div>
+                                    <!-- Withdrawal Timing -->
+                                    <div class="border-t border-fire-input-border pt-4 mb-4">
+                                        <div class="flex items-center mb-4">
+                                            <label class="mockup-form-label mr-4">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
+                                            <label class="flex items-center mr-4"><input type="radio" class="mockup-themed-radio" name="wt-${i}" ${s.withdrawal_time==='start'?'checked':''}><span class="ml-2 text-sm text-primary">Start</span></label>
+                                            <label class="flex items-center"><input type="radio" class="mockup-themed-radio" name="wt-${i}" ${s.withdrawal_time==='end'?'checked':''}><span class="ml-2 text-sm text-primary">End</span></label>
                                         </div>
                                         <div>
                                             <label class="mockup-form-label">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">Amount you wish to have remaining at the end.</span></span></label>
-                                            <input type="number" class="mockup-form-input text-sm" min="0" value="${s.D}">
+                                            <input type="number" class="mockup-form-input text-sm w-full" min="0" value="${s.D}">
                                         </div>
                                     </div>
 
+                                    <!-- Enable Scenario -->
                                     <div class="flex items-center">
-                                        <input type="checkbox" class="mockup-themed-checkbox" checked><label class="ml-2 text-sm text-primary">Enable Scenario ${s.n}</label>
+                                        <input type="checkbox" class="mockup-themed-checkbox" checked>
+                                        <label class="ml-2 text-sm text-primary">Enable Scenario ${s.n}</label>
                                     </div>
-                                </div>
+                                </section>
                             `);
                         });
                     </script>
