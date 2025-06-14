@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <!-- SortableJS will be moved to the end of the body -->
     <style>
         .sortable-ghost {
             opacity: 0.4;
@@ -55,158 +55,8 @@
 
                 <!-- Responsive grid: 2 columns default, 3 on md, 4 on lg -->
                 <div id="scenarioContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    </div>
-                <script>
-                    const scenarios = [
-                        { n: 1, W: 50000, T: 30, r: 7, i: 2, D: 0, withdrawal_time: 'start', enabled: true },
-                        { n: 2, W: 60000, T: 25, r: 6, i: 3, D: 100000, withdrawal_time: 'end', enabled: true },
-                        { n: 3, W: 55000, T: 35, r: 8, i: 2.5, D: 0, withdrawal_time: 'start', enabled: false },
-                        { n: 4, W: 50000, T: 30, r: 7, i: 2, D: 500000, withdrawal_time: 'start', enabled: false }
-                    ];
-
-                    function createScenarioPanel(scenarioData, scenarioIndex) {
-                        const panel = document.createElement('div');
-                        panel.className = 'scenario-panel glassmorphic p-4 rounded-lg border border-fire-input-border h-full'; // Added border for consistency
-                        // Keep existing bg-fire-dark-card or use a new glassmorphic style
-                        panel.classList.add('bg-fire-dark-card');
-                        // Add a data attribute to store the original scenario index for easier reference if needed.
-                        panel.dataset.originalIndex = scenarioIndex;
-
-
-                        let periodicRatesHTML = '';
-                        for (let k = 1; k <= 3; k++) {
-                            periodicRatesHTML += `
-                                <div class="mb-3">
-                                    <label class="mockup-form-label" for="scenario${scenarioIndex}_P${k}_yrs">P${k}:</label>
-                                    <div class="flex flex-col space-y-2 mt-1">
-                                        <input type="number" id="scenario${scenarioIndex}_P${k}_yrs" name="scenario${scenarioIndex}_P${k}_yrs" placeholder="Yrs" class="mockup-form-input text-sm w-full">
-                                        <input type="number" id="scenario${scenarioIndex}_P${k}_r" name="scenario${scenarioIndex}_P${k}_r" placeholder="R%" class="mockup-form-input text-sm w-full">
-                                        <input type="number" id="scenario${scenarioIndex}_P${k}_i" name="scenario${scenarioIndex}_P${k}_i" placeholder="I%" class="mockup-form-input text-sm w-full">
-                                    </div>
-                                </div>`;
-                        }
-
-                        let oneOffEventsHTML = '';
-                        // Assuming MAX_ONE_OFF_EVENTS_COMPARE is 3, as per instruction
-                        for (let k = 1; k <= 3; k++) {
-                            oneOffEventsHTML += `
-                                <div class="mb-3">
-                                    <label class="mockup-form-label">One-off ${k}:</label>
-                                    <div class="flex flex-col space-y-2 mt-1">
-                                        <input type="number" id="scenario${scenarioIndex}_one_off_${k}_year" name="scenario${scenarioIndex}_one_off_${k}_year" placeholder="Year" class="mockup-form-input text-sm w-full">
-                                        <input type="number" id="scenario${scenarioIndex}_one_off_${k}_amount" name="scenario${scenarioIndex}_one_off_${k}_amount" placeholder="Amount ($)" class="mockup-form-input text-sm w-full">
-                                    </div>
-                                </div>`;
-                        }
-
-                        panel.innerHTML = `
-                            <h3 class="text-xl font-bold mb-4 text-center text-primary">Scenario <span class="text-accent-color">${scenarioData.n}</span></h3>
-
-                            <!-- Core Inputs -->
-                            <div class="flex flex-col space-y-3 mb-4">
-                                <div>
-                                    <label class="mockup-form-label" for="scenario${scenarioIndex}_W">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
-                                    <input type="number" id="scenario${scenarioIndex}_W" name="scenario${scenarioIndex}_W" class="mockup-form-input text-sm w-full" value="${scenarioData.W}" placeholder="e.g., 50000">
-                                </div>
-                                <div>
-                                    <label class="mockup-form-label" for="scenario${scenarioIndex}_T">Duration (yrs):<span class="info-icon">&#9432;<span class="tooltip-text">How many years funds need to last.</span></span></label>
-                                    <input type="number" id="scenario${scenarioIndex}_T" name="scenario${scenarioIndex}_T" class="mockup-form-input text-sm w-full" value="${scenarioData.T}" placeholder="e.g., 30">
-                                </div>
-                                <div>
-                                    <label class="mockup-form-label" for="scenario${scenarioIndex}_r">Expected Return (r %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return.</span></span></label>
-                                    <input type="number" id="scenario${scenarioIndex}_r" name="scenario${scenarioIndex}_r" class="mockup-form-input text-sm w-full" step="0.1" value="${scenarioData.r}" placeholder="e.g., 7">
-                                </div>
-                                <div>
-                                    <label class="mockup-form-label" for="scenario${scenarioIndex}_i">Inflation Rate (i %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate.</span></span></label>
-                                    <input type="number" id="scenario${scenarioIndex}_i" name="scenario${scenarioIndex}_i" class="mockup-form-input text-sm w-full" step="0.1" value="${scenarioData.i}" placeholder="e.g., 2">
-                                </div>
-                            </div>
-
-                            <!-- Periodic Rates -->
-                            <div class="border-t border-fire-input-border pt-4 mb-4">
-                                <label class="mockup-form-label mb-3">Periodic Rates (Optional):</label>
-                                ${periodicRatesHTML}
-                            </div>
-
-                            <!-- One-off Events -->
-                            <div class="border-t border-fire-input-border pt-4 mb-4">
-                                <label class="mockup-form-label mb-3">One-off Events (Optional):</label>
-                                ${oneOffEventsHTML}
-                            </div>
-
-                            <!-- Withdrawal Timing -->
-                            <div class="border-t border-fire-input-border pt-4 mb-4">
-                                <div class="flex items-center mb-4">
-                                    <label class="mockup-form-label mr-4">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
-                                    <label class="flex items-center mr-4"><input type="radio" id="scenario${scenarioIndex}_wt_start" class="mockup-themed-radio" name="scenario${scenarioIndex}_wt" value="start" ${scenarioData.withdrawal_time === 'start' ? 'checked' : ''}><span class="ml-2 text-sm text-primary">Start</span></label>
-                                    <label class="flex items-center"><input type="radio" id="scenario${scenarioIndex}_wt_end" class="mockup-themed-radio" name="scenario${scenarioIndex}_wt" value="end" ${scenarioData.withdrawal_time === 'end' ? 'checked' : ''}><span class="ml-2 text-sm text-primary">End</span></label>
-                                </div>
-                                <div>
-                                    <label class="mockup-form-label" for="scenario${scenarioIndex}_D">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">Amount you wish to have remaining at the end.</span></span></label>
-                                    <input type="number" id="scenario${scenarioIndex}_D" name="scenario${scenarioIndex}_D" class="mockup-form-input text-sm w-full" min="0" value="${scenarioData.D}">
-                                </div>
-                            </div>
-
-                            <!-- Enable Scenario -->
-                            <div class="flex items-center">
-                                <input type="checkbox" id="scenario${scenarioIndex}_enabled" name="scenario${scenarioIndex}_enabled" class="mockup-themed-checkbox" ${scenarioData.enabled ? 'checked' : ''}>
-                                <label class="ml-2 text-sm text-primary" for="scenario${scenarioIndex}_enabled">Enable Scenario ${scenarioData.n}</label>
-                            </div>
-                        `;
-                        return panel;
-                    }
-
-                    const scenarioContainer = document.getElementById('scenarioContainer');
-                    const scenarioCountSelect = document.getElementById('scenarioCount');
-
-                    function displayScenarios() {
-                        scenarioContainer.innerHTML = ''; // Clear existing scenarios
-                        const count = parseInt(scenarioCountSelect.value);
-                        scenarios.slice(0, count).forEach((s, i) => {
-                            // Ensure we pass the original scenario number `s.n` and its current index `i` for correct data binding and ID generation.
-                            // Also, update the scenario data to reflect its enabled state based on the count.
-                            s.enabled = i < count;
-                            const panel = createScenarioPanel(s, i);
-                            scenarioContainer.appendChild(panel);
-                        });
-
-                        // Hide panels beyond the selected count by adjusting the main scenarios array or by controlling visibility.
-                        // For simplicity, we'll just re-render the visible ones.
-                        // To control visibility of remaining panels if they were pre-rendered:
-                        // Array.from(scenarioContainer.children).forEach((panel, index) => {
-                        //     panel.style.display = index < count ? '' : 'none';
-                        // });
-                    }
-
-                    scenarioCountSelect.addEventListener('change', displayScenarios);
-
-                    // Initial display
-                    displayScenarios();
-
-                    // Initialize SortableJS
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const scenarioContainerElement = document.getElementById('scenarioContainer');
-                        if (scenarioContainerElement) {
-                            new Sortable(scenarioContainerElement, {
-                                animation: 150, // Animation speed
-                                ghostClass: 'sortable-ghost', // Class for the drop placeholder
-                                chosenClass: 'sortable-chosen', // Class for the chosen item
-                                dragClass: 'sortable-drag', // Class for the dragging item
-                                // handle: '.scenario-drag-handle', // Uncomment if you add a specific drag handle
-                                onEnd: function (evt) {
-                                    // Logic after drag operation (optional for now)
-                                    // console.log('Item moved from', evt.oldIndex, 'to', evt.newIndex);
-                                    // If you need to update the underlying 'scenarios' array:
-                                    // const itemEl = evt.item; // dragged HTMLElement
-                                    // const scenarioId = itemEl.id; // Assuming you set an ID on the panel that maps to your data
-                                    // scenarios.splice(evt.newIndex, 0, scenarios.splice(evt.oldIndex, 1)[0]);
-                                    // You might need to re-render or update IDs/names if they depend on array index.
-                                    // For now, relying on DOM order for data collection later.
-                                }
-                            });
-                        }
-                    });
-                </script>
+                </div>
+                <!-- Removed the first inline script block from here -->
                 <div class="mt-8 flex justify-center">
                     <button id="runComparisonBtn" class="btn-primary font-bold text-lg py-2 px-8 rounded-lg">Compare Scenarios &rarr;</button>
                 </div>
@@ -221,130 +71,240 @@
         </main>
     </div>
 
-    <script>
-        // Helper function to render Plotly plots and execute their scripts
-        function renderPlot(containerId, plotHtml) {
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = plotHtml;
-                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
-                    const newScript = document.createElement("script");
-                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                });
-            }
+<!-- Consolidate all scripts here, at the end of content -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script defer>
+    const scenarios = [
+        { n: 1, W: 50000, T: 30, r: 7, i: 2, D: 0, withdrawal_time: 'start', enabled: true },
+        { n: 2, W: 60000, T: 25, r: 6, i: 3, D: 100000, withdrawal_time: 'end', enabled: true },
+        { n: 3, W: 55000, T: 35, r: 8, i: 2.5, D: 0, withdrawal_time: 'start', enabled: false },
+        { n: 4, W: 50000, T: 30, r: 7, i: 2, D: 500000, withdrawal_time: 'start', enabled: false }
+    ];
+
+    function createScenarioPanel(scenarioData, scenarioIndex) {
+        const panel = document.createElement('div');
+        panel.className = 'scenario-panel glassmorphic p-4 rounded-lg border border-fire-input-border h-full bg-fire-dark-card';
+        panel.dataset.originalIndex = scenarioIndex;
+
+        let periodicRatesHTML = '';
+        for (let k = 1; k <= 3; k++) {
+            periodicRatesHTML += `
+                <div class="mb-3">
+                    <label class="mockup-form-label" for="scenario${scenarioIndex}_P${k}_yrs">P${k}:</label>
+                    <div class="flex flex-col space-y-2 mt-1">
+                        <input type="number" id="scenario${scenarioIndex}_P${k}_yrs" name="scenario${scenarioIndex}_P${k}_yrs" placeholder="Yrs" class="mockup-form-input text-sm w-full">
+                        <input type="number" id="scenario${scenarioIndex}_P${k}_r" name="scenario${scenarioIndex}_P${k}_r" placeholder="R%" class="mockup-form-input text-sm w-full">
+                        <input type="number" id="scenario${scenarioIndex}_P${k}_i" name="scenario${scenarioIndex}_P${k}_i" placeholder="I%" class="mockup-form-input text-sm w-full">
+                    </div>
+                </div>`;
         }
 
-        document.getElementById('runComparisonBtn').addEventListener('click', function(event) {
-            event.preventDefault();
+        let oneOffEventsHTML = '';
+        for (let k = 1; k <= 3; k++) {
+            oneOffEventsHTML += `
+                <div class="mb-3">
+                    <label class="mockup-form-label">One-off ${k}:</label>
+                    <div class="flex flex-col space-y-2 mt-1">
+                        <input type="number" id="scenario${scenarioIndex}_one_off_${k}_year" name="scenario${scenarioIndex}_one_off_${k}_year" placeholder="Year" class="mockup-form-input text-sm w-full">
+                        <input type="number" id="scenario${scenarioIndex}_one_off_${k}_amount" name="scenario${scenarioIndex}_one_off_${k}_amount" placeholder="Amount ($)" class="mockup-form-input text-sm w-full">
+                    </div>
+                </div>`;
+        }
 
-            const formData = new FormData();
-            let enabledScenarioIndex = 1;
-            const scenarioPanels = document.querySelectorAll('#scenarioContainer .scenario-panel');
+        panel.innerHTML = `
+            <h3 class="text-xl font-bold mb-4 text-center text-primary">Scenario <span class="text-accent-color">${scenarioData.n}</span></h3>
+            <div class="flex flex-col space-y-3 mb-4">
+                <div>
+                    <label class="mockup-form-label" for="scenario${scenarioIndex}_W">Annual Expenses (W):<span class="info-icon">&#9432;<span class="tooltip-text">Your estimated current annual living expenses.</span></span></label>
+                    <input type="number" id="scenario${scenarioIndex}_W" name="scenario${scenarioIndex}_W" class="mockup-form-input text-sm w-full" value="${scenarioData.W}" placeholder="e.g., 50000">
+                </div>
+                <div>
+                    <label class="mockup-form-label" for="scenario${scenarioIndex}_T">Duration (yrs):<span class="info-icon">&#9432;<span class="tooltip-text">How many years funds need to last.</span></span></label>
+                    <input type="number" id="scenario${scenarioIndex}_T" name="scenario${scenarioIndex}_T" class="mockup-form-input text-sm w-full" value="${scenarioData.T}" placeholder="e.g., 30">
+                </div>
+                <div>
+                    <label class="mockup-form-label" for="scenario${scenarioIndex}_r">Expected Return (r %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual investment return.</span></span></label>
+                    <input type="number" id="scenario${scenarioIndex}_r" name="scenario${scenarioIndex}_r" class="mockup-form-input text-sm w-full" step="0.1" value="${scenarioData.r}" placeholder="e.g., 7">
+                </div>
+                <div>
+                    <label class="mockup-form-label" for="scenario${scenarioIndex}_i">Inflation Rate (i %):<span class="info-icon">&#9432;<span class="tooltip-text">Expected average annual inflation rate.</span></span></label>
+                    <input type="number" id="scenario${scenarioIndex}_i" name="scenario${scenarioIndex}_i" class="mockup-form-input text-sm w-full" step="0.1" value="${scenarioData.i}" placeholder="e.g., 2">
+                </div>
+            </div>
+            <div class="border-t border-fire-input-border pt-4 mb-4">
+                <label class="mockup-form-label mb-3">Periodic Rates (Optional):</label>
+                ${periodicRatesHTML}
+            </div>
+            <div class="border-t border-fire-input-border pt-4 mb-4">
+                <label class="mockup-form-label mb-3">One-off Events (Optional):</label>
+                ${oneOffEventsHTML}
+            </div>
+            <div class="border-t border-fire-input-border pt-4 mb-4">
+                <div class="flex items-center mb-4">
+                    <label class="mockup-form-label mr-4">Withdrawal Timing:<span class="info-icon">&#9432;<span class="tooltip-text">Choose withdrawal timing for this scenario.</span></span></label>
+                    <label class="flex items-center mr-4"><input type="radio" id="scenario${scenarioIndex}_wt_start" class="mockup-themed-radio" name="scenario${scenarioIndex}_wt" value="start" ${scenarioData.withdrawal_time === 'start' ? 'checked' : ''}><span class="ml-2 text-sm text-primary">Start</span></label>
+                    <label class="flex items-center"><input type="radio" id="scenario${scenarioIndex}_wt_end" class="mockup-themed-radio" name="scenario${scenarioIndex}_wt" value="end" ${scenarioData.withdrawal_time === 'end' ? 'checked' : ''}><span class="ml-2 text-sm text-primary">End</span></label>
+                </div>
+                <div>
+                    <label class="mockup-form-label" for="scenario${scenarioIndex}_D">Desired Final Portfolio Value ($):<span class="info-icon">&#9432;<span class="tooltip-text">Amount you wish to have remaining at the end.</span></span></label>
+                    <input type="number" id="scenario${scenarioIndex}_D" name="scenario${scenarioIndex}_D" class="mockup-form-input text-sm w-full" min="0" value="${scenarioData.D}">
+                </div>
+            </div>
+            <div class="flex items-center">
+                <input type="checkbox" id="scenario${scenarioIndex}_enabled" name="scenario${scenarioIndex}_enabled" class="mockup-themed-checkbox" ${scenarioData.enabled ? 'checked' : ''}>
+                <label class="ml-2 text-sm text-primary" for="scenario${scenarioIndex}_enabled">Enable Scenario ${scenarioData.n}</label>
+            </div>
+        `;
+        return panel;
+    }
 
-            scenarioPanels.forEach((panel, originalPanelIndex) => {
-                // The 'originalPanelIndex' from the loop is the same as 'scenarioIndex' used when creating the panel's inputs.
-                // It's also stored in panel.dataset.originalIndex if needed.
-                const enableCheckbox = panel.querySelector(`#scenario${originalPanelIndex}_enabled`);
+    function displayScenarios() {
+        const scenarioContainer = document.getElementById('scenarioContainer'); // Get fresh reference or ensure it's passed
+        const scenarioCountSelect = document.getElementById('scenarioCount'); // Get fresh reference
+        if (!scenarioContainer || !scenarioCountSelect) {
+            console.error("displayScenarios: scenarioContainer or scenarioCountSelect not found.");
+            return;
+        }
+        scenarioContainer.innerHTML = '';
+        const count = parseInt(scenarioCountSelect.value);
+        scenarios.slice(0, count).forEach((s, i) => {
+            s.enabled = i < count;
+            const panel = createScenarioPanel(s, i);
+            scenarioContainer.appendChild(panel);
+        });
+    }
 
-                if (enableCheckbox && enableCheckbox.checked) {
-                    const prefix = `scenario${enabledScenarioIndex}_`;
-                    formData.append(prefix + 'enabled', 'on');
+    function renderPlot(containerId, plotHtml) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = plotHtml;
+            Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                const newScript = document.createElement("script");
+                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        } else {
+            console.error(`renderPlot: Container with ID '${containerId}' not found.`);
+        }
+    }
 
-                    // Core fields
-                    const wInput = panel.querySelector(`#scenario${originalPanelIndex}_W`);
-                    if(wInput) formData.append(prefix + 'W_form', wInput.value);
+    document.addEventListener('DOMContentLoaded', function() {
+        const scenarioContainer = document.getElementById('scenarioContainer');
+        const scenarioCountSelect = document.getElementById('scenarioCount');
+        const runComparisonBtn = document.getElementById('runComparisonBtn');
 
-                    const rInput = panel.querySelector(`#scenario${originalPanelIndex}_r`);
-                    if(rInput) formData.append(prefix + 'r_form', rInput.value);
+        if (scenarioCountSelect && scenarioContainer) {
+            displayScenarios();
+            scenarioCountSelect.addEventListener('change', displayScenarios);
+        } else {
+            console.error("DOMContentLoaded: Scenario container or count select not found for initial display setup.");
+        }
 
-                    const iInput = panel.querySelector(`#scenario${originalPanelIndex}_i`);
-                    if(iInput) formData.append(prefix + 'i_form', iInput.value);
-
-                    const tInput = panel.querySelector(`#scenario${originalPanelIndex}_T`);
-                    if(tInput) formData.append(prefix + 'T_form', tInput.value);
-
-                    const dInput = panel.querySelector(`#scenario${originalPanelIndex}_D`);
-                    if(dInput) formData.append(prefix + 'D_form', dInput.value);
-
-                    // Withdrawal timing
-                    const wtStartInput = panel.querySelector(`#scenario${originalPanelIndex}_wt_start`);
-                    if (wtStartInput && wtStartInput.checked) {
-                        formData.append(prefix + 'withdrawal_time_form', 'start');
-                    } else {
-                        formData.append(prefix + 'withdrawal_time_form', 'end');
-                    }
-
-                    // Periodic Rates
-                    for (let k = 1; k <= 3; k++) {
-                        const pYrs = panel.querySelector(`#scenario${originalPanelIndex}_P${k}_yrs`);
-                        const pR = panel.querySelector(`#scenario${originalPanelIndex}_P${k}_r`);
-                        const pI = panel.querySelector(`#scenario${originalPanelIndex}_P${k}_i`);
-                        if(pYrs && pYrs.value) formData.append(prefix + `period${k}_duration`, pYrs.value);
-                        if(pR && pR.value) formData.append(prefix + `period${k}_r`, pR.value);
-                        if(pI && pI.value) formData.append(prefix + `period${k}_i`, pI.value);
-                    }
-
-                    // One-off Events (MAX_ONE_OFF_EVENTS_COMPARE = 3)
-                    for (let k = 1; k <= 3; k++) {
-                        const oneOffYear = panel.querySelector(`#scenario${originalPanelIndex}_one_off_${k}_year`);
-                        const oneOffAmount = panel.querySelector(`#scenario${originalPanelIndex}_one_off_${k}_amount`);
-                        if(oneOffYear && oneOffYear.value) formData.append(prefix + `one_off_${k}_year`, oneOffYear.value);
-                        if(oneOffAmount && oneOffAmount.value) formData.append(prefix + `one_off_${k}_amount`, oneOffAmount.value);
-                    }
-
-                    enabledScenarioIndex++;
+        if (scenarioContainer) {
+            new Sortable(scenarioContainer, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                onEnd: function (evt) {
+                    // console.log('Item moved from', evt.oldIndex, 'to', evt.newIndex);
                 }
             });
+        } else {
+            console.error("DOMContentLoaded: Scenario container not found for SortableJS initialization.");
+        }
 
-            // Log formData for debugging
-            // for (var pair of formData.entries()) { console.log(pair[0]+ ': ' + pair[1]); }
-
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            fetch('/compare', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': csrfToken
+        if (runComparisonBtn) {
+            runComparisonBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfToken) {
+                    console.error("CSRF token meta tag not found!");
+                    // Optionally, display an error to the user
+                    const msgContainer = document.getElementById('comparisonMessageContainer');
+                    if(msgContainer) msgContainer.innerHTML = '<p class="text-red-500">Critical error: CSRF token not found. Cannot submit data.</p>';
+                    return;
                 }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => { throw new Error(`HTTP error ${response.status}: ${text}`) });
-                }
-                return response.json();
-            })
-            .then(data => {
-                const msgContainer = document.getElementById('comparisonMessageContainer');
-                const balancePlotContainer = document.getElementById('combinedBalancePlotContainer');
-                const withdrawalPlotContainer = document.getElementById('combinedWithdrawalPlotContainer');
-                const summaryTableContainer = document.getElementById('summaryTableContainer');
+                const tokenValue = csrfToken.getAttribute('content');
 
-                // Clear previous results
-                if(msgContainer) msgContainer.innerHTML = '';
-                if(balancePlotContainer) balancePlotContainer.innerHTML = '';
-                if(withdrawalPlotContainer) withdrawalPlotContainer.innerHTML = '';
-                if(summaryTableContainer) summaryTableContainer.innerHTML = '';
+                const formData = new FormData();
+                let enabledScenarioIndex = 1;
+                const scenarioPanels = document.querySelectorAll('#scenarioContainer .scenario-panel');
 
-                if (data.message && msgContainer) {
-                    msgContainer.innerHTML = `<p class="text-info">${data.message}</p>`;
-                }
+                scenarioPanels.forEach((panel, originalPanelIndex) => {
+                    const enableCheckbox = panel.querySelector(`#scenario${originalPanelIndex}_enabled`);
+                    if (enableCheckbox && enableCheckbox.checked) {
+                        const prefix = `scenario${enabledScenarioIndex}_`;
+                        formData.append(prefix + 'enabled', 'on');
+                        // Core fields
+                        ['W', 'r', 'i', 'T', 'D'].forEach(field => {
+                            const input = panel.querySelector(`#scenario${originalPanelIndex}_${field}`);
+                            if(input) formData.append(prefix + `${field}_form`, input.value);
+                        });
+                        // Withdrawal timing
+                        const wtStartInput = panel.querySelector(`#scenario${originalPanelIndex}_wt_start`);
+                        if (wtStartInput && wtStartInput.checked) {
+                            formData.append(prefix + 'withdrawal_time_form', 'start');
+                        } else {
+                            formData.append(prefix + 'withdrawal_time_form', 'end');
+                        }
+                        // Periodic Rates
+                        for (let k = 1; k <= 3; k++) {
+                            ['yrs', 'r', 'i'].forEach(field => {
+                                const input = panel.querySelector(`#scenario${originalPanelIndex}_P${k}_${field}`);
+                                const backendFieldName = field === 'yrs' ? 'duration' : field;
+                                if(input && input.value) formData.append(prefix + `period${k}_${backendFieldName}`, input.value);
+                            });
+                        }
+                        // One-off Events
+                        for (let k = 1; k <= 3; k++) {
+                            ['year', 'amount'].forEach(field => {
+                                const input = panel.querySelector(`#scenario${originalPanelIndex}_one_off_${k}_${field}`);
+                                if(input && input.value) formData.append(prefix + `one_off_${k}_${field}`, input.value);
+                            });
+                        }
+                        enabledScenarioIndex++;
+                    }
+                });
 
-                if (data.combined_balance) renderPlot('combinedBalancePlotContainer', data.combined_balance);
-                if (data.combined_withdrawal) renderPlot('combinedWithdrawalPlotContainer', data.combined_withdrawal);
+                fetch('/compare', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': tokenValue
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(`HTTP error ${response.status}: ${text}`) });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const msgContainer = document.getElementById('comparisonMessageContainer');
+                    const balancePlotContainer = document.getElementById('combinedBalancePlotContainer');
+                    const withdrawalPlotContainer = document.getElementById('combinedWithdrawalPlotContainer');
+                    const summaryTableContainer = document.getElementById('summaryTableContainer');
 
-                if (data.scenarios && data.scenarios.length > 0 && summaryTableContainer) {
-                    // Helper to format currency or show N/A. Ensures that even if a value is 0, it's displayed.
-                    const formatCurrency = (val) => (typeof val === 'number' ? val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (val !== undefined && val !== null && val !== '' ? val : 'N/A'));
-                    // Helper for general input values that might be strings or numbers, treats empty strings as N/A.
-                    const formatInput = (val) => (val !== undefined && val !== null && val !== '' ? val : 'N/A');
+                    [msgContainer, balancePlotContainer, withdrawalPlotContainer, summaryTableContainer].forEach(el => {
+                        if(el) el.innerHTML = ''; else console.error("A result container is missing.");
+                    });
 
-                    let tableHtml = `
-                        <h3 class="text-2xl font-bold text-primary mb-6 text-center">Comparison Summary</h3>
-                        <div class="overflow-x-auto glassmorphic rounded-lg border border-fire-input-border p-1 shadow-lg">
+                    if (data.message && msgContainer) {
+                        msgContainer.innerHTML = `<p class="text-info">${data.message}</p>`;
+                    }
+
+                    if (data.combined_balance && balancePlotContainer) renderPlot('combinedBalancePlotContainer', data.combined_balance);
+                    if (data.combined_withdrawal && withdrawalPlotContainer) renderPlot('combinedWithdrawalPlotContainer', data.combined_withdrawal);
+
+                    if (data.scenarios && data.scenarios.length > 0 && summaryTableContainer) {
+                        const formatCurrency = (val) => (typeof val === 'number' ? val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (val !== undefined && val !== null && val !== '' ? val : 'N/A'));
+                        const formatInput = (val) => (val !== undefined && val !== null && val !== '' ? val : 'N/A');
+                        let tableHtml = `
+                            <h3 class="text-2xl font-bold text-primary mb-6 text-center">Comparison Summary</h3>
+                            <div class="overflow-x-auto glassmorphic rounded-lg border border-fire-input-border p-1 shadow-lg">
                             <table class="w-full text-sm text-left">
                                 <thead class="bg-black bg-opacity-25">
                                     <tr>
@@ -359,40 +319,48 @@
                                         <th class="px-6 py-4 text-primary font-semibold uppercase tracking-wider">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody class="text-gray-300">`; // Lighter text for body for contrast
-
-                    data.scenarios.forEach(sc => {
-                        tableHtml += `
-                            <tr class="border-b border-fire-input-border border-opacity-50 last:border-b-0 hover:bg-white hover:bg-opacity-10 transition-colors duration-150 ease-in-out">
-                                <td class="px-6 py-4 font-medium">${sc.n_display || sc.n || 'N/A'}</td>
-                                <td class="px-6 py-4">${formatInput(sc.W_form)}</td>
-                                <td class="px-6 py-4">${formatInput(sc.r_form)}</td>
-                                <td class="px-6 py-4">${formatInput(sc.i_form)}</td>
-                                <td class="px-6 py-4">${formatInput(sc.T_form)}</td>
-                                <td class="px-6 py-4 capitalize">${formatInput(sc.withdrawal_time_form)}</td>
-                                <td class="px-6 py-4 text-right">${formatCurrency(parseFloat(sc.D_form))}</td>
-                                <td class="px-6 py-4 font-semibold text-right">${sc.fire_number_display || 'N/A'}</td>
-                                <td class="px-6 py-4">${sc.error ? `<span class="text-red-400 font-medium">${sc.error}</span>` : `<span class="text-green-400 font-medium">Success</span>`}</td>
-                            </tr>`;
-                    });
-                    tableHtml += '</tbody></table></div>';
-                    summaryTableContainer.innerHTML = tableHtml;
-                } else if (summaryTableContainer && (!data.message || data.message.length === 0) ) {
-                     summaryTableContainer.innerHTML = '<p class="text-secondary text-center py-4">No scenario data processed or returned to display in summary.</p>';
-                }
-
-
-                document.getElementById('results-wrapper').style.display = 'block';
-                document.getElementById('results-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            })
-            .catch(error => {
-                console.error('Error fetching comparison data:', error);
-                const msgContainer = document.getElementById('comparisonMessageContainer');
-                if(msgContainer) msgContainer.innerHTML = `<p class="text-red-500">Error fetching comparison data: ${error.message}. Check console for details.</p>`;
-                document.getElementById('results-wrapper').style.display = 'block';
-                document.getElementById('results-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                <tbody class="text-gray-300">`;
+                        data.scenarios.forEach(sc => {
+                            tableHtml += `
+                                <tr class="border-b border-fire-input-border border-opacity-50 last:border-b-0 hover:bg-white hover:bg-opacity-10 transition-colors duration-150 ease-in-out">
+                                    <td class="px-6 py-4 font-medium">${sc.n_display || sc.n || 'N/A'}</td>
+                                    <td class="px-6 py-4">${formatInput(sc.W_form)}</td>
+                                    <td class="px-6 py-4">${formatInput(sc.r_form)}</td>
+                                    <td class="px-6 py-4">${formatInput(sc.i_form)}</td>
+                                    <td class="px-6 py-4">${formatInput(sc.T_form)}</td>
+                                    <td class="px-6 py-4 capitalize">${formatInput(sc.withdrawal_time_form)}</td>
+                                    <td class="px-6 py-4 text-right">${formatCurrency(parseFloat(sc.D_form))}</td>
+                                    <td class="px-6 py-4 font-semibold text-right">${sc.fire_number_display || 'N/A'}</td>
+                                    <td class="px-6 py-4">${sc.error ? `<span class="text-red-400 font-medium">${sc.error}</span>` : `<span class="text-green-400 font-medium">Success</span>`}</td>
+                                </tr>`;
+                        });
+                        tableHtml += '</tbody></table></div>';
+                        summaryTableContainer.innerHTML = tableHtml;
+                    } else if (summaryTableContainer && (!data.message || data.message.length === 0) ) {
+                         summaryTableContainer.innerHTML = '<p class="text-secondary text-center py-4">No scenario data processed or returned to display in summary.</p>';
+                    }
+                    const resultsWrapper = document.getElementById('results-wrapper');
+                    if (resultsWrapper) {
+                        resultsWrapper.style.display = 'block';
+                        resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        console.error("Results wrapper not found.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching comparison data:', error);
+                    const msgContainer = document.getElementById('comparisonMessageContainer');
+                    if(msgContainer) msgContainer.innerHTML = `<p class="text-red-500">Error fetching comparison data: ${error.message}. Check console for details.</p>`;
+                    const resultsWrapper = document.getElementById('results-wrapper');
+                     if (resultsWrapper) {
+                        resultsWrapper.style.display = 'block';
+                        resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
             });
-        });
-    </script>
+        } else {
+            console.error("DOMContentLoaded: Run comparison button not found.");
+        }
+    });
+</script>
 {% endblock %}
