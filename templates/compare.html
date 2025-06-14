@@ -74,6 +74,8 @@
 <!-- Consolidate all scripts here, at the end of content -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script defer>
+    let csrfTokenForComparePage = null; // Variable to store the CSRF token
+
     const scenarios = [
         { n: 1, W: 50000, T: 30, r: 7, i: 2, D: 0, withdrawal_time: 'start', enabled: true },
         { n: 2, W: 60000, T: 25, r: 6, i: 3, D: 100000, withdrawal_time: 'end', enabled: true },
@@ -190,6 +192,28 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+        if (!csrfTokenMeta) {
+            console.error('CRITICAL: CSRF token meta tag not found on DOMContentLoaded!');
+            const msgContainer = document.getElementById('comparisonMessageContainer');
+            if (msgContainer) {
+                msgContainer.innerHTML = '<p class="text-red-500 font-bold">Error: Application security token is missing. Please try reloading the page.</p>';
+                const resultsWrapper = document.getElementById('results-wrapper');
+                if (resultsWrapper) resultsWrapper.style.display = 'block';
+            }
+        } else {
+            csrfTokenForComparePage = csrfTokenMeta.getAttribute('content');
+            if (!csrfTokenForComparePage) {
+                 console.error('CRITICAL: CSRF token meta tag is present but content is empty!');
+                 const msgContainer = document.getElementById('comparisonMessageContainer');
+                 if (msgContainer) {
+                     msgContainer.innerHTML = '<p class="text-red-500 font-bold">Error: Application security token is invalid. Please try reloading the page.</p>';
+                     const resultsWrapper = document.getElementById('results-wrapper');
+                     if (resultsWrapper) resultsWrapper.style.display = 'block';
+                 }
+            }
+        }
+
         const scenarioContainer = document.getElementById('scenarioContainer');
         const scenarioCountSelect = document.getElementById('scenarioCount');
         const runComparisonBtn = document.getElementById('runComparisonBtn');
@@ -218,15 +242,17 @@
         if (runComparisonBtn) {
             runComparisonBtn.addEventListener('click', function(event) {
                 event.preventDefault();
-                const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                if (!csrfToken) {
-                    console.error("CSRF token meta tag not found!");
-                    // Optionally, display an error to the user
+
+                if (!csrfTokenForComparePage) {
+                    console.error('CSRF token not available for fetch. Aborting.');
                     const msgContainer = document.getElementById('comparisonMessageContainer');
-                    if(msgContainer) msgContainer.innerHTML = '<p class="text-red-500">Critical error: CSRF token not found. Cannot submit data.</p>';
+                    if (msgContainer) {
+                        msgContainer.innerHTML = '<p class="text-red-500 font-bold">Cannot submit data: Security token is missing. Please reload.</p>';
+                        const resultsWrapper = document.getElementById('results-wrapper');
+                        if (resultsWrapper) resultsWrapper.style.display = 'block';
+                    }
                     return;
                 }
-                const tokenValue = csrfToken.getAttribute('content');
 
                 const formData = new FormData();
                 let enabledScenarioIndex = 1;
@@ -273,7 +299,7 @@
                     body: formData,
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': tokenValue
+                        'X-CSRFToken': csrfTokenForComparePage // Use the stored token
                     }
                 })
                 .then(response => {
