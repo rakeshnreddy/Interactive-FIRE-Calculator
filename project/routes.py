@@ -357,8 +357,14 @@ def compare():
         scenarios_data_for_template = []
         for n in range(1, MAX_SCENARIOS_COMPARE + 1):
             scenario_input = {'n': n, 'enabled': form_data.get(f"scenario{n}_enabled") == "on"}
-            for k_form_field in ['W_form', 'r_form', 'i_form', 'T_form', 'D_form', 'withdrawal_time_form']:
-                scenario_input[k_form_field] = form_data.get(f"scenario{n}_{k_form_field.split('_form')[0]}", "")
+
+            # Correctly read core form fields
+            form_field_keys = ['W_form', 'r_form', 'i_form', 'T_form', 'D_form', 'withdrawal_time_form']
+            for key_suffix in form_field_keys:
+                actual_form_data_key = f"scenario{n}_{key_suffix}"
+                value = form_data.get(actual_form_data_key, "")
+                scenario_input[key_suffix] = value # e.g., scenario_input['W_form'] = form_data.get('scenario1_W_form')
+
             for p_num in range(1, 4):
                 for field in ['duration', 'r', 'i']:
                     scenario_input[f'period{p_num}_{field}_form'] = form_data.get(f"scenario{n}_period{p_num}_{field}", "")
