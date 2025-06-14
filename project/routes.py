@@ -1,5 +1,4 @@
 from flask import Blueprint, current_app, request, jsonify, render_template, Response
-from flask_wtf.csrf import generate_csrf
 from flask_babel import gettext, get_locale
 from babel.numbers import format_currency
 import numpy as np
@@ -515,7 +514,7 @@ def compare():
             if request.args.get('W'):
                  first_scenario['enabled'] = True
 
-        return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None, current_year=datetime.datetime.now().year, csrf_token=generate_csrf())
+        return render_template("compare.html", message="", scenarios=default_scenarios_for_template, combined_balance=None, combined_withdrawal=None, current_year=datetime.datetime.now().year)
 
 @project_blueprint.route('/settings')
 def settings():
