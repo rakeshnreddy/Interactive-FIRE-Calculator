@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "check:local": "./scripts/check_local.sh",
     "cf:dev": "npm run build && wrangler pages dev dist --compatibility-date=2026-06-06",
     "cf:deploy": "npm run build && wrangler pages deploy dist --project-name interactive-fire-calculator"
   },
