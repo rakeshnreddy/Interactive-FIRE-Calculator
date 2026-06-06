@@ -14,6 +14,14 @@ env/
 .env
 *.env
 
+# Node / Cloudflare Pages
+node_modules/
+dist/
+.vite/
+.wrangler/
+*.tsbuildinfo
+npm-debug.log*
+
 # IDE / Editor specific
 .vscode/
 .idea/
