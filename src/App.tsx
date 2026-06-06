@@ -39,6 +39,7 @@ import {
 type Mood = 'aurora' | 'lagoon' | 'ember';
 type Mode = 'light' | 'dark';
 type View = 'planner' | 'results' | 'compare' | 'assumptions';
+type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
 type ProjectionBasis = 'fire-number' | 'current-portfolio';
 type ScenarioField = 'spendingDelta' | 'portfolioDelta' | 'returnDelta' | 'inflationDelta';
@@ -65,11 +66,43 @@ const moodLabels: Record<Mood, string> = {
 };
 
 const views: Array<{ id: View; label: string; icon: typeof Calculator }> = [
-  { id: 'planner', label: 'Planner', icon: Calculator },
+  { id: 'planner', label: 'Calculator', icon: Calculator },
   { id: 'results', label: 'Results', icon: LineChartIcon },
   { id: 'compare', label: 'Compare', icon: BarChart3 },
   { id: 'assumptions', label: 'Assumptions', icon: SlidersHorizontal }
 ];
+
+const calculatorModeCopy: Record<
+  CalculatorMode,
+  {
+    eyebrow: string;
+    title: string;
+    shortTitle: string;
+    primaryLabel: string;
+    primaryHelp: string;
+    secondaryLabel: string;
+    secondaryHelp: string;
+  }
+> = {
+  'fire-number': {
+    eyebrow: 'Need to number',
+    title: 'Find my FIRE number',
+    shortTitle: 'FIRE number',
+    primaryLabel: 'Annual withdrawal need',
+    primaryHelp: 'First-year retirement spending.',
+    secondaryLabel: 'Current portfolio',
+    secondaryHelp: 'Used for gap and stress checks.'
+  },
+  'withdrawal-income': {
+    eyebrow: 'Number to income',
+    title: 'Find my annual withdrawal',
+    shortTitle: 'Withdrawal income',
+    primaryLabel: 'FIRE number / portfolio',
+    primaryHelp: 'Portfolio amount to test.',
+    secondaryLabel: 'Need benchmark',
+    secondaryHelp: 'Optional spending goal to compare.'
+  }
+};
 
 const initialPlan: PlanInput = {
   annualExpense: 80_000,
@@ -379,6 +412,43 @@ function Metric({
   );
 }
 
+function HeroPanel({
+  active = false,
+  eyebrow,
+  title,
+  value,
+  detail,
+  icon: Icon,
+  onClick
+}: {
+  active?: boolean;
+  eyebrow: string;
+  title: string;
+  value: string;
+  detail: string;
+  icon: typeof Calculator;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={active ? 'hero-panel active' : 'hero-panel'}
+      aria-pressed={active}
+      onClick={onClick}
+    >
+      <span className="hero-panel-icon">
+        <Icon size={18} />
+      </span>
+      <span className="hero-panel-copy">
+        <span>{eyebrow}</span>
+        <strong>{title}</strong>
+        <small>{value}</small>
+        <em>{detail}</em>
+      </span>
+    </button>
+  );
+}
+
 function Field({
   label,
   children
@@ -449,6 +519,7 @@ function App() {
   const [mood, setMood] = useState<Mood>('aurora');
   const [mode, setMode] = useState<Mode>('light');
   const [view, setView] = useState<View>('planner');
+  const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
   const [resultsMode, setResultsMode] = useState<ResultsMode>('chart');
   const [projectionBasis, setProjectionBasis] = useState<ProjectionBasis>('fire-number');
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>(initialScenarios);
@@ -457,6 +528,51 @@ function App() {
   const result = useMemo<FirePlanResult>(() => calculateFirePlan(plan), [plan]);
   const duration = totalDuration(plan.ratePeriods);
   const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
+  const activeCalculator = calculatorModeCopy[calculatorMode];
+  const annualExpenseLabel =
+    calculatorMode === 'fire-number'
+      ? activeCalculator.primaryLabel
+      : activeCalculator.secondaryLabel;
+  const portfolioLabel =
+    calculatorMode === 'fire-number'
+      ? activeCalculator.secondaryLabel
+      : activeCalculator.primaryLabel;
+  const withdrawalCoverage = result.maxAnnualExpense - plan.annualExpense;
+  const requiredWithdrawalRate =
+    result.requiredPortfolio > 0 && Number.isFinite(result.requiredPortfolio)
+      ? plan.annualExpense / result.requiredPortfolio
+      : 0;
+  const portfolioWithdrawalRate =
+    plan.initialPortfolio > 0 ? result.maxAnnualExpense / plan.initialPortfolio : 0;
+  const primaryResult =
+    calculatorMode === 'fire-number'
+      ? {
+          label: 'Required FIRE number',
+          value: formatMoney(result.requiredPortfolio),
+          tone: 'accent' as const,
+          detail: `${formatMoney(plan.annualExpense)} first-year withdrawal need.`
+        }
+      : {
+          label: 'Annual withdrawal',
+          value: formatMoney(result.maxAnnualExpense),
+          tone: 'success' as const,
+          detail: `${formatPercent(portfolioWithdrawalRate)} initial withdrawal rate.`
+        };
+  const secondaryResult =
+    calculatorMode === 'fire-number'
+      ? {
+          label: 'Withdrawal rate',
+          value: formatPercent(requiredWithdrawalRate),
+          tone: 'neutral' as const
+        }
+      : {
+          label: 'Need coverage',
+          value:
+            withdrawalCoverage >= 0
+              ? `+${formatMoney(withdrawalCoverage)}`
+              : formatMoney(withdrawalCoverage),
+          tone: withdrawalCoverage >= 0 ? ('success' as const) : ('warning' as const)
+        };
   const projectionRows =
     projectionBasis === 'fire-number' ? result.expenseMode.rows : currentSimulation.rows;
   const projectionLabel =
@@ -632,23 +748,68 @@ function App() {
           <button onClick={() => navigate(view)}>{views.find((item) => item.id === view)?.label}</button>
         </nav>
 
-        <section className="summary-band" aria-labelledby="summary-title">
-          <div>
-            <p className="eyebrow">FIRE Decision Workspace</p>
-            <h1 id="summary-title">Model your FIRE number, income ceiling, and yearly cash flow.</h1>
-            <p>
-              Tune spending, staged return assumptions, inflation, and one-off cash flows before
-              comparing what changes the outcome.
-            </p>
+        <section className="summary-band hero-band" aria-labelledby="summary-title">
+          <div className="hero-copy">
+            <p className="eyebrow">FIRE calculator</p>
+            <h1 id="summary-title">Plan your FIRE number and retirement income.</h1>
+            <p>Choose a calculator path, tune assumptions, then compare the outcome.</p>
           </div>
           <div className="summary-metrics">
-            <Metric label="FIRE Number" value={formatMoney(result.requiredPortfolio)} tone="accent" />
-            <Metric label="Portfolio Income" value={formatMoney(result.maxAnnualExpense)} tone="success" />
+            <Metric label={primaryResult.label} value={primaryResult.value} tone={primaryResult.tone} />
+            <Metric
+              label={secondaryResult.label}
+              value={secondaryResult.value}
+              tone={secondaryResult.tone}
+            />
             <Metric label="Plan Length" value={`${duration} years`} />
             <Metric
               label="Stress Ending"
               value={formatMoney(currentSimulation.finalBalance)}
               tone={currentSimulation.finalBalance >= plan.desiredFinalValue ? 'success' : 'warning'}
+            />
+          </div>
+          <div className="hero-panels" aria-label="Calculator paths and features">
+            <HeroPanel
+              active={calculatorMode === 'fire-number'}
+              eyebrow="Need to number"
+              title="Find FIRE number"
+              value={formatMoney(result.requiredPortfolio)}
+              detail="Start with annual withdrawals."
+              icon={Calculator}
+              onClick={() => {
+                setCalculatorMode('fire-number');
+                navigate('planner');
+              }}
+            />
+            <HeroPanel
+              active={calculatorMode === 'withdrawal-income'}
+              eyebrow="Number to income"
+              title="Find withdrawal"
+              value={formatMoney(result.maxAnnualExpense)}
+              detail="Start with a portfolio value."
+              icon={PiggyBank}
+              onClick={() => {
+                setCalculatorMode('withdrawal-income');
+                navigate('planner');
+              }}
+            />
+            <HeroPanel
+              active={view === 'results'}
+              eyebrow="Projection"
+              title="Review cash flow"
+              value={`${duration} years`}
+              detail="Chart or table."
+              icon={LineChartIcon}
+              onClick={() => navigate('results')}
+            />
+            <HeroPanel
+              active={view === 'compare'}
+              eyebrow="Scenarios"
+              title="Compare plans"
+              value="3 variants"
+              detail="Base, guardrail, upside."
+              icon={BarChart3}
+              onClick={() => navigate('compare')}
             />
           </div>
         </section>
@@ -657,7 +818,7 @@ function App() {
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Plan checks</p>
-              <h2 id="warnings-title">Warnings and model checks</h2>
+              <h2 id="warnings-title">Plan health</h2>
             </div>
             <span className="pill">{warningNotices.length} checks</span>
           </div>
@@ -677,9 +838,7 @@ function App() {
               <article className="scenario-card warning-card warning-ok">
                 <span>OK</span>
                 <strong>Model checks passed</strong>
-                <small>
-                  No validation, depletion, or assumption warnings were detected for this plan.
-                </small>
+                <small>No validation or depletion warnings.</small>
               </article>
             )}
           </div>
@@ -690,13 +849,48 @@ function App() {
             <section className="panel input-panel" aria-labelledby="planner-title">
               <div className="panel-heading">
                 <div>
-                  <p className="eyebrow">Inputs</p>
-                  <h2 id="planner-title">Plan settings</h2>
+                  <p className="eyebrow">{activeCalculator.eyebrow}</p>
+                  <h2 id="planner-title">{activeCalculator.title}</h2>
                 </div>
               </div>
 
+              <div className="calculator-result-card">
+                <span>{primaryResult.label}</span>
+                <strong>{primaryResult.value}</strong>
+                <small>{primaryResult.detail}</small>
+              </div>
+
               <div className="form-grid">
-                <Field label="Annual spending">
+                <div className="field full-field">
+                  <span>Calculator path</span>
+                  <div className="segmented">
+                    <button
+                      className={calculatorMode === 'fire-number' ? 'active' : ''}
+                      onClick={() => setCalculatorMode('fire-number')}
+                    >
+                      FIRE number
+                    </button>
+                    <button
+                      className={calculatorMode === 'withdrawal-income' ? 'active' : ''}
+                      onClick={() => setCalculatorMode('withdrawal-income')}
+                    >
+                      Withdrawal
+                    </button>
+                  </div>
+                </div>
+
+                {calculatorMode === 'withdrawal-income' && (
+                  <Field label={portfolioLabel}>
+                    <input
+                      type="number"
+                      min="0"
+                      value={plan.initialPortfolio}
+                      onChange={setMoney('initialPortfolio')}
+                    />
+                  </Field>
+                )}
+
+                <Field label={annualExpenseLabel}>
                   <input
                     type="number"
                     min="0"
@@ -704,15 +898,19 @@ function App() {
                     onChange={setMoney('annualExpense')}
                   />
                 </Field>
-                <Field label="Current portfolio">
-                  <input
-                    type="number"
-                    min="0"
-                    value={plan.initialPortfolio}
-                    onChange={setMoney('initialPortfolio')}
-                  />
-                </Field>
-                <Field label="Final value target">
+
+                {calculatorMode === 'fire-number' && (
+                  <Field label={portfolioLabel}>
+                    <input
+                      type="number"
+                      min="0"
+                      value={plan.initialPortfolio}
+                      onChange={setMoney('initialPortfolio')}
+                    />
+                  </Field>
+                )}
+
+                <Field label="Estate target">
                   <input
                     type="number"
                     min="0"
@@ -902,10 +1100,7 @@ function App() {
               <div>
                 <p className="eyebrow">Projection</p>
                 <h2 id="results-title">Year-by-year cash flow</h2>
-                <p>
-                  Review either the calculated FIRE-number projection or a stress test of the
-                  portfolio you have entered today.
-                </p>
+                <p>Switch between the calculated FIRE plan and the entered portfolio stress test.</p>
               </div>
               <div className="topbar-actions">
                 <button className="secondary-button" onClick={exportSelectedProjection}>
@@ -992,10 +1187,7 @@ function App() {
               <div>
                 <p className="eyebrow">Scenarios</p>
                 <h2 id="compare-title">Three-way assumption comparison</h2>
-                <p>
-                  Shift spending, portfolio, return, and inflation assumptions while keeping the
-                  timeline and one-off events consistent.
-                </p>
+                <p>Test spending, portfolio, return, and inflation changes against the same timeline.</p>
               </div>
               <span className="pill">3 scenarios</span>
             </div>
@@ -1067,7 +1259,7 @@ function App() {
             <div className="panel-heading">
               <div>
                 <p className="eyebrow">Model</p>
-                <h2 id="assumptions-title">Calculation contract</h2>
+                <h2 id="assumptions-title">Model assumptions</h2>
               </div>
             </div>
             <div className="assumption-grid">
@@ -1092,16 +1284,12 @@ function App() {
               <article className="scenario-card">
                 <span>Expense mode</span>
                 <strong>{formatMoney(result.requiredPortfolio)}</strong>
-                <small>
-                  Portfolio needed to support the entered annual spending and final value target.
-                </small>
+                <small>Portfolio needed for the entered withdrawal need.</small>
               </article>
               <article className="scenario-card">
                 <span>Portfolio mode</span>
                 <strong>{formatMoney(result.maxAnnualExpense)}</strong>
-                <small>
-                  Annual spending supported by the entered current portfolio over this timeline.
-                </small>
+                <small>Annual withdrawal supported by the entered portfolio.</small>
               </article>
               <article className="scenario-card">
                 <span>Cash-flow events</span>

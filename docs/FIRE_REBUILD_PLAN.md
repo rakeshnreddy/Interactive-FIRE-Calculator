@@ -314,3 +314,126 @@ Agents must use disjoint write sets when working in parallel. Any change that al
 3. Browser-test the Vite app across planner, results, compare, assumptions, mobile nav, breadcrumbs, and all three moods in light/dark.
 4. Expand the React app with editable custom scenarios and year-by-year table export.
 5. Keep the Cloudflare Pages project connected to GitHub previews, then enable production auto-deploy after the PR merges.
+
+## Scope Expansion: Comprehensive Retirement Calculator
+
+Date: June 6, 2026
+
+The TypeScript/Cloudflare rewrite foundation is about 70% complete for the original migration scope:
+calculation parity, a modern React app shell, theme moods, chart/table results, scenario comparison,
+Cloudflare deployment, and local scripts are in place.
+
+The expanded product scope is broader than the original migration. Against the new goal of a
+comprehensive retirement calculator website, the product is closer to 55% complete. The next work
+should prioritize discoverability, better first-use flow, and richer retirement assumptions before
+adding advanced stochastic modeling.
+
+### Current Product Feedback
+
+- The engine already calculates both inverse questions, but the UI does not make them first-class:
+  users need an explicit path for "annual withdrawal need to FIRE number" and another path for
+  "FIRE number to annual withdrawal amount."
+- The first screen reads like an internal planning dashboard. It should become a cleaner hero
+  workspace with short, clickable calculator panels and fewer explanatory paragraphs.
+- The core planner exposes advanced assumptions before the user has picked a goal. That makes the
+  app feel busier than the workflow needs to be.
+- "Current portfolio" is overloaded. In withdrawal-income mode, the same value is really the
+  portfolio or FIRE number the user wants to test.
+- Results, tables, warnings, and scenarios are useful, but they should be positioned as secondary
+  detail after the primary calculator path is clear.
+- The current warning cards are valuable but visually prominent. Future iterations should compress
+  them into a health strip or expandable diagnostics panel.
+- The copy needs to be more professional and terse. Labels should carry meaning; long helper text
+  should move into methodology or tooltips.
+
+### High-Value Feature Backlog
+
+Priority 0: Core calculator clarity
+
+- Need-to-number calculator: annual withdrawal need, final estate target, return/inflation periods,
+  and one-off cash flows produce a required FIRE number.
+- Number-to-income calculator: given a portfolio or FIRE number, timeline, final estate target,
+  return/inflation periods, and one-off cash flows produce an initial annual withdrawal amount.
+- Clickable hero panels for both calculators, Results, and Scenario Compare.
+- Compact primary result panel that changes based on the selected calculator path.
+- Progressive disclosure for advanced assumptions.
+
+Priority 1: Retirement planning completeness
+
+- Age-based timeline: current age, retirement age, end age, and optional life expectancy.
+- Income streams: Social Security, pensions, rental income, annuities, part-time income, and start/end years.
+- Expense phases: baseline retirement spending, early retirement bridge spending, healthcare,
+  mortgage payoff, education, travel, and late-life care.
+- Saved scenarios in localStorage plus JSON import/export.
+- Shareable scenario links using URL-safe encoded state.
+- Better diagnostics: depletion year, funding gap, safe withdrawal rate, margin of safety, and
+  assumption stress labels.
+
+Priority 2: Risk and strategy modeling
+
+- Withdrawal strategies: constant real spending, fixed-percent withdrawal, guardrails, and variable
+  percentage withdrawal.
+- Sequence-risk presets and sensitivity analysis for returns, inflation, and spending.
+- Monte Carlo success probability using configurable return/volatility assumptions.
+- Historical backtesting against major market periods.
+- Lean FIRE, Fat FIRE, Coast FI, and Barista FI calculators that reuse the same model.
+
+Priority 3: Taxes, accounts, and household modeling
+
+- Account buckets: taxable, traditional pre-tax, Roth, cash, and pension-like income.
+- Basic tax estimates for federal/state ordinary income and capital gains.
+- Required minimum distribution and Roth conversion planning hooks.
+- Household mode for spouse/partner income streams and staggered retirement ages.
+- Healthcare and insurance assumptions before Medicare eligibility.
+
+Priority 4: Trust, education, and conversion quality
+
+- Methodology page explaining nominal returns, inflation, withdrawal timing, and limitations.
+- Plain-language disclaimers that the tool is educational and not financial advice.
+- PDF report export with inputs, charts, scenarios, and warnings.
+- Accessible keyboard flow, screen-reader labels, and color contrast audits.
+- SEO/content pages for FIRE number, safe withdrawal rate, retirement income, and Monte Carlo planning.
+
+### Phased Implementation Plan
+
+Phase A: First-screen product clarity
+
+- Add explicit calculator modes: "Find my FIRE number" and "Find my annual withdrawal."
+- Replace the dense dashboard hero with short clickable panels.
+- Make the active calculator mode control field labels, primary result labels, and result emphasis.
+- Reduce visible copy in the planner, results, compare, and assumptions sections.
+- Keep all existing deterministic math and tests intact.
+
+Phase B: Guided retirement assumptions
+
+- Add age-based timeline inputs and convert them to modeled duration.
+- Add income streams and expense phases as structured rows.
+- Add local scenario save/load and JSON import/export.
+- Add better validation states near the fields that caused each warning.
+
+Phase C: Scenario and risk expansion
+
+- Add sensitivity panels for return, inflation, and spending changes.
+- Add guardrail withdrawal strategy and sequence-risk presets.
+- Add Monte Carlo and historical backtest modules once deterministic contracts are stable.
+
+Phase D: Tax/account modeling
+
+- Add account buckets and basic tax treatment.
+- Introduce retirement-account-specific constraints only after simple account buckets are stable.
+- Keep tax estimates visibly labeled as rough planning estimates.
+
+Phase E: Sharing, reports, and production hardening
+
+- Add URL share links, report export, and methodology pages.
+- Add browser E2E tests for navigation, theme modes, calculator mode switching, exports, and mobile.
+- Enable production Cloudflare deployment after PR review and final QA.
+
+### Immediate Phase A Tasks
+
+1. Add `CalculatorMode` state and calculator metadata in `src/App.tsx`.
+2. Replace the current hero summary with concise clickable panels.
+3. Make planner fields and primary metrics mode-aware.
+4. Add a compact result highlight that explicitly shows both inverse outputs.
+5. Update CSS for hero panels, mode cards, compact copy, and responsive behavior.
+6. Validate with typecheck, Vitest, production build, and browser QA on desktop and mobile.
