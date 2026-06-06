@@ -714,6 +714,21 @@ h2 {
     0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
+.field-has-issue input {
+  border-color: color-mix(in srgb, #b7791f 54%, var(--border));
+}
+
+.field-issue {
+  color: #9a5f10;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.app[data-mode="dark"] .field-issue {
+  color: #f1c56f;
+}
+
 .field input::placeholder {
   color: var(--muted);
   opacity: 0.72;
@@ -821,6 +836,16 @@ h2 {
   grid-template-columns: minmax(170px, 1.15fr) minmax(82px, 0.5fr) minmax(124px, 0.75fr) 40px;
 }
 
+.recurring-row {
+  grid-template-columns:
+    minmax(150px, 1.1fr)
+    minmax(74px, 0.45fr)
+    minmax(74px, 0.45fr)
+    minmax(118px, 0.7fr)
+    minmax(150px, 0.9fr)
+    40px;
+}
+
 .row-number {
   display: inline-flex;
   align-items: center;
@@ -840,6 +865,83 @@ h2 {
   border-color: var(--border);
   color: var(--muted-strong);
   background: var(--field-bg);
+}
+
+.empty-card {
+  box-shadow: none;
+}
+
+.utility-panel {
+  grid-column: 1 / -1;
+}
+
+.utility-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) repeat(3, auto);
+  gap: 0.7rem;
+  align-items: end;
+}
+
+.icon-text-button {
+  display: inline-flex;
+  gap: 0.42rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.9rem;
+}
+
+.saved-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.saved-item strong,
+.saved-item small {
+  display: block;
+}
+
+.saved-item strong {
+  overflow-wrap: anywhere;
+  color: var(--heading);
+  font-weight: 850;
+}
+
+.saved-item small {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.saved-actions {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.saved-actions .row-action {
+  width: 40px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .chart-panel {
@@ -1004,7 +1106,7 @@ h2 {
 
 table {
   width: 100%;
-  min-width: 720px;
+  min-width: 1040px;
   border-collapse: collapse;
   color: var(--text);
   font-variant-numeric: tabular-nums;
@@ -1202,8 +1304,21 @@ td {
   }
 
   .repeat-row,
-  .event-row {
+  .event-row,
+  .recurring-row,
+  .utility-grid,
+  .saved-item {
     grid-template-columns: 1fr;
+  }
+
+  .saved-actions,
+  .icon-text-button {
+    width: 100%;
+  }
+
+  .saved-actions {
+    display: grid;
+    grid-template-columns: 1fr 40px;
   }
 
   .row-number,

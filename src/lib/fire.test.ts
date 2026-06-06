@@ -55,6 +55,27 @@ describe('annualSimulation', () => {
     closeTo(result.balances[2], 91_470);
     closeTo(result.balances[3], 91_881.9);
   });
+
+  it('applies recurring income and expense phases to net withdrawals', () => {
+    const result = annualSimulation(
+      100_000,
+      10_000,
+      'end',
+      [{ duration: 2, r: 0, i: 0 }],
+      [],
+      [
+        { kind: 'income', startYear: 1, endYear: 2, amount: 3_000, label: 'Pension' },
+        { kind: 'expense', startYear: 2, endYear: 2, amount: 2_000, label: 'Healthcare' }
+      ]
+    );
+
+    closeTo(result.rows[0].baseWithdrawal, 10_000);
+    closeTo(result.rows[0].recurringIncome, 3_000);
+    closeTo(result.rows[0].recurringExpense, 0);
+    closeTo(result.rows[0].withdrawal, 7_000);
+    closeTo(result.rows[1].withdrawal, 9_000);
+    closeTo(result.finalBalance, 84_000);
+  });
 });
 
 describe('solvers', () => {
@@ -78,6 +99,26 @@ describe('solvers', () => {
       1_000_000
     );
     closeTo(portfolio, 1_493_642.18, 1);
+  });
+
+  it('uses recurring cash flows in both inverse solvers', () => {
+    const plan: PlanInput = {
+      annualExpense: 50_000,
+      initialPortfolio: 700_000,
+      withdrawalTiming: 'end',
+      desiredFinalValue: 0,
+      ratePeriods: [{ duration: 20, r: 0.05, i: 0.02 }],
+      oneOffEvents: [],
+      recurringCashFlows: [
+        { kind: 'income', startYear: 6, endYear: 20, amount: 20_000, label: 'Pension' }
+      ]
+    };
+
+    const withIncome = calculateFirePlan(plan);
+    const withoutIncome = calculateFirePlan({ ...plan, recurringCashFlows: [] });
+
+    expect(withIncome.requiredPortfolio).toBeLessThan(withoutIncome.requiredPortfolio);
+    expect(withIncome.maxAnnualExpense).toBeGreaterThan(withoutIncome.maxAnnualExpense);
   });
 });
 
@@ -161,6 +202,25 @@ describe('plan warnings', () => {
         'empty_rate_periods',
         'one_off_year_out_of_range'
       ])
+    );
+  });
+
+  it('flags invalid recurring cash-flow rows', () => {
+    const warnings = validatePlanInput({
+      annualExpense: 40_000,
+      initialPortfolio: 500_000,
+      withdrawalTiming: 'end',
+      desiredFinalValue: 0,
+      ratePeriods: [{ duration: 10, r: 0.06, i: 0.03 }],
+      oneOffEvents: [],
+      recurringCashFlows: [
+        { kind: 'income', startYear: 11, endYear: 12, amount: 1_000 },
+        { kind: 'expense', startYear: 1, endYear: 3, amount: -1 }
+      ]
+    });
+
+    expect(warningCodes(warnings)).toEqual(
+      expect.arrayContaining(['recurring_cash_flow_out_of_range', 'invalid_recurring_cash_flow'])
     );
   });
 

@@ -324,9 +324,9 @@ calculation parity, a modern React app shell, theme moods, chart/table results, 
 Cloudflare deployment, and local scripts are in place.
 
 The expanded product scope is broader than the original migration. Against the new goal of a
-comprehensive retirement calculator website, the product is closer to 55% complete. The next work
-should prioritize discoverability, better first-use flow, and richer retirement assumptions before
-adding advanced stochastic modeling.
+comprehensive retirement calculator website, the product is closer to 65% complete after the first
+guided-assumptions sprint. The next work should prioritize scenario persistence refinements,
+sensitivity analysis, and risk modeling before advanced tax/account modeling.
 
 ### Current Product Feedback
 
@@ -437,3 +437,14 @@ Phase E: Sharing, reports, and production hardening
 4. Add a compact result highlight that explicitly shows both inverse outputs.
 5. Update CSS for hero panels, mode cards, compact copy, and responsive behavior.
 6. Validate with typecheck, Vitest, production build, and browser QA on desktop and mobile.
+
+### Completed Phase B Slice
+
+- Added age-based timeline inputs and synchronized the modeled market-period duration.
+- Added recurring income streams for Social Security, pension, rental, annuity, or work income.
+- Added recurring expense phases for healthcare bridges, mortgage, travel, and late-life care.
+- Extended the deterministic engine with recurring cash-flow validation and year-by-year output
+  for base withdrawal, recurring income, recurring expense, and net withdrawal.
+- Added local saved plans plus JSON import/export for complete scenario snapshots.
+- Added field-level diagnostics from structured model warnings.
+- Expanded projection CSV/table output to include recurring income and expense columns.

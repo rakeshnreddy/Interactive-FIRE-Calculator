@@ -12,6 +12,17 @@ export type OneOffEvent = {
   label?: string;
 };
 
+export type RecurringCashFlowKind = 'income' | 'expense';
+
+export type RecurringCashFlow = {
+  kind: RecurringCashFlowKind;
+  startYear: number;
+  endYear: number;
+  amount: number;
+  label?: string;
+  inflationAdjusted?: boolean;
+};
+
 export type PlanInput = {
   annualExpense: number;
   initialPortfolio: number;
@@ -19,12 +30,16 @@ export type PlanInput = {
   desiredFinalValue: number;
   ratePeriods: RatePeriod[];
   oneOffEvents: OneOffEvent[];
+  recurringCashFlows?: RecurringCashFlow[];
 };
 
 export type YearResult = {
   year: number;
   startingBalance: number;
   withdrawal: number;
+  baseWithdrawal: number;
+  recurringIncome: number;
+  recurringExpense: number;
   oneOffAmount: number;
   returnRate: number;
   inflationRate: number;
@@ -43,6 +58,8 @@ export type PlanWarningCode =
   | 'invalid_one_off_year'
   | 'one_off_year_out_of_range'
   | 'invalid_one_off_amount'
+  | 'invalid_recurring_cash_flow'
+  | 'recurring_cash_flow_out_of_range'
   | 'empty_rate_periods'
   | 'invalid_rate_period'
   | 'invalid_money_value'
@@ -94,6 +111,7 @@ type NormalizedPlanInput = {
   desiredFinalValue: number;
   ratePeriods: RatePeriod[];
   oneOffEvents: OneOffEvent[];
+  recurringCashFlows: RecurringCashFlow[];
   warnings: PlanWarning[];
 };
 
@@ -363,6 +381,92 @@ function normalizeOneOffEvents(
   return events;
 }
 
+function normalizeRecurringCashFlows(
+  recurringCashFlowsInput: unknown,
+  duration: number,
+  warnings: PlanWarning[]
+): RecurringCashFlow[] {
+  if (!Array.isArray(recurringCashFlowsInput)) {
+    return [];
+  }
+
+  const cashFlows: RecurringCashFlow[] = [];
+
+  recurringCashFlowsInput.forEach((flowInput, index) => {
+    const flow = flowInput as Partial<RecurringCashFlow> | undefined;
+    const kind = flow?.kind;
+    const startYearValue = Number(flow?.startYear);
+    const endYearValue = Number(flow?.endYear);
+    const amount = Number(flow?.amount);
+    const path = `recurringCashFlows.${index}`;
+
+    if (kind !== 'income' && kind !== 'expense') {
+      warnings.push({
+        code: 'invalid_recurring_cash_flow',
+        severity: 'error',
+        path: `${path}.kind`,
+        index,
+        value: String(kind),
+        message: `Recurring cash flow ${index + 1} must be income or expense and will be ignored.`
+      });
+      return;
+    }
+
+    if (
+      !Number.isFinite(startYearValue) ||
+      !Number.isFinite(endYearValue) ||
+      !Number.isFinite(amount) ||
+      amount < 0
+    ) {
+      warnings.push({
+        code: 'invalid_recurring_cash_flow',
+        severity: 'error',
+        path,
+        index,
+        message: `Recurring ${kind} ${index + 1} needs finite start/end years and a non-negative annual amount.`
+      });
+      return;
+    }
+
+    const startYear = Math.trunc(startYearValue);
+    const endYear = Math.trunc(endYearValue);
+
+    if (startYear !== startYearValue || endYear !== endYearValue) {
+      warnings.push({
+        code: 'invalid_recurring_cash_flow',
+        severity: 'warning',
+        path,
+        index,
+        value: `${startYearValue}-${endYearValue}`,
+        message: `Recurring ${kind} ${index + 1} years should be whole numbers; using years ${startYear}-${endYear}.`
+      });
+    }
+
+    if (startYear < 1 || endYear < startYear || startYear > duration) {
+      warnings.push({
+        code: 'recurring_cash_flow_out_of_range',
+        severity: 'warning',
+        path,
+        index,
+        value: `${startYear}-${endYear}`,
+        message: `Recurring ${kind} ${index + 1} is outside the ${duration}-year plan and will be ignored.`
+      });
+      return;
+    }
+
+    cashFlows.push({
+      kind,
+      startYear,
+      endYear: Math.min(endYear, duration),
+      amount,
+      label: flow?.label,
+      inflationAdjusted: flow?.inflationAdjusted !== false
+    });
+  });
+
+  return cashFlows;
+}
+
 function normalizePeriods(ratePeriods: RatePeriod[]): RatePeriod[] {
   const periods = ratePeriods
     .map((period) => ({
@@ -402,6 +506,43 @@ function oneOffTotalForYear(oneOffEvents: OneOffEvent[], year: number): number {
     .reduce((sum, event) => sum + event.amount, 0);
 }
 
+function inflationMultiplierForYear(ratePeriods: RatePeriod[], year: number): number {
+  let multiplier = 1;
+
+  for (let currentYear = 1; currentYear < year; currentYear += 1) {
+    multiplier *= 1 + rateForYear(ratePeriods, currentYear).i;
+  }
+
+  return multiplier;
+}
+
+function recurringCashFlowTotalsForYear(
+  recurringCashFlows: RecurringCashFlow[],
+  ratePeriods: RatePeriod[],
+  year: number
+): { income: number; expense: number } {
+  const multiplier = inflationMultiplierForYear(ratePeriods, year);
+
+  return recurringCashFlows.reduce(
+    (totals, flow) => {
+      if (year < flow.startYear || year > flow.endYear) {
+        return totals;
+      }
+
+      const amount = flow.amount * (flow.inflationAdjusted === false ? 1 : multiplier);
+
+      if (flow.kind === 'income') {
+        totals.income += amount;
+      } else {
+        totals.expense += amount;
+      }
+
+      return totals;
+    },
+    { income: 0, expense: 0 }
+  );
+}
+
 function normalizePlanInput(input: PlanInput): NormalizedPlanInput {
   const warnings: PlanWarning[] = [];
   const ratePeriods = normalizePlanRatePeriods(input.ratePeriods, warnings);
@@ -424,6 +565,7 @@ function normalizePlanInput(input: PlanInput): NormalizedPlanInput {
     ),
     ratePeriods,
     oneOffEvents: normalizeOneOffEvents(input.oneOffEvents, duration, warnings),
+    recurringCashFlows: normalizeRecurringCashFlows(input.recurringCashFlows, duration, warnings),
     warnings: dedupeWarnings(warnings)
   };
 }
@@ -445,6 +587,7 @@ function runAnnualSimulation(
   withdrawalTiming: WithdrawalTiming,
   ratePeriods: RatePeriod[],
   oneOffEvents: OneOffEvent[],
+  recurringCashFlows: RecurringCashFlow[] = [],
   baseWarnings: PlanWarning[] = [],
   mode?: PlanWarningMode
 ): SimulationResult {
@@ -464,17 +607,27 @@ function runAnnualSimulation(
     const { r, i } = rateForYear(ratePeriods, year);
     const startingBalance = balance;
     const oneOffAmount = oneOffTotalForYear(oneOffEvents, year);
+    const { income: recurringIncome, expense: recurringExpense } = recurringCashFlowTotalsForYear(
+      recurringCashFlows,
+      ratePeriods,
+      year
+    );
+    const baseWithdrawal = withdrawal;
+    const netWithdrawal = baseWithdrawal + recurringExpense - recurringIncome;
 
     if (withdrawalTiming === 'start') {
-      balance = (balance - withdrawal + oneOffAmount) * (1 + r);
+      balance = (balance - netWithdrawal + oneOffAmount) * (1 + r);
     } else {
-      balance = (balance + oneOffAmount) * (1 + r) - withdrawal;
+      balance = (balance + oneOffAmount) * (1 + r) - netWithdrawal;
     }
 
     rows.push({
       year,
       startingBalance,
-      withdrawal,
+      withdrawal: netWithdrawal,
+      baseWithdrawal,
+      recurringIncome,
+      recurringExpense,
       oneOffAmount,
       returnRate: r,
       inflationRate: i,
@@ -505,7 +658,7 @@ function runAnnualSimulation(
       hasNegativeWarning = true;
     }
 
-    withdrawals.push(withdrawal);
+    withdrawals.push(netWithdrawal);
     balances.push(balance);
     withdrawal *= 1 + i;
   }
@@ -529,7 +682,8 @@ export function annualSimulation(
   annualExpense: number,
   withdrawalTiming: WithdrawalTiming,
   ratePeriodsInput: RatePeriod[],
-  oneOffEvents: OneOffEvent[] = []
+  oneOffEvents: OneOffEvent[] = [],
+  recurringCashFlows: RecurringCashFlow[] = []
 ): SimulationResult {
   assertFiniteNonNegative(initialPortfolio, 'Initial portfolio');
   assertFiniteNonNegative(annualExpense, 'Annual expense');
@@ -539,6 +693,11 @@ export function annualSimulation(
   const ratePeriods = normalizePeriods(ratePeriodsInput);
   const duration = totalDuration(ratePeriods);
   const normalizedOneOffEvents = normalizeOneOffEvents(oneOffEvents, duration, warnings);
+  const normalizedRecurringCashFlows = normalizeRecurringCashFlows(
+    recurringCashFlows,
+    duration,
+    warnings
+  );
 
   ratePeriods.forEach((period, index) => addRateAssumptionWarnings(period, index, warnings));
 
@@ -548,6 +707,7 @@ export function annualSimulation(
     normalizedWithdrawalTiming,
     ratePeriods,
     normalizedOneOffEvents,
+    normalizedRecurringCashFlows,
     warnings
   );
 }
@@ -558,14 +718,16 @@ export function simulateFinalBalance(
   withdrawalTiming: WithdrawalTiming,
   ratePeriods: RatePeriod[],
   desiredFinalValue = 0,
-  oneOffEvents: OneOffEvent[] = []
+  oneOffEvents: OneOffEvent[] = [],
+  recurringCashFlows: RecurringCashFlow[] = []
 ): number {
   const simulation = annualSimulation(
     initialPortfolio,
     annualExpense,
     withdrawalTiming,
     ratePeriods,
-    oneOffEvents
+    oneOffEvents,
+    recurringCashFlows
   );
   return simulation.finalBalance - desiredFinalValue;
 }
@@ -576,18 +738,32 @@ export function findRequiredPortfolio(
   ratePeriods: RatePeriod[],
   desiredFinalValue = 0,
   oneOffEvents: OneOffEvent[] = [],
+  recurringCashFlowsOrTolerance: RecurringCashFlow[] | number = [],
   tolerance = DEFAULT_TOLERANCE
 ): number {
   assertFiniteNonNegative(annualExpense, 'Annual expense');
   assertFiniteNonNegative(desiredFinalValue, 'Desired final value');
 
   normalizePeriods(ratePeriods);
+  const recurringCashFlows = Array.isArray(recurringCashFlowsOrTolerance)
+    ? recurringCashFlowsOrTolerance
+    : [];
+  const solverTolerance =
+    typeof recurringCashFlowsOrTolerance === 'number' ? recurringCashFlowsOrTolerance : tolerance;
 
   let low = 0;
   let high = Math.max(annualExpense * totalDuration(ratePeriods) * 2 + desiredFinalValue, 1);
 
   while (
-    simulateFinalBalance(high, annualExpense, withdrawalTiming, ratePeriods, desiredFinalValue, oneOffEvents) < 0
+    simulateFinalBalance(
+      high,
+      annualExpense,
+      withdrawalTiming,
+      ratePeriods,
+      desiredFinalValue,
+      oneOffEvents,
+      recurringCashFlows
+    ) < 0
   ) {
     high *= 2;
     if (high > MAX_GUESS_LIMIT) {
@@ -595,7 +771,11 @@ export function findRequiredPortfolio(
     }
   }
 
-  for (let iteration = 0; iteration < MAX_SOLVER_ITERATIONS && high - low > tolerance; iteration += 1) {
+  for (
+    let iteration = 0;
+    iteration < MAX_SOLVER_ITERATIONS && high - low > solverTolerance;
+    iteration += 1
+  ) {
     const mid = (low + high) / 2;
     const balance = simulateFinalBalance(
       mid,
@@ -603,7 +783,8 @@ export function findRequiredPortfolio(
       withdrawalTiming,
       ratePeriods,
       desiredFinalValue,
-      oneOffEvents
+      oneOffEvents,
+      recurringCashFlows
     );
 
     if (balance >= 0) {
@@ -622,11 +803,17 @@ export function findMaxAnnualExpense(
   ratePeriods: RatePeriod[],
   desiredFinalValue = 0,
   oneOffEvents: OneOffEvent[] = [],
+  recurringCashFlowsOrTolerance: RecurringCashFlow[] | number = [],
   tolerance = DEFAULT_TOLERANCE
 ): number {
   assertFiniteNonNegative(initialPortfolio, 'Initial portfolio');
   assertFiniteNonNegative(desiredFinalValue, 'Desired final value');
   normalizePeriods(ratePeriods);
+  const recurringCashFlows = Array.isArray(recurringCashFlowsOrTolerance)
+    ? recurringCashFlowsOrTolerance
+    : [];
+  const solverTolerance =
+    typeof recurringCashFlowsOrTolerance === 'number' ? recurringCashFlowsOrTolerance : tolerance;
 
   if (
     simulateFinalBalance(
@@ -635,7 +822,8 @@ export function findMaxAnnualExpense(
       withdrawalTiming,
       ratePeriods,
       desiredFinalValue,
-      oneOffEvents
+      oneOffEvents,
+      recurringCashFlows
     ) < 0
   ) {
     return 0;
@@ -651,7 +839,8 @@ export function findMaxAnnualExpense(
       withdrawalTiming,
       ratePeriods,
       desiredFinalValue,
-      oneOffEvents
+      oneOffEvents,
+      recurringCashFlows
     ) >= 0
   ) {
     high *= 2;
@@ -660,7 +849,11 @@ export function findMaxAnnualExpense(
     }
   }
 
-  for (let iteration = 0; iteration < MAX_SOLVER_ITERATIONS && high - low > tolerance; iteration += 1) {
+  for (
+    let iteration = 0;
+    iteration < MAX_SOLVER_ITERATIONS && high - low > solverTolerance;
+    iteration += 1
+  ) {
     const mid = (low + high) / 2;
     const balance = simulateFinalBalance(
       initialPortfolio,
@@ -668,7 +861,8 @@ export function findMaxAnnualExpense(
       withdrawalTiming,
       ratePeriods,
       desiredFinalValue,
-      oneOffEvents
+      oneOffEvents,
+      recurringCashFlows
     );
 
     if (balance >= 0) {
@@ -702,14 +896,16 @@ export function calculateFirePlan(input: PlanInput): FirePlanResult {
     normalized.withdrawalTiming,
     ratePeriods,
     normalized.desiredFinalValue,
-    normalized.oneOffEvents
+    normalized.oneOffEvents,
+    normalized.recurringCashFlows
   );
   const maxAnnualExpense = findMaxAnnualExpense(
     normalized.initialPortfolio,
     normalized.withdrawalTiming,
     ratePeriods,
     normalized.desiredFinalValue,
-    normalized.oneOffEvents
+    normalized.oneOffEvents,
+    normalized.recurringCashFlows
   );
   const startingPortfolioForExpenseMode = Number.isFinite(requiredPortfolio) ? requiredPortfolio : 0;
 
@@ -729,6 +925,7 @@ export function calculateFirePlan(input: PlanInput): FirePlanResult {
     normalized.withdrawalTiming,
     ratePeriods,
     normalized.oneOffEvents,
+    normalized.recurringCashFlows,
     warnings,
     'expense'
   );
@@ -738,6 +935,7 @@ export function calculateFirePlan(input: PlanInput): FirePlanResult {
     normalized.withdrawalTiming,
     ratePeriods,
     normalized.oneOffEvents,
+    normalized.recurringCashFlows,
     warnings,
     'portfolio'
   );
