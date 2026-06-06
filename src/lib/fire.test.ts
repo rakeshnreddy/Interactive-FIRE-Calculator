@@ -1,14 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import {
   annualSimulation,
+  calculateFirePlan,
   findMaxAnnualExpense,
   findRequiredPortfolio,
+  validatePlanInput,
+  type PlanInput,
+  type PlanWarning,
   type RatePeriod
 } from './fire';
 
 const closeTo = (value: number, expected: number, digits = 2) => {
   expect(value).toBeCloseTo(expected, digits);
 };
+
+const warningCodes = (warnings: PlanWarning[]) => warnings.map((warning) => warning.code);
 
 describe('annualSimulation', () => {
   it('matches the Python end-of-year timing baseline', () => {
@@ -72,5 +78,98 @@ describe('solvers', () => {
       1_000_000
     );
     closeTo(portfolio, 1_493_642.18, 1);
+  });
+});
+
+describe('plan warnings', () => {
+  it('flags the first depleted and negative balance year', () => {
+    const result = annualSimulation(100, 150, 'end', [{ duration: 2, r: 0, i: 0 }]);
+
+    expect(warningCodes(result.warnings)).toEqual(
+      expect.arrayContaining(['balance_depleted', 'negative_balance'])
+    );
+    expect(result.warnings.find((warning) => warning.code === 'balance_depleted')?.year).toBe(1);
+    expect(result.warnings.find((warning) => warning.code === 'negative_balance')?.severity).toBe(
+      'error'
+    );
+  });
+
+  it('flags unusually high and low return and inflation assumptions', () => {
+    const warnings = validatePlanInput({
+      annualExpense: 40_000,
+      initialPortfolio: 500_000,
+      withdrawalTiming: 'end',
+      desiredFinalValue: 0,
+      ratePeriods: [
+        { duration: 5, r: 0.14, i: 0.08 },
+        { duration: 5, r: -0.08, i: -0.01 }
+      ],
+      oneOffEvents: []
+    });
+
+    expect(warningCodes(warnings)).toEqual(
+      expect.arrayContaining([
+        'high_return_assumption',
+        'high_inflation_assumption',
+        'low_return_assumption',
+        'low_inflation_assumption'
+      ])
+    );
+  });
+
+  it('flags invalid and out-of-range one-off years and only applies valid events', () => {
+    const result = annualSimulation(
+      1_000,
+      0,
+      'end',
+      [{ duration: 2, r: 0, i: 0 }],
+      [
+        { year: Number.NaN, amount: 100 },
+        { year: 3, amount: 100 },
+        { year: 1.7, amount: 50 }
+      ]
+    );
+
+    expect(warningCodes(result.warnings)).toEqual(
+      expect.arrayContaining(['invalid_one_off_year', 'one_off_year_out_of_range'])
+    );
+    expect(result.rows[0].oneOffAmount).toBe(50);
+    expect(result.rows[1].oneOffAmount).toBe(0);
+  });
+
+  it('returns structured errors for unsupported timing and invalid periods in plan mode', () => {
+    const plan = {
+      annualExpense: 40_000,
+      initialPortfolio: 500_000,
+      withdrawalTiming: 'middle',
+      desiredFinalValue: 0,
+      ratePeriods: [
+        { duration: 0, r: 0.06, i: 0.03 },
+        { duration: 10, r: Number.NaN, i: 0.03 }
+      ],
+      oneOffEvents: [{ year: 1, amount: 10_000 }]
+    } as unknown as PlanInput;
+
+    const result = calculateFirePlan(plan);
+
+    expect(result.requiredPortfolio).toBe(Number.POSITIVE_INFINITY);
+    expect(result.expenseMode.rows).toEqual([]);
+    expect(warningCodes(result.warnings)).toEqual(
+      expect.arrayContaining([
+        'unsupported_withdrawal_timing',
+        'invalid_rate_period',
+        'empty_rate_periods',
+        'one_off_year_out_of_range'
+      ])
+    );
+  });
+
+  it('falls back to end-of-year timing when a runtime timing value is unsupported', () => {
+    const result = annualSimulation(100_000, 4_000, 'middle' as never, [
+      { duration: 1, r: 0.05, i: 0.02 }
+    ]);
+
+    closeTo(result.balances[1], 101_000);
+    expect(warningCodes(result.warnings)).toContain('unsupported_withdrawal_timing');
   });
 });
