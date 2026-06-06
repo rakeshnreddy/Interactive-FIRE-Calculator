@@ -87,10 +87,13 @@ Astro remains a good option if the product later becomes content-heavy, but the 
 
 Deploy `dist/` from `npm run build` to a Pages project named `interactive-fire-calculator`.
 
-Current Cloudflare account check on June 6, 2026:
+Current Cloudflare account state on June 6, 2026:
 
 - Existing Pages projects: `ipl-playoff-pulse`, `spy-options-analyzer-web`.
-- No existing `interactive-fire-calculator` Pages project was found.
+- Created Pages project: `interactive-fire-calculator`.
+- Current deployment URL: `https://025c08aa.interactive-fire-calculator.pages.dev`.
+- Current branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Production auto-deploy is disabled until the TypeScript rewrite is ready to merge.
 
 Deployment flow:
 
@@ -310,4 +313,4 @@ Agents must use disjoint write sets when working in parallel. Any change that al
 2. Run `./scripts/test_all.sh` and fix any TypeScript dependency or Cloudflare config drift.
 3. Browser-test the Vite app across planner, results, compare, assumptions, mobile nav, breadcrumbs, and all three moods in light/dark.
 4. Expand the React app with editable custom scenarios and year-by-year table export.
-5. Create the Cloudflare Pages project after the Vite build passes, then connect GitHub for previews.
+5. Keep the Cloudflare Pages project connected to GitHub previews, then enable production auto-deploy after the PR merges.

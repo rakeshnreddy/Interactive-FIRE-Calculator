@@ -6,6 +6,18 @@ Production deploy target: Cloudflare Pages project `interactive-fire-calculator`
 
 The production app is the TypeScript/Vite build in `dist/`. The Flask app is legacy reference code and should not be deployed to Pages.
 
+## Current Project
+
+The Cloudflare Pages project has been created.
+
+- Project: `interactive-fire-calculator`
+- Pages domain: `https://interactive-fire-calculator.pages.dev`
+- Current deployment URL: `https://025c08aa.interactive-fire-calculator.pages.dev`
+- Current branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
+- Health endpoint: `https://025c08aa.interactive-fire-calculator.pages.dev/api/health`
+
+Production auto-deploy is disabled while the TypeScript rewrite is in draft PR review, so the current `main` branch does not deploy the legacy Flask app by accident.
+
 ## Local Commands
 
 ```bash
@@ -27,4 +39,4 @@ Use `APP_TARGET=legacy ./scripts/run_local.sh` to run the Flask app on port `500
 - SPA routing: `public/_redirects`
 - Health function: `/api/health`
 
-The connected Cloudflare account was checked on June 6, 2026. It had existing Pages projects named `ipl-playoff-pulse` and `spy-options-analyzer-web`, but no `interactive-fire-calculator` project yet.
+The connected Cloudflare account was checked on June 6, 2026. The project `interactive-fire-calculator` was created and deployed from the `codex/cloudflare-pages-theme-plan` branch.
