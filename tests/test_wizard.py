@@ -16,6 +16,8 @@ class TestWizardForms(unittest.TestCase):
         app.testing = True
         # SECRET_KEY is needed for session, which is used by Flask-WTF's CSRF protection
         app.config['SECRET_KEY'] = 'test_secret_key_for_forms'
+        self.previous_csrf_enabled = app.config.get('WTF_CSRF_ENABLED', True)
+        app.config['WTF_CSRF_ENABLED'] = False
         # WTF_CSRF_ENABLED defaults to True, so forms will expect CSRF token
         # If you are not submitting through the client and testing forms directly,
         # you might need to provide a mock CSRF token or disable CSRF for form tests too.
@@ -26,6 +28,7 @@ class TestWizardForms(unittest.TestCase):
 
 
     def tearDown(self):
+        app.config['WTF_CSRF_ENABLED'] = self.previous_csrf_enabled
         self.app_context.pop()
 
     def test_expenses_form_valid(self):
@@ -45,10 +48,9 @@ class TestWizardForms(unittest.TestCase):
     def test_expenses_form_invalid_missing_required(self):
         with app.test_request_context('/'):
             from werkzeug.datastructures import MultiDict
-            form_data = {'annual_expenses': '50000'} # Missing other required fields
+            form_data = {'annual_expenses': '50000'} # Itemized fields are optional.
             form = ExpensesForm(formdata=MultiDict(form_data))
-            self.assertFalse(form.validate())
-            self.assertIn('housing', form.errors)
+            self.assertTrue(form.validate(), msg=form.errors)
 
     def test_expenses_form_invalid_number_range(self):
         with app.test_request_context('/'):
@@ -76,8 +78,9 @@ class TestWizardForms(unittest.TestCase):
 
     def test_rates_form_invalid_total_duration(self):
         with app.test_request_context('/'):
-            form_wtforms_data = {'return_rate': 7.0, 'inflation_rate': 2.5, 'total_duration_fallback': 0, 'withdrawal_time': 'end'}
-            form = RatesForm(data=form_wtforms_data)
+            from werkzeug.datastructures import MultiDict
+            form_data = {'return_rate': '7.0', 'inflation_rate': '2.5', 'total_duration_fallback': '0', 'withdrawal_time': 'end'}
+            form = RatesForm(formdata=MultiDict(form_data))
             self.assertFalse(form.validate())
             self.assertIn('total_duration_fallback', form.errors)
 
@@ -96,17 +99,10 @@ class TestWizardForms(unittest.TestCase):
             self.assertIn('return_rate', form.errors)
 
 
-    # This test was for when itemized fields were DataRequired. Now they are Optional.
-    # Renaming and adapting to test that annual_expenses is still DataRequired.
     def test_expenses_form_invalid_missing_annual_expenses(self): # Renamed
         with app.test_request_context('/'):
             from werkzeug.datastructures import MultiDict
-            form_data = {
-                # 'annual_expenses' is missing
-                'housing': '15000', 'food': '6000',
-                'transportation': '5000', 'utilities': '3000', 'personal_care': '2000',
-                'entertainment': '4000', 'healthcare': '3000', 'other_expenses': '1000'
-            }
+            form_data = {}
             form = ExpensesForm(formdata=MultiDict(form_data)) # Using formdata for MultiDict
             self.assertFalse(form.validate())
             self.assertIn('annual_expenses', form.errors)
@@ -117,7 +113,7 @@ class TestWizardForms(unittest.TestCase):
             form_data = {
                 'annual_expenses': '50000',
                 'housing': '',
-                'food': None,
+                'food': '',
                 # other itemized fields omitted
             }
             form = ExpensesForm(formdata=MultiDict(form_data)) # Using formdata for MultiDict
@@ -163,13 +159,18 @@ class TestWizardForms(unittest.TestCase):
 class TestWizardRoutes(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
+        self.previous_csrf_enabled = app.config.get('WTF_CSRF_ENABLED', True)
         app.config['WTF_CSRF_ENABLED'] = False # Disable CSRF for easier testing of route logic
         app.config['SECRET_KEY'] = 'test_secret_key_for_routes' # Needed for session
+        self.request_context = app.test_request_context()
+        self.request_context.push()
         self.client = app.test_client()
 
     def tearDown(self):
         with self.client.session_transaction() as sess:
             sess.clear()
+        self.request_context.pop()
+        app.config['WTF_CSRF_ENABLED'] = self.previous_csrf_enabled
 
     def test_wizard_expenses_get(self):
         response = self.client.get(url_for('wizard_bp.wizard_expenses_step'))
@@ -196,8 +197,7 @@ class TestWizardRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 200) # Re-renders form
         self.assertIn(b"Step 1: Your Expenses", response.data)
         # Error messages are rendered by the _formhelpers.html macro
-        self.assertIn(b"Number must be between 0 and", response.data) # Error message for annual_expenses
-        self.assertIn(b"This field is required.", response.data) # Error for housing
+        self.assertIn(b"Number must be at least 0", response.data) # Error message for annual_expenses
 
 
     def test_wizard_expenses_post_calculates_total_from_itemized(self):
@@ -262,7 +262,7 @@ class TestWizardRoutes(unittest.TestCase):
             }
         response = self.client.get(url_for('wizard_bp.wizard_rates_step'))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Step 2: Rates & Inflation", response.data)
+        self.assertIn(b"Step 2: Rates", response.data)
 
     def test_wizard_rates_post_valid(self):
         with self.client.session_transaction() as sess:
@@ -299,7 +299,7 @@ class TestWizardRoutes(unittest.TestCase):
         }
         response = self.client.post(url_for('wizard_bp.wizard_rates_step'), data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Step 2: Rates & Inflation", response.data)
+        self.assertIn(b"Step 2: Rates", response.data)
         self.assertIn(b'name="period_rates-0-years"', response.data) # Check for the first new entry
 
 
@@ -374,15 +374,13 @@ class TestWizardRoutes(unittest.TestCase):
 
     @patch('project.wizard_routes.find_required_portfolio')
     @patch('project.wizard_routes.annual_simulation')
-    @patch('project.wizard_routes.to_html')
-    def test_wizard_calculate_step_success(self, mock_to_html, mock_annual_simulation, mock_find_portfolio):
+    def test_wizard_calculate_step_success(self, mock_annual_simulation, mock_find_portfolio):
         mock_find_portfolio.return_value = 500000.0
         mock_annual_simulation.return_value = (
-            list(range(1, 31)),
+            list(range(0, 31)),
             [500000 - i * 1000 for i in range(31)],
             [20000] * 30
         )
-        mock_to_html.return_value = "<div>Mocked Plot</div>"
 
         with self.client.session_transaction() as sess:
             sess['wizard_expenses'] = {'annual_expenses': 20000.0, 'housing': 10000.0, 'food':1.0, 'transportation':1.0, 'utilities':1.0, 'personal_care':1.0, 'entertainment':1.0, 'healthcare':1.0, 'other_expenses':1.0}
@@ -400,10 +398,9 @@ class TestWizardRoutes(unittest.TestCase):
         self.assertIn(b"Calculation Results", response.data)
         self.assertIn(b"500,000.00", response.data)
         self.assertIn(b"20,000.00", response.data)
-        self.assertIn(b"Mocked Plot", response.data)
+        self.assertIn(b"original-plot1-spec-data", response.data)
         mock_find_portfolio.assert_called_once()
         mock_annual_simulation.assert_called_once()
-        self.assertEqual(mock_to_html.call_count, 2)
 
         with self.client.session_transaction() as sess:
             self.assertNotIn('wizard_expenses', sess)
@@ -443,11 +440,9 @@ class TestWizardRoutes(unittest.TestCase):
 
     @patch('project.wizard_routes.find_required_portfolio')
     @patch('project.wizard_routes.annual_simulation')
-    @patch('project.wizard_routes.to_html')
-    def test_wizard_calculate_uses_period_rates_over_fallback_duration(self, mock_to_html, mock_annual_simulation, mock_find_portfolio):
+    def test_wizard_calculate_uses_period_rates_over_fallback_duration(self, mock_annual_simulation, mock_find_portfolio):
         mock_find_portfolio.return_value = 600000.0
-        mock_annual_simulation.return_value = (list(range(1, 21)), [600000]*21, [25000]*20)
-        mock_to_html.return_value = "<div>Mocked Plot With Periods</div>"
+        mock_annual_simulation.return_value = (list(range(0, 21)), [600000]*21, [25000]*20)
 
         with self.client.session_transaction() as sess:
             sess['wizard_expenses'] = {'annual_expenses': 25000.0, 'housing': 1.0, 'food':1.0, 'transportation':1.0, 'utilities':1.0, 'personal_care':1.0, 'entertainment':1.0, 'healthcare':1.0, 'other_expenses':1.0}
@@ -471,17 +466,14 @@ class TestWizardRoutes(unittest.TestCase):
         self.assertEqual(passed_rates_periods[0]['duration'], 10)
         self.assertEqual(passed_rates_periods[1]['duration'], 10)
 
-        # Check that the summary on results page shows total duration from periods
-        self.assertIn(b"Total Duration (from periods): 20 years", response.data)
+        self.assertIn(b"20 yrs", response.data)
 
 
     @patch('project.wizard_routes.find_required_portfolio')
     @patch('project.wizard_routes.annual_simulation')
-    @patch('project.wizard_routes.to_html')
-    def test_recalculate_interactive_changed_w_success(self, mock_to_html, mock_annual_simulation, mock_find_portfolio):
+    def test_recalculate_interactive_changed_w_success(self, mock_annual_simulation, mock_find_portfolio):
         mock_find_portfolio.return_value = 600000.0  # New P
-        mock_annual_simulation.return_value = ([1,2], [600000, 580000], [25000, 25000]) # Dummy sim data
-        mock_to_html.return_value = "<div>Mocked Plot HTML</div>"
+        mock_annual_simulation.return_value = ([0, 1, 2], [600000, 580000, 560000], [25000, 25000])
 
         payload = {
             'changed_input': 'W',
@@ -503,20 +495,17 @@ class TestWizardRoutes(unittest.TestCase):
         self.assertNotIn('error', json_data)
         self.assertAlmostEqual(json_data['new_W'], 25000.0)
         self.assertAlmostEqual(json_data['new_P'], 600000.0)
-        self.assertEqual(json_data['plot1_div_html'], "<div>Mocked Plot HTML</div>")
-        self.assertEqual(json_data['plot2_div_html'], "<div>Mocked Plot HTML</div>")
+        self.assertIn('plot1_spec', json_data)
+        self.assertIn('plot2_spec', json_data)
 
         mock_find_portfolio.assert_called_once()
         mock_annual_simulation.assert_called_once()
-        self.assertEqual(mock_to_html.call_count, 2)
 
     @patch('project.wizard_routes.find_max_annual_expense')
     @patch('project.wizard_routes.annual_simulation')
-    @patch('project.wizard_routes.to_html')
-    def test_recalculate_interactive_changed_p_success(self, mock_to_html, mock_annual_simulation, mock_find_max_expense):
+    def test_recalculate_interactive_changed_p_success(self, mock_annual_simulation, mock_find_max_expense):
         mock_find_max_expense.return_value = 28000.0  # New W
-        mock_annual_simulation.return_value = ([1,2], [700000, 680000], [28000, 28000])
-        mock_to_html.return_value = "<div>Mocked Plot P Change</div>"
+        mock_annual_simulation.return_value = ([0, 1, 2], [700000, 680000, 660000], [28000, 28000])
 
         payload = {
             'changed_input': 'P',
@@ -538,11 +527,10 @@ class TestWizardRoutes(unittest.TestCase):
         self.assertNotIn('error', json_data)
         self.assertAlmostEqual(json_data['new_W'], 28000.0)
         self.assertAlmostEqual(json_data['new_P'], 700000.0)
-        self.assertEqual(json_data['plot1_div_html'], "<div>Mocked Plot P Change</div>")
+        self.assertIn('plot1_spec', json_data)
 
         mock_find_max_expense.assert_called_once()
         mock_annual_simulation.assert_called_once()
-        self.assertEqual(mock_to_html.call_count, 2)
 
     def test_recalculate_interactive_invalid_changed_input(self):
         payload = {'changed_input': 'X', 'W_value': 25000, 'P_value': 500000}
@@ -566,11 +554,10 @@ class TestWizardRoutes(unittest.TestCase):
             data="{malformed_json_string",
             content_type='application/json'
         )
-        # This will be caught by the main try-except in the route if get_json(silent=False) which is default
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 400)
         json_data = response.get_json()
         self.assertIn('error', json_data)
-        self.assertEqual(json_data['error'], 'An unexpected server error occurred.')
+        self.assertEqual(json_data['error'], 'Invalid request: No JSON data received.')
 
 
     @patch('project.wizard_routes.find_required_portfolio')

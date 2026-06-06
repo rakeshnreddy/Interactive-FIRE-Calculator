@@ -2,14 +2,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsButton = document.getElementById('settings-button');
     const settingsModal = document.getElementById('settings-modal');
     const settingsCloseButton = document.getElementById('settings-close-button');
+    const settingsButtonMobile = document.getElementById('settings-button-mobile');
     const themeSelector = document.getElementById('theme-selector');
     const modeToggle = document.getElementById('mode-toggle');
     const modeToggleCircle = document.getElementById('mode-toggle-circle');
     const root = document.documentElement;
 
     const themes = [
-        { name: 'default', label: 'Default' }, { name: 'oceanic', label: 'Oceanic' }, { name: 'forest', label: 'Forest' }, { name: 'sunrise', label: 'Sunrise' }, { name: 'maroon', label: 'Maroon' }, { name: 'amethyst', label: 'Amethyst' }, { name: 'emerald', label: 'Emerald' }, { name: 'slate', label: 'Slate' }, { name: 'tangerine', label: 'Tangerine' }, { name: 'rose', label: 'Rose' }
+        { name: 'aurora', label: 'Aurora' },
+        { name: 'lagoon', label: 'Lagoon' },
+        { name: 'ember', label: 'Ember' }
     ];
+
+    const normalizeTheme = (themeName) => {
+        return themes.some(theme => theme.name === themeName) ? themeName : 'aurora';
+    };
 
     const applySettings = (themeName, modeName) => {
         root.dataset.theme = themeName;
@@ -23,35 +30,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const isDark = modeName === 'dark';
-        modeToggle.classList.toggle('dark', isDark);
-        modeToggleCircle.classList.toggle('translate-x-5', isDark);
+        if (modeToggle) {
+            modeToggle.classList.toggle('dark', isDark);
+        }
+        if (modeToggleCircle) {
+            modeToggleCircle.classList.toggle('translate-x-5', isDark);
+        }
     };
 
-    themes.forEach(theme => {
-        const button = document.createElement('button');
-        button.textContent = theme.label;
-        button.dataset.theme = theme.name;
-        button.className = 'theme-button w-full text-left p-3 rounded-lg border border-opacity-50 transition-all';
-        button.addEventListener('click', () => {
-            const currentMode = root.dataset.mode;
-            applySettings(theme.name, currentMode);
+    if (themeSelector) {
+        themes.forEach(theme => {
+            const button = document.createElement('button');
+            button.textContent = theme.label;
+            button.dataset.theme = theme.name;
+            button.className = 'theme-button w-full text-left p-3 rounded-lg border border-opacity-50 transition-all';
+            button.addEventListener('click', () => {
+                const currentMode = root.dataset.mode;
+                applySettings(theme.name, currentMode);
+            });
+            themeSelector.appendChild(button);
         });
-        themeSelector.appendChild(button);
-    });
+    }
 
-    modeToggle.addEventListener('click', () => {
-        const newMode = root.dataset.mode === 'light' ? 'dark' : 'light';
-        const currentTheme = root.dataset.theme;
-        applySettings(currentTheme, newMode);
-    });
+    if (modeToggle) {
+        modeToggle.addEventListener('click', () => {
+            const newMode = root.dataset.mode === 'light' ? 'dark' : 'light';
+            const currentTheme = normalizeTheme(root.dataset.theme);
+            applySettings(currentTheme, newMode);
+        });
+    }
 
-    const savedTheme = localStorage.getItem('fire-calc-theme') || 'default';
+    const savedTheme = normalizeTheme(localStorage.getItem('fire-calc-theme') || 'aurora');
     const savedMode = localStorage.getItem('fire-calc-mode') || 'light';
     applySettings(savedTheme, savedMode);
+
+    const mobileNavButton = document.getElementById('mobile-nav-button');
+    const mobileNavMenu = document.getElementById('mobile-nav-menu');
+    if (mobileNavButton && mobileNavMenu) {
+        mobileNavButton.addEventListener('click', () => {
+            const isOpen = mobileNavButton.getAttribute('aria-expanded') === 'true';
+            mobileNavButton.setAttribute('aria-expanded', String(!isOpen));
+            mobileNavMenu.hidden = isOpen;
+        });
+    }
 
     // Check if settingsButton exists before adding event listener
     if (settingsButton) {
         settingsButton.addEventListener('click', () => settingsModal.classList.add('is-open'));
+    }
+    if (settingsButtonMobile) {
+        settingsButtonMobile.addEventListener('click', () => {
+            settingsModal.classList.add('is-open');
+            const mobileNavButton = document.getElementById('mobile-nav-button');
+            const mobileNavMenu = document.getElementById('mobile-nav-menu');
+            if (mobileNavButton && mobileNavMenu) {
+                mobileNavButton.setAttribute('aria-expanded', 'false');
+                mobileNavMenu.hidden = true;
+            }
+        });
     }
     // Check if settingsCloseButton exists
     if (settingsCloseButton) {

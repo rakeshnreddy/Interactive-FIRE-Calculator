@@ -154,9 +154,7 @@ class TestFinancialCalculations(unittest.TestCase):
                 actual_W = find_max_annual_expense(
                     case["P"], case["withdrawal_time"], case["rates_periods"], case["desired_final_value"], one_off_events=None
                 )
-                # Temporarily commenting out the assertion for find_max_annual_expense to focus on find_required_portfolio
-                # self.assertAlmostEqual(actual_W, case["expected_W"], delta=case["delta"])
-                pass
+                self.assertAlmostEqual(actual_W, case["expected_W"], delta=case["delta"])
 
 
     def test_frp_high_withdrawal_scenario_single_period(self):
