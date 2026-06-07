@@ -580,18 +580,36 @@ function HeroPanel({
   );
 }
 
+function InfoTip({ text }: { text: string }) {
+  return (
+    <span className="info-tip">
+      <span className="info-dot" tabIndex={0} aria-label={text}>
+        ?
+      </span>
+      <span className="info-popover" role="tooltip">
+        {text}
+      </span>
+    </span>
+  );
+}
+
 function Field({
   label,
+  help,
   issue,
   children
 }: {
   label: string;
+  help?: string;
   issue?: string;
   children: ReactNode;
 }) {
   return (
     <label className={issue ? 'field field-has-issue' : 'field'}>
-      <span>{label}</span>
+      <span className="field-label">
+        {label}
+        {help && <InfoTip text={help} />}
+      </span>
       {children}
       {issue && <small className="field-issue">{issue}</small>}
     </label>
@@ -661,6 +679,7 @@ function App() {
   const [mode, setMode] = useState<Mode>('light');
   const [view, setView] = useState<View>('planner');
   const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
+  const [hasCalculated, setHasCalculated] = useState(false);
   const [resultsMode, setResultsMode] = useState<ResultsMode>('chart');
   const [projectionBasis, setProjectionBasis] = useState<ProjectionBasis>('fire-number');
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>(initialScenarios);
@@ -789,7 +808,22 @@ function App() {
     });
   }, [plan, result.requiredPortfolio, scenarios]);
 
+  const markInputsChanged = () => {
+    setHasCalculated(false);
+  };
+
+  const chooseCalculatorMode = (nextMode: CalculatorMode) => {
+    setCalculatorMode(nextMode);
+    setHasCalculated(false);
+  };
+
+  const calculateNow = () => {
+    setHasCalculated(true);
+    setView('planner');
+  };
+
   const setTimelineValue = (key: keyof TimelineInput) => (event: ChangeEvent<HTMLInputElement>) => {
+    markInputsChanged();
     const value = Math.max(0, Math.trunc(numericValue(event.target.value, timeline[key])));
     const nextTimeline = { ...timeline, [key]: value };
     const nextDuration = modeledDurationFromTimeline(nextTimeline);
@@ -806,10 +840,12 @@ function App() {
 
   const setMoney = (key: keyof Pick<PlanInput, 'annualExpense' | 'initialPortfolio' | 'desiredFinalValue'>) =>
     (event: ChangeEvent<HTMLInputElement>) => {
+      markInputsChanged();
       setPlan((current) => ({ ...current, [key]: numericValue(event.target.value) }));
     };
 
   const setTiming = (timing: WithdrawalTiming) => {
+    markInputsChanged();
     setPlan((current) => ({ ...current, withdrawalTiming: timing }));
   };
 
@@ -842,6 +878,7 @@ function App() {
   });
 
   const applySnapshot = (snapshot: AppSnapshot) => {
+    markInputsChanged();
     setPlan({
       ...initialPlan,
       ...snapshot.plan,
@@ -898,6 +935,7 @@ function App() {
   };
 
   const addPeriod = () => {
+    markInputsChanged();
     setPlan((current) => ({
       ...current,
       ratePeriods: [...current.ratePeriods, { duration: 10, r: 0.06, i: 0.03 }]
@@ -905,6 +943,7 @@ function App() {
   };
 
   const removePeriod = (index: number) => {
+    markInputsChanged();
     setPlan((current) => ({
       ...current,
       ratePeriods:
@@ -915,6 +954,7 @@ function App() {
   };
 
   const addEvent = () => {
+    markInputsChanged();
     setPlan((current) => ({
       ...current,
       oneOffEvents: [...current.oneOffEvents, { year: 1, amount: 0, label: 'New event' }]
@@ -922,6 +962,7 @@ function App() {
   };
 
   const removeEvent = (index: number) => {
+    markInputsChanged();
     setPlan((current) => ({
       ...current,
       oneOffEvents: current.oneOffEvents.filter((_, eventIndex) => eventIndex !== index)
@@ -929,6 +970,7 @@ function App() {
   };
 
   const addRecurringCashFlow = (kind: RecurringCashFlow['kind']) => {
+    markInputsChanged();
     setPlan((current) => ({
       ...current,
       recurringCashFlows: [
@@ -946,6 +988,7 @@ function App() {
   };
 
   const updateRecurringCashFlow = (index: number, updates: Partial<RecurringCashFlow>) => {
+    markInputsChanged();
     setPlan((current) => ({
       ...current,
       recurringCashFlows: (current.recurringCashFlows ?? []).map((flow, flowIndex) =>
@@ -955,6 +998,7 @@ function App() {
   };
 
   const removeRecurringCashFlow = (index: number) => {
+    markInputsChanged();
     setPlan((current) => ({
       ...current,
       recurringCashFlows: (current.recurringCashFlows ?? []).filter((_, flowIndex) => flowIndex !== index)
@@ -1042,243 +1086,283 @@ function App() {
           <button onClick={() => navigate(view)}>{views.find((item) => item.id === view)?.label}</button>
         </nav>
 
-        <section className="summary-band hero-band" aria-labelledby="summary-title">
+        <section className="summary-band hero-band calculator-hero" aria-labelledby="summary-title">
           <div className="hero-copy">
             <p className="eyebrow">FIRE calculator</p>
-            <h1 id="summary-title">Plan your FIRE number and retirement income.</h1>
-            <p>Choose a calculator path, tune assumptions, then compare the outcome.</p>
+            <h1 id="summary-title">Calculate your FIRE number or retirement income.</h1>
+            <p>Pick the question you want answered, enter the basics, then run the calculator.</p>
+            <div className="hero-panels mode-panels" aria-label="Calculator paths">
+              <HeroPanel
+                active={calculatorMode === 'fire-number'}
+                eyebrow="Need to number"
+                title="Find FIRE number"
+                value="Spending -> target"
+                detail="Estimate the portfolio needed."
+                icon={Calculator}
+                onClick={() => chooseCalculatorMode('fire-number')}
+              />
+              <HeroPanel
+                active={calculatorMode === 'withdrawal-income'}
+                eyebrow="Number to income"
+                title="Find withdrawal"
+                value="Portfolio -> income"
+                detail="Estimate annual spending power."
+                icon={PiggyBank}
+                onClick={() => chooseCalculatorMode('withdrawal-income')}
+              />
+            </div>
+            <div className="hero-secondary-actions" aria-label="Explore calculator details">
+              <button className="secondary-button icon-text-button" onClick={() => navigate('results')}>
+                <LineChartIcon size={16} />
+                Results
+              </button>
+              <button className="secondary-button icon-text-button" onClick={() => navigate('compare')}>
+                <BarChart3 size={16} />
+                Compare
+              </button>
+              <button className="secondary-button icon-text-button" onClick={() => navigate('assumptions')}>
+                <SlidersHorizontal size={16} />
+                Assumptions
+              </button>
+            </div>
           </div>
-          <div className="summary-metrics">
-            <Metric label={primaryResult.label} value={primaryResult.value} tone={primaryResult.tone} />
-            <Metric
-              label={secondaryResult.label}
-              value={secondaryResult.value}
-              tone={secondaryResult.tone}
-            />
-            <Metric label="Plan Length" value={`${duration} years`} />
-            <Metric
-              label="Stress Ending"
-              value={formatMoney(currentSimulation.finalBalance)}
-              tone={currentSimulation.finalBalance >= plan.desiredFinalValue ? 'success' : 'warning'}
-            />
-          </div>
-          <div className="hero-panels" aria-label="Calculator paths and features">
-            <HeroPanel
-              active={calculatorMode === 'fire-number'}
-              eyebrow="Need to number"
-              title="Find FIRE number"
-              value={formatMoney(result.requiredPortfolio)}
-              detail="Start with annual withdrawals."
-              icon={Calculator}
-              onClick={() => {
-                setCalculatorMode('fire-number');
-                navigate('planner');
-              }}
-            />
-            <HeroPanel
-              active={calculatorMode === 'withdrawal-income'}
-              eyebrow="Number to income"
-              title="Find withdrawal"
-              value={formatMoney(result.maxAnnualExpense)}
-              detail="Start with a portfolio value."
-              icon={PiggyBank}
-              onClick={() => {
-                setCalculatorMode('withdrawal-income');
-                navigate('planner');
-              }}
-            />
-            <HeroPanel
-              active={view === 'results'}
-              eyebrow="Projection"
-              title="Review cash flow"
-              value={`${duration} years`}
-              detail="Chart or table."
-              icon={LineChartIcon}
-              onClick={() => navigate('results')}
-            />
-            <HeroPanel
-              active={view === 'compare'}
-              eyebrow="Scenarios"
-              title="Compare plans"
-              value="3 variants"
-              detail="Base, guardrail, upside."
-              icon={BarChart3}
-              onClick={() => navigate('compare')}
-            />
-          </div>
+
+          <section className="quick-calculator" aria-labelledby="quick-calculator-title">
+            <div className="panel-heading quick-heading">
+              <div>
+                <p className="eyebrow">{activeCalculator.eyebrow}</p>
+                <h2 id="quick-calculator-title">{activeCalculator.title}</h2>
+              </div>
+              <span className="pill">{duration} years</span>
+            </div>
+
+            <div className={`calculator-result-card hero-result ${hasCalculated ? '' : 'result-empty'}`}>
+              <span>{hasCalculated ? primaryResult.label : 'Result'}</span>
+              <strong>{hasCalculated ? primaryResult.value : 'Ready to calculate'}</strong>
+              {hasCalculated ? (
+                <>
+                  <small>{primaryResult.detail}</small>
+                  <div className="result-facts">
+                    <span>
+                      {secondaryResult.label}: <strong>{secondaryResult.value}</strong>
+                    </span>
+                    <span>
+                      Stress ending:{' '}
+                      <strong>{formatMoney(currentSimulation.finalBalance)}</strong>
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <small>No estimate is shown until you run the calculation.</small>
+              )}
+            </div>
+
+            <div className="form-grid quick-form">
+              <div className="field full-field">
+                <span className="field-label">
+                  Calculator path
+                  <InfoTip text="Choose FIRE number to solve for a portfolio target, or withdrawal to solve for annual spending from a portfolio." />
+                </span>
+                <div className="segmented">
+                  <button
+                    className={calculatorMode === 'fire-number' ? 'active' : ''}
+                    onClick={() => chooseCalculatorMode('fire-number')}
+                  >
+                    FIRE number
+                  </button>
+                  <button
+                    className={calculatorMode === 'withdrawal-income' ? 'active' : ''}
+                    onClick={() => chooseCalculatorMode('withdrawal-income')}
+                  >
+                    Withdrawal
+                  </button>
+                </div>
+              </div>
+
+              <Field
+                label="Current age"
+                help="Your age today. It is used to check that the retirement timeline makes sense."
+                issue={
+                  timeline.retirementAge <= timeline.currentAge
+                    ? 'Current age should be below retirement age.'
+                    : undefined
+                }
+              >
+                <input
+                  type="number"
+                  min="0"
+                  value={timeline.currentAge}
+                  onChange={setTimelineValue('currentAge')}
+                />
+              </Field>
+              <Field
+                label="Retirement age"
+                help="The age when withdrawals start in this plan."
+                issue={
+                  timeline.retirementAge <= timeline.currentAge
+                    ? 'Retirement age should be higher.'
+                    : undefined
+                }
+              >
+                <input
+                  type="number"
+                  min="0"
+                  value={timeline.retirementAge}
+                  onChange={setTimelineValue('retirementAge')}
+                />
+              </Field>
+              <Field
+                label="Plan end age"
+                help="The age through which the model should keep funding withdrawals."
+                issue={
+                  timeline.planEndAge <= timeline.retirementAge
+                    ? 'End age should be higher.'
+                    : undefined
+                }
+              >
+                <input
+                  type="number"
+                  min="0"
+                  value={timeline.planEndAge}
+                  onChange={setTimelineValue('planEndAge')}
+                />
+              </Field>
+
+              {calculatorMode === 'withdrawal-income' && (
+                <Field
+                  label={portfolioLabel}
+                  help="The portfolio balance you want to test for retirement income."
+                  issue={fieldIssue('initialPortfolio')}
+                >
+                  <input
+                    type="number"
+                    min="0"
+                    value={plan.initialPortfolio}
+                    onChange={setMoney('initialPortfolio')}
+                  />
+                </Field>
+              )}
+
+              <Field
+                label={annualExpenseLabel}
+                help={
+                  calculatorMode === 'fire-number'
+                    ? 'Your estimated first-year retirement spending before inflation.'
+                    : 'An optional spending goal used to show whether the calculated withdrawal covers your need.'
+                }
+                issue={fieldIssue('annualExpense')}
+              >
+                <input
+                  type="number"
+                  min="0"
+                  value={plan.annualExpense}
+                  onChange={setMoney('annualExpense')}
+                />
+              </Field>
+
+              {calculatorMode === 'fire-number' && (
+                <Field
+                  label={portfolioLabel}
+                  help="Your current invested assets. This is used for the funding gap and stress test."
+                  issue={fieldIssue('initialPortfolio')}
+                >
+                  <input
+                    type="number"
+                    min="0"
+                    value={plan.initialPortfolio}
+                    onChange={setMoney('initialPortfolio')}
+                  />
+                </Field>
+              )}
+
+              <Field
+                label="Estate target"
+                help="The amount you want remaining at the end of the plan."
+                issue={fieldIssue('desiredFinalValue')}
+              >
+                <input
+                  type="number"
+                  min="0"
+                  value={plan.desiredFinalValue}
+                  onChange={setMoney('desiredFinalValue')}
+                />
+              </Field>
+              <div className="field">
+                <span className="field-label">
+                  Withdrawal timing
+                  <InfoTip text="Start means withdrawals happen before annual growth. End means withdrawals happen after annual growth." />
+                </span>
+                <div className="segmented">
+                  <button
+                    className={plan.withdrawalTiming === 'end' ? 'active' : ''}
+                    onClick={() => setTiming('end')}
+                  >
+                    End
+                  </button>
+                  <button
+                    className={plan.withdrawalTiming === 'start' ? 'active' : ''}
+                    onClick={() => setTiming('start')}
+                  >
+                    Start
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="quick-actions">
+              <button className="primary-button icon-text-button" onClick={calculateNow}>
+                <Calculator size={17} />
+                Calculate
+              </button>
+              <button className="secondary-button icon-text-button" onClick={() => navigate('assumptions')}>
+                <SlidersHorizontal size={16} />
+                Tune assumptions
+              </button>
+            </div>
+          </section>
         </section>
 
-        <section className="panel" aria-labelledby="warnings-title">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Plan checks</p>
-              <h2 id="warnings-title">Plan health</h2>
+        {hasCalculated && (
+          <section className="panel health-panel" aria-labelledby="warnings-title">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">Plan checks</p>
+                <h2 id="warnings-title">Plan health</h2>
+              </div>
+              <span className="pill">{warningNotices.length} checks</span>
             </div>
-            <span className="pill">{warningNotices.length} checks</span>
-          </div>
-          <div className="comparison-grid">
-            {warningNotices.length > 0 ? (
-              warningNotices.map((warning, index) => (
-              <article
-                className={`scenario-card warning-card warning-${warning.severity}`}
-                key={`${warning.title}-${index}`}
-              >
-                <span>{warning.severity.toUpperCase()}</span>
-                <strong>{warning.title}</strong>
-                <small>{warning.message}</small>
-              </article>
-              ))
-            ) : (
-              <article className="scenario-card warning-card warning-ok">
-                <span>OK</span>
-                <strong>Model checks passed</strong>
-                <small>No validation or depletion warnings.</small>
-              </article>
-            )}
-          </div>
-        </section>
+            <div className="comparison-grid health-grid">
+              {warningNotices.length > 0 ? (
+                warningNotices.slice(0, 3).map((warning, index) => (
+                  <article
+                    className={`scenario-card warning-card warning-${warning.severity}`}
+                    key={`${warning.title}-${index}`}
+                  >
+                    <span>{warning.severity.toUpperCase()}</span>
+                    <strong>{warning.title}</strong>
+                    <small>{warning.message}</small>
+                  </article>
+                ))
+              ) : (
+                <article className="scenario-card warning-card warning-ok">
+                  <span>OK</span>
+                  <strong>Model checks passed</strong>
+                  <small>No validation or depletion warnings.</small>
+                </article>
+              )}
+              {warningNotices.length > 3 && (
+                <article className="scenario-card warning-card warning-info">
+                  <span>MORE</span>
+                  <strong>{warningNotices.length - 3} additional checks</strong>
+                  <small>Open Results or Assumptions to inspect the model in more detail.</small>
+                </article>
+              )}
+            </div>
+          </section>
+        )}
 
         {view === 'planner' && (
           <div className="planner-grid" id="planner">
-            <section className="panel input-panel" aria-labelledby="planner-title">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">{activeCalculator.eyebrow}</p>
-                  <h2 id="planner-title">{activeCalculator.title}</h2>
-                </div>
-              </div>
-
-              <div className="calculator-result-card">
-                <span>{primaryResult.label}</span>
-                <strong>{primaryResult.value}</strong>
-                <small>{primaryResult.detail}</small>
-              </div>
-
-              <div className="form-grid">
-                <div className="field full-field">
-                  <span>Calculator path</span>
-                  <div className="segmented">
-                    <button
-                      className={calculatorMode === 'fire-number' ? 'active' : ''}
-                      onClick={() => setCalculatorMode('fire-number')}
-                    >
-                      FIRE number
-                    </button>
-                    <button
-                      className={calculatorMode === 'withdrawal-income' ? 'active' : ''}
-                      onClick={() => setCalculatorMode('withdrawal-income')}
-                    >
-                      Withdrawal
-                    </button>
-                  </div>
-                </div>
-
-                <Field
-                  label="Current age"
-                  issue={
-                    timeline.retirementAge <= timeline.currentAge
-                      ? 'Current age should be below retirement age.'
-                      : undefined
-                  }
-                >
-                  <input
-                    type="number"
-                    min="0"
-                    value={timeline.currentAge}
-                    onChange={setTimelineValue('currentAge')}
-                  />
-                </Field>
-                <Field
-                  label="Retirement age"
-                  issue={
-                    timeline.retirementAge <= timeline.currentAge
-                      ? 'Retirement age should be higher.'
-                      : undefined
-                  }
-                >
-                  <input
-                    type="number"
-                    min="0"
-                    value={timeline.retirementAge}
-                    onChange={setTimelineValue('retirementAge')}
-                  />
-                </Field>
-                <Field
-                  label="Plan end age"
-                  issue={
-                    timeline.planEndAge <= timeline.retirementAge
-                      ? 'End age should be higher.'
-                      : undefined
-                  }
-                >
-                  <input
-                    type="number"
-                    min="0"
-                    value={timeline.planEndAge}
-                    onChange={setTimelineValue('planEndAge')}
-                  />
-                </Field>
-                <Metric label="Modeled years" value={`${duration}`} />
-
-                {calculatorMode === 'withdrawal-income' && (
-                  <Field label={portfolioLabel} issue={fieldIssue('initialPortfolio')}>
-                    <input
-                      type="number"
-                      min="0"
-                      value={plan.initialPortfolio}
-                      onChange={setMoney('initialPortfolio')}
-                    />
-                  </Field>
-                )}
-
-                <Field label={annualExpenseLabel} issue={fieldIssue('annualExpense')}>
-                  <input
-                    type="number"
-                    min="0"
-                    value={plan.annualExpense}
-                    onChange={setMoney('annualExpense')}
-                  />
-                </Field>
-
-                {calculatorMode === 'fire-number' && (
-                  <Field label={portfolioLabel} issue={fieldIssue('initialPortfolio')}>
-                    <input
-                      type="number"
-                      min="0"
-                      value={plan.initialPortfolio}
-                      onChange={setMoney('initialPortfolio')}
-                    />
-                  </Field>
-                )}
-
-                <Field label="Estate target" issue={fieldIssue('desiredFinalValue')}>
-                  <input
-                    type="number"
-                    min="0"
-                    value={plan.desiredFinalValue}
-                    onChange={setMoney('desiredFinalValue')}
-                  />
-                </Field>
-                <div className="field">
-                  <span>Withdrawal timing</span>
-                  <div className="segmented">
-                    <button
-                      className={plan.withdrawalTiming === 'end' ? 'active' : ''}
-                      onClick={() => setTiming('end')}
-                    >
-                      End
-                    </button>
-                    <button
-                      className={plan.withdrawalTiming === 'start' ? 'active' : ''}
-                      onClick={() => setTiming('start')}
-                    >
-                      Start
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
-
             <section className="panel" aria-labelledby="period-title">
               <div className="panel-heading">
                 <div>
@@ -1299,7 +1383,8 @@ function App() {
                         type="number"
                         min="1"
                         value={period.duration}
-                        onChange={(event) =>
+                        onChange={(event) => {
+                          markInputsChanged();
                           setPlan((current) => ({
                             ...current,
                             ratePeriods: updateRatePeriod(
@@ -1308,8 +1393,8 @@ function App() {
                               'duration',
                               numericValue(event.target.value, 1)
                             )
-                          }))
-                        }
+                          }));
+                        }}
                       />
                     </Field>
                     <Field label="Return" issue={fieldIssue(`ratePeriods.${index}.r`)}>
@@ -1317,7 +1402,8 @@ function App() {
                         type="number"
                         step="0.1"
                         value={(period.r * 100).toFixed(1)}
-                        onChange={(event) =>
+                        onChange={(event) => {
+                          markInputsChanged();
                           setPlan((current) => ({
                             ...current,
                             ratePeriods: updateRatePeriod(
@@ -1326,8 +1412,8 @@ function App() {
                               'r',
                               numericValue(event.target.value) / 100
                             )
-                          }))
-                        }
+                          }));
+                        }}
                       />
                     </Field>
                     <Field label="Inflation" issue={fieldIssue(`ratePeriods.${index}.i`)}>
@@ -1335,7 +1421,8 @@ function App() {
                         type="number"
                         step="0.1"
                         value={(period.i * 100).toFixed(1)}
-                        onChange={(event) =>
+                        onChange={(event) => {
+                          markInputsChanged();
                           setPlan((current) => ({
                             ...current,
                             ratePeriods: updateRatePeriod(
@@ -1344,8 +1431,8 @@ function App() {
                               'i',
                               numericValue(event.target.value) / 100
                             )
-                          }))
-                        }
+                          }));
+                        }}
                       />
                     </Field>
                     <button
@@ -1378,14 +1465,15 @@ function App() {
                       <input
                         type="text"
                         value={event.label ?? ''}
-                        onChange={(changeEvent) =>
+                        onChange={(changeEvent) => {
+                          markInputsChanged();
                           setPlan((current) => ({
                             ...current,
                             oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
                               itemIndex === index ? { ...item, label: changeEvent.target.value } : item
                             )
-                          }))
-                        }
+                          }));
+                        }}
                       />
                     </Field>
                     <Field label="Year" issue={fieldIssue(`oneOffEvents.${index}.year`)}>
@@ -1393,7 +1481,8 @@ function App() {
                         type="number"
                         min="1"
                         value={event.year}
-                        onChange={(changeEvent) =>
+                        onChange={(changeEvent) => {
+                          markInputsChanged();
                           setPlan((current) => ({
                             ...current,
                             oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
@@ -1401,15 +1490,16 @@ function App() {
                                 ? { ...item, year: Math.trunc(numericValue(changeEvent.target.value, 1)) }
                                 : item
                             )
-                          }))
-                        }
+                          }));
+                        }}
                       />
                     </Field>
                     <Field label="Amount" issue={fieldIssue(`oneOffEvents.${index}.amount`)}>
                       <input
                         type="number"
                         value={event.amount}
-                        onChange={(changeEvent) =>
+                        onChange={(changeEvent) => {
+                          markInputsChanged();
                           setPlan((current) => ({
                             ...current,
                             oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
@@ -1417,8 +1507,8 @@ function App() {
                                 ? { ...item, amount: numericValue(changeEvent.target.value) }
                                 : item
                             )
-                          }))
-                        }
+                          }));
+                        }}
                       />
                     </Field>
                     <button
