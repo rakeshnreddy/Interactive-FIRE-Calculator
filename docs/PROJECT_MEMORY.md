@@ -10,6 +10,7 @@ Last updated: June 7, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://343e5503.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -103,4 +104,3 @@ Start Phase 2: Auth and User Accounts.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
-
