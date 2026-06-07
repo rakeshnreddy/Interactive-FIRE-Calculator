@@ -1,5 +1,7 @@
 # Interactive FIRE Calculator Rebuild Plan
 
+> Product scope update, June 7, 2026: this plan is now historical context for the FIRE module rebuild. The broader product direction is a comprehensive personal financial tracker and planner with the FIRE calculator as the first planning module. Read [Financial platform handoff](FINANCIAL_PLATFORM_HANDOFF.md) before starting new work.
+
 ## Product Intent
 
 Build a practical retirement and FIRE planning tool that helps a user answer four core questions:

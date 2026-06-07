@@ -2,6 +2,12 @@
 
 A modern retirement and FIRE planning calculator for exploring required portfolio size, sustainable annual spending, withdrawal timing, inflation, return periods, one-off cash flows, and scenario comparisons.
 
+## Product Direction Update
+
+The product scope has expanded beyond a standalone FIRE calculator. The current target is a comprehensive personal financial tracker and planner where users can create accounts, store financial data, track goals, and save planning scenarios. The FIRE calculator is now the first planning module inside that broader platform.
+
+For a clean coding-session handoff, read [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md) first.
+
 ## Current Direction
 
 This repository is moving from a legacy Flask/Jinja app to a TypeScript, React, and Vite app designed for Cloudflare Pages.
@@ -66,5 +72,6 @@ Rates are nominal annual returns. Inflation adjusts the withdrawal amount after 
 
 ## Documentation
 
+- [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md)
 - [Comprehensive rebuild plan](docs/FIRE_REBUILD_PLAN.md)
 - [Cloudflare Pages deployment notes](docs/CLOUDFLARE_PAGES.md)
