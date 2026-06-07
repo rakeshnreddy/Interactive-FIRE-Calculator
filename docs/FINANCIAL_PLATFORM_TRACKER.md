@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: June 7, 2026
+Last updated: June 8, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -19,7 +19,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase | Status | Completion | Notes |
 | --- | --- | ---: | --- |
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
-| Phase 2: Auth and User Accounts | Not started | 0% | Select auth provider, add sign up/sign in/sign out, protect app routes, and create user profile basics. |
+| Phase 2: Auth and User Accounts | Ready to start | 0% | First task is auth provider research/selection; implementation depends on provider credentials and callback/env configuration. |
 | Phase 3: Server Persistence | Not started | 0% | Add D1 schema/migrations and user-owned plan APIs. |
 | Phase 4: Financial Tracker MVP | Not started | 0% | Add manual accounts, assets, liabilities, balances, and dashboard data. |
 | Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
