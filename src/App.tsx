@@ -55,11 +55,15 @@ type Mode = 'light' | 'dark';
 type AppRoute =
   | '/'
   | '/dashboard'
+  | '/accounts'
+  | '/transactions'
   | '/goals'
   | '/plans'
   | '/calculators'
   | '/calculators/fire'
+  | '/reports'
   | '/settings';
+type PlatformRoute = Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
 type CalculatorPanel = 'planner' | 'results' | 'compare';
 type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
@@ -110,9 +114,12 @@ const moodLabels: Record<Mood, string> = {
 
 const routeItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/accounts', label: 'Accounts', icon: CircleDollarSign },
+  { path: '/transactions', label: 'Transactions', icon: ClipboardList },
   { path: '/goals', label: 'Goals', icon: Target },
   { path: '/plans', label: 'Plans', icon: FolderKanban },
   { path: '/calculators', label: 'Calculators', icon: Calculator },
+  { path: '/reports', label: 'Reports', icon: BarChart3 },
   { path: '/settings', label: 'Settings', icon: Settings }
 ];
 
@@ -226,10 +233,13 @@ function normalizeRoute(pathname: string): AppRoute {
   switch (cleanPath) {
     case '/':
     case '/dashboard':
+    case '/accounts':
+    case '/transactions':
     case '/goals':
     case '/plans':
     case '/calculators':
     case '/calculators/fire':
+    case '/reports':
     case '/settings':
       return cleanPath;
     default:
@@ -740,7 +750,7 @@ const calculatorModules = [
 ];
 
 const platformPages: Record<
-  Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>,
+  PlatformRoute,
   {
     eyebrow: string;
     title: string;
@@ -759,6 +769,30 @@ const platformPages: Record<
       { label: 'Net worth', value: '$0', detail: 'Manual accounts and balances arrive in a later phase.' },
       { label: 'Goal progress', value: '0%', detail: 'Goals will roll up into a concise progress view.' },
       { label: 'Saved plans', value: '0', detail: 'FIRE and future planning modules will save here.' }
+    ]
+  },
+  '/accounts': {
+    eyebrow: 'Accounts',
+    title: 'Accounts will hold the financial profile backbone.',
+    description:
+      'This route reserves space for manual assets, liabilities, balances, and account history before bank connections or imports are introduced.',
+    icon: CircleDollarSign,
+    cards: [
+      { label: 'Assets', value: 'Planned', detail: 'Cash, brokerage, retirement, property, and other holdings.' },
+      { label: 'Liabilities', value: 'Planned', detail: 'Debt balances, rates, payoff schedules, and ownership.' },
+      { label: 'Balances', value: 'Planned', detail: 'Snapshot history for dashboard and goal calculations.' }
+    ]
+  },
+  '/transactions': {
+    eyebrow: 'Transactions',
+    title: 'Transactions get a dedicated review queue.',
+    description:
+      'This route will eventually handle CSV imports, categorization, recurring spending patterns, and review before data affects reports.',
+    icon: ClipboardList,
+    cards: [
+      { label: 'Import queue', value: 'Future', detail: 'CSV upload and review before saving user-owned records.' },
+      { label: 'Categories', value: 'Future', detail: 'Income, expense, transfer, and custom planning categories.' },
+      { label: 'Recurring items', value: 'Future', detail: 'Detect subscriptions, paychecks, rent, and debt payments.' }
     ]
   },
   '/goals': {
@@ -785,6 +819,18 @@ const platformPages: Record<
       { label: 'Exports', value: 'Coming', detail: 'Keep portability and user data ownership visible.' }
     ]
   },
+  '/reports': {
+    eyebrow: 'Reports',
+    title: 'Reports will turn tracked data into insight.',
+    description:
+      'This route keeps net worth, cash flow, spending, and plan-health reporting separate from data entry and calculators.',
+    icon: BarChart3,
+    cards: [
+      { label: 'Net worth', value: 'Planned', detail: 'Trend assets, liabilities, and account balance history.' },
+      { label: 'Cash flow', value: 'Planned', detail: 'Summarize income, spending, savings rate, and anomalies.' },
+      { label: 'Plan health', value: 'Planned', detail: 'Explain risks, assumptions, and progress against goals.' }
+    ]
+  },
   '/settings': {
     eyebrow: 'Settings',
     title: 'Profile, privacy, and data controls belong here.',
@@ -798,6 +844,10 @@ const platformPages: Record<
     ]
   }
 };
+
+function isPlatformRoute(route: AppRoute): route is PlatformRoute {
+  return route in platformPages;
+}
 
 function LandingPage({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
   return (
@@ -1446,7 +1496,7 @@ function App() {
           <LandingPage onNavigate={navigateTo} />
         ) : route === '/calculators' ? (
           <CalculatorsPage onNavigate={navigateTo} />
-        ) : route === '/dashboard' || route === '/goals' || route === '/plans' || route === '/settings' ? (
+        ) : isPlatformRoute(route) ? (
           <PlatformPage route={route} onNavigate={navigateTo} />
         ) : (
           <>

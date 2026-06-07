@@ -1739,11 +1739,6 @@ td {
 }
 
 @media (max-width: 1080px) {
-  .topbar-actions .topbar-primary,
-  .topbar-actions .topbar-link + .topbar-link {
-    display: none;
-  }
-
   .nav-button {
     padding-inline: 0.58rem;
     font-size: 0.9rem;
@@ -1772,7 +1767,24 @@ td {
   }
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1320px) {
+  .topbar-actions .topbar-primary,
+  .topbar-actions .topbar-link + .topbar-link {
+    display: none;
+  }
+
+  .desktop-nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .desktop-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 1040px) {
   .topbar {
     grid-template-columns: auto auto;
   }

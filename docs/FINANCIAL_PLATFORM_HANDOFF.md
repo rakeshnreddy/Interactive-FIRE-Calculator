@@ -18,18 +18,18 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://dbcfc2d3.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://e7a73243.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
 
+- `d456c59 Create financial platform shell`
+- `dbd158e Add financial platform handoff context`
 - `98723ac Replace stress ending hero metric`
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
-- `c51c6d8 Add dual FIRE calculator entry points`
-- `78af57c Add local check script`
 
-The working tree was clean before this handoff document was created.
+Phase 1 Product Shell and IA is now complete. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
@@ -79,6 +79,21 @@ FIRE calculator role:
 - Public demo capability for unauthenticated users.
 - Saved FIRE plans for authenticated users.
 - One part of a larger planning workspace.
+
+## Current Phase Status
+
+Phase 1 is complete:
+
+- `/` is a public landing page for the broader financial platform.
+- `/calculators/fire` contains the dedicated FIRE calculator module.
+- Placeholder app-shell routes exist for Dashboard, Accounts, Transactions, Goals, Plans, Calculators, Reports, and Settings.
+- FIRE calculator core inputs and `Calculate` are visible in the first viewport on desktop and mobile QA sizes.
+- Advanced FIRE assumptions are behind progressive disclosure.
+- The existing FIRE engine in `src/lib/fire.ts` remains intact.
+
+Next recommended phase:
+
+- Phase 2: Auth and User Accounts.
 
 ## Target Product Vision
 
@@ -365,39 +380,19 @@ Acceptance:
 
 ## Immediate Next Coding Session Recommendation
 
-Do not start by adding auth.
+Start Phase 2: Auth and User Accounts.
 
-Start by creating the new app shell and information architecture:
+Recommended first slice:
 
-1. Convert the current single-screen calculator app into a routed product shell.
-2. Add public landing page and authenticated-dashboard placeholder routes.
-3. Move the FIRE calculator to its own route/module.
-4. Remove redundant hero links and duplicate mode controls.
-5. Keep the current calculator engine intact.
-6. Do not wire real auth until the route/product shell is coherent.
+1. Research and choose the auth provider for Cloudflare Pages/Functions.
+2. Decide between Clerk/Auth0 for speed or Better Auth for a more app-owned path.
+3. Add sign up, sign in, sign out, and signed-in shell state.
+4. Keep the unauthenticated FIRE calculator demo available.
+5. Do not add D1 persistence until the auth choice and user identity model are stable.
 
 Reason:
 
-Adding auth before fixing information architecture will preserve the current confused page and make later changes more expensive.
-
-## Suggested First Implementation Slice
-
-Create a `Phase 1A` PR:
-
-- Add route/state structure:
-  - `/`
-  - `/dashboard`
-  - `/calculators/fire`
-  - `/plans`
-  - `/goals`
-  - `/settings`
-- Use React state routing for now or add a lightweight router if preferred.
-- Redesign `/` as public landing.
-- Move current calculator UI to `/calculators/fire`.
-- Simplify calculator hero to a compact workspace.
-- Hide advanced assumptions behind accordions or tabs.
-- Keep existing tests green.
-- Deploy to Cloudflare Pages preview.
+The product shell and information architecture are coherent enough to support auth work. Persistence should wait until the user identity model is clear.
 
 ## Testing Requirements
 
@@ -455,10 +450,14 @@ Use this prompt to start the next coding session:
 ```text
 We are in /Users/bhuvan/Documents/Rakesh/firecalculator/Interactive-FIRE-Calculator on branch codex/cloudflare-pages-theme-plan.
 
-Read docs/FINANCIAL_PLATFORM_HANDOFF.md first. The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
+Read these first:
+docs/PROJECT_MEMORY.md
+docs/FINANCIAL_PLATFORM_TRACKER.md
+docs/FINANCIAL_PLATFORM_HANDOFF.md
 
-Do not keep polishing the existing front page incrementally. Start Phase 1A: create a coherent app shell and information architecture. Add public landing, dashboard placeholder, goals/plans placeholders, and move the current FIRE calculator into a dedicated calculators route/module. Remove duplicate hero links and duplicate calculator mode controls. Keep the calculation engine intact and keep tests passing.
+The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
+Phase 1 Product Shell and IA is complete. Start Phase 2: Auth and User Accounts. Research and choose the auth provider for Cloudflare Pages/Functions, then add sign up, sign in, sign out, and signed-in shell state. Keep the unauthenticated FIRE calculator demo available. Do not add D1 persistence until the auth/user identity model is stable.
+
+Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```
-
