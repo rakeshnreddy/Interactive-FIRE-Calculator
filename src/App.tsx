@@ -739,6 +739,22 @@ function App() {
               : formatMoney(withdrawalCoverage),
           tone: withdrawalCoverage >= 0 ? ('success' as const) : ('warning' as const)
         };
+  const fireNumberGap = result.requiredPortfolio - plan.initialPortfolio;
+  const supportResult =
+    calculatorMode === 'fire-number'
+      ? fireNumberGap > 0
+        ? {
+            label: 'Gap to FIRE number',
+            value: formatMoney(fireNumberGap)
+          }
+        : {
+            label: 'Above FIRE number',
+            value: `+${formatMoney(Math.abs(fireNumberGap))}`
+          }
+      : {
+          label: 'Portfolio tested',
+          value: formatMoney(plan.initialPortfolio)
+        };
   const projectionRows =
     projectionBasis === 'fire-number' ? result.expenseMode.rows : currentSimulation.rows;
   const projectionLabel =
@@ -1147,8 +1163,7 @@ function App() {
                       {secondaryResult.label}: <strong>{secondaryResult.value}</strong>
                     </span>
                     <span>
-                      Stress ending:{' '}
-                      <strong>{formatMoney(currentSimulation.finalBalance)}</strong>
+                      {supportResult.label}: <strong>{supportResult.value}</strong>
                     </span>
                   </div>
                 </>
