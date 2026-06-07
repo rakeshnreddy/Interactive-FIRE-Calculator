@@ -1,20 +1,29 @@
 import {
+  ArrowRight,
   BarChart3,
   Calculator,
   ChevronRight,
+  CircleDollarSign,
+  CircleGauge,
+  ClipboardList,
   Download,
+  FolderKanban,
+  LayoutDashboard,
   LineChart as LineChartIcon,
   Menu,
   Moon,
   PiggyBank,
   Save,
+  Settings,
+  ShieldCheck,
   SlidersHorizontal,
   Sun,
+  Target,
   Trash2,
   Upload,
   X
 } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 import {
   CartesianGrid,
@@ -43,7 +52,15 @@ import {
 
 type Mood = 'aurora' | 'lagoon' | 'ember';
 type Mode = 'light' | 'dark';
-type View = 'planner' | 'results' | 'compare' | 'assumptions';
+type AppRoute =
+  | '/'
+  | '/dashboard'
+  | '/goals'
+  | '/plans'
+  | '/calculators'
+  | '/calculators/fire'
+  | '/settings';
+type CalculatorPanel = 'planner' | 'results' | 'compare';
 type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
 type ProjectionBasis = 'fire-number' | 'current-portfolio';
@@ -91,11 +108,18 @@ const moodLabels: Record<Mood, string> = {
   ember: 'Ember'
 };
 
-const views: Array<{ id: View; label: string; icon: typeof Calculator }> = [
-  { id: 'planner', label: 'Calculator', icon: Calculator },
+const routeItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/goals', label: 'Goals', icon: Target },
+  { path: '/plans', label: 'Plans', icon: FolderKanban },
+  { path: '/calculators', label: 'Calculators', icon: Calculator },
+  { path: '/settings', label: 'Settings', icon: Settings }
+];
+
+const calculatorPanels: Array<{ id: CalculatorPanel; label: string; icon: typeof Calculator }> = [
+  { id: 'planner', label: 'Inputs', icon: Calculator },
   { id: 'results', label: 'Results', icon: LineChartIcon },
-  { id: 'compare', label: 'Compare', icon: BarChart3 },
-  { id: 'assumptions', label: 'Assumptions', icon: SlidersHorizontal }
+  { id: 'compare', label: 'Compare', icon: BarChart3 }
 ];
 
 const calculatorModeCopy: Record<
@@ -195,6 +219,35 @@ const initialScenarios: ScenarioConfig[] = [
     inflationDelta: -0.005
   }
 ];
+
+function normalizeRoute(pathname: string): AppRoute {
+  const cleanPath = pathname.replace(/\/+$/, '') || '/';
+
+  switch (cleanPath) {
+    case '/':
+    case '/dashboard':
+    case '/goals':
+    case '/plans':
+    case '/calculators':
+    case '/calculators/fire':
+    case '/settings':
+      return cleanPath;
+    default:
+      return '/';
+  }
+}
+
+function readRoute(): AppRoute {
+  if (typeof window === 'undefined') {
+    return '/';
+  }
+
+  return normalizeRoute(window.location.pathname);
+}
+
+function isRouteActive(currentRoute: AppRoute, itemRoute: AppRoute): boolean {
+  return currentRoute === itemRoute || currentRoute.startsWith(`${itemRoute}/`);
+}
 
 function modeledDurationFromTimeline(timeline: TimelineInput): number {
   return Math.max(1, Math.trunc(timeline.planEndAge) - Math.trunc(timeline.retirementAge));
@@ -543,43 +596,6 @@ function Metric({
   );
 }
 
-function HeroPanel({
-  active = false,
-  eyebrow,
-  title,
-  value,
-  detail,
-  icon: Icon,
-  onClick
-}: {
-  active?: boolean;
-  eyebrow: string;
-  title: string;
-  value: string;
-  detail: string;
-  icon: typeof Calculator;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      className={active ? 'hero-panel active' : 'hero-panel'}
-      aria-pressed={active}
-      onClick={onClick}
-    >
-      <span className="hero-panel-icon">
-        <Icon size={18} />
-      </span>
-      <span className="hero-panel-copy">
-        <span>{eyebrow}</span>
-        <strong>{title}</strong>
-        <small>{value}</small>
-        <em>{detail}</em>
-      </span>
-    </button>
-  );
-}
-
 function InfoTip({ text }: { text: string }) {
   return (
     <span className="info-tip">
@@ -672,12 +688,293 @@ function YearByYearTable({ rows, label }: { rows: YearResult[]; label: string })
   );
 }
 
+const landingFeatures = [
+  {
+    title: 'Track',
+    body: 'Bring assets, debt, income, and spending into one private financial profile.',
+    icon: CircleDollarSign
+  },
+  {
+    title: 'Plan',
+    body: 'Turn goals into dated plans with assumptions you can revisit as life changes.',
+    icon: ClipboardList
+  },
+  {
+    title: 'Compare',
+    body: 'Model base, guardrail, and upside paths before committing to a decision.',
+    icon: BarChart3
+  },
+  {
+    title: 'Improve',
+    body: 'See the next action that most changes your plan health and goal progress.',
+    icon: CircleGauge
+  }
+];
+
+const calculatorModules = [
+  {
+    title: 'FIRE Calculator',
+    body: 'Estimate a retirement portfolio target or annual withdrawal from a portfolio.',
+    status: 'Ready',
+    route: '/calculators/fire' as AppRoute,
+    icon: Calculator
+  },
+  {
+    title: 'Emergency Fund',
+    body: 'Size cash reserves from monthly spending, income stability, and dependents.',
+    status: 'Planned',
+    icon: ShieldCheck
+  },
+  {
+    title: 'Debt Payoff',
+    body: 'Compare avalanche and snowball payoff schedules across balances and APRs.',
+    status: 'Planned',
+    icon: ClipboardList
+  },
+  {
+    title: 'Savings Goal',
+    body: 'Back into monthly savings for a home, education, travel, or family milestone.',
+    status: 'Planned',
+    icon: Target
+  }
+];
+
+const platformPages: Record<
+  Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>,
+  {
+    eyebrow: string;
+    title: string;
+    description: string;
+    icon: typeof Calculator;
+    cards: Array<{ label: string; value: string; detail: string }>;
+  }
+> = {
+  '/dashboard': {
+    eyebrow: 'Dashboard',
+    title: 'A signed-in financial snapshot will live here.',
+    description:
+      'This route establishes the future home for net worth, goal progress, saved plans, and recent account changes.',
+    icon: LayoutDashboard,
+    cards: [
+      { label: 'Net worth', value: '$0', detail: 'Manual accounts and balances arrive in a later phase.' },
+      { label: 'Goal progress', value: '0%', detail: 'Goals will roll up into a concise progress view.' },
+      { label: 'Saved plans', value: '0', detail: 'FIRE and future planning modules will save here.' }
+    ]
+  },
+  '/goals': {
+    eyebrow: 'Goals',
+    title: 'Goal tracking gets its own workspace.',
+    description:
+      'Future users will create targets with dates, funding sources, current balances, and plan links.',
+    icon: Target,
+    cards: [
+      { label: 'Retirement', value: 'Planned', detail: 'Connect FIRE plans to a long-term goal.' },
+      { label: 'Home fund', value: 'Planned', detail: 'Track target amount, deadline, and monthly pace.' },
+      { label: 'Education', value: 'Planned', detail: 'Reserve space for family or education goals.' }
+    ]
+  },
+  '/plans': {
+    eyebrow: 'Plans',
+    title: 'Saved planning versions will collect here.',
+    description:
+      'This route separates durable financial plans from one-time calculator runs and local demo drafts.',
+    icon: FolderKanban,
+    cards: [
+      { label: 'Plan versions', value: 'Coming', detail: 'Compare assumptions across saved plan history.' },
+      { label: 'Scenario notes', value: 'Coming', detail: 'Capture what changed and why.' },
+      { label: 'Exports', value: 'Coming', detail: 'Keep portability and user data ownership visible.' }
+    ]
+  },
+  '/settings': {
+    eyebrow: 'Settings',
+    title: 'Profile, privacy, and data controls belong here.',
+    description:
+      'This placeholder makes room for account settings, export/delete controls, theme, and security notices.',
+    icon: Settings,
+    cards: [
+      { label: 'Profile', value: 'Planned', detail: 'Household and planning defaults.' },
+      { label: 'Privacy', value: 'Planned', detail: 'Data export, deletion, and consent controls.' },
+      { label: 'Theme', value: 'Ready', detail: 'Light, dark, and mood controls remain global.' }
+    ]
+  }
+};
+
+function LandingPage({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
+  return (
+    <>
+      <section className="landing-hero" aria-labelledby="landing-title">
+        <div className="landing-hero-copy">
+          <p className="eyebrow">Personal finance tracker and planner</p>
+          <h1 id="landing-title">Track the money you have. Plan the choices ahead.</h1>
+          <p>
+            FinPath is becoming a private planning workspace for accounts, goals, saved plans, and
+            calculators. The FIRE calculator is the first module inside the larger platform.
+          </p>
+          <div className="landing-actions">
+            <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
+              Create account
+              <ArrowRight size={17} />
+            </button>
+            <button className="secondary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
+              Sign in
+            </button>
+            <button
+              className="secondary-button icon-text-button"
+              onClick={() => onNavigate('/calculators/fire')}
+            >
+              <Calculator size={16} />
+              Try FIRE calculator
+            </button>
+          </div>
+        </div>
+
+        <div className="landing-board" aria-label="Financial planning workspace preview">
+          <div className="board-toolbar">
+            <span>Financial profile</span>
+            <strong>Phase 1A shell</strong>
+          </div>
+          <div className="board-metrics">
+            <Metric label="Net worth" value="$1.42M" tone="accent" />
+            <Metric label="Goals on track" value="4 of 6" tone="success" />
+            <Metric label="Plan runway" value="29 yrs" />
+          </div>
+          <div className="board-rows" aria-hidden="true">
+            <span style={{ width: '78%' }} />
+            <span style={{ width: '64%' }} />
+            <span style={{ width: '88%' }} />
+            <span style={{ width: '52%' }} />
+          </div>
+        </div>
+      </section>
+
+      <section className="feature-grid" aria-label="Platform capabilities">
+        {landingFeatures.map((feature) => {
+          const Icon = feature.icon;
+          return (
+            <article className="feature-card" key={feature.title}>
+              <span className="feature-icon">
+                <Icon size={20} />
+              </span>
+              <strong>{feature.title}</strong>
+              <small>{feature.body}</small>
+            </article>
+          );
+        })}
+      </section>
+
+      <section className="privacy-band" aria-labelledby="privacy-title">
+        <ShieldCheck size={22} />
+        <div>
+          <h2 id="privacy-title">Built around private financial data.</h2>
+          <p>
+            Account-backed storage, export, deletion, and security controls are planned before the
+            product stores sensitive user-owned financial records.
+          </p>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
+  return (
+    <section className="route-shell" aria-labelledby="calculators-title">
+      <div className="route-heading">
+        <p className="eyebrow">Calculators</p>
+        <h1 id="calculators-title">Planning modules will live here.</h1>
+        <p>
+          FIRE is available now as the first task-focused calculator. Additional modules are parked
+          as clear placeholders so the product no longer depends on one front-page tool.
+        </p>
+      </div>
+
+      <div className="module-grid">
+        {calculatorModules.map((module) => {
+          const Icon = module.icon;
+          return (
+            <article className="module-card" key={module.title}>
+              <span className="feature-icon">
+                <Icon size={20} />
+              </span>
+              <div>
+                <span className="pill">{module.status}</span>
+                <strong>{module.title}</strong>
+                <small>{module.body}</small>
+              </div>
+              {module.route ? (
+                <button
+                  className="secondary-button icon-text-button"
+                  onClick={() => onNavigate(module.route)}
+                >
+                  Open
+                  <ChevronRight size={16} />
+                </button>
+              ) : (
+                <span className="module-soon">Future module</span>
+              )}
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function PlatformPage({
+  route,
+  onNavigate
+}: {
+  route: Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
+  onNavigate: (route: AppRoute) => void;
+}) {
+  const page = platformPages[route];
+  const Icon = page.icon;
+
+  return (
+    <section className="route-shell" aria-labelledby={`${route.slice(1)}-title`}>
+      <div className="route-heading">
+        <p className="eyebrow">{page.eyebrow}</p>
+        <h1 id={`${route.slice(1)}-title`}>{page.title}</h1>
+        <p>{page.description}</p>
+      </div>
+
+      <div className="placeholder-grid">
+        {page.cards.map((card) => (
+          <article className="scenario-card" key={card.label}>
+            <span>{card.label}</span>
+            <strong>{card.value}</strong>
+            <small>{card.detail}</small>
+          </article>
+        ))}
+      </div>
+
+      <section className="next-module-band" aria-label={`${page.eyebrow} next action`}>
+        <span className="feature-icon">
+          <Icon size={20} />
+        </span>
+        <div>
+          <strong>{page.eyebrow} route is wired.</strong>
+          <small>
+            Continue into the working FIRE module while auth, persistence, and tracker data models
+            are still future phases.
+          </small>
+        </div>
+        <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators/fire')}>
+          Try FIRE
+          <ChevronRight size={16} />
+        </button>
+      </section>
+    </section>
+  );
+}
+
 function App() {
+  const [route, setRoute] = useState<AppRoute>(readRoute);
   const [plan, setPlan] = useState<PlanInput>(initialPlan);
   const [timeline, setTimeline] = useState<TimelineInput>(initialTimeline);
   const [mood, setMood] = useState<Mood>('aurora');
   const [mode, setMode] = useState<Mode>('light');
-  const [view, setView] = useState<View>('planner');
+  const [calculatorPanel, setCalculatorPanel] = useState<CalculatorPanel>('planner');
   const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
   const [hasCalculated, setHasCalculated] = useState(false);
   const [resultsMode, setResultsMode] = useState<ResultsMode>('chart');
@@ -687,6 +984,16 @@ function App() {
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setRoute(readRoute());
+      setIsMenuOpen(false);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const result = useMemo<FirePlanResult>(() => calculateFirePlan(plan), [plan]);
   const duration = totalDuration(plan.ratePeriods);
@@ -835,7 +1142,7 @@ function App() {
 
   const calculateNow = () => {
     setHasCalculated(true);
-    setView('planner');
+    setCalculatorPanel('planner');
   };
 
   const setTimelineValue = (key: keyof TimelineInput) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -903,7 +1210,8 @@ function App() {
     setTimeline({ ...initialTimeline, ...snapshot.timeline });
     setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
     setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
-    setView('planner');
+    setHasCalculated(true);
+    setCalculatorPanel('planner');
   };
 
   const saveCurrentPlan = () => {
@@ -1021,36 +1329,66 @@ function App() {
     }));
   };
 
-  const navigate = (nextView: View) => {
-    setView(nextView);
+  const navigateTo = (nextRoute: AppRoute) => {
+    if (typeof window !== 'undefined') {
+      window.history.pushState({}, '', nextRoute);
+      window.scrollTo({ top: 0, left: 0 });
+    }
+
+    setRoute(nextRoute);
+    setIsMenuOpen(false);
+  };
+
+  const navigate = (nextPanel: CalculatorPanel) => {
+    setCalculatorPanel(nextPanel);
     setIsMenuOpen(false);
   };
 
   return (
     <div className="app" data-mood={mood} data-mode={mode}>
       <header className="topbar">
-        <a href="#planner" className="brand" onClick={() => navigate('planner')}>
+        <a
+          href="/"
+          className="brand"
+          onClick={(event) => {
+            event.preventDefault();
+            navigateTo('/');
+          }}
+        >
           <PiggyBank size={26} />
-          <span>FIRECalc</span>
+          <span>FinPath</span>
         </a>
 
         <nav className="desktop-nav" aria-label="Primary">
-          {views.map((item) => {
+          {routeItems.map((item) => {
             const Icon = item.icon;
             return (
-              <button
-                key={item.id}
-                className={view === item.id ? 'nav-button active' : 'nav-button'}
-                onClick={() => navigate(item.id)}
+              <a
+                key={item.path}
+                href={item.path}
+                className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigateTo(item.path);
+                }}
               >
                 <Icon size={17} />
                 {item.label}
-              </button>
+              </a>
             );
           })}
         </nav>
 
         <div className="topbar-actions">
+          <button className="secondary-button topbar-link" onClick={() => navigateTo('/calculators/fire')}>
+            Try FIRE
+          </button>
+          <button className="secondary-button topbar-link" onClick={() => navigateTo('/dashboard')}>
+            Sign in
+          </button>
+          <button className="primary-button topbar-primary" onClick={() => navigateTo('/dashboard')}>
+            Create account
+          </button>
           <div className="mood-switcher" aria-label="Mood">
             {(Object.keys(moodLabels) as Mood[]).map((moodName) => (
               <button
@@ -1083,258 +1421,201 @@ function App() {
 
       {isMenuOpen && (
         <nav className="mobile-nav" aria-label="Mobile primary">
-          {views.map((item) => {
+          {routeItems.map((item) => {
             const Icon = item.icon;
             return (
-              <button key={item.id} className="nav-button" onClick={() => navigate(item.id)}>
+              <button
+                key={item.path}
+                className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
+                onClick={() => navigateTo(item.path)}
+              >
                 <Icon size={17} />
                 {item.label}
               </button>
             );
           })}
+          <button className="nav-button mobile-cta" onClick={() => navigateTo('/calculators/fire')}>
+            <Calculator size={17} />
+            Try FIRE Calculator
+          </button>
         </nav>
       )}
 
-      <main className="workspace">
+      <main className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
+        {route === '/' ? (
+          <LandingPage onNavigate={navigateTo} />
+        ) : route === '/calculators' ? (
+          <CalculatorsPage onNavigate={navigateTo} />
+        ) : route === '/dashboard' || route === '/goals' || route === '/plans' || route === '/settings' ? (
+          <PlatformPage route={route} onNavigate={navigateTo} />
+        ) : (
+          <>
         <nav className="breadcrumbs" aria-label="Breadcrumb">
-          <button onClick={() => navigate('planner')}>FIRECalc</button>
+          <button onClick={() => navigateTo('/calculators')}>Calculators</button>
           <ChevronRight size={15} />
-          <button onClick={() => navigate(view)}>{views.find((item) => item.id === view)?.label}</button>
+          <button onClick={() => navigateTo('/calculators/fire')}>FIRE Calculator</button>
         </nav>
 
-        <section className="summary-band hero-band calculator-hero" aria-labelledby="summary-title">
-          <div className="hero-copy">
-            <p className="eyebrow">FIRE calculator</p>
-            <h1 id="summary-title">Calculate your FIRE number or retirement income.</h1>
-            <p>Pick the question you want answered, enter the basics, then run the calculator.</p>
-            <div className="hero-panels mode-panels" aria-label="Calculator paths">
-              <HeroPanel
-                active={calculatorMode === 'fire-number'}
-                eyebrow="Need to number"
-                title="Find FIRE number"
-                value="Spending -> target"
-                detail="Estimate the portfolio needed."
-                icon={Calculator}
-                onClick={() => chooseCalculatorMode('fire-number')}
-              />
-              <HeroPanel
-                active={calculatorMode === 'withdrawal-income'}
-                eyebrow="Number to income"
-                title="Find withdrawal"
-                value="Portfolio -> income"
-                detail="Estimate annual spending power."
-                icon={PiggyBank}
-                onClick={() => chooseCalculatorMode('withdrawal-income')}
-              />
+        <section className="calculator-intro" aria-labelledby="fire-title">
+          <div>
+            <p className="eyebrow">Calculator module</p>
+            <h1 id="fire-title">FIRE Calculator</h1>
+            <p>
+              Answer one retirement planning question at a time. Core inputs stay up front; market
+              periods, cash-flow events, and local draft management are tucked below.
+            </p>
+          </div>
+          <span className="pill">{activeCalculator.shortTitle}</span>
+        </section>
+
+        <section className="quick-calculator focused-calculator" aria-labelledby="quick-calculator-title">
+          <div className="panel-heading quick-heading">
+            <div>
+              <p className="eyebrow">{activeCalculator.eyebrow}</p>
+              <h2 id="quick-calculator-title">{activeCalculator.title}</h2>
             </div>
-            <div className="hero-secondary-actions" aria-label="Explore calculator details">
-              <button className="secondary-button icon-text-button" onClick={() => navigate('results')}>
-                <LineChartIcon size={16} />
-                Results
-              </button>
-              <button className="secondary-button icon-text-button" onClick={() => navigate('compare')}>
-                <BarChart3 size={16} />
-                Compare
-              </button>
-              <button className="secondary-button icon-text-button" onClick={() => navigate('assumptions')}>
-                <SlidersHorizontal size={16} />
-                Assumptions
-              </button>
-            </div>
+            <span className="pill">{duration} years</span>
           </div>
 
-          <section className="quick-calculator" aria-labelledby="quick-calculator-title">
-            <div className="panel-heading quick-heading">
-              <div>
-                <p className="eyebrow">{activeCalculator.eyebrow}</p>
-                <h2 id="quick-calculator-title">{activeCalculator.title}</h2>
-              </div>
-              <span className="pill">{duration} years</span>
-            </div>
-
-            <div className={`calculator-result-card hero-result ${hasCalculated ? '' : 'result-empty'}`}>
-              <span>{hasCalculated ? primaryResult.label : 'Result'}</span>
-              <strong>{hasCalculated ? primaryResult.value : 'Ready to calculate'}</strong>
-              {hasCalculated ? (
-                <>
-                  <small>{primaryResult.detail}</small>
-                  <div className="result-facts">
-                    <span>
-                      {secondaryResult.label}: <strong>{secondaryResult.value}</strong>
-                    </span>
-                    <span>
-                      {supportResult.label}: <strong>{supportResult.value}</strong>
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <small>No estimate is shown until you run the calculation.</small>
-              )}
-            </div>
-
-            <div className="form-grid quick-form">
-              <div className="field full-field">
-                <span className="field-label">
-                  Calculator path
-                  <InfoTip text="Choose FIRE number to solve for a portfolio target, or withdrawal to solve for annual spending from a portfolio." />
-                </span>
-                <div className="segmented">
-                  <button
-                    className={calculatorMode === 'fire-number' ? 'active' : ''}
-                    onClick={() => chooseCalculatorMode('fire-number')}
-                  >
-                    FIRE number
-                  </button>
-                  <button
-                    className={calculatorMode === 'withdrawal-income' ? 'active' : ''}
-                    onClick={() => chooseCalculatorMode('withdrawal-income')}
-                  >
-                    Withdrawal
-                  </button>
-                </div>
-              </div>
-
-              <Field
-                label="Current age"
-                help="Your age today. It is used to check that the retirement timeline makes sense."
-                issue={
-                  timeline.retirementAge <= timeline.currentAge
-                    ? 'Current age should be below retirement age.'
-                    : undefined
-                }
-              >
-                <input
-                  type="number"
-                  min="0"
-                  value={timeline.currentAge}
-                  onChange={setTimelineValue('currentAge')}
-                />
-              </Field>
-              <Field
-                label="Retirement age"
-                help="The age when withdrawals start in this plan."
-                issue={
-                  timeline.retirementAge <= timeline.currentAge
-                    ? 'Retirement age should be higher.'
-                    : undefined
-                }
-              >
-                <input
-                  type="number"
-                  min="0"
-                  value={timeline.retirementAge}
-                  onChange={setTimelineValue('retirementAge')}
-                />
-              </Field>
-              <Field
-                label="Plan end age"
-                help="The age through which the model should keep funding withdrawals."
-                issue={
-                  timeline.planEndAge <= timeline.retirementAge
-                    ? 'End age should be higher.'
-                    : undefined
-                }
-              >
-                <input
-                  type="number"
-                  min="0"
-                  value={timeline.planEndAge}
-                  onChange={setTimelineValue('planEndAge')}
-                />
-              </Field>
-
-              {calculatorMode === 'withdrawal-income' && (
-                <Field
-                  label={portfolioLabel}
-                  help="The portfolio balance you want to test for retirement income."
-                  issue={fieldIssue('initialPortfolio')}
+          <div className="form-grid quick-form core-fire-form">
+            <div className="field full-field">
+              <span className="field-label">
+                Planning question
+                <InfoTip text="Choose FIRE number to solve for a portfolio target, or withdrawal to solve for annual spending from a portfolio." />
+              </span>
+              <div className="segmented">
+                <button
+                  className={calculatorMode === 'fire-number' ? 'active' : ''}
+                  onClick={() => chooseCalculatorMode('fire-number')}
                 >
-                  <input
-                    type="number"
-                    min="0"
-                    value={plan.initialPortfolio}
-                    onChange={setMoney('initialPortfolio')}
-                  />
-                </Field>
-              )}
-
-              <Field
-                label={annualExpenseLabel}
-                help={
-                  calculatorMode === 'fire-number'
-                    ? 'Your estimated first-year retirement spending before inflation.'
-                    : 'An optional spending goal used to show whether the calculated withdrawal covers your need.'
-                }
-                issue={fieldIssue('annualExpense')}
-              >
-                <input
-                  type="number"
-                  min="0"
-                  value={plan.annualExpense}
-                  onChange={setMoney('annualExpense')}
-                />
-              </Field>
-
-              {calculatorMode === 'fire-number' && (
-                <Field
-                  label={portfolioLabel}
-                  help="Your current invested assets. This is used for the funding gap and stress test."
-                  issue={fieldIssue('initialPortfolio')}
+                  FIRE number
+                </button>
+                <button
+                  className={calculatorMode === 'withdrawal-income' ? 'active' : ''}
+                  onClick={() => chooseCalculatorMode('withdrawal-income')}
                 >
-                  <input
-                    type="number"
-                    min="0"
-                    value={plan.initialPortfolio}
-                    onChange={setMoney('initialPortfolio')}
-                  />
-                </Field>
-              )}
-
-              <Field
-                label="Estate target"
-                help="The amount you want remaining at the end of the plan."
-                issue={fieldIssue('desiredFinalValue')}
-              >
-                <input
-                  type="number"
-                  min="0"
-                  value={plan.desiredFinalValue}
-                  onChange={setMoney('desiredFinalValue')}
-                />
-              </Field>
-              <div className="field">
-                <span className="field-label">
-                  Withdrawal timing
-                  <InfoTip text="Start means withdrawals happen before annual growth. End means withdrawals happen after annual growth." />
-                </span>
-                <div className="segmented">
-                  <button
-                    className={plan.withdrawalTiming === 'end' ? 'active' : ''}
-                    onClick={() => setTiming('end')}
-                  >
-                    End
-                  </button>
-                  <button
-                    className={plan.withdrawalTiming === 'start' ? 'active' : ''}
-                    onClick={() => setTiming('start')}
-                  >
-                    Start
-                  </button>
-                </div>
+                  Withdrawal
+                </button>
               </div>
             </div>
 
-            <div className="quick-actions">
-              <button className="primary-button icon-text-button" onClick={calculateNow}>
-                <Calculator size={17} />
-                Calculate
-              </button>
-              <button className="secondary-button icon-text-button" onClick={() => navigate('assumptions')}>
-                <SlidersHorizontal size={16} />
-                Tune assumptions
-              </button>
+            <Field
+              label="Current age"
+              help="Your age today. It is used to check that the retirement timeline makes sense."
+              issue={
+                timeline.retirementAge <= timeline.currentAge
+                  ? 'Current age should be below retirement age.'
+                  : undefined
+              }
+            >
+              <input
+                type="number"
+                min="0"
+                value={timeline.currentAge}
+                onChange={setTimelineValue('currentAge')}
+              />
+            </Field>
+            <Field
+              label="Retirement age"
+              help="The age when withdrawals start in this plan."
+              issue={
+                timeline.retirementAge <= timeline.currentAge
+                  ? 'Retirement age should be higher.'
+                  : undefined
+              }
+            >
+              <input
+                type="number"
+                min="0"
+                value={timeline.retirementAge}
+                onChange={setTimelineValue('retirementAge')}
+              />
+            </Field>
+            <Field
+              label="Plan end age"
+              help="The age through which the model should keep funding withdrawals."
+              issue={
+                timeline.planEndAge <= timeline.retirementAge ? 'End age should be higher.' : undefined
+              }
+            >
+              <input
+                type="number"
+                min="0"
+                value={timeline.planEndAge}
+                onChange={setTimelineValue('planEndAge')}
+              />
+            </Field>
+
+            {calculatorMode === 'withdrawal-income' && (
+              <Field
+                label={portfolioLabel}
+                help="The portfolio balance you want to test for retirement income."
+                issue={fieldIssue('initialPortfolio')}
+              >
+                <input
+                  type="number"
+                  min="0"
+                  value={plan.initialPortfolio}
+                  onChange={setMoney('initialPortfolio')}
+                />
+              </Field>
+            )}
+
+            <Field
+              label={annualExpenseLabel}
+              help={
+                calculatorMode === 'fire-number'
+                  ? 'Your estimated first-year retirement spending before inflation.'
+                  : 'An optional spending goal used to show whether the calculated withdrawal covers your need.'
+              }
+              issue={fieldIssue('annualExpense')}
+            >
+              <input
+                type="number"
+                min="0"
+                value={plan.annualExpense}
+                onChange={setMoney('annualExpense')}
+              />
+            </Field>
+
+            {calculatorMode === 'fire-number' && (
+              <Field
+                label={portfolioLabel}
+                help="Your current invested assets. This is used for the funding gap and stress test."
+                issue={fieldIssue('initialPortfolio')}
+              >
+                <input
+                  type="number"
+                  min="0"
+                  value={plan.initialPortfolio}
+                  onChange={setMoney('initialPortfolio')}
+                />
+              </Field>
+            )}
+          </div>
+
+          <div className="quick-actions">
+            <button className="primary-button icon-text-button" onClick={calculateNow}>
+              <Calculator size={17} />
+              Calculate
+            </button>
+          </div>
+
+          {hasCalculated && (
+            <div className="calculator-result-card hero-result">
+              <span>{primaryResult.label}</span>
+              <strong>{primaryResult.value}</strong>
+              <small>{primaryResult.detail}</small>
+              <div className="result-facts">
+                <span>
+                  {secondaryResult.label}: <strong>{secondaryResult.value}</strong>
+                </span>
+                <span>
+                  {supportResult.label}: <strong>{supportResult.value}</strong>
+                </span>
+              </div>
             </div>
-          </section>
+          )}
         </section>
 
         {hasCalculated && (
@@ -1369,15 +1650,65 @@ function App() {
                 <article className="scenario-card warning-card warning-info">
                   <span>MORE</span>
                   <strong>{warningNotices.length - 3} additional checks</strong>
-                  <small>Open Results or Assumptions to inspect the model in more detail.</small>
+                  <small>Open Results or Compare to inspect the model in more detail.</small>
                 </article>
               )}
             </div>
           </section>
         )}
 
-        {view === 'planner' && (
+        <details className="advanced-shell">
+          <summary className="advanced-summary">
+            <span>
+              <strong>Advanced assumptions</strong>
+              <small>Market periods, withdrawal timing, cash-flow events, and local draft tools</small>
+            </span>
+            <SlidersHorizontal size={18} />
+          </summary>
           <div className="planner-grid" id="planner">
+            <section className="panel" aria-labelledby="model-options-title">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Model</p>
+                  <h2 id="model-options-title">Retirement model options</h2>
+                </div>
+              </div>
+
+              <div className="form-grid">
+                <Field
+                  label="Estate target"
+                  help="The amount you want remaining at the end of the plan."
+                  issue={fieldIssue('desiredFinalValue')}
+                >
+                  <input
+                    type="number"
+                    min="0"
+                    value={plan.desiredFinalValue}
+                    onChange={setMoney('desiredFinalValue')}
+                  />
+                </Field>
+                <div className="field">
+                  <span className="field-label">
+                    Withdrawal timing
+                    <InfoTip text="Start means withdrawals happen before annual growth. End means withdrawals happen after annual growth." />
+                  </span>
+                  <div className="segmented">
+                    <button
+                      className={plan.withdrawalTiming === 'end' ? 'active' : ''}
+                      onClick={() => setTiming('end')}
+                    >
+                      End
+                    </button>
+                    <button
+                      className={plan.withdrawalTiming === 'start' ? 'active' : ''}
+                      onClick={() => setTiming('start')}
+                    >
+                      Start
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
             <section className="panel" aria-labelledby="period-title">
               <div className="panel-heading">
                 <div>
@@ -1793,9 +2124,31 @@ function App() {
               </div>
             </section>
           </div>
+        </details>
+
+        {hasCalculated && (
+          <section className="panel result-tabs-panel" aria-label="Calculated outputs">
+            <div className="panel-tabs" role="tablist" aria-label="FIRE result views">
+              {calculatorPanels.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    className={calculatorPanel === item.id ? 'active' : ''}
+                    onClick={() => navigate(item.id)}
+                    role="tab"
+                    aria-selected={calculatorPanel === item.id}
+                  >
+                    <Icon size={16} />
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
         )}
 
-        {view === 'results' && (
+        {hasCalculated && calculatorPanel === 'results' && (
           <section className="panel chart-panel" id="results" aria-labelledby="results-title">
             <div className="panel-heading">
               <div>
@@ -1882,7 +2235,7 @@ function App() {
           </section>
         )}
 
-        {view === 'compare' && (
+        {hasCalculated && calculatorPanel === 'compare' && (
           <section className="panel" id="compare" aria-labelledby="compare-title">
             <div className="panel-heading">
               <div>
@@ -1954,53 +2307,7 @@ function App() {
             </div>
           </section>
         )}
-
-        {view === 'assumptions' && (
-          <section className="panel" id="assumptions" aria-labelledby="assumptions-title">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Model</p>
-                <h2 id="assumptions-title">Model assumptions</h2>
-              </div>
-            </div>
-            <div className="assumption-grid">
-              <Metric label="First withdrawal" value={formatMoney(plan.annualExpense)} />
-              <Metric label="Age range" value={`${timeline.retirementAge}-${timeline.planEndAge}`} />
-              <Metric label="Income streams" value={`${incomeStreams.length}`} />
-              <Metric label="Expense phases" value={`${expensePhases.length}`} />
-              <Metric
-                label="Average return"
-                value={formatPercent(
-                  plan.ratePeriods.reduce((sum, period) => sum + period.r * period.duration, 0) /
-                    Math.max(duration, 1)
-                )}
-              />
-              <Metric
-                label="Average inflation"
-                value={formatPercent(
-                  plan.ratePeriods.reduce((sum, period) => sum + period.i * period.duration, 0) /
-                    Math.max(duration, 1)
-                )}
-              />
-            </div>
-            <div className="comparison-grid">
-              <article className="scenario-card">
-                <span>Expense mode</span>
-                <strong>{formatMoney(result.requiredPortfolio)}</strong>
-                <small>Portfolio needed for the entered withdrawal need.</small>
-              </article>
-              <article className="scenario-card">
-                <span>Portfolio mode</span>
-                <strong>{formatMoney(result.maxAnnualExpense)}</strong>
-                <small>Annual withdrawal supported by the entered portfolio.</small>
-              </article>
-              <article className="scenario-card">
-                <span>Cash-flow events</span>
-                <strong>{plan.oneOffEvents.length + (plan.recurringCashFlows ?? []).length}</strong>
-                <small>One-off and recurring income or expense rows.</small>
-              </article>
-            </div>
-          </section>
+          </>
         )}
       </main>
     </div>
