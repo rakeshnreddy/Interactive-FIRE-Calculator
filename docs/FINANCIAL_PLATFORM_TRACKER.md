@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: June 8, 2026
+Last updated: June 11, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://343e5503.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://fb92f0fd.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -19,7 +19,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase | Status | Completion | Notes |
 | --- | --- | ---: | --- |
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
-| Phase 2: Auth and User Accounts | Ready to start | 0% | First task is auth provider research/selection; implementation depends on provider credentials and callback/env configuration. |
+| Phase 2: Auth and User Accounts | Provider-ready, blocked on credentials | 75% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, and `/api/me` exist. Real production auth needs Clerk env/secrets before it can be marked complete. |
 | Phase 3: Server Persistence | Not started | 0% | Add D1 schema/migrations and user-owned plan APIs. |
 | Phase 4: Financial Tracker MVP | Not started | 0% | Add manual accounts, assets, liabilities, balances, and dashboard data. |
 | Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
@@ -56,16 +56,38 @@ This tracker is the working source of truth for moving the product from a standa
 
 - Phase 1 merged or accepted as the product shell baseline.
 - Auth provider decision made or explicitly scoped as the first Phase 2 task.
-- Confirm whether to use:
-  - Clerk or Auth0 for fastest robust consumer auth.
-  - Better Auth for a more app-owned Cloudflare/D1-friendly path if research confirms fit.
+- Clerk selected for fastest robust consumer auth on the current Vite SPA + Cloudflare Pages/Functions stack.
 - Confirm persistence direction:
   - D1 for relational user/profile/account/goal/plan data.
   - Pages Functions or Workers for API routes.
 
+## Phase 2 Progress Checklist
+
+- [x] Researched Clerk, Auth0, and Better Auth against current official docs.
+- [x] Selected Clerk for the current Cloudflare Pages/Functions implementation.
+- [x] Added `@clerk/react` browser auth boundary.
+- [x] Added sign-up, sign-in, sign-out, signed-in profile basics, and signed-in shell state.
+- [x] Kept `/` and `/calculators/fire` unauthenticated.
+- [x] Gated `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/reports`, and `/settings`.
+- [x] Added Clerk-backed Pages Function `GET /api/me` for session validation and basic identity.
+- [x] Added `.env.example` and `.dev.vars.example`.
+- [x] Confirmed current deployed `/api/me` returns `503 {"authConfigured":false}` while credentials are absent.
+- [x] Did not add D1 persistence.
+- [ ] Configure Clerk application and Cloudflare Pages env/secrets.
+- [ ] Redeploy with real `VITE_CLERK_PUBLISHABLE_KEY` build env.
+- [ ] Verify real sign up, sign in, sign out, signed-in route access, and authenticated `/api/me`.
+
+## Required Clerk Configuration
+
+- Browser build env: `VITE_CLERK_PUBLISHABLE_KEY`.
+- Pages Functions env/secrets: `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`.
+- Optional but recommended: `CLERK_AUTHORIZED_PARTIES`, comma-separated origins for local Pages dev and deployed Pages/custom domains.
+- Current Cloudflare Pages production and preview secret lists were empty when checked on June 11, 2026.
+- The latest deploy therefore intentionally shows a configuration gate on account routes instead of fake auth.
+
 ## Open Decisions
 
-- Auth provider: Clerk, Auth0, Better Auth, or custom.
+- Auth provider: Clerk selected for Phase 2.
 - Whether to keep Vite SPA or move to a framework with richer routing/loaders.
 - Whether Pages Functions are enough for API needs or if a separate Worker should own API routes.
 - D1 schema and migration strategy.

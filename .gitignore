@@ -13,6 +13,7 @@ venv/
 env/
 .env
 *.env
+.dev.vars
 
 # Node / Cloudflare Pages
 node_modules/

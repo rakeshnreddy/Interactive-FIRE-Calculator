@@ -218,6 +218,30 @@ svg {
   min-width: 0;
 }
 
+.topbar-profile {
+  display: inline-flex;
+  gap: 0.48rem;
+  align-items: center;
+  min-width: 0;
+  max-width: 190px;
+  min-height: 40px;
+  padding: 0 0.56rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.topbar-profile span {
+  overflow: hidden;
+  color: var(--muted-strong);
+  font-size: 0.84rem;
+  font-weight: 850;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .topbar-primary {
   flex: 0 0 auto;
   min-height: 40px;
@@ -612,6 +636,116 @@ svg {
   gap: 0.85rem;
   align-items: center;
   padding: 1rem;
+}
+
+.auth-gate-panel,
+.profile-band,
+.auth-save-note {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent),
+    var(--surface-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.auth-gate-panel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.95rem;
+  align-items: start;
+  padding: clamp(1rem, 2.2vw, 1.35rem);
+}
+
+.auth-gate-panel .route-heading {
+  padding: 0;
+}
+
+.auth-env-list {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.58rem;
+  padding: 0.85rem;
+  border: 1px dashed color-mix(in srgb, var(--accent) 34%, var(--border));
+  border-radius: 8px;
+  background: var(--accent-wash);
+}
+
+.auth-env-list span {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.auth-env-list code,
+.profile-band code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted-strong);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.auth-gate-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 0.62rem;
+  align-items: center;
+}
+
+.profile-band {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, auto);
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.95rem;
+}
+
+.profile-band div {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.profile-band span,
+.profile-band small,
+.auth-save-note {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.profile-band strong {
+  overflow-wrap: anywhere;
+  color: var(--heading);
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.auth-save-note {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  margin-bottom: 0.9rem;
+  padding: 0.75rem 0.85rem;
+}
+
+.auth-save-note svg {
+  color: var(--accent);
+}
+
+.auth-save-note span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .calculator-intro h1 {
@@ -1773,6 +1907,10 @@ td {
     display: none;
   }
 
+  .topbar-profile span {
+    display: none;
+  }
+
   .desktop-nav {
     justify-content: flex-start;
     overflow-x: auto;
@@ -1817,14 +1955,22 @@ td {
 
   .route-heading,
   .calculator-intro,
+  .auth-gate-panel,
+  .profile-band,
   .next-module-band {
     align-items: start;
     grid-template-columns: 1fr;
   }
 
   .route-heading,
-  .calculator-intro {
+  .calculator-intro,
+  .auth-gate-panel,
+  .profile-band {
     display: grid;
+  }
+
+  .auth-env-list {
+    grid-template-columns: 1fr;
   }
 
   .next-module-band {
@@ -1896,6 +2042,10 @@ td {
   }
 
   .topbar-link {
+    display: none;
+  }
+
+  .topbar-profile {
     display: none;
   }
 
@@ -2010,9 +2160,16 @@ td {
   .landing-actions,
   .landing-actions .primary-button,
   .landing-actions .secondary-button,
+  .auth-gate-actions,
+  .auth-gate-actions .primary-button,
+  .auth-gate-actions .secondary-button,
   .next-module-band .secondary-button,
   .module-card .secondary-button {
     width: 100%;
+  }
+
+  .auth-save-note {
+    align-items: flex-start;
   }
 
   .mode-panels {

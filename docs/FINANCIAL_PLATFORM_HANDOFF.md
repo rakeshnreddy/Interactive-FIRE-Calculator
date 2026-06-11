@@ -1,6 +1,6 @@
 # Financial Platform Handoff
 
-Last updated: June 7, 2026
+Last updated: June 11, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://343e5503.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://fb92f0fd.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,16 +29,18 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is now complete. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint, but real production auth is blocked until Clerk credentials are configured. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
 Production target:
 
 - `src/` contains the TypeScript React app.
+- `src/auth.tsx` contains the Clerk browser auth boundary and user identity projection.
 - `src/lib/fire.ts` contains the deterministic FIRE calculation engine.
 - `src/lib/fire.test.ts` contains Vitest coverage for the TypeScript model.
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
+- `functions/api/me.ts` contains the Clerk-backed Pages Function identity endpoint.
 - `public/_redirects` handles SPA routing.
 - `wrangler.toml` configures the Cloudflare Pages project.
 - `dist/` is generated output.
@@ -91,9 +93,22 @@ Phase 1 is complete:
 - Advanced FIRE assumptions are behind progressive disclosure.
 - The existing FIRE engine in `src/lib/fire.ts` remains intact.
 
+Current Phase 2 state:
+
+- Clerk was selected after comparing current Clerk, Auth0, and Better Auth docs.
+- `@clerk/react` is installed and wraps the app when `VITE_CLERK_PUBLISHABLE_KEY` is present.
+- Landing/topbar/mobile auth actions use real Clerk sign-up, sign-in, and sign-out controls when configured.
+- Authenticated routes are gated when signed out or when auth env is missing.
+- `/calculators/fire` remains public as the unauthenticated demo.
+- Signed-in profile basics are limited to Clerk identity fields.
+- `GET /api/me` validates Clerk sessions in Pages Functions and returns only `userId`, `sessionId`, optional `orgId`, and optional `orgRole`.
+- FIRE plan saves remain local browser drafts; no D1 persistence has been added.
+- Cloudflare Pages production and preview secret lists were empty when checked on June 11, 2026.
+- Latest deploy intentionally shows auth/configuration gates rather than fake production auth.
+
 Next recommended phase:
 
-- Phase 2: Auth and User Accounts.
+- Finish Phase 2 by configuring Clerk credentials and verifying real hosted sign-up/sign-in/sign-out.
 
 ## Target Product Vision
 
@@ -155,12 +170,14 @@ Recommended pieces:
 - KV only for cache or low-risk ephemeral metadata.
 - Queues later for import processing, categorization, and notification jobs.
 
-Auth decision still needs implementation research and selection.
+Auth decision has been made: Clerk is the selected Phase 2 provider.
 
-Recommended auth options:
+Required Clerk configuration:
 
-- Fastest robust route: Clerk or Auth0.
-- More app-owned route: Better Auth, if it works cleanly with Cloudflare Workers/Pages and D1.
+- Browser build env: `VITE_CLERK_PUBLISHABLE_KEY`.
+- Pages Functions env/secrets: `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`.
+- Optional but recommended: `CLERK_AUTHORIZED_PARTIES`, comma-separated origins for local Pages dev and deployed Pages/custom domains.
+- Examples live in `.env.example` and `.dev.vars.example`.
 - Avoid using Cloudflare Access as primary consumer auth. It is better suited for internal/private apps.
 
 ## Data Model Direction
@@ -380,19 +397,20 @@ Acceptance:
 
 ## Immediate Next Coding Session Recommendation
 
-Start Phase 2: Auth and User Accounts.
+Finish Phase 2: Auth and User Accounts.
 
 Recommended first slice:
 
-1. Research and choose the auth provider for Cloudflare Pages/Functions.
-2. Decide between Clerk/Auth0 for speed or Better Auth for a more app-owned path.
-3. Add sign up, sign in, sign out, and signed-in shell state.
-4. Keep the unauthenticated FIRE calculator demo available.
-5. Do not add D1 persistence until the auth choice and user identity model are stable.
+1. Configure the Clerk application and allowed redirect/origin settings.
+2. Add `VITE_CLERK_PUBLISHABLE_KEY` to the build environment.
+3. Add `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` or `CLERK_JWT_KEY` to Cloudflare Pages Functions.
+4. Add `CLERK_AUTHORIZED_PARTIES` for local Pages dev and deployed Pages/custom domains.
+5. Redeploy and verify real sign up, sign in, sign out, signed-in route access, and `/api/me`.
+6. Keep `/calculators/fire` public and do not add D1 persistence until identity is stable.
 
 Reason:
 
-The product shell and information architecture are coherent enough to support auth work. Persistence should wait until the user identity model is clear.
+The code now has a real Clerk-ready auth boundary and route gates, but production auth cannot be called complete until real provider credentials are present and the hosted flow is verified end to end.
 
 ## Testing Requirements
 
@@ -435,7 +453,7 @@ https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 ## Open Decisions
 
-- Auth provider: Clerk, Auth0, Better Auth, or custom.
+- Auth provider: Clerk selected for Phase 2.
 - Whether to keep Vite SPA or move to a framework with richer routing/loaders.
 - Whether Pages Functions are enough for API needs or if a separate Worker should own API routes.
 - D1 schema and migration strategy.
@@ -457,7 +475,9 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phase 1 Product Shell and IA is complete. Start Phase 2: Auth and User Accounts. Research and choose the auth provider for Cloudflare Pages/Functions, then add sign up, sign in, sign out, and signed-in shell state. Keep the unauthenticated FIRE calculator demo available. Do not add D1 persistence until the auth/user identity model is stable.
+Phase 1 Product Shell and IA is complete. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed /api/me Pages Function. Real production auth is blocked until Clerk credentials are configured in Cloudflare Pages and the Vite build env. Keep the unauthenticated FIRE calculator demo available. Do not add D1 persistence until the auth/user identity model is stable.
+
+Next goal: configure Clerk credentials, redeploy, and verify real hosted sign up, sign in, sign out, signed-in route access, and /api/me.
 
 Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```

@@ -1,3 +1,4 @@
+import { SignInButton, SignOutButton, SignUpButton, UserButton } from '@clerk/react';
 import {
   ArrowRight,
   BarChart3,
@@ -9,6 +10,9 @@ import {
   Download,
   FolderKanban,
   LayoutDashboard,
+  LockKeyhole,
+  LogIn,
+  LogOut,
   LineChart as LineChartIcon,
   Menu,
   Moon,
@@ -21,6 +25,7 @@ import {
   Target,
   Trash2,
   Upload,
+  UserCircle,
   X
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -49,6 +54,7 @@ import {
   type WithdrawalTiming,
   type YearResult
 } from './lib/fire';
+import type { AuthState } from './auth';
 
 type Mood = 'aurora' | 'lagoon' | 'ember';
 type Mode = 'light' | 'dark';
@@ -420,7 +426,7 @@ function downloadCsv(filename: string, csv: string): void {
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
-  document.body.append(link);
+  document.body.appendChild(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
@@ -434,7 +440,7 @@ function downloadJson(filename: string, value: unknown): void {
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
-  document.body.append(link);
+  document.body.appendChild(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
@@ -849,7 +855,146 @@ function isPlatformRoute(route: AppRoute): route is PlatformRoute {
   return route in platformPages;
 }
 
-function LandingPage({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
+function AuthActionButton({
+  auth,
+  kind,
+  className,
+  children,
+  onUnavailable
+}: {
+  auth: AuthState;
+  kind: 'sign-in' | 'sign-up';
+  className: string;
+  children: ReactNode;
+  onUnavailable: () => void;
+}) {
+  const button = (
+    <button className={className} onClick={auth.isConfigured ? undefined : onUnavailable}>
+      {children}
+    </button>
+  );
+
+  if (!auth.isConfigured) {
+    return button;
+  }
+
+  return kind === 'sign-in' ? (
+    <SignInButton mode="redirect" fallbackRedirectUrl="/dashboard">
+      {button}
+    </SignInButton>
+  ) : (
+    <SignUpButton mode="redirect" fallbackRedirectUrl="/dashboard">
+      {button}
+    </SignUpButton>
+  );
+}
+
+function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'signed-in' }> }) {
+  return (
+    <section className="profile-band" aria-label="Signed-in profile">
+      <span className="feature-icon">
+        <UserCircle size={20} />
+      </span>
+      <div>
+        <span>Signed in as</span>
+        <strong>{auth.user.displayName}</strong>
+        {auth.user.email && <small>{auth.user.email}</small>}
+      </div>
+      <code>{auth.user.id}</code>
+    </section>
+  );
+}
+
+function AuthGate({
+  auth,
+  route,
+  onNavigate
+}: {
+  auth: AuthState;
+  route: PlatformRoute;
+  onNavigate: (route: AppRoute) => void;
+}) {
+  const page = platformPages[route];
+  const Icon = page.icon;
+  const title =
+    auth.status === 'not-configured'
+      ? 'Connect Clerk before opening account routes.'
+      : auth.status === 'loading'
+        ? 'Checking your session.'
+        : `Sign in to open ${page.eyebrow}.`;
+  const description =
+    auth.status === 'not-configured'
+      ? 'The app is wired for Clerk, but this environment is missing the public browser key. The FIRE calculator demo remains available without an account.'
+      : auth.status === 'loading'
+        ? 'FinPath is confirming whether there is an active Clerk session for this browser.'
+        : `${page.eyebrow} is part of the account-backed planning shell. You can still use the public FIRE calculator demo without signing in.`;
+
+  return (
+    <section className="route-shell auth-gate" aria-labelledby={`${route.slice(1)}-auth-title`}>
+      <div className="auth-gate-panel">
+        <span className="feature-icon">
+          {auth.status === 'not-configured' ? <LockKeyhole size={20} /> : <Icon size={20} />}
+        </span>
+        <div className="route-heading">
+          <p className="eyebrow">{page.eyebrow}</p>
+          <h1 id={`${route.slice(1)}-auth-title`}>{title}</h1>
+          <p>{description}</p>
+        </div>
+
+        {auth.status === 'not-configured' && (
+          <div className="auth-env-list" aria-label="Required Clerk environment variables">
+            <span>Required before production auth can run</span>
+            <code>VITE_CLERK_PUBLISHABLE_KEY</code>
+            <code>CLERK_PUBLISHABLE_KEY</code>
+            <code>CLERK_SECRET_KEY</code>
+            <code>CLERK_AUTHORIZED_PARTIES</code>
+          </div>
+        )}
+
+        <div className="auth-gate-actions">
+          {auth.status === 'loading' ? (
+            <button className="primary-button icon-text-button" disabled>
+              <LogIn size={17} />
+              Checking session
+            </button>
+          ) : auth.status === 'signed-out' ? (
+            <>
+              <AuthActionButton
+                auth={auth}
+                kind="sign-in"
+                className="primary-button icon-text-button"
+                onUnavailable={() => onNavigate(route)}
+              >
+                <LogIn size={17} />
+                Sign in
+              </AuthActionButton>
+              <AuthActionButton
+                auth={auth}
+                kind="sign-up"
+                className="secondary-button icon-text-button"
+                onUnavailable={() => onNavigate(route)}
+              >
+                Create account
+                <ArrowRight size={17} />
+              </AuthActionButton>
+            </>
+          ) : (
+            <button className="primary-button icon-text-button" disabled>
+              <LockKeyhole size={17} />
+              Auth not configured
+            </button>
+          )}
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators/fire')}>
+            <Calculator size={16} />
+            Try FIRE calculator
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
   return (
     <>
       <section className="landing-hero" aria-labelledby="landing-title">
@@ -861,13 +1006,41 @@ function LandingPage({ onNavigate }: { onNavigate: (route: AppRoute) => void }) 
             calculators. The FIRE calculator is the first module inside the larger platform.
           </p>
           <div className="landing-actions">
-            <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
-              Create account
-              <ArrowRight size={17} />
-            </button>
-            <button className="secondary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
-              Sign in
-            </button>
+            {auth.isSignedIn ? (
+              <>
+                <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
+                  Open dashboard
+                  <ArrowRight size={17} />
+                </button>
+                <SignOutButton redirectUrl="/">
+                  <button className="secondary-button icon-text-button">
+                    <LogOut size={16} />
+                    Sign out
+                  </button>
+                </SignOutButton>
+              </>
+            ) : (
+              <>
+                <AuthActionButton
+                  auth={auth}
+                  kind="sign-up"
+                  className="primary-button icon-text-button"
+                  onUnavailable={() => onNavigate('/dashboard')}
+                >
+                  Create account
+                  <ArrowRight size={17} />
+                </AuthActionButton>
+                <AuthActionButton
+                  auth={auth}
+                  kind="sign-in"
+                  className="secondary-button icon-text-button"
+                  onUnavailable={() => onNavigate('/dashboard')}
+                >
+                  <LogIn size={16} />
+                  Sign in
+                </AuthActionButton>
+              </>
+            )}
             <button
               className="secondary-button icon-text-button"
               onClick={() => onNavigate('/calculators/fire')}
@@ -971,9 +1144,11 @@ function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void
 }
 
 function PlatformPage({
+  auth,
   route,
   onNavigate
 }: {
+  auth: Extract<AuthState, { status: 'signed-in' }>;
   route: Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
   onNavigate: (route: AppRoute) => void;
 }) {
@@ -987,6 +1162,8 @@ function PlatformPage({
         <h1 id={`${route.slice(1)}-title`}>{page.title}</h1>
         <p>{page.description}</p>
       </div>
+
+      <SignedInProfileBand auth={auth} />
 
       <div className="placeholder-grid">
         {page.cards.map((card) => (
@@ -1018,7 +1195,75 @@ function PlatformPage({
   );
 }
 
-function App() {
+function TopbarAuthActions({
+  auth,
+  onNavigate
+}: {
+  auth: AuthState;
+  onNavigate: (route: AppRoute) => void;
+}) {
+  if (auth.isSignedIn) {
+    return (
+      <>
+        <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators/fire')}>
+          Try FIRE
+        </button>
+        <button className="secondary-button topbar-link" onClick={() => onNavigate('/dashboard')}>
+          Dashboard
+        </button>
+        <div className="topbar-profile" aria-label="Current user">
+          <UserButton userProfileMode="modal" />
+          <span>{auth.user.displayName}</span>
+        </div>
+        <SignOutButton redirectUrl="/">
+          <button className="secondary-button topbar-link icon-text-button">
+            <LogOut size={16} />
+            Sign out
+          </button>
+        </SignOutButton>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators/fire')}>
+        Try FIRE
+      </button>
+      {auth.status === 'loading' ? (
+        <button className="secondary-button topbar-link" disabled>
+          Checking
+        </button>
+      ) : (
+        <AuthActionButton
+          auth={auth}
+          kind="sign-in"
+          className="secondary-button topbar-link icon-text-button"
+          onUnavailable={() => onNavigate('/dashboard')}
+        >
+          <LogIn size={16} />
+          Sign in
+        </AuthActionButton>
+      )}
+      {auth.status === 'loading' ? (
+        <button className="primary-button topbar-primary" disabled>
+          Create account
+        </button>
+      ) : (
+        <AuthActionButton
+          auth={auth}
+          kind="sign-up"
+          className="primary-button topbar-primary"
+          onUnavailable={() => onNavigate('/dashboard')}
+        >
+          Create account
+        </AuthActionButton>
+      )}
+    </>
+  );
+}
+
+function App({ auth }: { auth: AuthState }) {
   const [route, setRoute] = useState<AppRoute>(readRoute);
   const [plan, setPlan] = useState<PlanInput>(initialPlan);
   const [timeline, setTimeline] = useState<TimelineInput>(initialTimeline);
@@ -1430,15 +1675,7 @@ function App() {
         </nav>
 
         <div className="topbar-actions">
-          <button className="secondary-button topbar-link" onClick={() => navigateTo('/calculators/fire')}>
-            Try FIRE
-          </button>
-          <button className="secondary-button topbar-link" onClick={() => navigateTo('/dashboard')}>
-            Sign in
-          </button>
-          <button className="primary-button topbar-primary" onClick={() => navigateTo('/dashboard')}>
-            Create account
-          </button>
+          <TopbarAuthActions auth={auth} onNavigate={navigateTo} />
           <div className="mood-switcher" aria-label="Mood">
             {(Object.keys(moodLabels) as Mood[]).map((moodName) => (
               <button
@@ -1488,16 +1725,60 @@ function App() {
             <Calculator size={17} />
             Try FIRE Calculator
           </button>
+          {auth.isSignedIn ? (
+            <>
+              <button className="nav-button mobile-cta" onClick={() => navigateTo('/dashboard')}>
+                <LayoutDashboard size={17} />
+                Open dashboard
+              </button>
+              <SignOutButton redirectUrl="/">
+                <button className="nav-button mobile-cta">
+                  <LogOut size={17} />
+                  Sign out
+                </button>
+              </SignOutButton>
+            </>
+          ) : auth.status === 'loading' ? (
+            <button className="nav-button mobile-cta" disabled>
+              <LogIn size={17} />
+              Checking session
+            </button>
+          ) : (
+            <>
+              <AuthActionButton
+                auth={auth}
+                kind="sign-in"
+                className="nav-button mobile-cta"
+                onUnavailable={() => navigateTo('/dashboard')}
+              >
+                <LogIn size={17} />
+                Sign in
+              </AuthActionButton>
+              <AuthActionButton
+                auth={auth}
+                kind="sign-up"
+                className="nav-button mobile-cta"
+                onUnavailable={() => navigateTo('/dashboard')}
+              >
+                <UserCircle size={17} />
+                Create account
+              </AuthActionButton>
+            </>
+          )}
         </nav>
       )}
 
       <main className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
         {route === '/' ? (
-          <LandingPage onNavigate={navigateTo} />
+          <LandingPage auth={auth} onNavigate={navigateTo} />
         ) : route === '/calculators' ? (
           <CalculatorsPage onNavigate={navigateTo} />
         ) : isPlatformRoute(route) ? (
-          <PlatformPage route={route} onNavigate={navigateTo} />
+          auth.isSignedIn ? (
+            <PlatformPage auth={auth} route={route} onNavigate={navigateTo} />
+          ) : (
+            <AuthGate auth={auth} route={route} onNavigate={navigateTo} />
+          )
         ) : (
           <>
         <nav className="breadcrumbs" aria-label="Breadcrumb">
@@ -2109,6 +2390,15 @@ function App() {
                   <p className="eyebrow">Scenarios</p>
                   <h2 id="saved-title">Save and move plans</h2>
                 </div>
+              </div>
+
+              <div className="auth-save-note">
+                <UserCircle size={17} />
+                <span>
+                  {auth.isSignedIn
+                    ? `Signed in as ${auth.user.displayName}; FIRE drafts still stay in this browser until account-backed plan storage is added.`
+                    : 'FIRE drafts stay in this browser. Sign in unlocks the account shell; server plan storage comes later.'}
+                </span>
               </div>
 
               <div className="utility-grid">
