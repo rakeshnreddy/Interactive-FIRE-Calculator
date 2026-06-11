@@ -19,7 +19,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase | Status | Completion | Notes |
 | --- | --- | ---: | --- |
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
-| Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
+| Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages preview secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
 | Phase 3: Server Persistence | Not started | 0% | Add D1 schema/migrations and user-owned plan APIs. |
 | Phase 4: Financial Tracker MVP | Not started | 0% | Add manual accounts, assets, liabilities, balances, and dashboard data. |
 | Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
@@ -74,7 +74,7 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Confirmed earlier deployed `/api/me` returned `503 {"authConfigured":false}` while credentials were absent.
 - [x] Did not add D1 persistence.
 - [x] Link Clerk development app and pull local env.
-- [x] Configure Cloudflare Pages preview and production secrets for Clerk development keys.
+- [x] Configure Cloudflare Pages preview secrets for Clerk development keys.
 - [x] Redeploy with real `VITE_CLERK_PUBLISHABLE_KEY` build env.
 - [ ] Verify real sign up, sign in, sign out, signed-in route access, and authenticated `/api/me`.
 - [ ] Create/configure Clerk production instance for an owned launch domain.
@@ -87,7 +87,8 @@ This tracker is the working source of truth for moving the product from a standa
 - Current Clerk app: `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`).
 - Current Clerk development instance: `ins_3EzmNoRe49U12NtPgfiqgXHKsgh`.
 - Local ignored env files are present: `.env.local` and `.dev.vars`.
-- Cloudflare Pages production and preview secrets now include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`.
+- Cloudflare Pages preview secrets now include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`.
+- Cloudflare Pages production secrets are intentionally empty until Clerk production keys exist.
 - `clerk doctor --spotlight` reports the production instance is not configured.
 - `clerk deploy status` reports production deployment is `not_started` and requires `clerk deploy` with human/domain setup.
 

@@ -29,7 +29,7 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages secrets, but real production auth is blocked until a Clerk production instance/domain is configured. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
@@ -105,7 +105,8 @@ Current Phase 2 state:
 - FIRE plan saves remain local browser drafts; no D1 persistence has been added.
 - Clerk CLI is linked to app `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`) with development instance `ins_3EzmNoRe49U12NtPgfiqgXHKsgh`.
 - Local ignored env files are present: `.env.local` and `.dev.vars`.
-- Cloudflare Pages production and preview secrets include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`.
+- Cloudflare Pages preview secrets include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`.
+- Cloudflare Pages production secrets are intentionally empty until Clerk production keys exist.
 - `clerk doctor --spotlight` reports no production instance configured.
 - `clerk deploy status` reports production deployment is `not_started` and requires `clerk deploy` with human/domain setup.
 
@@ -413,7 +414,7 @@ Recommended first slice:
 
 Reason:
 
-The code now has a real Clerk-ready auth boundary, route gates, local development keys, and Cloudflare Pages secrets. Production auth cannot be called complete until a Clerk production instance/domain exists and the hosted flow is verified end to end.
+The code now has a real Clerk-ready auth boundary, route gates, local development keys, and Cloudflare Pages preview secrets. Production auth cannot be called complete until a Clerk production instance/domain exists and the hosted flow is verified end to end.
 
 ## Testing Requirements
 
@@ -478,7 +479,7 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phase 1 Product Shell and IA is complete. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed /api/me Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Keep the unauthenticated FIRE calculator demo available. Do not add D1 persistence until the auth/user identity model is stable.
+Phase 1 Product Shell and IA is complete. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed /api/me Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Keep the unauthenticated FIRE calculator demo available. Do not add D1 persistence until the auth/user identity model is stable.
 
 Next goal: verify real hosted sign up, sign in, sign out, signed-in route access, and /api/me with a test user, then configure the Clerk production instance for an owned launch domain.
 
