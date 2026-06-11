@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://2801f6a1.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://3894ea1a.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -41,6 +41,9 @@ Production target:
 - `src/lib/fire.test.ts` contains Vitest coverage for the TypeScript model.
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
 - `functions/api/me.ts` contains the Clerk-backed Pages Function identity endpoint.
+- `functions/api/profile.ts` contains the D1-backed authenticated profile endpoint.
+- `functions/_lib/` contains shared Pages Function helpers for JSON responses and Clerk session validation.
+- `migrations/` contains D1 SQL migrations.
 - `public/_redirects` handles SPA routing.
 - `wrangler.toml` configures the Cloudflare Pages project.
 - `dist/` is generated output.
@@ -113,6 +116,17 @@ Current Phase 2 state:
 Next recommended phase:
 
 - Finish Phase 2 by verifying real hosted sign-up/sign-in/sign-out with a test user, then configuring Clerk production auth for an owned launch domain.
+
+Current Phase 3 state:
+
+- D1 preview database exists: `finpath-preview` (`0dbad68e-7493-452f-8504-98d4c61ee5da`).
+- D1 production database exists: `finpath-production` (`a5860350-0a50-4ebe-9f5f-1d9916a908e6`).
+- `wrangler.toml` binds both databases as `DB`.
+- `migrations/0001_initial_financial_platform_schema.sql` creates the initial relational schema.
+- The first migration has been applied locally, to preview D1, and to production D1.
+- Shared Pages Function auth helpers exist in `functions/_lib/`.
+- `GET` and `PUT /api/profile` create/read/update the signed-in user's basic profile in D1.
+- User-owned FIRE plan APIs are intentionally still pending until a signed-in preview user verifies auth end to end.
 
 ## Target Product Vision
 
@@ -406,15 +420,16 @@ Finish Phase 2: Auth and User Accounts.
 
 Recommended first slice:
 
-1. Verify real sign up, sign in, sign out, signed-in route access, and `/api/me` on the Pages preview with a test user.
+1. Verify real sign up, sign in, sign out, signed-in route access, `/api/me`, and `/api/profile` on the Pages preview with a test user.
 2. Run `clerk deploy` in a human terminal and configure the Clerk production instance for an owned domain.
 3. Pull/set production Clerk keys when the production instance exists.
 4. Re-run verification and redeploy for production auth.
-5. Keep `/calculators/fire` public and do not add D1 persistence until identity is stable.
+5. Add user-owned FIRE plan APIs once signed-in preview auth is verified.
+6. Keep `/calculators/fire` public and keep local demo drafts available for signed-out users.
 
 Reason:
 
-The code now has a real Clerk-ready auth boundary, route gates, local development keys, and Cloudflare Pages preview secrets. Production auth cannot be called complete until a Clerk production instance/domain exists and the hosted flow is verified end to end.
+The code now has a real Clerk-ready auth boundary, route gates, local development keys, Cloudflare Pages preview secrets, D1 databases, and a profile endpoint. Production auth cannot be called complete until a Clerk production instance/domain exists and the hosted flow is verified end to end.
 
 ## Testing Requirements
 
@@ -479,9 +494,9 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phase 1 Product Shell and IA is complete. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed /api/me Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Keep the unauthenticated FIRE calculator demo available. Do not add D1 persistence until the auth/user identity model is stable.
+Phase 1 Product Shell and IA is complete. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed /api/me Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 persistence foundation has D1 databases, an initial schema migration, and /api/profile. Keep the unauthenticated FIRE calculator demo available. Do not add account-backed FIRE plan persistence until the auth/user identity model is verified with a real preview user.
 
-Next goal: verify real hosted sign up, sign in, sign out, signed-in route access, and /api/me with a test user, then configure the Clerk production instance for an owned launch domain.
+Next goal: verify real hosted sign up, sign in, sign out, signed-in route access, /api/me, and /api/profile with a test user, then configure the Clerk production instance for an owned launch domain.
 
 Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```

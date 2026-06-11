@@ -2,3 +2,10 @@
 name = "interactive-fire-calculator"
 compatibility_date = "2026-06-06"
 pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "finpath-production"
+database_id = "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+preview_database_id = "0dbad68e-7493-452f-8504-98d4c61ee5da"
+migrations_dir = "migrations"

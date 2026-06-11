@@ -10,7 +10,7 @@ Last updated: June 11, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://2801f6a1.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://3894ea1a.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -26,6 +26,9 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - FIRE tests in `src/lib/fire.test.ts`.
 - Cloudflare Pages Function health endpoint in `functions/api/health.ts`.
 - Clerk-backed Pages Function identity endpoint in `functions/api/me.ts`.
+- Authenticated D1-backed profile endpoint in `functions/api/profile.ts`.
+- Shared Pages Function helpers in `functions/_lib/`.
+- D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
 - Legacy Flask/Jinja app remains in `app.py`, `project/`, `templates/`, and `static/` for reference/parity only.
 
@@ -55,12 +58,23 @@ Phase 2 provider-ready auth shell is implemented and Clerk development credentia
 - Local ignored env files are present: `.env.local` from `clerk env pull` and `.dev.vars` for Pages Functions local dev.
 - Cloudflare Pages preview secrets now include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`; production secrets are intentionally empty until Clerk production keys exist.
 - `clerk doctor --spotlight` reports no production instance configured. `clerk deploy status` says production deployment is `not_started` and requires a human terminal/domain setup.
-- `npm run cf:deploy` deployed the gated auth-ready state to `https://2801f6a1.interactive-fire-calculator.pages.dev`.
+- `npm run cf:deploy` deployed the gated auth-ready state to `https://3894ea1a.interactive-fire-calculator.pages.dev`.
 - Verification passed with `./scripts/test_all.sh` and browser QA at `1280x720` and `390x844`.
+
+Phase 3 persistence foundation is started:
+
+- D1 preview database: `finpath-preview` (`0dbad68e-7493-452f-8504-98d4c61ee5da`).
+- D1 production database: `finpath-production` (`a5860350-0a50-4ebe-9f5f-1d9916a908e6`).
+- `wrangler.toml` binds both databases as `DB`.
+- `migrations/0001_initial_financial_platform_schema.sql` creates the first relational schema for users, profiles, accounts, balances, transactions, goals, plans, plan versions, FIRE payloads, assumptions, and audit log.
+- The first migration has been applied locally, to preview D1, and to production D1.
+- `functions/_lib/session.ts` centralizes Clerk request validation for Pages Functions.
+- `GET` and `PUT /api/profile` create/read/update a signed-in user's D1 profile.
+- Account-backed FIRE plan APIs and UI are still pending until a signed-in preview user verifies auth end to end.
 
 ## Next Phase
 
-Finish Phase 2: Auth and User Accounts by validating the Clerk development flow on Cloudflare Pages, then creating a Clerk production instance for an owned production domain before launch.
+Finish the remaining Phase 2 validation, then continue Phase 3 persistence APIs.
 
 Remaining Phase 2 work:
 
@@ -69,6 +83,13 @@ Remaining Phase 2 work:
 3. Pull/set production Clerk keys when the production instance exists.
 4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
 5. Do not add D1 plan persistence until this identity flow is stable.
+
+Remaining Phase 3 work:
+
+1. Verify `/api/profile` with a real signed-in Clerk preview user.
+2. Add user-owned plan APIs once signed-in auth is verified.
+3. Add account-backed plan/profile UI after APIs are verified.
+4. Keep local FIRE demo drafts available for signed-out users.
 
 ## Working Rules
 
@@ -116,10 +137,10 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phase 1 Product Shell and IA is complete. Phase 2 has a Clerk provider-ready auth shell, route gates, signed-in shell state, and /api/me identity validation. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured.
+Phase 1 Product Shell and IA is complete. Phase 2 has a Clerk provider-ready auth shell, route gates, signed-in shell state, and /api/me identity validation. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 persistence foundation has D1 databases, an initial schema migration, and /api/profile.
 
 Next goal:
-Finish Phase 2 by verifying a real hosted sign-up/sign-in/sign-out flow with a test user, then configuring a Clerk production instance for launch.
+Finish Phase 2 by verifying a real hosted sign-up/sign-in/sign-out flow with a test user, including /api/me and /api/profile, then configuring a Clerk production instance for launch.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
@@ -148,7 +169,7 @@ Current state:
 Phase 1 Product Shell and IA is complete and pushed. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed `/api/me` Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is not complete because the Clerk app has no production instance/domain yet. The public landing page is `/`. The dedicated FIRE calculator route is `/calculators/fire` and remains unauthenticated. Placeholder app-shell routes exist for `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/calculators`, `/reports`, and `/settings`; account routes show an auth/configuration gate when signed out or unconfigured. The FIRE engine in `src/lib/fire.ts` is intact and should not be changed unless calculation behavior is explicitly in scope. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://2801f6a1.interactive-fire-calculator.pages.dev
+https://3894ea1a.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev

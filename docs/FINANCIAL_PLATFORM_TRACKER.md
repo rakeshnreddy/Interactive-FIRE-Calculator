@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://2801f6a1.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://3894ea1a.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -20,7 +20,7 @@ This tracker is the working source of truth for moving the product from a standa
 | --- | --- | ---: | --- |
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
 | Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages preview secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
-| Phase 3: Server Persistence | Not started | 0% | Add D1 schema/migrations and user-owned plan APIs. |
+| Phase 3: Server Persistence | Foundation started | 25% | D1 databases, binding, initial schema migration, shared auth helper, and authenticated `/api/profile` endpoint are in place. User-owned plan APIs are still pending until signed-in auth is verified. |
 | Phase 4: Financial Tracker MVP | Not started | 0% | Add manual accounts, assets, liabilities, balances, and dashboard data. |
 | Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
 | Phase 6: Planning Workspace | Not started | 0% | Add plan versions, scenario history, and profile/account-connected FIRE inputs. |
@@ -98,10 +98,24 @@ This tracker is the working source of truth for moving the product from a standa
 - Production auth domain for Clerk deployment.
 - Whether to keep Vite SPA or move to a framework with richer routing/loaders.
 - Whether Pages Functions are enough for API needs or if a separate Worker should own API routes.
-- D1 schema and migration strategy.
+- D1 schema and migration strategy: initial schema lives in `migrations/0001_initial_financial_platform_schema.sql`; use Wrangler D1 migrations for local, preview, and production DB changes.
 - How much sensitive financial data to store in the first MVP.
 - Data export and deletion policy.
 - Whether legacy Flask parity tests remain long term.
+
+## Phase 3 Progress Checklist
+
+- [x] Create Cloudflare D1 databases:
+  - Preview: `finpath-preview` (`0dbad68e-7493-452f-8504-98d4c61ee5da`)
+  - Production: `finpath-production` (`a5860350-0a50-4ebe-9f5f-1d9916a908e6`)
+- [x] Add `DB` D1 binding to `wrangler.toml`.
+- [x] Add first migration for users, profiles, accounts, balances, transactions, goals, plans, plan versions, FIRE payloads, assumptions, and audit log.
+- [x] Apply migration locally, to preview D1, and to production D1.
+- [x] Add shared Pages Function Clerk auth helper.
+- [x] Add authenticated `GET`/`PUT /api/profile` endpoint backed by D1.
+- [ ] Verify `/api/profile` with a real signed-in Clerk preview user.
+- [ ] Add user-owned plan APIs after signed-in auth is verified.
+- [ ] Wire account-backed plan/profile UI after APIs are verified.
 
 ## Required Verification Before Push
 
