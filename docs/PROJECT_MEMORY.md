@@ -10,7 +10,7 @@ Last updated: June 11, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://fb92f0fd.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://2801f6a1.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -41,9 +41,10 @@ Phase 1 Product Shell and IA is complete:
 - Results and compare views appear after calculation.
 - Browser QA performed on desktop and mobile.
 
-Phase 2 provider-ready auth shell is implemented, but production auth is not complete because Clerk credentials are not configured:
+Phase 2 provider-ready auth shell is implemented and Clerk development credentials are wired, but production auth is not complete because the Clerk app has no production instance/domain yet:
 
 - Clerk was chosen over Auth0 and Better Auth for the current Vite SPA + Cloudflare Pages/Functions shape.
+- Clerk CLI is linked to app `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`) with development instance `ins_3EzmNoRe49U12NtPgfiqgXHKsgh`.
 - `@clerk/react` wraps the app when `VITE_CLERK_PUBLISHABLE_KEY` is present.
 - Landing and topbar actions use real Clerk sign-up/sign-in/sign-out controls when configured.
 - Authenticated app routes are gated when signed out or when auth env is missing.
@@ -51,22 +52,23 @@ Phase 2 provider-ready auth shell is implemented, but production auth is not com
 - Signed-in profile display is limited to Clerk identity fields only.
 - `/api/me` validates Clerk sessions in Pages Functions and returns only basic identity.
 - FIRE plan saves remain browser-local; no D1 persistence was added.
-- `npm run cf:deploy` deployed the gated auth-ready state to `https://fb92f0fd.interactive-fire-calculator.pages.dev`.
+- Local ignored env files are present: `.env.local` from `clerk env pull` and `.dev.vars` for Pages Functions local dev.
+- Cloudflare Pages preview and production secrets now include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`.
+- `clerk doctor --spotlight` reports no production instance configured. `clerk deploy status` says production deployment is `not_started` and requires a human terminal/domain setup.
+- `npm run cf:deploy` deployed the gated auth-ready state to `https://2801f6a1.interactive-fire-calculator.pages.dev`.
 - Verification passed with `./scripts/test_all.sh` and browser QA at `1280x720` and `390x844`.
 
 ## Next Phase
 
-Finish Phase 2: Auth and User Accounts by configuring real Clerk credentials and validating an end-to-end sign-up/sign-in/sign-out flow on Cloudflare Pages.
+Finish Phase 2: Auth and User Accounts by validating the Clerk development flow on Cloudflare Pages, then creating a Clerk production instance for an owned production domain before launch.
 
 Remaining Phase 2 work:
 
-1. Create/configure a Clerk application.
-2. Add build/client env `VITE_CLERK_PUBLISHABLE_KEY`.
-3. Add Pages Function env/secrets `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`.
-4. Add `CLERK_AUTHORIZED_PARTIES` for local Pages dev and deployed Pages origins.
-5. Redeploy after env is present.
-6. Verify real sign up, sign in, sign out, signed-in route access, and `/api/me`.
-7. Do not add D1 plan persistence until this identity flow is stable.
+1. Verify real sign up, sign in, sign out, signed-in route access, and `/api/me` on the Cloudflare Pages preview with a test user.
+2. Run `clerk deploy` in a human terminal and configure the Clerk production instance for an owned domain.
+3. Pull/set production Clerk keys when the production instance exists.
+4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
+5. Do not add D1 plan persistence until this identity flow is stable.
 
 ## Working Rules
 
@@ -114,10 +116,10 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phase 1 Product Shell and IA is complete. Phase 2 has a Clerk provider-ready auth shell, route gates, signed-in shell state, and /api/me identity validation, but real production auth is blocked until Clerk credentials are configured in Cloudflare Pages and the Vite build env.
+Phase 1 Product Shell and IA is complete. Phase 2 has a Clerk provider-ready auth shell, route gates, signed-in shell state, and /api/me identity validation. Clerk development credentials are configured locally and in Cloudflare Pages preview/production secrets, but real production auth is blocked until a Clerk production instance/domain is configured.
 
 Next goal:
-Finish Phase 2 by configuring Clerk credentials and verifying a real hosted sign-up/sign-in/sign-out flow.
+Finish Phase 2 by verifying a real hosted sign-up/sign-in/sign-out flow with a test user, then configuring a Clerk production instance for launch.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
@@ -143,16 +145,16 @@ docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 Current state:
-Phase 1 Product Shell and IA is complete and pushed. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed `/api/me` Pages Function. Real production auth is not complete because Clerk credentials are missing from Cloudflare Pages and local build env. The public landing page is `/`. The dedicated FIRE calculator route is `/calculators/fire` and remains unauthenticated. Placeholder app-shell routes exist for `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/calculators`, `/reports`, and `/settings`; account routes show an auth/configuration gate when signed out or unconfigured. The FIRE engine in `src/lib/fire.ts` is intact and should not be changed unless calculation behavior is explicitly in scope. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phase 1 Product Shell and IA is complete and pushed. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed `/api/me` Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview/production secrets, but real production auth is not complete because the Clerk app has no production instance/domain yet. The public landing page is `/`. The dedicated FIRE calculator route is `/calculators/fire` and remains unauthenticated. Placeholder app-shell routes exist for `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/calculators`, `/reports`, and `/settings`; account routes show an auth/configuration gate when signed out or unconfigured. The FIRE engine in `src/lib/fire.ts` is intact and should not be changed unless calculation behavior is explicitly in scope. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://fb92f0fd.interactive-fire-calculator.pages.dev
+https://2801f6a1.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 Goal:
-Finish Phase 2: Auth and User Accounts by configuring Clerk credentials and validating real hosted auth.
+Finish Phase 2: Auth and User Accounts by validating real hosted auth on the Pages preview, then configuring Clerk production auth for an owned launch domain.
 
 Phase 2 target:
 - Choose an auth provider suitable for Cloudflare Pages/Functions.
@@ -170,6 +172,7 @@ Required Clerk environment:
 - Pages Functions env/secrets: `CLERK_PUBLISHABLE_KEY` plus `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`.
 - Optional but recommended: `CLERK_AUTHORIZED_PARTIES` as comma-separated origins for local Pages dev and deployed Pages/custom domains.
 - Examples live in `.env.example` and `.dev.vars.example`.
+- Current Clerk state: app `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`) has a development instance but no production instance. `clerk deploy` must be completed with a real owned domain before production auth can be called done.
 
 Use multi-agent parallelism:
 1. Spawn one explorer to research current official auth docs for Clerk/Auth0/Better Auth on Cloudflare Pages or Workers and summarize tradeoffs.

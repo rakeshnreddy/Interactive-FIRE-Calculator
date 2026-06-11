@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://fb92f0fd.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://2801f6a1.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -19,7 +19,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase | Status | Completion | Notes |
 | --- | --- | ---: | --- |
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
-| Phase 2: Auth and User Accounts | Provider-ready, blocked on credentials | 75% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, and `/api/me` exist. Real production auth needs Clerk env/secrets before it can be marked complete. |
+| Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
 | Phase 3: Server Persistence | Not started | 0% | Add D1 schema/migrations and user-owned plan APIs. |
 | Phase 4: Financial Tracker MVP | Not started | 0% | Add manual accounts, assets, liabilities, balances, and dashboard data. |
 | Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
@@ -71,23 +71,30 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Gated `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/reports`, and `/settings`.
 - [x] Added Clerk-backed Pages Function `GET /api/me` for session validation and basic identity.
 - [x] Added `.env.example` and `.dev.vars.example`.
-- [x] Confirmed current deployed `/api/me` returns `503 {"authConfigured":false}` while credentials are absent.
+- [x] Confirmed earlier deployed `/api/me` returned `503 {"authConfigured":false}` while credentials were absent.
 - [x] Did not add D1 persistence.
-- [ ] Configure Clerk application and Cloudflare Pages env/secrets.
-- [ ] Redeploy with real `VITE_CLERK_PUBLISHABLE_KEY` build env.
+- [x] Link Clerk development app and pull local env.
+- [x] Configure Cloudflare Pages preview and production secrets for Clerk development keys.
+- [x] Redeploy with real `VITE_CLERK_PUBLISHABLE_KEY` build env.
 - [ ] Verify real sign up, sign in, sign out, signed-in route access, and authenticated `/api/me`.
+- [ ] Create/configure Clerk production instance for an owned launch domain.
 
 ## Required Clerk Configuration
 
 - Browser build env: `VITE_CLERK_PUBLISHABLE_KEY`.
 - Pages Functions env/secrets: `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`.
 - Optional but recommended: `CLERK_AUTHORIZED_PARTIES`, comma-separated origins for local Pages dev and deployed Pages/custom domains.
-- Current Cloudflare Pages production and preview secret lists were empty when checked on June 11, 2026.
-- The latest deploy therefore intentionally shows a configuration gate on account routes instead of fake auth.
+- Current Clerk app: `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`).
+- Current Clerk development instance: `ins_3EzmNoRe49U12NtPgfiqgXHKsgh`.
+- Local ignored env files are present: `.env.local` and `.dev.vars`.
+- Cloudflare Pages production and preview secrets now include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`.
+- `clerk doctor --spotlight` reports the production instance is not configured.
+- `clerk deploy status` reports production deployment is `not_started` and requires `clerk deploy` with human/domain setup.
 
 ## Open Decisions
 
 - Auth provider: Clerk selected for Phase 2.
+- Production auth domain for Clerk deployment.
 - Whether to keep Vite SPA or move to a framework with richer routing/loaders.
 - Whether Pages Functions are enough for API needs or if a separate Worker should own API routes.
 - D1 schema and migration strategy.
