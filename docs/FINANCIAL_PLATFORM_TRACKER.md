@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://0fe386db.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://5d15bc5c.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -21,7 +21,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
 | Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages preview secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
 | Phase 3: Server Persistence | Preview/server complete | 100% | D1 schema, shared auth/DB helpers, authenticated profile API, user-owned FIRE plan APIs, account-backed plan saves, Settings profile form, and signed-out local demo saves are in place. Production usage still depends on the Phase 2 Clerk production instance/domain. |
-| Phase 4: Financial Tracker MVP | Not started | 0% | Add manual accounts, assets, liabilities, balances, and dashboard data. |
+| Phase 4: Financial Tracker MVP | Preview/server complete | 100% | Manual accounts, assets, liabilities, balance history, account archival, and dashboard net worth summaries are in place. |
 | Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
 | Phase 6: Planning Workspace | Not started | 0% | Add plan versions, scenario history, and profile/account-connected FIRE inputs. |
 | Phase 7: Imports and Automation | Not started | 0% | Add CSV imports, review flows, optional R2 storage, and optional queues. |
@@ -138,6 +138,44 @@ This tracker is the working source of truth for moving the product from a standa
 - Deployed preview `https://0fe386db.interactive-fire-calculator.pages.dev` passed the same authenticated profile and plan API flow; disposable test D1 rows and the temporary Clerk development user were removed afterward.
 - Browser smoke checks passed for `/calculators/fire` and `/settings` signed-out gate at desktop and mobile widths with no console errors and no horizontal overflow.
 - Full repository verification must still be run before each push with `./scripts/test_all.sh`.
+
+## Phase 4 Progress Checklist
+
+- [x] Add shared account and balance validation/persistence helpers in `functions/_lib/accounts.ts`.
+- [x] Add authenticated account endpoints:
+  - `GET`/`POST /api/accounts`
+  - `GET`/`PUT`/`DELETE /api/accounts/:id`
+- [x] Add authenticated balance endpoints:
+  - `GET`/`POST /api/accounts/:id/balances`
+- [x] Add authenticated `GET /api/dashboard` summary endpoint.
+- [x] Wire `/dashboard` to D1-backed net worth, assets, liabilities, active account count, and recent balances.
+- [x] Wire `/accounts` to manual asset/liability creation, balance recording, recent balance history, and account archival.
+- [x] Keep `/` and `/calculators/fire` public and unauthenticated.
+- [x] Keep FIRE calculation behavior unchanged in `src/lib/fire.ts`.
+- [x] Keep account-tracker writes separate from FIRE plan persistence.
+- [x] Keep goals as Phase 5 scope.
+
+## Phase 4 Verification Notes
+
+- Local Pages dev authenticated API verification passed with disposable Clerk development users:
+  - unauthenticated `GET /api/accounts` -> `401`
+  - authenticated initial `GET /api/accounts` -> `200`
+  - authenticated `POST /api/accounts` for an asset -> `201`
+  - authenticated `POST /api/accounts` for a liability -> `201`
+  - authenticated `GET /api/accounts` returned the expected assets, liabilities, and net worth summary
+  - authenticated `GET /api/dashboard` returned the expected recent account and summary data
+  - authenticated `POST /api/accounts/:id/balances` -> `201`
+  - authenticated `GET /api/accounts/:id/balances` -> `200`
+  - authenticated `DELETE /api/accounts/:id` archived the account and subsequent read returned `404`
+- Browser checks passed for signed-out `/dashboard` gates.
+- Browser checks passed for signed-in `/dashboard` and `/accounts` at `1280x720` and `390x844`.
+- The signed-in browser checks verified seeded data for `$40,000` assets, `$15,000` liabilities, and `$25,000` net worth.
+- No console errors or horizontal overflow were found in the checked desktop or mobile views.
+- `./scripts/test_all.sh` passed before deploy.
+- `npm run cf:deploy` deployed the Phase 4 tracker-ready state to `https://5d15bc5c.interactive-fire-calculator.pages.dev`.
+- Deployed preview API verification passed for unauthenticated account rejection, authenticated account create/list, dashboard summary, balance add/history, and account archival.
+- Deployed signed-out `/dashboard` browser gate smoke passed with no console errors or horizontal overflow.
+- Disposable D1 rows and Clerk development users created during verification were removed afterward.
 
 ## Required Verification Before Push
 

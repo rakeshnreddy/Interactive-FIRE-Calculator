@@ -138,7 +138,80 @@ type AccountProfileUpdate = {
   targetRetirementAge: number | null;
 };
 
+type FinancialAccountType =
+  | 'cash'
+  | 'checking'
+  | 'savings'
+  | 'investment'
+  | 'retirement'
+  | 'credit'
+  | 'loan'
+  | 'mortgage'
+  | 'real_estate'
+  | 'other_asset'
+  | 'other_liability';
+
+type AccountCategory = 'asset' | 'liability';
+
+type AccountBalance = {
+  balanceCents: number;
+  balanceDate: string;
+  createdAt: string;
+  id: string;
+};
+
+type FinancialAccount = {
+  accountType: FinancialAccountType;
+  balanceHistory: AccountBalance[];
+  category: AccountCategory;
+  createdAt: string;
+  currency: string;
+  id: string;
+  institutionName: string | null;
+  isActive: boolean;
+  latestBalanceCents: number;
+  latestBalanceDate: string | null;
+  name: string;
+  updatedAt: string;
+};
+
+type AccountSummary = {
+  accountCount: number;
+  assetsCents: number;
+  liabilityAccountCount: number;
+  liabilitiesCents: number;
+  netWorthCents: number;
+};
+
+type AccountDraft = {
+  accountType: FinancialAccountType;
+  balanceAmount: string;
+  balanceDate: string;
+  currency: string;
+  institutionName: string;
+  name: string;
+};
+
+type BalanceDraft = {
+  amount: string;
+  date: string;
+};
+
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
+
+const accountTypeOptions: Array<{ category: AccountCategory; label: string; value: FinancialAccountType }> = [
+  { category: 'asset', label: 'Cash', value: 'cash' },
+  { category: 'asset', label: 'Checking', value: 'checking' },
+  { category: 'asset', label: 'Savings', value: 'savings' },
+  { category: 'asset', label: 'Investment', value: 'investment' },
+  { category: 'asset', label: 'Retirement', value: 'retirement' },
+  { category: 'asset', label: 'Real estate', value: 'real_estate' },
+  { category: 'asset', label: 'Other asset', value: 'other_asset' },
+  { category: 'liability', label: 'Credit card', value: 'credit' },
+  { category: 'liability', label: 'Loan', value: 'loan' },
+  { category: 'liability', label: 'Mortgage', value: 'mortgage' },
+  { category: 'liability', label: 'Other liability', value: 'other_liability' }
+];
 
 const moodLabels: Record<Mood, string> = {
   aurora: 'Aurora',
@@ -563,6 +636,276 @@ function optionalIntegerFromDraft(value: string): number | null {
   const parsed = Number(trimmed);
 
   return Number.isInteger(parsed) ? parsed : null;
+}
+
+async function loadFinancialAccounts(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<{
+  accounts: FinancialAccount[];
+  summary: AccountSummary;
+}> {
+  const response = await authenticatedJsonRequest(auth, '/api/accounts');
+
+  if (!response.ok) {
+    throw new Error('Unable to load financial accounts.');
+  }
+
+  const body = await response.json();
+  const accounts = isRecord(body) && Array.isArray(body.accounts)
+    ? body.accounts.map(toFinancialAccount).filter((account): account is FinancialAccount => Boolean(account))
+    : [];
+  const summary = isRecord(body) ? toAccountSummary(body.summary) : null;
+
+  return {
+    accounts,
+    summary: summary ?? summarizeAccountList(accounts)
+  };
+}
+
+async function createFinancialAccountRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  draft: AccountDraft
+): Promise<FinancialAccount> {
+  const balanceCents = moneyInputToCents(draft.balanceAmount);
+  const payload = {
+    accountType: draft.accountType,
+    balanceCents: balanceCents ?? 0,
+    balanceDate: draft.balanceDate,
+    currency: draft.currency.trim().toUpperCase() || 'USD',
+    institutionName: optionalTextFromDraft(draft.institutionName),
+    name: draft.name.trim()
+  };
+  const response = await authenticatedJsonRequest(auth, '/api/accounts', {
+    body: JSON.stringify(payload),
+    method: 'POST'
+  });
+
+  return readFinancialAccountResponse(response, 'Unable to create account.');
+}
+
+async function archiveFinancialAccountRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  id: string
+): Promise<void> {
+  const response = await authenticatedJsonRequest(auth, `/api/accounts/${encodeURIComponent(id)}`, {
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to archive account.');
+  }
+}
+
+async function addFinancialAccountBalanceRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  id: string,
+  draft: BalanceDraft
+): Promise<FinancialAccount> {
+  const balanceCents = moneyInputToCents(draft.amount);
+
+  if (balanceCents === null) {
+    throw new Error('Balance amount is required.');
+  }
+
+  const response = await authenticatedJsonRequest(auth, `/api/accounts/${encodeURIComponent(id)}/balances`, {
+    body: JSON.stringify({
+      balanceCents,
+      balanceDate: draft.date
+    }),
+    method: 'POST'
+  });
+
+  return readFinancialAccountResponse(response, 'Unable to save balance.');
+}
+
+async function readFinancialAccountResponse(response: Response, errorMessage: string): Promise<FinancialAccount> {
+  if (!response.ok) {
+    throw new Error(errorMessage);
+  }
+
+  const body = await response.json();
+  const account = isRecord(body) ? toFinancialAccount(body.account) : null;
+
+  if (!account) {
+    throw new Error(errorMessage);
+  }
+
+  return account;
+}
+
+function toFinancialAccount(value: unknown): FinancialAccount | null {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.name !== 'string') {
+    return null;
+  }
+
+  if (
+    !isFinancialAccountType(value.accountType) ||
+    !isAccountCategory(value.category) ||
+    typeof value.currency !== 'string' ||
+    typeof value.createdAt !== 'string' ||
+    typeof value.updatedAt !== 'string'
+  ) {
+    return null;
+  }
+
+  const balances = Array.isArray(value.balanceHistory)
+    ? value.balanceHistory.map(toAccountBalance).filter((balance): balance is AccountBalance => Boolean(balance))
+    : [];
+
+  return {
+    accountType: value.accountType,
+    balanceHistory: balances,
+    category: value.category,
+    createdAt: value.createdAt,
+    currency: value.currency,
+    id: value.id,
+    institutionName: typeof value.institutionName === 'string' ? value.institutionName : null,
+    isActive: value.isActive !== false,
+    latestBalanceCents: typeof value.latestBalanceCents === 'number' ? value.latestBalanceCents : 0,
+    latestBalanceDate: typeof value.latestBalanceDate === 'string' ? value.latestBalanceDate : null,
+    name: value.name,
+    updatedAt: value.updatedAt
+  };
+}
+
+function toAccountBalance(value: unknown): AccountBalance | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.id !== 'string' ||
+    typeof value.balanceCents !== 'number' ||
+    typeof value.balanceDate !== 'string' ||
+    typeof value.createdAt !== 'string'
+  ) {
+    return null;
+  }
+
+  return {
+    balanceCents: value.balanceCents,
+    balanceDate: value.balanceDate,
+    createdAt: value.createdAt,
+    id: value.id
+  };
+}
+
+function toAccountSummary(value: unknown): AccountSummary | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.accountCount !== 'number' ||
+    typeof value.assetsCents !== 'number' ||
+    typeof value.liabilityAccountCount !== 'number' ||
+    typeof value.liabilitiesCents !== 'number' ||
+    typeof value.netWorthCents !== 'number'
+  ) {
+    return null;
+  }
+
+  return {
+    accountCount: value.accountCount,
+    assetsCents: value.assetsCents,
+    liabilityAccountCount: value.liabilityAccountCount,
+    liabilitiesCents: value.liabilitiesCents,
+    netWorthCents: value.netWorthCents
+  };
+}
+
+function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
+  const summary = accounts.reduce<AccountSummary>(
+    (current, account) => {
+      if (account.category === 'liability') {
+        return {
+          ...current,
+          liabilitiesCents: current.liabilitiesCents + account.latestBalanceCents,
+          liabilityAccountCount: current.liabilityAccountCount + 1
+        };
+      }
+
+      return {
+        ...current,
+        assetsCents: current.assetsCents + account.latestBalanceCents
+      };
+    },
+    {
+      accountCount: accounts.length,
+      assetsCents: 0,
+      liabilityAccountCount: 0,
+      liabilitiesCents: 0,
+      netWorthCents: 0
+    }
+  );
+
+  return {
+    ...summary,
+    netWorthCents: summary.assetsCents - summary.liabilitiesCents
+  };
+}
+
+function emptyAccountDraft(): AccountDraft {
+  return {
+    accountType: 'checking',
+    balanceAmount: '',
+    balanceDate: todayInputDate(),
+    currency: 'USD',
+    institutionName: '',
+    name: ''
+  };
+}
+
+function emptyBalanceDraft(): BalanceDraft {
+  return {
+    amount: '',
+    date: todayInputDate()
+  };
+}
+
+function buildBalanceDraftMap(accounts: FinancialAccount[]): Record<string, BalanceDraft> {
+  return accounts.reduce<Record<string, BalanceDraft>>((drafts, account) => {
+    drafts[account.id] = emptyBalanceDraft();
+    return drafts;
+  }, {});
+}
+
+function moneyInputToCents(value: string): number | null {
+  const normalized = value.replace(/[$,\s]/g, '');
+
+  if (!normalized) {
+    return null;
+  }
+
+  if (!/^\d+(\.\d{0,2})?$/.test(normalized)) {
+    return null;
+  }
+
+  const parsed = Number(normalized);
+
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+
+  return Math.round(parsed * 100);
+}
+
+function formatCents(value: number): string {
+  return formatMoney(value / 100);
+}
+
+function accountTypeLabel(value: FinancialAccountType): string {
+  return accountTypeOptions.find((option) => option.value === value)?.label ?? value;
+}
+
+function isFinancialAccountType(value: unknown): value is FinancialAccountType {
+  return typeof value === 'string' && accountTypeOptions.some((option) => option.value === value);
+}
+
+function isAccountCategory(value: unknown): value is AccountCategory {
+  return value === 'asset' || value === 'liability';
+}
+
+function todayInputDate(): string {
+  return new Date().toISOString().slice(0, 10);
 }
 
 function numericValue(value: string, fallback = 0): number {
@@ -1008,26 +1351,26 @@ const platformPages: Record<
 > = {
   '/dashboard': {
     eyebrow: 'Dashboard',
-    title: 'A signed-in financial snapshot will live here.',
+    title: 'Your financial snapshot starts here.',
     description:
-      'This route establishes the future home for net worth, goal progress, saved plans, and recent account changes.',
+      'Net worth, assets, liabilities, and recent account balance updates roll up from saved tracker data.',
     icon: LayoutDashboard,
     cards: [
-      { label: 'Net worth', value: '$0', detail: 'Manual accounts and balances arrive in a later phase.' },
+      { label: 'Net worth', value: '$0', detail: 'Manual accounts and balances power this number.' },
       { label: 'Goal progress', value: '0%', detail: 'Goals will roll up into a concise progress view.' },
       { label: 'Saved plans', value: '0', detail: 'FIRE and future planning modules will save here.' }
     ]
   },
   '/accounts': {
     eyebrow: 'Accounts',
-    title: 'Accounts will hold the financial profile backbone.',
+    title: 'Track manual assets, debt, and balance history.',
     description:
-      'This route reserves space for manual assets, liabilities, balances, and account history before bank connections or imports are introduced.',
+      'Add accounts by hand, record balance snapshots, and keep the first net-worth dashboard current before imports are introduced.',
     icon: CircleDollarSign,
     cards: [
-      { label: 'Assets', value: 'Planned', detail: 'Cash, brokerage, retirement, property, and other holdings.' },
-      { label: 'Liabilities', value: 'Planned', detail: 'Debt balances, rates, payoff schedules, and ownership.' },
-      { label: 'Balances', value: 'Planned', detail: 'Snapshot history for dashboard and goal calculations.' }
+      { label: 'Assets', value: 'Ready', detail: 'Cash, brokerage, retirement, property, and other holdings.' },
+      { label: 'Liabilities', value: 'Ready', detail: 'Credit cards, loans, mortgages, and other debt balances.' },
+      { label: 'Balances', value: 'Ready', detail: 'Snapshot history for dashboard calculations.' }
     ]
   },
   '/transactions': {
@@ -1240,6 +1583,308 @@ function ProfileSettingsPanel({
           </button>
         </div>
       </form>
+    </section>
+  );
+}
+
+function DashboardPanel({
+  accounts,
+  isLoading,
+  message,
+  onNavigate,
+  summary
+}: {
+  accounts: FinancialAccount[];
+  isLoading: boolean;
+  message: string;
+  onNavigate: (route: AppRoute) => void;
+  summary: AccountSummary;
+}) {
+  const recentAccounts = accounts.slice(0, 5);
+
+  return (
+    <section className="financial-dashboard" aria-labelledby="dashboard-summary-title">
+      <div className="dashboard-summary-grid">
+        <article className="tracker-metric tracker-metric-primary">
+          <span>Net worth</span>
+          <strong>{formatCents(summary.netWorthCents)}</strong>
+          <small>{summary.accountCount} active accounts</small>
+        </article>
+        <article className="tracker-metric">
+          <span>Assets</span>
+          <strong>{formatCents(summary.assetsCents)}</strong>
+          <small>Cash, investments, property, and other assets</small>
+        </article>
+        <article className="tracker-metric">
+          <span>Liabilities</span>
+          <strong>{formatCents(summary.liabilitiesCents)}</strong>
+          <small>{summary.liabilityAccountCount} debt accounts</small>
+        </article>
+      </div>
+
+      <section className="account-panel" aria-labelledby="dashboard-summary-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Balance rollup</p>
+            <h2 id="dashboard-summary-title">Latest account snapshot</h2>
+          </div>
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/accounts')}>
+            Accounts
+            <ChevronRight size={16} />
+          </button>
+        </div>
+
+        {message ? <p className="account-status">{message}</p> : null}
+
+        {isLoading ? (
+          <article className="scenario-card empty-card">
+            <span>Loading account data</span>
+            <small>Checking saved balances.</small>
+          </article>
+        ) : recentAccounts.length === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No account balances yet</span>
+            <small>Add an account to turn the dashboard into a net-worth view.</small>
+          </article>
+        ) : (
+          <div className="dashboard-account-list">
+            {recentAccounts.map((account) => (
+              <article className="dashboard-account-row" key={account.id}>
+                <div>
+                  <strong>{account.name}</strong>
+                  <small>
+                    {accountTypeLabel(account.accountType)}
+                    {account.latestBalanceDate ? ` - ${account.latestBalanceDate}` : ''}
+                  </small>
+                </div>
+                <span className={account.category === 'liability' ? 'amount-negative' : 'amount-positive'}>
+                  {account.category === 'liability' ? '-' : ''}
+                  {formatCents(account.latestBalanceCents)}
+                </span>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    </section>
+  );
+}
+
+function AccountsPanel({
+  accounts,
+  balanceDrafts,
+  draft,
+  isLoading,
+  isSaving,
+  message,
+  onArchiveAccount,
+  onBalanceDraftChange,
+  onCreateAccount,
+  onDraftChange,
+  onRecordBalance,
+  summary
+}: {
+  accounts: FinancialAccount[];
+  balanceDrafts: Record<string, BalanceDraft>;
+  draft: AccountDraft;
+  isLoading: boolean;
+  isSaving: boolean;
+  message: string;
+  onArchiveAccount: (id: string) => void;
+  onBalanceDraftChange: (id: string, field: keyof BalanceDraft, value: string) => void;
+  onCreateAccount: () => void;
+  onDraftChange: (field: keyof AccountDraft, value: string) => void;
+  onRecordBalance: (id: string) => void;
+  summary: AccountSummary;
+}) {
+  return (
+    <section className="account-workspace" aria-labelledby="accounts-workspace-title">
+      <div className="account-overview-strip">
+        <article>
+          <span>Net worth</span>
+          <strong>{formatCents(summary.netWorthCents)}</strong>
+        </article>
+        <article>
+          <span>Assets</span>
+          <strong>{formatCents(summary.assetsCents)}</strong>
+        </article>
+        <article>
+          <span>Liabilities</span>
+          <strong>{formatCents(summary.liabilitiesCents)}</strong>
+        </article>
+      </div>
+
+      <section className="account-panel" aria-labelledby="accounts-workspace-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Manual tracker</p>
+            <h2 id="accounts-workspace-title">Accounts and balances</h2>
+          </div>
+        </div>
+
+        <form
+          className="account-form-grid"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onCreateAccount();
+          }}
+        >
+          <Field label="Account name">
+            <input
+              disabled={isSaving}
+              maxLength={120}
+              type="text"
+              value={draft.name}
+              onChange={(event) => onDraftChange('name', event.target.value)}
+            />
+          </Field>
+          <Field label="Type">
+            <select
+              disabled={isSaving}
+              value={draft.accountType}
+              onChange={(event) => onDraftChange('accountType', event.target.value)}
+            >
+              {accountTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Institution">
+            <input
+              disabled={isSaving}
+              maxLength={120}
+              type="text"
+              value={draft.institutionName}
+              onChange={(event) => onDraftChange('institutionName', event.target.value)}
+            />
+          </Field>
+          <Field label="Currency">
+            <input
+              disabled={isSaving}
+              maxLength={3}
+              type="text"
+              value={draft.currency}
+              onChange={(event) => onDraftChange('currency', event.target.value.toUpperCase())}
+            />
+          </Field>
+          <Field label="Balance / debt">
+            <input
+              disabled={isSaving}
+              inputMode="decimal"
+              type="text"
+              value={draft.balanceAmount}
+              onChange={(event) => onDraftChange('balanceAmount', event.target.value)}
+            />
+          </Field>
+          <Field label="Balance date">
+            <input
+              disabled={isSaving}
+              type="date"
+              value={draft.balanceDate}
+              onChange={(event) => onDraftChange('balanceDate', event.target.value)}
+            />
+          </Field>
+          <button className="primary-button icon-text-button" disabled={isSaving} type="submit">
+            <Save size={16} />
+            Add account
+          </button>
+        </form>
+
+        {message ? <p className="account-status">{message}</p> : null}
+      </section>
+
+      <section className="account-panel" aria-label="Saved accounts">
+        {isLoading ? (
+          <article className="scenario-card empty-card">
+            <span>Loading accounts</span>
+            <small>Checking saved account balances.</small>
+          </article>
+        ) : accounts.length === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No accounts yet</span>
+            <small>Assets and debt balances will appear here.</small>
+          </article>
+        ) : (
+          <div className="account-card-list">
+            {accounts.map((account) => {
+              const balanceDraft = balanceDrafts[account.id] ?? emptyBalanceDraft();
+
+              return (
+                <article className="account-card" key={account.id}>
+                  <div className="account-card-main">
+                    <div>
+                      <span className={`account-category account-category-${account.category}`}>
+                        {account.category}
+                      </span>
+                      <strong>{account.name}</strong>
+                      <small>
+                        {accountTypeLabel(account.accountType)}
+                        {account.institutionName ? ` - ${account.institutionName}` : ''}
+                      </small>
+                    </div>
+                    <div className="account-balance">
+                      <span>{account.latestBalanceDate ?? 'No balance date'}</span>
+                      <strong>{formatCents(account.latestBalanceCents)}</strong>
+                    </div>
+                  </div>
+
+                  <form
+                    className="balance-form"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      onRecordBalance(account.id);
+                    }}
+                  >
+                    <Field label="New balance">
+                      <input
+                        disabled={isSaving}
+                        inputMode="decimal"
+                        type="text"
+                        value={balanceDraft.amount}
+                        onChange={(event) => onBalanceDraftChange(account.id, 'amount', event.target.value)}
+                      />
+                    </Field>
+                    <Field label="Date">
+                      <input
+                        disabled={isSaving}
+                        type="date"
+                        value={balanceDraft.date}
+                        onChange={(event) => onBalanceDraftChange(account.id, 'date', event.target.value)}
+                      />
+                    </Field>
+                    <button className="secondary-button icon-text-button" disabled={isSaving} type="submit">
+                      <Save size={16} />
+                      Record
+                    </button>
+                    <button
+                      className="icon-button row-action"
+                      disabled={isSaving}
+                      type="button"
+                      aria-label={`Archive ${account.name}`}
+                      onClick={() => onArchiveAccount(account.id)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </form>
+
+                  {account.balanceHistory.length > 0 ? (
+                    <div className="balance-history" aria-label={`${account.name} balance history`}>
+                      {account.balanceHistory.slice(0, 4).map((balance) => (
+                        <span key={balance.id}>
+                          {balance.balanceDate}
+                          <strong>{formatCents(balance.balanceCents)}</strong>
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
     </section>
   );
 }
@@ -1483,22 +2128,46 @@ function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void
 }
 
 function PlatformPage({
+  accountDraft,
+  accountMessage,
+  accountSummary,
+  balanceDrafts,
   auth,
+  financialAccounts,
   isLoadingProfile,
+  isLoadingAccounts,
+  isSavingAccount,
   isSavingProfile,
+  onAccountDraftChange,
+  onArchiveAccount,
+  onBalanceDraftChange,
+  onCreateAccount,
   onProfileDraftChange,
   onProfileSave,
+  onRecordBalance,
   route,
   onNavigate,
   profile,
   profileDraft,
   profileMessage
 }: {
+  accountDraft: AccountDraft;
+  accountMessage: string;
+  accountSummary: AccountSummary;
+  balanceDrafts: Record<string, BalanceDraft>;
   auth: Extract<AuthState, { status: 'signed-in' }>;
+  financialAccounts: FinancialAccount[];
+  isLoadingAccounts: boolean;
   isLoadingProfile: boolean;
+  isSavingAccount: boolean;
   isSavingProfile: boolean;
+  onAccountDraftChange: (field: keyof AccountDraft, value: string) => void;
+  onArchiveAccount: (id: string) => void;
+  onBalanceDraftChange: (id: string, field: keyof BalanceDraft, value: string) => void;
+  onCreateAccount: () => void;
   onProfileDraftChange: (field: keyof AccountProfileDraft, value: string) => void;
   onProfileSave: () => void;
+  onRecordBalance: (id: string) => void;
   route: Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
   onNavigate: (route: AppRoute) => void;
   profile: AccountProfile | null;
@@ -1518,6 +2187,33 @@ function PlatformPage({
 
       <SignedInProfileBand auth={auth} />
 
+      {route === '/dashboard' ? (
+        <DashboardPanel
+          accounts={financialAccounts}
+          isLoading={isLoadingAccounts}
+          message={accountMessage}
+          summary={accountSummary}
+          onNavigate={onNavigate}
+        />
+      ) : null}
+
+      {route === '/accounts' ? (
+        <AccountsPanel
+          accounts={financialAccounts}
+          balanceDrafts={balanceDrafts}
+          draft={accountDraft}
+          isLoading={isLoadingAccounts}
+          isSaving={isSavingAccount}
+          message={accountMessage}
+          summary={accountSummary}
+          onArchiveAccount={onArchiveAccount}
+          onBalanceDraftChange={onBalanceDraftChange}
+          onCreateAccount={onCreateAccount}
+          onDraftChange={onAccountDraftChange}
+          onRecordBalance={onRecordBalance}
+        />
+      ) : null}
+
       {route === '/settings' ? (
         <ProfileSettingsPanel
           draft={profileDraft}
@@ -1530,15 +2226,17 @@ function PlatformPage({
         />
       ) : null}
 
-      <div className="placeholder-grid">
-        {page.cards.map((card) => (
-          <article className="scenario-card" key={card.label}>
-            <span>{card.label}</span>
-            <strong>{card.value}</strong>
-            <small>{card.detail}</small>
-          </article>
-        ))}
-      </div>
+      {route === '/dashboard' || route === '/accounts' ? null : (
+        <div className="placeholder-grid">
+          {page.cards.map((card) => (
+            <article className="scenario-card" key={card.label}>
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.detail}</small>
+            </article>
+          ))}
+        </div>
+      )}
 
       <section className="next-module-band" aria-label={`${page.eyebrow} next action`}>
         <span className="feature-icon">
@@ -1547,12 +2245,16 @@ function PlatformPage({
         <div>
           <strong>{page.eyebrow} route is wired.</strong>
           <small>
-            Continue into the working FIRE module while auth, persistence, and tracker data models
-            are still future phases.
+            {route === '/dashboard' || route === '/accounts'
+              ? 'Account balances now power the tracker MVP while goals and imports remain future phases.'
+              : 'Continue into the working FIRE module while future platform modules are still being built.'}
           </small>
         </div>
-        <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators/fire')}>
-          Try FIRE
+        <button
+          className="secondary-button icon-text-button"
+          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : '/calculators/fire')}
+        >
+          {route === '/dashboard' ? 'Accounts' : 'Try FIRE'}
           <ChevronRight size={16} />
         </button>
       </section>
@@ -1649,6 +2351,12 @@ function App({ auth }: { auth: AuthState }) {
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileMessage, setProfileMessage] = useState('');
+  const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>([]);
+  const [accountDraft, setAccountDraft] = useState<AccountDraft>(emptyAccountDraft);
+  const [balanceDrafts, setBalanceDrafts] = useState<Record<string, BalanceDraft>>({});
+  const [isLoadingAccounts, setIsLoadingAccounts] = useState(false);
+  const [isSavingAccount, setIsSavingAccount] = useState(false);
+  const [accountMessage, setAccountMessage] = useState('');
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -1752,7 +2460,55 @@ function App({ auth }: { auth: AuthState }) {
     };
   }, [auth.status, auth.isSignedIn, auth.user?.id]);
 
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (auth.status !== 'signed-in') {
+      setFinancialAccounts([]);
+      setAccountDraft(emptyAccountDraft());
+      setBalanceDrafts({});
+      setIsLoadingAccounts(false);
+      setAccountMessage('');
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    setIsLoadingAccounts(true);
+    setAccountMessage('Loading account balances...');
+
+    loadFinancialAccounts(auth)
+      .then(({ accounts }) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setFinancialAccounts(accounts);
+        setBalanceDrafts(buildBalanceDraftMap(accounts));
+        setAccountMessage('Account balances are synced.');
+      })
+      .catch(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        setFinancialAccounts([]);
+        setBalanceDrafts({});
+        setAccountMessage('Account balances could not be loaded.');
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoadingAccounts(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [auth.status, auth.isSignedIn, auth.user?.id]);
+
   const result = useMemo<FirePlanResult>(() => calculateFirePlan(plan), [plan]);
+  const accountSummary = useMemo<AccountSummary>(() => summarizeAccountList(financialAccounts), [financialAccounts]);
   const duration = totalDuration(plan.ratePeriods);
   const timelineDuration = modeledDurationFromTimeline(timeline);
   const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
@@ -1996,6 +2752,126 @@ function App({ auth }: { auth: AuthState }) {
       setProfileMessage('Profile could not be saved.');
     } finally {
       setIsSavingProfile(false);
+    }
+  };
+
+  const updateAccountDraft = (field: keyof AccountDraft, value: string) => {
+    if (field === 'accountType') {
+      if (!isFinancialAccountType(value)) {
+        return;
+      }
+
+      setAccountDraft((current) => ({
+        ...current,
+        accountType: value
+      }));
+      return;
+    }
+
+    setAccountDraft((current) => ({
+      ...current,
+      [field]: value
+    }));
+  };
+
+  const updateBalanceDraft = (id: string, field: keyof BalanceDraft, value: string) => {
+    setBalanceDrafts((current) => ({
+      ...current,
+      [id]: {
+        ...(current[id] ?? emptyBalanceDraft()),
+        [field]: value
+      }
+    }));
+  };
+
+  const createFinancialAccount = async () => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    if (accountDraft.name.trim().length === 0) {
+      setAccountMessage('Account name is required.');
+      return;
+    }
+
+    if (accountDraft.balanceAmount.trim() && moneyInputToCents(accountDraft.balanceAmount) === null) {
+      setAccountMessage('Balance must be a dollar amount with up to two decimals.');
+      return;
+    }
+
+    setIsSavingAccount(true);
+    setAccountMessage('Saving account...');
+
+    try {
+      const account = await createFinancialAccountRecord(auth, accountDraft);
+      const nextAccounts = [account, ...financialAccounts.filter((item) => item.id !== account.id)];
+
+      setFinancialAccounts(nextAccounts);
+      setBalanceDrafts((current) => ({
+        ...current,
+        [account.id]: emptyBalanceDraft()
+      }));
+      setAccountDraft(emptyAccountDraft());
+      setAccountMessage('Account saved.');
+    } catch {
+      setAccountMessage('Account could not be saved.');
+    } finally {
+      setIsSavingAccount(false);
+    }
+  };
+
+  const recordAccountBalance = async (id: string) => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    const draft = balanceDrafts[id] ?? emptyBalanceDraft();
+
+    if (moneyInputToCents(draft.amount) === null) {
+      setAccountMessage('Balance must be a dollar amount with up to two decimals.');
+      return;
+    }
+
+    setIsSavingAccount(true);
+    setAccountMessage('Recording balance...');
+
+    try {
+      const account = await addFinancialAccountBalanceRecord(auth, id, draft);
+
+      setFinancialAccounts((current) => current.map((item) => (item.id === account.id ? account : item)));
+      setBalanceDrafts((current) => ({
+        ...current,
+        [account.id]: emptyBalanceDraft()
+      }));
+      setAccountMessage('Balance recorded.');
+    } catch {
+      setAccountMessage('Balance could not be recorded.');
+    } finally {
+      setIsSavingAccount(false);
+    }
+  };
+
+  const archiveFinancialAccount = async (id: string) => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    setIsSavingAccount(true);
+    setAccountMessage('Archiving account...');
+
+    try {
+      await archiveFinancialAccountRecord(auth, id);
+      setFinancialAccounts((current) => current.filter((item) => item.id !== id));
+      setBalanceDrafts((current) => {
+        const next = { ...current };
+        delete next[id];
+        return next;
+      });
+      setAccountMessage('Account archived.');
+    } catch {
+      setAccountMessage('Account could not be archived.');
+    } finally {
+      setIsSavingAccount(false);
     }
   };
 
@@ -2313,16 +3189,28 @@ function App({ auth }: { auth: AuthState }) {
         ) : isPlatformRoute(route) ? (
           auth.isSignedIn ? (
             <PlatformPage
+              accountDraft={accountDraft}
+              accountMessage={accountMessage}
+              accountSummary={accountSummary}
+              balanceDrafts={balanceDrafts}
               auth={auth}
+              financialAccounts={financialAccounts}
+              isLoadingAccounts={isLoadingAccounts}
               isLoadingProfile={isLoadingProfile}
+              isSavingAccount={isSavingAccount}
               isSavingProfile={isSavingProfile}
               profile={accountProfile}
               profileDraft={profileDraft}
               profileMessage={profileMessage}
               route={route}
               onNavigate={navigateTo}
+              onAccountDraftChange={updateAccountDraft}
+              onArchiveAccount={archiveFinancialAccount}
+              onBalanceDraftChange={updateBalanceDraft}
+              onCreateAccount={createFinancialAccount}
               onProfileDraftChange={updateProfileDraft}
               onProfileSave={saveAccountProfile}
+              onRecordBalance={recordAccountBalance}
             />
           ) : (
             <AuthGate auth={auth} route={route} onNavigate={navigateTo} />

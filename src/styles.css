@@ -72,6 +72,8 @@ svg {
   --accent-wash: color-mix(in srgb, var(--accent) 8%, transparent);
   --success: #16745a;
   --success-soft: rgba(22, 116, 90, 0.13);
+  --danger: #b4233a;
+  --danger-soft: rgba(180, 35, 58, 0.12);
   --chart-primary: #2563eb;
   --chart-secondary: #b75d7a;
   --chart-grid: rgba(67, 83, 108, 0.18);
@@ -101,6 +103,8 @@ svg {
   --accent-contrast: #07111e;
   --success: #6dd6a9;
   --success-soft: rgba(109, 214, 169, 0.15);
+  --danger: #ff7a8f;
+  --danger-soft: rgba(255, 122, 143, 0.14);
   --chart-grid: rgba(214, 225, 238, 0.15);
   --page-glaze: rgba(4, 7, 13, 0.38);
   color-scheme: dark;
@@ -777,6 +781,197 @@ svg {
   font-size: 0.78rem;
   font-weight: 750;
   line-height: 1.35;
+}
+
+.financial-dashboard,
+.account-workspace {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.dashboard-summary-grid,
+.account-overview-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.tracker-metric,
+.account-overview-strip article,
+.account-panel,
+.account-card {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.tracker-metric,
+.account-overview-strip article {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+}
+
+.tracker-metric-primary {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
+  background: var(--accent-wash);
+}
+
+.tracker-metric span,
+.tracker-metric small,
+.account-overview-strip span,
+.account-status,
+.dashboard-account-row small,
+.account-card small,
+.account-balance span,
+.balance-history span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.tracker-metric strong,
+.account-overview-strip strong {
+  color: var(--heading);
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.account-panel {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.account-form-grid {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.1fr) minmax(140px, 0.9fr) minmax(150px, 1fr) 76px minmax(116px, 0.8fr) 148px auto;
+  gap: 0.7rem;
+  align-items: end;
+}
+
+.account-status {
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+.dashboard-account-list,
+.account-card-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.dashboard-account-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.dashboard-account-row strong,
+.account-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--heading);
+  font-weight: 850;
+}
+
+.amount-positive,
+.amount-negative {
+  color: var(--heading);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.amount-negative {
+  color: var(--danger);
+}
+
+.account-card {
+  display: grid;
+  gap: 0.9rem;
+  padding: 0.9rem;
+}
+
+.account-card-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.account-category {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.4rem;
+  padding: 0.18rem 0.42rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted-strong);
+  background: var(--surface-soft);
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.account-category-asset {
+  border-color: color-mix(in srgb, var(--success) 28%, var(--border));
+  color: var(--success);
+}
+
+.account-category-liability {
+  border-color: color-mix(in srgb, var(--danger) 28%, var(--border));
+  color: var(--danger);
+}
+
+.account-balance {
+  display: grid;
+  gap: 0.2rem;
+  justify-items: end;
+  text-align: right;
+}
+
+.account-balance strong {
+  font-size: 1.05rem;
+}
+
+.balance-form {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) 148px auto 40px;
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.balance-history {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.balance-history span {
+  display: grid;
+  gap: 0.16rem;
+  min-width: 0;
+  padding: 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.balance-history strong {
+  color: var(--heading);
+  font-size: 0.86rem;
 }
 
 .auth-save-note {
@@ -2172,11 +2367,16 @@ td {
   .form-grid,
   .hero-panels,
   .result-facts,
+  .dashboard-summary-grid,
+  .account-overview-strip,
   .comparison-grid,
   .assumption-grid,
   .feature-grid,
   .module-grid,
   .profile-form-grid,
+  .account-form-grid,
+  .balance-form,
+  .balance-history,
   .placeholder-grid,
   .board-metrics,
   .core-fire-form {
@@ -2284,13 +2484,22 @@ td {
   .event-row,
   .recurring-row,
   .utility-grid,
+  .dashboard-account-row,
+  .account-card-main,
   .saved-item {
     grid-template-columns: 1fr;
   }
 
   .profile-editor-actions,
-  .profile-editor-actions .primary-button {
+  .profile-editor-actions .primary-button,
+  .account-form-grid .primary-button,
+  .balance-form .secondary-button {
     width: 100%;
+  }
+
+  .account-balance {
+    justify-items: start;
+    text-align: left;
   }
 
   .saved-actions,
