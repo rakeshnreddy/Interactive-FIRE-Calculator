@@ -731,6 +731,54 @@ svg {
   line-height: 1.2;
 }
 
+.profile-editor {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.profile-updated {
+  justify-self: end;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.profile-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.profile-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-status {
+  min-width: min(100%, 220px);
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
 .auth-save-note {
   display: flex;
   gap: 0.55rem;
@@ -746,6 +794,14 @@ svg {
 .auth-save-note span {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.storage-status {
+  margin: -0.45rem 0 0.95rem;
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.35;
 }
 
 .calculator-intro h1 {
@@ -2120,6 +2176,7 @@ td {
   .assumption-grid,
   .feature-grid,
   .module-grid,
+  .profile-form-grid,
   .placeholder-grid,
   .board-metrics,
   .core-fire-form {
@@ -2229,6 +2286,11 @@ td {
   .utility-grid,
   .saved-item {
     grid-template-columns: 1fr;
+  }
+
+  .profile-editor-actions,
+  .profile-editor-actions .primary-button {
+    width: 100%;
   }
 
   .saved-actions,

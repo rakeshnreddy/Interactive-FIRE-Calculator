@@ -1,6 +1,6 @@
 # Financial Platform Handoff
 
-Last updated: June 11, 2026
+Last updated: June 13, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://3894ea1a.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://0fe386db.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,7 +29,7 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 server persistence is complete for preview/development: D1 stores profiles and saved FIRE plans behind Clerk-authenticated Pages Functions, while signed-out users keep local demo drafts. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
@@ -42,6 +42,9 @@ Production target:
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
 - `functions/api/me.ts` contains the Clerk-backed Pages Function identity endpoint.
 - `functions/api/profile.ts` contains the D1-backed authenticated profile endpoint.
+- `functions/api/plans/index.ts` and `functions/api/plans/[id].ts` contain D1-backed authenticated FIRE plan endpoints.
+- `functions/_lib/persistence.ts` centralizes D1 binding checks and user/profile creation.
+- `functions/_lib/firePlans.ts` centralizes FIRE plan persistence, payload validation, versioning, and archival.
 - `functions/_lib/` contains shared Pages Function helpers for JSON responses and Clerk session validation.
 - `migrations/` contains D1 SQL migrations.
 - `public/_redirects` handles SPA routing.
@@ -105,7 +108,7 @@ Current Phase 2 state:
 - `/calculators/fire` remains public as the unauthenticated demo.
 - Signed-in profile basics are limited to Clerk identity fields.
 - `GET /api/me` validates Clerk sessions in Pages Functions and returns only `userId`, `sessionId`, optional `orgId`, and optional `orgRole`.
-- FIRE plan saves remain local browser drafts; no D1 persistence has been added.
+- FIRE plan saves are local browser drafts when signed out and account-backed D1 plans when signed in.
 - Clerk CLI is linked to app `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`) with development instance `ins_3EzmNoRe49U12NtPgfiqgXHKsgh`.
 - Local ignored env files are present: `.env.local` and `.dev.vars`.
 - Cloudflare Pages preview secrets include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`.
@@ -115,7 +118,7 @@ Current Phase 2 state:
 
 Next recommended phase:
 
-- Finish Phase 2 by verifying real hosted sign-up/sign-in/sign-out with a test user, then configuring Clerk production auth for an owned launch domain.
+- Begin Phase 4 Financial Tracker MVP for manual accounts, assets, liabilities, balances, and dashboard data, while keeping Clerk production auth/domain setup visible as a launch blocker.
 
 Current Phase 3 state:
 
@@ -126,7 +129,12 @@ Current Phase 3 state:
 - The first migration has been applied locally, to preview D1, and to production D1.
 - Shared Pages Function auth helpers exist in `functions/_lib/`.
 - `GET` and `PUT /api/profile` create/read/update the signed-in user's basic profile in D1.
-- User-owned FIRE plan APIs are intentionally still pending until a signed-in preview user verifies auth end to end.
+- `GET`/`POST /api/plans` and `GET`/`PUT`/`DELETE /api/plans/:id` create/list/read/version/archive signed-in user FIRE plans in D1.
+- The FIRE calculator save panel uses account-backed plan storage when signed in and browser localStorage drafts when signed out.
+- The Settings route includes a D1-backed profile form for display name, household name, currency, birth year, and target retirement age.
+- Local Pages dev API verification passed with a disposable Clerk development user token for profile read/update, plan create/list/read/update/delete, unauthenticated `401`, and archived-plan `404`.
+- Deployed preview API verification passed at `https://0fe386db.interactive-fire-calculator.pages.dev`; disposable D1 rows and the temporary Clerk development user were removed afterward.
+- Browser smoke checks passed for signed-out `/calculators/fire` and `/settings` at `1280x720` and `390x844` with no console errors or horizontal overflow.
 
 ## Target Product Vision
 
@@ -245,9 +253,11 @@ The TypeScript app currently supports:
 - Light/dark mode.
 - Three moods: Aurora, Lagoon, Ember.
 
-Current limitation:
+Current persistence behavior:
 
-- Saved plans are local browser state only. They are not account-backed.
+- Signed-out saved plans remain local browser state.
+- Signed-in saved plans are account-backed D1 records with versioned FIRE inputs/results.
+- Profile defaults are account-backed D1 records.
 
 ## Front Page Audit
 
@@ -323,28 +333,50 @@ Acceptance:
 - FIRE demo is accessible but not the whole app.
 - Navigation labels map to distinct screens.
 
-### Phase 2: Auth And User Persistence
+### Phase 2: Auth And User Accounts
 
-Goal: allow users to create accounts and save data.
+Goal: allow users to create accounts and access signed-in shell state.
 
 Tasks:
 
 - Select auth provider.
 - Add sign up/sign in/sign out flows.
-- Add user profile persistence.
-- Create D1 database and migrations.
-- Add Pages Function API routes for user-owned plans.
-- Replace localStorage saved plans with authenticated saved plans.
-- Keep localStorage only for unauthenticated demo drafts.
+- Add signed-in shell state and basic identity display.
+- Gate authenticated app routes.
+- Keep `/` and `/calculators/fire` public.
+- Add Pages Function session validation.
+- Configure production Clerk instance/domain before launch.
 
 Acceptance:
 
 - User can sign up/sign in.
-- User can save a FIRE plan to server storage.
-- User can list/load/delete saved FIRE plans.
-- User data is isolated by user ID.
+- Signed-out app routes clearly gate access.
+- Public FIRE demo remains usable.
+- `/api/me` validates real sessions.
+- Production auth is not called complete until production Clerk keys/domain exist.
 
-### Phase 3: Financial Tracker MVP
+### Phase 3: Server Persistence
+
+Goal: store user-owned profile and FIRE plan data behind authenticated Pages Functions.
+
+Tasks:
+
+- Create D1 databases, binding, and migrations.
+- Add authenticated D1 profile endpoint.
+- Add user-owned FIRE plan API routes.
+- Store FIRE plan snapshots/results as versioned D1 records.
+- Wire signed-in FIRE saves to account-backed storage.
+- Keep localStorage only for unauthenticated demo drafts.
+- Add Settings profile form backed by D1.
+
+Acceptance:
+
+- User profile can be read and updated through `/api/profile`.
+- User can save, list, load, update, and delete account-backed FIRE plans.
+- User data is isolated by Clerk user ID.
+- Signed-out users cannot access persistence APIs.
+
+### Phase 4: Financial Tracker MVP
 
 Goal: move from calculator to tracker.
 
@@ -362,7 +394,7 @@ Acceptance:
 - User can create goals.
 - Dashboard shows progress and next actions.
 
-### Phase 4: Planning System
+### Phase 5: Planning System
 
 Goal: connect goals and saved financial data to plans.
 
@@ -380,7 +412,7 @@ Acceptance:
 - Plans can be compared.
 - FIRE results can use saved account data instead of only manual calculator inputs.
 
-### Phase 5: Imports And Automation
+### Phase 6: Imports And Automation
 
 Goal: reduce manual entry burden.
 
@@ -397,7 +429,7 @@ Acceptance:
 - Imported data can be reviewed before saving.
 - Dashboard updates from imported data.
 
-### Phase 6: Advanced Insight Layer
+### Phase 7: Advanced Insight Layer
 
 Goal: make the platform more useful than static tracking.
 
@@ -416,20 +448,19 @@ Acceptance:
 
 ## Immediate Next Coding Session Recommendation
 
-Finish Phase 2: Auth and User Accounts.
+Begin Phase 4: Financial Tracker MVP.
 
 Recommended first slice:
 
-1. Verify real sign up, sign in, sign out, signed-in route access, `/api/me`, and `/api/profile` on the Pages preview with a test user.
-2. Run `clerk deploy` in a human terminal and configure the Clerk production instance for an owned domain.
-3. Pull/set production Clerk keys when the production instance exists.
-4. Re-run verification and redeploy for production auth.
-5. Add user-owned FIRE plan APIs once signed-in preview auth is verified.
-6. Keep `/calculators/fire` public and keep local demo drafts available for signed-out users.
+1. Add manual financial accounts API and UI for assets/liabilities.
+2. Add current balance capture and balance history in D1.
+3. Add a signed-in dashboard summary using stored balances.
+4. Keep FIRE plan persistence isolated from account-tracker writes until the account model is stable.
+5. Continue tracking Clerk production auth/domain setup as a launch blocker.
 
 Reason:
 
-The code now has a real Clerk-ready auth boundary, route gates, local development keys, Cloudflare Pages preview secrets, D1 databases, and a profile endpoint. Production auth cannot be called complete until a Clerk production instance/domain exists and the hosted flow is verified end to end.
+The code now has a Clerk-ready auth boundary, route gates, local development keys, Cloudflare Pages preview secrets, D1 databases, profile persistence, and account-backed FIRE plan persistence. The next product gap is manual account/balance tracking. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
 
 ## Testing Requirements
 
@@ -494,9 +525,9 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phase 1 Product Shell and IA is complete. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed /api/me Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 persistence foundation has D1 databases, an initial schema migration, and /api/profile. Keep the unauthenticated FIRE calculator demo available. Do not add account-backed FIRE plan persistence until the auth/user identity model is verified with a real preview user.
+Phase 1 Product Shell and IA is complete. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed /api/me Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 server persistence is complete for preview/development: D1 has the initial schema, /api/profile, /api/plans, account-backed signed-in FIRE saves, signed-out local demo drafts, and a Settings profile form.
 
-Next goal: verify real hosted sign up, sign in, sign out, signed-in route access, /api/me, and /api/profile with a test user, then configure the Clerk production instance for an owned launch domain.
+Next goal: begin Phase 4 Financial Tracker MVP by adding manual accounts/assets/liabilities, balance history, and dashboard summaries. Keep production Clerk setup as a launch blocker.
 
 Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```

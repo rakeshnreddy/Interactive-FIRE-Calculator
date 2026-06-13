@@ -107,7 +107,35 @@ type SavedPlan = {
   id: string;
   name: string;
   createdAt: string;
+  updatedAt?: string;
+  versionNumber?: number;
   snapshot: AppSnapshot;
+};
+
+type AccountProfile = {
+  birthYear: number | null;
+  defaultCurrency: string;
+  displayName: string | null;
+  householdName: string | null;
+  targetRetirementAge: number | null;
+  updatedAt: string;
+  userId: string;
+};
+
+type AccountProfileDraft = {
+  birthYear: string;
+  defaultCurrency: string;
+  displayName: string;
+  householdName: string;
+  targetRetirementAge: string;
+};
+
+type AccountProfileUpdate = {
+  birthYear: number | null;
+  defaultCurrency: string;
+  displayName: string | null;
+  householdName: string | null;
+  targetRetirementAge: number | null;
 };
 
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
@@ -322,6 +350,219 @@ function isAppSnapshot(value: unknown): value is AppSnapshot {
   }
 
   return isRecord(value.plan) && isRecord(value.timeline);
+}
+
+async function authenticatedJsonRequest(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  path: string,
+  init: RequestInit = {}
+): Promise<Response> {
+  const token = await auth.getToken();
+
+  if (!token) {
+    throw new Error('No Clerk session token is available.');
+  }
+
+  const headers = new Headers(init.headers);
+  headers.set('authorization', `Bearer ${token}`);
+
+  if (init.body && !headers.has('content-type')) {
+    headers.set('content-type', 'application/json');
+  }
+
+  return fetch(path, {
+    ...init,
+    headers
+  });
+}
+
+async function loadAccountPlans(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<SavedPlan[]> {
+  const response = await authenticatedJsonRequest(auth, '/api/plans');
+
+  if (!response.ok) {
+    throw new Error('Unable to load account plans.');
+  }
+
+  const body = await response.json();
+
+  if (!isRecord(body) || !Array.isArray(body.plans)) {
+    return [];
+  }
+
+  return body.plans
+    .map(toSavedPlan)
+    .filter((plan): plan is SavedPlan => Boolean(plan))
+    .slice(0, 8);
+}
+
+async function createAccountPlan(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  payload: { name: string; result: FirePlanResult; snapshot: AppSnapshot }
+): Promise<SavedPlan> {
+  const response = await authenticatedJsonRequest(auth, '/api/plans', {
+    body: JSON.stringify(payload),
+    method: 'POST'
+  });
+
+  return readSavedPlanResponse(response, 'Unable to save account plan.');
+}
+
+async function updateAccountPlan(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  id: string,
+  payload: { name: string; result: FirePlanResult; snapshot: AppSnapshot }
+): Promise<SavedPlan> {
+  const response = await authenticatedJsonRequest(auth, `/api/plans/${encodeURIComponent(id)}`, {
+    body: JSON.stringify(payload),
+    method: 'PUT'
+  });
+
+  return readSavedPlanResponse(response, 'Unable to update account plan.');
+}
+
+async function deleteAccountPlan(auth: Extract<AuthState, { status: 'signed-in' }>, id: string): Promise<void> {
+  const response = await authenticatedJsonRequest(auth, `/api/plans/${encodeURIComponent(id)}`, {
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to delete account plan.');
+  }
+}
+
+async function readSavedPlanResponse(response: Response, errorMessage: string): Promise<SavedPlan> {
+  if (!response.ok) {
+    throw new Error(errorMessage);
+  }
+
+  const body = await response.json();
+  const plan = isRecord(body) ? toSavedPlan(body.plan) : null;
+
+  if (!plan) {
+    throw new Error(errorMessage);
+  }
+
+  return plan;
+}
+
+function toSavedPlan(value: unknown): SavedPlan | null {
+  if (!isRecord(value) || typeof value.id !== 'string' || typeof value.name !== 'string') {
+    return null;
+  }
+
+  if (typeof value.createdAt !== 'string' || !isAppSnapshot(value.snapshot)) {
+    return null;
+  }
+
+  return {
+    createdAt: value.createdAt,
+    id: value.id,
+    name: value.name,
+    snapshot: value.snapshot,
+    updatedAt: typeof value.updatedAt === 'string' ? value.updatedAt : undefined,
+    versionNumber: typeof value.versionNumber === 'number' ? value.versionNumber : undefined
+  };
+}
+
+async function loadAccountProfile(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<AccountProfile> {
+  const response = await authenticatedJsonRequest(auth, '/api/profile');
+
+  return readProfileResponse(response, 'Unable to load account profile.');
+}
+
+async function updateAccountProfile(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  payload: AccountProfileUpdate
+): Promise<AccountProfile> {
+  const response = await authenticatedJsonRequest(auth, '/api/profile', {
+    body: JSON.stringify(payload),
+    method: 'PUT'
+  });
+
+  return readProfileResponse(response, 'Unable to save account profile.');
+}
+
+async function readProfileResponse(response: Response, errorMessage: string): Promise<AccountProfile> {
+  if (!response.ok) {
+    throw new Error(errorMessage);
+  }
+
+  const body = await response.json();
+  const profile = isRecord(body) ? toAccountProfile(body.profile) : null;
+
+  if (!profile) {
+    throw new Error(errorMessage);
+  }
+
+  return profile;
+}
+
+function toAccountProfile(value: unknown): AccountProfile | null {
+  if (!isRecord(value) || typeof value.userId !== 'string' || typeof value.defaultCurrency !== 'string') {
+    return null;
+  }
+
+  if (typeof value.updatedAt !== 'string') {
+    return null;
+  }
+
+  return {
+    birthYear: typeof value.birthYear === 'number' ? value.birthYear : null,
+    defaultCurrency: value.defaultCurrency,
+    displayName: typeof value.displayName === 'string' ? value.displayName : null,
+    householdName: typeof value.householdName === 'string' ? value.householdName : null,
+    targetRetirementAge: typeof value.targetRetirementAge === 'number' ? value.targetRetirementAge : null,
+    updatedAt: value.updatedAt,
+    userId: value.userId
+  };
+}
+
+function emptyProfileDraft(): AccountProfileDraft {
+  return {
+    birthYear: '',
+    defaultCurrency: 'USD',
+    displayName: '',
+    householdName: '',
+    targetRetirementAge: ''
+  };
+}
+
+function profileToDraft(profile: AccountProfile): AccountProfileDraft {
+  return {
+    birthYear: profile.birthYear === null ? '' : String(profile.birthYear),
+    defaultCurrency: profile.defaultCurrency,
+    displayName: profile.displayName ?? '',
+    householdName: profile.householdName ?? '',
+    targetRetirementAge: profile.targetRetirementAge === null ? '' : String(profile.targetRetirementAge)
+  };
+}
+
+function draftToProfileUpdate(draft: AccountProfileDraft): AccountProfileUpdate {
+  return {
+    birthYear: optionalIntegerFromDraft(draft.birthYear),
+    defaultCurrency: draft.defaultCurrency.trim().toUpperCase() || 'USD',
+    displayName: optionalTextFromDraft(draft.displayName),
+    householdName: optionalTextFromDraft(draft.householdName),
+    targetRetirementAge: optionalIntegerFromDraft(draft.targetRetirementAge)
+  };
+}
+
+function optionalTextFromDraft(value: string): string | null {
+  const trimmed = value.trim();
+
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function optionalIntegerFromDraft(value: string): number | null {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  const parsed = Number(trimmed);
+
+  return Number.isInteger(parsed) ? parsed : null;
 }
 
 function numericValue(value: string, fallback = 0): number {
@@ -905,6 +1146,104 @@ function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'sig
   );
 }
 
+function ProfileSettingsPanel({
+  draft,
+  isLoading,
+  isSaving,
+  message,
+  onChange,
+  onSave,
+  profile
+}: {
+  draft: AccountProfileDraft;
+  isLoading: boolean;
+  isSaving: boolean;
+  message: string;
+  onChange: (field: keyof AccountProfileDraft, value: string) => void;
+  onSave: () => void;
+  profile: AccountProfile | null;
+}) {
+  return (
+    <section className="profile-editor" aria-labelledby="profile-settings-title">
+      <div className="panel-heading">
+        <div>
+          <p className="eyebrow">Profile defaults</p>
+          <h2 id="profile-settings-title">Household profile</h2>
+        </div>
+        {profile ? <span className="profile-updated">Updated {new Date(profile.updatedAt).toLocaleDateString()}</span> : null}
+      </div>
+
+      <form
+        className="profile-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSave();
+        }}
+      >
+        <div className="profile-form-grid">
+          <Field label="Display name">
+            <input
+              disabled={isLoading || isSaving}
+              maxLength={80}
+              type="text"
+              value={draft.displayName}
+              onChange={(event) => onChange('displayName', event.target.value)}
+            />
+          </Field>
+          <Field label="Household name">
+            <input
+              disabled={isLoading || isSaving}
+              maxLength={120}
+              type="text"
+              value={draft.householdName}
+              onChange={(event) => onChange('householdName', event.target.value)}
+            />
+          </Field>
+          <Field label="Currency">
+            <input
+              disabled={isLoading || isSaving}
+              maxLength={3}
+              type="text"
+              value={draft.defaultCurrency}
+              onChange={(event) => onChange('defaultCurrency', event.target.value.toUpperCase())}
+            />
+          </Field>
+          <Field label="Birth year">
+            <input
+              disabled={isLoading || isSaving}
+              inputMode="numeric"
+              max={2200}
+              min={1900}
+              type="number"
+              value={draft.birthYear}
+              onChange={(event) => onChange('birthYear', event.target.value)}
+            />
+          </Field>
+          <Field label="Target retirement age">
+            <input
+              disabled={isLoading || isSaving}
+              inputMode="numeric"
+              max={100}
+              min={18}
+              type="number"
+              value={draft.targetRetirementAge}
+              onChange={(event) => onChange('targetRetirementAge', event.target.value)}
+            />
+          </Field>
+        </div>
+
+        <div className="profile-editor-actions">
+          {message ? <p className="profile-status">{message}</p> : null}
+          <button className="primary-button icon-text-button" disabled={isLoading || isSaving} type="submit">
+            <Save size={16} />
+            Save profile
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+}
+
 function AuthGate({
   auth,
   route,
@@ -1145,12 +1484,26 @@ function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void
 
 function PlatformPage({
   auth,
+  isLoadingProfile,
+  isSavingProfile,
+  onProfileDraftChange,
+  onProfileSave,
   route,
-  onNavigate
+  onNavigate,
+  profile,
+  profileDraft,
+  profileMessage
 }: {
   auth: Extract<AuthState, { status: 'signed-in' }>;
+  isLoadingProfile: boolean;
+  isSavingProfile: boolean;
+  onProfileDraftChange: (field: keyof AccountProfileDraft, value: string) => void;
+  onProfileSave: () => void;
   route: Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
   onNavigate: (route: AppRoute) => void;
+  profile: AccountProfile | null;
+  profileDraft: AccountProfileDraft;
+  profileMessage: string;
 }) {
   const page = platformPages[route];
   const Icon = page.icon;
@@ -1164,6 +1517,18 @@ function PlatformPage({
       </div>
 
       <SignedInProfileBand auth={auth} />
+
+      {route === '/settings' ? (
+        <ProfileSettingsPanel
+          draft={profileDraft}
+          isLoading={isLoadingProfile}
+          isSaving={isSavingProfile}
+          message={profileMessage}
+          profile={profile}
+          onChange={onProfileDraftChange}
+          onSave={onProfileSave}
+        />
+      ) : null}
 
       <div className="placeholder-grid">
         {page.cards.map((card) => (
@@ -1276,6 +1641,14 @@ function App({ auth }: { auth: AuthState }) {
   const [projectionBasis, setProjectionBasis] = useState<ProjectionBasis>('fire-number');
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>(initialScenarios);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>(readSavedPlans);
+  const [isLoadingSavedPlans, setIsLoadingSavedPlans] = useState(false);
+  const [isSavingPlan, setIsSavingPlan] = useState(false);
+  const [planStorageMessage, setPlanStorageMessage] = useState('');
+  const [accountProfile, setAccountProfile] = useState<AccountProfile | null>(null);
+  const [profileDraft, setProfileDraft] = useState<AccountProfileDraft>(emptyProfileDraft);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileMessage, setProfileMessage] = useState('');
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -1289,6 +1662,95 @@ function App({ auth }: { auth: AuthState }) {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (auth.status !== 'signed-in') {
+      setSavedPlans(readSavedPlans());
+      setIsLoadingSavedPlans(false);
+      setPlanStorageMessage('');
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    setIsLoadingSavedPlans(true);
+    setPlanStorageMessage('Loading account plans...');
+
+    loadAccountPlans(auth)
+      .then((plans) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setSavedPlans(plans);
+        setPlanStorageMessage('Account-backed plan storage is active.');
+      })
+      .catch(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        setSavedPlans([]);
+        setPlanStorageMessage('Account plans could not be loaded. Local export still works.');
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoadingSavedPlans(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [auth.status, auth.isSignedIn, auth.user?.id]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (auth.status !== 'signed-in') {
+      setAccountProfile(null);
+      setProfileDraft(emptyProfileDraft());
+      setIsLoadingProfile(false);
+      setProfileMessage('');
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    setIsLoadingProfile(true);
+    setProfileMessage('Loading account profile...');
+
+    loadAccountProfile(auth)
+      .then((profile) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setAccountProfile(profile);
+        setProfileDraft(profileToDraft(profile));
+        setProfileMessage('Account profile is synced.');
+      })
+      .catch(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        setAccountProfile(null);
+        setProfileDraft(emptyProfileDraft());
+        setProfileMessage('Account profile could not be loaded.');
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoadingProfile(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [auth.status, auth.isSignedIn, auth.user?.id]);
 
   const result = useMemo<FirePlanResult>(() => calculateFirePlan(plan), [plan]);
   const duration = totalDuration(plan.ratePeriods);
@@ -1509,23 +1971,98 @@ function App({ auth }: { auth: AuthState }) {
     setCalculatorPanel('planner');
   };
 
-  const saveCurrentPlan = () => {
+  const updateProfileDraft = (field: keyof AccountProfileDraft, value: string) => {
+    setProfileDraft((current) => ({
+      ...current,
+      [field]: value
+    }));
+  };
+
+  const saveAccountProfile = async () => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    setIsSavingProfile(true);
+    setProfileMessage('Saving account profile...');
+
+    try {
+      const profile = await updateAccountProfile(auth, draftToProfileUpdate(profileDraft));
+
+      setAccountProfile(profile);
+      setProfileDraft(profileToDraft(profile));
+      setProfileMessage('Profile saved.');
+    } catch {
+      setProfileMessage('Profile could not be saved.');
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const saveCurrentPlan = async () => {
     const name = saveName.trim() || 'Retirement plan';
+    const snapshot = buildSnapshot();
+
+    if (auth.status === 'signed-in') {
+      const existingPlan = savedPlans.find((item) => item.name.toLowerCase() === name.toLowerCase());
+
+      setIsSavingPlan(true);
+      setPlanStorageMessage(existingPlan ? 'Updating account plan...' : 'Saving account plan...');
+
+      try {
+        const savedPlan = existingPlan
+          ? await updateAccountPlan(auth, existingPlan.id, { name, result, snapshot })
+          : await createAccountPlan(auth, { name, result, snapshot });
+        const nextPlans = [
+          savedPlan,
+          ...savedPlans.filter((item) => item.id !== savedPlan.id && item.name.toLowerCase() !== name.toLowerCase())
+        ].slice(0, 8);
+
+        setSavedPlans(nextPlans);
+        setPlanStorageMessage('Saved to your account.');
+      } catch {
+        setPlanStorageMessage('Plan could not be saved to your account. Export JSON still works.');
+      } finally {
+        setIsSavingPlan(false);
+      }
+
+      return;
+    }
+
     const savedPlan: SavedPlan = {
       id: `${Date.now()}`,
       name,
       createdAt: new Date().toISOString(),
-      snapshot: buildSnapshot()
+      snapshot
     };
     const nextPlans = [savedPlan, ...savedPlans.filter((item) => item.name !== name)].slice(0, 8);
     setSavedPlans(nextPlans);
     writeSavedPlans(nextPlans);
+    setPlanStorageMessage('Saved in this browser.');
   };
 
-  const removeSavedPlan = (id: string) => {
+  const removeSavedPlan = async (id: string) => {
+    if (auth.status === 'signed-in') {
+      setIsSavingPlan(true);
+      setPlanStorageMessage('Deleting account plan...');
+
+      try {
+        await deleteAccountPlan(auth, id);
+        setSavedPlans((current) => current.filter((item) => item.id !== id));
+        setPlanStorageMessage('Plan deleted from your account.');
+      } catch {
+        setPlanStorageMessage('Plan could not be deleted from your account.');
+      } finally {
+        setIsSavingPlan(false);
+      }
+
+      return;
+    }
+
     const nextPlans = savedPlans.filter((item) => item.id !== id);
     setSavedPlans(nextPlans);
     writeSavedPlans(nextPlans);
+    setPlanStorageMessage('Deleted local browser draft.');
   };
 
   const exportPlanJson = () => {
@@ -1775,7 +2312,18 @@ function App({ auth }: { auth: AuthState }) {
           <CalculatorsPage onNavigate={navigateTo} />
         ) : isPlatformRoute(route) ? (
           auth.isSignedIn ? (
-            <PlatformPage auth={auth} route={route} onNavigate={navigateTo} />
+            <PlatformPage
+              auth={auth}
+              isLoadingProfile={isLoadingProfile}
+              isSavingProfile={isSavingProfile}
+              profile={accountProfile}
+              profileDraft={profileDraft}
+              profileMessage={profileMessage}
+              route={route}
+              onNavigate={navigateTo}
+              onProfileDraftChange={updateProfileDraft}
+              onProfileSave={saveAccountProfile}
+            />
           ) : (
             <AuthGate auth={auth} route={route} onNavigate={navigateTo} />
           )
@@ -2396,10 +2944,11 @@ function App({ auth }: { auth: AuthState }) {
                 <UserCircle size={17} />
                 <span>
                   {auth.isSignedIn
-                    ? `Signed in as ${auth.user.displayName}; FIRE drafts still stay in this browser until account-backed plan storage is added.`
-                    : 'FIRE drafts stay in this browser. Sign in unlocks the account shell; server plan storage comes later.'}
+                    ? `Signed in as ${auth.user.displayName}; FIRE plans save to your account.`
+                    : 'FIRE drafts stay in this browser. Sign in to save plans to your account.'}
                 </span>
               </div>
+              {planStorageMessage ? <p className="storage-status">{planStorageMessage}</p> : null}
 
               <div className="utility-grid">
                 <Field label="Plan name">
@@ -2409,9 +2958,13 @@ function App({ auth }: { auth: AuthState }) {
                     onChange={(event) => setSaveName(event.target.value)}
                   />
                 </Field>
-                <button className="secondary-button icon-text-button" onClick={saveCurrentPlan}>
+                <button
+                  className="secondary-button icon-text-button"
+                  disabled={isSavingPlan || isLoadingSavedPlans}
+                  onClick={saveCurrentPlan}
+                >
                   <Save size={16} />
-                  Save
+                  {auth.isSignedIn ? 'Save to account' : 'Save'}
                 </button>
                 <button className="secondary-button icon-text-button" onClick={exportPlanJson}>
                   <Download size={16} />
@@ -2434,10 +2987,15 @@ function App({ auth }: { auth: AuthState }) {
               </div>
 
               <div className="saved-list">
-                {savedPlans.length === 0 ? (
+                {isLoadingSavedPlans ? (
+                  <article className="scenario-card empty-card">
+                    <span>Loading saved plans</span>
+                    <small>Checking your account workspace.</small>
+                  </article>
+                ) : savedPlans.length === 0 ? (
                   <article className="scenario-card empty-card">
                     <span>No saved plans</span>
-                    <small>Saved plans stay in this browser.</small>
+                    <small>{auth.isSignedIn ? 'Account plans will appear here.' : 'Saved plans stay in this browser.'}</small>
                   </article>
                 ) : (
                   savedPlans.map((item) => (
@@ -2452,6 +3010,7 @@ function App({ auth }: { auth: AuthState }) {
                         </button>
                         <button
                           className="icon-button row-action"
+                          disabled={isSavingPlan}
                           aria-label={`Delete ${item.name}`}
                           onClick={() => removeSavedPlan(item.id)}
                         >

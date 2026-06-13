@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: June 11, 2026
+Last updated: June 13, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://3894ea1a.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://0fe386db.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -20,7 +20,7 @@ This tracker is the working source of truth for moving the product from a standa
 | --- | --- | ---: | --- |
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
 | Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages preview secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
-| Phase 3: Server Persistence | Foundation started | 25% | D1 databases, binding, initial schema migration, shared auth helper, and authenticated `/api/profile` endpoint are in place. User-owned plan APIs are still pending until signed-in auth is verified. |
+| Phase 3: Server Persistence | Preview/server complete | 100% | D1 schema, shared auth/DB helpers, authenticated profile API, user-owned FIRE plan APIs, account-backed plan saves, Settings profile form, and signed-out local demo saves are in place. Production usage still depends on the Phase 2 Clerk production instance/domain. |
 | Phase 4: Financial Tracker MVP | Not started | 0% | Add manual accounts, assets, liabilities, balances, and dashboard data. |
 | Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
 | Phase 6: Planning Workspace | Not started | 0% | Add plan versions, scenario history, and profile/account-connected FIRE inputs. |
@@ -113,9 +113,31 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Apply migration locally, to preview D1, and to production D1.
 - [x] Add shared Pages Function Clerk auth helper.
 - [x] Add authenticated `GET`/`PUT /api/profile` endpoint backed by D1.
-- [ ] Verify `/api/profile` with a real signed-in Clerk preview user.
-- [ ] Add user-owned plan APIs after signed-in auth is verified.
-- [ ] Wire account-backed plan/profile UI after APIs are verified.
+- [x] Verify `/api/profile` with a real Clerk development user token in local Pages dev.
+- [x] Add authenticated user-owned FIRE plan APIs:
+  - `GET`/`POST /api/plans`
+  - `GET`/`PUT`/`DELETE /api/plans/:id`
+- [x] Store plan snapshots and calculation results in D1 plan versions.
+- [x] Wire signed-in FIRE saves to account-backed API storage.
+- [x] Keep signed-out FIRE demo drafts in browser localStorage.
+- [x] Wire Settings profile basics to the D1-backed profile API.
+- [x] Browser-test signed-out FIRE and Settings gate at `1280x720` and `390x844`.
+
+## Phase 3 Verification Notes
+
+- Local Pages dev authenticated API verification passed with a disposable Clerk development user:
+  - `GET /api/profile` -> `200`
+  - `PUT /api/profile` -> `200`
+  - unauthenticated `GET /api/plans` -> `401`
+  - authenticated `POST /api/plans` -> `201`
+  - authenticated `GET /api/plans` -> `200`
+  - authenticated `PUT /api/plans/:id` -> `200` with version increment
+  - authenticated `GET /api/plans/:id` -> `200`
+  - authenticated `DELETE /api/plans/:id` -> `200`
+  - archived plan read -> `404`
+- Deployed preview `https://0fe386db.interactive-fire-calculator.pages.dev` passed the same authenticated profile and plan API flow; disposable test D1 rows and the temporary Clerk development user were removed afterward.
+- Browser smoke checks passed for `/calculators/fire` and `/settings` signed-out gate at desktop and mobile widths with no console errors and no horizontal overflow.
+- Full repository verification must still be run before each push with `./scripts/test_all.sh`.
 
 ## Required Verification Before Push
 

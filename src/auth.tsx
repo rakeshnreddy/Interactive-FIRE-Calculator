@@ -1,4 +1,4 @@
-import { ClerkProvider, useUser } from '@clerk/react';
+import { ClerkProvider, useAuth, useUser } from '@clerk/react';
 import type { ReactNode } from 'react';
 
 export type AuthUserProfile = {
@@ -7,6 +7,8 @@ export type AuthUserProfile = {
   email?: string;
   imageUrl?: string;
 };
+
+type AuthTokenGetter = () => Promise<string | null>;
 
 export type AuthState =
   | {
@@ -22,6 +24,7 @@ export type AuthState =
       status: 'loading' | 'signed-out';
       isConfigured: true;
       isSignedIn: false;
+      getToken: AuthTokenGetter;
       user: null;
     }
   | {
@@ -29,12 +32,14 @@ export type AuthState =
       status: 'signed-in';
       isConfigured: true;
       isSignedIn: true;
+      getToken: AuthTokenGetter;
       user: AuthUserProfile;
     };
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY?.trim();
 
 function ClerkSessionBridge({ children }: { children: (auth: AuthState) => ReactNode }) {
+  const { getToken } = useAuth();
   const { isLoaded, isSignedIn, user } = useUser();
 
   if (!isLoaded) {
@@ -43,6 +48,7 @@ function ClerkSessionBridge({ children }: { children: (auth: AuthState) => React
       status: 'loading',
       isConfigured: true,
       isSignedIn: false,
+      getToken,
       user: null
     });
   }
@@ -53,6 +59,7 @@ function ClerkSessionBridge({ children }: { children: (auth: AuthState) => React
       status: 'signed-out',
       isConfigured: true,
       isSignedIn: false,
+      getToken,
       user: null
     });
   }
@@ -65,6 +72,7 @@ function ClerkSessionBridge({ children }: { children: (auth: AuthState) => React
     status: 'signed-in',
     isConfigured: true,
     isSignedIn: true,
+    getToken,
     user: {
       id: user.id,
       displayName,

@@ -1,6 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { json } from '../_lib/http';
+import { ensureUserProfile, requireDatabase } from '../_lib/persistence';
 import { requireClerkAuth } from '../_lib/session';
 import type { ClerkEnv } from '../_lib/session';
 
@@ -80,48 +81,8 @@ export const onRequestPut: PagesFunction<ProfileEnv> = async ({ request, env }) 
   return json({ profile: toProfilePayload(updated) });
 };
 
-function requireDatabase(env: ProfileEnv):
-  | {
-      database: D1Database;
-      ok: true;
-    }
-  | {
-      ok: false;
-      response: Response;
-    } {
-  if (!env.DB) {
-    return { ok: false, response: json({ databaseConfigured: false }, 503) };
-  }
-
-  return { database: env.DB, ok: true };
-}
-
 async function ensureProfile(database: D1Database, userId: string): Promise<ProfileRow> {
-  const now = new Date().toISOString();
-
-  await database
-    .prepare(
-      `
-        INSERT INTO users (id, provider, provider_user_id, created_at, updated_at)
-        VALUES (?, 'clerk', ?, ?, ?)
-        ON CONFLICT(id) DO UPDATE SET
-          updated_at = excluded.updated_at,
-          deleted_at = NULL
-      `
-    )
-    .bind(userId, userId, now, now)
-    .run();
-
-  await database
-    .prepare(
-      `
-        INSERT INTO user_profiles (user_id, created_at, updated_at)
-        VALUES (?, ?, ?)
-        ON CONFLICT(user_id) DO NOTHING
-      `
-    )
-    .bind(userId, now, now)
-    .run();
+  await ensureUserProfile(database, userId);
 
   const profile = await readProfile(database, userId);
 
