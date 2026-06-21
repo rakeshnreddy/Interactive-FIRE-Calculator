@@ -197,6 +197,60 @@ type BalanceDraft = {
   date: string;
 };
 
+type GoalType =
+  | 'retirement'
+  | 'emergency_fund'
+  | 'debt_payoff'
+  | 'home'
+  | 'education'
+  | 'travel'
+  | 'custom';
+
+type GoalStatus = 'active' | 'paused' | 'completed';
+
+type Goal = {
+  createdAt: string;
+  currentAmountCents: number;
+  daysUntilTarget: number | null;
+  goalType: GoalType;
+  id: string;
+  isOverdue: boolean;
+  name: string;
+  progressPercent: number;
+  remainingAmountCents: number;
+  status: GoalStatus;
+  targetAmountCents: number | null;
+  targetDate: string | null;
+  updatedAt: string;
+};
+
+type GoalSummary = {
+  activeGoalCount: number;
+  completedGoalCount: number;
+  fundedPercent: number;
+  goalCount: number;
+  nextGoal: Goal | null;
+  overdueGoalCount: number;
+  pausedGoalCount: number;
+  totalCurrentCents: number;
+  totalTargetCents: number;
+};
+
+type GoalDraft = {
+  currentAmount: string;
+  goalType: GoalType;
+  name: string;
+  targetAmount: string;
+  targetDate: string;
+};
+
+type GoalUpdateDraft = {
+  currentAmount: string;
+  status: GoalStatus;
+  targetAmount: string;
+  targetDate: string;
+};
+
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
 
 const accountTypeOptions: Array<{ category: AccountCategory; label: string; value: FinancialAccountType }> = [
@@ -211,6 +265,22 @@ const accountTypeOptions: Array<{ category: AccountCategory; label: string; valu
   { category: 'liability', label: 'Loan', value: 'loan' },
   { category: 'liability', label: 'Mortgage', value: 'mortgage' },
   { category: 'liability', label: 'Other liability', value: 'other_liability' }
+];
+
+const goalTypeOptions: Array<{ label: string; value: GoalType }> = [
+  { label: 'Retirement', value: 'retirement' },
+  { label: 'Emergency fund', value: 'emergency_fund' },
+  { label: 'Debt payoff', value: 'debt_payoff' },
+  { label: 'Home', value: 'home' },
+  { label: 'Education', value: 'education' },
+  { label: 'Travel', value: 'travel' },
+  { label: 'Custom', value: 'custom' }
+];
+
+const goalStatusOptions: Array<{ label: string; value: GoalStatus }> = [
+  { label: 'Active', value: 'active' },
+  { label: 'Paused', value: 'paused' },
+  { label: 'Completed', value: 'completed' }
 ];
 
 const moodLabels: Record<Mood, string> = {
@@ -843,6 +913,273 @@ function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
   };
 }
 
+async function loadGoals(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<{
+  goals: Goal[];
+  summary: GoalSummary;
+}> {
+  const response = await authenticatedJsonRequest(auth, '/api/goals');
+
+  if (!response.ok) {
+    throw new Error('Unable to load goals.');
+  }
+
+  const body = await response.json();
+  const goals = isRecord(body) && Array.isArray(body.goals)
+    ? body.goals.map(toGoal).filter((goal): goal is Goal => Boolean(goal))
+    : [];
+  const summary = isRecord(body) ? toGoalSummary(body.summary) : null;
+
+  return {
+    goals,
+    summary: summary ?? summarizeGoalList(goals)
+  };
+}
+
+async function createGoalRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  draft: GoalDraft
+): Promise<Goal> {
+  const response = await authenticatedJsonRequest(auth, '/api/goals', {
+    body: JSON.stringify({
+      currentAmountCents: moneyInputToCents(draft.currentAmount) ?? 0,
+      goalType: draft.goalType,
+      name: draft.name.trim(),
+      targetAmountCents: moneyInputToCents(draft.targetAmount) ?? 0,
+      targetDate: optionalTextFromDraft(draft.targetDate)
+    }),
+    method: 'POST'
+  });
+
+  return readGoalResponse(response, 'Unable to create goal.');
+}
+
+async function updateGoalRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  id: string,
+  draft: GoalUpdateDraft
+): Promise<Goal> {
+  const response = await authenticatedJsonRequest(auth, `/api/goals/${encodeURIComponent(id)}`, {
+    body: JSON.stringify({
+      currentAmountCents: moneyInputToCents(draft.currentAmount) ?? 0,
+      status: draft.status,
+      targetAmountCents: moneyInputToCents(draft.targetAmount) ?? 0,
+      targetDate: optionalTextFromDraft(draft.targetDate)
+    }),
+    method: 'PUT'
+  });
+
+  return readGoalResponse(response, 'Unable to update goal.');
+}
+
+async function archiveGoalRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  id: string
+): Promise<void> {
+  const response = await authenticatedJsonRequest(auth, `/api/goals/${encodeURIComponent(id)}`, {
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to archive goal.');
+  }
+}
+
+async function readGoalResponse(response: Response, errorMessage: string): Promise<Goal> {
+  if (!response.ok) {
+    throw new Error(errorMessage);
+  }
+
+  const body = await response.json();
+  const goal = isRecord(body) ? toGoal(body.goal) : null;
+
+  if (!goal) {
+    throw new Error(errorMessage);
+  }
+
+  return goal;
+}
+
+function toGoal(value: unknown): Goal | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.id !== 'string' ||
+    typeof value.name !== 'string' ||
+    !isGoalType(value.goalType) ||
+    (typeof value.targetAmountCents !== 'number' && value.targetAmountCents !== null) ||
+    typeof value.currentAmountCents !== 'number' ||
+    (typeof value.targetDate !== 'string' && value.targetDate !== null) ||
+    !isGoalStatus(value.status) ||
+    typeof value.progressPercent !== 'number' ||
+    typeof value.remainingAmountCents !== 'number' ||
+    typeof value.isOverdue !== 'boolean' ||
+    (typeof value.daysUntilTarget !== 'number' && value.daysUntilTarget !== null) ||
+    typeof value.createdAt !== 'string' ||
+    typeof value.updatedAt !== 'string'
+  ) {
+    return null;
+  }
+
+  return {
+    createdAt: value.createdAt,
+    currentAmountCents: value.currentAmountCents,
+    daysUntilTarget: value.daysUntilTarget,
+    goalType: value.goalType,
+    id: value.id,
+    isOverdue: value.isOverdue,
+    name: value.name,
+    progressPercent: value.progressPercent,
+    remainingAmountCents: value.remainingAmountCents,
+    status: value.status,
+    targetAmountCents: value.targetAmountCents,
+    targetDate: value.targetDate,
+    updatedAt: value.updatedAt
+  };
+}
+
+function toGoalSummary(value: unknown): GoalSummary | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.goalCount !== 'number' ||
+    typeof value.activeGoalCount !== 'number' ||
+    typeof value.pausedGoalCount !== 'number' ||
+    typeof value.completedGoalCount !== 'number' ||
+    typeof value.overdueGoalCount !== 'number' ||
+    typeof value.totalTargetCents !== 'number' ||
+    typeof value.totalCurrentCents !== 'number' ||
+    typeof value.fundedPercent !== 'number'
+  ) {
+    return null;
+  }
+
+  const nextGoal = value.nextGoal === null ? null : toGoal(value.nextGoal);
+
+  if (value.nextGoal !== null && !nextGoal) {
+    return null;
+  }
+
+  return {
+    activeGoalCount: value.activeGoalCount,
+    completedGoalCount: value.completedGoalCount,
+    fundedPercent: value.fundedPercent,
+    goalCount: value.goalCount,
+    nextGoal,
+    overdueGoalCount: value.overdueGoalCount,
+    pausedGoalCount: value.pausedGoalCount,
+    totalCurrentCents: value.totalCurrentCents,
+    totalTargetCents: value.totalTargetCents
+  };
+}
+
+function summarizeGoalList(goals: Goal[]): GoalSummary {
+  const counts = goals.reduce(
+    (summary, goal) => ({
+      activeGoalCount: summary.activeGoalCount + (goal.status === 'active' ? 1 : 0),
+      completedGoalCount: summary.completedGoalCount + (goal.status === 'completed' ? 1 : 0),
+      overdueGoalCount: summary.overdueGoalCount + (goal.isOverdue ? 1 : 0),
+      pausedGoalCount: summary.pausedGoalCount + (goal.status === 'paused' ? 1 : 0),
+      totalCurrentCents: summary.totalCurrentCents + goal.currentAmountCents,
+      totalTargetCents: summary.totalTargetCents + (goal.targetAmountCents ?? 0)
+    }),
+    {
+      activeGoalCount: 0,
+      completedGoalCount: 0,
+      overdueGoalCount: 0,
+      pausedGoalCount: 0,
+      totalCurrentCents: 0,
+      totalTargetCents: 0
+    }
+  );
+  const fundedAmountCents = goals.reduce(
+    (total, goal) => total + (goal.targetAmountCents === null ? 0 : Math.min(goal.currentAmountCents, goal.targetAmountCents)),
+    0
+  );
+  const nextGoal = goals
+    .filter((goal) => goal.status !== 'completed' && goal.targetDate)
+    .sort((left, right) => String(left.targetDate).localeCompare(String(right.targetDate)))[0] ?? null;
+
+  return {
+    ...counts,
+    fundedPercent: counts.totalTargetCents > 0
+      ? (fundedAmountCents / counts.totalTargetCents) * 100
+      : 0,
+    goalCount: goals.length,
+    nextGoal
+  };
+}
+
+function emptyGoalDraft(): GoalDraft {
+  return {
+    currentAmount: '',
+    goalType: 'custom',
+    name: '',
+    targetAmount: '',
+    targetDate: ''
+  };
+}
+
+function goalToUpdateDraft(goal: Goal): GoalUpdateDraft {
+  return {
+    currentAmount: String(goal.currentAmountCents / 100),
+    status: goal.status,
+    targetAmount: goal.targetAmountCents === null ? '' : String(goal.targetAmountCents / 100),
+    targetDate: goal.targetDate ?? ''
+  };
+}
+
+function buildGoalUpdateDraftMap(goals: Goal[]): Record<string, GoalUpdateDraft> {
+  return goals.reduce<Record<string, GoalUpdateDraft>>((drafts, goal) => {
+    drafts[goal.id] = goalToUpdateDraft(goal);
+    return drafts;
+  }, {});
+}
+
+function isGoalType(value: unknown): value is GoalType {
+  return typeof value === 'string' && goalTypeOptions.some((option) => option.value === value);
+}
+
+function isGoalStatus(value: unknown): value is GoalStatus {
+  return typeof value === 'string' && goalStatusOptions.some((option) => option.value === value);
+}
+
+function goalTypeLabel(value: GoalType): string {
+  return goalTypeOptions.find((option) => option.value === value)?.label ?? value;
+}
+
+function goalStatusLabel(value: GoalStatus): string {
+  return goalStatusOptions.find((option) => option.value === value)?.label ?? value;
+}
+
+function formatGoalPercent(value: number): string {
+  return `${Math.round(Math.max(0, value))}%`;
+}
+
+function goalDeadlineLabel(goal: Goal): string {
+  if (goal.status === 'completed') {
+    return 'Completed';
+  }
+
+  if (!goal.targetDate || goal.daysUntilTarget === null) {
+    return 'No target date';
+  }
+
+  if (goal.isOverdue || goal.daysUntilTarget < 0) {
+    const overdueDays = Math.abs(goal.daysUntilTarget);
+    return `${overdueDays} day${overdueDays === 1 ? '' : 's'} overdue`;
+  }
+
+  if (goal.daysUntilTarget === 0) {
+    return 'Due today';
+  }
+
+  return `Due in ${goal.daysUntilTarget} day${goal.daysUntilTarget === 1 ? '' : 's'}`;
+}
+
 function emptyAccountDraft(): AccountDraft {
   return {
     accountType: 'checking',
@@ -1353,7 +1690,7 @@ const platformPages: Record<
     eyebrow: 'Dashboard',
     title: 'Your financial snapshot starts here.',
     description:
-      'Net worth, assets, liabilities, and recent account balance updates roll up from saved tracker data.',
+      'Net worth, account balances, and funded goals roll up from your saved tracker data.',
     icon: LayoutDashboard,
     cards: [
       { label: 'Net worth', value: '$0', detail: 'Manual accounts and balances power this number.' },
@@ -1387,14 +1724,14 @@ const platformPages: Record<
   },
   '/goals': {
     eyebrow: 'Goals',
-    title: 'Goal tracking gets its own workspace.',
+    title: 'Fund the milestones that matter next.',
     description:
-      'Future users will create targets with dates, funding sources, current balances, and plan links.',
+      'Create dated targets, update funded amounts, and keep overdue or paused goals visible.',
     icon: Target,
     cards: [
-      { label: 'Retirement', value: 'Planned', detail: 'Connect FIRE plans to a long-term goal.' },
-      { label: 'Home fund', value: 'Planned', detail: 'Track target amount, deadline, and monthly pace.' },
-      { label: 'Education', value: 'Planned', detail: 'Reserve space for family or education goals.' }
+      { label: 'Funded', value: '0%', detail: 'Overall progress across goals with target amounts.' },
+      { label: 'Active', value: '0', detail: 'Goals currently moving toward a target.' },
+      { label: 'Deadlines', value: '0', detail: 'Target dates surface upcoming and overdue work.' }
     ]
   },
   '/plans': {
@@ -1589,18 +1926,27 @@ function ProfileSettingsPanel({
 
 function DashboardPanel({
   accounts,
+  goals,
   isLoading,
+  isLoadingGoals,
   message,
+  goalMessage,
+  goalSummary,
   onNavigate,
   summary
 }: {
   accounts: FinancialAccount[];
+  goals: Goal[];
   isLoading: boolean;
+  isLoadingGoals: boolean;
   message: string;
+  goalMessage: string;
+  goalSummary: GoalSummary;
   onNavigate: (route: AppRoute) => void;
   summary: AccountSummary;
 }) {
   const recentAccounts = accounts.slice(0, 5);
+  const recentGoals = goals.slice(0, 3);
 
   return (
     <section className="financial-dashboard" aria-labelledby="dashboard-summary-title">
@@ -1620,7 +1966,65 @@ function DashboardPanel({
           <strong>{formatCents(summary.liabilitiesCents)}</strong>
           <small>{summary.liabilityAccountCount} debt accounts</small>
         </article>
+        <article className="tracker-metric">
+          <span>Goals funded</span>
+          <strong>{formatGoalPercent(goalSummary.fundedPercent)}</strong>
+          <small>{goalSummary.activeGoalCount} active goals</small>
+        </article>
       </div>
+
+      <section className="account-panel dashboard-goal-rollup" aria-labelledby="dashboard-goals-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Goal rollup</p>
+            <h2 id="dashboard-goals-title">Funding progress</h2>
+          </div>
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/goals')}>
+            Goals
+            <ChevronRight size={16} />
+          </button>
+        </div>
+
+        {goalMessage ? <p className="account-status">{goalMessage}</p> : null}
+
+        {isLoadingGoals ? (
+          <article className="scenario-card empty-card">
+            <span>Loading goals</span>
+            <small>Checking saved funding progress.</small>
+          </article>
+        ) : recentGoals.length === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No goals yet</span>
+            <small>Add a goal to track funding progress and target dates.</small>
+          </article>
+        ) : (
+          <div className="dashboard-goal-list">
+            {recentGoals.map((goal) => (
+              <article className="dashboard-goal-row" key={goal.id}>
+                <div className="dashboard-goal-copy">
+                  <strong>{goal.name}</strong>
+                  <small className={goal.isOverdue ? 'goal-deadline goal-deadline-overdue' : 'goal-deadline'}>
+                    {goalDeadlineLabel(goal)}
+                  </small>
+                </div>
+                <div className="goal-progress-compact">
+                  <span>{formatGoalPercent(goal.progressPercent)}</span>
+                  <div
+                    className="goal-progress-track"
+                    role="progressbar"
+                    aria-label={`${goal.name} funding progress`}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.min(100, Math.max(0, goal.progressPercent))}
+                  >
+                    <span style={{ width: `${Math.min(100, Math.max(0, goal.progressPercent))}%` }} />
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
 
       <section className="account-panel" aria-labelledby="dashboard-summary-title">
         <div className="panel-heading">
@@ -1663,6 +2067,264 @@ function DashboardPanel({
                 </span>
               </article>
             ))}
+          </div>
+        )}
+      </section>
+    </section>
+  );
+}
+
+function GoalsPanel({
+  draft,
+  goals,
+  isLoading,
+  isSaving,
+  message,
+  onArchiveGoal,
+  onCreateGoal,
+  onDraftChange,
+  onUpdateDraftChange,
+  onUpdateGoal,
+  summary,
+  updateDrafts
+}: {
+  draft: GoalDraft;
+  goals: Goal[];
+  isLoading: boolean;
+  isSaving: boolean;
+  message: string;
+  onArchiveGoal: (id: string) => void;
+  onCreateGoal: () => void;
+  onDraftChange: (field: keyof GoalDraft, value: string) => void;
+  onUpdateDraftChange: (id: string, field: keyof GoalUpdateDraft, value: string) => void;
+  onUpdateGoal: (id: string) => void;
+  summary: GoalSummary;
+  updateDrafts: Record<string, GoalUpdateDraft>;
+}) {
+  return (
+    <section className="goal-workspace" aria-labelledby="goals-workspace-title">
+      <div className="goal-overview-strip">
+        <article>
+          <span>Overall funded</span>
+          <strong>{formatGoalPercent(summary.fundedPercent)}</strong>
+          <small>
+            {formatCents(summary.totalCurrentCents)} of {formatCents(summary.totalTargetCents)}
+          </small>
+        </article>
+        <article>
+          <span>Active goals</span>
+          <strong>{summary.activeGoalCount}</strong>
+          <small>
+            {summary.completedGoalCount} completed, {summary.pausedGoalCount} paused
+          </small>
+        </article>
+        <article>
+          <span>Nearest deadline</span>
+          <strong>{summary.nextGoal?.name ?? 'None set'}</strong>
+          <small className={summary.nextGoal?.isOverdue ? 'goal-deadline-overdue' : undefined}>
+            {summary.nextGoal ? goalDeadlineLabel(summary.nextGoal) : 'Add a target date to plan ahead'}
+          </small>
+        </article>
+      </div>
+
+      <section className="goal-create-panel" aria-labelledby="goals-workspace-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">New milestone</p>
+            <h2 id="goals-workspace-title">Add a goal</h2>
+          </div>
+        </div>
+
+        <form
+          className="goal-create-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onCreateGoal();
+          }}
+        >
+          <Field label="Goal name">
+            <input
+              disabled={isSaving}
+              maxLength={120}
+              required
+              type="text"
+              value={draft.name}
+              onChange={(event) => onDraftChange('name', event.target.value)}
+            />
+          </Field>
+          <Field label="Type">
+            <select
+              disabled={isSaving}
+              value={draft.goalType}
+              onChange={(event) => onDraftChange('goalType', event.target.value)}
+            >
+              {goalTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Target amount">
+            <input
+              disabled={isSaving}
+              inputMode="decimal"
+              required
+              type="text"
+              value={draft.targetAmount}
+              onChange={(event) => onDraftChange('targetAmount', event.target.value)}
+            />
+          </Field>
+          <Field label="Current amount">
+            <input
+              disabled={isSaving}
+              inputMode="decimal"
+              type="text"
+              value={draft.currentAmount}
+              onChange={(event) => onDraftChange('currentAmount', event.target.value)}
+            />
+          </Field>
+          <Field label="Target date">
+            <input
+              disabled={isSaving}
+              type="date"
+              value={draft.targetDate}
+              onChange={(event) => onDraftChange('targetDate', event.target.value)}
+            />
+          </Field>
+          <button className="primary-button icon-text-button" disabled={isSaving} type="submit">
+            <Target size={16} />
+            Add goal
+          </button>
+        </form>
+
+        {message ? <p className="goal-status-copy">{message}</p> : null}
+      </section>
+
+      <section className="goal-list-section" aria-label="Saved goals">
+        {isLoading ? (
+          <article className="scenario-card empty-card">
+            <span>Loading goals</span>
+            <small>Checking saved targets and progress.</small>
+          </article>
+        ) : goals.length === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No goals yet</span>
+            <small>Create a goal to begin tracking funding and deadlines.</small>
+          </article>
+        ) : (
+          <div className="goal-card-list">
+            {goals.map((goal) => {
+              const updateDraft = updateDrafts[goal.id] ?? goalToUpdateDraft(goal);
+              const progressValue = Math.min(100, Math.max(0, goal.progressPercent));
+
+              return (
+                <article className="goal-card" key={goal.id}>
+                  <div className="goal-card-heading">
+                    <div className="goal-card-title">
+                      <div className="goal-badges">
+                        <span className="goal-type-badge">{goalTypeLabel(goal.goalType)}</span>
+                        <span className={`goal-status-badge goal-status-${goal.status}`}>
+                          {goalStatusLabel(goal.status)}
+                        </span>
+                      </div>
+                      <strong>{goal.name}</strong>
+                    </div>
+                    <div className="goal-amount-summary">
+                      <span>Current / target</span>
+                      <strong>
+                        {formatCents(goal.currentAmountCents)} /{' '}
+                        {goal.targetAmountCents === null ? 'No target' : formatCents(goal.targetAmountCents)}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="goal-progress-block">
+                    <div>
+                      <span>{formatGoalPercent(goal.progressPercent)} funded</span>
+                      <small>{formatCents(goal.remainingAmountCents)} remaining</small>
+                    </div>
+                    <div
+                      className="goal-progress-track"
+                      role="progressbar"
+                      aria-label={`${goal.name} funding progress`}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={progressValue}
+                    >
+                      <span style={{ width: `${progressValue}%` }} />
+                    </div>
+                    <small className={goal.isOverdue ? 'goal-deadline goal-deadline-overdue' : 'goal-deadline'}>
+                      {goalDeadlineLabel(goal)}
+                      {goal.targetDate ? ` - ${goal.targetDate}` : ''}
+                    </small>
+                  </div>
+
+                  <form
+                    className="goal-update-form"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      onUpdateGoal(goal.id);
+                    }}
+                  >
+                    <Field label="Current amount">
+                      <input
+                        disabled={isSaving}
+                        inputMode="decimal"
+                        type="text"
+                        value={updateDraft.currentAmount}
+                        onChange={(event) => onUpdateDraftChange(goal.id, 'currentAmount', event.target.value)}
+                      />
+                    </Field>
+                    <Field label="Target amount">
+                      <input
+                        disabled={isSaving}
+                        inputMode="decimal"
+                        required
+                        type="text"
+                        value={updateDraft.targetAmount}
+                        onChange={(event) => onUpdateDraftChange(goal.id, 'targetAmount', event.target.value)}
+                      />
+                    </Field>
+                    <Field label="Target date">
+                      <input
+                        disabled={isSaving}
+                        type="date"
+                        value={updateDraft.targetDate}
+                        onChange={(event) => onUpdateDraftChange(goal.id, 'targetDate', event.target.value)}
+                      />
+                    </Field>
+                    <Field label="Status">
+                      <select
+                        disabled={isSaving}
+                        value={updateDraft.status}
+                        onChange={(event) => onUpdateDraftChange(goal.id, 'status', event.target.value)}
+                      >
+                        {goalStatusOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                    <button className="secondary-button icon-text-button" disabled={isSaving} type="submit">
+                      <Save size={16} />
+                      Save
+                    </button>
+                    <button
+                      className="icon-button row-action"
+                      disabled={isSaving}
+                      type="button"
+                      aria-label={`Archive ${goal.name}`}
+                      title={`Archive ${goal.name}`}
+                      onClick={() => onArchiveGoal(goal.id)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </form>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
@@ -2134,17 +2796,29 @@ function PlatformPage({
   balanceDrafts,
   auth,
   financialAccounts,
+  goalDraft,
+  goalMessage,
+  goals,
+  goalSummary,
+  goalUpdateDrafts,
   isLoadingProfile,
   isLoadingAccounts,
+  isLoadingGoals,
   isSavingAccount,
+  isSavingGoal,
   isSavingProfile,
   onAccountDraftChange,
   onArchiveAccount,
   onBalanceDraftChange,
   onCreateAccount,
+  onCreateGoal,
+  onGoalDraftChange,
+  onGoalUpdateDraftChange,
   onProfileDraftChange,
   onProfileSave,
   onRecordBalance,
+  onArchiveGoal,
+  onUpdateGoal,
   route,
   onNavigate,
   profile,
@@ -2157,17 +2831,29 @@ function PlatformPage({
   balanceDrafts: Record<string, BalanceDraft>;
   auth: Extract<AuthState, { status: 'signed-in' }>;
   financialAccounts: FinancialAccount[];
+  goalDraft: GoalDraft;
+  goalMessage: string;
+  goals: Goal[];
+  goalSummary: GoalSummary;
+  goalUpdateDrafts: Record<string, GoalUpdateDraft>;
   isLoadingAccounts: boolean;
+  isLoadingGoals: boolean;
   isLoadingProfile: boolean;
   isSavingAccount: boolean;
+  isSavingGoal: boolean;
   isSavingProfile: boolean;
   onAccountDraftChange: (field: keyof AccountDraft, value: string) => void;
   onArchiveAccount: (id: string) => void;
   onBalanceDraftChange: (id: string, field: keyof BalanceDraft, value: string) => void;
   onCreateAccount: () => void;
+  onCreateGoal: () => void;
+  onGoalDraftChange: (field: keyof GoalDraft, value: string) => void;
+  onGoalUpdateDraftChange: (id: string, field: keyof GoalUpdateDraft, value: string) => void;
   onProfileDraftChange: (field: keyof AccountProfileDraft, value: string) => void;
   onProfileSave: () => void;
   onRecordBalance: (id: string) => void;
+  onArchiveGoal: (id: string) => void;
+  onUpdateGoal: (id: string) => void;
   route: Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
   onNavigate: (route: AppRoute) => void;
   profile: AccountProfile | null;
@@ -2190,8 +2876,12 @@ function PlatformPage({
       {route === '/dashboard' ? (
         <DashboardPanel
           accounts={financialAccounts}
+          goals={goals}
           isLoading={isLoadingAccounts}
+          isLoadingGoals={isLoadingGoals}
           message={accountMessage}
+          goalMessage={goalMessage}
+          goalSummary={goalSummary}
           summary={accountSummary}
           onNavigate={onNavigate}
         />
@@ -2214,6 +2904,23 @@ function PlatformPage({
         />
       ) : null}
 
+      {route === '/goals' ? (
+        <GoalsPanel
+          draft={goalDraft}
+          goals={goals}
+          isLoading={isLoadingGoals}
+          isSaving={isSavingGoal}
+          message={goalMessage}
+          summary={goalSummary}
+          updateDrafts={goalUpdateDrafts}
+          onArchiveGoal={onArchiveGoal}
+          onCreateGoal={onCreateGoal}
+          onDraftChange={onGoalDraftChange}
+          onUpdateDraftChange={onGoalUpdateDraftChange}
+          onUpdateGoal={onUpdateGoal}
+        />
+      ) : null}
+
       {route === '/settings' ? (
         <ProfileSettingsPanel
           draft={profileDraft}
@@ -2226,7 +2933,7 @@ function PlatformPage({
         />
       ) : null}
 
-      {route === '/dashboard' || route === '/accounts' ? null : (
+      {route === '/dashboard' || route === '/accounts' || route === '/goals' ? null : (
         <div className="placeholder-grid">
           {page.cards.map((card) => (
             <article className="scenario-card" key={card.label}>
@@ -2243,18 +2950,23 @@ function PlatformPage({
           <Icon size={20} />
         </span>
         <div>
-          <strong>{page.eyebrow} route is wired.</strong>
+          <strong>{route === '/goals' ? 'Goal tracking is active.' : `${page.eyebrow} route is wired.`}</strong>
+          {' '}
           <small>
-            {route === '/dashboard' || route === '/accounts'
-              ? 'Account balances now power the tracker MVP while goals and imports remain future phases.'
-              : 'Continue into the working FIRE module while future platform modules are still being built.'}
+            {route === '/dashboard'
+              ? 'Account balances and goal progress now power the signed-in tracker.'
+              : route === '/accounts'
+                ? 'Manual balances feed net worth while goals track progress toward the next milestone.'
+                : route === '/goals'
+                  ? 'Funding updates and target dates roll directly into the dashboard.'
+                  : 'Continue into the working FIRE module while future platform modules are still being built.'}
           </small>
         </div>
         <button
           className="secondary-button icon-text-button"
-          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : '/calculators/fire')}
+          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/goals' ? '/dashboard' : '/calculators/fire')}
         >
-          {route === '/dashboard' ? 'Accounts' : 'Try FIRE'}
+          {route === '/dashboard' ? 'Accounts' : route === '/goals' ? 'Dashboard' : 'Try FIRE'}
           <ChevronRight size={16} />
         </button>
       </section>
@@ -2357,6 +3069,13 @@ function App({ auth }: { auth: AuthState }) {
   const [isLoadingAccounts, setIsLoadingAccounts] = useState(false);
   const [isSavingAccount, setIsSavingAccount] = useState(false);
   const [accountMessage, setAccountMessage] = useState('');
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [goalSummary, setGoalSummary] = useState<GoalSummary>(() => summarizeGoalList([]));
+  const [goalDraft, setGoalDraft] = useState<GoalDraft>(emptyGoalDraft);
+  const [goalUpdateDrafts, setGoalUpdateDrafts] = useState<Record<string, GoalUpdateDraft>>({});
+  const [isLoadingGoals, setIsLoadingGoals] = useState(false);
+  const [isSavingGoal, setIsSavingGoal] = useState(false);
+  const [goalMessage, setGoalMessage] = useState('');
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -2499,6 +3218,57 @@ function App({ auth }: { auth: AuthState }) {
       .finally(() => {
         if (!isCancelled) {
           setIsLoadingAccounts(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [auth.status, auth.isSignedIn, auth.user?.id]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (auth.status !== 'signed-in') {
+      setGoals([]);
+      setGoalSummary(summarizeGoalList([]));
+      setGoalDraft(emptyGoalDraft());
+      setGoalUpdateDrafts({});
+      setIsLoadingGoals(false);
+      setIsSavingGoal(false);
+      setGoalMessage('');
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    setIsLoadingGoals(true);
+    setGoalMessage('Loading goals...');
+
+    loadGoals(auth)
+      .then(({ goals: loadedGoals, summary }) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setGoals(loadedGoals);
+        setGoalSummary(summary);
+        setGoalUpdateDrafts(buildGoalUpdateDraftMap(loadedGoals));
+        setGoalMessage('Goals are synced.');
+      })
+      .catch(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        setGoals([]);
+        setGoalSummary(summarizeGoalList([]));
+        setGoalUpdateDrafts({});
+        setGoalMessage('Goals could not be loaded.');
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoadingGoals(false);
         }
       });
 
@@ -2875,6 +3645,180 @@ function App({ auth }: { auth: AuthState }) {
     }
   };
 
+  const updateGoalDraft = (field: keyof GoalDraft, value: string) => {
+    if (field === 'goalType') {
+      if (!isGoalType(value)) {
+        return;
+      }
+
+      setGoalDraft((current) => ({
+        ...current,
+        goalType: value
+      }));
+      return;
+    }
+
+    setGoalDraft((current) => ({
+      ...current,
+      [field]: value
+    }));
+  };
+
+  const updateGoalUpdateDraft = (
+    id: string,
+    field: keyof GoalUpdateDraft,
+    value: string
+  ) => {
+    if (field === 'status') {
+      if (!isGoalStatus(value)) {
+        return;
+      }
+
+      setGoalUpdateDrafts((current) => ({
+        ...current,
+        [id]: {
+          ...(current[id] ?? {
+            currentAmount: '',
+            status: 'active',
+            targetAmount: '',
+            targetDate: ''
+          }),
+          status: value
+        }
+      }));
+      return;
+    }
+
+    setGoalUpdateDrafts((current) => ({
+      ...current,
+      [id]: {
+        ...(current[id] ?? {
+          currentAmount: '',
+          status: 'active',
+          targetAmount: '',
+          targetDate: ''
+        }),
+        [field]: value
+      }
+    }));
+  };
+
+  const createGoal = async () => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    if (goalDraft.name.trim().length === 0) {
+      setGoalMessage('Goal name is required.');
+      return;
+    }
+
+    const targetAmountCents = moneyInputToCents(goalDraft.targetAmount);
+
+    if (targetAmountCents === null || targetAmountCents <= 0) {
+      setGoalMessage('Enter a target amount greater than zero with up to two decimal places.');
+      return;
+    }
+
+    if (goalDraft.currentAmount.trim() && moneyInputToCents(goalDraft.currentAmount) === null) {
+      setGoalMessage('Current amount must use up to two decimal places.');
+      return;
+    }
+
+    setIsSavingGoal(true);
+    setGoalMessage('Saving goal...');
+
+    try {
+      const goal = await createGoalRecord(auth, goalDraft);
+      const nextGoals = [goal, ...goals.filter((item) => item.id !== goal.id)];
+
+      setGoals(nextGoals);
+      setGoalSummary(summarizeGoalList(nextGoals));
+      setGoalUpdateDrafts((current) => ({
+        ...current,
+        [goal.id]: goalToUpdateDraft(goal)
+      }));
+      setGoalDraft(emptyGoalDraft());
+      setGoalMessage('Goal saved.');
+    } catch {
+      setGoalMessage('Goal could not be saved.');
+    } finally {
+      setIsSavingGoal(false);
+    }
+  };
+
+  const updateGoal = async (id: string) => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    const draft = goalUpdateDrafts[id];
+
+    if (!draft) {
+      setGoalMessage('Goal update could not be prepared.');
+      return;
+    }
+
+    if (draft.currentAmount.trim() && moneyInputToCents(draft.currentAmount) === null) {
+      setGoalMessage('Current amount must use up to two decimal places.');
+      return;
+    }
+
+    const targetAmountCents = moneyInputToCents(draft.targetAmount);
+
+    if (targetAmountCents === null || targetAmountCents <= 0) {
+      setGoalMessage('Enter a target amount greater than zero with up to two decimal places.');
+      return;
+    }
+
+    setIsSavingGoal(true);
+    setGoalMessage('Saving goal changes...');
+
+    try {
+      const goal = await updateGoalRecord(auth, id, draft);
+      const nextGoals = goals.map((item) => (item.id === goal.id ? goal : item));
+
+      setGoals(nextGoals);
+      setGoalSummary(summarizeGoalList(nextGoals));
+      setGoalUpdateDrafts((current) => ({
+        ...current,
+        [goal.id]: goalToUpdateDraft(goal)
+      }));
+      setGoalMessage('Goal updated.');
+    } catch {
+      setGoalMessage('Goal could not be updated.');
+    } finally {
+      setIsSavingGoal(false);
+    }
+  };
+
+  const archiveGoal = async (id: string) => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    setIsSavingGoal(true);
+    setGoalMessage('Archiving goal...');
+
+    try {
+      await archiveGoalRecord(auth, id);
+      const nextGoals = goals.filter((item) => item.id !== id);
+
+      setGoals(nextGoals);
+      setGoalSummary(summarizeGoalList(nextGoals));
+      setGoalUpdateDrafts((current) => {
+        const next = { ...current };
+        delete next[id];
+        return next;
+      });
+      setGoalMessage('Goal archived.');
+    } catch {
+      setGoalMessage('Goal could not be archived.');
+    } finally {
+      setIsSavingGoal(false);
+    }
+  };
+
   const saveCurrentPlan = async () => {
     const name = saveName.trim() || 'Retirement plan';
     const snapshot = buildSnapshot();
@@ -3195,9 +4139,16 @@ function App({ auth }: { auth: AuthState }) {
               balanceDrafts={balanceDrafts}
               auth={auth}
               financialAccounts={financialAccounts}
+              goalDraft={goalDraft}
+              goalMessage={goalMessage}
+              goals={goals}
+              goalSummary={goalSummary}
+              goalUpdateDrafts={goalUpdateDrafts}
               isLoadingAccounts={isLoadingAccounts}
+              isLoadingGoals={isLoadingGoals}
               isLoadingProfile={isLoadingProfile}
               isSavingAccount={isSavingAccount}
+              isSavingGoal={isSavingGoal}
               isSavingProfile={isSavingProfile}
               profile={accountProfile}
               profileDraft={profileDraft}
@@ -3208,9 +4159,14 @@ function App({ auth }: { auth: AuthState }) {
               onArchiveAccount={archiveFinancialAccount}
               onBalanceDraftChange={updateBalanceDraft}
               onCreateAccount={createFinancialAccount}
+              onCreateGoal={createGoal}
+              onGoalDraftChange={updateGoalDraft}
+              onGoalUpdateDraftChange={updateGoalUpdateDraft}
               onProfileDraftChange={updateProfileDraft}
               onProfileSave={saveAccountProfile}
               onRecordBalance={recordAccountBalance}
+              onArchiveGoal={archiveGoal}
+              onUpdateGoal={updateGoal}
             />
           ) : (
             <AuthGate auth={auth} route={route} onNavigate={navigateTo} />

@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: June 13, 2026
+Last updated: June 21, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://5d15bc5c.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://06ad2b4d.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -22,7 +22,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages preview secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
 | Phase 3: Server Persistence | Preview/server complete | 100% | D1 schema, shared auth/DB helpers, authenticated profile API, user-owned FIRE plan APIs, account-backed plan saves, Settings profile form, and signed-out local demo saves are in place. Production usage still depends on the Phase 2 Clerk production instance/domain. |
 | Phase 4: Financial Tracker MVP | Preview/server complete | 100% | Manual accounts, assets, liabilities, balance history, account archival, and dashboard net worth summaries are in place. |
-| Phase 5: Goals System | Not started | 0% | Add goal creation, progress tracking, target dates, and plan links. |
+| Phase 5: Goals System | Preview/server complete | 100% | User-owned goal CRUD, progress and deadline tracking, signed-in Goals workspace, and dashboard goal summaries are in place. Plan links remain deliberate Phase 6 scope. |
 | Phase 6: Planning Workspace | Not started | 0% | Add plan versions, scenario history, and profile/account-connected FIRE inputs. |
 | Phase 7: Imports and Automation | Not started | 0% | Add CSV imports, review flows, optional R2 storage, and optional queues. |
 | Phase 8: Insights and Recommendations | Not started | 0% | Add plan health explanations, spending insights, and retirement risk guidance. |
@@ -176,6 +176,32 @@ This tracker is the working source of truth for moving the product from a standa
 - Deployed preview API verification passed for unauthenticated account rejection, authenticated account create/list, dashboard summary, balance add/history, and account archival.
 - Deployed signed-out `/dashboard` browser gate smoke passed with no console errors or horizontal overflow.
 - Disposable D1 rows and Clerk development users created during verification were removed afterward.
+
+## Phase 5 Progress Checklist
+
+- [x] Add shared goal validation, persistence, and summary helpers in `functions/_lib/goals.ts`.
+- [x] Add authenticated goal endpoints:
+  - `GET`/`POST /api/goals`
+  - `GET`/`PUT`/`DELETE /api/goals/:id`
+- [x] Scope every goal read and write to the authenticated user.
+- [x] Validate goal type, status, amounts, and target dates at the API boundary.
+- [x] Soft-archive goals and exclude archived rows from active reads and summaries.
+- [x] Derive progress percentage, remaining amount, overdue state, and days until target.
+- [x] Wire `/goals` to manual creation, progress/status updates, deadlines, and archival.
+- [x] Add goal funding, active/overdue counts, and next-goal context to `/dashboard`.
+- [x] Keep the public `/calculators/fire` demo available and leave `src/lib/fire.ts` unchanged.
+- [x] Keep goal persistence isolated from saved FIRE plan writes until Phase 6.
+
+## Phase 5 Verification Notes
+
+- Goal validation and summary coverage passes in `src/goals.test.ts`; the Vitest suite has 19 passing tests.
+- Local Pages dev API verification passed for unauthenticated rejection plus authenticated create, list, read, update, dashboard summary, archive, and archived-goal `404` behavior.
+- Signed-in browser QA passed for `/goals` and `/dashboard` at `1280x720` and `390x844`.
+- The browser flow covered goal creation, funding/status updates, archival, responsive layout, and dashboard aggregation.
+- No console errors, overlapping text, or horizontal overflow were found in the checked views.
+- `npm run cf:deploy` deployed the Phase 5 goal-ready state to `https://06ad2b4d.interactive-fire-calculator.pages.dev`.
+- The deployed API passed unauthenticated rejection plus authenticated create, list, update, dashboard aggregation, archive, and archived-goal `404` checks.
+- Disposable Clerk and D1 verification data is removed after local and deployed checks.
 
 ## Required Verification Before Push
 

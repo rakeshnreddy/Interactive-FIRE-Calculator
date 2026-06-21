@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: June 13, 2026
+Last updated: June 21, 2026
 
 ## Repository
 
@@ -10,7 +10,7 @@ Last updated: June 13, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://5d15bc5c.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://06ad2b4d.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -28,6 +28,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Clerk-backed Pages Function identity endpoint in `functions/api/me.ts`.
 - Authenticated D1-backed profile endpoint in `functions/api/profile.ts`.
 - Authenticated D1-backed FIRE plan endpoints in `functions/api/plans/index.ts` and `functions/api/plans/[id].ts`.
+- Authenticated D1-backed goal endpoints in `functions/api/goals/index.ts` and `functions/api/goals/[id].ts`.
 - Shared Pages Function helpers in `functions/_lib/`.
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
@@ -99,9 +100,22 @@ Phase 4 Financial Tracker MVP is complete for preview/development:
 - Deployed signed-out `/dashboard` browser gate smoke passed with no console errors or horizontal overflow.
 - `npm run cf:deploy` deployed the Phase 4 tracker-ready state to `https://5d15bc5c.interactive-fire-calculator.pages.dev`.
 
+Phase 5 Goals System is complete for preview/development:
+
+- `functions/_lib/goals.ts` centralizes goal validation, user-scoped D1 persistence, derived progress, overdue state, deadline calculations, and aggregate summaries.
+- Authenticated `GET`/`POST /api/goals` and `GET`/`PUT`/`DELETE /api/goals/:id` support manual goal creation, updates, reads, and soft archival.
+- Goals support retirement, emergency fund, debt payoff, home, education, travel, and custom categories plus active, paused, and completed states.
+- `/goals` is a signed-in workspace for creating goals, updating funding and status, reviewing progress/deadlines, and archiving goals.
+- `/dashboard` includes goal funding, active/overdue counts, and the next target alongside account summaries.
+- Goal writes remain isolated from FIRE plan persistence; `src/lib/fire.ts` is unchanged.
+- Local authenticated API lifecycle checks and signed-in browser QA passed at `1280x720` and `390x844` with no console errors or horizontal overflow.
+- Goal unit coverage brings the frontend suite to 19 passing tests.
+- `npm run cf:deploy` deployed the Phase 5 goal-ready state to `https://06ad2b4d.interactive-fire-calculator.pages.dev`.
+- Deployed API verification passed for unauthenticated rejection plus authenticated create, list, update, dashboard aggregation, archive, and archived-goal `404`; disposable Clerk and D1 data was removed afterward.
+
 ## Next Phase
 
-Begin Phase 5 Goals System, while keeping the remaining Phase 2 production-auth launch blocker visible.
+Begin Phase 6 Planning Workspace, while keeping the remaining Phase 2 production-auth launch blocker visible.
 
 Remaining Phase 2 work:
 
@@ -111,12 +125,12 @@ Remaining Phase 2 work:
 4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
 5. Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
-Phase 5 first slice:
+Phase 6 first slice:
 
-1. Add authenticated manual goals API and UI.
-2. Support target amount, current amount, target date, and category.
-3. Add goal progress summaries to `/dashboard`.
-4. Keep goals separate from FIRE plan persistence until the goal model is stable.
+1. Turn saved FIRE plans into a focused planning workspace with version and scenario history.
+2. Let users deliberately seed plan inputs from profile, accounts, and goals without silently changing calculator assumptions.
+3. Add plan comparison across saved versions and concise plan health explanations.
+4. Preserve the public FIRE demo and existing user-owned D1 boundaries.
 
 ## Working Rules
 
@@ -164,17 +178,17 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phase 1 Product Shell and IA is complete. Phase 2 has a Clerk provider-ready auth shell, route gates, signed-in shell state, and /api/me identity validation. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 server persistence is complete for preview/development with D1-backed profile persistence, account-backed FIRE plan APIs, signed-in plan saves, signed-out local demo drafts, and a Settings profile form. Phase 4 Financial Tracker MVP is complete for preview/development with D1-backed manual accounts, balance history, account archival, dashboard net worth summaries, and signed-in `/dashboard` and `/accounts` UI.
+Phase 1 Product Shell and IA is complete. Phase 2 has a Clerk provider-ready auth shell, route gates, signed-in shell state, and /api/me identity validation. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 server persistence is complete for preview/development with D1-backed profile persistence and saved FIRE plans. Phase 4 Financial Tracker MVP is complete with manual accounts, balance history, and dashboard net worth summaries. Phase 5 Goals System is complete with user-owned goal APIs, progress/deadline tracking, a signed-in Goals workspace, and dashboard goal summaries.
 
 Next goal:
-Begin Phase 5 Goals System by adding authenticated goals with target amounts, current amounts, target dates, categories, and dashboard progress summaries. Keep Clerk production auth/domain setup as a launch blocker.
+Begin Phase 6 Planning Workspace with plan scenario/version history, deliberate profile/account/goal input connections, comparison, and plan health explanations. Keep Clerk production auth/domain setup as a launch blocker.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
 
-## Detailed Phase 5 Handoff Prompt
+## Detailed Phase 6 Handoff Prompt
 
-Use this more detailed prompt when starting the coding session that should begin Phase 5:
+Use this more detailed prompt when starting the coding session that should begin Phase 6:
 
 ```text
 We are working in this repo:
@@ -193,23 +207,24 @@ docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 Current state:
-Phase 1 Product Shell and IA is complete and pushed. Phase 2 selected Clerk and implemented a provider-ready auth shell, route gates, signed-in profile basics, and a Clerk-backed `/api/me` Pages Function. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is not complete because the Clerk app has no production instance/domain yet. Phase 3 server persistence is complete for preview/development with D1-backed `/api/profile`, `/api/plans`, account-backed signed-in FIRE saves, signed-out local demo drafts, and a Settings profile form. The public landing page is `/`. The dedicated FIRE calculator route is `/calculators/fire` and remains unauthenticated. Placeholder app-shell routes exist for `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/calculators`, `/reports`, and `/settings`; account routes show an auth/configuration gate when signed out or unconfigured. The FIRE engine in `src/lib/fire.ts` is intact and should not be changed unless calculation behavior is explicitly in scope. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1, 3, 4, and 5 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, accounts, balances, and goals behind user-scoped Pages Functions. `/goals` supports manual goal creation, progress/status updates, deadlines, and archival; `/dashboard` combines account and goal summaries. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://5d15bc5c.interactive-fire-calculator.pages.dev
+https://06ad2b4d.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 Goal:
-Begin Phase 5: Goals System.
+Begin Phase 6: Planning Workspace.
 
-Phase 5 target:
-- Add manual goals for target amounts, current amounts, target dates, and categories.
-- Add goal progress tracking and signed-in dashboard summaries.
-- Keep the existing account and balance tracker data intact.
+Phase 6 target:
+- Add a signed-in workspace for saved FIRE plans and their version/scenario history.
+- Support clear comparison between plan versions or scenarios.
+- Offer explicit controls to seed plan inputs from profile, account, and goal data.
+- Add concise plan health explanations without changing the deterministic FIRE engine.
+- Keep the existing account, balance, and goal data intact.
 - Keep the unauthenticated FIRE calculator demo available.
-- Keep goal writes separate from FIRE plan persistence until the goal model is stable.
 - Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
 Important decision:
@@ -222,17 +237,11 @@ Required Clerk environment:
 - Examples live in `.env.example` and `.dev.vars.example`.
 - Current Clerk state: app `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`) has a development instance but no production instance. `clerk deploy` must be completed with a real owned domain before production auth can be called done.
 
-Use multi-agent parallelism:
-1. Spawn one explorer to inspect the current repo and identify integration points in `functions/_lib/persistence.ts`, `migrations/`, `src/App.tsx`, and the existing Dashboard/Goals routes.
-2. Spawn one explorer to review the existing D1 schema and propose the smallest goal API shape that fits the current migration.
-3. After implementation scope is clear, split workers by disjoint write scopes, for example Pages Function goal APIs vs frontend goals/dashboard UI.
-4. Do not let agents edit overlapping files without clear ownership.
-
-Likely implementation scope:
-- `functions/api/goals/` for authenticated goal endpoints.
-- `functions/_lib/` for shared goal validation/persistence if needed.
-- `src/App.tsx` and `src/styles.css` for the signed-in Goals and Dashboard surfaces.
-- `docs/FINANCIAL_PLATFORM_TRACKER.md`, `docs/FINANCIAL_PLATFORM_HANDOFF.md`, and `docs/PROJECT_MEMORY.md` to update Phase 5 status.
+Implementation guidance:
+- Start from the existing versioned plan schema and `functions/_lib/firePlans.ts` before adding migrations.
+- Keep plan input imports explicit and reversible; never silently infer or overwrite assumptions.
+- Split backend plan/version work from frontend workspace work when parallelizing edits.
+- Update the three project memory documents when Phase 6 scope is settled.
 
 Required verification before push:
 ./scripts/test_all.sh

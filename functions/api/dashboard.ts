@@ -1,6 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { listAccounts, summarizeAccounts } from '../_lib/accounts';
+import { listGoals, summarizeGoals } from '../_lib/goals';
 import { json } from '../_lib/http';
 import { requireDatabase } from '../_lib/persistence';
 import { requireClerkAuth } from '../_lib/session';
@@ -24,12 +25,15 @@ export const onRequestGet: PagesFunction<DashboardEnv> = async ({ request, env }
 
   try {
     const accounts = await listAccounts(db.database, session.auth.userId);
+    const goals = await listGoals(db.database, session.auth.userId);
 
     return json({
       dashboard: {
         generatedAt: new Date().toISOString(),
         recentAccounts: accounts.slice(0, 5),
-        summary: summarizeAccounts(accounts)
+        recentGoals: goals.slice(0, 5),
+        summary: summarizeAccounts(accounts),
+        goalSummary: summarizeGoals(goals)
       }
     });
   } catch {
