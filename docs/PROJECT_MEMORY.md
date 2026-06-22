@@ -10,7 +10,7 @@ Last updated: June 22, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://f047c87a.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://67e3a1ca.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -32,6 +32,9 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Authenticated D1-backed goal endpoints in `functions/api/goals/index.ts` and `functions/api/goals/[id].ts`.
 - Signed-in Planning Workspace in `src/PlanningWorkspace.tsx`.
 - Explicit plan import rules and deterministic health explanations in `src/lib/planWorkspace.ts` and `src/lib/planHealth.ts`.
+- Review-first balance CSV UI in `src/BalanceImportPanel.tsx` with local parsing/template helpers in `src/lib/balanceCsv.ts`.
+- Authenticated balance import review, commit, and history endpoints under `functions/api/imports/account-balances/`.
+- Shared import validation, duplicate detection, atomic D1 commit, and history rules in `functions/_lib/balanceImports.ts`.
 - Shared Pages Function helpers in `functions/_lib/`.
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
@@ -146,9 +149,28 @@ Phase 6 Planning Workspace is complete for preview/development:
 - The deployed authenticated version API and signed-out desktop/mobile route smoke passed; all disposable Clerk and D1 records were removed.
 - A Clerk development instance cannot complete browser sign-in on the non-localhost Pages preview origin, so hosted signed-in browser verification remains tied to the documented Phase 2 production-instance/domain blocker.
 
+Phase 7 Imports and Automation is complete for preview/development:
+
+- Accounts now includes a review-first balance CSV workbench with generated account-aware templates.
+- The exact contract is `account,balance_date,balance,currency`, with any header order accepted and a 256 KB/500-row bound.
+- Papa Parse handles CSV structure locally; only normalized row fields reach authenticated Pages Functions.
+- Server review resolves active owned accounts, converts decimal amounts to integer cents, validates dates/currencies, and classifies every row as ready, duplicate, or rejected.
+- Existing snapshots and repeated file rows are skipped; unknown/ambiguous accounts, malformed fields, and different same-day balances are rejected with row-level evidence.
+- Commit re-runs the complete review and transactionally writes one audit record plus all approved balances.
+- Recent import history is stored in the new `balance_imports` table created by `migrations/0002_balance_import_history.sql`.
+- Migration `0002` is applied locally and to both configured remote D1 databases.
+- Account cards, net worth, and dashboard summaries refresh after a successful import.
+- The import panel and Papa Parse live in a separate lazy bundle; public routes do not load CSV tooling.
+- R2 and Queues are deliberately deferred because raw files are not retained and the bounded multi-row D1 batch stays within the current Free query cap.
+- Balance imports do not invent transaction categories; categorization remains future transaction scope.
+- Unit, local authenticated API, and signed-in desktop/mobile browser verification pass. Wrangler is current and `npm audit` reports zero vulnerabilities.
+- `npm run cf:deploy` deployed Phase 7 to `https://67e3a1ca.interactive-fire-calculator.pages.dev`.
+- The live authenticated import lifecycle, account/dashboard refresh, repeat protection, and signed-out desktop/mobile route smoke passed; all disposable D1 and Clerk records were removed.
+- Hosted signed-in browser verification remains tied to the documented Phase 2 production-instance/domain blocker.
+
 ## Next Phase
 
-Begin Phase 7 Imports and Automation, while keeping the remaining Phase 2 production-auth launch blocker visible.
+Begin Phase 8 Insights and Recommendations, while keeping the remaining Phase 2 production-auth launch blocker visible.
 
 Remaining Phase 2 work:
 
@@ -158,12 +180,12 @@ Remaining Phase 2 work:
 4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
 5. Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
-Phase 7 first slice:
+Phase 8 first slice:
 
-1. Define a narrow CSV contract for account balances or transactions and keep raw uploads out of persistence until review.
-2. Add a parse-and-review flow with row-level validation, duplicate detection, and explicit confirmation.
-3. Persist approved rows through existing user-scoped account or transaction boundaries.
-4. Add R2 or Queues only if file size and processing time justify them; keep the first slice synchronous and auditable.
+1. Extend existing deterministic plan health evidence into prioritized, explainable next actions.
+2. Add account and goal trend insights only where persisted history supports them.
+3. Keep recommendations rule-based and traceable before considering AI summaries.
+4. Define privacy and uncertainty language before presenting personalized guidance.
 
 ## Working Rules
 
@@ -211,17 +233,17 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phases 1, 3, 4, 5, and 6 are complete for preview/development. Phase 6 adds the signed-in Planning Workspace, immutable version APIs, stale-write protection, explicit profile/account/goal imports, comparison, and deterministic health explanations. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
+Phases 1 and 3 through 7 are complete for preview/development. Phase 7 adds review-first account-balance CSV imports, atomic commits, duplicate/conflict evidence, import history, and dashboard refresh. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
 
 Next goal:
-Begin Phase 7 Imports and Automation with a review-first CSV import flow. Keep Clerk production auth/domain setup as a launch blocker.
+Begin Phase 8 Insights and Recommendations with deterministic, explainable guidance. Keep Clerk production auth/domain setup as a launch blocker.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
 
-## Detailed Phase 7 Handoff Prompt
+## Detailed Phase 8 Handoff Prompt
 
-Use this more detailed prompt when starting the coding session that should begin Phase 7:
+Use this more detailed prompt when starting the coding session that should begin Phase 8:
 
 ```text
 We are working in this repo:
@@ -240,24 +262,23 @@ docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 Current state:
-Phases 1, 3, 4, 5, and 6 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, and goals behind user-scoped Pages Functions. `/plans` supports explicit imports, version history, comparisons, and deterministic health evidence. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1 and 3 through 7 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, and balance import audit history behind user-scoped Pages Functions. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed CSV imports. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://f047c87a.interactive-fire-calculator.pages.dev
+https://67e3a1ca.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 Goal:
-Begin Phase 7: Imports and Automation.
+Begin Phase 8: Insights and Recommendations.
 
-Phase 7 target:
-- Add a narrow CSV import for account balances or transactions.
-- Parse and validate locally or in a user-scoped Pages Function before any financial rows are persisted.
-- Show a review table with accepted rows, rejected rows, duplicate warnings, and explicit confirmation.
-- Reuse existing account/balance ownership boundaries for approved data.
-- Add R2 or Queues only if measured file size or processing time requires them.
-- Keep the unauthenticated FIRE calculator demo and completed Planning Workspace available.
+Phase 8 target:
+- Extend deterministic plan health evidence into prioritized next actions with traceable inputs.
+- Add account and goal trend insights only where persisted dated history supports them.
+- Explain recommendation assumptions and uncertainty in concise user-facing language.
+- Keep recommendations rule-based before considering any AI-assisted summaries.
+- Preserve completed imports, planning, and public FIRE workflows.
 - Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
 Important decision:
@@ -271,10 +292,10 @@ Required Clerk environment:
 - Current Clerk state: app `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`) has a development instance but no production instance. `clerk deploy` must be completed with a real owned domain before production auth can be called done.
 
 Implementation guidance:
-- Choose one import contract for the first slice; do not combine balances and full transaction categorization in one release.
-- Treat uploaded content as untrusted and validate headers, row counts, dates, currencies, and integer cents at the boundary.
-- Keep review and commit separate so no parsed row is silently persisted.
-- Update the three project memory documents when Phase 7 scope is settled.
+- Start from `src/lib/planHealth.ts` and dated account/goal data already present; avoid invented data or opaque scoring.
+- Separate factual observations from recommendations and state which assumptions drive each result.
+- Do not add AI-generated financial guidance until privacy, safety, and evidence constraints are explicit.
+- Update the three project memory documents when Phase 8 scope is settled.
 
 Required verification before push:
 ./scripts/test_all.sh

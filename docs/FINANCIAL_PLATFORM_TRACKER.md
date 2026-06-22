@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://f047c87a.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://67e3a1ca.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -24,7 +24,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 4: Financial Tracker MVP | Preview/server complete | 100% | Manual accounts, assets, liabilities, balance history, account archival, and dashboard net worth summaries are in place. |
 | Phase 5: Goals System | Preview/server complete | 100% | User-owned goal CRUD, progress and deadline tracking, signed-in Goals workspace, and dashboard goal summaries are in place. |
 | Phase 6: Planning Workspace | Preview/server complete | 100% | Signed-in plan library, immutable version history, stale-write protection, comparisons, explicit profile/account/goal imports, and deterministic health checks are in place. |
-| Phase 7: Imports and Automation | Not started | 0% | Add CSV imports, review flows, optional R2 storage, and optional queues. |
+| Phase 7: Imports and Automation | Preview/server complete | 100% | Review-first account-balance CSV imports, duplicate/conflict handling, atomic commits, audit history, and dashboard refresh are in place. |
 | Phase 8: Insights and Recommendations | Not started | 0% | Extend deterministic plan health into spending insights, recommendations, and retirement risk guidance. |
 | Phase 9: Hardening and Launch | Not started | 0% | Privacy/export/delete flows, accessibility, performance, monitoring, and launch readiness. |
 
@@ -246,6 +246,39 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 - The deployed authenticated API passed create, version list/read, version append, stale-write `409`, archive, and unauthenticated `401`; disposable D1 and Clerk records were removed afterward.
 - The deployed public FIRE route and signed-out `/plans` gate passed desktop/mobile browser smoke with no console errors or horizontal overflow.
 - Clerk development instances do not complete browser sign-in on the non-localhost Pages preview origin; live signed-in browser verification remains part of the existing Phase 2 production-instance/domain blocker.
+
+## Phase 7 Progress Checklist
+
+- [x] Choose account-balance CSV as the narrow first import contract.
+- [x] Require exactly `account`, `balance_date`, `balance`, and `currency` headers while allowing any column order.
+- [x] Parse CSV locally with Papa Parse and send only normalized row fields for authenticated server review.
+- [x] Bound files to 256 KB and 500 balance rows.
+- [x] Match active owned accounts by ID or unambiguous exact name.
+- [x] Validate ISO dates, non-negative decimal amounts, account currency, row shape, and unique row numbers at the API boundary.
+- [x] Mark existing snapshots and repeated rows as duplicates without writing them.
+- [x] Reject unknown/ambiguous accounts, currency mismatches, malformed fields, and conflicting same-day balances.
+- [x] Re-run review during commit so client changes cannot bypass ownership or validation.
+- [x] Write the import audit record and approved balances in one transactional D1 batch.
+- [x] Add recent import history and a generated account-aware CSV template.
+- [x] Refresh account history, net worth, and dashboard summaries after commit.
+- [x] Keep the import workbench in a route-specific lazy chunk so public pages do not load CSV tooling.
+- [x] Add migration `0002_balance_import_history.sql` and apply it locally, to preview D1, and to production D1.
+- [x] Update Wrangler to `4.103.0`; `npm audit` reports zero known vulnerabilities.
+- [x] Defer R2 and Queues: the bounded synchronous path does not store raw files and remains below the current D1 Free query limit.
+- [x] Keep transaction categorization out of a balance-snapshot import; it remains future transaction scope.
+
+## Phase 7 Verification Notes
+
+- Vitest now covers CSV parsing/template generation plus payload, account match, amount/date/currency, duplicate, and conflict rules; 41 frontend tests pass.
+- Local Pages Functions verification passed account creation, mixed-row preview, atomic commit, import history, refreshed account state, repeat commit rejection, malformed payload `400`, and unauthenticated `401`.
+- The local review fixture produced exactly `1 ready / 2 duplicates / 1 rejected`, committed one balance, and updated the dashboard total.
+- Signed-in browser QA passed on `/accounts` and `/dashboard` at `1440x900` and `390x844`, including file selection, review evidence, commit, history, repeat-file review, lazy chunk loading, and responsive table containment.
+- Browser checks found no console errors, horizontal page overflow, or overlapping controls.
+- `npm run cf:deploy` deployed Phase 7 to `https://67e3a1ca.interactive-fire-calculator.pages.dev`.
+- The live authenticated import flow passed mixed-row preview, atomic commit, import history, account/dashboard refresh to `$2,500`, repeat-commit rejection, and unauthenticated `401`.
+- The deployed public FIRE route and signed-out `/accounts` gate passed desktop/mobile browser smoke with no console errors or horizontal overflow.
+- Disposable local, preview/production D1, and Clerk verification records were removed after testing.
+- Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
 
 ## Required Verification Before Push
 

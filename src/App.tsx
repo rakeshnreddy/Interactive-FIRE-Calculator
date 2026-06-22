@@ -28,7 +28,7 @@ import {
   UserCircle,
   X
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 import {
   PlanningWorkspace,
@@ -63,6 +63,10 @@ import {
 } from './lib/fire';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
 import type { AuthState } from './auth';
+
+const BalanceImportPanel = lazy(() =>
+  import('./BalanceImportPanel').then((module) => ({ default: module.BalanceImportPanel }))
+);
 
 type Mode = 'light' | 'dark';
 type AppRoute =
@@ -1732,9 +1736,9 @@ const platformPages: Record<
   },
   '/accounts': {
     eyebrow: 'Accounts',
-    title: 'Track manual assets, debt, and balance history.',
+    title: 'Keep every balance in view.',
     description:
-      'Add accounts by hand, record balance snapshots, and keep the first net-worth dashboard current before imports are introduced.',
+      'Add accounts by hand or review a balance CSV before updating net worth and account history.',
     icon: CircleDollarSign,
     cards: [
       { label: 'Assets', value: 'Ready', detail: 'Cash, brokerage, retirement, property, and other holdings.' },
@@ -2370,6 +2374,7 @@ function GoalsPanel({
 
 function AccountsPanel({
   accounts,
+  auth,
   balanceDrafts,
   draft,
   isLoading,
@@ -2379,10 +2384,12 @@ function AccountsPanel({
   onBalanceDraftChange,
   onCreateAccount,
   onDraftChange,
+  onImportComplete,
   onRecordBalance,
   summary
 }: {
   accounts: FinancialAccount[];
+  auth: Extract<AuthState, { status: 'signed-in' }>;
   balanceDrafts: Record<string, BalanceDraft>;
   draft: AccountDraft;
   isLoading: boolean;
@@ -2392,6 +2399,7 @@ function AccountsPanel({
   onBalanceDraftChange: (id: string, field: keyof BalanceDraft, value: string) => void;
   onCreateAccount: () => void;
   onDraftChange: (field: keyof AccountDraft, value: string) => void;
+  onImportComplete: () => Promise<void>;
   onRecordBalance: (id: string) => void;
   summary: AccountSummary;
 }) {
@@ -2492,6 +2500,10 @@ function AccountsPanel({
 
         {message ? <p className="account-status" role="status" aria-live="polite">{message}</p> : null}
       </section>
+
+      <Suspense fallback={<section className="account-panel"><p className="empty-inline">Loading CSV import...</p></section>}>
+        <BalanceImportPanel accounts={accounts} auth={auth} onImportComplete={onImportComplete} />
+      </Suspense>
 
       <section className="account-panel" aria-label="Saved accounts">
         {isLoading ? (
@@ -2879,6 +2891,7 @@ function PlatformPage({
   onCreateGoal,
   onGoalDraftChange,
   onGoalUpdateDraftChange,
+  onImportComplete,
   onProfileDraftChange,
   onProfileSave,
   onRecordBalance,
@@ -2914,6 +2927,7 @@ function PlatformPage({
   onCreateGoal: () => void;
   onGoalDraftChange: (field: keyof GoalDraft, value: string) => void;
   onGoalUpdateDraftChange: (id: string, field: keyof GoalUpdateDraft, value: string) => void;
+  onImportComplete: () => Promise<void>;
   onProfileDraftChange: (field: keyof AccountProfileDraft, value: string) => void;
   onProfileSave: () => void;
   onRecordBalance: (id: string) => void;
@@ -2955,6 +2969,7 @@ function PlatformPage({
       {route === '/accounts' ? (
         <AccountsPanel
           accounts={financialAccounts}
+          auth={auth}
           balanceDrafts={balanceDrafts}
           draft={accountDraft}
           isLoading={isLoadingAccounts}
@@ -2965,6 +2980,7 @@ function PlatformPage({
           onBalanceDraftChange={onBalanceDraftChange}
           onCreateAccount={onCreateAccount}
           onDraftChange={onAccountDraftChange}
+          onImportComplete={onImportComplete}
           onRecordBalance={onRecordBalance}
         />
       ) : null}
@@ -3021,7 +3037,7 @@ function PlatformPage({
             {route === '/dashboard'
               ? 'Account balances and goal progress now power the signed-in tracker.'
               : route === '/accounts'
-                ? 'Manual balances feed net worth while goals track progress toward the next milestone.'
+                ? 'Manual and reviewed CSV balances feed net worth while goals track the next milestone.'
                 : route === '/goals'
                   ? 'Funding updates and target dates roll directly into the dashboard.'
                   : 'Continue into the working FIRE module while future platform modules are still being built.'}
@@ -3760,6 +3776,20 @@ function App({ auth }: { auth: AuthState }) {
     }
   };
 
+  const refreshAccountsAfterImport = async () => {
+    if (auth.status !== 'signed-in') return;
+
+    setIsLoadingAccounts(true);
+    try {
+      const { accounts } = await loadFinancialAccounts(auth);
+      setFinancialAccounts(accounts);
+      setBalanceDrafts(buildBalanceDraftMap(accounts));
+      setAccountMessage('Imported balances are synced.');
+    } finally {
+      setIsLoadingAccounts(false);
+    }
+  };
+
   const archiveFinancialAccount = async (id: string) => {
     if (auth.status !== 'signed-in') {
       return;
@@ -4385,6 +4415,7 @@ function App({ auth }: { auth: AuthState }) {
                 onCreateGoal={createGoal}
                 onGoalDraftChange={updateGoalDraft}
                 onGoalUpdateDraftChange={updateGoalUpdateDraft}
+                onImportComplete={refreshAccountsAfterImport}
                 onProfileDraftChange={updateProfileDraft}
                 onProfileSave={saveAccountProfile}
                 onRecordBalance={recordAccountBalance}
