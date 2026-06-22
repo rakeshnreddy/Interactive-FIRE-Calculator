@@ -2,7 +2,9 @@
 
 import {
   archiveFirePlan,
+  InvalidGoalLinkError,
   parseFirePlanPayload,
+  PlanVersionConflictError,
   readFirePlan,
   readJsonBody,
   updateFirePlan
@@ -58,7 +60,15 @@ export const onRequestPut: PagesFunction<PlanEnv, PlanParams> = async ({ request
     }
 
     return json({ plan });
-  } catch {
+  } catch (error) {
+    if (error instanceof PlanVersionConflictError) {
+      return json({ error: error.message }, 409);
+    }
+
+    if (error instanceof InvalidGoalLinkError) {
+      return json({ error: error.message }, 400);
+    }
+
     return json({ error: 'Unable to update plan.' }, 500);
   }
 };

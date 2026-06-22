@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://61627f11.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://f047c87a.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -22,10 +22,10 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages preview secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
 | Phase 3: Server Persistence | Preview/server complete | 100% | D1 schema, shared auth/DB helpers, authenticated profile API, user-owned FIRE plan APIs, account-backed plan saves, Settings profile form, and signed-out local demo saves are in place. Production usage still depends on the Phase 2 Clerk production instance/domain. |
 | Phase 4: Financial Tracker MVP | Preview/server complete | 100% | Manual accounts, assets, liabilities, balance history, account archival, and dashboard net worth summaries are in place. |
-| Phase 5: Goals System | Preview/server complete | 100% | User-owned goal CRUD, progress and deadline tracking, signed-in Goals workspace, and dashboard goal summaries are in place. Plan links remain deliberate Phase 6 scope. |
-| Phase 6: Planning Workspace | Not started | 0% | Add plan versions, scenario history, and profile/account-connected FIRE inputs. |
+| Phase 5: Goals System | Preview/server complete | 100% | User-owned goal CRUD, progress and deadline tracking, signed-in Goals workspace, and dashboard goal summaries are in place. |
+| Phase 6: Planning Workspace | Preview/server complete | 100% | Signed-in plan library, immutable version history, stale-write protection, comparisons, explicit profile/account/goal imports, and deterministic health checks are in place. |
 | Phase 7: Imports and Automation | Not started | 0% | Add CSV imports, review flows, optional R2 storage, and optional queues. |
-| Phase 8: Insights and Recommendations | Not started | 0% | Add plan health explanations, spending insights, and retirement risk guidance. |
+| Phase 8: Insights and Recommendations | Not started | 0% | Extend deterministic plan health into spending insights, recommendations, and retirement risk guidance. |
 | Phase 9: Hardening and Launch | Not started | 0% | Privacy/export/delete flows, accessibility, performance, monitoring, and launch readiness. |
 
 ## Design System Milestone
@@ -41,7 +41,7 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Verify landing, FIRE calculator, and signed-out route gates at desktop and mobile widths with no horizontal overflow.
 - [x] Deploy the design milestone to `https://61627f11.interactive-fire-calculator.pages.dev` and verify the live hero asset, console, and responsive framing.
 
-This milestone is intentionally separate from Phase 6 behavior. Phase 6 remains the next product phase.
+This milestone remains the visual baseline for the completed Planning Workspace and future product phases.
 
 ## Phase 1 Completion Checklist
 
@@ -217,6 +217,35 @@ This milestone is intentionally separate from Phase 6 behavior. Phase 6 remains 
 - `npm run cf:deploy` deployed the Phase 5 goal-ready state to `https://06ad2b4d.interactive-fire-calculator.pages.dev`.
 - The deployed API passed unauthenticated rejection plus authenticated create, list, update, dashboard aggregation, archive, and archived-goal `404` checks.
 - Disposable Clerk and D1 verification data is removed after local and deployed checks.
+
+## Phase 6 Progress Checklist
+
+- [x] Add authenticated version-history endpoints:
+  - `GET /api/plans/:id/versions`
+  - `GET /api/plans/:id/versions/:versionNumber`
+- [x] Preserve immutable snapshots, results, version labels, notes, creation times, scenario sets, and optional retirement-goal links.
+- [x] Require an expected version number for signed-in updates and return `409` for stale writes.
+- [x] Stop matching account plans by name; updates now use explicit plan identity.
+- [x] Replace the `/plans` placeholder with a signed-in Planning Workspace.
+- [x] Support separate `Save new version` and `Save as new plan` commands.
+- [x] Restore the most recently updated signed-in plan when the workspace is revisited.
+- [x] Add explicit, previewable, reversible imports from profile ages, selected dated same-currency asset accounts, or one retirement goal.
+- [x] Keep retirement goal target amounts as visible benchmarks rather than silently mapping them to final-value assumptions.
+- [x] Add immutable version history, scenario counts, two-version comparison, and historical-version loading.
+- [x] Add deterministic portfolio-gap, spending-coverage, ending-balance, and engine-warning explanations without changing `src/lib/fire.ts`.
+- [x] Keep the unauthenticated FIRE calculator and browser-local signed-out drafts available.
+
+## Phase 6 Verification Notes
+
+- Vitest coverage now includes plan payload/version parsing, health derivation, account/goal seed rules, invalid source rejection, and one-step undo; 30 frontend tests pass.
+- Local Pages Functions verification passed for authenticated plan creation, version-list/read, version append, stale-write `409`, invalid-version `400`, and unauthenticated `401`.
+- Signed-in browser QA passed the populated `/plans` flow at `1440x900` and `390x844`, including account import preview/apply, immutable version save, new-plan creation, archive, comparison, reload restoration, and responsive control geometry.
+- Browser checks found no console errors, horizontal overflow, or overlapping workspace controls.
+- The existing D1 schema already supported this scope, so Phase 6 required no migration.
+- `npm run cf:deploy` deployed Phase 6 to `https://f047c87a.interactive-fire-calculator.pages.dev`.
+- The deployed authenticated API passed create, version list/read, version append, stale-write `409`, archive, and unauthenticated `401`; disposable D1 and Clerk records were removed afterward.
+- The deployed public FIRE route and signed-out `/plans` gate passed desktop/mobile browser smoke with no console errors or horizontal overflow.
+- Clerk development instances do not complete browser sign-in on the non-localhost Pages preview origin; live signed-in browser verification remains part of the existing Phase 2 production-instance/domain blocker.
 
 ## Required Verification Before Push
 

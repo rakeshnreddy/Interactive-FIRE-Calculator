@@ -31,6 +31,13 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 import {
+  PlanningWorkspace,
+  type PlanVersionDetail,
+  type PlanningSaveDraft,
+  type PlanningSavedPlan,
+  type PlanningSnapshot
+} from './PlanningWorkspace';
+import {
   CartesianGrid,
   Legend,
   Line,
@@ -54,6 +61,7 @@ import {
   type WithdrawalTiming,
   type YearResult
 } from './lib/fire';
+import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
 import type { AuthState } from './auth';
 
 type Mode = 'light' | 'dark';
@@ -95,21 +103,8 @@ type WarningNotice = {
   severity: 'info' | 'warning' | 'critical';
 };
 
-type AppSnapshot = {
-  plan: PlanInput;
-  timeline: TimelineInput;
-  calculatorMode: CalculatorMode;
-  scenarios: ScenarioConfig[];
-};
-
-type SavedPlan = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt?: string;
-  versionNumber?: number;
-  snapshot: AppSnapshot;
-};
+type AppSnapshot = PlanningSnapshot;
+type SavedPlan = PlanningSavedPlan;
 
 type AccountProfile = {
   birthYear: number | null;
@@ -533,7 +528,14 @@ async function loadAccountPlans(auth: Extract<AuthState, { status: 'signed-in' }
 
 async function createAccountPlan(
   auth: Extract<AuthState, { status: 'signed-in' }>,
-  payload: { name: string; result: FirePlanResult; snapshot: AppSnapshot }
+  payload: {
+    goalId?: string | null;
+    label?: string | null;
+    name: string;
+    notes?: string | null;
+    result: FirePlanResult;
+    snapshot: AppSnapshot;
+  }
 ): Promise<SavedPlan> {
   const response = await authenticatedJsonRequest(auth, '/api/plans', {
     body: JSON.stringify(payload),
@@ -546,7 +548,15 @@ async function createAccountPlan(
 async function updateAccountPlan(
   auth: Extract<AuthState, { status: 'signed-in' }>,
   id: string,
-  payload: { name: string; result: FirePlanResult; snapshot: AppSnapshot }
+  payload: {
+    expectedVersionNumber?: number;
+    goalId?: string | null;
+    label?: string | null;
+    name: string;
+    notes?: string | null;
+    result: FirePlanResult;
+    snapshot: AppSnapshot;
+  }
 ): Promise<SavedPlan> {
   const response = await authenticatedJsonRequest(auth, `/api/plans/${encodeURIComponent(id)}`, {
     body: JSON.stringify(payload),
@@ -567,11 +577,15 @@ async function deleteAccountPlan(auth: Extract<AuthState, { status: 'signed-in' 
 }
 
 async function readSavedPlanResponse(response: Response, errorMessage: string): Promise<SavedPlan> {
+  const body: unknown = await response.json().catch(() => null);
+
   if (!response.ok) {
-    throw new Error(errorMessage);
+    throw new PlanRequestError(
+      isRecord(body) && typeof body.error === 'string' ? body.error : errorMessage,
+      response.status
+    );
   }
 
-  const body = await response.json();
   const plan = isRecord(body) ? toSavedPlan(body.plan) : null;
 
   if (!plan) {
@@ -579,6 +593,26 @@ async function readSavedPlanResponse(response: Response, errorMessage: string): 
   }
 
   return plan;
+}
+
+class PlanRequestError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'PlanRequestError';
+    this.status = status;
+  }
+}
+
+function planErrorMessage(error: unknown): string {
+  if (error instanceof PlanRequestError && error.status === 409) {
+    return 'This plan changed in another session. Latest versions were reloaded; review before saving again.';
+  }
+
+  return error instanceof Error
+    ? error.message
+    : 'Plan could not be saved to your account. JSON export is still available.';
 }
 
 function toSavedPlan(value: unknown): SavedPlan | null {
@@ -592,10 +626,15 @@ function toSavedPlan(value: unknown): SavedPlan | null {
 
   return {
     createdAt: value.createdAt,
+    goalId: typeof value.goalId === 'string' || value.goalId === null ? value.goalId : undefined,
     id: value.id,
+    label: typeof value.label === 'string' || value.label === null ? value.label : undefined,
     name: value.name,
+    notes: typeof value.notes === 'string' || value.notes === null ? value.notes : undefined,
+    result: isRecord(value.result) ? value.result as FirePlanResult : undefined,
     snapshot: value.snapshot,
     updatedAt: typeof value.updatedAt === 'string' ? value.updatedAt : undefined,
+    versionCreatedAt: typeof value.versionCreatedAt === 'string' ? value.versionCreatedAt : undefined,
     versionNumber: typeof value.versionNumber === 'number' ? value.versionNumber : undefined
   };
 }
@@ -3095,6 +3134,12 @@ function App({ auth }: { auth: AuthState }) {
   const [projectionBasis, setProjectionBasis] = useState<ProjectionBasis>('fire-number');
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>(initialScenarios);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>(readSavedPlans);
+  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const [seedApplications, setSeedApplications] = useState<SeedApplication[]>([]);
+  const [lastSeedImport, setLastSeedImport] = useState<{
+    preview: Extract<PlanSeedPreview, { ok: true }>;
+    previousApplications: SeedApplication[];
+  } | null>(null);
   const [isLoadingSavedPlans, setIsLoadingSavedPlans] = useState(false);
   const [isSavingPlan, setIsSavingPlan] = useState(false);
   const [planStorageMessage, setPlanStorageMessage] = useState('');
@@ -3135,6 +3180,7 @@ function App({ auth }: { auth: AuthState }) {
 
     if (auth.status !== 'signed-in') {
       setSavedPlans(readSavedPlans());
+      setActivePlanId(null);
       setIsLoadingSavedPlans(false);
       setPlanStorageMessage('');
       return () => {
@@ -3152,6 +3198,22 @@ function App({ auth }: { auth: AuthState }) {
         }
 
         setSavedPlans(plans);
+        const latestPlan = plans[0];
+
+        if (latestPlan) {
+          setActivePlanId(latestPlan.id);
+          setSaveName(latestPlan.name);
+          setPlan({
+            ...initialPlan,
+            ...latestPlan.snapshot.plan,
+            recurringCashFlows: latestPlan.snapshot.plan.recurringCashFlows ?? []
+          });
+          setTimeline({ ...initialTimeline, ...latestPlan.snapshot.timeline });
+          setCalculatorMode(latestPlan.snapshot.calculatorMode ?? 'fire-number');
+          setScenarios(Array.isArray(latestPlan.snapshot.scenarios) ? latestPlan.snapshot.scenarios : initialScenarios);
+          setSeedApplications(Array.isArray(latestPlan.snapshot.seedApplications) ? latestPlan.snapshot.seedApplications : []);
+          setHasCalculated(true);
+        }
         setPlanStorageMessage('Account-backed plan storage is active.');
       })
       .catch(() => {
@@ -3517,10 +3579,13 @@ function App({ auth }: { auth: AuthState }) {
   };
 
   const buildSnapshot = (): AppSnapshot => ({
-    plan,
-    timeline,
     calculatorMode,
-    scenarios
+    engineVersion: 'fire-ts-v1',
+    plan,
+    scenarios,
+    schemaVersion: 2,
+    seedApplications,
+    timeline
   });
 
   const applySnapshot = (snapshot: AppSnapshot) => {
@@ -3533,8 +3598,42 @@ function App({ auth }: { auth: AuthState }) {
     setTimeline({ ...initialTimeline, ...snapshot.timeline });
     setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
     setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
+    setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
+    setLastSeedImport(null);
     setHasCalculated(true);
     setCalculatorPanel('planner');
+  };
+
+  const loadSavedPlan = (savedPlan: SavedPlan) => {
+    setActivePlanId(savedPlan.id);
+    setSaveName(savedPlan.name);
+    applySnapshot(savedPlan.snapshot);
+  };
+
+  const loadSavedPlanVersion = (planId: string, version: PlanVersionDetail) => {
+    setActivePlanId(planId);
+    applySnapshot(version.snapshot);
+  };
+
+  const applyPlanSeed = (preview: Extract<PlanSeedPreview, { ok: true }>) => {
+    setLastSeedImport({ preview, previousApplications: seedApplications });
+    setPlan(preview.nextPlan);
+    setTimeline(preview.nextTimeline);
+    setSeedApplications(preview.applications);
+    setHasCalculated(false);
+    setPlanStorageMessage('Account data imported into the draft. Save a version to preserve it.');
+  };
+
+  const undoLastPlanSeed = () => {
+    if (!lastSeedImport) return;
+
+    const previous = undoPlanSeed(lastSeedImport.preview);
+    setPlan(previous.plan);
+    setTimeline(previous.timeline);
+    setSeedApplications(lastSeedImport.previousApplications);
+    setLastSeedImport(null);
+    setHasCalculated(false);
+    setPlanStorageMessage('Last account-data import undone.');
   };
 
   const updateProfileDraft = (field: keyof AccountProfileDraft, value: string) => {
@@ -3864,24 +3963,37 @@ function App({ auth }: { auth: AuthState }) {
     const snapshot = buildSnapshot();
 
     if (auth.status === 'signed-in') {
-      const existingPlan = savedPlans.find((item) => item.name.toLowerCase() === name.toLowerCase());
+      const activePlan = savedPlans.find((item) => item.id === activePlanId) ?? null;
 
       setIsSavingPlan(true);
-      setPlanStorageMessage(existingPlan ? 'Updating account plan...' : 'Saving account plan...');
+      setPlanStorageMessage(activePlan ? 'Saving a new account version...' : 'Saving a new account plan...');
 
       try {
-        const savedPlan = existingPlan
-          ? await updateAccountPlan(auth, existingPlan.id, { name, result, snapshot })
-          : await createAccountPlan(auth, { name, result, snapshot });
-        const nextPlans = [
-          savedPlan,
-          ...savedPlans.filter((item) => item.id !== savedPlan.id && item.name.toLowerCase() !== name.toLowerCase())
-        ].slice(0, 8);
+        const savedPlan = activePlan
+          ? await updateAccountPlan(auth, activePlan.id, {
+              expectedVersionNumber: activePlan.versionNumber,
+              goalId: activePlan.goalId ?? null,
+              label: `Calculator update ${new Date().toLocaleDateString()}`,
+              name,
+              notes: 'Saved from the FIRE calculator.',
+              result,
+              snapshot
+            })
+          : await createAccountPlan(auth, {
+              goalId: null,
+              label: 'Calculator draft',
+              name,
+              notes: 'Created from the FIRE calculator.',
+              result,
+              snapshot
+            });
 
-        setSavedPlans(nextPlans);
-        setPlanStorageMessage('Saved to your account.');
-      } catch {
-        setPlanStorageMessage('Plan could not be saved to your account. Export JSON still works.');
+        setSavedPlans((current) => [savedPlan, ...current.filter((item) => item.id !== savedPlan.id)].slice(0, 8));
+        setActivePlanId(savedPlan.id);
+        setSaveName(savedPlan.name);
+        setPlanStorageMessage(activePlan ? `Version ${savedPlan.versionNumber} saved to your account.` : 'New plan saved to your account.');
+      } catch (error) {
+        setPlanStorageMessage(planErrorMessage(error));
       } finally {
         setIsSavingPlan(false);
       }
@@ -3901,6 +4013,55 @@ function App({ auth }: { auth: AuthState }) {
     setPlanStorageMessage('Saved in this browser.');
   };
 
+  const savePlanningPlan = async (
+    mode: 'new-plan' | 'new-version',
+    draft: PlanningSaveDraft
+  ) => {
+    if (auth.status !== 'signed-in') return;
+
+    const name = draft.name.trim() || 'Retirement plan';
+    const snapshot = buildSnapshot();
+    const activePlan = savedPlans.find((item) => item.id === activePlanId) ?? null;
+
+    if (mode === 'new-version' && !activePlan) {
+      setPlanStorageMessage('Open or create a plan before saving a new version.');
+      return;
+    }
+
+    setIsSavingPlan(true);
+    setPlanStorageMessage(mode === 'new-version' ? 'Saving immutable version...' : 'Creating account plan...');
+
+    try {
+      const payload = {
+        goalId: draft.goalId,
+        label: draft.label.trim() || null,
+        name,
+        notes: draft.notes.trim() || null,
+        result,
+        snapshot
+      };
+      const savedPlan = mode === 'new-version' && activePlan
+        ? await updateAccountPlan(auth, activePlan.id, {
+            ...payload,
+            expectedVersionNumber: activePlan.versionNumber
+          })
+        : await createAccountPlan(auth, payload);
+
+      setSavedPlans((current) => [savedPlan, ...current.filter((item) => item.id !== savedPlan.id)].slice(0, 8));
+      setActivePlanId(savedPlan.id);
+      setSaveName(savedPlan.name);
+      setPlanStorageMessage(mode === 'new-version' ? `Version ${savedPlan.versionNumber} saved.` : 'New plan created.');
+    } catch (error) {
+      setPlanStorageMessage(planErrorMessage(error));
+
+      if (error instanceof PlanRequestError && error.status === 409) {
+        loadAccountPlans(auth).then(setSavedPlans).catch(() => undefined);
+      }
+    } finally {
+      setIsSavingPlan(false);
+    }
+  };
+
   const removeSavedPlan = async (id: string) => {
     if (auth.status === 'signed-in') {
       setIsSavingPlan(true);
@@ -3909,9 +4070,10 @@ function App({ auth }: { auth: AuthState }) {
       try {
         await deleteAccountPlan(auth, id);
         setSavedPlans((current) => current.filter((item) => item.id !== id));
-        setPlanStorageMessage('Plan deleted from your account.');
+        if (activePlanId === id) setActivePlanId(null);
+        setPlanStorageMessage('Plan archived in your account.');
       } catch {
-        setPlanStorageMessage('Plan could not be deleted from your account.');
+        setPlanStorageMessage('Plan could not be archived in your account.');
       } finally {
         setIsSavingPlan(false);
       }
@@ -4160,42 +4322,76 @@ function App({ auth }: { auth: AuthState }) {
           <CalculatorsPage onNavigate={navigateTo} />
         ) : isPlatformRoute(route) ? (
           auth.isSignedIn ? (
-            <PlatformPage
-              accountDraft={accountDraft}
-              accountMessage={accountMessage}
-              accountSummary={accountSummary}
-              balanceDrafts={balanceDrafts}
-              auth={auth}
-              financialAccounts={financialAccounts}
-              goalDraft={goalDraft}
-              goalMessage={goalMessage}
-              goals={goals}
-              goalSummary={goalSummary}
-              goalUpdateDrafts={goalUpdateDrafts}
-              isLoadingAccounts={isLoadingAccounts}
-              isLoadingGoals={isLoadingGoals}
-              isLoadingProfile={isLoadingProfile}
-              isSavingAccount={isSavingAccount}
-              isSavingGoal={isSavingGoal}
-              isSavingProfile={isSavingProfile}
-              profile={accountProfile}
-              profileDraft={profileDraft}
-              profileMessage={profileMessage}
-              route={route}
-              onNavigate={navigateTo}
-              onAccountDraftChange={updateAccountDraft}
-              onArchiveAccount={archiveFinancialAccount}
-              onBalanceDraftChange={updateBalanceDraft}
-              onCreateAccount={createFinancialAccount}
-              onCreateGoal={createGoal}
-              onGoalDraftChange={updateGoalDraft}
-              onGoalUpdateDraftChange={updateGoalUpdateDraft}
-              onProfileDraftChange={updateProfileDraft}
-              onProfileSave={saveAccountProfile}
-              onRecordBalance={recordAccountBalance}
-              onArchiveGoal={archiveGoal}
-              onUpdateGoal={updateGoal}
-            />
+            route === '/plans' ? (
+              <section className="route-shell" aria-labelledby="plans-title">
+                <div className="route-heading">
+                  <p className="eyebrow">Planning workspace</p>
+                  <h1 id="plans-title">Build a plan you can revisit.</h1>
+                  <p>Import selected account facts, preserve assumptions as immutable versions, and compare how the plan changes over time.</p>
+                </div>
+                <SignedInProfileBand auth={auth} />
+                <PlanningWorkspace
+                  accounts={financialAccounts}
+                  activePlanId={activePlanId}
+                  auth={auth}
+                  canUndoSeed={Boolean(lastSeedImport)}
+                  currentPlan={plan}
+                  currentResult={result}
+                  currentSnapshot={buildSnapshot()}
+                  currentTimeline={timeline}
+                  goals={goals}
+                  isLoading={isLoadingSavedPlans}
+                  isSaving={isSavingPlan}
+                  message={planStorageMessage}
+                  plans={savedPlans}
+                  profile={accountProfile}
+                  onApplySeed={applyPlanSeed}
+                  onArchive={removeSavedPlan}
+                  onLoadPlan={loadSavedPlan}
+                  onLoadVersion={loadSavedPlanVersion}
+                  onNavigateCalculator={() => navigateTo('/calculators/fire')}
+                  onSave={savePlanningPlan}
+                  onUndoSeed={undoLastPlanSeed}
+                />
+              </section>
+            ) : (
+              <PlatformPage
+                accountDraft={accountDraft}
+                accountMessage={accountMessage}
+                accountSummary={accountSummary}
+                balanceDrafts={balanceDrafts}
+                auth={auth}
+                financialAccounts={financialAccounts}
+                goalDraft={goalDraft}
+                goalMessage={goalMessage}
+                goals={goals}
+                goalSummary={goalSummary}
+                goalUpdateDrafts={goalUpdateDrafts}
+                isLoadingAccounts={isLoadingAccounts}
+                isLoadingGoals={isLoadingGoals}
+                isLoadingProfile={isLoadingProfile}
+                isSavingAccount={isSavingAccount}
+                isSavingGoal={isSavingGoal}
+                isSavingProfile={isSavingProfile}
+                profile={accountProfile}
+                profileDraft={profileDraft}
+                profileMessage={profileMessage}
+                route={route}
+                onNavigate={navigateTo}
+                onAccountDraftChange={updateAccountDraft}
+                onArchiveAccount={archiveFinancialAccount}
+                onBalanceDraftChange={updateBalanceDraft}
+                onCreateAccount={createFinancialAccount}
+                onCreateGoal={createGoal}
+                onGoalDraftChange={updateGoalDraft}
+                onGoalUpdateDraftChange={updateGoalUpdateDraft}
+                onProfileDraftChange={updateProfileDraft}
+                onProfileSave={saveAccountProfile}
+                onRecordBalance={recordAccountBalance}
+                onArchiveGoal={archiveGoal}
+                onUpdateGoal={updateGoal}
+              />
+            )
           ) : (
             <AuthGate auth={auth} route={route} onNavigate={navigateTo} />
           )
@@ -4877,7 +5073,7 @@ function App({ auth }: { auth: AuthState }) {
                         <small>{new Date(item.createdAt).toLocaleDateString()}</small>
                       </div>
                       <div className="saved-actions">
-                        <button className="secondary-button" onClick={() => applySnapshot(item.snapshot)}>
+                        <button className="secondary-button" onClick={() => loadSavedPlan(item)}>
                           Load
                         </button>
                         <button

@@ -10,7 +10,7 @@ Last updated: June 22, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://61627f11.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://f047c87a.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -28,7 +28,10 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Clerk-backed Pages Function identity endpoint in `functions/api/me.ts`.
 - Authenticated D1-backed profile endpoint in `functions/api/profile.ts`.
 - Authenticated D1-backed FIRE plan endpoints in `functions/api/plans/index.ts` and `functions/api/plans/[id].ts`.
+- Authenticated immutable version endpoints in `functions/api/plans/[id]/versions.ts` and `functions/api/plans/[id]/versions/[versionNumber].ts`.
 - Authenticated D1-backed goal endpoints in `functions/api/goals/index.ts` and `functions/api/goals/[id].ts`.
+- Signed-in Planning Workspace in `src/PlanningWorkspace.tsx`.
+- Explicit plan import rules and deterministic health explanations in `src/lib/planWorkspace.ts` and `src/lib/planHealth.ts`.
 - Shared Pages Function helpers in `functions/_lib/`.
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
@@ -125,9 +128,27 @@ Pre-Phase 6 design system overhaul is complete:
 - Desktop and mobile visual checks passed for landing, FIRE calculator, and signed-out account gates with no horizontal overflow.
 - `npm run cf:deploy` deployed the design-system milestone to `https://61627f11.interactive-fire-calculator.pages.dev`; live desktop/mobile hero, asset, console, and overflow checks passed.
 
+Phase 6 Planning Workspace is complete for preview/development:
+
+- `/plans` is now a signed-in working surface rather than a placeholder.
+- Users can create multiple plans, append immutable labeled versions, load historical versions, archive plans, and compare two saved versions.
+- Version-list and version-detail Pages Functions are user-scoped and exclude archived plans.
+- Plan updates use optimistic concurrency with `expectedVersionNumber`; stale writes return `409` and prompt a reload instead of overwriting newer work.
+- Signed-in saves use plan IDs rather than plan-name matching, and the latest plan is restored on a later signed-in visit.
+- Profile current age/retirement age and one explicitly selected portfolio source can be previewed before import and undone immediately afterward.
+- Account imports accept only selected active assets with dated balances in the profile currency; retirement goals can seed current funding and target age while target amount remains a benchmark.
+- Every snapshot retains its scenario configuration and seed provenance.
+- Version comparison shows portfolio, annual spending, scenario count, and deterministic health status.
+- Health evidence covers portfolio target, spending coverage, ending balance, and calculator warnings without changing `src/lib/fire.ts` or offering Phase 8 recommendations.
+- Local authenticated API checks passed create/read/version/conflict/auth boundaries, and signed-in desktop/mobile browser QA passed the full workflow with no console errors or horizontal overflow.
+- The existing D1 schema was sufficient; no Phase 6 migration was needed.
+- `npm run cf:deploy` deployed Phase 6 to `https://f047c87a.interactive-fire-calculator.pages.dev`.
+- The deployed authenticated version API and signed-out desktop/mobile route smoke passed; all disposable Clerk and D1 records were removed.
+- A Clerk development instance cannot complete browser sign-in on the non-localhost Pages preview origin, so hosted signed-in browser verification remains tied to the documented Phase 2 production-instance/domain blocker.
+
 ## Next Phase
 
-Begin Phase 6 Planning Workspace, while keeping the remaining Phase 2 production-auth launch blocker visible.
+Begin Phase 7 Imports and Automation, while keeping the remaining Phase 2 production-auth launch blocker visible.
 
 Remaining Phase 2 work:
 
@@ -137,12 +158,12 @@ Remaining Phase 2 work:
 4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
 5. Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
-Phase 6 first slice:
+Phase 7 first slice:
 
-1. Turn saved FIRE plans into a focused planning workspace with version and scenario history.
-2. Let users deliberately seed plan inputs from profile, accounts, and goals without silently changing calculator assumptions.
-3. Add plan comparison across saved versions and concise plan health explanations.
-4. Preserve the public FIRE demo and existing user-owned D1 boundaries.
+1. Define a narrow CSV contract for account balances or transactions and keep raw uploads out of persistence until review.
+2. Add a parse-and-review flow with row-level validation, duplicate detection, and explicit confirmation.
+3. Persist approved rows through existing user-scoped account or transaction boundaries.
+4. Add R2 or Queues only if file size and processing time justify them; keep the first slice synchronous and auditable.
 
 ## Working Rules
 
@@ -190,17 +211,17 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phase 1 Product Shell and IA is complete. Phase 2 has a Clerk provider-ready auth shell, route gates, signed-in shell state, and /api/me identity validation. Clerk development credentials are configured locally and in Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 server persistence is complete for preview/development with D1-backed profile persistence and saved FIRE plans. Phase 4 Financial Tracker MVP is complete with manual accounts, balance history, and dashboard net worth summaries. Phase 5 Goals System is complete with user-owned goal APIs, progress/deadline tracking, a signed-in Goals workspace, and dashboard goal summaries.
+Phases 1, 3, 4, 5, and 6 are complete for preview/development. Phase 6 adds the signed-in Planning Workspace, immutable version APIs, stale-write protection, explicit profile/account/goal imports, comparison, and deterministic health explanations. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
 
 Next goal:
-Begin Phase 6 Planning Workspace with plan scenario/version history, deliberate profile/account/goal input connections, comparison, and plan health explanations. Keep Clerk production auth/domain setup as a launch blocker.
+Begin Phase 7 Imports and Automation with a review-first CSV import flow. Keep Clerk production auth/domain setup as a launch blocker.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
 
-## Detailed Phase 6 Handoff Prompt
+## Detailed Phase 7 Handoff Prompt
 
-Use this more detailed prompt when starting the coding session that should begin Phase 6:
+Use this more detailed prompt when starting the coding session that should begin Phase 7:
 
 ```text
 We are working in this repo:
@@ -219,24 +240,24 @@ docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 Current state:
-Phases 1, 3, 4, and 5 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, accounts, balances, and goals behind user-scoped Pages Functions. `/goals` supports manual goal creation, progress/status updates, deadlines, and archival; `/dashboard` combines account and goal summaries. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1, 3, 4, 5, and 6 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, and goals behind user-scoped Pages Functions. `/plans` supports explicit imports, version history, comparisons, and deterministic health evidence. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://61627f11.interactive-fire-calculator.pages.dev
+https://f047c87a.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 Goal:
-Begin Phase 6: Planning Workspace.
+Begin Phase 7: Imports and Automation.
 
-Phase 6 target:
-- Add a signed-in workspace for saved FIRE plans and their version/scenario history.
-- Support clear comparison between plan versions or scenarios.
-- Offer explicit controls to seed plan inputs from profile, account, and goal data.
-- Add concise plan health explanations without changing the deterministic FIRE engine.
-- Keep the existing account, balance, and goal data intact.
-- Keep the unauthenticated FIRE calculator demo available.
+Phase 7 target:
+- Add a narrow CSV import for account balances or transactions.
+- Parse and validate locally or in a user-scoped Pages Function before any financial rows are persisted.
+- Show a review table with accepted rows, rejected rows, duplicate warnings, and explicit confirmation.
+- Reuse existing account/balance ownership boundaries for approved data.
+- Add R2 or Queues only if measured file size or processing time requires them.
+- Keep the unauthenticated FIRE calculator demo and completed Planning Workspace available.
 - Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
 Important decision:
@@ -250,10 +271,10 @@ Required Clerk environment:
 - Current Clerk state: app `app_3EzmNqZyUgQlO1n2nrftcHWizyV` (`Finpath`) has a development instance but no production instance. `clerk deploy` must be completed with a real owned domain before production auth can be called done.
 
 Implementation guidance:
-- Start from the existing versioned plan schema and `functions/_lib/firePlans.ts` before adding migrations.
-- Keep plan input imports explicit and reversible; never silently infer or overwrite assumptions.
-- Split backend plan/version work from frontend workspace work when parallelizing edits.
-- Update the three project memory documents when Phase 6 scope is settled.
+- Choose one import contract for the first slice; do not combine balances and full transaction categorization in one release.
+- Treat uploaded content as untrusted and validate headers, row counts, dates, currencies, and integer cents at the boundary.
+- Keep review and commit separate so no parsed row is silently persisted.
+- Update the three project memory documents when Phase 7 scope is settled.
 
 Required verification before push:
 ./scripts/test_all.sh

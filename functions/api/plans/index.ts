@@ -2,6 +2,7 @@
 
 import {
   createFirePlan,
+  InvalidGoalLinkError,
   listFirePlans,
   parseFirePlanPayload,
   readJsonBody
@@ -44,7 +45,11 @@ export const onRequestPost: PagesFunction<PlansEnv> = async ({ request, env }) =
 
   try {
     return json({ plan: await createFirePlan(context.database, context.userId, parsed.value) }, 201);
-  } catch {
+  } catch (error) {
+    if (error instanceof InvalidGoalLinkError) {
+      return json({ error: error.message }, 400);
+    }
+
     return json({ error: 'Unable to save plan.' }, 500);
   }
 };
