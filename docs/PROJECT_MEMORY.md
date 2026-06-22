@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: June 21, 2026
+Last updated: June 22, 2026
 
 ## Repository
 
@@ -10,7 +10,7 @@ Last updated: June 21, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://06ad2b4d.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://61627f11.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -33,6 +33,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
 - Legacy Flask/Jinja app remains in `app.py`, `project/`, `templates/`, and `static/` for reference/parity only.
+- `DESIGN.md` defines the Revolut-inspired FinPath visual language used by the React app.
 
 ## Completed Work
 
@@ -112,6 +113,17 @@ Phase 5 Goals System is complete for preview/development:
 - Goal unit coverage brings the frontend suite to 19 passing tests.
 - `npm run cf:deploy` deployed the Phase 5 goal-ready state to `https://06ad2b4d.interactive-fire-calculator.pages.dev`.
 - Deployed API verification passed for unauthenticated rejection plus authenticated create, list, update, dashboard aggregation, archive, and archived-goal `404`; disposable Clerk and D1 data was removed afterward.
+
+Pre-Phase 6 design system overhaul is complete:
+
+- Added the requested Revolut-inspired `DESIGN.md` reference and translated it into a distinct FinPath system rather than copying Revolut branding.
+- Rebuilt the landing page around a full-bleed product hero, concise conversion path, editorial capability rows, module entry points, and a compact trust/footer treatment.
+- Added a generated, optimized product hero asset at `public/assets/finpath-product-hero.jpg`.
+- Replaced mood gradients with a black/white/cobalt language while retaining glassmorphism for navigation, planner panels, account/goal surfaces, and auth gates.
+- Self-hosted Inter through `@fontsource-variable/inter` and standardized pill actions, 12px inputs, 16-20px panels, focus states, and mobile touch targets.
+- Removed the public mood switcher, fixed duplicate dashboard labeling, hid the raw Clerk user ID from the normal profile band, added route focus management, live status regions, and reduced-motion/transparency fallbacks.
+- Desktop and mobile visual checks passed for landing, FIRE calculator, and signed-out account gates with no horizontal overflow.
+- `npm run cf:deploy` deployed the design-system milestone to `https://61627f11.interactive-fire-calculator.pages.dev`; live desktop/mobile hero, asset, console, and overflow checks passed.
 
 ## Next Phase
 
@@ -210,7 +222,7 @@ Current state:
 Phases 1, 3, 4, and 5 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, accounts, balances, and goals behind user-scoped Pages Functions. `/goals` supports manual goal creation, progress/status updates, deadlines, and archival; `/dashboard` combines account and goal summaries. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://06ad2b4d.interactive-fire-calculator.pages.dev
+https://61627f11.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev

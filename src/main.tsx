@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import '@fontsource-variable/inter/index.css';
 import App from './App';
 import { AuthProviderBoundary } from './auth';
 import './styles.css';

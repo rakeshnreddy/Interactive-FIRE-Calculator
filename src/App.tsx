@@ -56,7 +56,6 @@ import {
 } from './lib/fire';
 import type { AuthState } from './auth';
 
-type Mood = 'aurora' | 'lagoon' | 'ember';
 type Mode = 'light' | 'dark';
 type AppRoute =
   | '/'
@@ -282,12 +281,6 @@ const goalStatusOptions: Array<{ label: string; value: GoalStatus }> = [
   { label: 'Paused', value: 'paused' },
   { label: 'Completed', value: 'completed' }
 ];
-
-const moodLabels: Record<Mood, string> = {
-  aurora: 'Aurora',
-  lagoon: 'Lagoon',
-  ember: 'Ember'
-};
 
 const routeItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -1627,24 +1620,24 @@ function YearByYearTable({ rows, label }: { rows: YearResult[]; label: string })
 
 const landingFeatures = [
   {
-    title: 'Track',
-    body: 'Bring assets, debt, income, and spending into one private financial profile.',
+    title: 'See the whole balance sheet',
+    body: 'Track assets, liabilities, and current net worth from balances you control.',
     icon: CircleDollarSign
   },
   {
-    title: 'Plan',
-    body: 'Turn goals into dated plans with assumptions you can revisit as life changes.',
-    icon: ClipboardList
+    title: 'Fund goals with context',
+    body: 'Set targets, dates, and funding progress inside the same financial workspace.',
+    icon: Target
   },
   {
-    title: 'Compare',
-    body: 'Model base, guardrail, and upside paths before committing to a decision.',
+    title: 'Keep plans revisitable',
+    body: 'Save FIRE assumptions and return to them as your priorities change.',
+    icon: FolderKanban
+  },
+  {
+    title: 'Compare before deciding',
+    body: 'Stress-test spending, returns, and inflation before a long-term decision.',
     icon: BarChart3
-  },
-  {
-    title: 'Improve',
-    body: 'See the next action that most changes your plan health and goal progress.',
-    icon: CircleGauge
   }
 ];
 
@@ -1767,7 +1760,7 @@ const platformPages: Record<
     cards: [
       { label: 'Profile', value: 'Planned', detail: 'Household and planning defaults.' },
       { label: 'Privacy', value: 'Planned', detail: 'Data export, deletion, and consent controls.' },
-      { label: 'Theme', value: 'Ready', detail: 'Light, dark, and mood controls remain global.' }
+      { label: 'Theme', value: 'Ready', detail: 'Light and dark controls remain global.' }
     ]
   }
 };
@@ -1821,7 +1814,7 @@ function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'sig
         <strong>{auth.user.displayName}</strong>
         {auth.user.email && <small>{auth.user.email}</small>}
       </div>
-      <code>{auth.user.id}</code>
+      <small className="profile-private-label">Private workspace</small>
     </section>
   );
 }
@@ -1913,7 +1906,11 @@ function ProfileSettingsPanel({
         </div>
 
         <div className="profile-editor-actions">
-          {message ? <p className="profile-status">{message}</p> : null}
+          {message ? (
+            <p className="profile-status" role="status" aria-live="polite">
+              {message}
+            </p>
+          ) : null}
           <button className="primary-button icon-text-button" disabled={isLoading || isSaving} type="submit">
             <Save size={16} />
             Save profile
@@ -1949,7 +1946,7 @@ function DashboardPanel({
   const recentGoals = goals.slice(0, 3);
 
   return (
-    <section className="financial-dashboard" aria-labelledby="dashboard-summary-title">
+    <section className="financial-dashboard" aria-label="Financial dashboard">
       <div className="dashboard-summary-grid">
         <article className="tracker-metric tracker-metric-primary">
           <span>Net worth</span>
@@ -1985,7 +1982,7 @@ function DashboardPanel({
           </button>
         </div>
 
-        {goalMessage ? <p className="account-status">{goalMessage}</p> : null}
+        {goalMessage ? <p className="account-status" role="status" aria-live="polite">{goalMessage}</p> : null}
 
         {isLoadingGoals ? (
           <article className="scenario-card empty-card">
@@ -2026,11 +2023,11 @@ function DashboardPanel({
         )}
       </section>
 
-      <section className="account-panel" aria-labelledby="dashboard-summary-title">
+      <section className="account-panel" aria-labelledby="dashboard-accounts-title">
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Balance rollup</p>
-            <h2 id="dashboard-summary-title">Latest account snapshot</h2>
+            <h2 id="dashboard-accounts-title">Latest account snapshot</h2>
           </div>
           <button className="secondary-button icon-text-button" onClick={() => onNavigate('/accounts')}>
             Accounts
@@ -2038,7 +2035,7 @@ function DashboardPanel({
           </button>
         </div>
 
-        {message ? <p className="account-status">{message}</p> : null}
+        {message ? <p className="account-status" role="status" aria-live="polite">{message}</p> : null}
 
         {isLoading ? (
           <article className="scenario-card empty-card">
@@ -2198,7 +2195,7 @@ function GoalsPanel({
           </button>
         </form>
 
-        {message ? <p className="goal-status-copy">{message}</p> : null}
+        {message ? <p className="goal-status-copy" role="status" aria-live="polite">{message}</p> : null}
       </section>
 
       <section className="goal-list-section" aria-label="Saved goals">
@@ -2454,7 +2451,7 @@ function AccountsPanel({
           </button>
         </form>
 
-        {message ? <p className="account-status">{message}</p> : null}
+        {message ? <p className="account-status" role="status" aria-live="polite">{message}</p> : null}
       </section>
 
       <section className="account-panel" aria-label="Saved accounts">
@@ -2644,29 +2641,27 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
   return (
     <>
       <section className="landing-hero" aria-labelledby="landing-title">
-        <div className="landing-hero-copy">
-          <p className="eyebrow">Personal finance tracker and planner</p>
-          <h1 id="landing-title">Track the money you have. Plan the choices ahead.</h1>
-          <p>
-            FinPath is becoming a private planning workspace for accounts, goals, saved plans, and
-            calculators. The FIRE calculator is the first module inside the larger platform.
-          </p>
-          <div className="landing-actions">
-            {auth.isSignedIn ? (
-              <>
+        <img
+          className="landing-hero-media"
+          src="/assets/finpath-product-hero.jpg"
+          alt="A mobile financial planning dashboard beside a cobalt card"
+          width="1672"
+          height="941"
+          decoding="async"
+        />
+        <div className="landing-hero-scrim" aria-hidden="true" />
+        <div className="landing-hero-inner">
+          <div className="landing-hero-copy">
+            <p className="eyebrow">Plan with the full picture</p>
+            <h1 id="landing-title">Your money. One clear path.</h1>
+            <p>Track accounts, fund goals, and test retirement choices in one private workspace.</p>
+            <div className="landing-actions">
+              {auth.isSignedIn ? (
                 <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
                   Open dashboard
                   <ArrowRight size={17} />
                 </button>
-                <SignOutButton redirectUrl="/">
-                  <button className="secondary-button icon-text-button">
-                    <LogOut size={16} />
-                    Sign out
-                  </button>
-                </SignOutButton>
-              </>
-            ) : (
-              <>
+              ) : (
                 <AuthActionButton
                   auth={auth}
                   kind="sign-up"
@@ -2676,71 +2671,102 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
                   Create account
                   <ArrowRight size={17} />
                 </AuthActionButton>
-                <AuthActionButton
-                  auth={auth}
-                  kind="sign-in"
-                  className="secondary-button icon-text-button"
-                  onUnavailable={() => onNavigate('/dashboard')}
-                >
-                  <LogIn size={16} />
-                  Sign in
-                </AuthActionButton>
-              </>
-            )}
-            <button
-              className="secondary-button icon-text-button"
-              onClick={() => onNavigate('/calculators/fire')}
-            >
-              <Calculator size={16} />
-              Try FIRE calculator
-            </button>
-          </div>
-        </div>
-
-        <div className="landing-board" aria-label="Financial planning workspace preview">
-          <div className="board-toolbar">
-            <span>Financial profile</span>
-            <strong>Phase 1A shell</strong>
-          </div>
-          <div className="board-metrics">
-            <Metric label="Net worth" value="$1.42M" tone="accent" />
-            <Metric label="Goals on track" value="4 of 6" tone="success" />
-            <Metric label="Plan runway" value="29 yrs" />
-          </div>
-          <div className="board-rows" aria-hidden="true">
-            <span style={{ width: '78%' }} />
-            <span style={{ width: '64%' }} />
-            <span style={{ width: '88%' }} />
-            <span style={{ width: '52%' }} />
+              )}
+              <button
+                className="secondary-button icon-text-button"
+                onClick={() => onNavigate('/calculators/fire')}
+              >
+                <Calculator size={16} />
+                Try FIRE
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="feature-grid" aria-label="Platform capabilities">
-        {landingFeatures.map((feature) => {
-          const Icon = feature.icon;
-          return (
-            <article className="feature-card" key={feature.title}>
-              <span className="feature-icon">
-                <Icon size={20} />
-              </span>
-              <strong>{feature.title}</strong>
-              <small>{feature.body}</small>
-            </article>
-          );
-        })}
+      <section className="landing-capabilities" aria-labelledby="capabilities-title">
+        <header>
+          <h2 id="capabilities-title">A financial plan you can keep current.</h2>
+          <p>Move from today&apos;s balances to tomorrow&apos;s decisions without rebuilding the story each time.</p>
+        </header>
+
+        <div className="landing-feature-list">
+          {landingFeatures.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <article className="landing-feature" key={feature.title}>
+                <span className="feature-icon">
+                  <Icon size={20} />
+                </span>
+                <div>
+                  <strong>{feature.title}</strong>
+                  <small>{feature.body}</small>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="landing-ready-band" aria-labelledby="ready-title">
+        <div className="landing-ready-copy">
+          <h2 id="ready-title">Start with the decision in front of you.</h2>
+          <p>Use the public FIRE calculator now, then keep accounts, goals, and plans together when you sign in.</p>
+        </div>
+        <div className="landing-ready-actions">
+          <button className="landing-module-link landing-module-primary" onClick={() => onNavigate('/calculators/fire')}>
+            <Calculator size={22} />
+            <span>
+              <strong>FIRE planning</strong>
+              <small>Model retirement income or a target portfolio.</small>
+            </span>
+            <ArrowRight size={18} />
+          </button>
+          <button className="landing-module-link" onClick={() => onNavigate('/accounts')}>
+            <CircleDollarSign size={22} />
+            <span>
+              <strong>Accounts</strong>
+              <small>Keep net worth current.</small>
+            </span>
+            <ArrowRight size={18} />
+          </button>
+          <button className="landing-module-link" onClick={() => onNavigate('/goals')}>
+            <Target size={22} />
+            <span>
+              <strong>Goals</strong>
+              <small>Track funding and dates.</small>
+            </span>
+            <ArrowRight size={18} />
+          </button>
+        </div>
       </section>
 
       <section className="privacy-band" aria-labelledby="privacy-title">
-        <ShieldCheck size={22} />
+        <ShieldCheck size={24} />
         <div>
-          <h2 id="privacy-title">Built around private financial data.</h2>
-          <p>
-            Account-backed storage, export, deletion, and security controls are planned before the
-            product stores sensitive user-owned financial records.
-          </p>
+          <h2 id="privacy-title">Private by account boundary.</h2>
+          <p>Signed-in financial records are scoped to your identity. The FIRE calculator remains available without an account.</p>
         </div>
       </section>
+
+      <footer className="landing-footer">
+        <a
+          href="/"
+          onClick={(event) => {
+            event.preventDefault();
+            onNavigate('/');
+          }}
+          aria-label="FinPath home"
+        >
+          <PiggyBank size={22} />
+          <strong>FinPath</strong>
+        </a>
+        <p>Track today. Test tomorrow. Keep the assumptions yours.</p>
+        <button onClick={() => onNavigate('/calculators/fire')}>
+          Open FIRE calculator
+          <ArrowRight size={16} />
+        </button>
+      </footer>
     </>
   );
 }
@@ -3044,9 +3070,23 @@ function TopbarAuthActions({
 
 function App({ auth }: { auth: AuthState }) {
   const [route, setRoute] = useState<AppRoute>(readRoute);
+  const mainRef = useRef<HTMLElement>(null);
+  const previousRouteRef = useRef<AppRoute>(route);
+
+  useEffect(() => {
+    if (previousRouteRef.current === route) {
+      return;
+    }
+
+    previousRouteRef.current = route;
+    const heading = mainRef.current?.querySelector<HTMLElement>('h1');
+
+    heading?.setAttribute('tabindex', '-1');
+    heading?.focus();
+  }, [route]);
+
   const [plan, setPlan] = useState<PlanInput>(initialPlan);
   const [timeline, setTimeline] = useState<TimelineInput>(initialTimeline);
-  const [mood, setMood] = useState<Mood>('aurora');
   const [mode, setMode] = useState<Mode>('light');
   const [calculatorPanel, setCalculatorPanel] = useState<CalculatorPanel>('planner');
   const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
@@ -3997,7 +4037,7 @@ function App({ auth }: { auth: AuthState }) {
   };
 
   return (
-    <div className="app" data-mood={mood} data-mode={mode}>
+    <div className="app" data-mode={mode}>
       <header className="topbar">
         <a
           href="/"
@@ -4033,18 +4073,6 @@ function App({ auth }: { auth: AuthState }) {
 
         <div className="topbar-actions">
           <TopbarAuthActions auth={auth} onNavigate={navigateTo} />
-          <div className="mood-switcher" aria-label="Mood">
-            {(Object.keys(moodLabels) as Mood[]).map((moodName) => (
-              <button
-                key={moodName}
-                className={mood === moodName ? 'mood-dot active' : 'mood-dot'}
-                data-mood-name={moodName}
-                title={moodLabels[moodName]}
-                aria-label={moodLabels[moodName]}
-                onClick={() => setMood(moodName)}
-              />
-            ))}
-          </div>
           <button
             className="icon-button"
             aria-label="Toggle light and dark mode"
@@ -4125,7 +4153,7 @@ function App({ auth }: { auth: AuthState }) {
         </nav>
       )}
 
-      <main className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
+      <main ref={mainRef} className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
         {route === '/' ? (
           <LandingPage auth={auth} onNavigate={navigateTo} />
         ) : route === '/calculators' ? (
@@ -4792,7 +4820,7 @@ function App({ auth }: { auth: AuthState }) {
                     : 'FIRE drafts stay in this browser. Sign in to save plans to your account.'}
                 </span>
               </div>
-              {planStorageMessage ? <p className="storage-status">{planStorageMessage}</p> : null}
+              {planStorageMessage ? <p className="storage-status" role="status" aria-live="polite">{planStorageMessage}</p> : null}
 
               <div className="utility-grid">
                 <Field label="Plan name">

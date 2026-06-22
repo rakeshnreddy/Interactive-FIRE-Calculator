@@ -1,6 +1,6 @@
 # Financial Platform Handoff
 
-Last updated: June 21, 2026
+Last updated: June 22, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://06ad2b4d.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://61627f11.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,13 +29,15 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 server persistence is complete for preview/development. Phase 4 Financial Tracker MVP provides D1-backed manual accounts, balances, and dashboard net worth summaries. Phase 5 Goals System provides user-owned goal APIs, a signed-in goal workspace, progress/deadline tracking, and dashboard goal summaries. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phase 3 server persistence is complete for preview/development. Phase 4 Financial Tracker MVP provides D1-backed manual accounts, balances, and dashboard net worth summaries. Phase 5 Goals System provides user-owned goal APIs, a signed-in goal workspace, progress/deadline tracking, and dashboard goal summaries. A pre-Phase 6 design overhaul now applies the FinPath interpretation of the installed Revolut-inspired reference across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
 Production target:
 
 - `src/` contains the TypeScript React app.
+- `DESIGN.md` contains the installed Revolut-inspired visual reference and FinPath design tokens.
+- `public/assets/finpath-product-hero.jpg` is the generated landing product hero asset.
 - `src/auth.tsx` contains the Clerk browser auth boundary and user identity projection.
 - `src/lib/fire.ts` contains the deterministic FIRE calculation engine.
 - `src/lib/fire.test.ts` contains Vitest coverage for the TypeScript model.

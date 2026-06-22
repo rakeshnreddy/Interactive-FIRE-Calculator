@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: June 21, 2026
+Last updated: June 22, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://06ad2b4d.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://61627f11.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -27,6 +27,21 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 7: Imports and Automation | Not started | 0% | Add CSV imports, review flows, optional R2 storage, and optional queues. |
 | Phase 8: Insights and Recommendations | Not started | 0% | Add plan health explanations, spending insights, and retirement risk guidance. |
 | Phase 9: Hardening and Launch | Not started | 0% | Privacy/export/delete flows, accessibility, performance, monitoring, and launch readiness. |
+
+## Design System Milestone
+
+- [x] Add the requested Revolut-inspired `DESIGN.md` reference.
+- [x] Establish a FinPath-specific black, white, and restrained cobalt token system.
+- [x] Preserve glassmorphism for real navigation, tool, account, goal, and auth panels.
+- [x] Replace the fake landing dashboard with an optimized product-led hero asset.
+- [x] Recompose the landing page with a full-bleed hero, concise CTAs, editorial capability rows, module entry points, privacy context, and footer.
+- [x] Self-host Inter and standardize pill buttons, accessible fields, panel geometry, focus rings, and mobile touch targets.
+- [x] Remove mood-gradient controls while preserving light/dark mode.
+- [x] Add route-focus management, live status regions, reduced-motion behavior, and reduced-transparency fallbacks.
+- [x] Verify landing, FIRE calculator, and signed-out route gates at desktop and mobile widths with no horizontal overflow.
+- [x] Deploy the design milestone to `https://61627f11.interactive-fire-calculator.pages.dev` and verify the live hero asset, console, and responsive framing.
+
+This milestone is intentionally separate from Phase 6 behavior. Phase 6 remains the next product phase.
 
 ## Phase 1 Completion Checklist
 
