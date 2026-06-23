@@ -14,6 +14,7 @@ import {
   LogIn,
   LogOut,
   LineChart as LineChartIcon,
+  Lightbulb,
   Menu,
   Moon,
   PiggyBank,
@@ -24,6 +25,7 @@ import {
   Sun,
   Target,
   Trash2,
+  TrendingUp,
   Upload,
   UserCircle,
   X
@@ -61,6 +63,12 @@ import {
   type WithdrawalTiming,
   type YearResult
 } from './lib/fire';
+import {
+  buildFinancialInsights,
+  type FinancialInsight,
+  type InsightArea,
+  type InsightPriority
+} from './lib/insights';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
 import type { AuthState } from './auth';
 
@@ -1195,6 +1203,26 @@ function formatGoalPercent(value: number): string {
   return `${Math.round(Math.max(0, value))}%`;
 }
 
+function priorityLabel(priority: InsightPriority): string {
+  if (priority === 'high') return 'High';
+  if (priority === 'medium') return 'Medium';
+  return 'Low';
+}
+
+function areaLabel(area: InsightArea): string {
+  if (area === 'accounts') return 'Accounts';
+  if (area === 'goals') return 'Goals';
+  if (area === 'plan') return 'Plan';
+  return 'Method';
+}
+
+function insightIcon(area: InsightArea): typeof Calculator {
+  if (area === 'accounts') return TrendingUp;
+  if (area === 'goals') return Target;
+  if (area === 'plan') return Lightbulb;
+  return ShieldCheck;
+}
+
 function goalDeadlineLabel(goal: Goal): string {
   if (goal.status === 'completed') {
     return 'Completed';
@@ -1784,14 +1812,14 @@ const platformPages: Record<
   },
   '/reports': {
     eyebrow: 'Reports',
-    title: 'Reports will turn tracked data into insight.',
+    title: 'Insights with the evidence attached.',
     description:
-      'This route keeps net worth, cash flow, spending, and plan-health reporting separate from data entry and calculators.',
+      'Prioritized recommendations stay rule-based, traceable, and clear about uncertainty.',
     icon: BarChart3,
     cards: [
-      { label: 'Net worth', value: 'Planned', detail: 'Trend assets, liabilities, and account balance history.' },
-      { label: 'Cash flow', value: 'Planned', detail: 'Summarize income, spending, savings rate, and anomalies.' },
-      { label: 'Plan health', value: 'Planned', detail: 'Explain risks, assumptions, and progress against goals.' }
+      { label: 'Next actions', value: 'Ready', detail: 'Plan, account, and goal rules sorted by priority.' },
+      { label: 'Evidence', value: 'Ready', detail: 'Every insight cites the inputs that triggered it.' },
+      { label: 'Uncertainty', value: 'Ready', detail: 'Assumption limits stay visible before acting.' }
     ]
   },
   '/settings': {
@@ -1967,6 +1995,7 @@ function ProfileSettingsPanel({
 function DashboardPanel({
   accounts,
   goals,
+  insights,
   isLoading,
   isLoadingGoals,
   message,
@@ -1977,6 +2006,7 @@ function DashboardPanel({
 }: {
   accounts: FinancialAccount[];
   goals: Goal[];
+  insights: FinancialInsight[];
   isLoading: boolean;
   isLoadingGoals: boolean;
   message: string;
@@ -2012,6 +2042,33 @@ function DashboardPanel({
           <small>{goalSummary.activeGoalCount} active goals</small>
         </article>
       </div>
+
+      <section className="account-panel dashboard-insight-rollup" aria-labelledby="dashboard-insights-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Priority insights</p>
+            <h2 id="dashboard-insights-title">What needs attention</h2>
+          </div>
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/reports')}>
+            Reports
+            <ChevronRight size={16} />
+          </button>
+        </div>
+
+        <div className="dashboard-insight-list">
+          {insights.slice(0, 3).map((insight) => (
+            <button
+              className={`dashboard-insight-row insight-priority-${insight.priority}`}
+              key={insight.id}
+              onClick={() => onNavigate(insight.route)}
+            >
+              <span>{priorityLabel(insight.priority)}</span>
+              <strong>{insight.title}</strong>
+              <small>{insight.rationale}</small>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <section className="account-panel dashboard-goal-rollup" aria-labelledby="dashboard-goals-title">
         <div className="panel-heading">
@@ -2110,6 +2167,136 @@ function DashboardPanel({
           </div>
         )}
       </section>
+    </section>
+  );
+}
+
+function InsightsPanel({
+  insights,
+  onNavigate
+}: {
+  insights: FinancialInsight[];
+  onNavigate: (route: AppRoute) => void;
+}) {
+  const recommendationCount = insights.filter((insight) => insight.category === 'recommendation').length;
+  const highPriorityCount = insights.filter((insight) => insight.priority === 'high').length;
+  const evidenceCount = insights.reduce((total, insight) => total + insight.evidence.length, 0);
+  const privacyInsight = insights.find((insight) => insight.area === 'privacy') ?? null;
+  const workingInsights = insights.filter((insight) => insight.area !== 'privacy');
+
+  return (
+    <section className="insights-workspace" aria-label="Insights and recommendations">
+      <div className="insight-summary-strip">
+        <article>
+          <span>High priority</span>
+          <strong>{highPriorityCount}</strong>
+          <small>Items to review before using the plan as current.</small>
+        </article>
+        <article>
+          <span>Recommendations</span>
+          <strong>{recommendationCount}</strong>
+          <small>Rule-based actions with cited inputs.</small>
+        </article>
+        <article>
+          <span>Evidence points</span>
+          <strong>{evidenceCount}</strong>
+          <small>Plan, account, and goal facts behind each card.</small>
+        </article>
+      </div>
+
+      <section className="account-panel insight-list-panel" aria-labelledby="insight-list-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Next actions</p>
+            <h2 id="insight-list-title">Prioritized guidance</h2>
+          </div>
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/plans')}>
+            Plans
+            <ChevronRight size={16} />
+          </button>
+        </div>
+
+        <div className="insight-card-list">
+          {workingInsights.map((insight) => {
+            const Icon = insightIcon(insight.area);
+            return (
+              <article className={`insight-card insight-priority-${insight.priority}`} key={insight.id}>
+                <div className="insight-card-heading">
+                  <span className="feature-icon">
+                    <Icon size={18} />
+                  </span>
+                  <div>
+                    <span>{areaLabel(insight.area)} / {priorityLabel(insight.priority)}</span>
+                    <h3>{insight.title}</h3>
+                  </div>
+                  <span className="insight-category">{insight.category}</span>
+                </div>
+
+                <p>{insight.rationale}</p>
+
+                <div className="insight-evidence-grid" aria-label={`${insight.title} evidence`}>
+                  {insight.evidence.map((item) => (
+                    <span key={`${insight.id}-${item.label}`}>
+                      <small>{item.label}</small>
+                      <strong>{item.value}</strong>
+                      {item.detail ? <em>{item.detail}</em> : null}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="insight-action-row">
+                  <div>
+                    <strong>Suggested next step</strong>
+                    <small>{insight.action}</small>
+                  </div>
+                  <button className="secondary-button icon-text-button" onClick={() => onNavigate(insight.route)}>
+                    Open
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+
+                <details className="insight-detail">
+                  <summary>Assumptions and uncertainty</summary>
+                  <ul>
+                    {insight.assumptions.map((assumption) => (
+                      <li key={`${insight.id}-${assumption}`}>{assumption}</li>
+                    ))}
+                  </ul>
+                  <p>{insight.uncertainty}</p>
+                </details>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      {privacyInsight ? (
+        <section className="account-panel insight-method-panel" aria-labelledby="insight-method-title">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Method</p>
+              <h2 id="insight-method-title">{privacyInsight.title}</h2>
+            </div>
+            <span className="pill">{privacyInsight.evidence[0]?.value ?? 'Rule-based'}</span>
+          </div>
+          <p>{privacyInsight.rationale}</p>
+          <div className="insight-action-row">
+            <div>
+              <strong>Boundary</strong>
+              <small>{privacyInsight.action}</small>
+            </div>
+          </div>
+          <details className="insight-detail">
+            <summary>Assumptions and uncertainty</summary>
+            <ul>
+              {privacyInsight.assumptions.map((assumption) => (
+                <li key={assumption}>{assumption}</li>
+              ))}
+            </ul>
+            <p>{privacyInsight.uncertainty}</p>
+          </details>
+        </section>
+      ) : null}
     </section>
   );
 }
@@ -2873,6 +3060,7 @@ function PlatformPage({
   balanceDrafts,
   auth,
   financialAccounts,
+  financialInsights,
   goalDraft,
   goalMessage,
   goals,
@@ -2909,6 +3097,7 @@ function PlatformPage({
   balanceDrafts: Record<string, BalanceDraft>;
   auth: Extract<AuthState, { status: 'signed-in' }>;
   financialAccounts: FinancialAccount[];
+  financialInsights: FinancialInsight[];
   goalDraft: GoalDraft;
   goalMessage: string;
   goals: Goal[];
@@ -2956,6 +3145,7 @@ function PlatformPage({
         <DashboardPanel
           accounts={financialAccounts}
           goals={goals}
+          insights={financialInsights}
           isLoading={isLoadingAccounts}
           isLoadingGoals={isLoadingGoals}
           message={accountMessage}
@@ -3014,7 +3204,11 @@ function PlatformPage({
         />
       ) : null}
 
-      {route === '/dashboard' || route === '/accounts' || route === '/goals' ? null : (
+      {route === '/reports' ? (
+        <InsightsPanel insights={financialInsights} onNavigate={onNavigate} />
+      ) : null}
+
+      {route === '/dashboard' || route === '/accounts' || route === '/goals' || route === '/reports' ? null : (
         <div className="placeholder-grid">
           {page.cards.map((card) => (
             <article className="scenario-card" key={card.label}>
@@ -3031,7 +3225,13 @@ function PlatformPage({
           <Icon size={20} />
         </span>
         <div>
-          <strong>{route === '/goals' ? 'Goal tracking is active.' : `${page.eyebrow} route is wired.`}</strong>
+          <strong>
+            {route === '/goals'
+              ? 'Goal tracking is active.'
+              : route === '/reports'
+                ? 'Insights are active.'
+                : `${page.eyebrow} route is wired.`}
+          </strong>
           {' '}
           <small>
             {route === '/dashboard'
@@ -3040,14 +3240,16 @@ function PlatformPage({
                 ? 'Manual and reviewed CSV balances feed net worth while goals track the next milestone.'
                 : route === '/goals'
                   ? 'Funding updates and target dates roll directly into the dashboard.'
+                  : route === '/reports'
+                    ? 'Rule-based insights now cite plan health, dated balances, and goal timing.'
                   : 'Continue into the working FIRE module while future platform modules are still being built.'}
           </small>
         </div>
         <button
           className="secondary-button icon-text-button"
-          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/goals' ? '/dashboard' : '/calculators/fire')}
+          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/goals' ? '/dashboard' : route === '/reports' ? '/plans' : '/calculators/fire')}
         >
-          {route === '/dashboard' ? 'Accounts' : route === '/goals' ? 'Dashboard' : 'Try FIRE'}
+          {route === '/dashboard' ? 'Accounts' : route === '/goals' ? 'Dashboard' : route === '/reports' ? 'Plans' : 'Try FIRE'}
           <ChevronRight size={16} />
         </button>
       </section>
@@ -3397,6 +3599,29 @@ function App({ auth }: { auth: AuthState }) {
 
   const result = useMemo<FirePlanResult>(() => calculateFirePlan(plan), [plan]);
   const accountSummary = useMemo<AccountSummary>(() => summarizeAccountList(financialAccounts), [financialAccounts]);
+  const activeSavedPlan = useMemo(
+    () => savedPlans.find((item) => item.id === activePlanId) ?? null,
+    [activePlanId, savedPlans]
+  );
+  const financialInsights = useMemo(
+    () =>
+      buildFinancialInsights({
+        accounts: financialAccounts,
+        goals,
+        goalSummary,
+        plan:
+          auth.status === 'signed-in'
+            ? {
+                name: activeSavedPlan?.name ?? 'Current FIRE draft',
+                plan,
+                result,
+                versionNumber: activeSavedPlan?.versionNumber
+              }
+            : null,
+        today: todayInputDate()
+      }),
+    [activeSavedPlan?.name, activeSavedPlan?.versionNumber, auth.status, financialAccounts, goalSummary, goals, plan, result]
+  );
   const duration = totalDuration(plan.ratePeriods);
   const timelineDuration = modeledDurationFromTimeline(timeline);
   const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
@@ -4392,6 +4617,7 @@ function App({ auth }: { auth: AuthState }) {
                 balanceDrafts={balanceDrafts}
                 auth={auth}
                 financialAccounts={financialAccounts}
+                financialInsights={financialInsights}
                 goalDraft={goalDraft}
                 goalMessage={goalMessage}
                 goals={goals}

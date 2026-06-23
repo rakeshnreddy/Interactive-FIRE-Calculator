@@ -1,6 +1,6 @@
 # Financial Platform Handoff
 
-Last updated: June 22, 2026
+Last updated: June 23, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://67e3a1ca.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://fa829950.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,7 +29,7 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 7 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, and reviewed balance CSV imports are active. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 8 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, reviewed balance CSV imports, and deterministic Reports insights are active. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
@@ -43,6 +43,7 @@ Production target:
 - `src/lib/fire.test.ts` contains Vitest coverage for the TypeScript model.
 - `src/PlanningWorkspace.tsx` contains the signed-in plan library, explicit imports, history, and comparison UI.
 - `src/lib/planWorkspace.ts` and `src/lib/planHealth.ts` contain tested import and deterministic health rules.
+- `src/lib/insights.ts` contains the deterministic, evidence-linked recommendation rules used by Reports and Dashboard.
 - `src/BalanceImportPanel.tsx` contains the lazy-loaded CSV review, commit, template, and history UI.
 - `src/lib/balanceCsv.ts` contains bounded local CSV parsing and template generation.
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
@@ -186,9 +187,21 @@ Current Phase 7 state:
 - Phase 7 is deployed at `https://67e3a1ca.interactive-fire-calculator.pages.dev`; the live import lifecycle and public/signed-out routes passed verification and disposable data was removed.
 - Hosted signed-in browser verification still requires the Clerk production instance/domain because the current development instance is localhost-only for browser sign-in.
 
+Current Phase 8 state:
+
+- `/reports` is a signed-in workspace for deterministic insights and recommendations.
+- Plan health now emits prioritized next actions with evidence, assumptions, rationale, and uncertainty language.
+- Dashboard surfaces the top three priority insights so recommendations are visible from the signed-in home view.
+- Account trends are shown only when persisted balance history has at least two distinct dated snapshots; otherwise setup prompts explain what data is missing.
+- Goal recommendations cover overdue targets, nearest active funding pace, and aggregate funded progress with explicit limitations.
+- The method boundary states that Phase 8 uses saved app data and rule-based logic only; no AI summaries, external account analysis, or new persistence were added.
+- `src/lib/fire.ts` remains unchanged.
+- Phase 8 is deployed at `https://fa829950.interactive-fire-calculator.pages.dev`; local signed-in Reports/Dashboard QA and deployed signed-out/public smoke checks passed.
+- Hosted signed-in browser verification still requires the Clerk production instance/domain because the current development instance is localhost-only for browser sign-in.
+
 Next recommended phase:
 
-- Begin Phase 8 Insights and Recommendations with deterministic, evidence-linked guidance. Keep Clerk production auth/domain setup visible as a launch blocker.
+- Begin Phase 9 Hardening and Launch with privacy/export/delete planning, accessibility, performance, monitoring, and launch readiness. Keep Clerk production auth/domain setup visible as a launch blocker.
 
 Current Phase 3 state:
 
@@ -520,36 +533,37 @@ Acceptance met:
 
 ### Phase 8: Advanced Insight Layer
 
-Goal: make the platform more useful than static tracking.
+Status: complete for preview/development.
 
-Tasks:
+Delivered:
 
-- Extend deterministic plan health into prioritized next actions.
-- Add goal recommendations.
-- Add account and spending trend insights where dated data supports them.
-- Add retirement risk explanations.
-- Consider AI-assisted summaries only after data privacy constraints are clear.
+- Prioritized plan next actions derived from deterministic health checks.
+- Signed-in Reports workspace with evidence cards, suggested next steps, assumptions, and uncertainty.
+- Dashboard priority insight rollup.
+- Goal recommendations for overdue goals, active funding pace, and aggregate funded progress.
+- Account trend observations only when persisted dated balance history supports them.
+- Explicit rule-based method/privacy language and no AI-generated summaries.
 
-Acceptance:
+Acceptance met:
 
 - User gets understandable recommendations.
 - Insights explain assumptions and uncertainty.
 
 ## Immediate Next Coding Session Recommendation
 
-Begin Phase 8: Insights and Recommendations.
+Begin Phase 9: Hardening and Launch.
 
 Recommended first slice:
 
-1. Turn deterministic plan-health checks into prioritized, traceable next actions.
-2. Add account and goal trend observations only when dated history supports them.
-3. Clearly separate factual observations, assumptions, and recommendations.
-4. Keep the first insight layer rule-based and testable.
+1. Define and implement user data export/delete readiness without over-collecting sensitive data.
+2. Audit accessibility and keyboard flow across landing, calculator, Reports, plans, accounts, goals, and settings.
+3. Review performance and bundle splitting, especially the main Vite app chunk.
+4. Add launch-readiness notes for monitoring, production auth, and data privacy gaps.
 5. Continue tracking Clerk production auth/domain setup as a launch blocker.
 
 Reason:
 
-The platform now has identity, persistence, reviewed balance imports, goals, and versioned planning. The next useful step is turning that dated, user-owned data into explanations and actions without introducing opaque financial guidance. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
+The product now has identity, persistence, reviewed imports, goals, versioned planning, and rule-based insights. The next useful step is hardening trust, accessibility, performance, and launch readiness before expanding scope. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
 
 ## Testing Requirements
 
@@ -614,9 +628,9 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phases 1 and 3 through 7 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, and balance import history behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed CSV imports, and Planning includes comparisons and deterministic health evidence, while the public FIRE calculator remains available.
+Phases 1 and 3 through 8 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, and balance import history behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed CSV imports, Planning includes comparisons and deterministic health evidence, Reports now shows evidence-linked rule-based recommendations, and the public FIRE calculator remains available.
 
-Next goal: begin Phase 8 Insights and Recommendations with deterministic, explainable guidance. Keep production Clerk setup as a launch blocker.
+Next goal: begin Phase 9 Hardening and Launch with privacy/export/delete readiness, accessibility, performance, monitoring, and launch-readiness work. Keep production Clerk setup as a launch blocker.
 
 Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```

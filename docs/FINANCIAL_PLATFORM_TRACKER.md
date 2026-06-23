@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: June 22, 2026
+Last updated: June 23, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://67e3a1ca.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://fa829950.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -25,7 +25,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 5: Goals System | Preview/server complete | 100% | User-owned goal CRUD, progress and deadline tracking, signed-in Goals workspace, and dashboard goal summaries are in place. |
 | Phase 6: Planning Workspace | Preview/server complete | 100% | Signed-in plan library, immutable version history, stale-write protection, comparisons, explicit profile/account/goal imports, and deterministic health checks are in place. |
 | Phase 7: Imports and Automation | Preview/server complete | 100% | Review-first account-balance CSV imports, duplicate/conflict handling, atomic commits, audit history, and dashboard refresh are in place. |
-| Phase 8: Insights and Recommendations | Not started | 0% | Extend deterministic plan health into spending insights, recommendations, and retirement risk guidance. |
+| Phase 8: Insights and Recommendations | Preview/app complete | 100% | Rule-based Reports recommendations, dashboard priority insights, account/goal/plan evidence, and uncertainty language are in place. |
 | Phase 9: Hardening and Launch | Not started | 0% | Privacy/export/delete flows, accessibility, performance, monitoring, and launch readiness. |
 
 ## Design System Milestone
@@ -278,6 +278,34 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 - The live authenticated import flow passed mixed-row preview, atomic commit, import history, account/dashboard refresh to `$2,500`, repeat-commit rejection, and unauthenticated `401`.
 - The deployed public FIRE route and signed-out `/accounts` gate passed desktop/mobile browser smoke with no console errors or horizontal overflow.
 - Disposable local, preview/production D1, and Clerk verification records were removed after testing.
+- Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
+
+## Phase 8 Progress Checklist
+
+- [x] Extend deterministic plan-health checks into prioritized next actions.
+- [x] Include traceable plan evidence, assumptions, rationale, and uncertainty for each plan recommendation.
+- [x] Add a rule-based signed-in `/reports` workspace for insights and recommendations.
+- [x] Add dashboard priority insights so the highest-value actions are visible from `/dashboard`.
+- [x] Add account trend observations only when active accounts have at least two distinct persisted balance dates.
+- [x] Add setup prompts instead of trend claims when account history is insufficient.
+- [x] Add goal recommendations for overdue goals, nearest active funding pace, and aggregate funded progress.
+- [x] Add explicit method/privacy language that says insights are rule-based and use saved app data only.
+- [x] Keep AI-generated summaries out of the product until privacy and safety constraints are explicit.
+- [x] Keep Phase 8 frontend-only; no D1 migration or new persistence table was added.
+- [x] Keep `src/lib/fire.ts` unchanged.
+
+## Phase 8 Verification Notes
+
+- Vitest now covers plan-health actions and the full insight rule set; 48 frontend tests pass.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 48 frontend tests, and production build.
+- Local signed-out Reports gate passed at `1280x720` with no console errors or horizontal overflow.
+- Local signed-in Reports passed with a disposable Clerk development user at `1280x720`, including prioritized plan actions, evidence cards, and method boundary.
+- Local signed-in Dashboard passed after auth settled, showing three priority insight rows and the Reports action with no console errors or horizontal overflow.
+- Local mobile Reports passed at `390x844` with no console errors or horizontal overflow.
+- Public mobile FIRE route remained usable at `390x844`; the calculator and Calculate action were visible with no console errors or horizontal overflow.
+- The disposable Clerk development user created for browser QA was deleted.
+- `npm run cf:deploy` deployed Phase 8 to `https://fa829950.interactive-fire-calculator.pages.dev`.
+- Deployed signed-out `/reports` and public mobile `/calculators/fire` smoke checks passed with no console errors or horizontal overflow.
 - Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
 
 ## Required Verification Before Push
