@@ -1,6 +1,6 @@
 # Financial Platform Handoff
 
-Last updated: June 23, 2026
+Last updated: June 24, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://fa829950.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://4dfecf5e.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,7 +29,7 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 8 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, reviewed balance CSV imports, and deterministic Reports insights are active. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 9 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, reviewed balance CSV imports, deterministic Reports insights, authenticated account-data export/delete readiness, accessibility hardening, and bundle splitting are active. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
@@ -42,6 +42,7 @@ Production target:
 - `src/lib/fire.ts` contains the deterministic FIRE calculation engine.
 - `src/lib/fire.test.ts` contains Vitest coverage for the TypeScript model.
 - `src/PlanningWorkspace.tsx` contains the signed-in plan library, explicit imports, history, and comparison UI.
+- `src/ProjectionChart.tsx` lazy-loads the Recharts projection visualization for the FIRE calculator results view.
 - `src/lib/planWorkspace.ts` and `src/lib/planHealth.ts` contain tested import and deterministic health rules.
 - `src/lib/insights.ts` contains the deterministic, evidence-linked recommendation rules used by Reports and Dashboard.
 - `src/BalanceImportPanel.tsx` contains the lazy-loaded CSV review, commit, template, and history UI.
@@ -53,12 +54,14 @@ Production target:
 - `functions/api/plans/[id]/versions.ts` and `functions/api/plans/[id]/versions/[versionNumber].ts` expose user-scoped immutable history.
 - `functions/api/accounts/` contains D1-backed authenticated financial account and balance endpoints.
 - `functions/api/imports/account-balances/` contains authenticated import history, preview, and commit endpoints.
+- `functions/api/account-data/export.ts` and `functions/api/account-data/index.ts` contain authenticated account data export and delete endpoints.
 - `functions/api/goals/` contains D1-backed authenticated goal endpoints.
 - `functions/api/dashboard.ts` contains the authenticated account and goal summary endpoint.
 - `functions/_lib/persistence.ts` centralizes D1 binding checks and user/profile creation.
 - `functions/_lib/firePlans.ts` centralizes FIRE plan persistence, payload validation, versioning, and archival.
 - `functions/_lib/accounts.ts` centralizes financial account, balance, and summary validation/persistence.
 - `functions/_lib/balanceImports.ts` centralizes account matching, row validation, duplicate/conflict review, and atomic import commits.
+- `functions/_lib/accountData.ts` centralizes authenticated user-data export and deletion behavior.
 - `functions/_lib/goals.ts` centralizes goal validation, persistence, progress, deadline, and summary behavior.
 - `functions/_lib/` contains shared Pages Function helpers for JSON responses and Clerk session validation.
 - `migrations/` contains D1 SQL migrations.
@@ -199,9 +202,22 @@ Current Phase 8 state:
 - Phase 8 is deployed at `https://fa829950.interactive-fire-calculator.pages.dev`; local signed-in Reports/Dashboard QA and deployed signed-out/public smoke checks passed.
 - Hosted signed-in browser verification still requires the Clerk production instance/domain because the current development instance is localhost-only for browser sign-in.
 
+Current Phase 9 state:
+
+- `/settings` includes authenticated profile defaults plus privacy controls for account-data export and account-data deletion.
+- `GET /api/account-data/export` returns a user-scoped D1 export covering identity row, profile, accounts, balances, goals, plans, plan versions, FIRE payloads, assumptions, audit rows, balance imports, and transactions.
+- `DELETE /api/account-data` requires the exact phrase `DELETE MY FINPATH DATA`, deletes D1-owned data in dependency order, and explicitly does not delete the Clerk identity.
+- Route accessibility was hardened with a skip link, main landmark target, active navigation states, mobile menu controls, inert hidden file inputs, and chart semantics.
+- The Planning workspace, Balance Import panel, and projection chart are lazy-loaded to reduce the main Vite bundle.
+- Local signed-in API lifecycle verification passed for export, wrong-confirmation rejection, correct deletion, post-delete empty account/goal/plan state, and disposable Clerk user cleanup.
+- Local and deployed signed-out desktop/mobile smoke checks passed with no console errors or horizontal overflow.
+- `./scripts/test_all.sh` passed before deploy.
+- Phase 9 is deployed at `https://4dfecf5e.interactive-fire-calculator.pages.dev`.
+- Hosted signed-in browser verification still requires the Clerk production instance/domain because the current development instance is localhost-only for browser sign-in.
+
 Next recommended phase:
 
-- Begin Phase 9 Hardening and Launch with privacy/export/delete planning, accessibility, performance, monitoring, and launch readiness. Keep Clerk production auth/domain setup visible as a launch blocker.
+- Either complete production Clerk setup for launch readiness or begin Phase 10 Transactions MVP. Keep Clerk production auth/domain setup visible as the remaining launch blocker.
 
 Current Phase 3 state:
 
@@ -549,21 +565,41 @@ Acceptance met:
 - User gets understandable recommendations.
 - Insights explain assumptions and uncertainty.
 
+### Phase 9: Hardening and Launch
+
+Status: complete for preview/development.
+
+Delivered:
+
+- Authenticated account-data export and D1 data deletion endpoints.
+- Settings privacy controls with export download and explicit delete confirmation.
+- Accessibility hardening for landmarks, navigation state, mobile menu controls, hidden inputs, and projection chart semantics.
+- Bundle splitting for Planning, Balance Import, and projection chart surfaces.
+- Launch-readiness notes that keep production Clerk setup separate from preview/development completion.
+
+Acceptance met:
+
+- User-owned app data can be exported.
+- User-owned D1 app data can be deleted without pretending to delete Clerk identity.
+- Signed-out routes remain gated and public FIRE remains usable.
+- Main app bundle is smaller and route-level surfaces lazy-load.
+- Production auth/domain setup remains visible as the launch blocker.
+
 ## Immediate Next Coding Session Recommendation
 
-Begin Phase 9: Hardening and Launch.
+Begin Phase 10 candidate: Transactions MVP, unless product ownership chooses to pause product expansion and finish production Clerk setup first.
 
 Recommended first slice:
 
-1. Define and implement user data export/delete readiness without over-collecting sensitive data.
-2. Audit accessibility and keyboard flow across landing, calculator, Reports, plans, accounts, goals, and settings.
-3. Review performance and bundle splitting, especially the main Vite app chunk.
-4. Add launch-readiness notes for monitoring, production auth, and data privacy gaps.
+1. Use the existing `transactions` table from `migrations/0001_initial_financial_platform_schema.sql`.
+2. Add user-scoped transaction list/create/update/archive APIs behind Clerk auth.
+3. Replace the `/transactions` placeholder with a signed-in ledger workspace.
+4. Keep transaction writes separate from account-balance CSV imports until linking rules are explicit.
 5. Continue tracking Clerk production auth/domain setup as a launch blocker.
 
 Reason:
 
-The product now has identity, persistence, reviewed imports, goals, versioned planning, and rule-based insights. The next useful step is hardening trust, accessibility, performance, and launch readiness before expanding scope. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
+The product now has identity, persistence, reviewed imports, goals, versioned planning, rule-based insights, privacy controls, accessibility hardening, and performance splitting. The next product gap in the existing IA is a usable Transactions ledger. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
 
 ## Testing Requirements
 
@@ -612,7 +648,7 @@ https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 - D1 schema and migration strategy.
 - Whether to keep legacy Flask parity tests long term.
 - How much financial data to store in MVP.
-- Privacy and user data deletion/export policy.
+- Production retention/SLA and full identity deletion policy beyond the preview D1 account-data delete/export controls.
 
 ## New Session Starter Prompt
 
@@ -628,9 +664,9 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phases 1 and 3 through 8 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, and balance import history behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed CSV imports, Planning includes comparisons and deterministic health evidence, Reports now shows evidence-linked rule-based recommendations, and the public FIRE calculator remains available.
+Phases 1 and 3 through 9 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, balance import history, and account-data export/delete readiness behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed CSV imports, Planning includes comparisons and deterministic health evidence, Reports shows evidence-linked rule-based recommendations, Settings includes privacy controls, and the public FIRE calculator remains available.
 
-Next goal: begin Phase 9 Hardening and Launch with privacy/export/delete readiness, accessibility, performance, monitoring, and launch-readiness work. Keep production Clerk setup as a launch blocker.
+Next goal: begin Phase 10 candidate, Transactions MVP, unless product ownership chooses to pause product expansion and finish production Clerk setup first. Keep production Clerk setup as a launch blocker.
 
 Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```

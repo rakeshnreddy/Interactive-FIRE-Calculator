@@ -32,23 +32,12 @@ import {
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
-import {
-  PlanningWorkspace,
-  type PlanVersionDetail,
-  type PlanningSaveDraft,
-  type PlanningSavedPlan,
-  type PlanningSnapshot
+import type {
+  PlanVersionDetail,
+  PlanningSaveDraft,
+  PlanningSavedPlan,
+  PlanningSnapshot
 } from './PlanningWorkspace';
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from 'recharts';
 import {
   annualSimulation,
   calculateFirePlan,
@@ -74,6 +63,12 @@ import type { AuthState } from './auth';
 
 const BalanceImportPanel = lazy(() =>
   import('./BalanceImportPanel').then((module) => ({ default: module.BalanceImportPanel }))
+);
+const PlanningWorkspace = lazy(() =>
+  import('./PlanningWorkspace').then((module) => ({ default: module.PlanningWorkspace }))
+);
+const ProjectionChart = lazy(() =>
+  import('./ProjectionChart').then((module) => ({ default: module.ProjectionChart }))
 );
 
 type Mode = 'light' | 'dark';
@@ -258,6 +253,7 @@ type GoalUpdateDraft = {
 };
 
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
+const ACCOUNT_DATA_DELETE_CONFIRMATION = 'DELETE MY FINPATH DATA';
 
 const accountTypeOptions: Array<{ category: AccountCategory; label: string; value: FinancialAccountType }> = [
   { category: 'asset', label: 'Cash', value: 'cash' },
@@ -667,6 +663,38 @@ async function updateAccountProfile(
   });
 
   return readProfileResponse(response, 'Unable to save account profile.');
+}
+
+async function loadAccountDataExport(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<unknown> {
+  const response = await authenticatedJsonRequest(auth, '/api/account-data/export');
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(isRecord(body) && typeof body.error === 'string' ? body.error : 'Unable to export account data.');
+  }
+
+  if (!isRecord(body) || !isRecord(body.export)) {
+    throw new Error('Account data export was not recognized.');
+  }
+
+  return body.export;
+}
+
+async function deleteAccountDataRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  confirmation: string
+): Promise<unknown> {
+  const response = await authenticatedJsonRequest(auth, '/api/account-data', {
+    body: JSON.stringify({ confirmation }),
+    method: 'DELETE'
+  });
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(isRecord(body) && typeof body.error === 'string' ? body.error : 'Unable to delete account data.');
+  }
+
+  return body;
 }
 
 async function readProfileResponse(response: Response, errorMessage: string): Promise<AccountProfile> {
@@ -1633,23 +1661,6 @@ function Field({
   );
 }
 
-function MoneyTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) {
-    return null;
-  }
-
-  return (
-    <div className="chart-tooltip">
-      <strong>Year {label}</strong>
-      {payload.map((entry: any) => (
-        <span key={entry.dataKey} style={{ color: entry.color }}>
-          {entry.name}: {formatMoney(Number(entry.value))}
-        </span>
-      ))}
-    </div>
-  );
-}
-
 function YearByYearTable({ rows, label }: { rows: YearResult[]; label: string }) {
   return (
     <div className="table-wrap">
@@ -1824,13 +1835,13 @@ const platformPages: Record<
   },
   '/settings': {
     eyebrow: 'Settings',
-    title: 'Profile, privacy, and data controls belong here.',
+    title: 'Profile and privacy controls.',
     description:
-      'This placeholder makes room for account settings, export/delete controls, theme, and security notices.',
+      'Manage household planning defaults, download saved data, and remove D1 financial records when needed.',
     icon: Settings,
     cards: [
-      { label: 'Profile', value: 'Planned', detail: 'Household and planning defaults.' },
-      { label: 'Privacy', value: 'Planned', detail: 'Data export, deletion, and consent controls.' },
+      { label: 'Profile', value: 'Ready', detail: 'Household and planning defaults.' },
+      { label: 'Privacy', value: 'Ready', detail: 'Data export and D1 deletion controls.' },
       { label: 'Theme', value: 'Ready', detail: 'Light and dark controls remain global.' }
     ]
   }
@@ -1988,6 +1999,110 @@ function ProfileSettingsPanel({
           </button>
         </div>
       </form>
+    </section>
+  );
+}
+
+function PrivacyControlsPanel({
+  deleteConfirmation,
+  isDeleting,
+  isExporting,
+  message,
+  onDelete,
+  onDeleteConfirmationChange,
+  onExport
+}: {
+  deleteConfirmation: string;
+  isDeleting: boolean;
+  isExporting: boolean;
+  message: string;
+  onDelete: () => void;
+  onDeleteConfirmationChange: (value: string) => void;
+  onExport: () => void;
+}) {
+  const canDelete = deleteConfirmation.trim() === ACCOUNT_DATA_DELETE_CONFIRMATION && !isDeleting && !isExporting;
+
+  return (
+    <section className="profile-editor privacy-controls-panel" aria-labelledby="privacy-controls-title">
+      <div className="panel-heading">
+        <div>
+          <p className="eyebrow">Privacy controls</p>
+          <h2 id="privacy-controls-title">Export or delete saved data</h2>
+          <p>
+            These controls apply to FinPath data in D1: profile defaults, accounts, balances, goals, plans,
+            versions, import history, and user-scoped audit rows.
+          </p>
+        </div>
+        <span className="feature-icon">
+          <ShieldCheck size={20} />
+        </span>
+      </div>
+
+      <ul className="privacy-scope-list" aria-label="Export and deletion scope">
+        <li>
+          <strong>Included</strong>
+          <span>Saved financial records, planning snapshots, import audit history, and profile defaults.</span>
+        </li>
+        <li>
+          <strong>Not included</strong>
+          <span>The public FIRE demo drafts in this browser and the Clerk identity provider account.</span>
+        </li>
+        <li>
+          <strong>After deletion</strong>
+          <span>You stay signed in until you sign out, but the local FinPath account data is removed.</span>
+        </li>
+      </ul>
+
+      <div className="privacy-action-row">
+        <div>
+          <strong>Download JSON export</strong>
+          <small>Use this before deleting data or before moving data to another system later.</small>
+        </div>
+        <button
+          className="secondary-button icon-text-button"
+          disabled={isDeleting || isExporting}
+          type="button"
+          onClick={onExport}
+        >
+          <Download size={16} />
+          {isExporting ? 'Preparing export' : 'Export data'}
+        </button>
+      </div>
+
+      <form
+        className="privacy-delete-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onDelete();
+        }}
+      >
+        <div>
+          <strong>Delete saved FinPath data</strong>
+          <small id="delete-account-data-help">
+            Type {ACCOUNT_DATA_DELETE_CONFIRMATION} to permanently remove D1 account data for this signed-in user.
+          </small>
+        </div>
+        <Field label="Deletion confirmation">
+          <input
+            aria-describedby="delete-account-data-help"
+            autoComplete="off"
+            disabled={isDeleting || isExporting}
+            type="text"
+            value={deleteConfirmation}
+            onChange={(event) => onDeleteConfirmationChange(event.target.value)}
+          />
+        </Field>
+        <button className="secondary-button danger-button icon-text-button" disabled={!canDelete} type="submit">
+          <Trash2 size={16} />
+          {isDeleting ? 'Deleting data' : 'Delete D1 data'}
+        </button>
+      </form>
+
+      {message ? (
+        <p className="profile-status privacy-status" role="status" aria-live="polite">
+          {message}
+        </p>
+      ) : null}
     </section>
   );
 }
@@ -3082,6 +3197,8 @@ function PlatformPage({
   onImportComplete,
   onProfileDraftChange,
   onProfileSave,
+  onAccountDataDelete,
+  onAccountDataExport,
   onRecordBalance,
   onArchiveGoal,
   onUpdateGoal,
@@ -3089,7 +3206,12 @@ function PlatformPage({
   onNavigate,
   profile,
   profileDraft,
-  profileMessage
+  profileMessage,
+  accountDataDeleteConfirmation,
+  accountDataPrivacyMessage,
+  isDeletingAccountData,
+  isExportingAccountData,
+  onAccountDataDeleteConfirmationChange
 }: {
   accountDraft: AccountDraft;
   accountMessage: string;
@@ -3119,6 +3241,8 @@ function PlatformPage({
   onImportComplete: () => Promise<void>;
   onProfileDraftChange: (field: keyof AccountProfileDraft, value: string) => void;
   onProfileSave: () => void;
+  onAccountDataDelete: () => void;
+  onAccountDataExport: () => void;
   onRecordBalance: (id: string) => void;
   onArchiveGoal: (id: string) => void;
   onUpdateGoal: (id: string) => void;
@@ -3127,6 +3251,11 @@ function PlatformPage({
   profile: AccountProfile | null;
   profileDraft: AccountProfileDraft;
   profileMessage: string;
+  accountDataDeleteConfirmation: string;
+  accountDataPrivacyMessage: string;
+  isDeletingAccountData: boolean;
+  isExportingAccountData: boolean;
+  onAccountDataDeleteConfirmationChange: (value: string) => void;
 }) {
   const page = platformPages[route];
   const Icon = page.icon;
@@ -3193,22 +3322,33 @@ function PlatformPage({
       ) : null}
 
       {route === '/settings' ? (
-        <ProfileSettingsPanel
-          draft={profileDraft}
-          isLoading={isLoadingProfile}
-          isSaving={isSavingProfile}
-          message={profileMessage}
-          profile={profile}
-          onChange={onProfileDraftChange}
-          onSave={onProfileSave}
-        />
+        <>
+          <ProfileSettingsPanel
+            draft={profileDraft}
+            isLoading={isLoadingProfile}
+            isSaving={isSavingProfile}
+            message={profileMessage}
+            profile={profile}
+            onChange={onProfileDraftChange}
+            onSave={onProfileSave}
+          />
+          <PrivacyControlsPanel
+            deleteConfirmation={accountDataDeleteConfirmation}
+            isDeleting={isDeletingAccountData}
+            isExporting={isExportingAccountData}
+            message={accountDataPrivacyMessage}
+            onDelete={onAccountDataDelete}
+            onDeleteConfirmationChange={onAccountDataDeleteConfirmationChange}
+            onExport={onAccountDataExport}
+          />
+        </>
       ) : null}
 
       {route === '/reports' ? (
         <InsightsPanel insights={financialInsights} onNavigate={onNavigate} />
       ) : null}
 
-      {route === '/dashboard' || route === '/accounts' || route === '/goals' || route === '/reports' ? null : (
+      {route === '/dashboard' || route === '/accounts' || route === '/goals' || route === '/reports' || route === '/settings' ? null : (
         <div className="placeholder-grid">
           {page.cards.map((card) => (
             <article className="scenario-card" key={card.label}>
@@ -3366,6 +3506,10 @@ function App({ auth }: { auth: AuthState }) {
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileMessage, setProfileMessage] = useState('');
+  const [isExportingAccountData, setIsExportingAccountData] = useState(false);
+  const [isDeletingAccountData, setIsDeletingAccountData] = useState(false);
+  const [accountDataDeleteConfirmation, setAccountDataDeleteConfirmation] = useState('');
+  const [accountDataPrivacyMessage, setAccountDataPrivacyMessage] = useState('');
   const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>([]);
   const [accountDraft, setAccountDraft] = useState<AccountDraft>(emptyAccountDraft);
   const [balanceDrafts, setBalanceDrafts] = useState<Record<string, BalanceDraft>>({});
@@ -3451,6 +3595,17 @@ function App({ auth }: { auth: AuthState }) {
     return () => {
       isCancelled = true;
     };
+  }, [auth.status, auth.isSignedIn, auth.user?.id]);
+
+  useEffect(() => {
+    if (auth.status === 'signed-in') {
+      return;
+    }
+
+    setIsExportingAccountData(false);
+    setIsDeletingAccountData(false);
+    setAccountDataDeleteConfirmation('');
+    setAccountDataPrivacyMessage('');
   }, [auth.status, auth.isSignedIn, auth.user?.id]);
 
   useEffect(() => {
@@ -3902,6 +4057,68 @@ function App({ auth }: { auth: AuthState }) {
       setProfileMessage('Profile could not be saved.');
     } finally {
       setIsSavingProfile(false);
+    }
+  };
+
+  const exportAccountData = async () => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    setIsExportingAccountData(true);
+    setAccountDataPrivacyMessage('Preparing account data export...');
+
+    try {
+      const accountExport = await loadAccountDataExport(auth);
+      downloadJson(`finpath-account-data-${todayInputDate()}.json`, accountExport);
+      setAccountDataPrivacyMessage('Account data export downloaded.');
+    } catch (error) {
+      setAccountDataPrivacyMessage(error instanceof Error ? error.message : 'Account data export failed.');
+    } finally {
+      setIsExportingAccountData(false);
+    }
+  };
+
+  const deleteAccountData = async () => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    if (accountDataDeleteConfirmation.trim() !== ACCOUNT_DATA_DELETE_CONFIRMATION) {
+      setAccountDataPrivacyMessage(`Type ${ACCOUNT_DATA_DELETE_CONFIRMATION} before deleting saved data.`);
+      return;
+    }
+
+    setIsDeletingAccountData(true);
+    setAccountDataPrivacyMessage('Deleting saved FinPath data...');
+
+    try {
+      await deleteAccountDataRecord(auth, accountDataDeleteConfirmation.trim());
+      setAccountProfile(null);
+      setProfileDraft(emptyProfileDraft());
+      setProfileMessage('Profile data was deleted.');
+      setSavedPlans([]);
+      setActivePlanId(null);
+      setSeedApplications([]);
+      setLastSeedImport(null);
+      setPlanStorageMessage('Account plans were deleted.');
+      setFinancialAccounts([]);
+      setAccountDraft(emptyAccountDraft());
+      setBalanceDrafts({});
+      setAccountMessage('Account data was deleted.');
+      setGoals([]);
+      setGoalSummary(summarizeGoalList([]));
+      setGoalDraft(emptyGoalDraft());
+      setGoalUpdateDrafts({});
+      setGoalMessage('Goal data was deleted.');
+      setAccountDataDeleteConfirmation('');
+      setAccountDataPrivacyMessage(
+        'Saved FinPath D1 data was deleted. Clerk sign-in remains active until you sign out or delete the identity provider account.'
+      );
+    } catch (error) {
+      setAccountDataPrivacyMessage(error instanceof Error ? error.message : 'Account data deletion failed.');
+    } finally {
+      setIsDeletingAccountData(false);
     }
   };
 
@@ -4455,6 +4672,9 @@ function App({ auth }: { auth: AuthState }) {
 
   return (
     <div className="app" data-mode={mode}>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <header className="topbar">
         <a
           href="/"
@@ -4476,6 +4696,7 @@ function App({ auth }: { auth: AuthState }) {
                 key={item.path}
                 href={item.path}
                 className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
+                aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
                 onClick={(event) => {
                   event.preventDefault();
                   navigateTo(item.path);
@@ -4499,8 +4720,9 @@ function App({ auth }: { auth: AuthState }) {
           </button>
           <button
             className="icon-button mobile-menu-button"
-            aria-label="Open navigation"
+            aria-controls="mobile-primary-navigation"
             aria-expanded={isMenuOpen}
+            aria-label={isMenuOpen ? 'Close navigation' : 'Open navigation'}
             onClick={() => setIsMenuOpen((open) => !open)}
           >
             {isMenuOpen ? <X size={19} /> : <Menu size={19} />}
@@ -4509,13 +4731,14 @@ function App({ auth }: { auth: AuthState }) {
       </header>
 
       {isMenuOpen && (
-        <nav className="mobile-nav" aria-label="Mobile primary">
+        <nav className="mobile-nav" id="mobile-primary-navigation" aria-label="Mobile primary">
           {routeItems.map((item) => {
             const Icon = item.icon;
             return (
               <button
                 key={item.path}
                 className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
+                aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
                 onClick={() => navigateTo(item.path)}
               >
                 <Icon size={17} />
@@ -4570,7 +4793,7 @@ function App({ auth }: { auth: AuthState }) {
         </nav>
       )}
 
-      <main ref={mainRef} className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
+      <main id="main-content" ref={mainRef} className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
         {route === '/' ? (
           <LandingPage auth={auth} onNavigate={navigateTo} />
         ) : route === '/calculators' ? (
@@ -4585,29 +4808,37 @@ function App({ auth }: { auth: AuthState }) {
                   <p>Import selected account facts, preserve assumptions as immutable versions, and compare how the plan changes over time.</p>
                 </div>
                 <SignedInProfileBand auth={auth} />
-                <PlanningWorkspace
-                  accounts={financialAccounts}
-                  activePlanId={activePlanId}
-                  auth={auth}
-                  canUndoSeed={Boolean(lastSeedImport)}
-                  currentPlan={plan}
-                  currentResult={result}
-                  currentSnapshot={buildSnapshot()}
-                  currentTimeline={timeline}
-                  goals={goals}
-                  isLoading={isLoadingSavedPlans}
-                  isSaving={isSavingPlan}
-                  message={planStorageMessage}
-                  plans={savedPlans}
-                  profile={accountProfile}
-                  onApplySeed={applyPlanSeed}
-                  onArchive={removeSavedPlan}
-                  onLoadPlan={loadSavedPlan}
-                  onLoadVersion={loadSavedPlanVersion}
-                  onNavigateCalculator={() => navigateTo('/calculators/fire')}
-                  onSave={savePlanningPlan}
-                  onUndoSeed={undoLastPlanSeed}
-                />
+                <Suspense
+                  fallback={
+                    <section className="panel planning-loading-panel" aria-label="Planning workspace loading" aria-busy="true">
+                      <p className="empty-inline">Loading planning workspace...</p>
+                    </section>
+                  }
+                >
+                  <PlanningWorkspace
+                    accounts={financialAccounts}
+                    activePlanId={activePlanId}
+                    auth={auth}
+                    canUndoSeed={Boolean(lastSeedImport)}
+                    currentPlan={plan}
+                    currentResult={result}
+                    currentSnapshot={buildSnapshot()}
+                    currentTimeline={timeline}
+                    goals={goals}
+                    isLoading={isLoadingSavedPlans}
+                    isSaving={isSavingPlan}
+                    message={planStorageMessage}
+                    plans={savedPlans}
+                    profile={accountProfile}
+                    onApplySeed={applyPlanSeed}
+                    onArchive={removeSavedPlan}
+                    onLoadPlan={loadSavedPlan}
+                    onLoadVersion={loadSavedPlanVersion}
+                    onNavigateCalculator={() => navigateTo('/calculators/fire')}
+                    onSave={savePlanningPlan}
+                    onUndoSeed={undoLastPlanSeed}
+                  />
+                </Suspense>
               </section>
             ) : (
               <PlatformPage
@@ -4629,11 +4860,18 @@ function App({ auth }: { auth: AuthState }) {
                 isSavingAccount={isSavingAccount}
                 isSavingGoal={isSavingGoal}
                 isSavingProfile={isSavingProfile}
+                accountDataDeleteConfirmation={accountDataDeleteConfirmation}
+                accountDataPrivacyMessage={accountDataPrivacyMessage}
                 profile={accountProfile}
                 profileDraft={profileDraft}
                 profileMessage={profileMessage}
                 route={route}
+                isDeletingAccountData={isDeletingAccountData}
+                isExportingAccountData={isExportingAccountData}
                 onNavigate={navigateTo}
+                onAccountDataDelete={deleteAccountData}
+                onAccountDataDeleteConfirmationChange={setAccountDataDeleteConfirmation}
+                onAccountDataExport={exportAccountData}
                 onAccountDraftChange={updateAccountDraft}
                 onArchiveAccount={archiveFinancialAccount}
                 onBalanceDraftChange={updateBalanceDraft}
@@ -5307,6 +5545,7 @@ function App({ auth }: { auth: AuthState }) {
                   className="visually-hidden"
                   type="file"
                   accept="application/json"
+                  tabIndex={-1}
                   onChange={importPlanJson}
                 />
               </div>
@@ -5426,33 +5665,15 @@ function App({ auth }: { auth: AuthState }) {
             </div>
 
             {resultsMode === 'chart' ? (
-              <div className="chart-frame">
-                <ResponsiveContainer width="100%" height={360}>
-                  <LineChart data={chartRows} margin={{ top: 10, right: 22, left: 8, bottom: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis tickFormatter={(value) => `$${Math.round(Number(value) / 1000)}k`} width={72} />
-                    <Tooltip content={<MoneyTooltip />} />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="balance"
-                      name={projectionLabel}
-                      stroke="var(--chart-primary)"
-                      strokeWidth={3}
-                      dot={false}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="withdrawal"
-                      name="Withdrawal"
-                      stroke="var(--chart-secondary)"
-                      strokeWidth={3}
-                      dot={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              <Suspense
+                fallback={
+                  <div className="chart-frame chart-loading" role="status" aria-live="polite">
+                    Loading projection chart...
+                  </div>
+                }
+              >
+                <ProjectionChart label={projectionLabel} rows={chartRows} />
+              </Suspense>
             ) : (
               <YearByYearTable rows={projectionRows} label={projectionLabel} />
             )}

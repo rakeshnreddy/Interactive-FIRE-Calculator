@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: June 23, 2026
+Last updated: June 24, 2026
 
 ## Repository
 
@@ -10,7 +10,7 @@ Last updated: June 23, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://fa829950.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://4dfecf5e.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -183,9 +183,26 @@ Phase 8 Insights and Recommendations is complete for preview/development:
 - `npm run cf:deploy` deployed Phase 8 to `https://fa829950.interactive-fire-calculator.pages.dev`.
 - The deployed signed-out Reports gate and public mobile FIRE route passed live smoke checks. Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
 
+Phase 9 Hardening and Launch is complete for preview/development, with production launch still blocked by the Phase 2 Clerk production-instance/domain requirement:
+
+- `functions/_lib/accountData.ts` centralizes authenticated user data export, exact deletion confirmation parsing, and D1 account-data deletion.
+- Authenticated `GET /api/account-data/export` returns a no-store JSON export with user, profile, accounts, balances, goals, plans, versions, FIRE payloads, assumptions, import history, transactions, and user-scoped audit rows.
+- Authenticated `DELETE /api/account-data` requires the exact phrase `DELETE MY FINPATH DATA`, deletes user-owned D1 rows including audit rows before the root user row, and explicitly does not delete the Clerk identity.
+- `/settings` now includes glassy privacy controls for JSON export and D1 data deletion alongside the D1-backed profile form.
+- Signed-in deletion clears loaded profile, account, goal, and plan state in the SPA so stale financial data is not left on screen.
+- Accessibility hardening adds a skip link, a stable `main` target, `aria-current` navigation state, mobile menu `aria-controls` plus open/close labels, accessible chart labeling, and removes hidden file inputs from the tab order.
+- Performance hardening lazy-loads `PlanningWorkspace` and the Recharts projection chart. The built main JS chunk dropped from about 756 kB to about 401 kB; `/plans`, CSV imports, and projection charts now load as separate chunks.
+- Monitoring/launch readiness now relies on the existing `GET /api/health`, Cloudflare Pages deployment logs, D1-bound API verification, and the documented production Clerk blocker; no external monitoring provider was added.
+- `src/accountData.test.ts` covers deletion confirmation, export shape, archived-row inclusion, parsed FIRE JSON payloads, and delete ordering.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 51 frontend tests, and production build.
+- Local browser QA passed for landing, FIRE, Settings gate, signed-in Settings privacy controls, chart lazy loading, and mobile FIRE/Settings at `390x844` with no console errors or horizontal overflow.
+- Local signed-in Pages Function verification passed with a disposable Clerk development user: profile/account/goal/plan seed, account-data export summary, wrong-confirmation `400`, confirmed deletion `200`, zero accounts/goals/plans after deletion, and disposable Clerk cleanup.
+- `npm run cf:deploy` deployed Phase 9 to `https://4dfecf5e.interactive-fire-calculator.pages.dev`.
+- The deployed signed-out landing, FIRE, Settings gate, and mobile FIRE/Settings smoke checks passed with no console errors or horizontal overflow. Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
+
 ## Next Phase
 
-Begin Phase 9 Hardening and Launch, while keeping the remaining Phase 2 production-auth launch blocker visible.
+Phase 9 preview/development hardening is complete. The next launch-critical step is still production Clerk setup; the next product-build phase can be Phase 10 Transactions MVP after the product owner accepts continuing beyond launch hardening.
 
 Remaining Phase 2 work:
 
@@ -195,12 +212,13 @@ Remaining Phase 2 work:
 4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
 5. Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
-Phase 9 first slice:
+Phase 10 candidate first slice:
 
-1. Add privacy and user-data controls for export and deletion planning.
-2. Audit accessibility and keyboard flow across authenticated workspaces.
-3. Review performance and bundle-splitting opportunities, especially the main app chunk.
-4. Keep production Clerk setup as the launch-critical blocker until an owned domain and production keys are configured.
+1. Define a manual transaction model and validation rules for income, expense, transfer, and adjustment rows.
+2. Add user-scoped transaction CRUD endpoints without changing FIRE calculation behavior.
+3. Replace the `/transactions` placeholder with a signed-in ledger workspace.
+4. Keep CSV balance imports separate from transaction categorization until the transaction model is stable.
+5. Keep production Clerk setup as the launch-critical blocker until an owned domain and production keys are configured.
 
 ## Working Rules
 
@@ -248,17 +266,17 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phases 1 and 3 through 8 are complete for preview/development. Phase 8 adds deterministic Reports recommendations, dashboard priority insights, evidence-linked account/goal/plan guidance, and explicit uncertainty language. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
+Phases 1 and 3 through 9 are complete for preview/development. Phase 9 adds authenticated data export/delete controls, Settings privacy UI, accessibility hardening, and bundle-splitting for Planning and projection charts. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
 
 Next goal:
-Begin Phase 9 Hardening and Launch with privacy/export/delete planning, accessibility, performance, and launch readiness. Keep Clerk production auth/domain setup as a launch blocker.
+Either complete production Clerk setup for launch readiness or begin Phase 10 Transactions MVP. Keep Clerk production auth/domain setup as a launch blocker.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
 
-## Detailed Phase 9 Handoff Prompt
+## Detailed Phase 10 Candidate Handoff Prompt
 
-Use this more detailed prompt when starting the coding session that should begin Phase 9:
+Use this more detailed prompt when starting the coding session that should begin the next product-build phase:
 
 ```text
 We are working in this repo:
@@ -277,22 +295,23 @@ docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 Current state:
-Phases 1 and 3 through 8 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, and balance import audit history behind user-scoped Pages Functions. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed CSV imports. `/reports` shows deterministic, evidence-linked recommendations with assumptions and uncertainty language; `/dashboard` surfaces the top priority insights. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1 and 3 through 9 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, balance import audit history, and now supports authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed CSV imports. `/reports` shows deterministic, evidence-linked recommendations with assumptions and uncertainty language; `/dashboard` surfaces the top priority insights. `/settings` includes profile defaults plus privacy export/delete controls. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://fa829950.interactive-fire-calculator.pages.dev
+https://4dfecf5e.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 Goal:
-Begin Phase 9: Hardening and Launch.
+Begin Phase 10 candidate: Transactions MVP, unless the product owner chooses to pause product expansion for production Clerk setup first.
 
-Phase 9 target:
-- Add privacy and user-data controls for export/delete readiness.
-- Audit accessibility, keyboard flow, and screen-reader structure across landing, app shell, calculator, Reports, plans, accounts, and goals.
-- Review performance and bundle-splitting opportunities without regressing public FIRE or authenticated workspaces.
-- Preserve completed imports, planning, Reports insights, and public FIRE workflows.
+Phase 10 candidate target:
+- Add a user-scoped manual transaction model for income, expense, transfer, and adjustment rows.
+- Add transaction list/create/update/archive APIs backed by D1 and Clerk auth.
+- Replace the `/transactions` placeholder with a signed-in ledger workspace.
+- Keep account-balance CSV imports separate from transaction categorization until the transaction model is stable.
+- Preserve public FIRE, accounts, goals, plans, reports, imports, Settings privacy controls, and `src/lib/fire.ts`.
 - Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
 Important decision:
@@ -307,9 +326,10 @@ Required Clerk environment:
 
 Implementation guidance:
 - Keep Phase 8 recommendations deterministic and traceable; do not add AI-generated financial guidance until privacy, safety, and evidence constraints are explicit.
-- Start Phase 9 from user data rights, accessibility, performance, and launch-readiness gaps.
+- Use the existing `transactions` table from `migrations/0001_initial_financial_platform_schema.sql` before adding a migration.
+- Keep transaction writes isolated from FIRE plan persistence and account-balance imports until linking rules are explicit.
 - Keep the production Clerk blocker visible in all launch-readiness summaries.
-- Update the three project memory documents as each hardening slice completes.
+- Update the three project memory documents as each phase slice completes.
 
 Required verification before push:
 ./scripts/test_all.sh

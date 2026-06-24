@@ -2389,6 +2389,13 @@ h2 {
   overflow: hidden;
 }
 
+.chart-loading {
+  display: grid;
+  place-items: center;
+  color: var(--muted-strong);
+  font-weight: 700;
+}
+
 .chart-tooltip {
   display: grid;
   gap: 0.35rem;
@@ -3730,9 +3737,121 @@ h2 {
   opacity: 0.78;
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--heading);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 1.5rem));
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  outline: 3px solid color-mix(in srgb, #7f84ff 60%, transparent);
+  outline-offset: 3px;
+  transform: translateY(0);
+}
+
 .profile-private-label {
   justify-self: end;
   color: var(--muted);
+}
+
+.privacy-controls-panel {
+  gap: 1.1rem;
+}
+
+.privacy-controls-panel .panel-heading {
+  align-items: flex-start;
+}
+
+.privacy-scope-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border-block: 1px solid var(--border);
+  list-style: none;
+}
+
+.privacy-scope-list li {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.95rem;
+  border-right: 1px solid var(--border);
+}
+
+.privacy-scope-list li:last-child {
+  border-right: 0;
+}
+
+.privacy-scope-list strong,
+.privacy-action-row strong,
+.privacy-delete-form strong {
+  color: var(--heading);
+  font-weight: 700;
+}
+
+.privacy-scope-list span,
+.privacy-action-row small,
+.privacy-delete-form small {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.48;
+}
+
+.privacy-action-row,
+.privacy-delete-form {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  min-width: 0;
+  padding-top: 0.1rem;
+}
+
+.privacy-action-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.privacy-delete-form {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.7fr) auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.privacy-action-row > div,
+.privacy-delete-form > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.privacy-status {
+  max-width: none;
+}
+
+.danger-button {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 38%, var(--border));
+  background: var(--danger-soft);
+}
+
+.danger-button:hover {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 70%, var(--border));
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface));
 }
 
 .table-wrap,
@@ -3917,6 +4036,26 @@ h2 {
   .focused-calculator,
   .calculator-result-card {
     border-radius: 16px;
+  }
+
+  .privacy-scope-list,
+  .privacy-action-row,
+  .privacy-delete-form {
+    grid-template-columns: 1fr;
+  }
+
+  .privacy-scope-list li {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .privacy-scope-list li:last-child {
+    border-bottom: 0;
+  }
+
+  .privacy-action-row .secondary-button,
+  .privacy-delete-form .secondary-button {
+    width: 100%;
   }
 }
 

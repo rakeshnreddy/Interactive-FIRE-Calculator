@@ -193,6 +193,7 @@ export function BalanceImportPanel({ accounts, auth, onImportComplete }: Balance
             className="visually-hidden"
             type="file"
             accept=".csv,text/csv"
+            tabIndex={-1}
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (file) void reviewFile(file);
