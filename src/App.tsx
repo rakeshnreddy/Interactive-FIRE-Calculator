@@ -198,6 +198,48 @@ type BalanceDraft = {
   date: string;
 };
 
+type TransactionType = 'income' | 'expense' | 'transfer' | 'adjustment';
+
+type Transaction = {
+  account: {
+    accountType: FinancialAccountType;
+    currency: string;
+    id: string;
+    name: string;
+  } | null;
+  accountId: string | null;
+  amountCents: number;
+  category: string | null;
+  createdAt: string;
+  description: string;
+  id: string;
+  notes: string | null;
+  signedCashFlowCents: number;
+  transactionDate: string;
+  transactionType: TransactionType;
+  updatedAt: string;
+};
+
+type TransactionSummary = {
+  adjustmentCents: number;
+  expenseCents: number;
+  incomeCents: number;
+  latestTransactionDate: string | null;
+  netCashFlowCents: number;
+  transactionCount: number;
+  transferCents: number;
+};
+
+type TransactionDraft = {
+  accountId: string;
+  amount: string;
+  category: string;
+  description: string;
+  notes: string;
+  transactionDate: string;
+  transactionType: TransactionType;
+};
+
 type GoalType =
   | 'retirement'
   | 'emergency_fund'
@@ -283,6 +325,13 @@ const goalStatusOptions: Array<{ label: string; value: GoalStatus }> = [
   { label: 'Active', value: 'active' },
   { label: 'Paused', value: 'paused' },
   { label: 'Completed', value: 'completed' }
+];
+
+const transactionTypeOptions: Array<{ label: string; value: TransactionType }> = [
+  { label: 'Income', value: 'income' },
+  { label: 'Expense', value: 'expense' },
+  { label: 'Transfer', value: 'transfer' },
+  { label: 'Adjustment', value: 'adjustment' }
 ];
 
 const routeItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
@@ -954,6 +1003,203 @@ function toAccountSummary(value: unknown): AccountSummary | null {
   };
 }
 
+async function loadTransactions(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<{
+  summary: TransactionSummary;
+  transactions: Transaction[];
+}> {
+  const response = await authenticatedJsonRequest(auth, '/api/transactions');
+
+  if (!response.ok) {
+    throw new Error('Unable to load transactions.');
+  }
+
+  const body = await response.json();
+  const transactions = isRecord(body) && Array.isArray(body.transactions)
+    ? body.transactions.map(toTransaction).filter((transaction): transaction is Transaction => Boolean(transaction))
+    : [];
+  const summary = isRecord(body) ? toTransactionSummary(body.summary) : null;
+
+  return {
+    summary: summary ?? summarizeTransactionList(transactions),
+    transactions
+  };
+}
+
+async function createTransactionRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  draft: TransactionDraft
+): Promise<Transaction> {
+  const amountCents = moneyInputToCents(draft.amount);
+
+  if (amountCents === null) {
+    throw new Error('Amount is required.');
+  }
+
+  const response = await authenticatedJsonRequest(auth, '/api/transactions', {
+    body: JSON.stringify({
+      accountId: optionalTextFromDraft(draft.accountId),
+      amountCents,
+      category: optionalTextFromDraft(draft.category),
+      description: draft.description.trim(),
+      notes: optionalTextFromDraft(draft.notes),
+      transactionDate: draft.transactionDate,
+      transactionType: draft.transactionType
+    }),
+    method: 'POST'
+  });
+
+  return readTransactionResponse(response, 'Unable to create transaction.');
+}
+
+async function updateTransactionRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  id: string,
+  draft: TransactionDraft
+): Promise<Transaction> {
+  const amountCents = moneyInputToCents(draft.amount);
+
+  if (amountCents === null) {
+    throw new Error('Amount is required.');
+  }
+
+  const response = await authenticatedJsonRequest(auth, `/api/transactions/${encodeURIComponent(id)}`, {
+    body: JSON.stringify({
+      accountId: optionalTextFromDraft(draft.accountId),
+      amountCents,
+      category: optionalTextFromDraft(draft.category),
+      description: draft.description.trim(),
+      notes: optionalTextFromDraft(draft.notes),
+      transactionDate: draft.transactionDate,
+      transactionType: draft.transactionType
+    }),
+    method: 'PUT'
+  });
+
+  return readTransactionResponse(response, 'Unable to update transaction.');
+}
+
+async function archiveTransactionRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  id: string
+): Promise<void> {
+  const response = await authenticatedJsonRequest(auth, `/api/transactions/${encodeURIComponent(id)}`, {
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to remove transaction.');
+  }
+}
+
+async function readTransactionResponse(response: Response, errorMessage: string): Promise<Transaction> {
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(isRecord(body) && typeof body.error === 'string' ? body.error : errorMessage);
+  }
+
+  const transaction = isRecord(body) ? toTransaction(body.transaction) : null;
+
+  if (!transaction) {
+    throw new Error(errorMessage);
+  }
+
+  return transaction;
+}
+
+function toTransaction(value: unknown): Transaction | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.id !== 'string' ||
+    (typeof value.accountId !== 'string' && value.accountId !== null) ||
+    typeof value.amountCents !== 'number' ||
+    typeof value.category !== 'string' && value.category !== null ||
+    typeof value.createdAt !== 'string' ||
+    typeof value.description !== 'string' ||
+    typeof value.notes !== 'string' && value.notes !== null ||
+    typeof value.signedCashFlowCents !== 'number' ||
+    typeof value.transactionDate !== 'string' ||
+    !isTransactionType(value.transactionType) ||
+    typeof value.updatedAt !== 'string'
+  ) {
+    return null;
+  }
+
+  const account = value.account === null ? null : toTransactionAccount(value.account);
+
+  if (value.account !== null && !account) {
+    return null;
+  }
+
+  return {
+    account,
+    accountId: value.accountId,
+    amountCents: value.amountCents,
+    category: value.category,
+    createdAt: value.createdAt,
+    description: value.description,
+    id: value.id,
+    notes: value.notes,
+    signedCashFlowCents: value.signedCashFlowCents,
+    transactionDate: value.transactionDate,
+    transactionType: value.transactionType,
+    updatedAt: value.updatedAt
+  };
+}
+
+function toTransactionAccount(value: unknown): Transaction['account'] {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.id !== 'string' ||
+    typeof value.name !== 'string' ||
+    typeof value.currency !== 'string' ||
+    !isFinancialAccountType(value.accountType)
+  ) {
+    return null;
+  }
+
+  return {
+    accountType: value.accountType,
+    currency: value.currency,
+    id: value.id,
+    name: value.name
+  };
+}
+
+function toTransactionSummary(value: unknown): TransactionSummary | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.adjustmentCents !== 'number' ||
+    typeof value.expenseCents !== 'number' ||
+    typeof value.incomeCents !== 'number' ||
+    (typeof value.latestTransactionDate !== 'string' && value.latestTransactionDate !== null) ||
+    typeof value.netCashFlowCents !== 'number' ||
+    typeof value.transactionCount !== 'number' ||
+    typeof value.transferCents !== 'number'
+  ) {
+    return null;
+  }
+
+  return {
+    adjustmentCents: value.adjustmentCents,
+    expenseCents: value.expenseCents,
+    incomeCents: value.incomeCents,
+    latestTransactionDate: value.latestTransactionDate,
+    netCashFlowCents: value.netCashFlowCents,
+    transactionCount: value.transactionCount,
+    transferCents: value.transferCents
+  };
+}
+
 function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
   const summary = accounts.reduce<AccountSummary>(
     (current, account) => {
@@ -983,6 +1229,97 @@ function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
     ...summary,
     netWorthCents: summary.assetsCents - summary.liabilitiesCents
   };
+}
+
+function summarizeTransactionList(transactions: Transaction[]): TransactionSummary {
+  return transactions.reduce<TransactionSummary>(
+    (summary, transaction) => {
+      const latestTransactionDate =
+        summary.latestTransactionDate === null || transaction.transactionDate > summary.latestTransactionDate
+          ? transaction.transactionDate
+          : summary.latestTransactionDate;
+
+      if (transaction.transactionType === 'income') {
+        return {
+          ...summary,
+          incomeCents: summary.incomeCents + transaction.amountCents,
+          latestTransactionDate,
+          netCashFlowCents: summary.netCashFlowCents + transaction.amountCents,
+          transactionCount: summary.transactionCount + 1
+        };
+      }
+
+      if (transaction.transactionType === 'expense') {
+        return {
+          ...summary,
+          expenseCents: summary.expenseCents + transaction.amountCents,
+          latestTransactionDate,
+          netCashFlowCents: summary.netCashFlowCents - transaction.amountCents,
+          transactionCount: summary.transactionCount + 1
+        };
+      }
+
+      if (transaction.transactionType === 'transfer') {
+        return {
+          ...summary,
+          latestTransactionDate,
+          transactionCount: summary.transactionCount + 1,
+          transferCents: summary.transferCents + transaction.amountCents
+        };
+      }
+
+      return {
+        ...summary,
+        adjustmentCents: summary.adjustmentCents + transaction.amountCents,
+        latestTransactionDate,
+        transactionCount: summary.transactionCount + 1
+      };
+    },
+    emptyTransactionSummary()
+  );
+}
+
+function emptyTransactionSummary(): TransactionSummary {
+  return {
+    adjustmentCents: 0,
+    expenseCents: 0,
+    incomeCents: 0,
+    latestTransactionDate: null,
+    netCashFlowCents: 0,
+    transactionCount: 0,
+    transferCents: 0
+  };
+}
+
+function emptyTransactionDraft(): TransactionDraft {
+  return {
+    accountId: '',
+    amount: '',
+    category: '',
+    description: '',
+    notes: '',
+    transactionDate: todayInputDate(),
+    transactionType: 'expense'
+  };
+}
+
+function transactionToDraft(transaction: Transaction): TransactionDraft {
+  return {
+    accountId: transaction.accountId ?? '',
+    amount: String(transaction.amountCents / 100),
+    category: transaction.category ?? '',
+    description: transaction.description,
+    notes: transaction.notes ?? '',
+    transactionDate: transaction.transactionDate,
+    transactionType: transaction.transactionType
+  };
+}
+
+function buildTransactionDraftMap(transactions: Transaction[]): Record<string, TransactionDraft> {
+  return transactions.reduce<Record<string, TransactionDraft>>((drafts, transaction) => {
+    drafts[transaction.id] = transactionToDraft(transaction);
+    return drafts;
+  }, {});
 }
 
 async function loadGoals(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<{
@@ -1321,12 +1658,44 @@ function formatCents(value: number): string {
   return formatMoney(value / 100);
 }
 
+function transactionTypeLabel(value: TransactionType): string {
+  return transactionTypeOptions.find((option) => option.value === value)?.label ?? value;
+}
+
+function transactionAmountClass(transaction: Transaction): string {
+  if (transaction.transactionType === 'income') {
+    return 'amount-positive';
+  }
+
+  if (transaction.transactionType === 'expense') {
+    return 'amount-negative';
+  }
+
+  return 'amount-neutral';
+}
+
+function formatTransactionAmount(transaction: Transaction): string {
+  if (transaction.transactionType === 'income') {
+    return `+${formatCents(transaction.amountCents)}`;
+  }
+
+  if (transaction.transactionType === 'expense') {
+    return `-${formatCents(transaction.amountCents)}`;
+  }
+
+  return formatCents(transaction.amountCents);
+}
+
 function accountTypeLabel(value: FinancialAccountType): string {
   return accountTypeOptions.find((option) => option.value === value)?.label ?? value;
 }
 
 function isFinancialAccountType(value: unknown): value is FinancialAccountType {
   return typeof value === 'string' && accountTypeOptions.some((option) => option.value === value);
+}
+
+function isTransactionType(value: unknown): value is TransactionType {
+  return typeof value === 'string' && transactionTypeOptions.some((option) => option.value === value);
 }
 
 function isAccountCategory(value: unknown): value is AccountCategory {
@@ -1787,14 +2156,14 @@ const platformPages: Record<
   },
   '/transactions': {
     eyebrow: 'Transactions',
-    title: 'Transactions get a dedicated review queue.',
+    title: 'Manual ledger for cash flow.',
     description:
-      'This route will eventually handle CSV imports, categorization, recurring spending patterns, and review before data affects reports.',
+      'Add income, expenses, transfers, and adjustments without linking them to balance imports yet.',
     icon: ClipboardList,
     cards: [
-      { label: 'Import queue', value: 'Future', detail: 'CSV upload and review before saving user-owned records.' },
-      { label: 'Categories', value: 'Future', detail: 'Income, expense, transfer, and custom planning categories.' },
-      { label: 'Recurring items', value: 'Future', detail: 'Detect subscriptions, paychecks, rent, and debt payments.' }
+      { label: 'Manual rows', value: 'Ready', detail: 'Income, expense, transfer, and adjustment entries.' },
+      { label: 'Categories', value: 'Ready', detail: 'Optional labels keep the first ledger flexible.' },
+      { label: 'Imports', value: 'Later', detail: 'Balance CSV imports remain separate from transactions.' }
     ]
   },
   '/goals': {
@@ -2279,6 +2648,300 @@ function DashboardPanel({
                 </span>
               </article>
             ))}
+          </div>
+        )}
+      </section>
+    </section>
+  );
+}
+
+function TransactionsPanel({
+  accounts,
+  draft,
+  isLoading,
+  isSaving,
+  message,
+  onArchiveTransaction,
+  onCreateTransaction,
+  onDraftChange,
+  onUpdateDraftChange,
+  onUpdateTransaction,
+  summary,
+  transactions,
+  updateDrafts
+}: {
+  accounts: FinancialAccount[];
+  draft: TransactionDraft;
+  isLoading: boolean;
+  isSaving: boolean;
+  message: string;
+  onArchiveTransaction: (id: string) => void;
+  onCreateTransaction: () => void;
+  onDraftChange: (field: keyof TransactionDraft, value: string) => void;
+  onUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
+  onUpdateTransaction: (id: string) => void;
+  summary: TransactionSummary;
+  transactions: Transaction[];
+  updateDrafts: Record<string, TransactionDraft>;
+}) {
+  const accountOptions = accounts.slice().sort((left, right) => left.name.localeCompare(right.name));
+
+  return (
+    <section className="transaction-workspace" aria-labelledby="transactions-workspace-title">
+      <div className="transaction-overview-strip">
+        <article>
+          <span>Net cash flow</span>
+          <strong className={summary.netCashFlowCents >= 0 ? 'amount-positive' : 'amount-negative'}>
+            {summary.netCashFlowCents >= 0 ? '+' : ''}
+            {formatCents(summary.netCashFlowCents)}
+          </strong>
+          <small>{summary.transactionCount} manual rows</small>
+        </article>
+        <article>
+          <span>Income</span>
+          <strong>{formatCents(summary.incomeCents)}</strong>
+          <small>Money in</small>
+        </article>
+        <article>
+          <span>Expenses</span>
+          <strong>{formatCents(summary.expenseCents)}</strong>
+          <small>Money out</small>
+        </article>
+        <article>
+          <span>Latest date</span>
+          <strong>{summary.latestTransactionDate ?? 'None'}</strong>
+          <small>{formatCents(summary.transferCents)} transfers tracked</small>
+        </article>
+      </div>
+
+      <section className="transaction-create-panel" aria-labelledby="transactions-workspace-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Manual ledger</p>
+            <h2 id="transactions-workspace-title">Add a transaction</h2>
+          </div>
+        </div>
+
+        <form
+          className="transaction-create-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onCreateTransaction();
+          }}
+        >
+          <Field label="Date">
+            <input
+              disabled={isSaving}
+              required
+              type="date"
+              value={draft.transactionDate}
+              onChange={(event) => onDraftChange('transactionDate', event.target.value)}
+            />
+          </Field>
+          <Field label="Type">
+            <select
+              disabled={isSaving}
+              value={draft.transactionType}
+              onChange={(event) => onDraftChange('transactionType', event.target.value)}
+            >
+              {transactionTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Description">
+            <input
+              disabled={isSaving}
+              maxLength={160}
+              required
+              type="text"
+              value={draft.description}
+              onChange={(event) => onDraftChange('description', event.target.value)}
+            />
+          </Field>
+          <Field label="Amount">
+            <input
+              disabled={isSaving}
+              inputMode="decimal"
+              required
+              type="text"
+              value={draft.amount}
+              onChange={(event) => onDraftChange('amount', event.target.value)}
+            />
+          </Field>
+          <Field label="Account">
+            <select
+              disabled={isSaving}
+              value={draft.accountId}
+              onChange={(event) => onDraftChange('accountId', event.target.value)}
+            >
+              <option value="">No account link</option>
+              {accountOptions.map((account) => (
+                <option key={account.id} value={account.id}>
+                  {account.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Category">
+            <input
+              disabled={isSaving}
+              maxLength={80}
+              type="text"
+              value={draft.category}
+              onChange={(event) => onDraftChange('category', event.target.value)}
+            />
+          </Field>
+          <Field label="Notes">
+            <input
+              disabled={isSaving}
+              maxLength={500}
+              type="text"
+              value={draft.notes}
+              onChange={(event) => onDraftChange('notes', event.target.value)}
+            />
+          </Field>
+          <button className="primary-button icon-text-button" disabled={isSaving} type="submit">
+            <Save size={16} />
+            Add transaction
+          </button>
+        </form>
+
+        {message ? <p className="transaction-status-copy" role="status" aria-live="polite">{message}</p> : null}
+      </section>
+
+      <section className="transaction-list-section" aria-label="Saved transactions">
+        {isLoading ? (
+          <article className="scenario-card empty-card">
+            <span>Loading transactions</span>
+            <small>Checking saved ledger rows.</small>
+          </article>
+        ) : transactions.length === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No transactions yet</span>
+            <small>Income, expenses, transfers, and adjustments will appear here.</small>
+          </article>
+        ) : (
+          <div className="transaction-row-list">
+            {transactions.map((transaction) => {
+              const updateDraft = updateDrafts[transaction.id] ?? transactionToDraft(transaction);
+
+              return (
+                <article className="transaction-row-card" key={transaction.id}>
+                  <div className="transaction-row-main">
+                    <div className="transaction-row-copy">
+                      <div className="transaction-badges">
+                        <span className={`transaction-type-badge transaction-type-${transaction.transactionType}`}>
+                          {transactionTypeLabel(transaction.transactionType)}
+                        </span>
+                        {transaction.category ? <span>{transaction.category}</span> : null}
+                      </div>
+                      <strong>{transaction.description}</strong>
+                      <small>
+                        {transaction.transactionDate}
+                        {transaction.account ? ` - ${transaction.account.name}` : ' - No account link'}
+                      </small>
+                    </div>
+                    <div className="transaction-amount">
+                      <span>{transaction.notes ?? 'Manual row'}</span>
+                      <strong className={transactionAmountClass(transaction)}>
+                        {formatTransactionAmount(transaction)}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <form
+                    className="transaction-update-form"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      onUpdateTransaction(transaction.id);
+                    }}
+                  >
+                    <Field label="Date">
+                      <input
+                        disabled={isSaving}
+                        required
+                        type="date"
+                        value={updateDraft.transactionDate}
+                        onChange={(event) => onUpdateDraftChange(transaction.id, 'transactionDate', event.target.value)}
+                      />
+                    </Field>
+                    <Field label="Type">
+                      <select
+                        disabled={isSaving}
+                        value={updateDraft.transactionType}
+                        onChange={(event) => onUpdateDraftChange(transaction.id, 'transactionType', event.target.value)}
+                      >
+                        {transactionTypeOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                    <Field label="Description">
+                      <input
+                        disabled={isSaving}
+                        maxLength={160}
+                        required
+                        type="text"
+                        value={updateDraft.description}
+                        onChange={(event) => onUpdateDraftChange(transaction.id, 'description', event.target.value)}
+                      />
+                    </Field>
+                    <Field label="Amount">
+                      <input
+                        disabled={isSaving}
+                        inputMode="decimal"
+                        required
+                        type="text"
+                        value={updateDraft.amount}
+                        onChange={(event) => onUpdateDraftChange(transaction.id, 'amount', event.target.value)}
+                      />
+                    </Field>
+                    <Field label="Account">
+                      <select
+                        disabled={isSaving}
+                        value={updateDraft.accountId}
+                        onChange={(event) => onUpdateDraftChange(transaction.id, 'accountId', event.target.value)}
+                      >
+                        <option value="">No account link</option>
+                        {accountOptions.map((account) => (
+                          <option key={account.id} value={account.id}>
+                            {account.name}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                    <Field label="Category">
+                      <input
+                        disabled={isSaving}
+                        maxLength={80}
+                        type="text"
+                        value={updateDraft.category}
+                        onChange={(event) => onUpdateDraftChange(transaction.id, 'category', event.target.value)}
+                      />
+                    </Field>
+                    <button className="secondary-button icon-text-button" disabled={isSaving} type="submit">
+                      <Save size={16} />
+                      Save
+                    </button>
+                    <button
+                      className="icon-button row-action"
+                      disabled={isSaving}
+                      type="button"
+                      aria-label={`Remove ${transaction.description}`}
+                      title={`Remove ${transaction.description}`}
+                      onClick={() => onArchiveTransaction(transaction.id)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </form>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
@@ -3172,6 +3835,11 @@ function PlatformPage({
   accountDraft,
   accountMessage,
   accountSummary,
+  transactionDraft,
+  transactionMessage,
+  transactionSummary,
+  transactions,
+  transactionUpdateDrafts,
   balanceDrafts,
   auth,
   financialAccounts,
@@ -3183,14 +3851,18 @@ function PlatformPage({
   goalUpdateDrafts,
   isLoadingProfile,
   isLoadingAccounts,
+  isLoadingTransactions,
   isLoadingGoals,
   isSavingAccount,
+  isSavingTransaction,
   isSavingGoal,
   isSavingProfile,
   onAccountDraftChange,
   onArchiveAccount,
+  onArchiveTransaction,
   onBalanceDraftChange,
   onCreateAccount,
+  onCreateTransaction,
   onCreateGoal,
   onGoalDraftChange,
   onGoalUpdateDraftChange,
@@ -3201,6 +3873,9 @@ function PlatformPage({
   onAccountDataExport,
   onRecordBalance,
   onArchiveGoal,
+  onTransactionDraftChange,
+  onTransactionUpdateDraftChange,
+  onUpdateTransaction,
   onUpdateGoal,
   route,
   onNavigate,
@@ -3216,6 +3891,11 @@ function PlatformPage({
   accountDraft: AccountDraft;
   accountMessage: string;
   accountSummary: AccountSummary;
+  transactionDraft: TransactionDraft;
+  transactionMessage: string;
+  transactionSummary: TransactionSummary;
+  transactions: Transaction[];
+  transactionUpdateDrafts: Record<string, TransactionDraft>;
   balanceDrafts: Record<string, BalanceDraft>;
   auth: Extract<AuthState, { status: 'signed-in' }>;
   financialAccounts: FinancialAccount[];
@@ -3226,15 +3906,19 @@ function PlatformPage({
   goalSummary: GoalSummary;
   goalUpdateDrafts: Record<string, GoalUpdateDraft>;
   isLoadingAccounts: boolean;
+  isLoadingTransactions: boolean;
   isLoadingGoals: boolean;
   isLoadingProfile: boolean;
   isSavingAccount: boolean;
+  isSavingTransaction: boolean;
   isSavingGoal: boolean;
   isSavingProfile: boolean;
   onAccountDraftChange: (field: keyof AccountDraft, value: string) => void;
   onArchiveAccount: (id: string) => void;
+  onArchiveTransaction: (id: string) => void;
   onBalanceDraftChange: (id: string, field: keyof BalanceDraft, value: string) => void;
   onCreateAccount: () => void;
+  onCreateTransaction: () => void;
   onCreateGoal: () => void;
   onGoalDraftChange: (field: keyof GoalDraft, value: string) => void;
   onGoalUpdateDraftChange: (id: string, field: keyof GoalUpdateDraft, value: string) => void;
@@ -3245,6 +3929,9 @@ function PlatformPage({
   onAccountDataExport: () => void;
   onRecordBalance: (id: string) => void;
   onArchiveGoal: (id: string) => void;
+  onTransactionDraftChange: (field: keyof TransactionDraft, value: string) => void;
+  onTransactionUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
+  onUpdateTransaction: (id: string) => void;
   onUpdateGoal: (id: string) => void;
   route: Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
   onNavigate: (route: AppRoute) => void;
@@ -3304,6 +3991,24 @@ function PlatformPage({
         />
       ) : null}
 
+      {route === '/transactions' ? (
+        <TransactionsPanel
+          accounts={financialAccounts}
+          draft={transactionDraft}
+          isLoading={isLoadingTransactions}
+          isSaving={isSavingTransaction}
+          message={transactionMessage}
+          summary={transactionSummary}
+          transactions={transactions}
+          updateDrafts={transactionUpdateDrafts}
+          onArchiveTransaction={onArchiveTransaction}
+          onCreateTransaction={onCreateTransaction}
+          onDraftChange={onTransactionDraftChange}
+          onUpdateDraftChange={onTransactionUpdateDraftChange}
+          onUpdateTransaction={onUpdateTransaction}
+        />
+      ) : null}
+
       {route === '/goals' ? (
         <GoalsPanel
           draft={goalDraft}
@@ -3348,7 +4053,7 @@ function PlatformPage({
         <InsightsPanel insights={financialInsights} onNavigate={onNavigate} />
       ) : null}
 
-      {route === '/dashboard' || route === '/accounts' || route === '/goals' || route === '/reports' || route === '/settings' ? null : (
+      {route === '/dashboard' || route === '/accounts' || route === '/transactions' || route === '/goals' || route === '/reports' || route === '/settings' ? null : (
         <div className="placeholder-grid">
           {page.cards.map((card) => (
             <article className="scenario-card" key={card.label}>
@@ -3368,6 +4073,8 @@ function PlatformPage({
           <strong>
             {route === '/goals'
               ? 'Goal tracking is active.'
+              : route === '/transactions'
+                ? 'Transaction tracking is active.'
               : route === '/reports'
                 ? 'Insights are active.'
                 : `${page.eyebrow} route is wired.`}
@@ -3378,6 +4085,8 @@ function PlatformPage({
               ? 'Account balances and goal progress now power the signed-in tracker.'
               : route === '/accounts'
                 ? 'Manual and reviewed CSV balances feed net worth while goals track the next milestone.'
+                : route === '/transactions'
+                  ? 'Manual ledger rows stay separate from balance imports while the transaction model settles.'
                 : route === '/goals'
                   ? 'Funding updates and target dates roll directly into the dashboard.'
                   : route === '/reports'
@@ -3387,9 +4096,9 @@ function PlatformPage({
         </div>
         <button
           className="secondary-button icon-text-button"
-          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/goals' ? '/dashboard' : route === '/reports' ? '/plans' : '/calculators/fire')}
+          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/transactions' ? '/accounts' : route === '/goals' ? '/dashboard' : route === '/reports' ? '/plans' : '/calculators/fire')}
         >
-          {route === '/dashboard' ? 'Accounts' : route === '/goals' ? 'Dashboard' : route === '/reports' ? 'Plans' : 'Try FIRE'}
+          {route === '/dashboard' ? 'Accounts' : route === '/transactions' ? 'Accounts' : route === '/goals' ? 'Dashboard' : route === '/reports' ? 'Plans' : 'Try FIRE'}
           <ChevronRight size={16} />
         </button>
       </section>
@@ -3516,6 +4225,13 @@ function App({ auth }: { auth: AuthState }) {
   const [isLoadingAccounts, setIsLoadingAccounts] = useState(false);
   const [isSavingAccount, setIsSavingAccount] = useState(false);
   const [accountMessage, setAccountMessage] = useState('');
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactionSummary, setTransactionSummary] = useState<TransactionSummary>(emptyTransactionSummary);
+  const [transactionDraft, setTransactionDraft] = useState<TransactionDraft>(emptyTransactionDraft);
+  const [transactionUpdateDrafts, setTransactionUpdateDrafts] = useState<Record<string, TransactionDraft>>({});
+  const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
+  const [isSavingTransaction, setIsSavingTransaction] = useState(false);
+  const [transactionMessage, setTransactionMessage] = useState('');
   const [goals, setGoals] = useState<Goal[]>([]);
   const [goalSummary, setGoalSummary] = useState<GoalSummary>(() => summarizeGoalList([]));
   const [goalDraft, setGoalDraft] = useState<GoalDraft>(emptyGoalDraft);
@@ -3693,6 +4409,57 @@ function App({ auth }: { auth: AuthState }) {
       .finally(() => {
         if (!isCancelled) {
           setIsLoadingAccounts(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [auth.status, auth.isSignedIn, auth.user?.id]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (auth.status !== 'signed-in') {
+      setTransactions([]);
+      setTransactionSummary(emptyTransactionSummary());
+      setTransactionDraft(emptyTransactionDraft());
+      setTransactionUpdateDrafts({});
+      setIsLoadingTransactions(false);
+      setIsSavingTransaction(false);
+      setTransactionMessage('');
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    setIsLoadingTransactions(true);
+    setTransactionMessage('Loading transactions...');
+
+    loadTransactions(auth)
+      .then(({ summary, transactions: loadedTransactions }) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setTransactions(loadedTransactions);
+        setTransactionSummary(summary);
+        setTransactionUpdateDrafts(buildTransactionDraftMap(loadedTransactions));
+        setTransactionMessage('Transactions are synced.');
+      })
+      .catch(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        setTransactions([]);
+        setTransactionSummary(emptyTransactionSummary());
+        setTransactionUpdateDrafts({});
+        setTransactionMessage('Transactions could not be loaded.');
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoadingTransactions(false);
         }
       });
 
@@ -4106,6 +4873,11 @@ function App({ auth }: { auth: AuthState }) {
       setAccountDraft(emptyAccountDraft());
       setBalanceDrafts({});
       setAccountMessage('Account data was deleted.');
+      setTransactions([]);
+      setTransactionSummary(emptyTransactionSummary());
+      setTransactionDraft(emptyTransactionDraft());
+      setTransactionUpdateDrafts({});
+      setTransactionMessage('Transaction data was deleted.');
       setGoals([]);
       setGoalSummary(summarizeGoalList([]));
       setGoalDraft(emptyGoalDraft());
@@ -4253,6 +5025,169 @@ function App({ auth }: { auth: AuthState }) {
       setAccountMessage('Account could not be archived.');
     } finally {
       setIsSavingAccount(false);
+    }
+  };
+
+  const updateTransactionDraft = (field: keyof TransactionDraft, value: string) => {
+    if (field === 'transactionType') {
+      if (!isTransactionType(value)) {
+        return;
+      }
+
+      setTransactionDraft((current) => ({
+        ...current,
+        transactionType: value
+      }));
+      return;
+    }
+
+    setTransactionDraft((current) => ({
+      ...current,
+      [field]: value
+    }));
+  };
+
+  const updateTransactionUpdateDraft = (
+    id: string,
+    field: keyof TransactionDraft,
+    value: string
+  ) => {
+    if (field === 'transactionType') {
+      if (!isTransactionType(value)) {
+        return;
+      }
+
+      setTransactionUpdateDrafts((current) => ({
+        ...current,
+        [id]: {
+          ...(current[id] ?? emptyTransactionDraft()),
+          transactionType: value
+        }
+      }));
+      return;
+    }
+
+    setTransactionUpdateDrafts((current) => ({
+      ...current,
+      [id]: {
+        ...(current[id] ?? emptyTransactionDraft()),
+        [field]: value
+      }
+    }));
+  };
+
+  const createTransaction = async () => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    if (transactionDraft.description.trim().length === 0) {
+      setTransactionMessage('Description is required.');
+      return;
+    }
+
+    const amountCents = moneyInputToCents(transactionDraft.amount);
+
+    if (amountCents === null || amountCents <= 0) {
+      setTransactionMessage('Amount must be greater than zero with up to two decimal places.');
+      return;
+    }
+
+    setIsSavingTransaction(true);
+    setTransactionMessage('Saving transaction...');
+
+    try {
+      const transaction = await createTransactionRecord(auth, transactionDraft);
+      const nextTransactions = [transaction, ...transactions.filter((item) => item.id !== transaction.id)];
+
+      setTransactions(nextTransactions);
+      setTransactionSummary(summarizeTransactionList(nextTransactions));
+      setTransactionUpdateDrafts((current) => ({
+        ...current,
+        [transaction.id]: transactionToDraft(transaction)
+      }));
+      setTransactionDraft(emptyTransactionDraft());
+      setTransactionMessage('Transaction saved.');
+    } catch (error) {
+      setTransactionMessage(error instanceof Error ? error.message : 'Transaction could not be saved.');
+    } finally {
+      setIsSavingTransaction(false);
+    }
+  };
+
+  const updateTransaction = async (id: string) => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    const draft = transactionUpdateDrafts[id];
+
+    if (!draft) {
+      setTransactionMessage('Transaction update could not be prepared.');
+      return;
+    }
+
+    if (draft.description.trim().length === 0) {
+      setTransactionMessage('Description is required.');
+      return;
+    }
+
+    const amountCents = moneyInputToCents(draft.amount);
+
+    if (amountCents === null || amountCents <= 0) {
+      setTransactionMessage('Amount must be greater than zero with up to two decimal places.');
+      return;
+    }
+
+    setIsSavingTransaction(true);
+    setTransactionMessage('Saving transaction changes...');
+
+    try {
+      const transaction = await updateTransactionRecord(auth, id, draft);
+      const nextTransactions = transactions
+        .map((item) => (item.id === transaction.id ? transaction : item))
+        .sort((left, right) =>
+          right.transactionDate.localeCompare(left.transactionDate) || right.createdAt.localeCompare(left.createdAt)
+        );
+
+      setTransactions(nextTransactions);
+      setTransactionSummary(summarizeTransactionList(nextTransactions));
+      setTransactionUpdateDrafts((current) => ({
+        ...current,
+        [transaction.id]: transactionToDraft(transaction)
+      }));
+      setTransactionMessage('Transaction updated.');
+    } catch (error) {
+      setTransactionMessage(error instanceof Error ? error.message : 'Transaction could not be updated.');
+    } finally {
+      setIsSavingTransaction(false);
+    }
+  };
+
+  const archiveTransaction = async (id: string) => {
+    if (auth.status !== 'signed-in') {
+      return;
+    }
+
+    setIsSavingTransaction(true);
+    setTransactionMessage('Removing transaction...');
+
+    try {
+      await archiveTransactionRecord(auth, id);
+      const nextTransactions = transactions.filter((item) => item.id !== id);
+
+      setTransactions(nextTransactions);
+      setTransactionSummary(summarizeTransactionList(nextTransactions));
+      setTransactionUpdateDrafts((current) => {
+        const next = { ...current };
+        delete next[id];
+        return next;
+      });
+      setTransactionMessage('Transaction removed.');
+    } catch {
+      setTransactionMessage('Transaction could not be removed.');
+    } finally {
+      setIsSavingTransaction(false);
     }
   };
 
@@ -4845,6 +5780,11 @@ function App({ auth }: { auth: AuthState }) {
                 accountDraft={accountDraft}
                 accountMessage={accountMessage}
                 accountSummary={accountSummary}
+                transactionDraft={transactionDraft}
+                transactionMessage={transactionMessage}
+                transactionSummary={transactionSummary}
+                transactions={transactions}
+                transactionUpdateDrafts={transactionUpdateDrafts}
                 balanceDrafts={balanceDrafts}
                 auth={auth}
                 financialAccounts={financialAccounts}
@@ -4855,9 +5795,11 @@ function App({ auth }: { auth: AuthState }) {
                 goalSummary={goalSummary}
                 goalUpdateDrafts={goalUpdateDrafts}
                 isLoadingAccounts={isLoadingAccounts}
+                isLoadingTransactions={isLoadingTransactions}
                 isLoadingGoals={isLoadingGoals}
                 isLoadingProfile={isLoadingProfile}
                 isSavingAccount={isSavingAccount}
+                isSavingTransaction={isSavingTransaction}
                 isSavingGoal={isSavingGoal}
                 isSavingProfile={isSavingProfile}
                 accountDataDeleteConfirmation={accountDataDeleteConfirmation}
@@ -4874,8 +5816,10 @@ function App({ auth }: { auth: AuthState }) {
                 onAccountDataExport={exportAccountData}
                 onAccountDraftChange={updateAccountDraft}
                 onArchiveAccount={archiveFinancialAccount}
+                onArchiveTransaction={archiveTransaction}
                 onBalanceDraftChange={updateBalanceDraft}
                 onCreateAccount={createFinancialAccount}
+                onCreateTransaction={createTransaction}
                 onCreateGoal={createGoal}
                 onGoalDraftChange={updateGoalDraft}
                 onGoalUpdateDraftChange={updateGoalUpdateDraft}
@@ -4884,6 +5828,9 @@ function App({ auth }: { auth: AuthState }) {
                 onProfileSave={saveAccountProfile}
                 onRecordBalance={recordAccountBalance}
                 onArchiveGoal={archiveGoal}
+                onTransactionDraftChange={updateTransactionDraft}
+                onTransactionUpdateDraftChange={updateTransactionUpdateDraft}
+                onUpdateTransaction={updateTransaction}
                 onUpdateGoal={updateGoal}
               />
             )

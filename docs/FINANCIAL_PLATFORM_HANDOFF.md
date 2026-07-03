@@ -1,6 +1,6 @@
 # Financial Platform Handoff
 
-Last updated: June 24, 2026
+Last updated: July 3, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://4dfecf5e.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://82e4b4b6.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,7 +29,7 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 9 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, reviewed balance CSV imports, deterministic Reports insights, authenticated account-data export/delete readiness, accessibility hardening, and bundle splitting are active. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 10 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, reviewed balance CSV imports, deterministic Reports insights, authenticated account-data export/delete readiness, accessibility hardening, bundle splitting, and a signed-in manual Transactions ledger are active. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
@@ -55,6 +55,7 @@ Production target:
 - `functions/api/accounts/` contains D1-backed authenticated financial account and balance endpoints.
 - `functions/api/imports/account-balances/` contains authenticated import history, preview, and commit endpoints.
 - `functions/api/account-data/export.ts` and `functions/api/account-data/index.ts` contain authenticated account data export and delete endpoints.
+- `functions/api/transactions/index.ts` and `functions/api/transactions/[id].ts` contain authenticated transaction list, create, read, update, and remove endpoints.
 - `functions/api/goals/` contains D1-backed authenticated goal endpoints.
 - `functions/api/dashboard.ts` contains the authenticated account and goal summary endpoint.
 - `functions/_lib/persistence.ts` centralizes D1 binding checks and user/profile creation.
@@ -62,6 +63,7 @@ Production target:
 - `functions/_lib/accounts.ts` centralizes financial account, balance, and summary validation/persistence.
 - `functions/_lib/balanceImports.ts` centralizes account matching, row validation, duplicate/conflict review, and atomic import commits.
 - `functions/_lib/accountData.ts` centralizes authenticated user-data export and deletion behavior.
+- `functions/_lib/transactions.ts` centralizes transaction validation, account ownership checks, CRUD, and summary behavior.
 - `functions/_lib/goals.ts` centralizes goal validation, persistence, progress, deadline, and summary behavior.
 - `functions/_lib/` contains shared Pages Function helpers for JSON responses and Clerk session validation.
 - `migrations/` contains D1 SQL migrations.
@@ -217,7 +219,21 @@ Current Phase 9 state:
 
 Next recommended phase:
 
-- Either complete production Clerk setup for launch readiness or begin Phase 10 Transactions MVP. Keep Clerk production auth/domain setup visible as the remaining launch blocker.
+- Either complete production Clerk setup for launch readiness or begin Phase 11 Transaction Categorization and Cashflow Automation. Keep Clerk production auth/domain setup visible as the remaining launch blocker.
+
+Current Phase 10 state:
+
+- `/transactions` is a signed-in manual ledger workspace for income, expenses, transfers, and adjustments.
+- `GET`/`POST /api/transactions` and `GET`/`PUT`/`DELETE /api/transactions/:id` are user-scoped behind Clerk-authenticated Pages Functions.
+- Transaction validation covers ISO dates, positive integer cents, transaction types, descriptions, optional categories, optional notes, and optional active owned account links.
+- The ledger shows net cash flow, income, expenses, latest transaction date, and transfer totals.
+- Users can create unlinked transactions, optionally attach active owned accounts, edit saved rows inline, and remove rows.
+- Balance CSV imports remain separate from transactions; no categorization or reconciliation automation has been added yet.
+- Account-data deletion clears loaded transaction state in the SPA after confirmed D1 deletion.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 55 frontend tests, and production build.
+- Unit tests, local authenticated API verification, signed-out browser gate checks, and signed-in desktop/mobile browser QA passed with disposable Clerk/local D1 data removed afterward.
+- Phase 10 is deployed at `https://82e4b4b6.interactive-fire-calculator.pages.dev`; live HTTP smoke passed for `/transactions`, `/calculators/fire`, and unauthenticated `GET /api/transactions -> 401`.
+- `src/lib/fire.ts` remains unchanged.
 
 Current Phase 3 state:
 
@@ -585,21 +601,41 @@ Acceptance met:
 - Main app bundle is smaller and route-level surfaces lazy-load.
 - Production auth/domain setup remains visible as the launch blocker.
 
+### Phase 10: Transactions MVP
+
+Status: complete for preview/development.
+
+Delivered:
+
+- Authenticated user-scoped transaction APIs backed by the existing D1 `transactions` table.
+- Shared transaction validation and summary helpers.
+- Signed-in `/transactions` manual ledger workspace.
+- Create, inline edit, optional account linking, and row removal UI.
+- Summary tiles for net cash flow, income, expenses, latest transaction date, and transfers.
+- Test coverage and local API/browser verification.
+
+Acceptance met:
+
+- User can manually track income, expenses, transfers, and adjustments.
+- Transaction rows are isolated by Clerk user ID.
+- Public FIRE and existing accounts/goals/plans/reports/settings behavior stays stable.
+- Balance imports remain separate from transaction categorization and reconciliation.
+
 ## Immediate Next Coding Session Recommendation
 
-Begin Phase 10 candidate: Transactions MVP, unless product ownership chooses to pause product expansion and finish production Clerk setup first.
+Begin Phase 11 candidate: Transaction Categorization and Cashflow Automation, unless product ownership chooses to pause product expansion and finish production Clerk setup first.
 
 Recommended first slice:
 
-1. Use the existing `transactions` table from `migrations/0001_initial_financial_platform_schema.sql`.
-2. Add user-scoped transaction list/create/update/archive APIs behind Clerk auth.
-3. Replace the `/transactions` placeholder with a signed-in ledger workspace.
-4. Keep transaction writes separate from account-balance CSV imports until linking rules are explicit.
+1. Add simple category rules or saved category suggestions on top of the existing manual ledger.
+2. Add transaction cash-flow rollups to Dashboard and Reports.
+3. Plan review-first transaction imports separately from account-balance snapshot imports.
+4. Keep matching, reconciliation, and account-link behavior explicit and reversible.
 5. Continue tracking Clerk production auth/domain setup as a launch blocker.
 
 Reason:
 
-The product now has identity, persistence, reviewed imports, goals, versioned planning, rule-based insights, privacy controls, accessibility hardening, and performance splitting. The next product gap in the existing IA is a usable Transactions ledger. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
+The product now has identity, persistence, reviewed imports, goals, versioned planning, rule-based insights, privacy controls, accessibility hardening, performance splitting, and a manual Transactions ledger. The next product gap is turning raw transaction rows into useful cash-flow context without pretending reconciliation/import automation exists. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
 
 ## Testing Requirements
 
@@ -664,9 +700,9 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phases 1 and 3 through 9 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, balance import history, and account-data export/delete readiness behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed CSV imports, Planning includes comparisons and deterministic health evidence, Reports shows evidence-linked rule-based recommendations, Settings includes privacy controls, and the public FIRE calculator remains available.
+Phases 1 and 3 through 10 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, balance import history, transactions, and account-data export/delete readiness behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed CSV imports, Transactions supports manual income/expense/transfer/adjustment rows, Planning includes comparisons and deterministic health evidence, Reports shows evidence-linked rule-based recommendations, Settings includes privacy controls, and the public FIRE calculator remains available.
 
-Next goal: begin Phase 10 candidate, Transactions MVP, unless product ownership chooses to pause product expansion and finish production Clerk setup first. Keep production Clerk setup as a launch blocker.
+Next goal: begin Phase 11 candidate, Transaction Categorization and Cashflow Automation, unless product ownership chooses to pause product expansion and finish production Clerk setup first. Keep production Clerk setup as a launch blocker.
 
 Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```

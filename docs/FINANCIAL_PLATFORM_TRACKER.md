@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: June 24, 2026
+Last updated: July 3, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://4dfecf5e.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://82e4b4b6.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -27,6 +27,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 7: Imports and Automation | Preview/server complete | 100% | Review-first account-balance CSV imports, duplicate/conflict handling, atomic commits, audit history, and dashboard refresh are in place. |
 | Phase 8: Insights and Recommendations | Preview/app complete | 100% | Rule-based Reports recommendations, dashboard priority insights, account/goal/plan evidence, and uncertainty language are in place. |
 | Phase 9: Hardening and Launch | Preview/app complete | 100% | Authenticated D1 export/delete readiness, Settings privacy controls, accessibility pass, bundle splitting, launch notes, and verification are in place. Production launch still depends on the Phase 2 Clerk production instance/domain. |
+| Phase 10: Transactions MVP | Preview/app complete | 100% | User-scoped manual transaction APIs and a signed-in Transactions ledger are in place for income, expenses, transfers, and adjustments. Balance imports remain separate from categorization. |
 
 ## Design System Milestone
 
@@ -341,13 +342,52 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 - Deployed signed-out landing, FIRE calculator, Settings gate, and mobile FIRE/Settings smoke checks passed with no console errors or horizontal overflow.
 - Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
 
-## Phase 10 Candidate: Transactions MVP
+## Phase 10 Progress Checklist
 
-- [ ] Define transaction payload validation for income, expense, transfer, and adjustment rows.
-- [ ] Add authenticated transaction list/create/read/update/archive helpers and Pages Functions using the existing `transactions` table.
-- [ ] Replace the `/transactions` placeholder with a signed-in ledger workspace.
-- [ ] Keep transaction work isolated from account-balance imports until matching/categorization rules are explicit.
-- [ ] Keep public FIRE, Settings privacy controls, Reports insights, planning, accounts, and goals stable.
+- [x] Define transaction payload validation for income, expense, transfer, and adjustment rows.
+- [x] Add authenticated transaction list/create/read/update/remove helpers using the existing `transactions` table.
+- [x] Add authenticated Pages Functions:
+  - `GET`/`POST /api/transactions`
+  - `GET`/`PUT`/`DELETE /api/transactions/:id`
+- [x] Scope every transaction read and write to the authenticated Clerk user.
+- [x] Validate ISO transaction dates, positive integer cents, transaction types, descriptions, optional categories, optional notes, and optional owned account links.
+- [x] Replace the `/transactions` placeholder with a signed-in manual ledger workspace.
+- [x] Add ledger summary tiles for net cash flow, income, expenses, latest date, and transfers.
+- [x] Support create, inline update, and row removal from the Transactions UI.
+- [x] Keep transaction work isolated from account-balance imports until matching/categorization rules are explicit.
+- [x] Keep public FIRE, Settings privacy controls, Reports insights, planning, accounts, and goals stable.
+- [x] Keep `src/lib/fire.ts` unchanged.
+
+## Phase 10 Verification Notes
+
+- `src/transactions.test.ts` covers create/update payload parsing, invalid dates/amounts/types, nullable optional fields, empty update rejection, and summary math.
+- `npm run typecheck` passed.
+- `npm test` passed with 55 frontend tests across 10 files.
+- `npm run build` passed with the transaction workspace included in the app bundle.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 55 frontend tests, and production build.
+- Local Pages dev authenticated API verification passed with a disposable Clerk development user:
+  - unauthenticated `GET /api/transactions` returned `401`
+  - initial authenticated list returned empty transactions and summary
+  - invalid amount returned `400`
+  - account-linked create returned `201`
+  - update/read/list summary returned the expected expense and net cash-flow totals
+  - delete returned `200`
+  - read after delete returned `404`
+- Local signed-out `/transactions` browser gate passed.
+- Local signed-in `/transactions` browser QA passed with a Clerk test account, including creating a manual expense row, status messaging, desktop layout, and `390x844` mobile layout.
+- Browser checks found no console errors or horizontal page overflow.
+- Disposable Clerk users and local D1 verification rows were removed afterward.
+- `npm run cf:deploy` deployed Phase 10 to `https://82e4b4b6.interactive-fire-calculator.pages.dev`.
+- Live HTTP smoke passed for `/transactions`, `/calculators/fire`, and unauthenticated `GET /api/transactions -> 401`.
+- Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
+
+## Phase 11 Candidate: Transaction Categorization and Cashflow Automation
+
+- [ ] Add lightweight category rules or saved suggestions for manual transactions.
+- [ ] Add cash-flow rollups to Dashboard and Reports.
+- [ ] Design review-first transaction import planning without merging it into account-balance snapshot imports.
+- [ ] Keep matching, reconciliation, and account-link behavior explicit and reversible.
+- [ ] Keep production Clerk setup visible as the launch-critical blocker until an owned domain and production keys are configured.
 
 ## Required Verification Before Push
 
