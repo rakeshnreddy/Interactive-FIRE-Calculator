@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: July 3, 2026
+Last updated: July 4, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://82e4b4b6.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://959f0a17.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -28,6 +28,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 8: Insights and Recommendations | Preview/app complete | 100% | Rule-based Reports recommendations, dashboard priority insights, account/goal/plan evidence, and uncertainty language are in place. |
 | Phase 9: Hardening and Launch | Preview/app complete | 100% | Authenticated D1 export/delete readiness, Settings privacy controls, accessibility pass, bundle splitting, launch notes, and verification are in place. Production launch still depends on the Phase 2 Clerk production instance/domain. |
 | Phase 10: Transactions MVP | Preview/app complete | 100% | User-scoped manual transaction APIs and a signed-in Transactions ledger are in place for income, expenses, transfers, and adjustments. Balance imports remain separate from categorization. |
+| Phase 11: Transaction Categorization and Cashflow Automation | Preview/app complete | 100% | Transaction search/filtering, category suggestions, monthly cashflow rollups, dashboard cashflow context, and reports transaction insights are in place. Transaction imports and reconciliation remain separate future scope. |
 
 ## Design System Milestone
 
@@ -381,12 +382,42 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 - Live HTTP smoke passed for `/transactions`, `/calculators/fire`, and unauthenticated `GET /api/transactions -> 401`.
 - Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
 
-## Phase 11 Candidate: Transaction Categorization and Cashflow Automation
+## Phase 11 Progress Checklist
 
-- [ ] Add lightweight category rules or saved suggestions for manual transactions.
-- [ ] Add cash-flow rollups to Dashboard and Reports.
-- [ ] Design review-first transaction import planning without merging it into account-balance snapshot imports.
-- [ ] Keep matching, reconciliation, and account-link behavior explicit and reversible.
+- [x] Add tested transaction analytics helpers for filtering, category options, monthly cashflow, top expense categories, recent transactions, and uncategorized counts.
+- [x] Add search, type, category, account, and date-range filters to `/transactions`.
+- [x] Add saved/starter category suggestions and consistent uncategorized labeling for manual transactions.
+- [x] Add visible-row summary math while preserving all-row ledger summaries.
+- [x] Add Dashboard monthly cashflow tile and detailed cashflow panel.
+- [x] Add transaction insights to Dashboard and Reports without AI summaries or external account analysis.
+- [x] Keep balance CSV imports separate from transaction rows.
+- [x] Keep transaction matching, account reconciliation, and transaction import automation as explicit future scope.
+- [x] Keep production Clerk setup visible as the launch-critical blocker until an owned domain and production keys are configured.
+- [x] Keep `src/lib/fire.ts` unchanged.
+
+## Phase 11 Verification Notes
+
+- `src/lib/transactionAnalytics.test.ts` covers query/type/account/category/date filtering, unlinked and uncategorized filtering, category normalization/options, and cashflow rollups.
+- `src/lib/insights.test.ts` now covers negative monthly cashflow, missing income rows, top category concentration, and uncategorized cleanup insights.
+- `npm run typecheck` passed.
+- `npm test` passed with 63 frontend tests across 11 files.
+- `npm run build` passed with the Phase 11 transaction analytics UI included.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 63 frontend tests, and production build.
+- Local signed-out `/transactions` browser gate passed.
+- Local signed-in `/transactions` browser QA passed with a Clerk test account, including transaction creation, category suggestions, category/search/date/account filters, empty filtered state, and clear filters.
+- Local signed-in `/dashboard` browser QA passed with monthly cashflow tile, cashflow detail panel, top categories, recent rows, and transaction insights.
+- Local signed-in `/reports` browser QA passed with transaction insight cards and evidence.
+- Mobile QA at `390x844` passed for Transactions, Dashboard, and Reports with no console errors or horizontal overflow.
+- Disposable Clerk users and local D1 verification rows were removed afterward.
+- `npm run cf:deploy` deployed Phase 11 to `https://959f0a17.interactive-fire-calculator.pages.dev`.
+- Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
+
+## Phase 12 Candidate: Review-first Transaction Import and Reconciliation Planning
+
+- [ ] Define a transaction CSV import contract that remains separate from account-balance snapshot imports.
+- [ ] Add review-first transaction import parsing with server-side row validation.
+- [ ] Classify rows as ready, duplicate, or rejected with clear account-link evidence.
+- [ ] Keep reconciliation and balance effects explicit, reversible, and user-confirmed.
 - [ ] Keep production Clerk setup visible as the launch-critical blocker until an owned domain and production keys are configured.
 
 ## Required Verification Before Push

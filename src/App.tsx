@@ -59,6 +59,21 @@ import {
   type InsightPriority
 } from './lib/insights';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
+import {
+  allTransactionAccountFilter,
+  allTransactionCategoryFilter,
+  buildTransactionCashflowRollup,
+  emptyTransactionFilters,
+  filterTransactions,
+  getTransactionCategoryOptions,
+  normalizeTransactionCategoryInput,
+  transactionCategoryLabel,
+  uncategorizedTransactionCategoryFilter,
+  unlinkedTransactionAccountFilter,
+  type TransactionCashflowRollup,
+  type TransactionFilters,
+  type TransactionType
+} from './lib/transactionAnalytics';
 import type { AuthState } from './auth';
 
 const BalanceImportPanel = lazy(() =>
@@ -197,8 +212,6 @@ type BalanceDraft = {
   amount: string;
   date: string;
 };
-
-type TransactionType = 'income' | 'expense' | 'transfer' | 'adjustment';
 
 type Transaction = {
   account: {
@@ -1039,7 +1052,7 @@ async function createTransactionRecord(
     body: JSON.stringify({
       accountId: optionalTextFromDraft(draft.accountId),
       amountCents,
-      category: optionalTextFromDraft(draft.category),
+      category: optionalTextFromDraft(normalizeTransactionCategoryInput(draft.category)),
       description: draft.description.trim(),
       notes: optionalTextFromDraft(draft.notes),
       transactionDate: draft.transactionDate,
@@ -1066,7 +1079,7 @@ async function updateTransactionRecord(
     body: JSON.stringify({
       accountId: optionalTextFromDraft(draft.accountId),
       amountCents,
-      category: optionalTextFromDraft(draft.category),
+      category: optionalTextFromDraft(normalizeTransactionCategoryInput(draft.category)),
       description: draft.description.trim(),
       notes: optionalTextFromDraft(draft.notes),
       transactionDate: draft.transactionDate,
@@ -1307,7 +1320,7 @@ function transactionToDraft(transaction: Transaction): TransactionDraft {
   return {
     accountId: transaction.accountId ?? '',
     amount: String(transaction.amountCents / 100),
-    category: transaction.category ?? '',
+    category: transaction.category ? normalizeTransactionCategoryInput(transaction.category) : '',
     description: transaction.description,
     notes: transaction.notes ?? '',
     transactionDate: transaction.transactionDate,
@@ -1578,6 +1591,7 @@ function areaLabel(area: InsightArea): string {
   if (area === 'accounts') return 'Accounts';
   if (area === 'goals') return 'Goals';
   if (area === 'plan') return 'Plan';
+  if (area === 'transactions') return 'Transactions';
   return 'Method';
 }
 
@@ -1585,6 +1599,7 @@ function insightIcon(area: InsightArea): typeof Calculator {
   if (area === 'accounts') return TrendingUp;
   if (area === 'goals') return Target;
   if (area === 'plan') return Lightbulb;
+  if (area === 'transactions') return ClipboardList;
   return ShieldCheck;
 }
 
@@ -1656,6 +1671,26 @@ function moneyInputToCents(value: string): number | null {
 
 function formatCents(value: number): string {
   return formatMoney(value / 100);
+}
+
+function formatSignedCents(value: number): string {
+  if (value === 0) {
+    return formatCents(0);
+  }
+
+  return `${value > 0 ? '+' : '-'}${formatCents(Math.abs(value))}`;
+}
+
+function formatMonthLabel(value: string): string {
+  if (!/^\d{4}-\d{2}$/.test(value)) {
+    return 'No month';
+  }
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(new Date(`${value}-01T00:00:00.000Z`));
 }
 
 function transactionTypeLabel(value: TransactionType): string {
@@ -2478,6 +2513,7 @@ function PrivacyControlsPanel({
 
 function DashboardPanel({
   accounts,
+  cashflow,
   goals,
   insights,
   isLoading,
@@ -2489,6 +2525,7 @@ function DashboardPanel({
   summary
 }: {
   accounts: FinancialAccount[];
+  cashflow: TransactionCashflowRollup;
   goals: Goal[];
   insights: FinancialInsight[];
   isLoading: boolean;
@@ -2525,6 +2562,13 @@ function DashboardPanel({
           <strong>{formatGoalPercent(goalSummary.fundedPercent)}</strong>
           <small>{goalSummary.activeGoalCount} active goals</small>
         </article>
+        <article className={cashflow.currentMonthNetCashFlowCents >= 0 ? 'tracker-metric' : 'tracker-metric tracker-metric-warning'}>
+          <span>Monthly cash flow</span>
+          <strong className={cashflow.currentMonthNetCashFlowCents >= 0 ? 'amount-positive' : 'amount-negative'}>
+            {formatSignedCents(cashflow.currentMonthNetCashFlowCents)}
+          </strong>
+          <small>{formatMonthLabel(cashflow.currentMonth)} manual ledger</small>
+        </article>
       </div>
 
       <section className="account-panel dashboard-insight-rollup" aria-labelledby="dashboard-insights-title">
@@ -2552,6 +2596,78 @@ function DashboardPanel({
             </button>
           ))}
         </div>
+      </section>
+
+      <section className="account-panel dashboard-cashflow-rollup" aria-labelledby="dashboard-cashflow-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Cash flow</p>
+            <h2 id="dashboard-cashflow-title">Manual ledger this month</h2>
+          </div>
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/transactions')}>
+            Transactions
+            <ChevronRight size={16} />
+          </button>
+        </div>
+
+        <div className="dashboard-cashflow-grid" aria-label={`${formatMonthLabel(cashflow.currentMonth)} cash flow`}>
+          <span>
+            <small>Income</small>
+            <strong>{formatCents(cashflow.currentMonthIncomeCents)}</strong>
+          </span>
+          <span>
+            <small>Expenses</small>
+            <strong>{formatCents(cashflow.currentMonthExpenseCents)}</strong>
+          </span>
+          <span>
+            <small>Net</small>
+            <strong className={cashflow.currentMonthNetCashFlowCents >= 0 ? 'amount-positive' : 'amount-negative'}>
+              {formatSignedCents(cashflow.currentMonthNetCashFlowCents)}
+            </strong>
+          </span>
+          <span>
+            <small>Rows</small>
+            <strong>{cashflow.currentMonthTransactionCount}</strong>
+          </span>
+        </div>
+
+        {cashflow.totalTransactionCount === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No transaction rows yet</span>
+            <small>Add manual income and expenses to unlock cash-flow rollups.</small>
+          </article>
+        ) : (
+          <div className="dashboard-cashflow-columns">
+            <div className="dashboard-category-list" aria-label="Top expense categories">
+              <strong>Top categories</strong>
+              {cashflow.topExpenseCategories.length === 0 ? (
+                <small>No expense categories yet.</small>
+              ) : (
+                cashflow.topExpenseCategories.slice(0, 3).map((category) => (
+                  <span key={category.category}>
+                    <small>{category.category}</small>
+                    <strong>{formatCents(category.amountCents)}</strong>
+                  </span>
+                ))
+              )}
+            </div>
+            <div className="dashboard-recent-transactions" aria-label="Recent transactions">
+              <strong>Recent rows</strong>
+              {cashflow.recentTransactions.slice(0, 3).map((transaction) => (
+                <button key={transaction.id} type="button" onClick={() => onNavigate('/transactions')}>
+                  <span>
+                    <strong>{transaction.description}</strong>
+                    <small>{transaction.transactionDate} - {transactionCategoryLabel(transaction.category)}</small>
+                  </span>
+                  <em className={transaction.transactionType === 'expense' ? 'amount-negative' : transaction.transactionType === 'income' ? 'amount-positive' : 'amount-neutral'}>
+                    {transaction.transactionType === 'expense' ? '-' : transaction.transactionType === 'income' ? '+' : ''}
+                    {formatCents(transaction.amountCents)}
+                  </em>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="account-panel dashboard-goal-rollup" aria-labelledby="dashboard-goals-title">
@@ -2657,13 +2773,18 @@ function DashboardPanel({
 
 function TransactionsPanel({
   accounts,
+  allSummary,
+  categoryOptions,
   draft,
+  filters,
   isLoading,
   isSaving,
   message,
   onArchiveTransaction,
+  onClearFilters,
   onCreateTransaction,
   onDraftChange,
+  onFilterChange,
   onUpdateDraftChange,
   onUpdateTransaction,
   summary,
@@ -2671,13 +2792,18 @@ function TransactionsPanel({
   updateDrafts
 }: {
   accounts: FinancialAccount[];
+  allSummary: TransactionSummary;
+  categoryOptions: string[];
   draft: TransactionDraft;
+  filters: TransactionFilters;
   isLoading: boolean;
   isSaving: boolean;
   message: string;
   onArchiveTransaction: (id: string) => void;
+  onClearFilters: () => void;
   onCreateTransaction: () => void;
   onDraftChange: (field: keyof TransactionDraft, value: string) => void;
+  onFilterChange: (field: keyof TransactionFilters, value: string) => void;
   onUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
   onUpdateTransaction: (id: string) => void;
   summary: TransactionSummary;
@@ -2685,17 +2811,23 @@ function TransactionsPanel({
   updateDrafts: Record<string, TransactionDraft>;
 }) {
   const accountOptions = accounts.slice().sort((left, right) => left.name.localeCompare(right.name));
+  const filtersAreActive =
+    filters.accountId !== allTransactionAccountFilter ||
+    filters.category !== allTransactionCategoryFilter ||
+    filters.dateFrom.length > 0 ||
+    filters.dateTo.length > 0 ||
+    filters.query.trim().length > 0 ||
+    filters.transactionType !== 'all';
 
   return (
     <section className="transaction-workspace" aria-labelledby="transactions-workspace-title">
       <div className="transaction-overview-strip">
         <article>
-          <span>Net cash flow</span>
+          <span>Visible net cash flow</span>
           <strong className={summary.netCashFlowCents >= 0 ? 'amount-positive' : 'amount-negative'}>
-            {summary.netCashFlowCents >= 0 ? '+' : ''}
-            {formatCents(summary.netCashFlowCents)}
+            {formatSignedCents(summary.netCashFlowCents)}
           </strong>
-          <small>{summary.transactionCount} manual rows</small>
+          <small>{summary.transactionCount} of {allSummary.transactionCount} manual rows</small>
         </article>
         <article>
           <span>Income</span>
@@ -2787,6 +2919,7 @@ function TransactionsPanel({
           </Field>
           <Field label="Category">
             <input
+              list="transaction-category-suggestions"
               disabled={isSaving}
               maxLength={80}
               type="text"
@@ -2794,6 +2927,11 @@ function TransactionsPanel({
               onChange={(event) => onDraftChange('category', event.target.value)}
             />
           </Field>
+          <datalist id="transaction-category-suggestions">
+            {categoryOptions.map((category) => (
+              <option key={category} value={category} />
+            ))}
+          </datalist>
           <Field label="Notes">
             <input
               disabled={isSaving}
@@ -2812,16 +2950,94 @@ function TransactionsPanel({
         {message ? <p className="transaction-status-copy" role="status" aria-live="polite">{message}</p> : null}
       </section>
 
+      <section className="transaction-filter-panel" aria-label="Filter transactions">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Ledger filters</p>
+            <h2>Find transaction rows</h2>
+          </div>
+          <button className="secondary-button icon-text-button" disabled={!filtersAreActive} onClick={onClearFilters}>
+            <SlidersHorizontal size={16} />
+            Clear filters
+          </button>
+        </div>
+
+        <div className="transaction-filter-grid">
+          <Field label="Search">
+            <input
+              type="search"
+              value={filters.query}
+              onChange={(event) => onFilterChange('query', event.target.value)}
+              placeholder="Description, note, account"
+            />
+          </Field>
+          <Field label="Type">
+            <select
+              value={filters.transactionType}
+              onChange={(event) => onFilterChange('transactionType', event.target.value)}
+            >
+              <option value="all">All types</option>
+              {transactionTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Category">
+            <select value={filters.category} onChange={(event) => onFilterChange('category', event.target.value)}>
+              <option value={allTransactionCategoryFilter}>All categories</option>
+              <option value={uncategorizedTransactionCategoryFilter}>Uncategorized</option>
+              {categoryOptions.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Account">
+            <select value={filters.accountId} onChange={(event) => onFilterChange('accountId', event.target.value)}>
+              <option value={allTransactionAccountFilter}>All accounts</option>
+              <option value={unlinkedTransactionAccountFilter}>No account link</option>
+              {accountOptions.map((account) => (
+                <option key={account.id} value={account.id}>
+                  {account.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="From">
+            <input
+              type="date"
+              value={filters.dateFrom}
+              onChange={(event) => onFilterChange('dateFrom', event.target.value)}
+            />
+          </Field>
+          <Field label="To">
+            <input
+              type="date"
+              value={filters.dateTo}
+              onChange={(event) => onFilterChange('dateTo', event.target.value)}
+            />
+          </Field>
+        </div>
+      </section>
+
       <section className="transaction-list-section" aria-label="Saved transactions">
         {isLoading ? (
           <article className="scenario-card empty-card">
             <span>Loading transactions</span>
             <small>Checking saved ledger rows.</small>
           </article>
-        ) : transactions.length === 0 ? (
+        ) : allSummary.transactionCount === 0 ? (
           <article className="scenario-card empty-card">
             <span>No transactions yet</span>
             <small>Income, expenses, transfers, and adjustments will appear here.</small>
+          </article>
+        ) : transactions.length === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No matching transactions</span>
+            <small>Clear filters or broaden the date range to see saved rows.</small>
           </article>
         ) : (
           <div className="transaction-row-list">
@@ -2836,7 +3052,7 @@ function TransactionsPanel({
                         <span className={`transaction-type-badge transaction-type-${transaction.transactionType}`}>
                           {transactionTypeLabel(transaction.transactionType)}
                         </span>
-                        {transaction.category ? <span>{transaction.category}</span> : null}
+                        <span>{transactionCategoryLabel(transaction.category)}</span>
                       </div>
                       <strong>{transaction.description}</strong>
                       <small>
@@ -2917,6 +3133,7 @@ function TransactionsPanel({
                     </Field>
                     <Field label="Category">
                       <input
+                        list="transaction-category-suggestions"
                         disabled={isSaving}
                         maxLength={80}
                         type="text"
@@ -3836,8 +4053,12 @@ function PlatformPage({
   accountMessage,
   accountSummary,
   transactionDraft,
+  transactionCashflow,
+  transactionCategoryOptions,
+  transactionFilters,
   transactionMessage,
   transactionSummary,
+  visibleTransactionSummary,
   transactions,
   transactionUpdateDrafts,
   balanceDrafts,
@@ -3874,6 +4095,8 @@ function PlatformPage({
   onRecordBalance,
   onArchiveGoal,
   onTransactionDraftChange,
+  onTransactionFilterChange,
+  onTransactionFiltersClear,
   onTransactionUpdateDraftChange,
   onUpdateTransaction,
   onUpdateGoal,
@@ -3892,8 +4115,12 @@ function PlatformPage({
   accountMessage: string;
   accountSummary: AccountSummary;
   transactionDraft: TransactionDraft;
+  transactionCashflow: TransactionCashflowRollup;
+  transactionCategoryOptions: string[];
+  transactionFilters: TransactionFilters;
   transactionMessage: string;
   transactionSummary: TransactionSummary;
+  visibleTransactionSummary: TransactionSummary;
   transactions: Transaction[];
   transactionUpdateDrafts: Record<string, TransactionDraft>;
   balanceDrafts: Record<string, BalanceDraft>;
@@ -3930,6 +4157,8 @@ function PlatformPage({
   onRecordBalance: (id: string) => void;
   onArchiveGoal: (id: string) => void;
   onTransactionDraftChange: (field: keyof TransactionDraft, value: string) => void;
+  onTransactionFilterChange: (field: keyof TransactionFilters, value: string) => void;
+  onTransactionFiltersClear: () => void;
   onTransactionUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
   onUpdateTransaction: (id: string) => void;
   onUpdateGoal: (id: string) => void;
@@ -3960,6 +4189,7 @@ function PlatformPage({
       {route === '/dashboard' ? (
         <DashboardPanel
           accounts={financialAccounts}
+          cashflow={transactionCashflow}
           goals={goals}
           insights={financialInsights}
           isLoading={isLoadingAccounts}
@@ -3994,16 +4224,21 @@ function PlatformPage({
       {route === '/transactions' ? (
         <TransactionsPanel
           accounts={financialAccounts}
+          allSummary={transactionSummary}
+          categoryOptions={transactionCategoryOptions}
           draft={transactionDraft}
+          filters={transactionFilters}
           isLoading={isLoadingTransactions}
           isSaving={isSavingTransaction}
           message={transactionMessage}
-          summary={transactionSummary}
+          summary={visibleTransactionSummary}
           transactions={transactions}
           updateDrafts={transactionUpdateDrafts}
           onArchiveTransaction={onArchiveTransaction}
+          onClearFilters={onTransactionFiltersClear}
           onCreateTransaction={onCreateTransaction}
           onDraftChange={onTransactionDraftChange}
+          onFilterChange={onTransactionFilterChange}
           onUpdateDraftChange={onTransactionUpdateDraftChange}
           onUpdateTransaction={onUpdateTransaction}
         />
@@ -4229,6 +4464,7 @@ function App({ auth }: { auth: AuthState }) {
   const [transactionSummary, setTransactionSummary] = useState<TransactionSummary>(emptyTransactionSummary);
   const [transactionDraft, setTransactionDraft] = useState<TransactionDraft>(emptyTransactionDraft);
   const [transactionUpdateDrafts, setTransactionUpdateDrafts] = useState<Record<string, TransactionDraft>>({});
+  const [transactionFilters, setTransactionFilters] = useState<TransactionFilters>(emptyTransactionFilters);
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
   const [isSavingTransaction, setIsSavingTransaction] = useState(false);
   const [transactionMessage, setTransactionMessage] = useState('');
@@ -4425,6 +4661,7 @@ function App({ auth }: { auth: AuthState }) {
       setTransactionSummary(emptyTransactionSummary());
       setTransactionDraft(emptyTransactionDraft());
       setTransactionUpdateDrafts({});
+      setTransactionFilters(emptyTransactionFilters());
       setIsLoadingTransactions(false);
       setIsSavingTransaction(false);
       setTransactionMessage('');
@@ -4521,6 +4758,22 @@ function App({ auth }: { auth: AuthState }) {
 
   const result = useMemo<FirePlanResult>(() => calculateFirePlan(plan), [plan]);
   const accountSummary = useMemo<AccountSummary>(() => summarizeAccountList(financialAccounts), [financialAccounts]);
+  const filteredTransactions = useMemo(
+    () => filterTransactions(transactions, transactionFilters),
+    [transactionFilters, transactions]
+  );
+  const filteredTransactionSummary = useMemo(
+    () => summarizeTransactionList(filteredTransactions),
+    [filteredTransactions]
+  );
+  const transactionCategoryOptions = useMemo(
+    () => getTransactionCategoryOptions(transactions),
+    [transactions]
+  );
+  const transactionCashflow = useMemo<TransactionCashflowRollup>(
+    () => buildTransactionCashflowRollup(transactions, todayInputDate()),
+    [transactions]
+  );
   const activeSavedPlan = useMemo(
     () => savedPlans.find((item) => item.id === activePlanId) ?? null,
     [activePlanId, savedPlans]
@@ -4540,9 +4793,10 @@ function App({ auth }: { auth: AuthState }) {
                 versionNumber: activeSavedPlan?.versionNumber
               }
             : null,
+        transactions,
         today: todayInputDate()
       }),
-    [activeSavedPlan?.name, activeSavedPlan?.versionNumber, auth.status, financialAccounts, goalSummary, goals, plan, result]
+    [activeSavedPlan?.name, activeSavedPlan?.versionNumber, auth.status, financialAccounts, goalSummary, goals, plan, result, transactions]
   );
   const duration = totalDuration(plan.ratePeriods);
   const timelineDuration = modeledDurationFromTimeline(timeline);
@@ -4877,6 +5131,7 @@ function App({ auth }: { auth: AuthState }) {
       setTransactionSummary(emptyTransactionSummary());
       setTransactionDraft(emptyTransactionDraft());
       setTransactionUpdateDrafts({});
+      setTransactionFilters(emptyTransactionFilters());
       setTransactionMessage('Transaction data was deleted.');
       setGoals([]);
       setGoalSummary(summarizeGoalList([]));
@@ -5045,6 +5300,29 @@ function App({ auth }: { auth: AuthState }) {
       ...current,
       [field]: value
     }));
+  };
+
+  const updateTransactionFilter = (field: keyof TransactionFilters, value: string) => {
+    if (field === 'transactionType') {
+      if (value !== 'all' && !isTransactionType(value)) {
+        return;
+      }
+
+      setTransactionFilters((current) => ({
+        ...current,
+        transactionType: value
+      }));
+      return;
+    }
+
+    setTransactionFilters((current) => ({
+      ...current,
+      [field]: value
+    }));
+  };
+
+  const clearTransactionFilters = () => {
+    setTransactionFilters(emptyTransactionFilters());
   };
 
   const updateTransactionUpdateDraft = (
@@ -5781,9 +6059,13 @@ function App({ auth }: { auth: AuthState }) {
                 accountMessage={accountMessage}
                 accountSummary={accountSummary}
                 transactionDraft={transactionDraft}
+                transactionCashflow={transactionCashflow}
+                transactionCategoryOptions={transactionCategoryOptions}
+                transactionFilters={transactionFilters}
                 transactionMessage={transactionMessage}
                 transactionSummary={transactionSummary}
-                transactions={transactions}
+                visibleTransactionSummary={filteredTransactionSummary}
+                transactions={filteredTransactions}
                 transactionUpdateDrafts={transactionUpdateDrafts}
                 balanceDrafts={balanceDrafts}
                 auth={auth}
@@ -5829,6 +6111,8 @@ function App({ auth }: { auth: AuthState }) {
                 onRecordBalance={recordAccountBalance}
                 onArchiveGoal={archiveGoal}
                 onTransactionDraftChange={updateTransactionDraft}
+                onTransactionFilterChange={updateTransactionFilter}
+                onTransactionFiltersClear={clearTransactionFilters}
                 onTransactionUpdateDraftChange={updateTransactionUpdateDraft}
                 onUpdateTransaction={updateTransaction}
                 onUpdateGoal={updateGoal}

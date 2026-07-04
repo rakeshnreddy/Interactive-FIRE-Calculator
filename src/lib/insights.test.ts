@@ -7,6 +7,7 @@ import {
   type InsightAccount,
   type InsightGoal
 } from './insights';
+import type { TransactionAnalyticsRow } from './transactionAnalytics';
 
 const basePlan: PlanInput = {
   annualExpense: 40_000,
@@ -45,6 +46,18 @@ const goal: InsightGoal = {
   targetDate: '2026-07-13'
 };
 
+const transaction: TransactionAnalyticsRow = {
+  account: null,
+  accountId: null,
+  amountCents: 10_000,
+  category: 'Dining',
+  description: 'Dinner',
+  id: 'transaction-1',
+  notes: null,
+  transactionDate: '2026-06-20',
+  transactionType: 'expense'
+};
+
 function input(overrides: Partial<FinancialInsightInput> = {}): FinancialInsightInput {
   const plan = {
     name: 'Base retirement',
@@ -67,6 +80,17 @@ function input(overrides: Partial<FinancialInsightInput> = {}): FinancialInsight
     },
     plan,
     today: '2026-06-23',
+    transactions: [
+      {
+        ...transaction,
+        amountCents: 500_000,
+        category: 'Income',
+        description: 'Paycheck',
+        id: 'paycheck',
+        transactionType: 'income'
+      },
+      transaction
+    ],
     ...overrides
   };
 }
@@ -166,6 +190,94 @@ describe('buildFinancialInsights', () => {
     expect(insights.find((item) => item.id === 'goal-pace-goal-1')?.evidence).toContainEqual({
       label: 'Monthly pace',
       value: '$8,000'
+    });
+  });
+
+  it('surfaces negative monthly cash flow from transactions', () => {
+    const insights = buildFinancialInsights(
+      input({
+        transactions: [
+          {
+            ...transaction,
+            amountCents: 100_000,
+            category: 'Income',
+            id: 'income',
+            transactionType: 'income'
+          },
+          {
+            ...transaction,
+            amountCents: 175_000,
+            category: 'Housing',
+            id: 'rent'
+          }
+        ]
+      })
+    );
+
+    const cashflow = insights.find((item) => item.id === 'transactions-negative-cashflow');
+
+    expect(cashflow).toMatchObject({
+      area: 'transactions',
+      priority: 'high',
+      title: 'Cash flow is negative this month'
+    });
+    expect(cashflow?.evidence.find((item) => item.label === 'Net cash flow')?.value).toBe('-$750');
+  });
+
+  it('does not pretend expenses are negative cash flow when income rows are absent', () => {
+    const insights = buildFinancialInsights(
+      input({
+        transactions: [
+          {
+            ...transaction,
+            amountCents: 80_000,
+            category: 'Housing',
+            id: 'rent'
+          }
+        ]
+      })
+    );
+
+    expect(insights.find((item) => item.id === 'transactions-missing-income')).toMatchObject({
+      category: 'setup',
+      title: 'Income rows are missing this month'
+    });
+    expect(insights.find((item) => item.id === 'transactions-negative-cashflow')).toBeUndefined();
+  });
+
+  it('reports top categories and uncategorized transaction cleanup', () => {
+    const insights = buildFinancialInsights(
+      input({
+        transactions: [
+          {
+            ...transaction,
+            amountCents: 500_000,
+            category: 'Income',
+            id: 'paycheck',
+            transactionType: 'income'
+          },
+          {
+            ...transaction,
+            amountCents: 200_000,
+            category: 'Housing',
+            id: 'rent'
+          },
+          {
+            ...transaction,
+            amountCents: 25_000,
+            category: null,
+            id: 'uncategorized'
+          }
+        ]
+      })
+    );
+
+    expect(insights.find((item) => item.id === 'transactions-top-category-housing')).toMatchObject({
+      route: '/transactions',
+      title: 'Housing leads expense categories'
+    });
+    expect(insights.find((item) => item.id === 'transactions-categorize-expenses')).toMatchObject({
+      title: 'Clean up transaction categories'
     });
   });
 

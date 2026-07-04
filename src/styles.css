@@ -806,7 +806,7 @@ svg {
 }
 
 .dashboard-summary-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .tracker-metric,
@@ -816,6 +816,7 @@ svg {
 .account-panel,
 .account-card,
 .transaction-create-panel,
+.transaction-filter-panel,
 .transaction-row-card,
 .goal-create-panel,
 .goal-card {
@@ -838,6 +839,11 @@ svg {
 .tracker-metric-primary {
   border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
   background: var(--accent-wash);
+}
+
+.tracker-metric-warning {
+  border-color: color-mix(in srgb, var(--danger) 30%, var(--border));
+  background: var(--danger-soft);
 }
 
 .tracker-metric span,
@@ -898,6 +904,8 @@ svg {
 }
 
 .dashboard-account-list,
+.dashboard-category-list,
+.dashboard-recent-transactions,
 .account-card-list {
   display: grid;
   gap: 0.7rem;
@@ -921,6 +929,82 @@ svg {
   overflow-wrap: anywhere;
   color: var(--heading);
   font-weight: 850;
+}
+
+.dashboard-cashflow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.dashboard-cashflow-grid span,
+.dashboard-category-list span,
+.dashboard-recent-transactions button {
+  min-width: 0;
+  padding: 0.72rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.dashboard-cashflow-grid span,
+.dashboard-category-list span {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.dashboard-cashflow-grid small,
+.dashboard-category-list small,
+.dashboard-recent-transactions small {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.dashboard-cashflow-grid strong,
+.dashboard-category-list > strong,
+.dashboard-category-list span strong,
+.dashboard-recent-transactions > strong,
+.dashboard-recent-transactions button strong {
+  overflow-wrap: anywhere;
+  color: var(--heading);
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.dashboard-cashflow-columns {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.82fr) minmax(0, 1.18fr);
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.dashboard-category-list > small {
+  color: var(--muted-strong);
+}
+
+.dashboard-recent-transactions button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+  color: inherit;
+  text-align: left;
+}
+
+.dashboard-recent-transactions button:hover {
+  border-color: var(--border-strong);
+}
+
+.dashboard-recent-transactions button span {
+  display: grid;
+  gap: 0.16rem;
+  min-width: 0;
+}
+
+.dashboard-recent-transactions em {
+  font-style: normal;
 }
 
 .amount-positive,
@@ -1016,7 +1100,8 @@ svg {
   font-size: 0.86rem;
 }
 
-.transaction-create-panel {
+.transaction-create-panel,
+.transaction-filter-panel {
   display: grid;
   gap: 0.9rem;
   padding: 1rem;
@@ -1032,6 +1117,13 @@ svg {
 .transaction-status-copy {
   margin: 0;
   color: var(--muted-strong);
+}
+
+.transaction-filter-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.35fr) minmax(130px, 0.7fr) minmax(150px, 0.85fr) minmax(160px, 1fr) 142px 142px;
+  gap: 0.7rem;
+  align-items: end;
 }
 
 .transaction-list-section,
@@ -2768,6 +2860,7 @@ td {
   .dashboard-summary-grid,
   .dashboard-insight-list,
   .transaction-create-form,
+  .transaction-filter-grid,
   .transaction-update-form,
   .goal-create-form,
   .goal-update-form {
@@ -3002,6 +3095,8 @@ td {
   .result-facts,
   .dashboard-summary-grid,
   .dashboard-insight-list,
+  .dashboard-cashflow-grid,
+  .dashboard-cashflow-columns,
   .account-overview-strip,
   .transaction-overview-strip,
   .goal-overview-strip,
@@ -3014,6 +3109,7 @@ td {
   .profile-form-grid,
   .account-form-grid,
   .transaction-create-form,
+  .transaction-filter-grid,
   .transaction-update-form,
   .goal-create-form,
   .goal-update-form,
@@ -3819,6 +3915,9 @@ h2 {
 .goal-overview-strip article,
 .account-panel,
 .account-card,
+.transaction-create-panel,
+.transaction-filter-panel,
+.transaction-row-card,
 .goal-create-panel,
 .goal-card,
 .insight-card,
@@ -4169,9 +4268,12 @@ h2 {
   .profile-band,
   .profile-editor,
   .tracker-metric,
-  .account-panel,
-  .account-card,
-  .goal-create-panel,
+.account-panel,
+.account-card,
+.transaction-create-panel,
+.transaction-filter-panel,
+.transaction-row-card,
+.goal-create-panel,
   .goal-card,
   .module-card,
   .next-module-band,
@@ -4236,6 +4338,7 @@ h2 {
   .account-panel,
   .account-card,
   .transaction-create-panel,
+  .transaction-filter-panel,
   .transaction-row-card,
   .goal-create-panel,
   .goal-card,
@@ -4268,6 +4371,7 @@ h2 {
   .account-panel,
   .account-card,
   .transaction-create-panel,
+  .transaction-filter-panel,
   .transaction-row-card,
   .goal-create-panel,
   .goal-card,

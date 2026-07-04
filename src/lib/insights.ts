@@ -1,10 +1,15 @@
 import { formatMoney, type FirePlanResult, type PlanInput } from './fire';
 import { derivePlanHealthActions, type PlanHealthAction } from './planHealth';
+import {
+  buildTransactionCashflowRollup,
+  type TransactionAnalyticsRow,
+  type TransactionCashflowRollup
+} from './transactionAnalytics';
 
-export type InsightArea = 'accounts' | 'goals' | 'plan' | 'privacy';
+export type InsightArea = 'accounts' | 'goals' | 'plan' | 'privacy' | 'transactions';
 export type InsightCategory = 'observation' | 'recommendation' | 'setup';
 export type InsightPriority = 'high' | 'medium' | 'low';
-export type InsightRoute = '/accounts' | '/calculators/fire' | '/goals' | '/plans' | '/reports';
+export type InsightRoute = '/accounts' | '/calculators/fire' | '/goals' | '/plans' | '/reports' | '/transactions';
 
 export type InsightEvidence = {
   detail?: string;
@@ -78,6 +83,7 @@ export type FinancialInsightInput = {
   goals: InsightGoal[];
   plan: InsightPlan | null;
   today?: string;
+  transactions?: TransactionAnalyticsRow[];
 };
 
 type AccountTrend = {
@@ -94,6 +100,7 @@ export function buildFinancialInsights(input: FinancialInsightInput): FinancialI
   const insights = [
     ...buildPlanInsights(input.plan),
     ...buildGoalInsights(input.goals, input.goalSummary),
+    ...buildTransactionInsights(input.transactions ?? [], today),
     ...buildAccountInsights(input.accounts, today),
     buildPrivacyInsight()
   ];
@@ -289,6 +296,156 @@ function buildGoalInsights(goals: InsightGoal[], summary: InsightGoalSummary): F
   return insights;
 }
 
+function buildTransactionInsights(transactions: TransactionAnalyticsRow[], today: string): FinancialInsight[] {
+  if (transactions.length === 0) {
+    return [
+      {
+        action:
+          'Add a few income and expense rows so Reports can separate cash-flow pressure from balance movement.',
+        area: 'transactions',
+        assumptions: ['No manual transaction rows are stored for this signed-in user.'],
+        category: 'setup',
+        evidence: [{ label: 'Transactions', value: '0' }],
+        id: 'transactions-setup-add-rows',
+        priority: 'medium',
+        rationale:
+          'Cash-flow guidance needs dated income and expense rows before it can say whether spending is covered.',
+        route: '/transactions',
+        title: 'Add transaction history',
+        uncertainty:
+          'Manual transaction rows are not reconciled against imported account balances yet.'
+      }
+    ];
+  }
+
+  const rollup = buildTransactionCashflowRollup(transactions, today);
+  const insights: FinancialInsight[] = [];
+  const topCategory = rollup.topExpenseCategories[0] ?? null;
+
+  if (rollup.currentMonthExpenseCents > 0 && rollup.currentMonthIncomeCents === 0) {
+    insights.push({
+      action:
+        'Add income rows for the same month or treat the cash-flow panel as expense-only until income is captured.',
+      area: 'transactions',
+      assumptions: [`Current month is ${rollup.currentMonth}.`, 'Only manual transaction rows are included.'],
+      category: 'setup',
+      evidence: [
+        { label: 'Current income', value: formatCents(rollup.currentMonthIncomeCents) },
+        { label: 'Current expenses', value: formatCents(rollup.currentMonthExpenseCents) }
+      ],
+      id: 'transactions-missing-income',
+      priority: 'medium',
+      rationale:
+        'Expenses without income make the net cash-flow number incomplete instead of truly negative.',
+      route: '/transactions',
+      title: 'Income rows are missing this month',
+      uncertainty:
+        'The app cannot infer paychecks, transfers from external accounts, or other income until rows are entered.'
+    });
+  } else if (rollup.currentMonthNetCashFlowCents < 0) {
+    insights.push({
+      action:
+        'Review the largest expense categories and decide whether the month is unusual before using this run rate in a plan.',
+      area: 'transactions',
+      assumptions: [`Current month is ${rollup.currentMonth}.`, 'Transfers and adjustments do not count toward net cash flow.'],
+      category: 'recommendation',
+      evidence: [
+        { label: 'Income', value: formatCents(rollup.currentMonthIncomeCents) },
+        { label: 'Expenses', value: formatCents(rollup.currentMonthExpenseCents) },
+        { label: 'Net cash flow', value: formatSignedCents(rollup.currentMonthNetCashFlowCents) }
+      ],
+      id: 'transactions-negative-cashflow',
+      priority: 'high',
+      rationale:
+        'This month has more manual expenses than manual income, which can pressure account balances if it repeats.',
+      route: '/transactions',
+      title: 'Cash flow is negative this month',
+      uncertainty:
+        'The rule does not know whether missing income, one-off spending, or timing differences explain the gap.'
+    });
+  }
+
+  if (topCategory && topCategory.category !== 'Uncategorized') {
+    insights.push(topExpenseCategoryInsight(rollup, topCategory));
+  }
+
+  if (rollup.uncategorizedExpenseCount > 0) {
+    insights.push({
+      action:
+        'Categorize the uncategorized expense rows before relying on top-spend insights or month-end reports.',
+      area: 'transactions',
+      assumptions: ['Only expense rows are counted for uncategorized spending cleanup.'],
+      category: 'recommendation',
+      evidence: [
+        { label: 'Uncategorized expenses', value: String(rollup.uncategorizedExpenseCount) },
+        { label: 'Total expenses', value: formatCents(rollup.totalExpenseCents) }
+      ],
+      id: 'transactions-categorize-expenses',
+      priority: rollup.uncategorizedExpenseCount >= 3 ? 'medium' : 'low',
+      rationale:
+        'Category-level reports get less useful when manual expenses stay uncategorized.',
+      route: '/transactions',
+      title: 'Clean up transaction categories',
+      uncertainty:
+        'A category is a reporting label only; it does not prove merchant type or tax treatment.'
+    });
+  }
+
+  if (insights.length === 0) {
+    insights.push({
+      action:
+        'Keep adding dated rows through the month so the cash-flow view can stay useful for planning decisions.',
+      area: 'transactions',
+      assumptions: ['Transfers and adjustments are tracked, but net cash flow uses income minus expenses.'],
+      category: 'observation',
+      evidence: [
+        { label: 'Current month net', value: formatSignedCents(rollup.currentMonthNetCashFlowCents) },
+        { label: 'Rows', value: String(rollup.totalTransactionCount) },
+        { label: 'Latest row', value: rollup.latestTransactionDate ?? 'None' }
+      ],
+      id: 'transactions-cashflow-current',
+      priority: 'low',
+      rationale:
+        'Manual rows now give Reports a basic cash-flow read without importing or categorizing statements automatically.',
+      route: '/transactions',
+      title: 'Cash flow is being tracked',
+      uncertainty:
+        'The rollup is only as complete as the manual rows entered in the Transactions workspace.'
+    });
+  }
+
+  return insights;
+}
+
+function topExpenseCategoryInsight(
+  rollup: TransactionCashflowRollup,
+  topCategory: TransactionCashflowRollup['topExpenseCategories'][number]
+): FinancialInsight {
+  return {
+    action:
+      topCategory.shareOfExpenses >= 0.4
+        ? 'Review this category first when checking whether spending is intentional or temporary.'
+        : 'Use this category as the first drill-down before comparing smaller spending groups.',
+    area: 'transactions',
+    assumptions: ['Top category uses manual expense rows only.', 'Uncategorized expenses are reported separately.'],
+    category: topCategory.shareOfExpenses >= 0.4 ? 'recommendation' : 'observation',
+    evidence: [
+      { label: 'Category', value: topCategory.category },
+      { label: 'Amount', value: formatCents(topCategory.amountCents) },
+      { label: 'Share', value: formatPercent(topCategory.shareOfExpenses) },
+      { label: 'Rows', value: String(topCategory.count) }
+    ],
+    id: `transactions-top-category-${topCategory.category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    priority: topCategory.shareOfExpenses >= 0.4 ? 'medium' : 'low',
+    rationale:
+      `${topCategory.category} is the largest manual expense category in the current transaction set.`,
+    route: '/transactions',
+    title: `${topCategory.category} leads expense categories`,
+    uncertainty:
+      'This does not include uncaptured transactions, account balance imports, or merchant-level reconciliation.'
+  };
+}
+
 function buildAccountInsights(accounts: InsightAccount[], today: string): FinancialInsight[] {
   if (accounts.length === 0) {
     return [
@@ -445,12 +602,12 @@ function buildPrivacyInsight(): FinancialInsight {
     area: 'privacy',
     assumptions: [
       'Insights are generated locally in the React app from data already loaded for signed-in routes.',
-      'No AI summary, external account connection, or third-party financial analysis is used in this phase.'
+      'No AI summary, external account connection, transaction import, or third-party financial analysis is used in this phase.'
     ],
     category: 'observation',
     evidence: [
       { label: 'Method', value: 'Rule-based' },
-      { label: 'Data scope', value: 'Saved app data only' }
+      { label: 'Data scope', value: 'Saved account, goal, plan, and transaction data only' }
     ],
     id: 'privacy-rule-based-guidance',
     priority: 'low',
@@ -494,8 +651,9 @@ function categoryRank(category: InsightCategory): number {
 function areaRank(area: InsightArea): number {
   if (area === 'plan') return 0;
   if (area === 'goals') return 1;
-  if (area === 'accounts') return 2;
-  return 3;
+  if (area === 'transactions') return 2;
+  if (area === 'accounts') return 3;
+  return 4;
 }
 
 function formatEvidenceNumber(label: string, value: number): string {
@@ -530,6 +688,13 @@ function formatSignedCents(cents: number): string {
   }
 
   return `${cents > 0 ? '+' : '-'}${formatCents(Math.abs(cents))}`;
+}
+
+function formatPercent(value: number): string {
+  return new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: 0,
+    style: 'percent'
+  }).format(value);
 }
 
 function sentenceLabel(label: string): string {

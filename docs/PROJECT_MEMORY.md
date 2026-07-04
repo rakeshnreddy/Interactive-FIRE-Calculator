@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: July 3, 2026
+Last updated: July 4, 2026
 
 ## Repository
 
@@ -10,7 +10,7 @@ Last updated: July 3, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://82e4b4b6.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://959f0a17.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -37,6 +37,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Shared import validation, duplicate detection, atomic D1 commit, and history rules in `functions/_lib/balanceImports.ts`.
 - Authenticated D1-backed transaction endpoints in `functions/api/transactions/index.ts` and `functions/api/transactions/[id].ts`.
 - Shared transaction validation, ownership checks, CRUD, and summary rules in `functions/_lib/transactions.ts`.
+- Transaction filtering, category suggestions, and cashflow rollups in `src/lib/transactionAnalytics.ts`.
 - Shared Pages Function helpers in `functions/_lib/`.
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
@@ -219,9 +220,24 @@ Phase 10 Transactions MVP is complete for preview/development:
 - Live HTTP smoke passed for `/transactions`, `/calculators/fire`, and unauthenticated `GET /api/transactions -> 401`.
 - `src/lib/fire.ts` remains unchanged.
 
+Phase 11 Transaction Categorization and Cashflow Automation is complete for preview/development:
+
+- `src/lib/transactionAnalytics.ts` now centralizes transaction filtering, category normalization, category suggestion options, visible-row filtering, monthly cashflow rollups, top expense categories, recent transactions, and uncategorized counts.
+- `/transactions` now includes search, type, category, account, and date-range filters with clear visible-row summary math.
+- Manual transaction category entry is polished with saved/starter category suggestions and uncategorized labeling.
+- `/dashboard` now includes a monthly cashflow summary tile plus a detailed cashflow panel with income, expenses, net, row count, top expense categories, and recent manual transactions.
+- `/reports` and Dashboard insights now include deterministic transaction recommendations for missing income rows, negative monthly cashflow, top expense category concentration, and uncategorized cleanup.
+- Balance CSV imports remain separate from transactions; Phase 11 does not add transaction import, matching, or reconciliation automation.
+- `src/lib/transactionAnalytics.test.ts` covers filters, categories, and cashflow rollups; `src/lib/insights.test.ts` covers transaction insight behavior.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 63 frontend tests, and production build.
+- Local signed-out gate checks, signed-in desktop/mobile transaction filtering, dashboard cashflow, and reports transaction insight browser QA passed with no console errors or horizontal overflow.
+- Disposable Clerk and local D1 verification data were removed after QA.
+- `npm run cf:deploy` deployed Phase 11 to `https://959f0a17.interactive-fire-calculator.pages.dev`.
+- `src/lib/fire.ts` remains unchanged.
+
 ## Next Phase
 
-Phase 10 preview/development transaction tracking is complete. The next product-build phase can be Phase 11 Transaction Categorization and Cashflow Automation. The next launch-critical step remains production Clerk setup, but the product owner has chosen to continue product phases and deal with that blocker later.
+Phase 11 preview/development transaction categorization and cashflow automation is complete. The next product-build phase can be Phase 12 Review-first Transaction Import and Reconciliation Planning. The next launch-critical step remains production Clerk setup, but the product owner has chosen to continue product phases and deal with that blocker later.
 
 Remaining Phase 2 work:
 
@@ -231,12 +247,12 @@ Remaining Phase 2 work:
 4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
 5. Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
-Phase 11 candidate first slice:
+Phase 12 candidate first slice:
 
-1. Add lightweight category rules or saved category suggestions for manual transactions.
-2. Add cash-flow summaries to Dashboard and Reports using saved transaction data.
-3. Introduce review-first transaction import planning without merging it into balance snapshot imports.
-4. Keep transaction matching/account reconciliation explicit and reversible.
+1. Design a separate transaction CSV import contract without merging it into account-balance snapshot imports.
+2. Add review-first transaction import parsing and server validation with row-level ready/duplicate/rejected status.
+3. Keep transaction matching, account linking, and reconciliation explicit and reversible.
+4. Avoid changing historical balances from imported transactions until reconciliation rules are intentionally designed.
 5. Keep production Clerk setup as the launch-critical blocker until an owned domain and production keys are configured.
 
 ## Working Rules
@@ -285,15 +301,15 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phases 1 and 3 through 10 are complete for preview/development. Phase 10 adds a signed-in manual Transactions ledger with authenticated D1 transaction APIs. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
+Phases 1 and 3 through 11 are complete for preview/development. Phase 11 adds transaction filters, category suggestions, monthly cashflow rollups, Dashboard cashflow context, and Reports transaction insights. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
 
 Next goal:
-Either complete production Clerk setup for launch readiness or begin Phase 11 Transaction Categorization and Cashflow Automation. Keep Clerk production auth/domain setup as a launch blocker.
+Either complete production Clerk setup for launch readiness or begin Phase 12 Review-first Transaction Import and Reconciliation Planning. Keep Clerk production auth/domain setup as a launch blocker.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
 
-## Detailed Phase 11 Candidate Handoff Prompt
+## Detailed Phase 12 Candidate Handoff Prompt
 
 Use this more detailed prompt when starting the coding session that should begin the next product-build phase:
 
@@ -314,22 +330,23 @@ docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 Current state:
-Phases 1 and 3 through 10 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, balance import audit history, transactions, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is now a signed-in manual ledger for income, expenses, transfers, and adjustments. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed CSV imports. `/reports` shows deterministic, evidence-linked recommendations with assumptions and uncertainty language; `/dashboard` surfaces the top priority insights. `/settings` includes profile defaults plus privacy export/delete controls. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1 and 3 through 11 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, balance import audit history, transactions, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is now a signed-in manual ledger for income, expenses, transfers, and adjustments with search, filters, category suggestions, and visible-row summary math. `/dashboard` includes monthly transaction cashflow context; `/reports` includes deterministic transaction insights. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed CSV imports. `/settings` includes profile defaults plus privacy export/delete controls. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://82e4b4b6.interactive-fire-calculator.pages.dev
+https://959f0a17.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 Goal:
-Begin Phase 11 candidate: Transaction Categorization and Cashflow Automation, unless the product owner chooses to pause product expansion for production Clerk setup first.
+Begin Phase 12 candidate: Review-first Transaction Import and Reconciliation Planning, unless the product owner chooses to pause product expansion for production Clerk setup first.
 
-Phase 11 candidate target:
-- Add lightweight transaction categorization rules or saved suggestions on top of the existing manual ledger.
-- Add cash-flow rollups to Dashboard and Reports using saved transactions.
-- Explore review-first transaction import planning without merging it into account-balance snapshot imports.
+Phase 12 candidate target:
+- Add a separate transaction CSV import contract without changing the existing account-balance import contract.
+- Parse candidate transaction imports locally and revalidate normalized rows in authenticated Pages Functions.
+- Review rows before commit with ready, duplicate, rejected, and account-link evidence.
 - Keep matching, reconciliation, and account-link behavior explicit and reversible.
+- Do not automatically mutate balance snapshots from transaction imports.
 - Preserve public FIRE, accounts, goals, plans, reports, imports, Settings privacy controls, and `src/lib/fire.ts`.
 - Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
