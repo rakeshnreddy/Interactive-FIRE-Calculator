@@ -125,6 +125,22 @@ class FakeDatabase {
       ] as T[];
     }
 
+    if (sql.includes('FROM transaction_imports')) {
+      return [
+        {
+          created_at: '2026-07-05T00:00:00.000Z',
+          duplicate_rows: 1,
+          error_rows: 2,
+          file_name: 'transactions.csv',
+          id: 'transaction_import_1',
+          imported_rows: 4,
+          source_hash: 'transaction_hash_123',
+          total_rows: 7,
+          user_id: 'user_123'
+        }
+      ] as T[];
+    }
+
     return [];
   }
 }
@@ -160,11 +176,13 @@ describe('account data export', () => {
       timeline: { retirementAge: 55 }
     });
     expect(exported.data.balanceImports[0]).toMatchObject({ source_hash: 'hash_123' });
+    expect(exported.data.transactionImports[0]).toMatchObject({ source_hash: 'transaction_hash_123' });
     expect(exported.summary).toMatchObject({
       balanceImports: 1,
       financialAccounts: 1,
       firePlanInputs: 1,
       profile: 1,
+      transactionImports: 1,
       user: 1
     });
   });
@@ -183,7 +201,7 @@ describe('account data deletion', () => {
     expect(deletion.identityProvider).toBe('clerk');
     expect(deletion.deletedRows).toMatchObject({
       auditLog: 1,
-      user: 13
+      user: 14
     });
   });
 });

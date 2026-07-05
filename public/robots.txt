@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://interactive-fire-calculator.pages.dev/sitemap.xml

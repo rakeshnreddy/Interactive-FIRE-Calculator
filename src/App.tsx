@@ -74,10 +74,17 @@ import {
   type TransactionFilters,
   type TransactionType
 } from './lib/transactionAnalytics';
+import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
 import type { AuthState } from './auth';
 
 const BalanceImportPanel = lazy(() =>
   import('./BalanceImportPanel').then((module) => ({ default: module.BalanceImportPanel }))
+);
+const TransactionImportPanel = lazy(() =>
+  import('./TransactionImportPanel').then((module) => ({ default: module.TransactionImportPanel }))
+);
+const CalculatorLibrary = lazy(() =>
+  import('./CalculatorLibrary').then((module) => ({ default: module.CalculatorLibrary }))
 );
 const PlanningWorkspace = lazy(() =>
   import('./PlanningWorkspace').then((module) => ({ default: module.PlanningWorkspace }))
@@ -96,9 +103,10 @@ type AppRoute =
   | '/plans'
   | '/calculators'
   | '/calculators/fire'
+  | `/calculators/${string}`
   | '/reports'
   | '/settings';
-type PlatformRoute = Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
+type PlatformRoute = Exclude<AppRoute, '/' | '/calculators' | `/calculators/${string}`>;
 type CalculatorPanel = 'planner' | 'results' | 'compare';
 type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
@@ -478,7 +486,130 @@ function normalizeRoute(pathname: string): AppRoute {
     case '/settings':
       return cleanPath;
     default:
+      if (cleanPath.startsWith('/calculators/') && findSeoCalculator(cleanPath)) {
+        return cleanPath as `/calculators/${string}`;
+      }
+
       return '/';
+  }
+}
+
+const siteOrigin = 'https://interactive-fire-calculator.pages.dev';
+
+function applyRouteMetadata(route: AppRoute) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  const calculator = route !== '/calculators/fire' ? findSeoCalculator(route) : null;
+  const title = calculator
+    ? `${calculator.title} | FinPath`
+    : route === '/calculators'
+      ? 'Financial Calculators for US and India | FinPath'
+      : route === '/calculators/fire'
+        ? 'FIRE Calculator | FinPath'
+        : 'FinPath | FIRE Calculator and Financial Planning';
+  const description = calculator
+    ? calculator.description
+    : route === '/calculators'
+      ? 'Search public financial calculators for US and India planning, then save results into FinPath goals, accounts, plans, or transaction tracking.'
+      : route === '/calculators/fire'
+        ? 'Use the public FIRE calculator to estimate retirement readiness, withdrawals, and portfolio scenarios.'
+        : 'Plan financial independence, retirement, savings, goals, accounts, and cash flow in FinPath.';
+  const canonicalPath = route === '/' ? '/' : route;
+
+  document.title = title;
+  upsertMetaTag('description', description);
+  upsertCanonical(canonicalPath);
+  upsertRouteJsonLd(canonicalPath, calculator);
+}
+
+function upsertMetaTag(name: string, content: string) {
+  const selector = `meta[name="${name}"]`;
+  const existing = document.head.querySelector<HTMLMetaElement>(selector);
+  const element = existing ?? document.createElement('meta');
+  element.name = name;
+  element.content = content;
+
+  if (!existing) {
+    document.head.appendChild(element);
+  }
+}
+
+function upsertCanonical(path: string) {
+  const href = `${siteOrigin}${path}`;
+  const existing = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  const element = existing ?? document.createElement('link');
+  element.rel = 'canonical';
+  element.href = href;
+
+  if (!existing) {
+    document.head.appendChild(element);
+  }
+}
+
+function upsertRouteJsonLd(path: string, calculator: ReturnType<typeof findSeoCalculator>) {
+  const existing = document.head.querySelector<HTMLScriptElement>('#finpath-route-json-ld');
+  const element = existing ?? document.createElement('script');
+  const url = `${siteOrigin}${path}`;
+  const routeSchema = calculator
+    ? {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'WebApplication',
+            applicationCategory: 'FinanceApplication',
+            name: calculator.title,
+            operatingSystem: 'Any',
+            url
+          },
+          {
+            '@type': 'FAQPage',
+            mainEntity: calculator.faq.map((item) => ({
+              '@type': 'Question',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.answer
+              },
+              name: item.question
+            }))
+          }
+        ]
+      }
+    : path === '/calculators'
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Financial Calculators for US and India',
+          url,
+          hasPart: seoCalculators.slice(0, 24).map((item) => ({
+            '@type': 'WebApplication',
+            applicationCategory: 'FinanceApplication',
+            name: item.title,
+            url: `${siteOrigin}/calculators/${item.slug}`
+          }))
+        }
+      : path === '/calculators/fire'
+        ? {
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            applicationCategory: 'FinanceApplication',
+            name: 'FIRE Calculator',
+            operatingSystem: 'Any',
+            url
+          }
+        : {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'FinPath',
+            url: siteOrigin
+          };
+  element.id = 'finpath-route-json-ld';
+  element.type = 'application/ld+json';
+  element.textContent = JSON.stringify(routeSchema);
+
+  if (!existing) {
+    document.head.appendChild(element);
   }
 }
 
@@ -2773,6 +2904,7 @@ function DashboardPanel({
 
 function TransactionsPanel({
   accounts,
+  auth,
   allSummary,
   categoryOptions,
   draft,
@@ -2785,6 +2917,7 @@ function TransactionsPanel({
   onCreateTransaction,
   onDraftChange,
   onFilterChange,
+  onImportComplete,
   onUpdateDraftChange,
   onUpdateTransaction,
   summary,
@@ -2792,6 +2925,7 @@ function TransactionsPanel({
   updateDrafts
 }: {
   accounts: FinancialAccount[];
+  auth: Extract<AuthState, { status: 'signed-in' }>;
   allSummary: TransactionSummary;
   categoryOptions: string[];
   draft: TransactionDraft;
@@ -2804,6 +2938,7 @@ function TransactionsPanel({
   onCreateTransaction: () => void;
   onDraftChange: (field: keyof TransactionDraft, value: string) => void;
   onFilterChange: (field: keyof TransactionFilters, value: string) => void;
+  onImportComplete: () => Promise<void>;
   onUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
   onUpdateTransaction: (id: string) => void;
   summary: TransactionSummary;
@@ -3022,6 +3157,10 @@ function TransactionsPanel({
           </Field>
         </div>
       </section>
+
+      <Suspense fallback={<p className="transaction-status-copy">Loading transaction import tools...</p>}>
+        <TransactionImportPanel accounts={accounts} auth={auth} onImportComplete={onImportComplete} />
+      </Suspense>
 
       <section className="transaction-list-section" aria-label="Saved transactions">
         {isLoading ? (
@@ -4097,6 +4236,7 @@ function PlatformPage({
   onTransactionDraftChange,
   onTransactionFilterChange,
   onTransactionFiltersClear,
+  onTransactionImportComplete,
   onTransactionUpdateDraftChange,
   onUpdateTransaction,
   onUpdateGoal,
@@ -4159,10 +4299,11 @@ function PlatformPage({
   onTransactionDraftChange: (field: keyof TransactionDraft, value: string) => void;
   onTransactionFilterChange: (field: keyof TransactionFilters, value: string) => void;
   onTransactionFiltersClear: () => void;
+  onTransactionImportComplete: () => Promise<void>;
   onTransactionUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
   onUpdateTransaction: (id: string) => void;
   onUpdateGoal: (id: string) => void;
-  route: Exclude<AppRoute, '/' | '/calculators' | '/calculators/fire'>;
+  route: PlatformRoute;
   onNavigate: (route: AppRoute) => void;
   profile: AccountProfile | null;
   profileDraft: AccountProfileDraft;
@@ -4224,6 +4365,7 @@ function PlatformPage({
       {route === '/transactions' ? (
         <TransactionsPanel
           accounts={financialAccounts}
+          auth={auth}
           allSummary={transactionSummary}
           categoryOptions={transactionCategoryOptions}
           draft={transactionDraft}
@@ -4239,6 +4381,7 @@ function PlatformPage({
           onCreateTransaction={onCreateTransaction}
           onDraftChange={onTransactionDraftChange}
           onFilterChange={onTransactionFilterChange}
+          onImportComplete={onTransactionImportComplete}
           onUpdateDraftChange={onTransactionUpdateDraftChange}
           onUpdateTransaction={onUpdateTransaction}
         />
@@ -4424,6 +4567,10 @@ function App({ auth }: { auth: AuthState }) {
 
     heading?.setAttribute('tabindex', '-1');
     heading?.focus();
+  }, [route]);
+
+  useEffect(() => {
+    applyRouteMetadata(route);
   }, [route]);
 
   const [plan, setPlan] = useState<PlanInput>(initialPlan);
@@ -5325,6 +5472,21 @@ function App({ auth }: { auth: AuthState }) {
     setTransactionFilters(emptyTransactionFilters());
   };
 
+  const refreshTransactionsAfterImport = async () => {
+    if (auth.status !== 'signed-in') return;
+
+    setIsLoadingTransactions(true);
+    try {
+      const { summary, transactions: loadedTransactions } = await loadTransactions(auth);
+      setTransactions(loadedTransactions);
+      setTransactionSummary(summary);
+      setTransactionUpdateDrafts(buildTransactionDraftMap(loadedTransactions));
+      setTransactionMessage('Imported transactions are synced.');
+    } finally {
+      setIsLoadingTransactions(false);
+    }
+  };
+
   const updateTransactionUpdateDraft = (
     id: string,
     field: keyof TransactionDraft,
@@ -6009,8 +6171,16 @@ function App({ auth }: { auth: AuthState }) {
       <main id="main-content" ref={mainRef} className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
         {route === '/' ? (
           <LandingPage auth={auth} onNavigate={navigateTo} />
-        ) : route === '/calculators' ? (
-          <CalculatorsPage onNavigate={navigateTo} />
+        ) : route === '/calculators' || (route.startsWith('/calculators/') && route !== '/calculators/fire') ? (
+          <Suspense
+            fallback={
+              <section className="route-shell" aria-label="Calculator library loading" aria-busy="true">
+                <p className="empty-inline">Loading calculator library...</p>
+              </section>
+            }
+          >
+            <CalculatorLibrary auth={auth} route={route} onNavigate={(nextRoute) => navigateTo(normalizeRoute(nextRoute))} />
+          </Suspense>
         ) : isPlatformRoute(route) ? (
           auth.isSignedIn ? (
             route === '/plans' ? (
@@ -6113,6 +6283,7 @@ function App({ auth }: { auth: AuthState }) {
                 onTransactionDraftChange={updateTransactionDraft}
                 onTransactionFilterChange={updateTransactionFilter}
                 onTransactionFiltersClear={clearTransactionFilters}
+                onTransactionImportComplete={refreshTransactionsAfterImport}
                 onTransactionUpdateDraftChange={updateTransactionUpdateDraft}
                 onUpdateTransaction={updateTransaction}
                 onUpdateGoal={updateGoal}

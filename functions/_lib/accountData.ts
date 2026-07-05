@@ -145,6 +145,8 @@ type BalanceImportRow = {
   user_id: string;
 };
 
+type TransactionImportRow = BalanceImportRow;
+
 type AccountDataExportData = {
   accountBalances: DataRow[];
   assumptions: DataRow[];
@@ -157,6 +159,7 @@ type AccountDataExportData = {
   planVersions: DataRow[];
   plans: DataRow[];
   profile: DataRow | null;
+  transactionImports: DataRow[];
   transactions: DataRow[];
   user: DataRow | null;
 };
@@ -195,6 +198,7 @@ const deleteTargets: DeleteTarget[] = [
   { key: 'transactions', sql: 'DELETE FROM transactions WHERE user_id = ?' },
   { key: 'accountBalances', sql: 'DELETE FROM account_balances WHERE user_id = ?' },
   { key: 'financialAccounts', sql: 'DELETE FROM financial_accounts WHERE user_id = ?' },
+  { key: 'transactionImports', sql: 'DELETE FROM transaction_imports WHERE user_id = ?' },
   { key: 'balanceImports', sql: 'DELETE FROM balance_imports WHERE user_id = ?' },
   { key: 'profile', sql: 'DELETE FROM user_profiles WHERE user_id = ?' },
   { key: 'user', sql: 'DELETE FROM users WHERE id = ?' }
@@ -233,6 +237,7 @@ export async function exportAccountData(database: D1Database, userId: string): P
     planVersions: await readPlanVersions(database, userId),
     plans: await readPlans(database, userId),
     profile: toOptionalDataRow(await readProfile(database, userId)),
+    transactionImports: await readTransactionImports(database, userId),
     transactions: await readTransactions(database, userId),
     user: toOptionalDataRow(await readUser(database, userId))
   };
@@ -536,6 +541,31 @@ async function readBalanceImports(database: D1Database, userId: string): Promise
   return result.results.map(toDataRow);
 }
 
+async function readTransactionImports(database: D1Database, userId: string): Promise<DataRow[]> {
+  const result = await database
+    .prepare(
+      `
+        SELECT
+          id,
+          user_id,
+          file_name,
+          source_hash,
+          total_rows,
+          imported_rows,
+          duplicate_rows,
+          error_rows,
+          created_at
+        FROM transaction_imports
+        WHERE user_id = ?
+        ORDER BY created_at ASC, id ASC
+      `
+    )
+    .bind(userId)
+    .all<TransactionImportRow>();
+
+  return result.results.map(toDataRow);
+}
+
 function summarizeExport(data: AccountDataExportData): AccountDataExport['summary'] {
   return {
     accountBalances: data.accountBalances.length,
@@ -549,6 +579,7 @@ function summarizeExport(data: AccountDataExportData): AccountDataExport['summar
     planVersions: data.planVersions.length,
     plans: data.plans.length,
     profile: data.profile ? 1 : 0,
+    transactionImports: data.transactionImports.length,
     transactions: data.transactions.length,
     user: data.user ? 1 : 0
   };

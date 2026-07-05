@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: July 4, 2026
+Last updated: July 5, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://959f0a17.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://aafc128f.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -29,6 +29,13 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 9: Hardening and Launch | Preview/app complete | 100% | Authenticated D1 export/delete readiness, Settings privacy controls, accessibility pass, bundle splitting, launch notes, and verification are in place. Production launch still depends on the Phase 2 Clerk production instance/domain. |
 | Phase 10: Transactions MVP | Preview/app complete | 100% | User-scoped manual transaction APIs and a signed-in Transactions ledger are in place for income, expenses, transfers, and adjustments. Balance imports remain separate from categorization. |
 | Phase 11: Transaction Categorization and Cashflow Automation | Preview/app complete | 100% | Transaction search/filtering, category suggestions, monthly cashflow rollups, dashboard cashflow context, and reports transaction insights are in place. Transaction imports and reconciliation remain separate future scope. |
+| Phase 12: Review-first Transaction Import and Reconciliation Planning | Preview/app complete | 100% | A separate transaction CSV import flow now reviews ready, duplicate, and rejected rows before commit, stores import history, and never mutates account balances. |
+| Phase 13: Calculator SEO Foundation | Preview/app complete | 100% | `/calculators` is a public searchable hub with shared calculator layout, stable routes, route metadata, JSON-LD, robots, and sitemap coverage. |
+| Phase 14: Global High-Intent Calculators | Preview/app complete | 100% | Global compound interest, savings goal, net worth, budget, emergency fund, retirement, debt payoff, and investment return calculators are live. |
+| Phase 15: India SEO Calculator Cluster | Preview/app complete | 100% | India-first SIP, step-up SIP, SIP goal, mutual fund, SWP, EMI, tax, salary, HRA, FD/RD, PPF, EPF, NPS, and gratuity calculators are live. |
+| Phase 16: US SEO Calculator Cluster | Preview/app complete | 100% | US-first mortgage, refinance, amortization, rent-vs-buy, credit, debt, loan, 401(k), IRA, paycheck, tax, Social Security, and RMD calculators are live. |
+| Phase 17: Calculator-to-Account Conversion Layer | Planned | 20% | Public calculator CTAs route to the right signed-in surfaces; durable save-result workflows, draft preservation after auth, and dashboard saved-result cards remain next scope. |
+| Phase 18: Calculator Library Scale-Out | Preview/app complete | 100% | Long-tail CAGR, XIRR, inflation, Rule of 72, capital gains, GST/TDS, down payment, PMI, HELOC, balance transfer, CD/HYSA, insurance, lease-vs-buy, and ROI calculators are live. |
 
 ## Design System Milestone
 
@@ -412,13 +419,41 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 - `npm run cf:deploy` deployed Phase 11 to `https://959f0a17.interactive-fire-calculator.pages.dev`.
 - Hosted signed-in browser verification remains tied to the existing Phase 2 Clerk production-instance/domain blocker.
 
-## Phase 12 Candidate: Review-first Transaction Import and Reconciliation Planning
+## Phase 12: Review-first Transaction Import and Reconciliation Planning
 
-- [ ] Define a transaction CSV import contract that remains separate from account-balance snapshot imports.
-- [ ] Add review-first transaction import parsing with server-side row validation.
-- [ ] Classify rows as ready, duplicate, or rejected with clear account-link evidence.
-- [ ] Keep reconciliation and balance effects explicit, reversible, and user-confirmed.
-- [ ] Keep production Clerk setup visible as the launch-critical blocker until an owned domain and production keys are configured.
+- [x] Define a transaction CSV import contract that remains separate from account-balance snapshot imports.
+- [x] Add review-first transaction import parsing with server-side row validation.
+- [x] Classify rows as ready, duplicate, or rejected with clear account-link evidence.
+- [x] Commit only reviewed ready rows and store transaction import history.
+- [x] Keep transaction imports from mutating account balances or reconciliation snapshots.
+- [x] Keep production Clerk setup visible as the launch-critical blocker until an owned domain and production keys are configured.
+
+## Phase 13-18 Calculator SEO Roadmap
+
+- [x] Phase 13: Replace `/calculators` placeholder with a public searchable calculator hub.
+- [x] Phase 13: Add shared calculator layout with H1, intro, inputs, results, explanation, FAQ, and conversion CTA.
+- [x] Phase 13: Add stable public calculator routes, page titles, descriptions, canonical paths, JSON-LD, robots, and sitemap entries.
+- [x] Phase 14: Add the eight global high-intent calculators.
+- [x] Phase 15: Add the India-first calculator cluster.
+- [x] Phase 16: Add the US-first calculator cluster.
+- [ ] Phase 17: Add durable signed-in "save result" flows that create goals, accounts, plans, or transaction-tracking drafts.
+- [ ] Phase 17: Preserve signed-out calculator drafts/results through sign-up and surface saved calculator-derived items on Dashboard.
+- [x] Phase 18: Add long-tail calculator scale-out routes.
+- [x] Keep every public calculator usable without auth.
+- [x] Keep `src/lib/fire.ts` unchanged.
+
+## Phase 12-18 Verification Notes
+
+- `migrations/0003_transaction_import_history.sql` is applied locally and to both remote D1 databases.
+- Remote `0003` was applied with `wrangler d1 execute --file` and recorded in `d1_migrations` because `wrangler d1 migrations apply --remote` hit a Cloudflare query endpoint authorization error even though direct D1 execute succeeded.
+- `npm run typecheck` passed.
+- `npm test` passed with 78 frontend tests across 14 files.
+- `npm run build` passed with `CalculatorLibrary`, `TransactionImportPanel`, `BalanceImportPanel`, `PlanningWorkspace`, and `ProjectionChart` split into lazy chunks.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 78 frontend tests, and production build.
+- Local browser QA passed for calculator hub, SIP calculator, mortgage calculator, FIRE route, and signed-out Transactions gate at desktop and `390x844` mobile widths with no console errors or horizontal overflow.
+- `npm run cf:deploy` deployed Phase 12 plus the public calculator SEO library to `https://aafc128f.interactive-fire-calculator.pages.dev`.
+- Live browser smoke passed for `/calculators`, `/calculators/sip`, `/calculators/mortgage`, `/calculators/fire`, and signed-out `/transactions`.
+- Live API smoke returned unauthenticated `401` for `GET /api/imports/transactions`, `POST /api/imports/transactions/preview`, and `POST /api/imports/transactions/commit`.
 
 ## Required Verification Before Push
 
