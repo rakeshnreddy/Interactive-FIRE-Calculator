@@ -51,6 +51,7 @@ export type CalculatorInput = {
 };
 
 export type CalculatorMetric = {
+  description?: string;
   label: string;
   tone?: 'accent' | 'neutral' | 'positive' | 'warning';
   value: number;
@@ -168,6 +169,10 @@ function defineCalculator(
   return {
     ...calculator,
     ...conversionByFormula[calculator.formula],
+    inputs: calculator.inputs.map((input) => ({
+      ...input,
+      helper: input.helper ?? defaultInputHelper(input)
+    })),
     faq: [...(calculator.faq ?? []), ...commonFaq]
   };
 }
@@ -300,8 +305,8 @@ export const seoCalculators: SeoCalculator[] = [
     ['gratuity', 'Gratuity Calculator', 'gratuity', [money('salary', 'Last drawn basic + DA', 120000), number('years', 'Completed service', 8, 'yrs')]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: formula === 'loan' ? 'Borrowing' : formula === 'tax-rate' || formula === 'salary' || formula === 'hra' ? 'Tax' : 'Investing',
-    description: `${title} for India-focused planning and goal tracking.`,
-    explanation: `${title} uses a transparent planning estimate so the result can be saved into FinPath goals, accounts, or plans.`,
+    description: `${title} for a quick planning estimate you can turn into a goal, account, or plan.`,
+    explanation: `${title} uses the inputs you provide to estimate the main outcome and show the supporting amount behind it.`,
     formula: formula as CalculatorFormula,
     h1: title,
     inputs: [...inputs],
@@ -330,8 +335,8 @@ export const seoCalculators: SeoCalculator[] = [
     ['rmd', 'Required Minimum Distribution Calculator', 'rmd', [money('balance', 'Retirement account balance', 800000), number('divisor', 'IRS life expectancy divisor', 26.5)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: formula === 'loan' || formula === 'debt-payoff' || formula === 'refinance' || formula === 'rent-buy' ? 'Borrowing' : formula === 'tax-rate' || formula === 'paycheck' || formula === 'rmd' ? 'Tax' : 'Planning',
-    description: `${title} for US-focused planning and account tracking.`,
-    explanation: `${title} provides a planning estimate and a next step to track the decision inside FinPath.`,
+    description: `${title} for a quick planning estimate you can turn into a goal, account, or plan.`,
+    explanation: `${title} uses the inputs you provide to estimate the main outcome and show the supporting amount behind it.`,
     formula: formula as CalculatorFormula,
     h1: title,
     inputs: [...inputs],
@@ -359,8 +364,8 @@ export const seoCalculators: SeoCalculator[] = [
     ['roi', 'ROI Calculator', 'roi', [money('gain', 'Net gain', 5000), money('cost', 'Cost', 20000)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: formula === 'loan' || formula === 'balance-transfer' || formula === 'rent-buy' ? 'Borrowing' : formula === 'capital-gains' || formula === 'gst' || formula === 'tax-rate' ? 'Tax' : 'Investing',
-    description: `${title} for quick planning estimates and FinPath tracking handoff.`,
-    explanation: `${title} is part of the long-tail calculator library for education, planning, and account conversion.`,
+    description: `${title} for a quick estimate you can compare, save, or revisit later.`,
+    explanation: `${title} uses the inputs you provide to estimate the main outcome and show the supporting amount behind it.`,
     formula: formula as CalculatorFormula,
     h1: title,
     inputs: [...inputs],
@@ -380,6 +385,10 @@ export function findSeoCalculator(path: string): SeoCalculator | null {
   return seoCalculators.find((calculator) => calculator.slug === slug) ?? null;
 }
 
+export function calculatorCurrency(calculator: SeoCalculator): 'INR' | 'USD' {
+  return calculator.region === 'India' || ['gst', 'tds'].includes(calculator.slug) ? 'INR' : 'USD';
+}
+
 export function calculateSeoCalculator(calculator: SeoCalculator, values: Record<string, number>): CalculatorResult {
   const get = (key: string) => Number.isFinite(values[key]) ? values[key] : 0;
   const rate = get('rate') / 100;
@@ -390,7 +399,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
 
   switch (calculator.formula) {
     case 'compound': {
-      const futureValue = get('principal') * (1 + rate) ** years + get('monthly') * fvFactor;
+      const futureValue = get('principal') * (1 + monthlyRate) ** months + get('monthly') * fvFactor;
       return result('Projected value', futureValue, 'Projected value after contributions and compounding.', [
         'Contributions are assumed monthly.',
         'Returns are annualized and compounded monthly.'
@@ -406,7 +415,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       let contribution = 0;
       for (let month = 1; month <= months; month += 1) {
         if (stepUp > 0 && month > 1 && (month - 1) % 12 === 0) monthly *= 1 + stepUp;
-        futureValue = (futureValue + monthly) * (1 + monthlyRate);
+        futureValue = futureValue * (1 + monthlyRate) + monthly;
         contribution += monthly;
       }
       return result('Projected corpus', futureValue, 'Estimated future value of recurring SIP contributions.', [
@@ -482,12 +491,21 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
         metric('Total interest', payment * months - get('principal'), 'currency', 'warning')
       ]);
     }
-    case 'investment-return':
-    case 'xirr': {
-      const denominator = Math.max(1, get('initial') + get('monthly') * months);
-      const annualized = years > 0 ? (get('final') / denominator) ** (1 / years) - 1 : 0;
+    case 'investment-return': {
+      const annualized = years > 0 && get('initial') > 0 ? (get('final') / get('initial')) ** (1 / years) - 1 : 0;
       return result('Annualized return', annualized, 'Estimated annualized return from the supplied values.', [], [
-        metric('Starting plus contributions', denominator, 'currency'),
+        metric('Starting value', get('initial'), 'currency'),
+        metric('Ending value', get('final'), 'currency')
+      ]);
+    }
+    case 'xirr': {
+      const contributions = get('initial') + get('monthly') * months;
+      const annualized = years > 0 && contributions > 0 ? (get('final') / contributions) ** (1 / years) - 1 : 0;
+      return result('Approximate annualized return', annualized, 'Approximate annualized return after including average recurring contributions.', [
+        'This is a simplified money-weighted estimate, not a dated cash-flow XIRR schedule.',
+        'Use exact transaction dates for formal performance reporting.'
+      ], [
+        metric('Starting plus contributions', contributions, 'currency'),
         metric('Ending value', get('final'), 'currency')
       ]);
     }
@@ -506,13 +524,13 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'swp': {
-      const depletion = payoffDebt(get('corpus'), -Math.abs(get('rate') / 100), get('withdrawal'));
-      return result('Estimated withdrawal runway', depletion.months / 12, 'Estimated years the corpus may support the monthly withdrawal.', [
+      const runway = withdrawalRunway(get('corpus'), get('rate') / 100, get('withdrawal'));
+      return result('Estimated withdrawal runway', runway.months / 12, 'Estimated years the corpus may support the monthly withdrawal.', [
         'This is a simplified drawdown estimate.',
         'Market sequence risk is not modeled.'
       ], [
-        metric('Months covered', depletion.months, 'number'),
-        metric('Starting corpus', get('corpus'), 'currency')
+        metric('Months covered', runway.months, 'number'),
+        metric('Ending balance estimate', runway.endingBalance, 'currency')
       ]);
     }
     case 'gst':
@@ -529,10 +547,12 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'salary': {
       const base = Math.max(0, get('income') || get('gain') || get('principal'));
       const deductions = get('deductions');
-      const taxable = Math.max(0, base - deductions);
+      const taxable = calculator.formula === 'paycheck'
+        ? Math.max(0, base * get('periods') - deductions)
+        : Math.max(0, base - deductions);
       const tax = taxable * (get('effectiveRate') || get('rate')) / 100;
       const net = calculator.formula === 'paycheck'
-        ? (base - tax) * get('periods')
+        ? base * get('periods') - tax
         : base - tax;
       return result(calculator.formula === 'paycheck' ? 'Estimated annual take-home' : 'Estimated net amount', net, 'Estimated using the rate you provide, not statutory tax tables.', [
         'Tax calculators are planning estimates, not filing advice.',
@@ -563,7 +583,9 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'ppf': {
-      const futureValue = get('annual') * (((1 + rate) ** years - 1) / (rate || 1)) * (1 + rate);
+      const futureValue = rate === 0
+        ? get('annual') * years
+        : get('annual') * (((1 + rate) ** years - 1) / rate) * (1 + rate);
       return result('Estimated PPF maturity', futureValue, 'Annual contribution compounded at the assumed rate.', [], [
         metric('Total contributions', get('annual') * years, 'currency'),
         metric('Estimated interest', futureValue - get('annual') * years, 'currency', 'positive')
@@ -625,11 +647,16 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     }
     case 'balance-transfer': {
       const fee = get('balance') * get('feeRate') / 100;
-      const currentInterest = get('balance') * get('currentRate') / 100;
-      const promoInterest = get('balance') * get('newRate') / 100 + fee;
-      return result('Estimated first-year savings', currentInterest - promoInterest, 'Compares one year of current interest with promo interest plus transfer fee.', [], [
+      const currentPayoff = payoffDebt(get('balance'), get('currentRate') / 100, get('payment'));
+      const promoPayoff = payoffDebt(get('balance') + fee, get('newRate') / 100, get('payment'));
+      const currentCost = currentPayoff.interest;
+      const promoCost = fee + promoPayoff.interest;
+      return result('Estimated payoff cost savings', currentCost - promoCost, 'Compares payoff interest at the current APR with promo interest plus the transfer fee.', [
+        'Assumes the same monthly payment in both scenarios.',
+        'Promo APR is assumed to last through payoff for this first-pass comparison.'
+      ], [
         metric('Transfer fee', fee, 'currency', 'warning'),
-        metric('Promo-year cost', promoInterest, 'currency')
+        metric('Promo payoff months', promoPayoff.months, 'number')
       ]);
     }
     case 'inflation': {
@@ -670,9 +697,10 @@ function metric(
   label: string,
   value: number,
   valueType: CalculatorMetric['valueType'],
-  tone: CalculatorMetric['tone'] = 'neutral'
+  tone: CalculatorMetric['tone'] = 'neutral',
+  description?: string
 ): CalculatorMetric {
-  return { label, tone, value, valueType };
+  return { description, label, tone, value, valueType };
 }
 
 function result(
@@ -684,14 +712,40 @@ function result(
 ): CalculatorResult {
   return {
     assumptions,
-    metrics: [metric(label, value, inferValueType(label), 'accent'), ...supporting],
+    metrics: [metric(label, value, inferValueType(label), 'accent', narrative), ...supporting],
     narrative
   };
 }
 
+function defaultInputHelper(input: CalculatorInput): string {
+  const lower = input.label.toLowerCase();
+
+  if (input.type === 'currency') {
+    if (/monthly|payment|rent|withdrawal|contribution|deposit|sip/i.test(input.label)) {
+      return `Enter the ${lower} as a recurring amount in the calculator currency.`;
+    }
+
+    return `Enter the ${lower} in the calculator currency.`;
+  }
+
+  if (input.type === 'percent') {
+    return `Enter the ${lower} as an annual percentage unless the label says otherwise.`;
+  }
+
+  if (/year|tenure|term|support|delayed/i.test(input.label)) {
+    return `Enter the ${lower} in years.`;
+  }
+
+  if (/period/i.test(input.label)) {
+    return `Enter the number of ${lower}; for example, 26 for biweekly pay.`;
+  }
+
+  return `Enter the ${lower} used for this estimate.`;
+}
+
 function inferValueType(label: string): CalculatorMetric['valueType'] {
-  if (/rate|roi|return|ltv/i.test(label)) return 'percent';
-  if (/year/i.test(label)) return 'years';
+  if (/rate|roi|return|ltv|loan-to-value/i.test(label)) return 'percent';
+  if (/payoff time|withdrawal runway|years to|years after|^years$/i.test(label)) return 'years';
   if (/month/i.test(label) && !/monthly/i.test(label)) return 'number';
   return 'currency';
 }
@@ -723,4 +777,23 @@ function payoffDebt(balance: number, annualRate: number, payment: number): { int
   }
 
   return { interest: Math.max(0, interest), months };
+}
+
+function withdrawalRunway(corpus: number, annualRate: number, withdrawal: number): { endingBalance: number; months: number } {
+  if (withdrawal <= 0 || corpus <= 0) return { endingBalance: Math.max(0, corpus), months: 0 };
+
+  let currentBalance = corpus;
+  let months = 0;
+  const monthlyRate = annualRate / 12;
+
+  while (currentBalance > 0 && months < 1200) {
+    currentBalance = currentBalance * (1 + monthlyRate) - withdrawal;
+    months += 1;
+
+    if (currentBalance > 0 && monthlyRate >= 0 && currentBalance * monthlyRate >= withdrawal) {
+      return { endingBalance: currentBalance, months: 1200 };
+    }
+  }
+
+  return { endingBalance: Math.max(0, currentBalance), months };
 }

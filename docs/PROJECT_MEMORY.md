@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: July 5, 2026
+Last updated: July 6, 2026
 
 ## Repository
 
@@ -10,7 +10,7 @@ Last updated: July 5, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://aafc128f.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://afdbe589.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -41,7 +41,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Authenticated D1-backed transaction endpoints in `functions/api/transactions/index.ts` and `functions/api/transactions/[id].ts`.
 - Shared transaction validation, ownership checks, CRUD, and summary rules in `functions/_lib/transactions.ts`.
 - Transaction filtering, category suggestions, and cashflow rollups in `src/lib/transactionAnalytics.ts`.
-- Public calculator SEO library in `src/CalculatorLibrary.tsx` and tested calculator engines/registry in `src/lib/seoCalculators.ts`.
+- Public calculator library in `src/CalculatorLibrary.tsx` and tested calculator engines/registry in `src/lib/seoCalculators.ts`.
 - Public calculator sitemap and robots files in `public/sitemap.xml` and `public/robots.txt`.
 - Shared Pages Function helpers in `functions/_lib/`.
 - D1 migrations in `migrations/`.
@@ -255,26 +255,27 @@ Phase 12 Review-first Transaction Import and Reconciliation Planning is complete
 - Unit coverage covers local CSV parsing, server payload validation, review states, and account-data export inclusion.
 - `src/lib/fire.ts` remains unchanged.
 
-Phases 13-16 and Phase 18 Public Calculator SEO Library are complete for preview/development:
+Phases 13-16 and Phase 18 Public Calculator Library are complete for preview/development:
 
 - `/calculators` is now a public searchable calculator hub instead of a placeholder.
-- Stable public routes exist for 59 calculator pages across Global, India, US, and long-tail clusters.
-- Shared calculator pages include exact-search H1 copy, a short intro, input panel, result panel, explanation notes, FAQ, and a conversion CTA.
-- The library includes the requested Global, India, US, and long-tail calculators, including SIP, EMI, mortgage, compound interest, debt payoff, 401(k), tax-estimate, PPF/EPF/NPS, CAGR, XIRR, GST, PMI, HYSA, ROI, and more.
+- Stable public routes exist for 59 calculator pages across core planning, investing, borrowing, tax, India, and US-specific financial decisions.
+- Shared calculator pages include H1 copy, a short intro, input panel, result panel, explanation notes, FAQ, and a conversion CTA.
+- The library includes the requested calculators, including SIP, EMI, mortgage, compound interest, debt payoff, 401(k), tax-estimate, PPF/EPF/NPS, CAGR, XIRR, GST, PMI, HYSA, ROI, and more.
 - Public calculators remain usable without auth; signed-out users see account-creation CTAs after results.
 - Calculator routes update browser titles, descriptions, canonicals, and JSON-LD FAQ/application schema client-side.
 - `public/sitemap.xml` lists the calculator hub, FIRE route, and every calculator route.
 - Conversion CTAs route to the intended signed-in surfaces, but durable account-backed "save result" behavior remains Phase 17 scope.
-- Calculator formula tests cover registry presence, compound interest, EMI, credit-card payoff, and tax estimate behavior.
+- Calculator formula tests cover every calculator route with individual expected-output assertions plus edge cases for zero-rate loans, PPF, paycheck annualization, payoff loops, and balance-transfer payments.
+- Phase 19 keeps public calculator copy user-facing, adds landing-page entry points to the full library, exposes input/result help in the calculator UI, and fixes calculator formula/unit issues found during review.
 - `src/lib/fire.ts` remains unchanged.
-- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 78 frontend tests, and production build.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 198 frontend tests, and production build.
 - Local browser smoke passed for `/calculators`, `/calculators/sip`, `/calculators/mortgage`, `/calculators/fire`, and signed-out `/transactions` at desktop and `390x844` mobile widths with no console errors or horizontal overflow.
-- `npm run cf:deploy` deployed this milestone to `https://aafc128f.interactive-fire-calculator.pages.dev`.
+- `npm run cf:deploy` deployed this milestone to `https://afdbe589.interactive-fire-calculator.pages.dev`.
 - Live smoke passed for calculator hub, SIP calculator, mortgage calculator, FIRE route, signed-out Transactions gate, and unauthenticated `401` responses on transaction import endpoints.
 
 ## Next Phase
 
-Phase 12 and the public calculator SEO library through Phase 16 plus Phase 18 are implemented for preview/development. The next product-build phase is Phase 17 Calculator-to-Account Conversion Layer: durable save-result flows that turn calculator outputs into signed-in goals, accounts, plans, or transaction-tracking drafts. The next launch-critical step remains production Clerk setup, but the product owner has chosen to continue product phases and deal with that blocker later.
+Phase 12 and the public calculator library through Phase 16 plus Phase 19 are implemented for preview/development. The next product-build phase is Phase 17 Calculator-to-Account Conversion Layer: durable save-result flows that turn calculator outputs into signed-in goals, accounts, plans, or transaction-tracking drafts. The next launch-critical step remains production Clerk setup, but the product owner has chosen to continue product phases and deal with that blocker later.
 
 Remaining Phase 2 work:
 
@@ -338,7 +339,7 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phases 1 and 3 through 16 plus Phase 18 are complete for preview/development. Phase 12 adds reviewed transaction CSV imports, and Phases 13-16 plus Phase 18 add the public calculator SEO library. Phase 17 durable calculator-to-account saves remain next. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
+Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Phase 12 adds reviewed transaction CSV imports, and Phases 13-16 plus Phase 18 add the public calculator library. Phase 19 completed calculator UX/formula assurance. Phase 17 durable calculator-to-account saves remain next. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
 
 Next goal:
 Either complete production Clerk setup for launch readiness or begin Phase 17 Calculator-to-Account Conversion Layer. Keep Clerk production auth/domain setup as a launch blocker.
@@ -367,10 +368,10 @@ docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
 
 Current state:
-Phases 1 and 3 through 16 plus Phase 18 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, balance import audit history, transaction import audit history, transactions, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed transaction CSV imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public SEO calculator hub with Global, India, US, and long-tail calculator routes. `/dashboard` includes monthly transaction cashflow context; `/reports` includes deterministic transaction insights. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed balance CSV imports. `/settings` includes profile defaults plus privacy export/delete controls. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, balance import audit history, transaction import audit history, transactions, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed transaction CSV imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public calculator hub with user-facing decision categories and 59 public calculator routes. `/dashboard` includes monthly transaction cashflow context; `/reports` includes deterministic transaction insights. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed balance CSV imports. `/settings` includes profile defaults plus privacy export/delete controls. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://959f0a17.interactive-fire-calculator.pages.dev
+https://afdbe589.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev

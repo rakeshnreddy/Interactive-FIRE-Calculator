@@ -505,14 +505,14 @@ function applyRouteMetadata(route: AppRoute) {
   const title = calculator
     ? `${calculator.title} | FinPath`
     : route === '/calculators'
-      ? 'Financial Calculators for US and India | FinPath'
+      ? 'Financial Calculators | FinPath'
       : route === '/calculators/fire'
         ? 'FIRE Calculator | FinPath'
         : 'FinPath | FIRE Calculator and Financial Planning';
   const description = calculator
     ? calculator.description
     : route === '/calculators'
-      ? 'Search public financial calculators for US and India planning, then save results into FinPath goals, accounts, plans, or transaction tracking.'
+      ? 'Run financial calculators for loans, investing, savings, taxes, retirement, and planning, then save the next step into FinPath.'
       : route === '/calculators/fire'
         ? 'Use the public FIRE calculator to estimate retirement readiness, withdrawals, and portfolio scenarios.'
         : 'Plan financial independence, retirement, savings, goals, accounts, and cash flow in FinPath.';
@@ -580,7 +580,7 @@ function upsertRouteJsonLd(path: string, calculator: ReturnType<typeof findSeoCa
       ? {
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
-          name: 'Financial Calculators for US and India',
+          name: 'Financial Calculators',
           url,
           hasPart: seoCalculators.slice(0, 24).map((item) => ({
             '@type': 'WebApplication',
@@ -2580,7 +2580,7 @@ function PrivacyControlsPanel({
         </li>
         <li>
           <strong>Not included</strong>
-          <span>The public FIRE demo drafts in this browser and the Clerk identity provider account.</span>
+          <span>Unsigned public calculator drafts in this browser and the Clerk identity provider account.</span>
         </li>
         <li>
           <strong>After deletion</strong>
@@ -3939,10 +3939,10 @@ function AuthGate({
         : `Sign in to open ${page.eyebrow}.`;
   const description =
     auth.status === 'not-configured'
-      ? 'The app is wired for Clerk, but this environment is missing the public browser key. The FIRE calculator demo remains available without an account.'
+      ? 'The app is wired for Clerk, but this environment is missing the public browser key. The public calculator library remains available without an account.'
       : auth.status === 'loading'
         ? 'FinPath is confirming whether there is an active Clerk session for this browser.'
-        : `${page.eyebrow} is part of the account-backed planning shell. You can still use the public FIRE calculator demo without signing in.`;
+        : `${page.eyebrow} is part of the account-backed planning shell. You can still use the public calculator library without signing in.`;
 
   return (
     <section className="route-shell auth-gate" aria-labelledby={`${route.slice(1)}-auth-title`}>
@@ -3999,9 +3999,9 @@ function AuthGate({
               Auth not configured
             </button>
           )}
-          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators/fire')}>
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
             <Calculator size={16} />
-            Try FIRE calculator
+            Browse calculators
           </button>
         </div>
       </div>
@@ -4046,10 +4046,17 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
               )}
               <button
                 className="secondary-button icon-text-button"
+                onClick={() => onNavigate('/calculators')}
+              >
+                <Calculator size={16} />
+                Browse calculators
+              </button>
+              <button
+                className="secondary-button icon-text-button"
                 onClick={() => onNavigate('/calculators/fire')}
               >
                 <Calculator size={16} />
-                Try FIRE
+                FIRE planner
               </button>
             </div>
           </div>
@@ -4083,10 +4090,18 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
       <section className="landing-ready-band" aria-labelledby="ready-title">
         <div className="landing-ready-copy">
           <h2 id="ready-title">Start with the decision in front of you.</h2>
-          <p>Use the public FIRE calculator now, then keep accounts, goals, and plans together when you sign in.</p>
+          <p>Use public calculators first, then keep accounts, goals, and plans together when you sign in.</p>
         </div>
         <div className="landing-ready-actions">
-          <button className="landing-module-link landing-module-primary" onClick={() => onNavigate('/calculators/fire')}>
+          <button className="landing-module-link landing-module-primary" onClick={() => onNavigate('/calculators')}>
+            <Calculator size={22} />
+            <span>
+              <strong>Calculator library</strong>
+              <small>Estimate loans, taxes, goals, investing, and retirement.</small>
+            </span>
+            <ArrowRight size={18} />
+          </button>
+          <button className="landing-module-link" onClick={() => onNavigate('/calculators/fire')}>
             <Calculator size={22} />
             <span>
               <strong>FIRE planning</strong>
@@ -4134,8 +4149,8 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
           <strong>FinPath</strong>
         </a>
         <p>Track today. Test tomorrow. Keep the assumptions yours.</p>
-        <button onClick={() => onNavigate('/calculators/fire')}>
-          Open FIRE calculator
+        <button onClick={() => onNavigate('/calculators')}>
+          Browse calculators
           <ArrowRight size={16} />
         </button>
       </footer>
@@ -4469,14 +4484,14 @@ function PlatformPage({
                   ? 'Funding updates and target dates roll directly into the dashboard.'
                   : route === '/reports'
                     ? 'Rule-based insights now cite plan health, dated balances, and goal timing.'
-                  : 'Continue into the working FIRE module while future platform modules are still being built.'}
+                  : 'Use public calculators first, then sign in when you want to keep the result connected to your plan.'}
           </small>
         </div>
         <button
           className="secondary-button icon-text-button"
-          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/transactions' ? '/accounts' : route === '/goals' ? '/dashboard' : route === '/reports' ? '/plans' : '/calculators/fire')}
+          onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/transactions' ? '/accounts' : route === '/goals' ? '/dashboard' : route === '/reports' ? '/plans' : '/calculators')}
         >
-          {route === '/dashboard' ? 'Accounts' : route === '/transactions' ? 'Accounts' : route === '/goals' ? 'Dashboard' : route === '/reports' ? 'Plans' : 'Try FIRE'}
+          {route === '/dashboard' ? 'Accounts' : route === '/transactions' ? 'Accounts' : route === '/goals' ? 'Dashboard' : route === '/reports' ? 'Plans' : 'Calculators'}
           <ChevronRight size={16} />
         </button>
       </section>
@@ -4494,8 +4509,8 @@ function TopbarAuthActions({
   if (auth.isSignedIn) {
     return (
       <>
-        <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators/fire')}>
-          Try FIRE
+        <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators')}>
+          Calculators
         </button>
         <button className="secondary-button topbar-link" onClick={() => onNavigate('/dashboard')}>
           Dashboard
@@ -4516,8 +4531,8 @@ function TopbarAuthActions({
 
   return (
     <>
-      <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators/fire')}>
-        Try FIRE
+      <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators')}>
+        Calculators
       </button>
       {auth.status === 'loading' ? (
         <button className="secondary-button topbar-link" disabled>
@@ -6121,9 +6136,9 @@ function App({ auth }: { auth: AuthState }) {
               </button>
             );
           })}
-          <button className="nav-button mobile-cta" onClick={() => navigateTo('/calculators/fire')}>
+          <button className="nav-button mobile-cta" onClick={() => navigateTo('/calculators')}>
             <Calculator size={17} />
-            Try FIRE Calculator
+            Calculator library
           </button>
           {auth.isSignedIn ? (
             <>

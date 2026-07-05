@@ -2,6 +2,7 @@ import { SignUpButton } from '@clerk/react';
 import {
   ArrowRight,
   Calculator,
+  CircleHelp,
   CircleDollarSign,
   ClipboardList,
   FolderKanban,
@@ -12,11 +13,12 @@ import { useMemo, useState } from 'react';
 import type { AuthState } from './auth';
 import {
   calculateSeoCalculator,
+  calculatorCurrency,
   calculatorPath,
   findSeoCalculator,
   seoCalculators,
+  type CalculatorCategory,
   type CalculatorMetric,
-  type CalculatorRegion,
   type SeoCalculator
 } from './lib/seoCalculators';
 
@@ -26,7 +28,29 @@ type CalculatorLibraryProps = {
   onNavigate: (route: string) => void;
 };
 
-const regionOrder: CalculatorRegion[] = ['Global', 'India', 'US'];
+const categoryOrder: CalculatorCategory[] = ['Planning', 'Investing', 'Borrowing', 'Tax'];
+const categoryCopy: Record<CalculatorCategory, { description: string; title: string }> = {
+  Borrowing: {
+    description: 'Estimate payments, payoff timelines, refinancing, housing choices, and other liability decisions.',
+    title: 'Borrowing and payoff'
+  },
+  Investing: {
+    description: 'Project compounding, recurring investments, returns, and long-term growth estimates.',
+    title: 'Investing and growth'
+  },
+  Planning: {
+    description: 'Turn goals, retirement questions, net worth, and protection needs into a first estimate.',
+    title: 'Planning decisions'
+  },
+  Savings: {
+    description: 'Plan deposits, reserves, maturity values, and recurring savings targets.',
+    title: 'Savings tools'
+  },
+  Tax: {
+    description: 'Use simple rate-based estimates for paycheck, salary, tax, and deduction planning.',
+    title: 'Tax and income estimates'
+  }
+};
 
 export function CalculatorLibrary({ auth, route, onNavigate }: CalculatorLibraryProps) {
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
@@ -48,7 +72,6 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
         [
           calculator.title,
           calculator.description,
-          calculator.region,
           calculator.category,
           ...calculator.keywords
         ].join(' ').toLowerCase().includes(normalizedQuery)
@@ -59,37 +82,41 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
   return (
     <section className="calculator-library route-shell" aria-labelledby="calculators-title">
       <div className="route-heading calculator-library-heading">
-        <p className="eyebrow">Calculator library</p>
-        <h1 id="calculators-title">Financial calculators for US and India planning.</h1>
-        <p>Search public calculators, run a quick estimate, then save the next step into goals, accounts, plans, or transaction tracking.</p>
+        <p className="eyebrow">Planning tools</p>
+        <h1 id="calculators-title">Financial calculators for the decisions in front of you.</h1>
+        <p>Run a quick estimate, understand the moving parts, then save the next step into goals, accounts, plans, or transaction tracking.</p>
       </div>
 
       <div className="calculator-search-panel">
         <Search size={18} />
         <input
-          aria-label="Search calculators"
+          aria-label="Find calculators"
           type="search"
-          placeholder="Search SIP, EMI, mortgage, debt payoff, retirement..."
+          placeholder="Find SIP, EMI, mortgage, debt payoff, retirement..."
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
       </div>
 
-      <div className="calculator-region-tabs" aria-label="Calculator regions">
-        {regionOrder.map((region) => (
-          <a key={region} href={`#${region.toLowerCase()}-calculators`}>{region}</a>
+      <div className="calculator-region-tabs" aria-label="Calculator sections">
+        {categoryOrder.map((category) => (
+          <a key={category} href={`#${category.toLowerCase()}-calculators`}>{categoryCopy[category].title}</a>
         ))}
       </div>
 
-      {regionOrder.map((region) => {
-        const calculators = visibleCalculators.filter((calculator) => calculator.region === region);
+      {categoryOrder.map((category) => {
+        const calculators = visibleCalculators.filter((calculator) => calculator.category === category);
+        const copy = categoryCopy[category];
+
+        if (!normalizedQuery && calculators.length === 0) return null;
 
         return (
-          <section className="calculator-region-section" id={`${region.toLowerCase()}-calculators`} key={region}>
+          <section className="calculator-region-section" id={`${category.toLowerCase()}-calculators`} key={category}>
             <div className="panel-heading">
               <div>
-                <p className="eyebrow">{region}</p>
-                <h2>{region === 'Global' ? 'Universal finance calculators' : `${region} search-demand calculators`}</h2>
+                <p className="eyebrow">{category}</p>
+                <h2>{copy.title}</h2>
+                <p>{copy.description}</p>
               </div>
               <span>{calculators.length} calculators</span>
             </div>
@@ -151,10 +178,21 @@ function CalculatorDetail({
   return (
     <section className="calculator-library calculator-detail route-shell" aria-labelledby="calculator-detail-title">
       <div className="route-heading calculator-library-heading">
-        <p className="eyebrow">{calculator.region} · {calculator.category}</p>
+        <p className="eyebrow">{calculator.category} calculator</p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
         <p>{calculator.description}</p>
       </div>
+
+      <section className="calculator-context-panel" aria-label={`${calculator.title} overview`}>
+        <article>
+          <p className="eyebrow">What it answers</p>
+          <p>{calculator.explanation}</p>
+        </article>
+        <article>
+          <p className="eyebrow">How to read it</p>
+          <p>{result.narrative} The supporting tiles explain the main estimate and show the inputs that matter most.</p>
+        </article>
+      </section>
 
       <div className="calculator-detail-grid">
         <section className="calculator-input-panel" aria-label={`${calculator.title} inputs`}>
@@ -167,9 +205,19 @@ function CalculatorDetail({
           <div className="calculator-input-grid">
             {calculator.inputs.map((input) => (
               <label className="field" key={input.key}>
-                <span>{input.label}</span>
+                <span className="calculator-field-label">
+                  <span>{input.label}</span>
+                  <span
+                    className="calculator-help-dot"
+                    title={input.helper}
+                    aria-label={`${input.label}: ${input.helper}`}
+                    tabIndex={0}
+                  >
+                    <CircleHelp size={14} />
+                  </span>
+                </span>
                 <div className="calculator-input-control">
-                  {input.type === 'currency' ? <small>{calculator.region === 'India' ? 'INR' : 'USD'}</small> : null}
+                  {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
                   <input
                     type="number"
                     min={input.min}
@@ -197,8 +245,18 @@ function CalculatorDetail({
           <div className="calculator-result-metrics">
             {result.metrics.map((metric) => (
               <article className={`calculator-result-metric metric-${metric.tone ?? 'neutral'}`} key={metric.label}>
-                <span>{metric.label}</span>
-                <strong>{formatMetric(metric, calculator.region)}</strong>
+                <span className="calculator-metric-label">
+                  <span>{metric.label}</span>
+                  <span
+                    className="calculator-help-dot"
+                    title={metricDescription(metric)}
+                    aria-label={`${metric.label}: ${metricDescription(metric)}`}
+                    tabIndex={0}
+                  >
+                    <CircleHelp size={14} />
+                  </span>
+                </span>
+                <strong>{formatMetric(metric, calculator)}</strong>
               </article>
             ))}
           </div>
@@ -267,10 +325,18 @@ function conversionIcon(route: SeoCalculator['conversionRoute']) {
   return Calculator;
 }
 
-function formatMetric(metric: CalculatorMetric, region: CalculatorRegion): string {
+function metricDescription(metric: CalculatorMetric): string {
+  if (metric.description) return metric.description;
+  if (metric.valueType === 'percent') return 'A percentage output based on the inputs you entered.';
+  if (metric.valueType === 'years') return 'A time estimate in years. Fractions represent partial years.';
+  if (/month/i.test(metric.label)) return 'A monthly count or monthly amount derived from the estimate.';
+  return 'A supporting value used to explain the main estimate.';
+}
+
+function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): string {
   if (metric.valueType === 'currency') {
     return new Intl.NumberFormat(undefined, {
-      currency: region === 'India' ? 'INR' : 'USD',
+      currency: calculatorCurrency(calculator),
       maximumFractionDigits: 0,
       style: 'currency'
     }).format(metric.value);
