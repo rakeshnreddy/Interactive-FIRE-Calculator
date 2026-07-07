@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: July 6, 2026
+Last updated: July 7, 2026
 
 ## Repository
 
@@ -43,6 +43,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Transaction filtering, category suggestions, and cashflow rollups in `src/lib/transactionAnalytics.ts`.
 - Public calculator library in `src/CalculatorLibrary.tsx` and tested calculator engines/registry in `src/lib/seoCalculators.ts`.
 - Public calculator sitemap and robots files in `public/sitemap.xml` and `public/robots.txt`.
+- Calculator value and visualization roadmap in `docs/CALCULATOR_VALUE_ROADMAP.md`.
 - Shared Pages Function helpers in `functions/_lib/`.
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
@@ -275,7 +276,15 @@ Phases 13-16 and Phase 18 Public Calculator Library are complete for preview/dev
 
 ## Next Phase
 
-Phase 12 and the public calculator library through Phase 16 plus Phase 19 are implemented for preview/development. The next product-build phase is Phase 17 Calculator-to-Account Conversion Layer: durable save-result flows that turn calculator outputs into signed-in goals, accounts, plans, or transaction-tracking drafts. The next launch-critical step remains production Clerk setup, but the product owner has chosen to continue product phases and deal with that blocker later.
+Phase 12 and the public calculator library through Phase 16 plus Phase 19 are implemented for preview/development. The next product-build phase is Phase 17 Calculator-to-Account Conversion Layer: durable save-result flows that turn calculator outputs into signed-in goals, accounts, plans, or transaction-tracking drafts. The new Phase 20-25 calculator roadmap is documented in `docs/CALCULATOR_VALUE_ROADMAP.md`: keep every public route, combine implementation through richer decision studios, add visualizations and scenario comparison, and preserve search value with route-specific useful content. The next launch-critical step remains production Clerk setup, but the product owner has chosen to continue product phases and deal with that blocker later.
+
+Calculator roadmap decision:
+
+- Do not remove or redirect calculator routes just because formulas overlap.
+- Combine calculators internally as shared studios: growth/goals, returns, loan/home, debt payoff, income/tax, retirement income, and cashflow/balance sheet.
+- Upgrade calculators so users get decision support: scenarios, visual timelines, break-even points, saved follow-ups, and dashboard connections.
+- Keep public-facing copy user-first; SEO/search strategy stays internal.
+- Phase 17 save flows should be designed once and reused by all later calculator studios.
 
 Remaining Phase 2 work:
 
@@ -334,15 +343,16 @@ First read:
 docs/PROJECT_MEMORY.md
 docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
+docs/CALCULATOR_VALUE_ROADMAP.md
 
 Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Phase 12 adds reviewed transaction CSV imports, and Phases 13-16 plus Phase 18 add the public calculator library. Phase 19 completed calculator UX/formula assurance. Phase 17 durable calculator-to-account saves remain next. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
+Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Phase 12 adds reviewed transaction CSV imports, and Phases 13-16 plus Phase 18 add the public calculator library. Phase 19 completed calculator UX/formula assurance. Phase 17 durable calculator-to-account saves remain next, followed by Phase 20-25 calculator value/visualization upgrades in `docs/CALCULATOR_VALUE_ROADMAP.md`. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
 
 Next goal:
-Either complete production Clerk setup for launch readiness or begin Phase 17 Calculator-to-Account Conversion Layer. Keep Clerk production auth/domain setup as a launch blocker.
+Either complete production Clerk setup for launch readiness or begin Phase 17 Calculator-to-Account Conversion Layer. Phase 17 should create reusable save-result infrastructure for the later decision studios. Keep Clerk production auth/domain setup as a launch blocker.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
@@ -366,9 +376,10 @@ First read:
 docs/PROJECT_MEMORY.md
 docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
+docs/CALCULATOR_VALUE_ROADMAP.md
 
 Current state:
-Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, balance import audit history, transaction import audit history, transactions, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed transaction CSV imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public calculator hub with user-facing decision categories and 59 public calculator routes. `/dashboard` includes monthly transaction cashflow context; `/reports` includes deterministic transaction insights. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed balance CSV imports. `/settings` includes profile defaults plus privacy export/delete controls. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, balance import audit history, transaction import audit history, transactions, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed transaction CSV imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public calculator hub with user-facing decision categories and 59 public calculator routes. `docs/CALCULATOR_VALUE_ROADMAP.md` defines how to keep those routes while combining implementation into richer decision studios with visualizations. `/dashboard` includes monthly transaction cashflow context; `/reports` includes deterministic transaction insights. `/plans` supports versioned planning and health evidence; `/accounts` supports manual balances plus reviewed balance CSV imports. `/settings` includes profile defaults plus privacy export/delete controls. `/calculators/fire` remains public. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
 https://afdbe589.interactive-fire-calculator.pages.dev

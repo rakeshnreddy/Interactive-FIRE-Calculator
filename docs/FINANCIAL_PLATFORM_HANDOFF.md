@@ -29,7 +29,7 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 16 and Phase 19 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, reviewed balance CSV imports, deterministic Reports insights, authenticated account-data export/delete readiness, accessibility hardening, bundle splitting, a signed-in manual Transactions ledger, transaction filters, category suggestions, cashflow insights, separate reviewed transaction CSV imports, a public calculator library, and calculator UX/formula assurance are active. Phase 17 durable calculator-to-account saves remain the next product gap. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 16 and Phase 19 are complete for preview/development: D1 persistence, manual financial tracking, goals, versioned planning, reviewed balance CSV imports, deterministic Reports insights, authenticated account-data export/delete readiness, accessibility hardening, bundle splitting, a signed-in manual Transactions ledger, transaction filters, category suggestions, cashflow insights, separate reviewed transaction CSV imports, a public calculator library, and calculator UX/formula assurance are active. Phase 17 durable calculator-to-account saves remain the next product gap, and Phase 20-25 calculator value/visualization upgrades are planned in `docs/CALCULATOR_VALUE_ROADMAP.md`. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels. See `docs/FINANCIAL_PLATFORM_TRACKER.md` and `docs/PROJECT_MEMORY.md` for ongoing status and handoff prompts.
 
 ## Current Code Shape
 
@@ -52,6 +52,7 @@ Production target:
 - `src/lib/transactionCsv.ts` contains bounded local transaction CSV parsing and template generation.
 - `src/CalculatorLibrary.tsx` contains the public calculator hub and shared calculator detail layout.
 - `src/lib/seoCalculators.ts` contains the tested public calculator registry and formula engine.
+- `docs/CALCULATOR_VALUE_ROADMAP.md` contains the per-calculator value audit, shared studio plan, visualization inventory, and Phase 20-25 roadmap.
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
 - `functions/api/me.ts` contains the Clerk-backed Pages Function identity endpoint.
 - `functions/api/profile.ts` contains the D1-backed authenticated profile endpoint.
@@ -738,6 +739,28 @@ Target:
 - Show saved calculator-derived items on Dashboard and relevant destination workspaces.
 - Keep public calculator usage unauthenticated.
 
+### Phase 20-25: Calculator Value and Visualization Roadmap
+
+Status: planned.
+
+Source of truth: `docs/CALCULATOR_VALUE_ROADMAP.md`.
+
+Intent:
+
+- Keep all existing calculator routes and search entry points.
+- Combine overlapping calculators internally through shared decision studios instead of removing public pages.
+- Make calculators valuable beyond basic arithmetic by adding scenarios, timelines, sensitivity, visualizations, saved follow-ups, and dashboard links.
+- Preserve user-first public copy while keeping search strategy internal.
+
+Planned phases:
+
+- Phase 20: Decision studio foundation, shared metadata, chart primitives, scenarios, route-specific examples, and related calculators.
+- Phase 21: Growth, goal, and retirement visualizers.
+- Phase 22: Loan, debt, home, and vehicle visualizers.
+- Phase 23: Income, tax, budget, and protection deepening.
+- Phase 24: Search preservation and content quality hardening.
+- Phase 25: Engagement and personalization loop.
+
 ## Immediate Next Coding Session Recommendation
 
 Begin Phase 17 Calculator-to-Account Conversion Layer, unless product ownership chooses to pause product expansion and finish production Clerk setup first.
@@ -814,10 +837,11 @@ Read these first:
 docs/PROJECT_MEMORY.md
 docs/FINANCIAL_PLATFORM_TRACKER.md
 docs/FINANCIAL_PLATFORM_HANDOFF.md
+docs/CALCULATOR_VALUE_ROADMAP.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, balance import history, transaction import history, transactions, and account-data export/delete readiness behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed balance CSV imports, Transactions supports manual income/expense/transfer/adjustment rows plus reviewed transaction CSV imports with search, filters, and category suggestions, Dashboard shows monthly cashflow context, Planning includes comparisons and deterministic health evidence, Reports shows evidence-linked rule-based recommendations including transaction insights, Settings includes privacy controls, and the public FIRE plus calculator library remain available.
+Phases 1 and 3 through 16 plus Phase 19 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved FIRE plans and immutable versions, accounts, balances, goals, balance import history, transaction import history, transactions, and account-data export/delete readiness behind authenticated user-scoped Pages Functions. The Accounts workspace supports reviewed balance CSV imports, Transactions supports manual income/expense/transfer/adjustment rows plus reviewed transaction CSV imports with search, filters, and category suggestions, Dashboard shows monthly cashflow context, Planning includes comparisons and deterministic health evidence, Reports shows evidence-linked rule-based recommendations including transaction insights, Settings includes privacy controls, and the public FIRE plus calculator library remain available. `docs/CALCULATOR_VALUE_ROADMAP.md` defines the Phase 20-25 plan to keep all calculator routes while upgrading them into richer decision studios with visualizations.
 
 Next goal: begin Phase 17 Calculator-to-Account Conversion Layer, unless product ownership chooses to pause product expansion and finish production Clerk setup first. Keep production Clerk setup as a launch blocker.
 

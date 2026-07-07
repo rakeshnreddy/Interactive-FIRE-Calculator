@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: July 6, 2026
+Last updated: July 7, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -37,6 +37,12 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 17: Calculator-to-Account Conversion Layer | Planned | 20% | Public calculator CTAs route to the right signed-in surfaces; durable save-result workflows, draft preservation after auth, and dashboard saved-result cards remain next scope. |
 | Phase 18: Calculator Library Scale-Out | Preview/app complete | 100% | CAGR, XIRR, inflation, Rule of 72, capital gains, GST/TDS, down payment, PMI, HELOC, balance transfer, CD/HYSA, insurance, lease-vs-buy, and ROI calculators are live. |
 | Phase 19: Calculator UX and Formula Assurance | Preview/app complete | 100% | Calculator copy now uses user-facing decision framing, the landing hero links to the full library, detail pages explain inputs/results with hover/focus help, and every calculator has an individual expected-output test. |
+| Phase 20: Calculator Decision Studio Foundation | Planned | 0% | Keep every public route, but group calculators internally into richer shared decision studios with scenario state, chart primitives, related calculators, and route-specific content. |
+| Phase 21: Growth, Goal, and Retirement Visualizers | Planned | 0% | Add contribution-vs-growth timelines, goal feasibility, inflation-adjusted values, retirement corpus gaps, and withdrawal runway visuals. |
+| Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Planned | 0% | Add amortization schedules, payoff calendars, break-even charts, true multi-debt snowball/avalanche, and liability/payoff save flows. |
+| Phase 23: Income, Tax, Budget, and Protection Deepening | Planned | 0% | Add gross-to-net waterfalls, richer India/US tax assumptions, budget cashflow visuals, emergency runway, and protection-gap planning. |
+| Phase 24: Calculator Search Preservation and Content Quality | Planned | 0% | Preserve stable URLs while adding unique route examples, assumptions, structured data, internal links, and no-auth smoke coverage for every calculator. |
+| Phase 25: Engagement and Personalization Loop | Planned | 0% | Add saved scenario comparisons, recent calculator history, dashboard follow-up cards, and export/share for schedules and summaries. |
 
 ## Design System Milestone
 
@@ -446,6 +452,21 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 - [x] Phase 19: Add individual expected-output tests for every calculator and edge-case coverage for zero rates, payoff loops, paycheck annualization, and balance-transfer payments.
 - [x] Keep every public calculator usable without auth.
 - [x] Keep `src/lib/fire.ts` unchanged.
+
+## Phase 20-25 Calculator Value Roadmap
+
+Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
+
+- [ ] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
+- [ ] Phase 20: Add calculator family/studio metadata while preserving every existing public route.
+- [ ] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
+- [ ] Phase 21: Upgrade growth, goal, and retirement calculators with timelines, inflation-adjusted outputs, contribution/growth splits, corpus gaps, and withdrawal runway visuals.
+- [ ] Phase 22: Upgrade loan, debt, home, and vehicle calculators with amortization schedules, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
+- [ ] Phase 23: Upgrade income, tax, budget, and protection calculators with waterfalls, category/cashflow visuals, richer assumptions, and estimate disclaimers.
+- [ ] Phase 24: Preserve search value by keeping stable URLs, self-canonicals, sitemap coverage, route-specific content, structured data, and public no-auth smoke coverage.
+- [ ] Phase 25: Add saved scenario comparison, recent calculator history, dashboard follow-up cards, and export/share options.
+- [ ] Keep internal search/acquisition strategy out of user-facing copy.
+- [ ] Combine calculator implementations through shared studios, not by removing or redirecting public calculator routes.
 
 ## Phase 12-19 Verification Notes
 
