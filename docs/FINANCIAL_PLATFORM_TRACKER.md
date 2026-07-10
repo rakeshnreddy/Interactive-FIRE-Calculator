@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://afdbe589.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://3c829b65.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -37,7 +37,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 17: Calculator-to-Account Conversion Layer | Planned | 20% | Public calculator CTAs route to the right signed-in surfaces; durable save-result workflows, draft preservation after auth, and dashboard saved-result cards remain next scope. |
 | Phase 18: Calculator Library Scale-Out | Preview/app complete | 100% | CAGR, XIRR, inflation, Rule of 72, capital gains, GST/TDS, down payment, PMI, HELOC, balance transfer, CD/HYSA, insurance, lease-vs-buy, and ROI calculators are live. |
 | Phase 19: Calculator UX and Formula Assurance | Preview/app complete | 100% | Calculator copy now uses user-facing decision framing, the landing hero links to the full library, detail pages explain inputs/results with hover/focus help, and every calculator has an individual expected-output test. |
-| Phase 20: Calculator Decision Studio Foundation | Planned | 0% | Keep every public route, but group calculators internally into richer shared decision studios with scenario state, chart primitives, related calculators, and route-specific content. |
+| Phase 20: Calculator Decision Studio Foundation | In progress | 20% | A code-level quality contract, baseline visual read, and decision checks are in place for every current calculator; scenario state, full chart primitives, related calculators, and route-specific content remain. |
 | Phase 21: Growth, Goal, and Retirement Visualizers | Planned | 0% | Add contribution-vs-growth timelines, goal feasibility, inflation-adjusted values, retirement corpus gaps, and withdrawal runway visuals. |
 | Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Planned | 0% | Add amortization schedules, payoff calendars, break-even charts, true multi-debt snowball/avalanche, missing loan/mortgage routes, and liability/payoff save flows. |
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Planned | 0% | Add gross-to-net waterfalls, richer India/US tax assumptions, budget cashflow visuals, emergency runway, and protection-gap planning. |
@@ -456,10 +456,12 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 ## Phase 20-25 Calculator Value Roadmap
 
 Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
+Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
-- Current comprehensive-calculator completion estimate: 10%. Existing public routes, base formulas, tests, and planning are in place; 90% remains for durable saves, decision studios, visualizations, missing routes, richer content, exports, and personalization.
+- Current comprehensive-calculator completion estimate: 12%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, and planning are in place; 88% remains for durable saves, decision studios, rich visualizations, missing routes, richer content, exports, and personalization.
 - [ ] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
-- [ ] Phase 20: Add calculator family/studio metadata while preserving every existing public route.
+- [x] Phase 20: Add code-level calculator quality/studio contracts while preserving every existing public route.
+- [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
 - [ ] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
 - [ ] Phase 21: Upgrade growth, goal, and retirement calculators with timelines, inflation-adjusted outputs, contribution/growth splits, corpus gaps, and withdrawal runway visuals.
 - [ ] Phase 22: Upgrade loan, debt, home, and vehicle calculators with amortization schedules, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
@@ -470,6 +472,18 @@ Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 - [ ] Keep internal search/acquisition strategy out of user-facing copy.
 - [ ] Combine calculator implementations through shared studios, not by removing or redirecting public calculator routes.
 - [ ] After each app deploy, record preview URL, tests, smoke routes, completed work, completion percentage, remaining percentage, and blockers.
+
+## Phase 20 High-Standard Foundation Checkpoint
+
+- Completed: per-calculator high-standard implementation plan in `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
+- Completed: `src/lib/calculatorQuality.ts` quality contracts for every current public calculator route.
+- Completed: calculator detail pages now show why the calculator matters, a baseline visual read of the computed metrics, and decision checks.
+- Completed: quality-contract tests ensure every current route has calculation, visual, scenario, validation, interpretation, and conversion expectations.
+- Tests: `npm run typecheck` passed; `npm test` passed with 258 tests across 14 frontend files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 258 frontend tests, and production build.
+- Deploy: `npm run cf:deploy` deployed to `https://3c829b65.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live route smoke: `/`, `/calculators`, `/calculators/sip`, `/calculators/amortization`, `/calculators/mortgage`, `/calculators/fire`, and `/transactions` returned `200`.
+- Completion after deploy: comprehensive calculator program is 12% complete; 88% remains.
+- Remaining blockers: production Clerk setup is still the launch blocker; Phase 17 durable calculator save flows remain next product work; full route-specific visualizations/schedules/tax engines are still pending in Phases 20-25.
 
 ## Phase 12-19 Verification Notes
 

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { getCalculatorQualitySpec } from './calculatorQuality';
 import {
   calculateSeoCalculator,
   calculatorCurrency,
@@ -111,6 +112,37 @@ describe('calculator registry', () => {
       expect(publicCopy).not.toMatch(/SEO|search-demand|traffic cluster|long-tail|US-focused|India-focused/i);
     }
   );
+
+  it.each(seoCalculators.map((calculator) => [calculator.slug, calculator] as const))(
+    '%s has a comprehensive implementation quality contract',
+    (_slug, calculator) => {
+      const spec = getCalculatorQualitySpec(calculator);
+
+      expect(spec.slug).toBe(calculator.slug);
+      expect(spec.title).toBe(calculator.title);
+      expect(spec.inputRequirements).toHaveLength(calculator.inputs.length);
+      expect(spec.calculationRequirements.length).toBeGreaterThanOrEqual(3);
+      expect(spec.visualRequirements.length).toBeGreaterThanOrEqual(3);
+      expect(spec.interpretationChecks.length).toBeGreaterThanOrEqual(3);
+      expect(spec.scenarioRequirements.length).toBeGreaterThanOrEqual(2);
+      expect(spec.validationRequirements.length).toBeGreaterThanOrEqual(3);
+      expect(spec.doneWhen.length).toBeGreaterThanOrEqual(6);
+      expect(spec.conversionExpectation).toContain(calculator.conversionLabel);
+    }
+  );
+
+  it('requires the amortization route to become a real schedule calculator', () => {
+    const calculator = getCalculator('amortization');
+    const spec = getCalculatorQualitySpec(calculator);
+    const requirements = [
+      ...spec.calculationRequirements,
+      ...spec.visualRequirements
+    ].join(' ');
+
+    expect(requirements).toMatch(/month-by-month/i);
+    expect(requirements).toMatch(/yearly/i);
+    expect(requirements).toMatch(/cumulative interest/i);
+  });
 });
 
 describe('calculateSeoCalculator', () => {

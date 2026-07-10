@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { AuthState } from './auth';
+import { getCalculatorQualitySpec, type CalculatorQualitySpec } from './lib/calculatorQuality';
 import {
   calculateSeoCalculator,
   calculatorCurrency,
@@ -165,6 +166,7 @@ function CalculatorDetail({
     Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]))
   );
   const result = useMemo(() => calculateSeoCalculator(calculator, values), [calculator, values]);
+  const qualitySpec = useMemo(() => getCalculatorQualitySpec(calculator), [calculator]);
   const ConversionIcon = conversionIcon(calculator.conversionRoute);
 
   const setValue = (key: string, value: string) => {
@@ -187,6 +189,10 @@ function CalculatorDetail({
         <article>
           <p className="eyebrow">What it answers</p>
           <p>{calculator.explanation}</p>
+        </article>
+        <article>
+          <p className="eyebrow">Why it matters</p>
+          <p>{qualitySpec.decisionUsefulness}</p>
         </article>
         <article>
           <p className="eyebrow">How to read it</p>
@@ -260,6 +266,7 @@ function CalculatorDetail({
               </article>
             ))}
           </div>
+          <CalculatorResultVisual calculator={calculator} metrics={result.metrics} />
           <p className="calculator-result-narrative">{result.narrative}</p>
           <div className="calculator-conversion-panel">
             <span className="feature-icon"><ConversionIcon size={18} /></span>
@@ -302,6 +309,8 @@ function CalculatorDetail({
         </div>
       </section>
 
+      <CalculatorDecisionPanel calculator={calculator} qualitySpec={qualitySpec} />
+
       <section className="calculator-faq-panel" aria-label={`${calculator.title} FAQ`}>
         <p className="eyebrow">FAQ</p>
         <div className="calculator-faq-grid">
@@ -313,6 +322,69 @@ function CalculatorDetail({
           ))}
         </div>
       </section>
+    </section>
+  );
+}
+
+function CalculatorResultVisual({
+  calculator,
+  metrics
+}: {
+  calculator: SeoCalculator;
+  metrics: CalculatorMetric[];
+}) {
+  const visibleMetrics = metrics.slice(0, 4);
+  const maxVisualValue = Math.max(1, ...visibleMetrics.map((metric) => visualMetricValue(metric)));
+
+  return (
+    <div className="calculator-visual-panel" aria-label={`${calculator.title} visual summary`}>
+      <div>
+        <p className="eyebrow">Visual read</p>
+        <small>The bars compare the headline estimate with the supporting numbers so the biggest driver is easier to spot.</small>
+      </div>
+      <div className="calculator-visual-bars">
+        {visibleMetrics.map((metric) => {
+          const width = Math.max(8, Math.min(100, (visualMetricValue(metric) / maxVisualValue) * 100));
+
+          return (
+            <div className="calculator-visual-row" key={metric.label}>
+              <div>
+                <span>{metric.label}</span>
+                <strong>{formatMetric(metric, calculator)}</strong>
+              </div>
+              <span className="calculator-visual-track" aria-hidden="true">
+                <span
+                  className={`calculator-visual-fill metric-${metric.tone ?? 'neutral'}`}
+                  style={{ width: `${width}%` }}
+                />
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CalculatorDecisionPanel({
+  calculator,
+  qualitySpec
+}: {
+  calculator: SeoCalculator;
+  qualitySpec: CalculatorQualitySpec;
+}) {
+  return (
+    <section className="calculator-decision-panel" aria-label={`${calculator.title} decision checks`}>
+      <div>
+        <p className="eyebrow">Decision checks</p>
+        <h2>Use the number with context</h2>
+        <p>{qualitySpec.conversionExpectation} Before acting on the result, compare the assumptions that can move the answer.</p>
+      </div>
+      <div className="calculator-decision-list">
+        {qualitySpec.interpretationChecks.slice(0, 3).map((check) => (
+          <span key={check}>{check}</span>
+        ))}
+      </div>
     </section>
   );
 }
@@ -331,6 +403,11 @@ function metricDescription(metric: CalculatorMetric): string {
   if (metric.valueType === 'years') return 'A time estimate in years. Fractions represent partial years.';
   if (/month/i.test(metric.label)) return 'A monthly count or monthly amount derived from the estimate.';
   return 'A supporting value used to explain the main estimate.';
+}
+
+function visualMetricValue(metric: CalculatorMetric): number {
+  if (metric.valueType === 'percent') return Math.abs(metric.value * 100);
+  return Math.abs(metric.value);
 }
 
 function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): string {

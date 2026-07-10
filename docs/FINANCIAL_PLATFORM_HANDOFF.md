@@ -1,6 +1,6 @@
 # Financial Platform Handoff
 
-Last updated: July 5, 2026
+Last updated: July 10, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://afdbe589.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://3c829b65.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -53,6 +53,7 @@ Production target:
 - `src/CalculatorLibrary.tsx` contains the public calculator hub and shared calculator detail layout.
 - `src/lib/seoCalculators.ts` contains the tested public calculator registry and formula engine.
 - `docs/CALCULATOR_VALUE_ROADMAP.md` contains the per-calculator value audit, shared studio plan, visualization inventory, and Phase 20-25 roadmap.
+- `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md` contains the strict per-calculator implementation standard that keeps each route from shipping as a thin formula page.
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
 - `functions/api/me.ts` contains the Clerk-backed Pages Function identity endpoint.
 - `functions/api/profile.ts` contains the D1-backed authenticated profile endpoint.
@@ -716,16 +717,15 @@ Delivered:
 - Calculator detail pages explain what the calculator answers, how to read the result, and what each input/output means through hover/focus help.
 - Calculator currency labels use the calculator context, including INR for India calculators and GST/TDS.
 - Formula and unit fixes cover monthly-compounded principal, SIP contribution timing, payoff-time units, SWP runway units, balance-transfer payment effects, paycheck annualization, and zero-rate PPF.
-- Vitest coverage now has an individual expected-output test for every public calculator route plus edge-case tests for zero rates, payoff loops, paycheck annualization, and balance-transfer payments.
+- Vitest coverage now has an individual expected-output test for every public calculator route, edge-case tests for zero rates/payoff loops/paycheck annualization/balance-transfer payments, and quality-contract tests for every calculator route.
 
 Verification and deployment:
 
 - `migrations/0003_transaction_import_history.sql` is applied locally and to both remote D1 databases.
 - Remote `0003` was applied with direct `wrangler d1 execute --file` plus a guarded `d1_migrations` insert after the Wrangler migrations subcommand hit a Cloudflare query endpoint authorization error.
-- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 198 frontend tests, and production build.
-- Local browser QA passed landing, calculator hub, SIP calculator, mortgage calculator, balance transfer calculator, FIRE route, and signed-out Transactions gate at desktop and `390x844` mobile widths.
-- `npm run cf:deploy` deployed to `https://afdbe589.interactive-fire-calculator.pages.dev`.
-- Live smoke passed for landing, calculator hub, SIP calculator, mortgage calculator, FIRE route, signed-out Transactions gate, and unauthenticated `401` responses from transaction import endpoints.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 258 frontend tests, and production build.
+- Latest app deploy: `npm run cf:deploy` deployed to `https://3c829b65.interactive-fire-calculator.pages.dev`.
+- Live route smoke passed for `/`, `/calculators`, `/calculators/sip`, `/calculators/amortization`, `/calculators/mortgage`, `/calculators/fire`, and `/transactions` returning `200`.
 
 ### Phase 17: Calculator-to-Account Conversion Layer
 
@@ -744,19 +744,21 @@ Target:
 Status: planned.
 
 Source of truth: `docs/CALCULATOR_VALUE_ROADMAP.md`.
+High-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
 Intent:
 
 - Keep all existing calculator routes and search entry points.
 - Combine overlapping calculators internally through shared decision studios instead of removing public pages.
 - Make calculators valuable beyond basic arithmetic by adding scenarios, timelines, sensitivity, visualizations, saved follow-ups, and dashboard links.
+- Apply the same high standard to every calculator: useful decision framing, input/output explanations, tested formulas, baseline visual read, route-specific comprehensive visuals, scenarios, save flows, and responsive QA.
 - Preserve user-first public copy while keeping search strategy internal.
 - Treat the current amortization route as incomplete until it includes monthly schedules, yearly rollups, custom period views, principal/interest charts, balance timeline, cumulative interest, and export/share.
 - Phase 22 owns the new loan/mortgage route backlog: mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment/foreclosure/balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
 
 Planned phases:
 
-- Phase 20: Decision studio foundation, shared metadata, chart primitives, scenarios, route-specific examples, and related calculators.
+- Phase 20: Decision studio foundation, shared metadata, chart primitives, scenarios, route-specific examples, and related calculators. Current partial progress: code-level quality contracts, baseline visual read, and decision checks are in place.
 - Phase 21: Growth, goal, and retirement visualizers.
 - Phase 22: Loan, debt, home, and vehicle visualizers plus the missing loan/mortgage calculator routes.
 - Phase 23: Income, tax, budget, and protection deepening.
@@ -766,7 +768,7 @@ Planned phases:
 Deploy/handoff rule:
 
 - After each app deploy, record what shipped, preview URL, tests, smoke routes, percent complete, percent remaining, and blockers.
-- Current comprehensive calculator completion estimate is 10%; roughly 90% remains for save flows, visual studios, missing routes, richer content, exports, and personalization.
+- Current comprehensive calculator completion estimate is 12%; roughly 88% remains for save flows, visual studios, missing routes, richer content, exports, and personalization.
 
 ## Immediate Next Coding Session Recommendation
 

@@ -55,6 +55,17 @@ Visual patterns by calculator type:
 | Budget/cashflow | Cashflow waterfall or Sankey, category bars, savings-rate trend, emergency runway. |
 | Insurance/protection | Coverage gap waterfall, dependents timeline, existing coverage vs need. |
 
+## High Standard Contract
+
+The detailed per-calculator implementation standard now lives in `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
+
+Current checkpoint:
+
+- `src/lib/calculatorQuality.ts` defines calculation, visual, scenario, validation, interpretation, and conversion expectations for every current public calculator route.
+- `src/lib/seoCalculators.test.ts` asserts that every current route has a comprehensive quality contract.
+- Calculator detail pages now show why the calculator matters, a baseline visual read of the result metrics, and decision checks.
+- This raises the comprehensive calculator program from 10% to 12% complete. It does not complete the deeper studio work; 88% remains for save flows, full chart data, amortization schedules, statutory tax engines, missing routes, scenario drawers, exports, and personalization.
+
 ## Shared Decision Studios
 
 Keep all calculator routes, but route them into shared richer experiences with route-specific presets.
@@ -142,6 +153,7 @@ This is the implementation sequence to avoid losing progress. Deploy when app be
 | Checkpoint | Deploy? | Expected comprehensive-calculator completion | Work left after checkpoint | What should be accomplished |
 | --- | --- | ---: | ---: | --- |
 | Planning checkpoint | No app deploy | 10% | 90% | Existing routes, base formulas, tests, Phase 20-25 roadmap, missing calculator backlog, and comprehensive standards documented. |
+| High-standard foundation checkpoint | Yes | 12% | 88% | Code-level quality contracts, baseline visual read, decision checks, and detailed high-standard implementation plan for every current calculator. |
 | Phase 17 deploy | Yes | 20% | 80% | Durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, and reusable mapping into goals/accounts/plans/transactions. |
 | Phase 20 deploy | Yes | 32% | 68% | Decision studio metadata, scenario state, shared visualization primitives, related calculators, route-specific content scaffolding, and route guard tests. |
 | Phase 21 deploy | Yes | 48% | 52% | Growth, goal, and retirement calculators upgraded with timelines, contribution/growth visuals, inflation-adjusted results, corpus gaps, withdrawal runway, and save flows. |
