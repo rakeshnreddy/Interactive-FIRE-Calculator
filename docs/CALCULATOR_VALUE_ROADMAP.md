@@ -65,7 +65,8 @@ Current checkpoint:
 - `src/lib/seoCalculators.test.ts` asserts that every current route has a comprehensive quality contract.
 - Calculator detail pages now show why the calculator matters, a baseline visual read of the result metrics, and decision checks.
 - Phase 17 adds durable signed-in calculator result saves, signed-out draft preservation, downstream goal/account/plan draft creation where safe, transaction-workflow result storage, Dashboard saved-result cards, and account-data export/delete coverage.
-- This raises the comprehensive calculator program to 20% complete. It does not complete the deeper studio work; 80% remains for full chart data, amortization schedules, statutory tax engines, missing routes, scenario drawers, exports, and personalization.
+- Phase 20 adds reusable decision-studio metadata, conservative/base/optimistic scenario state, chart-ready primitives, route-specific examples, related-calculator navigation, and public-copy guard tests for every current route.
+- This raises the comprehensive calculator program to 32% complete. It does not complete the deeper family-specific studio work; 68% remains for full chart data, amortization schedules, statutory tax engines, missing routes, exports, and personalization.
 
 ## Shared Decision Studios
 
@@ -98,6 +99,8 @@ Status: complete for preview/development.
 - Tests cover the server save payload validation and route-to-destination mapping; future browser-level signed-out/signed-in CTA tests remain part of Phase 24 hardening.
 
 ### Phase 20: Decision Studio Foundation
+
+Status: complete for preview/development.
 
 - Introduce shared calculator family metadata while keeping every public route.
 - Add scenario state: base, conservative, optimistic.

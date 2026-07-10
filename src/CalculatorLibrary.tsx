@@ -13,6 +13,17 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AuthState } from './auth';
 import { getCalculatorQualitySpec, type CalculatorQualitySpec } from './lib/calculatorQuality';
 import {
+  buildCalculatorScenarios,
+  buildCalculatorStudioChart,
+  buildScenarioValues,
+  getCalculatorStudioMetadata,
+  type CalculatorScenario,
+  type CalculatorScenarioId,
+  type CalculatorStudioChart,
+  type CalculatorStudioExample,
+  type CalculatorStudioMetadata
+} from './lib/calculatorStudios';
+import {
   calculateSeoCalculator,
   calculatorCurrency,
   calculatorPath,
@@ -186,14 +197,27 @@ function CalculatorDetail({
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [lastSavedRoute, setLastSavedRoute] = useState<SeoCalculator['conversionRoute'] | null>(null);
-  const result = useMemo(() => calculateSeoCalculator(calculator, values), [calculator, values]);
+  const [selectedScenarioId, setSelectedScenarioId] = useState<CalculatorScenarioId>('base');
+  const scenarioValues = useMemo(
+    () => buildScenarioValues(calculator, values, selectedScenarioId),
+    [calculator, selectedScenarioId, values]
+  );
+  const result = useMemo(() => calculateSeoCalculator(calculator, scenarioValues), [calculator, scenarioValues]);
+  const scenarios = useMemo(() => buildCalculatorScenarios(calculator, values), [calculator, values]);
+  const selectedScenario = scenarios.find((scenario) => scenario.id === selectedScenarioId) ?? scenarios[1];
+  const studioMetadata = useMemo(() => getCalculatorStudioMetadata(calculator), [calculator]);
+  const studioChart = useMemo(
+    () => buildCalculatorStudioChart(calculator, scenarioValues, result),
+    [calculator, result, scenarioValues]
+  );
   const qualitySpec = useMemo(() => getCalculatorQualitySpec(calculator), [calculator]);
   const ConversionIcon = conversionIcon(calculator.conversionRoute);
 
   useEffect(() => {
     const draft = readCalculatorDraft(calculator.slug);
 
-    setValues(draft?.values ?? Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue])));
+    setValues(draft?.values ?? defaultCalculatorValues(calculator));
+    setSelectedScenarioId(draft?.scenarioId ?? 'base');
     setLastSavedRoute(null);
     setSaveMessage(draft && auth.status === 'signed-in' ? 'Draft restored. Save it to keep it in your account.' : '');
   }, [auth.status, calculator]);
@@ -205,11 +229,12 @@ function CalculatorDetail({
 
     writeCalculatorDraft({
       result,
+      scenarioId: selectedScenarioId,
       slug: calculator.slug,
       updatedAt: new Date().toISOString(),
       values
     });
-  }, [auth.status, calculator.slug, result, values]);
+  }, [auth.status, calculator.slug, result, selectedScenarioId, values]);
 
   const setValue = (key: string, value: string) => {
     const parsed = Number(value);
@@ -224,6 +249,7 @@ function CalculatorDetail({
   const persistSignedOutDraft = () => {
     writeCalculatorDraft({
       result,
+      scenarioId: selectedScenarioId,
       slug: calculator.slug,
       updatedAt: new Date().toISOString(),
       values
@@ -245,7 +271,7 @@ function CalculatorDetail({
         calculator,
         currency: calculatorCurrency(calculator),
         result,
-        values
+        values: scenarioValues
       });
 
       clearCalculatorDraft(calculator.slug);
@@ -276,8 +302,12 @@ function CalculatorDetail({
           <p>{qualitySpec.decisionUsefulness}</p>
         </article>
         <article>
+          <p className="eyebrow">Decision studio</p>
+          <p>{studioMetadata.summary}</p>
+        </article>
+        <article>
           <p className="eyebrow">How to read it</p>
-          <p>{result.narrative} The supporting tiles explain the main estimate and show the inputs that matter most.</p>
+          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
         </article>
       </section>
 
@@ -320,6 +350,13 @@ function CalculatorDetail({
               </label>
             ))}
           </div>
+          <CalculatorScenarioPanel
+            scenarios={scenarios}
+            selectedScenarioId={selectedScenarioId}
+            onSelectScenario={setSelectedScenarioId}
+            calculator={calculator}
+            focus={studioMetadata.scenarioFocus}
+          />
         </section>
 
         <section className="calculator-result-panel" aria-label={`${calculator.title} result`}>
@@ -347,7 +384,7 @@ function CalculatorDetail({
               </article>
             ))}
           </div>
-          <CalculatorResultVisual calculator={calculator} metrics={result.metrics} />
+          <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} />
           <p className="calculator-result-narrative">{result.narrative}</p>
           <div className="calculator-conversion-panel">
             <span className="feature-icon"><ConversionIcon size={18} /></span>
@@ -403,7 +440,20 @@ function CalculatorDetail({
         </div>
       </section>
 
+      <CalculatorExamplePanel
+        calculator={calculator}
+        example={studioMetadata.example}
+        onLoadExample={(exampleValues) => {
+          setValues(exampleValues);
+          setSelectedScenarioId('base');
+          setLastSavedRoute(null);
+          setSaveMessage('Example loaded. Adjust the inputs or save the result when it fits your plan.');
+        }}
+      />
+
       <CalculatorDecisionPanel calculator={calculator} qualitySpec={qualitySpec} />
+
+      <CalculatorRelatedPanel metadata={studioMetadata} onNavigate={onNavigate} />
 
       <section className="calculator-faq-panel" aria-label={`${calculator.title} FAQ`}>
         <p className="eyebrow">FAQ</p>
@@ -420,21 +470,100 @@ function CalculatorDetail({
   );
 }
 
-function CalculatorResultVisual({
+function CalculatorScenarioPanel({
   calculator,
+  focus,
+  onSelectScenario,
+  scenarios,
+  selectedScenarioId
+}: {
+  calculator: SeoCalculator;
+  focus: string;
+  onSelectScenario: (scenarioId: CalculatorScenarioId) => void;
+  scenarios: CalculatorScenario[];
+  selectedScenarioId: CalculatorScenarioId;
+}) {
+  return (
+    <section className="calculator-scenario-panel" aria-label={`${calculator.title} scenarios`}>
+      <div>
+        <p className="eyebrow">Scenario lens</p>
+        <small>{focus}</small>
+      </div>
+      <div className="calculator-scenario-tabs" role="tablist" aria-label="Scenario results">
+        {scenarios.map((scenario) => (
+          <button
+            aria-selected={scenario.id === selectedScenarioId}
+            className={scenario.id === selectedScenarioId ? 'is-active' : ''}
+            key={scenario.id}
+            role="tab"
+            type="button"
+            onClick={() => onSelectScenario(scenario.id)}
+          >
+            <span>{scenario.label}</span>
+            <small>{formatMetric(scenario.result.metrics[0], calculator)}</small>
+          </button>
+        ))}
+      </div>
+      <p>{scenarios.find((scenario) => scenario.id === selectedScenarioId)?.description}</p>
+    </section>
+  );
+}
+
+function CalculatorStudioVisual({
+  calculator,
+  chart,
   metrics
 }: {
   calculator: SeoCalculator;
+  chart: CalculatorStudioChart;
   metrics: CalculatorMetric[];
 }) {
   const visibleMetrics = metrics.slice(0, 4);
   const maxVisualValue = Math.max(1, ...visibleMetrics.map((metric) => visualMetricValue(metric)));
+  const maxChartValue = Math.max(
+    1,
+    ...chart.entries.flatMap((entry) => [Math.abs(entry.primary), Math.abs(entry.secondary ?? 0)])
+  );
 
   return (
-    <div className="calculator-visual-panel" aria-label={`${calculator.title} visual summary`}>
+    <div className={`calculator-visual-panel visual-${chart.type}`} aria-label={`${calculator.title} visual summary`}>
       <div>
         <p className="eyebrow">Visual read</p>
-        <small>The bars compare the headline estimate with the supporting numbers so the biggest driver is easier to spot.</small>
+        <strong>{chart.title}</strong>
+        <small>{chart.description}</small>
+      </div>
+      <div className="calculator-studio-chart" aria-label={chart.summary}>
+        {chart.entries.map((entry) => {
+          const primaryWidth = Math.max(8, Math.min(100, Math.abs(entry.primary) / maxChartValue * 100));
+          const secondaryWidth = entry.secondary === undefined
+            ? 0
+            : Math.max(8, Math.min(100, Math.abs(entry.secondary) / maxChartValue * 100));
+
+          return (
+            <div className="calculator-studio-chart-row" key={entry.label}>
+              <div>
+                <span>{entry.label}</span>
+                <strong>{formatChartValue(entry.primary, calculator)}</strong>
+              </div>
+              <span className="calculator-visual-track" aria-hidden="true">
+                <span
+                  className={`calculator-visual-fill metric-${entry.tone ?? 'neutral'}`}
+                  style={{ width: `${primaryWidth}%` }}
+                />
+              </span>
+              {entry.secondary !== undefined ? (
+                <span className="calculator-visual-track secondary-track" aria-hidden="true">
+                  <span className="calculator-visual-fill metric-neutral" style={{ width: `${secondaryWidth}%` }} />
+                </span>
+              ) : null}
+              {entry.note ? <small>{entry.note}</small> : null}
+            </div>
+          );
+        })}
+      </div>
+      <div className="calculator-chart-legend">
+        <span>{chart.legend.primary}</span>
+        {chart.legend.secondary ? <span>{chart.legend.secondary}</span> : null}
       </div>
       <div className="calculator-visual-bars">
         {visibleMetrics.map((metric) => {
@@ -460,6 +589,33 @@ function CalculatorResultVisual({
   );
 }
 
+function CalculatorExamplePanel({
+  calculator,
+  example,
+  onLoadExample
+}: {
+  calculator: SeoCalculator;
+  example: CalculatorStudioExample;
+  onLoadExample: (values: Record<string, number>) => void;
+}) {
+  return (
+    <section className="calculator-example-panel" aria-label={`${calculator.title} example`}>
+      <div>
+        <p className="eyebrow">Example scenario</p>
+        <h2>{example.title}</h2>
+        <p>{example.description}</p>
+      </div>
+      <div className="calculator-example-actions">
+        <small>{example.insight}</small>
+        <button className="secondary-button icon-text-button" type="button" onClick={() => onLoadExample(example.values)}>
+          <Calculator size={16} />
+          Load example
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function CalculatorDecisionPanel({
   calculator,
   qualitySpec
@@ -477,6 +633,33 @@ function CalculatorDecisionPanel({
       <div className="calculator-decision-list">
         {qualitySpec.interpretationChecks.slice(0, 3).map((check) => (
           <span key={check}>{check}</span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CalculatorRelatedPanel({
+  metadata,
+  onNavigate
+}: {
+  metadata: CalculatorStudioMetadata;
+  onNavigate: (route: string) => void;
+}) {
+  return (
+    <section className="calculator-related-panel" aria-label={`${metadata.studio} related calculators`}>
+      <div>
+        <p className="eyebrow">{metadata.studio}</p>
+        <h2>Compare the nearby decisions</h2>
+        <p>These calculators use the same decision workflow, so moving between them keeps the assumptions in context.</p>
+      </div>
+      <div className="calculator-related-list">
+        {metadata.relatedCalculators.map((related) => (
+          <button key={related.slug} type="button" onClick={() => onNavigate(related.path)}>
+            <span>{related.title}</span>
+            <small>{related.reason}</small>
+            <ArrowRight size={15} />
+          </button>
         ))}
       </div>
     </section>
@@ -504,6 +687,18 @@ function visualMetricValue(metric: CalculatorMetric): number {
   return Math.abs(metric.value);
 }
 
+function formatChartValue(value: number, calculator: SeoCalculator): string {
+  if (Math.abs(value) >= 1000) {
+    return new Intl.NumberFormat(undefined, {
+      currency: calculatorCurrency(calculator),
+      maximumFractionDigits: 0,
+      style: 'currency'
+    }).format(value);
+  }
+
+  return value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+}
+
 function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): string {
   if (metric.valueType === 'currency') {
     return new Intl.NumberFormat(undefined, {
@@ -526,10 +721,15 @@ function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): stri
 
 type StoredCalculatorDraft = {
   result: ReturnType<typeof calculateSeoCalculator>;
+  scenarioId?: CalculatorScenarioId;
   slug: string;
   updatedAt: string;
   values: Record<string, number>;
 };
+
+function defaultCalculatorValues(calculator: SeoCalculator): Record<string, number> {
+  return Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]));
+}
 
 function readCalculatorDraft(slug: string): StoredCalculatorDraft | null {
   if (typeof window === 'undefined') {
@@ -587,6 +787,10 @@ function isDraftRecord(value: unknown): value is StoredCalculatorDraft {
     record.values !== null &&
     !Array.isArray(record.values) &&
     typeof record.result === 'object' &&
-    record.result !== null
+    record.result !== null &&
+    (record.scenarioId === undefined ||
+      record.scenarioId === 'base' ||
+      record.scenarioId === 'conservative' ||
+      record.scenarioId === 'optimistic')
   );
 }

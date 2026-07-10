@@ -28,14 +28,15 @@ Status after this checkpoint:
 - Calculator pages show a "Why it matters" explanation, a baseline visual read of the result metrics, and decision checks.
 - Signed-in users can save calculator outputs through a durable D1 result record, with downstream goal/account/plan draft creation where safe.
 - Signed-out users can preserve a calculator draft/result before account creation.
+- Shared decision-studio metadata, scenario state, chart-ready primitives, route-specific examples, and related-calculator navigation are in place for every current public route.
 - Existing formula tests now also assert that every calculator has calculation, visual, scenario, validation, and conversion expectations.
-- This is Phase 17 plus a Phase 20 foundation slice, not completion of the comprehensive studio work.
+- This completes the Phase 20 foundation, not the family-specific comprehensive studio work.
 
 Completion estimate:
 
-- Comprehensive calculator program: 20% complete.
-- Remaining work: 80%.
-- Why not higher: full studio charts, amortization schedules, statutory tax engines, missing loan routes, scenario drawers, exports, and personalization are still pending.
+- Comprehensive calculator program: 32% complete.
+- Remaining work: 68%.
+- Why not higher: family-specific full studio charts, amortization schedules, statutory tax engines, missing loan routes, exports, and personalization are still pending.
 
 ## Universal Definition Of Done
 
@@ -174,12 +175,11 @@ No new route should ship as a one-number page. Each one needs route-specific cop
 
 ## Implementation Sequence
 
-1. Phase 20: finish decision-studio metadata, shared scenario state, chart primitives, related links, and content guard tests.
-2. Phase 21: growth, savings, goal, retirement, and return visualizers.
-3. Phase 22: loan, debt, home, vehicle, amortization, and missing route buildout.
-4. Phase 23: income, tax, budget, protection engines and visualizers.
-5. Phase 24: route-specific content quality, sitemap/schema verification, no-auth smoke tests.
-6. Phase 25: saved scenarios, recent history, dashboard follow-ups, export/share.
+1. Phase 21: growth, savings, goal, retirement, and return visualizers.
+2. Phase 22: loan, debt, home, vehicle, amortization, and missing route buildout.
+3. Phase 23: income, tax, budget, protection engines and visualizers.
+4. Phase 24: route-specific content quality, sitemap/schema verification, no-auth smoke tests.
+5. Phase 25: saved scenarios, recent history, dashboard follow-ups, export/share.
 
 ## Test Standard
 

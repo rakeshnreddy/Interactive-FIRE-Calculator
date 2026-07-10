@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://0fe9ade0.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://2e1c808a.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -37,7 +37,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 17: Calculator-to-Account Conversion Layer | Preview/server complete | 100% | Durable calculator result saves, signed-out draft preservation, signed-in save CTAs, downstream goal/account/plan draft creation, transaction-workflow result storage, dashboard saved-result cards, and account-data export/delete coverage are in place. |
 | Phase 18: Calculator Library Scale-Out | Preview/app complete | 100% | CAGR, XIRR, inflation, Rule of 72, capital gains, GST/TDS, down payment, PMI, HELOC, balance transfer, CD/HYSA, insurance, lease-vs-buy, and ROI calculators are live. |
 | Phase 19: Calculator UX and Formula Assurance | Preview/app complete | 100% | Calculator copy now uses user-facing decision framing, the landing hero links to the full library, detail pages explain inputs/results with hover/focus help, and every calculator has an individual expected-output test. |
-| Phase 20: Calculator Decision Studio Foundation | In progress | 20% | A code-level quality contract, baseline visual read, and decision checks are in place for every current calculator; scenario state, full chart primitives, related calculators, and route-specific content remain. |
+| Phase 20: Calculator Decision Studio Foundation | Preview/app complete | 100% | Shared decision-studio metadata, reusable scenario state, chart-ready visual primitives, route-specific example loaders, related-calculator navigation, and public-copy guard tests are in place for every current calculator route. |
 | Phase 21: Growth, Goal, and Retirement Visualizers | Planned | 0% | Add contribution-vs-growth timelines, goal feasibility, inflation-adjusted values, retirement corpus gaps, and withdrawal runway visuals. |
 | Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Planned | 0% | Add amortization schedules, payoff calendars, break-even charts, true multi-debt snowball/avalanche, missing loan/mortgage routes, and liability/payoff save flows. |
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Planned | 0% | Add gross-to-net waterfalls, richer India/US tax assumptions, budget cashflow visuals, emergency runway, and protection-gap planning. |
@@ -458,11 +458,11 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
-- Current comprehensive-calculator completion estimate: 20%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, and downstream goal/account/plan draft creation are in place; 80% remains for decision studios, rich visualizations, missing routes, richer content, exports, and personalization.
+- Current comprehensive-calculator completion estimate: 32%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, downstream goal/account/plan draft creation, shared decision-studio metadata, scenario state, chart primitives, route-specific examples, and related calculators are in place; 68% remains for family-specific rich visualizations, missing routes, fuller statutory/tax/schedule engines, exports, and personalization.
 - [x] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
 - [x] Phase 20: Add code-level calculator quality/studio contracts while preserving every existing public route.
 - [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
-- [ ] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
+- [x] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
 - [ ] Phase 21: Upgrade growth, goal, and retirement calculators with timelines, inflation-adjusted outputs, contribution/growth splits, corpus gaps, and withdrawal runway visuals.
 - [ ] Phase 22: Upgrade loan, debt, home, and vehicle calculators with amortization schedules, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
 - [ ] Phase 22: Add missing loan/mortgage calculators, including mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment, India foreclosure, India balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
@@ -500,6 +500,22 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - Live API smoke: unauthenticated `GET /api/calculator-results` returned `401 {"error":"Unauthorized"}`.
 - Completion after implementation: comprehensive calculator program is 20% complete; 80% remains.
 - Remaining blockers: production Clerk setup is still the launch blocker; Phase 20-25 route-specific visualizations, schedules, tax engines, missing routes, exports, and personalization remain.
+
+## Phase 20 Decision Studio Foundation Completion Checkpoint
+
+- Completed: `src/lib/calculatorStudios.ts` adds shared decision-studio metadata for every calculator family while preserving every existing public route.
+- Completed: calculator detail pages now include a reusable scenario lens with conservative, base, and optimistic states. Scenario results apply as temporary result lenses without replacing the user's base inputs.
+- Completed: shared chart-ready primitives now cover timeline, waterfall, comparison, and amortization previews so later phases can deepen family-specific visuals without reworking the page structure.
+- Completed: every calculator has a route-specific example loader and related-calculator navigation scoped to the same decision workflow.
+- Completed: `src/lib/calculatorStudios.test.ts` verifies studio metadata, scenarios, chart data, examples, related routes, amortization primitives, bounded scenario values, and public-copy guardrails across every current route.
+- Tests before deploy: `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 440 frontend tests across 16 files, and production build.
+- Local visual smoke: Playwright CLI screenshots rendered `/calculators/sip` at `1280x720` and `/calculators/amortization` at `390x844`; full-page mobile amortization showed scenario controls, chart preview, example, decision checks, related calculators, and FAQ without visible overlap. Clerk emitted the expected development-key warning only.
+- Deploy: `npm run cf:deploy` deployed to `https://2e1c808a.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live HTTP smoke: `/`, `/calculators`, `/calculators/sip`, `/calculators/amortization`, `/calculators/roi`, `/calculators/fire`, and `/transactions` returned `200`.
+- Live API smoke: unauthenticated `GET /api/calculator-results` returned `401 {"error":"Unauthorized"}`.
+- Live visual smoke: Playwright CLI screenshot rendered `/calculators/sip` at `390x844`.
+- Completion after implementation: comprehensive calculator program is 32% complete; 68% remains.
+- Remaining blockers: production Clerk setup is still the launch blocker; Phase 21-25 rich family visualizations, full schedules, statutory/tax engines, missing route buildout, exports, and personalization remain.
 
 ## Phase 12-19 Verification Notes
 
