@@ -787,14 +787,15 @@ Intent:
 - Make calculators valuable beyond basic arithmetic by adding scenarios, timelines, sensitivity, visualizations, saved follow-ups, and dashboard links.
 - Apply the same high standard to every calculator: useful decision framing, input/output explanations, tested formulas, baseline visual read, route-specific comprehensive visuals, scenarios, save flows, and responsive QA.
 - Preserve user-first public copy while keeping search strategy internal.
-- Treat the current amortization route as incomplete until it includes monthly schedules, yearly rollups, custom period views, principal/interest charts, balance timeline, cumulative interest, and export/share.
+- Treat the current amortization route as incomplete until it includes a full payment-by-payment monthly table, yearly rollups, custom period views, principal/interest charts, balance timeline, cumulative interest, and export/share.
+- Apply the same period-table standard to adjacent calculators: loan/EMI/mortgage schedules, debt payoff tables, SIP/deposit contribution schedules, SWP/retirement withdrawal schedules, tax/paycheck bracket or period tables, and cashflow/category breakdown tables.
 - Phase 22 owns the new loan/mortgage route backlog: mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment/foreclosure/balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
 
 Phase status:
 
 - Phase 20: Complete for preview/development. Decision studio foundation, shared metadata, chart primitives, scenarios, route-specific examples, related calculators, and public-copy guard tests are in place.
 - Phase 21: Growth, goal, and retirement visualizers.
-- Phase 22: Loan, debt, home, and vehicle visualizers plus the missing loan/mortgage calculator routes.
+- Phase 22: Loan, debt, home, and vehicle visualizers plus the missing loan/mortgage calculator routes, with complete payment schedules and payoff tables as required deliverables.
 - Phase 23: Income, tax, budget, and protection deepening.
 - Phase 24: Search preservation and content quality hardening.
 - Phase 25: Engagement and personalization loop.

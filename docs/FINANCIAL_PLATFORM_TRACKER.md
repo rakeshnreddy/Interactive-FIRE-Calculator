@@ -39,7 +39,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 19: Calculator UX and Formula Assurance | Preview/app complete | 100% | Calculator copy now uses user-facing decision framing, the landing hero links to the full library, detail pages explain inputs/results with hover/focus help, and every calculator has an individual expected-output test. |
 | Phase 20: Calculator Decision Studio Foundation | Preview/app complete | 100% | Shared decision-studio metadata, reusable scenario state, chart-ready visual primitives, route-specific example loaders, related-calculator navigation, and public-copy guard tests are in place for every current calculator route. |
 | Phase 21: Growth, Goal, and Retirement Visualizers | Planned | 0% | Add contribution-vs-growth timelines, goal feasibility, inflation-adjusted values, retirement corpus gaps, and withdrawal runway visuals. |
-| Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Planned | 0% | Add amortization schedules, payoff calendars, break-even charts, true multi-debt snowball/avalanche, missing loan/mortgage routes, and liability/payoff save flows. |
+| Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Planned | 0% | Add complete monthly amortization/payment tables, yearly rollups, custom period views, payoff calendars, break-even charts, true multi-debt snowball/avalanche schedules, missing loan/mortgage routes, and liability/payoff save flows. |
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Planned | 0% | Add gross-to-net waterfalls, richer India/US tax assumptions, budget cashflow visuals, emergency runway, and protection-gap planning. |
 | Phase 24: Calculator Search Preservation and Content Quality | Planned | 0% | Preserve stable URLs while adding unique route examples, assumptions, structured data, internal links, and no-auth smoke coverage for every calculator. |
 | Phase 25: Engagement and Personalization Loop | Planned | 0% | Add saved scenario comparisons, recent calculator history, dashboard follow-up cards, and export/share for schedules and summaries. |
@@ -464,11 +464,11 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
 - [x] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
 - [ ] Phase 21: Upgrade growth, goal, and retirement calculators with timelines, inflation-adjusted outputs, contribution/growth splits, corpus gaps, and withdrawal runway visuals.
-- [ ] Phase 22: Upgrade loan, debt, home, and vehicle calculators with amortization schedules, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
+- [ ] Phase 22: Upgrade loan, debt, home, and vehicle calculators with complete payment-by-payment amortization tables, yearly rollups, custom period views, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
 - [ ] Phase 22: Add missing loan/mortgage calculators, including mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment, India foreclosure, India balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
 - [ ] Phase 23: Upgrade income, tax, budget, and protection calculators with waterfalls, category/cashflow visuals, richer assumptions, and estimate disclaimers.
 - [ ] Phase 24: Preserve search value by keeping stable URLs, self-canonicals, sitemap coverage, route-specific content, structured data, and public no-auth smoke coverage.
-- [ ] Phase 25: Add saved scenario comparison, recent calculator history, dashboard follow-up cards, and export/share options.
+- [ ] Phase 25: Add saved scenario comparison, recent calculator history, dashboard follow-up cards, and export/share options for schedules, payoff tables, deposit tables, withdrawal tables, and summaries.
 - [ ] Keep internal search/acquisition strategy out of user-facing copy.
 - [ ] Combine calculator implementations through shared studios, not by removing or redirecting public calculator routes.
 - [ ] After each app deploy, record preview URL, tests, smoke routes, completed work, completion percentage, remaining percentage, and blockers.
