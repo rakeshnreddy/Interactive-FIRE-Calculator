@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: July 7, 2026
+Last updated: July 10, 2026
 
 ## Repository
 
@@ -283,6 +283,8 @@ Calculator roadmap decision:
 - Do not remove or redirect calculator routes just because formulas overlap.
 - Combine calculators internally as shared studios: growth/goals, returns, loan/home, debt payoff, income/tax, retirement income, and cashflow/balance sheet.
 - Upgrade calculators so users get decision support: scenarios, visual timelines, break-even points, saved follow-ups, and dashboard connections.
+- Treat the current amortization route as incomplete until it shows full monthly schedule, yearly rollups, custom period views, principal/interest charts, balance timeline, cumulative interest, and export/share.
+- Phase 22 now includes missing loan/mortgage routes such as mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, FHA/VA, India loan prepayment/foreclosure/balance transfer, flat-vs-reducing rate, India eligibility, and stamp duty/registration.
 - Keep public-facing copy user-first; SEO/search strategy stays internal.
 - Phase 17 save flows should be designed once and reused by all later calculator studios.
 

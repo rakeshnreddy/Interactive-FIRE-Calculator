@@ -751,15 +751,22 @@ Intent:
 - Combine overlapping calculators internally through shared decision studios instead of removing public pages.
 - Make calculators valuable beyond basic arithmetic by adding scenarios, timelines, sensitivity, visualizations, saved follow-ups, and dashboard links.
 - Preserve user-first public copy while keeping search strategy internal.
+- Treat the current amortization route as incomplete until it includes monthly schedules, yearly rollups, custom period views, principal/interest charts, balance timeline, cumulative interest, and export/share.
+- Phase 22 owns the new loan/mortgage route backlog: mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment/foreclosure/balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
 
 Planned phases:
 
 - Phase 20: Decision studio foundation, shared metadata, chart primitives, scenarios, route-specific examples, and related calculators.
 - Phase 21: Growth, goal, and retirement visualizers.
-- Phase 22: Loan, debt, home, and vehicle visualizers.
+- Phase 22: Loan, debt, home, and vehicle visualizers plus the missing loan/mortgage calculator routes.
 - Phase 23: Income, tax, budget, and protection deepening.
 - Phase 24: Search preservation and content quality hardening.
 - Phase 25: Engagement and personalization loop.
+
+Deploy/handoff rule:
+
+- After each app deploy, record what shipped, preview URL, tests, smoke routes, percent complete, percent remaining, and blockers.
+- Current comprehensive calculator completion estimate is 10%; roughly 90% remains for save flows, visual studios, missing routes, richer content, exports, and personalization.
 
 ## Immediate Next Coding Session Recommendation
 

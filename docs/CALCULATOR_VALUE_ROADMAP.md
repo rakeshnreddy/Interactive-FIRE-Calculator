@@ -1,6 +1,6 @@
 # Calculator Value and Visualization Roadmap
 
-Last updated: July 7, 2026
+Last updated: July 10, 2026
 
 ## Goal
 
@@ -27,6 +27,33 @@ Reference guidance:
 - Google Search Central: creating helpful, reliable, people-first content: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
 - Google Search Central: canonical URLs and duplicate or similar pages: https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls
 - Google Search Central: structured data overview and JSON-LD guidance: https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
+- Loan and mortgage feature benchmarks: Bankrate amortization and refinance calculators, NerdWallet mortgage/affordability/refinance calculators, Calculator.net amortization/refinance calculators, and major lender extra-payment calculators.
+
+## Comprehensive Calculator Standard
+
+Every calculator should eventually meet this standard before being called fully implemented:
+
+- Keep the public route usable without auth and preserve the route's search-intent H1.
+- Provide a primary answer, supporting numbers, assumptions, and route-specific examples.
+- Show at least one visual representation whenever the calculation has a timeline, split, tradeoff, or sensitivity.
+- Offer scenario comparison where a user naturally asks "what if": base, conservative, optimistic, or custom scenario.
+- Include an explanation of what changed the result most.
+- Connect the result to a signed-in next step through Phase 17 save flows.
+- Include tests for formula outputs, invalid inputs, generated visualization data, and signed-out/signed-in CTA behavior.
+- Avoid "thin duplicate" pages: routes can share engines, but route copy, defaults, examples, FAQs, and related links must match the user's actual intent.
+
+Visual patterns by calculator type:
+
+| Calculator type | Required visual aids |
+| --- | --- |
+| Amortizing loans and EMI | Monthly schedule, yearly summary, principal/interest split, remaining balance line, cumulative interest, extra-payment comparison. |
+| Mortgage/home decisions | Payment waterfall, amortization/equity timeline, break-even chart, affordability/DTI gauge, closing-cost or PMI impact. |
+| Debt payoff | Balance timeline, payoff calendar, interest-saved comparison, snowball vs avalanche side-by-side, minimum-payment warning. |
+| Growth and savings | Contributions vs growth area chart, milestone timeline, inflation-adjusted value, scenario comparison, sensitivity grid. |
+| Retirement income | Corpus timeline, withdrawal runway, gap/surplus chart, account mix, claiming or distribution break-even. |
+| Tax/income | Gross-to-net waterfall, regime/status comparison bars, deduction sensitivity, effective vs marginal rate where applicable. |
+| Budget/cashflow | Cashflow waterfall or Sankey, category bars, savings-rate trend, emergency runway. |
+| Insurance/protection | Coverage gap waterfall, dependents timeline, existing coverage vs need. |
 
 ## Shared Decision Studios
 
@@ -36,7 +63,7 @@ Keep all calculator routes, but route them into shared richer experiences with r
 | --- | --- | --- |
 | Growth and Goal Studio | `compound-interest`, `savings-goal`, `sip`, `step-up-sip`, `sip-goal`, `lumpsum-mutual-fund`, `fd`, `rd`, `ppf`, `epf`, `nps`, `401k`, `cd`, `hysa`, `inflation`, `down-payment` | Time-series projection, contribution vs growth split, goal date, monthly required, inflation-adjusted value, scenario comparison, save as goal/account. |
 | Return Analysis Studio | `investment-return`, `cagr`, `xirr`, `roi`, `rule-of-72` | Annualized return, cashflow-aware return, benchmark comparison, payback period, inflation-adjusted return, performance timeline. |
-| Loan and Home Studio | `emi`, `home-loan-emi`, `car-loan-emi`, `personal-loan-emi`, `mortgage`, `mortgage-affordability`, `mortgage-refinance`, `amortization`, `extra-mortgage-payment`, `auto-loan`, `personal-loan`, `heloc`, `pmi`, `rent-vs-buy`, `lease-vs-buy` | Amortization schedule, principal/interest split, affordability, prepayment effect, break-even, total cost of ownership, save liability account and payoff plan. |
+| Loan and Home Studio | `emi`, `home-loan-emi`, `car-loan-emi`, `personal-loan-emi`, `mortgage`, `mortgage-affordability`, `mortgage-refinance`, `amortization`, `extra-mortgage-payment`, `auto-loan`, `personal-loan`, `heloc`, `pmi`, `rent-vs-buy`, `lease-vs-buy`, plus planned routes listed below | Amortization schedule, principal/interest split, affordability, prepayment effect, break-even, total cost of ownership, save liability account and payoff plan. |
 | Debt Payoff Studio | `debt-payoff`, `credit-card-payoff`, `debt-snowball-avalanche`, `student-loan-payoff`, `balance-transfer`, `extra-mortgage-payment` | Multiple debt entry, snowball vs avalanche, payoff calendar, interest saved, balance transfer promo duration, minimum-payment warning, save payoff plan. |
 | Income and Tax Studio | `income-tax-india`, `salary-india`, `hra-exemption`, `paycheck`, `income-tax-us`, `capital-gains-tax`, `gst`, `tds`, `roth-vs-traditional-ira`, `rmd` | Waterfall from gross to net, regime/status comparison, deduction impact, tax-rate sensitivity, taxable vs tax-free income, save tax plan or monthly cashflow. |
 | Retirement Income Studio | `retirement`, `swp`, `social-security-break-even`, `rmd`, `nps`, `401k`, `epf`, `ppf`, `/calculators/fire` | Retirement timeline, corpus need, contribution gap, withdrawal runway, claiming break-even, account mix, save retirement plan. |
@@ -77,8 +104,10 @@ This remains the immediate remaining product phase.
 ### Phase 22: Loan, Debt, Home, and Vehicle Visualizers
 
 - Upgrade all loan/EMI/mortgage routes with amortization schedule, principal vs interest chart, payoff calendar, and prepayment sensitivity.
+- Make `/calculators/amortization` a true schedule calculator: complete monthly schedule, yearly rollups, custom period view, remaining balance, cumulative interest, export, and charts.
 - Upgrade refinance, balance transfer, rent-vs-buy, lease-vs-buy, PMI, and affordability calculators with break-even charts.
 - Replace weighted debt-only snowball/avalanche with a true multi-debt table.
+- Add missing loan and mortgage routes from the planned calculator backlog below.
 - Add save liability and payoff-plan flows for borrowing calculators.
 
 ### Phase 23: Income, Tax, Budget, and Protection Deepening
@@ -105,6 +134,60 @@ This remains the immediate remaining product phase.
 - Add recent calculator history for signed-in users.
 - Add dashboard follow-up cards: "your EMI plan needs a liability account", "your SIP goal is behind by X", "your emergency fund target changed after spending updates".
 - Add export/share for schedules and scenario summaries.
+
+## Logical Handoff and Deploy Checkpoints
+
+This is the implementation sequence to avoid losing progress. Deploy when app behavior changes; docs-only planning updates do not need a Pages deploy because they are not part of the built SPA artifact.
+
+| Checkpoint | Deploy? | Expected comprehensive-calculator completion | Work left after checkpoint | What should be accomplished |
+| --- | --- | ---: | ---: | --- |
+| Planning checkpoint | No app deploy | 10% | 90% | Existing routes, base formulas, tests, Phase 20-25 roadmap, missing calculator backlog, and comprehensive standards documented. |
+| Phase 17 deploy | Yes | 20% | 80% | Durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, and reusable mapping into goals/accounts/plans/transactions. |
+| Phase 20 deploy | Yes | 32% | 68% | Decision studio metadata, scenario state, shared visualization primitives, related calculators, route-specific content scaffolding, and route guard tests. |
+| Phase 21 deploy | Yes | 48% | 52% | Growth, goal, and retirement calculators upgraded with timelines, contribution/growth visuals, inflation-adjusted results, corpus gaps, withdrawal runway, and save flows. |
+| Phase 22 deploy | Yes | 66% | 34% | Full amortization schedules, loan/debt/home visualizers, missing loan/mortgage routes, multi-debt snowball/avalanche, payoff calendars, break-even charts, and exports. |
+| Phase 23 deploy | Yes | 80% | 20% | Income, tax, budget, and protection calculators upgraded with waterfalls, richer assumptions, estimate disclaimers, and cashflow/protection visuals. |
+| Phase 24 deploy | Yes | 92% | 8% | Route-specific content, canonicals, structured data, sitemap coverage, internal links, no-auth smoke coverage, and duplicate-content guard tests. |
+| Phase 25 deploy | Yes | 100% | 0% | Saved scenario comparison, recent calculator history, dashboard follow-up cards, export/share, and final browser QA across representative calculator families. |
+
+After each app deploy, record:
+
+- Preview URL and branch alias.
+- Tests run and pass/fail result.
+- Local browser smoke routes.
+- Live browser smoke routes.
+- Percentage complete and percentage remaining from this table.
+- Any launch blockers, especially Clerk production auth.
+
+## Planned New Calculator Routes
+
+These calculators are not currently implemented as public routes. Add them without removing existing routes. Where formulas overlap, route them into the Loan and Home Studio or Debt Payoff Studio with route-specific defaults, copy, examples, FAQs, and internal links.
+
+| Planned calculator | Suggested route | Why it matters | Phase | Studio | Comprehensive visual requirements |
+| --- | --- | --- | --- | --- | --- |
+| Mortgage Payoff Calculator | `/calculators/mortgage-payoff` | Users search directly for payoff timing and interest saved; current `extra-mortgage-payment` partially covers this but not as a dedicated payoff route. | 22 | Loan and Home / Debt Payoff | Payoff calendar, interest saved, original vs accelerated balance line, monthly/yearly schedule. |
+| Biweekly Mortgage Payment Calculator | `/calculators/biweekly-mortgage-payment` | Common mortgage acceleration query; helps users understand why 26 half-payments matter. | 22 | Loan and Home | Standard vs biweekly payoff timeline, interest saved, effective extra payment, amortization comparison. |
+| Mortgage Recast Calculator | `/calculators/mortgage-recast` | Distinct from refinance and extra payments; users need lower-payment vs shorter-term comparison. | 22 | Loan and Home | Before/after payment, recast fee break-even, remaining balance line, amortization comparison. |
+| Mortgage Points / Rate Buydown Calculator | `/calculators/mortgage-points` | High-intent purchase/refinance decision; compares upfront cost against lower rate. | 22 | Loan and Home | Break-even month, cumulative savings, payment comparison, sensitivity by holding period. |
+| 15 vs 30 Year Mortgage Calculator | `/calculators/15-vs-30-year-mortgage` | Common search and useful decision page; avoids manual side-by-side math. | 22 | Loan and Home | Payment comparison, total interest bars, equity timeline, affordability warning. |
+| Adjustable Rate Mortgage Calculator | `/calculators/arm-mortgage` | Important for rate reset risk; needs scenario visualization. | 22 | Loan and Home | Payment reset timeline, max payment scenario, balance line, rate sensitivity. |
+| Interest-Only Loan Calculator | `/calculators/interest-only-loan` | Useful for HELOCs, mortgages, and bridge loans; payment shock is the core value. | 22 | Loan and Home | Interest-only period vs amortizing period, payment shock chart, total interest. |
+| Balloon Loan Calculator | `/calculators/balloon-loan` | Captures loans with a final lump sum that normal amortization does not explain. | 22 | Loan and Home | Balloon amount, balance timeline, refinance/save-for-balloon target. |
+| Closing Costs Calculator | `/calculators/closing-costs` | Needed for home affordability and cash-to-close planning. | 22 | Loan and Home | Cash-to-close waterfall, lender/third-party/prepaid split, down payment integration. |
+| Escrow Calculator | `/calculators/escrow` | Mortgage payment pages are more useful with tax/insurance escrow. | 22 | Loan and Home | Principal/interest/tax/insurance/PMI waterfall, annual escrow projection. |
+| Debt-to-Income Ratio Calculator | `/calculators/debt-to-income-ratio` | Critical affordability metric for mortgage/loan eligibility. | 22 | Loan and Home | Front-end/back-end DTI gauges, approval bands, debt reduction scenario. |
+| Loan Comparison Calculator | `/calculators/loan-comparison` | Users often compare terms/rates/fees rather than one loan. | 22 | Loan and Home | Side-by-side payment, total cost, total interest, break-even, recommendation note. |
+| APR / True Loan Cost Calculator | `/calculators/apr` | Turns fees and points into true borrowing cost; complements all loan pages. | 22 | Loan and Home | APR vs nominal rate, fee impact waterfall, loan-cost comparison. |
+| Home Equity Loan Calculator | `/calculators/home-equity-loan` | Different from HELOC because it is a closed-end amortizing loan. | 22 | Loan and Home | Payment, equity available, LTV gauge, amortization schedule. |
+| FHA Loan Calculator | `/calculators/fha-loan` | High-search mortgage route with mortgage insurance assumptions. | 22 | Loan and Home | Upfront/monthly MIP, payment waterfall, cash-to-close, amortization. |
+| VA Loan Calculator | `/calculators/va-loan` | High-search veteran mortgage route with funding fee assumptions. | 22 | Loan and Home | Funding fee impact, payment waterfall, cash-to-close, amortization. |
+| FHA vs Conventional Calculator | `/calculators/fha-vs-conventional` | Decision route for buyers comparing mortgage paths. | 22 | Loan and Home | Side-by-side cash-to-close, monthly payment, insurance duration, break-even. |
+| Home Loan Prepayment Calculator India | `/calculators/home-loan-prepayment-india` | Indian home-loan users often compare partial prepayment vs tenure reduction. | 22 | Loan and Home | Tenure saved, interest saved, revised amortization, lump-sum timing. |
+| Loan Foreclosure Calculator India | `/calculators/loan-foreclosure-india` | Helps estimate payoff amount, interest saved, and foreclosure charges. | 22 | Loan and Home / Debt Payoff | Payoff amount, fees, interest saved, remaining schedule comparison. |
+| Home Loan Balance Transfer Calculator India | `/calculators/home-loan-balance-transfer-india` | Indian analogue to refinance; high value when rates change. | 22 | Loan and Home | Old vs new EMI, fee break-even, total interest saved, remaining tenure. |
+| Flat vs Reducing Interest Rate Calculator | `/calculators/flat-vs-reducing-rate` | Common Indian loan confusion; explains true cost. | 22 | Loan and Home | Effective rate comparison, EMI comparison, total interest bars. |
+| Loan Eligibility Calculator India | `/calculators/loan-eligibility-india` | Useful before EMI; maps income, obligations, and tenure to eligible loan. | 22 | Loan and Home | Eligibility gauge, EMI-to-income ratio, max loan sensitivity. |
+| Stamp Duty and Registration Calculator India | `/calculators/stamp-duty-registration` | Complements home loan/down payment and cash-to-close planning. | 22 | Loan and Home | Cost breakdown waterfall, state/rate assumptions, cash required. |
 
 ## Per-Calculator Value Audit
 
