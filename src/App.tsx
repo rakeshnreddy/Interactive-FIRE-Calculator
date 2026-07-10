@@ -33,6 +33,10 @@ import {
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 import type {
+  CalculatorSaveOutcome,
+  CalculatorSaveRequest
+} from './CalculatorLibrary';
+import type {
   PlanVersionDetail,
   PlanningSaveDraft,
   PlanningSavedPlan,
@@ -313,6 +317,51 @@ type GoalUpdateDraft = {
   status: GoalStatus;
   targetAmount: string;
   targetDate: string;
+};
+
+type SavedCalculatorDestinationType = 'account' | 'goal' | 'plan' | 'transaction';
+type SavedCalculatorCreatedEntityType = SavedCalculatorDestinationType;
+
+type SavedCalculatorMetric = {
+  description?: string;
+  label: string;
+  tone?: string;
+  value: number;
+  valueType: 'currency' | 'number' | 'percent' | 'years';
+};
+
+type SavedCalculatorResultSnapshot = {
+  assumptions: string[];
+  metrics: SavedCalculatorMetric[];
+  narrative: string;
+};
+
+type SavedCalculatorResult = {
+  calculatorCategory: string;
+  calculatorRegion: string;
+  calculatorSlug: string;
+  calculatorTitle: string;
+  conversionLabel: string;
+  conversionRoute: '/accounts' | '/goals' | '/plans' | '/transactions';
+  createdAt: string;
+  createdEntityId: string | null;
+  createdEntityType: SavedCalculatorCreatedEntityType | null;
+  currency: string;
+  destinationType: SavedCalculatorDestinationType;
+  id: string;
+  inputValues: Record<string, number>;
+  result: SavedCalculatorResultSnapshot;
+  updatedAt: string;
+};
+
+type CalculatorSaveApiResponse = {
+  createdEntity: {
+    entity: unknown;
+    id: string;
+    route: '/accounts' | '/goals' | '/plans';
+    type: 'account' | 'goal' | 'plan';
+  } | null;
+  savedResult: SavedCalculatorResult;
 };
 
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
@@ -706,6 +755,207 @@ async function authenticatedJsonRequest(
     ...init,
     headers
   });
+}
+
+async function loadSavedCalculatorResults(
+  auth: Extract<AuthState, { status: 'signed-in' }>
+): Promise<SavedCalculatorResult[]> {
+  const response = await authenticatedJsonRequest(auth, '/api/calculator-results');
+
+  if (!response.ok) {
+    throw new Error('Unable to load saved calculator results.');
+  }
+
+  const body: unknown = await response.json().catch(() => null);
+
+  return isRecord(body) && Array.isArray(body.calculatorResults)
+    ? body.calculatorResults
+        .map(toSavedCalculatorResult)
+        .filter((item): item is SavedCalculatorResult => Boolean(item))
+        .slice(0, 12)
+    : [];
+}
+
+async function createCalculatorResultRecord(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  request: CalculatorSaveRequest
+): Promise<CalculatorSaveApiResponse> {
+  const response = await authenticatedJsonRequest(auth, '/api/calculator-results', {
+    body: JSON.stringify({
+      calculatorCategory: request.calculator.category,
+      calculatorRegion: request.calculator.region,
+      calculatorSlug: request.calculator.slug,
+      calculatorTitle: request.calculator.title,
+      conversionLabel: request.calculator.conversionLabel,
+      conversionRoute: request.calculator.conversionRoute,
+      currency: request.currency,
+      inputValues: request.values,
+      result: request.result
+    }),
+    method: 'POST'
+  });
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(isRecord(body) && typeof body.error === 'string' ? body.error : 'Unable to save calculator result.');
+  }
+
+  const savedResult = isRecord(body) ? toSavedCalculatorResult(body.savedResult) : null;
+
+  if (!savedResult) {
+    throw new Error('Saved calculator result was not recognized.');
+  }
+
+  return {
+    createdEntity: toCalculatorCreatedEntity(isRecord(body) ? body.createdEntity : null),
+    savedResult
+  };
+}
+
+function calculatorSaveMessage(saved: CalculatorSaveApiResponse): string {
+  const area = saved.savedResult.destinationType === 'transaction'
+    ? 'cashflow draft'
+    : calculatorDestinationLabel(saved.savedResult.destinationType).toLowerCase();
+
+  if (saved.createdEntity) {
+    return `${saved.savedResult.calculatorTitle} saved and ${area} created.`;
+  }
+
+  return `${saved.savedResult.calculatorTitle} saved as a ${area}.`;
+}
+
+function toSavedCalculatorResult(value: unknown): SavedCalculatorResult | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.id !== 'string' ||
+    typeof value.calculatorSlug !== 'string' ||
+    typeof value.calculatorTitle !== 'string' ||
+    typeof value.calculatorCategory !== 'string' ||
+    typeof value.calculatorRegion !== 'string' ||
+    typeof value.currency !== 'string' ||
+    !isSavedCalculatorDestinationType(value.destinationType) ||
+    !isCalculatorConversionRoute(value.conversionRoute) ||
+    typeof value.conversionLabel !== 'string' ||
+    (typeof value.createdEntityType !== 'string' && value.createdEntityType !== null) ||
+    (typeof value.createdEntityId !== 'string' && value.createdEntityId !== null) ||
+    typeof value.createdAt !== 'string' ||
+    typeof value.updatedAt !== 'string' ||
+    !isNumberRecord(value.inputValues)
+  ) {
+    return null;
+  }
+
+  const result = toSavedCalculatorResultSnapshot(value.result);
+
+  if (!result) {
+    return null;
+  }
+
+  return {
+    calculatorCategory: value.calculatorCategory,
+    calculatorRegion: value.calculatorRegion,
+    calculatorSlug: value.calculatorSlug,
+    calculatorTitle: value.calculatorTitle,
+    conversionLabel: value.conversionLabel,
+    conversionRoute: value.conversionRoute,
+    createdAt: value.createdAt,
+    createdEntityId: value.createdEntityId,
+    createdEntityType: isSavedCalculatorCreatedEntityType(value.createdEntityType) ? value.createdEntityType : null,
+    currency: value.currency,
+    destinationType: value.destinationType,
+    id: value.id,
+    inputValues: value.inputValues,
+    result,
+    updatedAt: value.updatedAt
+  };
+}
+
+function toSavedCalculatorResultSnapshot(value: unknown): SavedCalculatorResultSnapshot | null {
+  if (!isRecord(value) || typeof value.narrative !== 'string' || !Array.isArray(value.metrics)) {
+    return null;
+  }
+
+  const metrics = value.metrics
+    .map(toSavedCalculatorMetric)
+    .filter((metric): metric is SavedCalculatorMetric => Boolean(metric));
+
+  if (metrics.length === 0) {
+    return null;
+  }
+
+  return {
+    assumptions: Array.isArray(value.assumptions)
+      ? value.assumptions.filter((assumption): assumption is string => typeof assumption === 'string')
+      : [],
+    metrics,
+    narrative: value.narrative
+  };
+}
+
+function toSavedCalculatorMetric(value: unknown): SavedCalculatorMetric | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    typeof value.label !== 'string' ||
+    typeof value.value !== 'number' ||
+    !isSavedMetricValueType(value.valueType)
+  ) {
+    return null;
+  }
+
+  return {
+    description: typeof value.description === 'string' ? value.description : undefined,
+    label: value.label,
+    tone: typeof value.tone === 'string' ? value.tone : undefined,
+    value: value.value,
+    valueType: value.valueType
+  };
+}
+
+function toCalculatorCreatedEntity(value: unknown): CalculatorSaveApiResponse['createdEntity'] {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    (value.type !== 'account' && value.type !== 'goal' && value.type !== 'plan') ||
+    (value.route !== '/accounts' && value.route !== '/goals' && value.route !== '/plans') ||
+    typeof value.id !== 'string'
+  ) {
+    return null;
+  }
+
+  return {
+    entity: value.entity,
+    id: value.id,
+    route: value.route,
+    type: value.type
+  };
+}
+
+function isSavedCalculatorDestinationType(value: unknown): value is SavedCalculatorDestinationType {
+  return value === 'account' || value === 'goal' || value === 'plan' || value === 'transaction';
+}
+
+function isSavedCalculatorCreatedEntityType(value: unknown): value is SavedCalculatorCreatedEntityType {
+  return isSavedCalculatorDestinationType(value);
+}
+
+function isCalculatorConversionRoute(value: unknown): value is SavedCalculatorResult['conversionRoute'] {
+  return value === '/accounts' || value === '/goals' || value === '/plans' || value === '/transactions';
+}
+
+function isSavedMetricValueType(value: unknown): value is SavedCalculatorMetric['valueType'] {
+  return value === 'currency' || value === 'number' || value === 'percent' || value === 'years';
+}
+
+function isNumberRecord(value: unknown): value is Record<string, number> {
+  return isRecord(value) && Object.values(value).every((item) => typeof item === 'number');
 }
 
 async function loadAccountPlans(auth: Extract<AuthState, { status: 'signed-in' }>): Promise<SavedPlan[]> {
@@ -1712,6 +1962,43 @@ function formatGoalPercent(value: number): string {
   return `${Math.round(Math.max(0, value))}%`;
 }
 
+function calculatorDestinationLabel(value: SavedCalculatorDestinationType): string {
+  if (value === 'account') return 'Account draft';
+  if (value === 'goal') return 'Goal draft';
+  if (value === 'plan') return 'Plan draft';
+  return 'Cashflow draft';
+}
+
+function formatSavedCalculatorMetric(item: SavedCalculatorResult): string {
+  const metric = item.result.metrics[0];
+
+  if (!metric) {
+    return item.conversionLabel;
+  }
+
+  if (metric.valueType === 'currency') {
+    return `${metric.label}: ${formatStoredCurrency(metric.value, item.currency)}`;
+  }
+
+  if (metric.valueType === 'percent') {
+    return `${metric.label}: ${(metric.value * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+  }
+
+  if (metric.valueType === 'years') {
+    return `${metric.label}: ${metric.value.toLocaleString(undefined, { maximumFractionDigits: 1 })} years`;
+  }
+
+  return `${metric.label}: ${metric.value.toLocaleString(undefined, { maximumFractionDigits: 1 })}`;
+}
+
+function formatStoredCurrency(value: number, currency: string): string {
+  return new Intl.NumberFormat(undefined, {
+    currency,
+    maximumFractionDigits: 0,
+    style: 'currency'
+  }).format(value);
+}
+
 function priorityLabel(priority: InsightPriority): string {
   if (priority === 'high') return 'High';
   if (priority === 'medium') return 'Medium';
@@ -2565,7 +2852,7 @@ function PrivacyControlsPanel({
           <h2 id="privacy-controls-title">Export or delete saved data</h2>
           <p>
             These controls apply to FinPath data in D1: profile defaults, accounts, balances, goals, plans,
-            versions, import history, and user-scoped audit rows.
+            calculator results, versions, import history, and user-scoped audit rows.
           </p>
         </div>
         <span className="feature-icon">
@@ -2645,30 +2932,37 @@ function PrivacyControlsPanel({
 function DashboardPanel({
   accounts,
   cashflow,
+  calculatorResultMessage,
   goals,
   insights,
   isLoading,
+  isLoadingCalculatorResults,
   isLoadingGoals,
   message,
   goalMessage,
   goalSummary,
   onNavigate,
+  savedCalculatorResults,
   summary
 }: {
   accounts: FinancialAccount[];
   cashflow: TransactionCashflowRollup;
+  calculatorResultMessage: string;
   goals: Goal[];
   insights: FinancialInsight[];
   isLoading: boolean;
+  isLoadingCalculatorResults: boolean;
   isLoadingGoals: boolean;
   message: string;
   goalMessage: string;
   goalSummary: GoalSummary;
   onNavigate: (route: AppRoute) => void;
+  savedCalculatorResults: SavedCalculatorResult[];
   summary: AccountSummary;
 }) {
   const recentAccounts = accounts.slice(0, 5);
   const recentGoals = goals.slice(0, 3);
+  const recentCalculatorResults = savedCalculatorResults.slice(0, 4);
 
   return (
     <section className="financial-dashboard" aria-label="Financial dashboard">
@@ -2727,6 +3021,47 @@ function DashboardPanel({
             </button>
           ))}
         </div>
+      </section>
+
+      <section className="account-panel dashboard-calculator-rollup" aria-labelledby="dashboard-calculators-title">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Saved calculator results</p>
+            <h2 id="dashboard-calculators-title">Decisions to keep tracking</h2>
+          </div>
+          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
+            Calculators
+            <ChevronRight size={16} />
+          </button>
+        </div>
+
+        {isLoadingCalculatorResults ? (
+          <p className="empty-inline">Loading saved calculator results...</p>
+        ) : recentCalculatorResults.length === 0 ? (
+          <article className="scenario-card empty-card">
+            <span>No saved calculator results yet</span>
+            <small>Run a public calculator, then save the result to connect it to this dashboard.</small>
+          </article>
+        ) : (
+          <div className="dashboard-calculator-list">
+            {recentCalculatorResults.map((item) => (
+              <button
+                className="dashboard-calculator-card"
+                key={item.id}
+                type="button"
+                onClick={() => onNavigate(item.conversionRoute)}
+              >
+                <span>{calculatorDestinationLabel(item.destinationType)}</span>
+                <strong>{item.calculatorTitle}</strong>
+                <small>
+                  {formatSavedCalculatorMetric(item)} saved {new Date(item.createdAt).toLocaleDateString()}
+                </small>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {calculatorResultMessage ? <p className="empty-inline">{calculatorResultMessage}</p> : null}
       </section>
 
       <section className="account-panel dashboard-cashflow-rollup" aria-labelledby="dashboard-cashflow-title">
@@ -4208,6 +4543,7 @@ function PlatformPage({
   accountSummary,
   transactionDraft,
   transactionCashflow,
+  calculatorResultMessage,
   transactionCategoryOptions,
   transactionFilters,
   transactionMessage,
@@ -4226,6 +4562,7 @@ function PlatformPage({
   goalUpdateDrafts,
   isLoadingProfile,
   isLoadingAccounts,
+  isLoadingCalculatorResults,
   isLoadingTransactions,
   isLoadingGoals,
   isSavingAccount,
@@ -4256,6 +4593,7 @@ function PlatformPage({
   onUpdateTransaction,
   onUpdateGoal,
   route,
+  savedCalculatorResults,
   onNavigate,
   profile,
   profileDraft,
@@ -4271,6 +4609,7 @@ function PlatformPage({
   accountSummary: AccountSummary;
   transactionDraft: TransactionDraft;
   transactionCashflow: TransactionCashflowRollup;
+  calculatorResultMessage: string;
   transactionCategoryOptions: string[];
   transactionFilters: TransactionFilters;
   transactionMessage: string;
@@ -4288,6 +4627,7 @@ function PlatformPage({
   goalSummary: GoalSummary;
   goalUpdateDrafts: Record<string, GoalUpdateDraft>;
   isLoadingAccounts: boolean;
+  isLoadingCalculatorResults: boolean;
   isLoadingTransactions: boolean;
   isLoadingGoals: boolean;
   isLoadingProfile: boolean;
@@ -4319,6 +4659,7 @@ function PlatformPage({
   onUpdateTransaction: (id: string) => void;
   onUpdateGoal: (id: string) => void;
   route: PlatformRoute;
+  savedCalculatorResults: SavedCalculatorResult[];
   onNavigate: (route: AppRoute) => void;
   profile: AccountProfile | null;
   profileDraft: AccountProfileDraft;
@@ -4349,10 +4690,13 @@ function PlatformPage({
           goals={goals}
           insights={financialInsights}
           isLoading={isLoadingAccounts}
+          isLoadingCalculatorResults={isLoadingCalculatorResults}
           isLoadingGoals={isLoadingGoals}
+          calculatorResultMessage={calculatorResultMessage}
           message={accountMessage}
           goalMessage={goalMessage}
           goalSummary={goalSummary}
+          savedCalculatorResults={savedCalculatorResults}
           summary={accountSummary}
           onNavigate={onNavigate}
         />
@@ -4637,6 +4981,9 @@ function App({ auth }: { auth: AuthState }) {
   const [isLoadingGoals, setIsLoadingGoals] = useState(false);
   const [isSavingGoal, setIsSavingGoal] = useState(false);
   const [goalMessage, setGoalMessage] = useState('');
+  const [savedCalculatorResults, setSavedCalculatorResults] = useState<SavedCalculatorResult[]>([]);
+  const [isLoadingCalculatorResults, setIsLoadingCalculatorResults] = useState(false);
+  const [calculatorResultMessage, setCalculatorResultMessage] = useState('');
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -4910,6 +5257,53 @@ function App({ auth }: { auth: AuthState }) {
       .finally(() => {
         if (!isCancelled) {
           setIsLoadingGoals(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [auth.status, auth.isSignedIn, auth.user?.id]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (auth.status !== 'signed-in') {
+      setSavedCalculatorResults([]);
+      setIsLoadingCalculatorResults(false);
+      setCalculatorResultMessage('');
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    setIsLoadingCalculatorResults(true);
+    setCalculatorResultMessage('Loading saved calculator results...');
+
+    loadSavedCalculatorResults(auth)
+      .then((calculatorResults) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setSavedCalculatorResults(calculatorResults);
+        setCalculatorResultMessage(
+          calculatorResults.length > 0
+            ? 'Saved calculator results are synced.'
+            : 'Run a calculator and save the result to see it here.'
+        );
+      })
+      .catch(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        setSavedCalculatorResults([]);
+        setCalculatorResultMessage('Saved calculator results could not be loaded.');
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsLoadingCalculatorResults(false);
         }
       });
 
@@ -5300,6 +5694,8 @@ function App({ auth }: { auth: AuthState }) {
       setGoalDraft(emptyGoalDraft());
       setGoalUpdateDrafts({});
       setGoalMessage('Goal data was deleted.');
+      setSavedCalculatorResults([]);
+      setCalculatorResultMessage('Saved calculator results were deleted.');
       setAccountDataDeleteConfirmation('');
       setAccountDataPrivacyMessage(
         'Saved FinPath D1 data was deleted. Clerk sign-in remains active until you sign out or delete the identity provider account.'
@@ -5820,6 +6216,64 @@ function App({ auth }: { auth: AuthState }) {
     }
   };
 
+  const saveCalculatorResult = async (request: CalculatorSaveRequest): Promise<CalculatorSaveOutcome> => {
+    if (auth.status !== 'signed-in') {
+      throw new Error('Sign in before saving calculator results.');
+    }
+
+    setCalculatorResultMessage('Saving calculator result...');
+
+    const saved = await createCalculatorResultRecord(auth, request);
+    const nextSavedResults = [
+      saved.savedResult,
+      ...savedCalculatorResults.filter((item) => item.id !== saved.savedResult.id)
+    ].slice(0, 12);
+
+    setSavedCalculatorResults(nextSavedResults);
+
+    if (saved.createdEntity?.type === 'goal') {
+      const goal = toGoal(saved.createdEntity.entity);
+
+      if (goal) {
+        const nextGoals = [goal, ...goals.filter((item) => item.id !== goal.id)];
+        setGoals(nextGoals);
+        setGoalSummary(summarizeGoalList(nextGoals));
+        setGoalUpdateDrafts((current) => ({
+          ...current,
+          [goal.id]: goalToUpdateDraft(goal)
+        }));
+        setGoalMessage('Goal draft created from calculator result.');
+      }
+    }
+
+    if (saved.createdEntity?.type === 'account') {
+      const account = toFinancialAccount(saved.createdEntity.entity);
+
+      if (account) {
+        const nextAccounts = [account, ...financialAccounts.filter((item) => item.id !== account.id)];
+        setFinancialAccounts(nextAccounts);
+        setBalanceDrafts((current) => ({
+          ...current,
+          [account.id]: emptyBalanceDraft()
+        }));
+        setAccountMessage('Account draft created from calculator result.');
+      }
+    }
+
+    if (saved.createdEntity?.type === 'plan') {
+      setPlanStorageMessage('Plan draft created from calculator result.');
+    }
+
+    const message = calculatorSaveMessage(saved);
+    setCalculatorResultMessage(message);
+
+    return {
+      destinationRoute: saved.savedResult.conversionRoute,
+      message,
+      savedResultId: saved.savedResult.id
+    };
+  };
+
   const saveCurrentPlan = async () => {
     const name = saveName.trim() || 'Retirement plan';
     const snapshot = buildSnapshot();
@@ -6194,7 +6648,12 @@ function App({ auth }: { auth: AuthState }) {
               </section>
             }
           >
-            <CalculatorLibrary auth={auth} route={route} onNavigate={(nextRoute) => navigateTo(normalizeRoute(nextRoute))} />
+            <CalculatorLibrary
+              auth={auth}
+              route={route}
+              onNavigate={(nextRoute) => navigateTo(normalizeRoute(nextRoute))}
+              onSaveResult={saveCalculatorResult}
+            />
           </Suspense>
         ) : isPlatformRoute(route) ? (
           auth.isSignedIn ? (
@@ -6245,6 +6704,7 @@ function App({ auth }: { auth: AuthState }) {
                 accountSummary={accountSummary}
                 transactionDraft={transactionDraft}
                 transactionCashflow={transactionCashflow}
+                calculatorResultMessage={calculatorResultMessage}
                 transactionCategoryOptions={transactionCategoryOptions}
                 transactionFilters={transactionFilters}
                 transactionMessage={transactionMessage}
@@ -6262,6 +6722,7 @@ function App({ auth }: { auth: AuthState }) {
                 goalSummary={goalSummary}
                 goalUpdateDrafts={goalUpdateDrafts}
                 isLoadingAccounts={isLoadingAccounts}
+                isLoadingCalculatorResults={isLoadingCalculatorResults}
                 isLoadingTransactions={isLoadingTransactions}
                 isLoadingGoals={isLoadingGoals}
                 isLoadingProfile={isLoadingProfile}
@@ -6275,6 +6736,7 @@ function App({ auth }: { auth: AuthState }) {
                 profileDraft={profileDraft}
                 profileMessage={profileMessage}
                 route={route}
+                savedCalculatorResults={savedCalculatorResults}
                 isDeletingAccountData={isDeletingAccountData}
                 isExportingAccountData={isExportingAccountData}
                 onNavigate={navigateTo}

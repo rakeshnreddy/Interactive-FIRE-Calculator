@@ -64,7 +64,8 @@ Current checkpoint:
 - `src/lib/calculatorQuality.ts` defines calculation, visual, scenario, validation, interpretation, and conversion expectations for every current public calculator route.
 - `src/lib/seoCalculators.test.ts` asserts that every current route has a comprehensive quality contract.
 - Calculator detail pages now show why the calculator matters, a baseline visual read of the result metrics, and decision checks.
-- This raises the comprehensive calculator program from 10% to 12% complete. It does not complete the deeper studio work; 88% remains for save flows, full chart data, amortization schedules, statutory tax engines, missing routes, scenario drawers, exports, and personalization.
+- Phase 17 adds durable signed-in calculator result saves, signed-out draft preservation, downstream goal/account/plan draft creation where safe, transaction-workflow result storage, Dashboard saved-result cards, and account-data export/delete coverage.
+- This raises the comprehensive calculator program to 20% complete. It does not complete the deeper studio work; 80% remains for full chart data, amortization schedules, statutory tax engines, missing routes, scenario drawers, exports, and personalization.
 
 ## Shared Decision Studios
 
@@ -84,17 +85,17 @@ Keep all calculator routes, but route them into shared richer experiences with r
 
 ### Phase 17: Calculator-to-Account Conversion Layer
 
-This remains the immediate remaining product phase.
+Status: complete for preview/development.
 
-- Add a durable calculator result model in D1 or a thin mapping layer into existing goals/accounts/plans.
-- Preserve signed-out calculator inputs/results through sign-up.
-- For signed-in users, save calculator outputs as:
+- Added a durable calculator result model in D1 and a mapping layer into existing goals/accounts/plans.
+- Preserves signed-out calculator inputs/results through sign-up.
+- For signed-in users, calculator outputs can be saved as:
   - Goals for wealth, savings, down payment, emergency fund, insurance, investing.
   - Accounts or liabilities for loans, mortgages, EMI, credit, EPF/PPF/NPS/FD/CD/HYSA.
   - Plans for FIRE, retirement, tax, payoff, refinance, rent-vs-buy, SWP.
-  - Transaction workflows for budget, salary, paycheck, cashflow.
-- Add dashboard cards for saved calculator-derived goals/plans/accounts.
-- Add tests for signed-out draft preservation and signed-in save flows.
+  - Durable transaction-workflow result records for budget, salary, paycheck, and cashflow, without mutating the ledger.
+- Dashboard cards show saved calculator-derived goals/plans/accounts/workflows.
+- Tests cover the server save payload validation and route-to-destination mapping; future browser-level signed-out/signed-in CTA tests remain part of Phase 24 hardening.
 
 ### Phase 20: Decision Studio Foundation
 
@@ -154,7 +155,7 @@ This is the implementation sequence to avoid losing progress. Deploy when app be
 | --- | --- | ---: | ---: | --- |
 | Planning checkpoint | No app deploy | 10% | 90% | Existing routes, base formulas, tests, Phase 20-25 roadmap, missing calculator backlog, and comprehensive standards documented. |
 | High-standard foundation checkpoint | Yes | 12% | 88% | Code-level quality contracts, baseline visual read, decision checks, and detailed high-standard implementation plan for every current calculator. |
-| Phase 17 deploy | Yes | 20% | 80% | Durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, and reusable mapping into goals/accounts/plans/transactions. |
+| Phase 17 deploy | Yes | 20% | 80% | Durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, and reusable mapping into goals/accounts/plans/transactions. Complete for preview/development. |
 | Phase 20 deploy | Yes | 32% | 68% | Decision studio metadata, scenario state, shared visualization primitives, related calculators, route-specific content scaffolding, and route guard tests. |
 | Phase 21 deploy | Yes | 48% | 52% | Growth, goal, and retirement calculators upgraded with timelines, contribution/growth visuals, inflation-adjusted results, corpus gaps, withdrawal runway, and save flows. |
 | Phase 22 deploy | Yes | 66% | 34% | Full amortization schedules, loan/debt/home visualizers, missing loan/mortgage routes, multi-debt snowball/avalanche, payoff calendars, break-even charts, and exports. |

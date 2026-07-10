@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://3c829b65.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://0fe9ade0.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -34,7 +34,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 14: Core Planning Calculators | Preview/app complete | 100% | Compound interest, savings goal, net worth, budget, emergency fund, retirement, debt payoff, and investment return calculators are live. |
 | Phase 15: India Calculator Set | Preview/app complete | 100% | SIP, step-up SIP, SIP goal, mutual fund, SWP, EMI, tax, salary, HRA, FD/RD, PPF, EPF, NPS, and gratuity calculators are live. |
 | Phase 16: US Calculator Set | Preview/app complete | 100% | Mortgage, refinance, amortization, rent-vs-buy, credit, debt, loan, 401(k), IRA, paycheck, tax, Social Security, and RMD calculators are live. |
-| Phase 17: Calculator-to-Account Conversion Layer | Planned | 20% | Public calculator CTAs route to the right signed-in surfaces; durable save-result workflows, draft preservation after auth, and dashboard saved-result cards remain next scope. |
+| Phase 17: Calculator-to-Account Conversion Layer | Preview/server complete | 100% | Durable calculator result saves, signed-out draft preservation, signed-in save CTAs, downstream goal/account/plan draft creation, transaction-workflow result storage, dashboard saved-result cards, and account-data export/delete coverage are in place. |
 | Phase 18: Calculator Library Scale-Out | Preview/app complete | 100% | CAGR, XIRR, inflation, Rule of 72, capital gains, GST/TDS, down payment, PMI, HELOC, balance transfer, CD/HYSA, insurance, lease-vs-buy, and ROI calculators are live. |
 | Phase 19: Calculator UX and Formula Assurance | Preview/app complete | 100% | Calculator copy now uses user-facing decision framing, the landing hero links to the full library, detail pages explain inputs/results with hover/focus help, and every calculator has an individual expected-output test. |
 | Phase 20: Calculator Decision Studio Foundation | In progress | 20% | A code-level quality contract, baseline visual read, and decision checks are in place for every current calculator; scenario state, full chart primitives, related calculators, and route-specific content remain. |
@@ -443,8 +443,8 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 - [x] Phase 14: Add the eight core planning calculators.
 - [x] Phase 15: Add the India calculator set.
 - [x] Phase 16: Add the US calculator set.
-- [ ] Phase 17: Add durable signed-in "save result" flows that create goals, accounts, plans, or transaction-tracking drafts.
-- [ ] Phase 17: Preserve signed-out calculator drafts/results through sign-up and surface saved calculator-derived items on Dashboard.
+- [x] Phase 17: Add durable signed-in "save result" flows that create goals, accounts, plans, or transaction-tracking drafts.
+- [x] Phase 17: Preserve signed-out calculator drafts/results through sign-up and surface saved calculator-derived items on Dashboard.
 - [x] Phase 18: Add calculator scale-out routes.
 - [x] Phase 19: Remove internal strategy framing from public copy and group the hub by user decisions.
 - [x] Phase 19: Add landing-page paths to the calculator library in the hero, ready band, footer, topbar, mobile nav, and signed-out gates.
@@ -458,8 +458,8 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
-- Current comprehensive-calculator completion estimate: 12%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, and planning are in place; 88% remains for durable saves, decision studios, rich visualizations, missing routes, richer content, exports, and personalization.
-- [ ] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
+- Current comprehensive-calculator completion estimate: 20%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, and downstream goal/account/plan draft creation are in place; 80% remains for decision studios, rich visualizations, missing routes, richer content, exports, and personalization.
+- [x] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
 - [x] Phase 20: Add code-level calculator quality/studio contracts while preserving every existing public route.
 - [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
 - [ ] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
@@ -482,8 +482,24 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - Tests: `npm run typecheck` passed; `npm test` passed with 258 tests across 14 frontend files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 258 frontend tests, and production build.
 - Deploy: `npm run cf:deploy` deployed to `https://3c829b65.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
 - Live route smoke: `/`, `/calculators`, `/calculators/sip`, `/calculators/amortization`, `/calculators/mortgage`, `/calculators/fire`, and `/transactions` returned `200`.
-- Completion after deploy: comprehensive calculator program is 12% complete; 88% remains.
-- Remaining blockers: production Clerk setup is still the launch blocker; Phase 17 durable calculator save flows remain next product work; full route-specific visualizations/schedules/tax engines are still pending in Phases 20-25.
+- Completion after deploy: comprehensive calculator program was 12% complete; 88% remained.
+- Remaining blockers at that checkpoint: production Clerk setup was still the launch blocker; Phase 17 durable calculator save flows remained next product work; full route-specific visualizations/schedules/tax engines were still pending in Phases 20-25.
+
+## Phase 17 Calculator-to-Account Conversion Checkpoint
+
+- Completed: `migrations/0004_saved_calculator_results.sql` adds durable user-owned calculator result storage with calculator metadata, input/result snapshots, conversion destination, created entity references, and dashboard-friendly indexes.
+- Completed: `POST /api/calculator-results` validates signed-in save requests, stores the calculator result, and safely creates downstream drafts where appropriate: goals for goal-oriented calculators, accounts for balance/liability calculators, generic plan drafts for plan-oriented calculators, and durable transaction-workflow results without mutating the ledger.
+- Completed: `GET /api/calculator-results` returns signed-in saved calculator results for Dashboard and future destination surfaces.
+- Completed: signed-out calculator users keep their last calculator draft/result in local storage before opening sign-up, so the result can be restored and saved after sign-in.
+- Completed: Dashboard now shows saved calculator result cards with the calculator title, destination, headline metric, creation date, and a shortcut to the intended workspace.
+- Completed: account-data export/delete now includes saved calculator results, and delete removes them with the rest of user-owned D1 data.
+- D1 migration status: `0004_saved_calculator_results.sql` is applied locally and to both configured remote D1 databases.
+- Tests before deploy: `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 261 frontend tests across 15 files, and production build.
+- Deploy: `npm run cf:deploy` deployed to `https://0fe9ade0.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live HTTP smoke: `/`, `/calculators`, `/calculators/sip`, `/calculators/amortization`, `/calculators/mortgage`, `/calculators/fire`, and `/transactions` returned `200`.
+- Live API smoke: unauthenticated `GET /api/calculator-results` returned `401 {"error":"Unauthorized"}`.
+- Completion after implementation: comprehensive calculator program is 20% complete; 80% remains.
+- Remaining blockers: production Clerk setup is still the launch blocker; Phase 20-25 route-specific visualizations, schedules, tax engines, missing routes, exports, and personalization remain.
 
 ## Phase 12-19 Verification Notes
 

@@ -9,7 +9,7 @@ import {
   Search,
   Target
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { AuthState } from './auth';
 import { getCalculatorQualitySpec, type CalculatorQualitySpec } from './lib/calculatorQuality';
 import {
@@ -23,11 +23,27 @@ import {
   type SeoCalculator
 } from './lib/seoCalculators';
 
+export type CalculatorSaveRequest = {
+  calculator: SeoCalculator;
+  currency: 'INR' | 'USD';
+  result: ReturnType<typeof calculateSeoCalculator>;
+  values: Record<string, number>;
+};
+
+export type CalculatorSaveOutcome = {
+  destinationRoute: SeoCalculator['conversionRoute'];
+  message: string;
+  savedResultId: string;
+};
+
 type CalculatorLibraryProps = {
   auth: AuthState;
+  onSaveResult: (request: CalculatorSaveRequest) => Promise<CalculatorSaveOutcome>;
   route: string;
   onNavigate: (route: string) => void;
 };
+
+const calculatorDraftStorageKey = 'finpath.calculatorDraft.v1';
 
 const categoryOrder: CalculatorCategory[] = ['Planning', 'Investing', 'Borrowing', 'Tax'];
 const categoryCopy: Record<CalculatorCategory, { description: string; title: string }> = {
@@ -53,11 +69,11 @@ const categoryCopy: Record<CalculatorCategory, { description: string; title: str
   }
 };
 
-export function CalculatorLibrary({ auth, route, onNavigate }: CalculatorLibraryProps) {
+export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult }: CalculatorLibraryProps) {
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
 
   if (calculator) {
-    return <CalculatorDetail auth={auth} calculator={calculator} onNavigate={onNavigate} />;
+    return <CalculatorDetail auth={auth} calculator={calculator} onNavigate={onNavigate} onSaveResult={onSaveResult} />;
   }
 
   return <CalculatorHub onNavigate={onNavigate} />;
@@ -156,25 +172,90 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
 function CalculatorDetail({
   auth,
   calculator,
-  onNavigate
+  onNavigate,
+  onSaveResult
 }: {
   auth: AuthState;
   calculator: SeoCalculator;
   onNavigate: (route: string) => void;
+  onSaveResult: (request: CalculatorSaveRequest) => Promise<CalculatorSaveOutcome>;
 }) {
   const [values, setValues] = useState<Record<string, number>>(
     Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]))
   );
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+  const [lastSavedRoute, setLastSavedRoute] = useState<SeoCalculator['conversionRoute'] | null>(null);
   const result = useMemo(() => calculateSeoCalculator(calculator, values), [calculator, values]);
   const qualitySpec = useMemo(() => getCalculatorQualitySpec(calculator), [calculator]);
   const ConversionIcon = conversionIcon(calculator.conversionRoute);
 
+  useEffect(() => {
+    const draft = readCalculatorDraft(calculator.slug);
+
+    setValues(draft?.values ?? Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue])));
+    setLastSavedRoute(null);
+    setSaveMessage(draft && auth.status === 'signed-in' ? 'Draft restored. Save it to keep it in your account.' : '');
+  }, [auth.status, calculator]);
+
+  useEffect(() => {
+    if (auth.status === 'signed-in') {
+      return;
+    }
+
+    writeCalculatorDraft({
+      result,
+      slug: calculator.slug,
+      updatedAt: new Date().toISOString(),
+      values
+    });
+  }, [auth.status, calculator.slug, result, values]);
+
   const setValue = (key: string, value: string) => {
     const parsed = Number(value);
+    setLastSavedRoute(null);
+    setSaveMessage('');
     setValues((current) => ({
       ...current,
       [key]: Number.isFinite(parsed) ? parsed : 0
     }));
+  };
+
+  const persistSignedOutDraft = () => {
+    writeCalculatorDraft({
+      result,
+      slug: calculator.slug,
+      updatedAt: new Date().toISOString(),
+      values
+    });
+  };
+
+  const saveResult = async () => {
+    if (auth.status !== 'signed-in') {
+      persistSignedOutDraft();
+      setSaveMessage('Draft saved in this browser. Create an account to keep it in FinPath.');
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveMessage('Saving calculator result...');
+
+    try {
+      const outcome = await onSaveResult({
+        calculator,
+        currency: calculatorCurrency(calculator),
+        result,
+        values
+      });
+
+      clearCalculatorDraft(calculator.slug);
+      setLastSavedRoute(outcome.destinationRoute);
+      setSaveMessage(outcome.message);
+    } catch (error) {
+      setSaveMessage(error instanceof Error ? error.message : 'Calculator result could not be saved.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -275,24 +356,37 @@ function CalculatorDetail({
               <small>Use this estimate as the first step, then track progress inside FinPath.</small>
             </div>
             {auth.status === 'signed-in' ? (
-              <button className="primary-button icon-text-button" type="button" onClick={() => onNavigate(calculator.conversionRoute)}>
-                Continue
+              <button className="primary-button icon-text-button" disabled={isSaving} type="button" onClick={saveResult}>
+                {isSaving ? 'Saving' : 'Save result'}
                 <ArrowRight size={16} />
               </button>
             ) : auth.status === 'not-configured' ? (
-              <button className="primary-button icon-text-button" type="button" onClick={() => onNavigate(calculator.conversionRoute)}>
+              <button className="primary-button icon-text-button" type="button" onClick={() => {
+                persistSignedOutDraft();
+                onNavigate(calculator.conversionRoute);
+              }}>
                 Continue
                 <ArrowRight size={16} />
               </button>
             ) : (
               <SignUpButton mode="modal">
-                <button className="primary-button icon-text-button" type="button">
-                  Create account
+                <button className="primary-button icon-text-button" type="button" onClick={persistSignedOutDraft}>
+                  Create account to save
                   <ArrowRight size={16} />
                 </button>
               </SignUpButton>
             )}
           </div>
+          {saveMessage ? (
+            <p className="calculator-save-message" role="status" aria-live="polite">
+              <span>{saveMessage}</span>
+              {lastSavedRoute ? (
+                <button className="inline-link-button" type="button" onClick={() => onNavigate(lastSavedRoute)}>
+                  Open saved area
+                </button>
+              ) : null}
+            </p>
+          ) : null}
         </section>
       </div>
 
@@ -428,4 +522,71 @@ function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): stri
   }
 
   return metric.value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+}
+
+type StoredCalculatorDraft = {
+  result: ReturnType<typeof calculateSeoCalculator>;
+  slug: string;
+  updatedAt: string;
+  values: Record<string, number>;
+};
+
+function readCalculatorDraft(slug: string): StoredCalculatorDraft | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(window.localStorage.getItem(calculatorDraftStorageKey) ?? 'null');
+
+    if (!isDraftRecord(parsed) || parsed.slug !== slug) {
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function writeCalculatorDraft(draft: StoredCalculatorDraft): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(calculatorDraftStorageKey, JSON.stringify(draft));
+  } catch {
+    // localStorage can be unavailable in private browsing; calculator use still works.
+  }
+}
+
+function clearCalculatorDraft(slug: string): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const draft = readCalculatorDraft(slug);
+
+  if (draft) {
+    window.localStorage.removeItem(calculatorDraftStorageKey);
+  }
+}
+
+function isDraftRecord(value: unknown): value is StoredCalculatorDraft {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  const record = value as Record<string, unknown>;
+
+  return (
+    typeof record.slug === 'string' &&
+    typeof record.updatedAt === 'string' &&
+    typeof record.values === 'object' &&
+    record.values !== null &&
+    !Array.isArray(record.values) &&
+    typeof record.result === 'object' &&
+    record.result !== null
+  );
 }

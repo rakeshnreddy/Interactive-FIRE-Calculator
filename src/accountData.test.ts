@@ -201,7 +201,8 @@ describe('account data deletion', () => {
     expect(deletion.identityProvider).toBe('clerk');
     expect(deletion.deletedRows).toMatchObject({
       auditLog: 1,
-      user: 14
+      savedCalculatorResults: 3,
+      user: 15
     });
   });
 });

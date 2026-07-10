@@ -1403,6 +1403,12 @@ svg {
   gap: 0.7rem;
 }
 
+.dashboard-calculator-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
 .dashboard-insight-row {
   display: grid;
   gap: 0.38rem;
@@ -1413,6 +1419,45 @@ svg {
   color: inherit;
   background: var(--surface-soft);
   text-align: left;
+}
+
+.dashboard-calculator-card {
+  display: grid;
+  gap: 0.38rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: inherit;
+  background: var(--surface-soft);
+  text-align: left;
+}
+
+.dashboard-calculator-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  box-shadow: var(--shadow-soft);
+}
+
+.dashboard-calculator-card span {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 850;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.dashboard-calculator-card strong {
+  overflow-wrap: anywhere;
+  color: var(--heading);
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+.dashboard-calculator-card small {
+  color: var(--muted-strong);
+  font-size: 0.76rem;
+  font-weight: 650;
+  line-height: 1.35;
 }
 
 .dashboard-insight-row span,
@@ -2860,6 +2905,7 @@ td {
   }
 
   .dashboard-summary-grid,
+  .dashboard-calculator-list,
   .dashboard-insight-list,
   .transaction-create-form,
   .transaction-filter-grid,
@@ -3096,6 +3142,7 @@ td {
   .hero-panels,
   .result-facts,
   .dashboard-summary-grid,
+  .dashboard-calculator-list,
   .dashboard-insight-list,
   .dashboard-cashflow-grid,
   .dashboard-cashflow-columns,
@@ -5383,6 +5430,34 @@ h2 {
 .calculator-result-narrative {
   margin: 0;
   color: var(--muted-strong);
+}
+
+.calculator-save-message {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.86rem;
+}
+
+.inline-link-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  color: var(--accent);
+  background: transparent;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.inline-link-button:hover {
+  color: var(--heading);
 }
 
 .calculator-visual-panel {

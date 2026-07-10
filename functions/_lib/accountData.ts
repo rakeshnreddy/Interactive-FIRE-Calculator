@@ -147,6 +147,25 @@ type BalanceImportRow = {
 
 type TransactionImportRow = BalanceImportRow;
 
+type SavedCalculatorResultRow = {
+  calculator_category: string;
+  calculator_region: string;
+  calculator_slug: string;
+  calculator_title: string;
+  conversion_label: string;
+  conversion_route: string;
+  created_at: string;
+  created_entity_id: string | null;
+  created_entity_type: string | null;
+  currency: string;
+  destination_type: string;
+  id: string;
+  input_json: string;
+  result_json: string;
+  updated_at: string;
+  user_id: string;
+};
+
 type AccountDataExportData = {
   accountBalances: DataRow[];
   assumptions: DataRow[];
@@ -159,6 +178,7 @@ type AccountDataExportData = {
   planVersions: DataRow[];
   plans: DataRow[];
   profile: DataRow | null;
+  savedCalculatorResults: DataRow[];
   transactionImports: DataRow[];
   transactions: DataRow[];
   user: DataRow | null;
@@ -190,6 +210,7 @@ type DeleteTarget = {
 const deleteTargets: DeleteTarget[] = [
   { key: 'auditLog', sql: 'DELETE FROM audit_log WHERE user_id = ?' },
   { key: 'assumptions', sql: 'DELETE FROM assumptions WHERE user_id = ?' },
+  { key: 'savedCalculatorResults', sql: 'DELETE FROM saved_calculator_results WHERE user_id = ?' },
   { key: 'firePlanResults', sql: 'DELETE FROM fire_plan_results WHERE user_id = ?' },
   { key: 'firePlanInputs', sql: 'DELETE FROM fire_plan_inputs WHERE user_id = ?' },
   { key: 'planVersions', sql: 'DELETE FROM plan_versions WHERE user_id = ?' },
@@ -237,6 +258,7 @@ export async function exportAccountData(database: D1Database, userId: string): P
     planVersions: await readPlanVersions(database, userId),
     plans: await readPlans(database, userId),
     profile: toOptionalDataRow(await readProfile(database, userId)),
+    savedCalculatorResults: await readSavedCalculatorResults(database, userId),
     transactionImports: await readTransactionImports(database, userId),
     transactions: await readTransactions(database, userId),
     user: toOptionalDataRow(await readUser(database, userId))
@@ -478,6 +500,42 @@ async function readFirePlanResults(database: D1Database, userId: string): Promis
   }));
 }
 
+async function readSavedCalculatorResults(database: D1Database, userId: string): Promise<DataRow[]> {
+  const result = await database
+    .prepare(
+      `
+        SELECT
+          id,
+          user_id,
+          calculator_slug,
+          calculator_title,
+          calculator_category,
+          calculator_region,
+          currency,
+          destination_type,
+          conversion_route,
+          conversion_label,
+          input_json,
+          result_json,
+          created_entity_type,
+          created_entity_id,
+          created_at,
+          updated_at
+        FROM saved_calculator_results
+        WHERE user_id = ?
+        ORDER BY created_at ASC, id ASC
+      `
+    )
+    .bind(userId)
+    .all<SavedCalculatorResultRow>();
+
+  return result.results.map(({ input_json: inputJson, result_json: resultJson, ...row }) => ({
+    ...toDataRow(row),
+    input: parseStoredJson(inputJson),
+    result: parseStoredJson(resultJson)
+  }));
+}
+
 async function readAssumptions(database: D1Database, userId: string): Promise<DataRow[]> {
   const result = await database
     .prepare(
@@ -579,6 +637,7 @@ function summarizeExport(data: AccountDataExportData): AccountDataExport['summar
     planVersions: data.planVersions.length,
     plans: data.plans.length,
     profile: data.profile ? 1 : 0,
+    savedCalculatorResults: data.savedCalculatorResults.length,
     transactionImports: data.transactionImports.length,
     transactions: data.transactions.length,
     user: data.user ? 1 : 0
