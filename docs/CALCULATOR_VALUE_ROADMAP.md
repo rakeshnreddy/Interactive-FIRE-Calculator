@@ -69,7 +69,7 @@ Current checkpoint:
 - Phase 20 adds reusable decision-studio metadata, conservative/base/optimistic scenario state, chart-ready primitives, route-specific examples, related-calculator navigation, and public-copy guard tests for every current route.
 - Phase 21 adds expandable optional growth, goal, retirement, withdrawal, distribution, benefit, inflation, and return tables.
 - Phase 22 adds borrowing-route expansion, complete optional amortization/payoff/refinance/prepayment/detail tables, custom period views, CSV schedule export, and true multi-debt snowball vs avalanche comparison.
-- Phase 24 raises the comprehensive calculator program to 92% complete. Route content, metadata/schema/sitemap hardening, crawlable internal links, duplicate-content guards, and all-route no-auth smoke coverage are complete; saved scenario comparison, recent history, dashboard follow-ups, export/share, and final flow QA remain at 8%.
+- Phase 25 completes the comprehensive calculator program at 100%. All planned route, formula, visualization, schedule, content, conversion, comparison, history, follow-up, export/share, and public smoke requirements are complete for preview/development; 0% remains in this roadmap.
 
 ## Shared Decision Studios
 
@@ -158,6 +158,8 @@ Status: complete for preview/development.
 - Use Search Console data later to tune internal links and examples without changing stable URLs.
 
 ### Phase 25: Engagement and Personalization Loop
+
+Status: complete for preview/development.
 
 - Add side-by-side comparison drawers so users can save multiple scenarios.
 - Add "what changed the outcome most" explanations.

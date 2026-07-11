@@ -6,8 +6,12 @@ import {
   CircleHelp,
   CircleDollarSign,
   ClipboardList,
+  Columns3,
+  Copy,
   Download,
   FolderKanban,
+  Gauge,
+  History,
   Search,
   Table2,
   Target
@@ -15,6 +19,13 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { AuthState } from './auth';
+import {
+  buildCalculatorInputImpacts,
+  buildCalculatorShareUrl,
+  buildCalculatorSummaryCsv,
+  readCalculatorShareState,
+  type CalculatorInputImpact
+} from './lib/calculatorEngagement';
 import { getCalculatorQualitySpec, type CalculatorQualitySpec } from './lib/calculatorQuality';
 import {
   buildCalculatorScenarios,
@@ -37,6 +48,7 @@ import {
   seoCalculators,
   type CalculatorCategory,
   type CalculatorMetric,
+  type CalculatorResult,
   type SeoCalculator
 } from './lib/seoCalculators';
 
@@ -53,11 +65,29 @@ export type CalculatorSaveOutcome = {
   savedResultId: string;
 };
 
+export type CalculatorSavedResult = {
+  calculatorSlug: string;
+  calculatorTitle: string;
+  createdAt: string;
+  currency: string;
+  id: string;
+  inputValues: Record<string, number>;
+  result: {
+    metrics: Array<{
+      label: string;
+      value: number;
+      valueType: CalculatorMetric['valueType'];
+    }>;
+    narrative: string;
+  };
+};
+
 type CalculatorLibraryProps = {
   auth: AuthState;
   onSaveResult: (request: CalculatorSaveRequest) => Promise<CalculatorSaveOutcome>;
   route: string;
   onNavigate: (route: string) => void;
+  savedResults: CalculatorSavedResult[];
 };
 
 const calculatorDraftStorageKey = 'finpath.calculatorDraft.v1';
@@ -86,11 +116,19 @@ const categoryCopy: Record<CalculatorCategory, { description: string; title: str
   }
 };
 
-export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult }: CalculatorLibraryProps) {
+export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, savedResults }: CalculatorLibraryProps) {
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
 
   if (calculator) {
-    return <CalculatorDetail auth={auth} calculator={calculator} onNavigate={onNavigate} onSaveResult={onSaveResult} />;
+    return (
+      <CalculatorDetail
+        auth={auth}
+        calculator={calculator}
+        onNavigate={onNavigate}
+        onSaveResult={onSaveResult}
+        savedResults={savedResults}
+      />
+    );
   }
 
   return <CalculatorHub onNavigate={onNavigate} />;
@@ -190,12 +228,14 @@ function CalculatorDetail({
   auth,
   calculator,
   onNavigate,
-  onSaveResult
+  onSaveResult,
+  savedResults
 }: {
   auth: AuthState;
   calculator: SeoCalculator;
   onNavigate: (route: string) => void;
   onSaveResult: (request: CalculatorSaveRequest) => Promise<CalculatorSaveOutcome>;
+  savedResults: CalculatorSavedResult[];
 }) {
   const [values, setValues] = useState<Record<string, number>>(
     Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]))
@@ -204,6 +244,7 @@ function CalculatorDetail({
   const [saveMessage, setSaveMessage] = useState('');
   const [lastSavedRoute, setLastSavedRoute] = useState<SeoCalculator['conversionRoute'] | null>(null);
   const [selectedScenarioId, setSelectedScenarioId] = useState<CalculatorScenarioId>('base');
+  const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
   const scenarioValues = useMemo(
     () => buildScenarioValues(calculator, values, selectedScenarioId),
     [calculator, selectedScenarioId, values]
@@ -221,16 +262,44 @@ function CalculatorDetail({
     [calculator, result, scenarioValues]
   );
   const qualitySpec = useMemo(() => getCalculatorQualitySpec(calculator), [calculator]);
+  const inputImpacts = useMemo(
+    () => buildCalculatorInputImpacts(calculator, scenarioValues),
+    [calculator, scenarioValues]
+  );
+  const calculatorHistory = useMemo(
+    () => savedResults.filter((item) => item.calculatorSlug === calculator.slug).slice(0, 6),
+    [calculator.slug, savedResults]
+  );
+  const selectedHistory = calculatorHistory.find((item) => item.id === selectedHistoryId) ?? calculatorHistory[0] ?? null;
   const ConversionIcon = conversionIcon(calculator.conversionRoute);
 
   useEffect(() => {
+    const shared = typeof window === 'undefined' ? null : readCalculatorShareState(calculator, window.location.search);
     const draft = readCalculatorDraft(calculator.slug);
 
-    setValues(draft?.values ?? defaultCalculatorValues(calculator));
-    setSelectedScenarioId(draft?.scenarioId ?? 'base');
+    setValues(shared?.values ?? draft?.values ?? defaultCalculatorValues(calculator));
+    setSelectedScenarioId(shared?.scenarioId ?? draft?.scenarioId ?? 'base');
+    setSelectedHistoryId(null);
     setLastSavedRoute(null);
-    setSaveMessage(draft && auth.status === 'signed-in' ? 'Draft restored. Save it to keep it in your account.' : '');
+    setSaveMessage(
+      shared
+        ? 'Shared scenario loaded. Review the assumptions before saving it.'
+        : draft && auth.status === 'signed-in'
+          ? 'Draft restored. Save it to keep it in your account.'
+          : ''
+    );
   }, [auth.status, calculator]);
+
+  useEffect(() => {
+    if (calculatorHistory.length === 0) {
+      setSelectedHistoryId(null);
+      return;
+    }
+
+    if (!calculatorHistory.some((item) => item.id === selectedHistoryId)) {
+      setSelectedHistoryId(calculatorHistory[0].id);
+    }
+  }, [calculatorHistory, selectedHistoryId]);
 
   useEffect(() => {
     if (auth.status === 'signed-in') {
@@ -292,6 +361,32 @@ function CalculatorDetail({
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const loadSavedResult = (saved: CalculatorSavedResult) => {
+    setValues(normalizeSavedValues(calculator, saved.inputValues));
+    setSelectedScenarioId('base');
+    setSelectedHistoryId(saved.id);
+    setLastSavedRoute(null);
+    setSaveMessage(`Loaded the saved ${new Date(saved.createdAt).toLocaleDateString()} inputs. Current edits were replaced.`);
+  };
+
+  const copyShareLink = async () => {
+    const origin = typeof window === 'undefined' ? 'https://interactive-fire-calculator.pages.dev' : window.location.origin;
+    const url = buildCalculatorShareUrl(calculator, values, selectedScenarioId, origin);
+
+    try {
+      await copyText(url);
+      setSaveMessage('Share link copied. It contains these inputs and the selected scenario, but no account data.');
+    } catch {
+      setSaveMessage('The share link could not be copied in this browser.');
+    }
+  };
+
+  const exportScenarioSummary = () => {
+    const csv = buildCalculatorSummaryCsv(calculator, scenarios, selectedScenarioId, inputImpacts);
+    downloadText(`${calculator.slug}-scenario-summary.csv`, csv, 'text/csv;charset=utf-8;');
+    setSaveMessage('Scenario summary exported as CSV.');
   };
 
   return (
@@ -437,6 +532,21 @@ function CalculatorDetail({
           ) : null}
         </section>
       </div>
+
+      <CalculatorEngagementPanel
+        auth={auth}
+        calculator={calculator}
+        currentResult={result}
+        history={calculatorHistory}
+        impacts={inputImpacts}
+        onCopyShareLink={copyShareLink}
+        onExportSummary={exportScenarioSummary}
+        onLoadHistory={loadSavedResult}
+        onSelectHistory={setSelectedHistoryId}
+        scenarios={scenarios}
+        selectedHistory={selectedHistory}
+        selectedScenarioId={selectedScenarioId}
+      />
 
       <section className="calculator-explanation-panel">
         <div>
@@ -665,6 +775,163 @@ function CalculatorScenarioPanel({
   );
 }
 
+function CalculatorEngagementPanel({
+  auth,
+  calculator,
+  currentResult,
+  history,
+  impacts,
+  onCopyShareLink,
+  onExportSummary,
+  onLoadHistory,
+  onSelectHistory,
+  scenarios,
+  selectedHistory,
+  selectedScenarioId
+}: {
+  auth: AuthState;
+  calculator: SeoCalculator;
+  currentResult: CalculatorResult;
+  history: CalculatorSavedResult[];
+  impacts: CalculatorInputImpact[];
+  onCopyShareLink: () => void;
+  onExportSummary: () => void;
+  onLoadHistory: (saved: CalculatorSavedResult) => void;
+  onSelectHistory: (id: string) => void;
+  scenarios: CalculatorScenario[];
+  selectedHistory: CalculatorSavedResult | null;
+  selectedScenarioId: CalculatorScenarioId;
+}) {
+  const baseScenario = scenarios.find((scenario) => scenario.id === 'base') ?? scenarios[0];
+  const currentMetric = currentResult.metrics[0];
+  const savedMetric = selectedHistory?.result.metrics[0];
+
+  return (
+    <details className="calculator-engagement-shell">
+      <summary className="calculator-engagement-summary">
+        <span className="feature-icon"><Columns3 size={17} /></span>
+        <span>
+          <strong>Compare, revisit, and share</strong>
+          <small>Open the decision drawer for scenario deltas, outcome drivers, saved runs, and portable summaries.</small>
+        </span>
+        <ChevronDown size={17} />
+      </summary>
+
+      <div className="calculator-engagement-body">
+        <div className="calculator-engagement-toolbar">
+          <div>
+            <p className="eyebrow">Decision comparison</p>
+            <h2>See what changes the answer</h2>
+          </div>
+          <div className="calculator-engagement-actions">
+            <button className="secondary-button icon-text-button" type="button" onClick={onCopyShareLink}>
+              <Copy size={15} />
+              Copy link
+            </button>
+            <button className="secondary-button icon-text-button" type="button" onClick={onExportSummary}>
+              <Download size={15} />
+              Summary CSV
+            </button>
+          </div>
+        </div>
+
+        <section className="calculator-comparison-section" aria-labelledby="calculator-scenario-comparison-title">
+          <div className="calculator-engagement-heading">
+            <span className="feature-icon"><Columns3 size={16} /></span>
+            <div>
+              <strong id="calculator-scenario-comparison-title">Scenario comparison</strong>
+              <small>Each column changes a bounded set of inputs while preserving the values entered above.</small>
+            </div>
+          </div>
+          <div className="calculator-comparison-grid">
+            {scenarios.map((scenario) => (
+              <article className={scenario.id === selectedScenarioId ? 'is-selected' : ''} key={scenario.id}>
+                <span>{scenario.label}</span>
+                <strong>{formatMetric(scenario.result.metrics[0], calculator)}</strong>
+                <small>{scenarioDeltaLabel(scenario, baseScenario, calculator)}</small>
+                <p>{changedInputsLabel(scenario, baseScenario, calculator)}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="calculator-driver-section" aria-labelledby="calculator-driver-title">
+          <div className="calculator-engagement-heading">
+            <span className="feature-icon"><Gauge size={16} /></span>
+            <div>
+              <strong id="calculator-driver-title">What changed the outcome most</strong>
+              <small>One input moves at a time inside a 10% test range; this is sensitivity evidence, not a forecast.</small>
+            </div>
+          </div>
+          <div className="calculator-driver-list">
+            {impacts.slice(0, 4).map((impact, index) => (
+              <article key={impact.inputKey}>
+                <span>{index + 1}</span>
+                <div>
+                  <strong>{impact.inputLabel}</strong>
+                  <small>{impact.summary}</small>
+                </div>
+                <em>{formatImpact(impact, currentMetric, calculator)}</em>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="calculator-history-section" aria-labelledby="calculator-history-title">
+          <div className="calculator-engagement-heading">
+            <span className="feature-icon"><History size={16} /></span>
+            <div>
+              <strong id="calculator-history-title">Recent saved runs</strong>
+              <small>Select a saved result to compare it with the current output; loading its inputs is a separate action.</small>
+            </div>
+          </div>
+
+          {auth.status !== 'signed-in' ? (
+            <p className="calculator-history-empty">Create an account when you want to keep multiple runs and revisit them here.</p>
+          ) : history.length === 0 ? (
+            <p className="calculator-history-empty">No saved runs for this calculator yet. Save the current result to start its history.</p>
+          ) : (
+            <>
+              <div className="calculator-history-list" aria-label={`${calculator.title} saved result history`}>
+                {history.map((saved) => (
+                  <button
+                    aria-pressed={selectedHistory?.id === saved.id}
+                    className={selectedHistory?.id === saved.id ? 'is-selected' : ''}
+                    key={saved.id}
+                    type="button"
+                    onClick={() => onSelectHistory(saved.id)}
+                  >
+                    <span>{new Date(saved.createdAt).toLocaleDateString()}</span>
+                    <strong>{formatSavedMetric(saved, calculator)}</strong>
+                    <small>{new Date(saved.createdAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</small>
+                  </button>
+                ))}
+              </div>
+
+              {selectedHistory && savedMetric ? (
+                <div className="calculator-history-compare">
+                  <div>
+                    <span>Current</span>
+                    <strong>{currentMetric ? formatMetric(currentMetric, calculator) : 'No result'}</strong>
+                  </div>
+                  <div>
+                    <span>Saved {new Date(selectedHistory.createdAt).toLocaleDateString()}</span>
+                    <strong>{formatSavedMetric(selectedHistory, calculator)}</strong>
+                  </div>
+                  <p>{savedDeltaLabel(currentMetric, savedMetric, calculator)}</p>
+                  <button className="secondary-button" type="button" onClick={() => onLoadHistory(selectedHistory)}>
+                    Load saved inputs
+                  </button>
+                </div>
+              ) : null}
+            </>
+          )}
+        </section>
+      </div>
+    </details>
+  );
+}
+
 function CalculatorStudioVisual({
   calculator,
   chart,
@@ -834,6 +1101,106 @@ function navigateInternalLink(
   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   onNavigate(route);
+}
+
+function scenarioDeltaLabel(
+  scenario: CalculatorScenario,
+  baseScenario: CalculatorScenario,
+  calculator: SeoCalculator
+): string {
+  if (scenario.id === 'base') return 'Reference result';
+
+  const metric = scenario.result.metrics[0];
+  const baseMetric = baseScenario.result.metrics[0];
+  if (!metric || !baseMetric) return 'No headline comparison';
+
+  const difference = metric.value - baseMetric.value;
+  if (Math.abs(difference) <= 1e-9) return 'Same headline result as base';
+
+  return `${difference > 0 ? '+' : '-'}${formatMetric({ ...metric, value: Math.abs(difference) }, calculator)} vs base`;
+}
+
+function changedInputsLabel(
+  scenario: CalculatorScenario,
+  baseScenario: CalculatorScenario,
+  calculator: SeoCalculator
+): string {
+  const changed = calculator.inputs
+    .filter((input) => Math.abs((scenario.values[input.key] ?? 0) - (baseScenario.values[input.key] ?? 0)) > 1e-9)
+    .map((input) => input.label)
+    .slice(0, 3);
+
+  return changed.length > 0 ? `Changes ${changed.join(', ')}.` : 'Uses the values entered above.';
+}
+
+function formatImpact(
+  impact: CalculatorInputImpact,
+  metric: CalculatorMetric | undefined,
+  calculator: SeoCalculator
+): string {
+  if (!metric) return impact.magnitude.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  return `up to ${formatMetric({ ...metric, value: impact.magnitude }, calculator)}`;
+}
+
+function formatSavedMetric(saved: CalculatorSavedResult, calculator: SeoCalculator): string {
+  const metric = saved.result.metrics[0];
+  return metric ? formatMetric(metric, calculator) : 'Saved result';
+}
+
+function savedDeltaLabel(
+  current: CalculatorMetric | undefined,
+  saved: CalculatorSavedResult['result']['metrics'][number],
+  calculator: SeoCalculator
+): string {
+  if (!current || current.valueType !== saved.valueType) return 'The current and saved headline results use different units.';
+
+  const difference = current.value - saved.value;
+  if (Math.abs(difference) <= 1e-9) return 'The current headline result matches this saved run.';
+
+  return `Current is ${difference > 0 ? 'higher' : 'lower'} by ${formatMetric({ ...current, value: Math.abs(difference) }, calculator)}.`;
+}
+
+function normalizeSavedValues(
+  calculator: SeoCalculator,
+  values: Record<string, number>
+): Record<string, number> {
+  return Object.fromEntries(calculator.inputs.map((input) => {
+    const value = Number.isFinite(values[input.key]) ? values[input.key] : input.defaultValue;
+    return [input.key, Math.min(input.max ?? Number.POSITIVE_INFINITY, Math.max(input.min ?? 0, value))];
+  }));
+}
+
+async function copyText(value: string): Promise<void> {
+  if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  if (typeof document === 'undefined') throw new Error('Clipboard is unavailable.');
+
+  const input = document.createElement('textarea');
+  input.value = value;
+  input.setAttribute('readonly', '');
+  input.style.position = 'fixed';
+  input.style.opacity = '0';
+  document.body.appendChild(input);
+  input.select();
+  const copied = document.execCommand('copy');
+  input.remove();
+
+  if (!copied) throw new Error('Clipboard is unavailable.');
+}
+
+function downloadText(filename: string, content: string, type: string) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
 }
 
 function conversionIcon(route: SeoCalculator['conversionRoute']) {

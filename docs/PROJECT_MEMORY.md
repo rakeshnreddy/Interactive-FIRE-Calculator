@@ -10,7 +10,7 @@ Last updated: July 12, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://45c8e45c.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://bd0e9f28.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -276,22 +276,23 @@ Phases 13-16 and Phase 18 Public Calculator Library are complete for preview/dev
 - `npm run cf:deploy` deployed this milestone to `https://afdbe589.interactive-fire-calculator.pages.dev`.
 - Live smoke passed for calculator hub, SIP calculator, mortgage calculator, FIRE route, signed-out Transactions gate, and unauthenticated `401` responses on transaction import endpoints.
 
-## Next Phase
+## Current Completion
 
-Phase 12 and the public calculator library through Phase 24 are implemented for preview/development. Phase 17 Calculator-to-Account Conversion Layer is implemented: signed-in users can save calculator outputs into durable D1 result records, goal/account/plan drafts are created where appropriate, transaction-oriented calculator saves are kept as workflow results without mutating the ledger, signed-out users can preserve a calculator draft through sign-up, and Dashboard surfaces saved calculator results. Phase 20 Decision Studio Foundation is implemented: every calculator route has shared studio metadata, conservative/base/optimistic scenario state, chart-ready primitives, route-specific examples, related calculators, and public-copy guard tests. Phase 21-23 add the family-specific schedules, borrowing visualizers, and income/tax/budget/protection breakdowns. Phase 24 adds formula-aware route content, assumptions, five visible FAQs per calculator, crawlable internal links, testable canonical and structured-data generation, duplicate-content guards, sitemap completeness tests, and a live no-auth smoke sweep for all 84 calculator-library paths. The next product-build phase is Phase 25 engagement and personalization. The next launch-critical step remains production Clerk setup, but the product owner has chosen to continue product phases and deal with that blocker later.
+Phase 12 and the public calculator program through Phase 25 are implemented for preview/development. Phase 17 provides durable signed-in saves and signed-out draft preservation. Phase 20-24 provide decision studios, scenarios, visualizers, optional schedules, borrowing and tax depth, formula-aware content, crawlable links, metadata/schema guards, and all-route public smoke coverage. Phase 25 completes the engagement loop with side-by-side scenario comparison, deterministic one-input sensitivity evidence, recent saved-run history, explicit history reload, dashboard follow-up actions, input-only share links, and scenario-summary CSV export. All planned calculator phases are complete. The sole launch-critical next step is production Clerk setup and hosted signed-in verification.
 
 Calculator roadmap decision:
 
 - Do not remove or redirect calculator routes just because formulas overlap.
 - Combine calculators internally as shared studios: growth/goals, returns, loan/home, debt payoff, income/tax, retirement income, and cashflow/balance sheet.
 - Upgrade calculators so users get decision support: scenarios, visual timelines, break-even points, saved follow-ups, and dashboard connections.
-- Every current calculator route now has a code-level quality contract, a baseline calculator detail visual read, a durable save-result path, decision-studio metadata, scenario state, chart-ready primitives, a route-specific example, visible assumptions and FAQs, crawlable related links, self-canonical metadata, and tested application/FAQ schema. The comprehensive standard is now 92% complete; saved scenario comparison, recent history, dashboard follow-ups, export/share, and final representative browser QA remain.
+- Every current calculator route now has the complete high-standard contract: tested formulas, input/output guidance, scenario and visual reads, optional detailed schedules where useful, deterministic outcome drivers, durable save/history behavior, comparison, export/share, conversion follow-ups, route-specific content, crawlable links, self-canonicals, and tested application/FAQ schema. The comprehensive calculator program is 100% complete for preview/development.
 - Phase 17 verification: `migrations/0004_saved_calculator_results.sql` is applied locally and to both configured remote D1 databases. `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 261 frontend tests, and production build. `npm run cf:deploy` deployed to `https://0fe9ade0.interactive-fire-calculator.pages.dev`. Live HTTP smoke returned `200` for `/`, `/calculators`, `/calculators/sip`, `/calculators/amortization`, `/calculators/mortgage`, `/calculators/fire`, and `/transactions`; unauthenticated `GET /api/calculator-results` returned `401`.
 - Phase 20 verification: `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 440 frontend tests across 16 files, and production build. Local Playwright CLI screenshots rendered SIP desktop and amortization mobile/full-page views. `npm run cf:deploy` deployed to `https://2e1c808a.interactive-fire-calculator.pages.dev`. Live HTTP smoke returned `200` for `/`, `/calculators`, `/calculators/sip`, `/calculators/amortization`, `/calculators/roi`, `/calculators/fire`, and `/transactions`; unauthenticated `GET /api/calculator-results` returned `401`.
 - Phase 21 verification: `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 480 frontend tests across 16 files, and production build. Local Playwright CLI screenshots rendered SIP desktop/full-page and retirement mobile/full-page views; a Chrome-driven mobile check opened the SIP schedule disclosure and confirmed the table stays inside its wrapper without document-level horizontal overflow. `npm run cf:deploy` deployed to `https://c41f598d.interactive-fire-calculator.pages.dev`. Live HTTP smoke returned `200` for `/`, `/calculators`, `/calculators/sip`, `/calculators/retirement`, `/calculators/xirr`, `/calculators/fire`, and `/transactions`; unauthenticated `GET /api/calculator-results` returned `401`; live mobile SIP disclosure was closed by default, opened on click, rendered 10 rows, and kept the document width at `390px`.
 - Phase 22 verification: `npm run typecheck` passed; `npm test` passed with 664 frontend tests across 16 files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 664 frontend tests, and production build. `npm run cf:deploy` deployed to `https://ca04df60.interactive-fire-calculator.pages.dev`. Live HTTP smoke returned `200` for `/`, `/calculators`, `/calculators/amortization`, `/calculators/home-loan-prepayment`, `/calculators/mortgage-payoff`, `/calculators/fire`, and `/transactions`; unauthenticated `GET /api/calculator-results` returned `401`; live sitemap includes `mortgage-payoff`, `home-loan-prepayment`, `debt-to-income`, and `fha-vs-conventional`.
 - Phase 23 verification: `npm run typecheck` passed; `npm test` passed with 682 frontend tests across 16 files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 682 frontend tests, and production build. `npm run cf:deploy` deployed to `https://62099a61.interactive-fire-calculator.pages.dev`. Live HTTP smoke returned `200` for `/`, `/calculators`, `/calculators/income-tax-india`, `/calculators/income-tax-us`, `/calculators/paycheck`, `/calculators/fire`, and `/transactions`; unauthenticated `GET /api/calculator-results` returned `401`; live sitemap includes `income-tax-india`, `income-tax-us`, `paycheck`, `life-insurance-needs`, and `calculators/fire`.
 - Phase 24 verification: `npm run typecheck` passed; `npm test` passed with 852 frontend tests across 18 files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 852 frontend tests, and production build. Local browser QA covered the calculator hub plus India and US calculator pages at desktop and `390x844` with no errors or horizontal overflow. `npm run cf:deploy` deployed to `https://45c8e45c.interactive-fire-calculator.pages.dev`. The new smoke script verified all 84 public calculator-library paths without auth; `/`, `/calculators/fire`, and `/transactions` returned `200`; unauthenticated `GET /api/calculator-results` returned `401`; live mobile amortization metadata/schema/link/table-disclosure checks passed.
+- Phase 25 verification: no D1 migration or Pages Function change was needed because `saved_calculator_results` already preserves recent inputs, outputs, timestamps, and linked destination IDs. `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 1,019 frontend tests across 19 files, and production build. Local desktop/mobile browser QA passed scenario comparison, ranked outcome drivers, share-link copy and restoration, summary CSV export, signed-out history prompts, closed schedule disclosures, console state, and overflow. `npm run cf:deploy` deployed to `https://bd0e9f28.interactive-fire-calculator.pages.dev`. All 84 public calculator-library paths passed without auth; live shared SIP restoration and mobile drawer checks passed; `/`, `/calculators/fire`, and `/dashboard` returned `200`; unauthenticated `GET /api/calculator-results` returned `401`.
 - `/calculators/amortization` now has a full payment-by-payment monthly table with year labels, cumulative interest, period views, and CSV export. Future polish can deepen chart visuals and date-aware payment labels, but the route is no longer a placeholder schedule.
 - The same period-table standard now applies wherever users expect line-by-line detail: loan/EMI/mortgage schedules, debt payoff tables, SIP/deposit contribution schedules, SWP/retirement withdrawal schedules, tax/paycheck bracket or period tables, and cashflow/category breakdown tables.
 - Phase 22 implemented missing loan/mortgage routes such as mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only mortgage, balloon loan, closing costs, escrow, DTI, loan comparison, APR, FHA/VA, India loan prepayment/foreclosure/balance transfer, flat-vs-reducing rate, India eligibility, and stamp duty/registration.
@@ -306,14 +307,13 @@ Remaining Phase 2 work:
 4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
 5. Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
-Phase 25 next slice:
+Launch next slice:
 
-1. Add side-by-side saved scenario comparisons without changing stable public calculator routes.
-2. Add recent signed-in calculator history and dashboard follow-up cards tied to saved result destinations.
-3. Explain which input changed each outcome most and keep the language deterministic and evidence-linked.
-4. Add export/share for scenario summaries and the existing optional schedules and breakdowns.
-5. Run final browser QA across representative calculator families, signed-out draft recovery, and signed-in save/history flows.
-6. Keep production Clerk setup as the launch-critical blocker until an owned domain and production keys are configured.
+1. Run `clerk deploy` in a human terminal and configure the production instance for an owned domain.
+2. Pull and configure production Clerk keys in Cloudflare Pages production and preview environments as intended.
+3. Verify real sign up, sign in, sign out, signed-in dashboard access, `/api/me`, saved calculator history, and destination follow-ups on the hosted domain.
+4. Re-run the full repository suite and deploy the production-auth configuration.
+5. Do not call the product launch-ready until this hosted production auth flow passes.
 
 ## Working Rules
 
@@ -362,17 +362,17 @@ Product context:
 The product has pivoted from a standalone FIRE calculator to a comprehensive personal financial tracker and planner. FIRE is now only the first calculator module inside the broader platform.
 
 Current status:
-Phases 1 and 3 through 24 are complete for preview/development. Phase 24 adds route-specific content, assumptions, FAQs, crawlable internal links, canonical/application/FAQ schema tests, sitemap completeness, and no-auth smoke coverage across all public calculator paths. Phase 25 is the final calculator value/personalization phase. Phase 2 still has one launch blocker: Clerk needs a production instance/domain and production keys.
+Phases 1 and 3 through 25 are complete for preview/development. The comprehensive calculator program is 100% complete. Phase 2 still has one launch blocker: Clerk needs a production instance/domain, production keys, and hosted signed-in verification.
 
 Next goal:
-Either complete production Clerk setup for launch readiness or begin Phase 25 Engagement and Personalization Loop. Keep Clerk production auth/domain setup as a launch blocker.
+Complete production Clerk setup and hosted signed-in verification for launch readiness.
 
 Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
 
-## Detailed Phase 25 Handoff Prompt
+## Detailed Launch Handoff Prompt
 
-Use this more detailed prompt when starting the coding session that should begin the next product-build phase:
+Use this more detailed prompt when starting the launch-readiness session:
 
 ```text
 We are working in this repo:
@@ -392,25 +392,22 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 docs/CALCULATOR_VALUE_ROADMAP.md
 
 Current state:
-Phases 1 and 3 through 24 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, import history, transactions, saved calculator results, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed transaction CSV imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public hub with 82 calculator routes plus public FIRE. Phase 17 calculator saves, Phase 20 decision studios, Phase 21-23 optional schedules and family-specific visualizers, and Phase 24 formula-aware content/metadata hardening are complete. Phase 24 also adds crawlable hub/related links, five FAQs and visible assumptions per route, tested canonicals/robots/application and FAQ schema/sitemap completeness, and deployed no-auth smoke coverage across all 84 calculator-library paths. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1 and 3 through 25 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, import history, transactions, saved calculator results, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public hub with 82 calculator routes plus public FIRE. The complete calculator program includes durable saves, decision studios, optional schedules, family visualizers, content/metadata hardening, all-route no-auth smoke coverage, scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, input-only share links, and CSV export. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://45c8e45c.interactive-fire-calculator.pages.dev
+https://bd0e9f28.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev
 
 Goal:
-Begin Phase 25 Engagement and Personalization Loop, unless the product owner chooses to pause product expansion for production Clerk setup first.
+Complete production Clerk setup and hosted signed-in verification.
 
-Phase 25 target:
-- Add side-by-side scenario comparison using the existing conservative/base/optimistic scenario engine.
-- Add recent signed-in calculator history and useful dashboard follow-up cards.
-- Add deterministic explanations of which changed input affected the outcome most.
-- Add export/share for scenario summaries and existing schedules or breakdowns.
+Launch target:
+- Create the Clerk production instance for an owned domain.
+- Configure production publishable and secret keys in Cloudflare Pages without exposing them in source or command output.
+- Verify real hosted sign-up, sign-in, sign-out, `/api/me`, signed-in routes, saved calculator history, and destination follow-ups.
 - Keep all public calculator routes, content, links, metadata, schema, sitemap, and no-auth behavior stable.
-- Reuse the Phase 17 save-result layer instead of building one-off persistence.
-- Complete final signed-out draft recovery and signed-in save/history browser QA.
 - Preserve public FIRE, accounts, goals, plans, reports, imports, Settings privacy controls, and `src/lib/fire.ts`.
 - Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
 
@@ -426,7 +423,7 @@ Required Clerk environment:
 
 Implementation guidance:
 - Keep Phase 8 recommendations and Phase 25 outcome explanations deterministic and traceable; do not add AI-generated financial guidance until privacy, safety, and evidence constraints are explicit.
-- Extend the existing `saved_calculator_results` model conservatively for history/comparison needs.
+- Preserve the existing `saved_calculator_results` history and explicit calculator-derived writes while verifying the hosted signed-in flow.
 - Keep calculator-derived writes explicit, reversible, and visible before creating durable user data.
 - Keep the production Clerk blocker visible in all launch-readiness summaries.
 - Update the three project memory documents as each phase slice completes.

@@ -56,6 +56,7 @@ import {
   type WithdrawalTiming,
   type YearResult
 } from './lib/fire';
+import { buildCalculatorFollowUp } from './lib/calculatorFollowUps';
 import {
   buildFinancialInsights,
   type FinancialInsight,
@@ -2926,20 +2927,24 @@ function DashboardPanel({
           </article>
         ) : (
           <div className="dashboard-calculator-list">
-            {recentCalculatorResults.map((item) => (
-              <button
-                className="dashboard-calculator-card"
-                key={item.id}
-                type="button"
-                onClick={() => onNavigate(item.conversionRoute)}
-              >
-                <span>{calculatorDestinationLabel(item.destinationType)}</span>
-                <strong>{item.calculatorTitle}</strong>
-                <small>
-                  {formatSavedCalculatorMetric(item)} saved {new Date(item.createdAt).toLocaleDateString()}
-                </small>
-              </button>
-            ))}
+            {recentCalculatorResults.map((item) => {
+              const followUp = buildCalculatorFollowUp(item);
+
+              return (
+                <button
+                  className="dashboard-calculator-card"
+                  key={item.id}
+                  type="button"
+                  onClick={() => onNavigate(item.conversionRoute)}
+                >
+                  <span>{followUp.label}</span>
+                  <strong>{item.calculatorTitle}</strong>
+                  <small>
+                    {formatSavedCalculatorMetric(item)} saved {new Date(item.createdAt).toLocaleDateString()}. {followUp.action}
+                  </small>
+                </button>
+              );
+            })}
           </div>
         )}
 
@@ -6533,6 +6538,7 @@ function App({ auth }: { auth: AuthState }) {
             <CalculatorLibrary
               auth={auth}
               route={route}
+              savedResults={savedCalculatorResults}
               onNavigate={(nextRoute) => navigateTo(normalizeRoute(nextRoute))}
               onSaveResult={saveCalculatorResult}
             />

@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://45c8e45c.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://bd0e9f28.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,7 +29,7 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 24 are complete for preview/development: D1 persistence, financial tracking, goals, versioned planning, reviewed imports, deterministic insights, privacy controls, the public calculator library, durable calculator saves, calculator decision studios, comprehensive optional schedules, borrowing expansion, income/tax/budget/protection breakdowns, and calculator content/metadata hardening are active. Every calculator route now has formula-aware user guidance, visible assumptions and FAQs, crawlable related links, tested canonical and structured-data output, sitemap coverage, and live no-auth smoke coverage. Phase 25 is the final calculator engagement and personalization phase. The FinPath interpretation of the installed Revolut-inspired reference applies across the landing page and product shell, with glassmorphism retained for functional panels.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 25 are complete for preview/development. The financial tracker, goals, versioned planning, reviewed imports, deterministic insights, privacy controls, public calculator library, durable calculator saves, decision studios, comprehensive optional schedules, content/metadata hardening, side-by-side comparison, deterministic outcome drivers, recent history, dashboard follow-ups, and export/share loop are active. The calculator roadmap is 100% complete; production Clerk configuration and hosted signed-in verification are the remaining launch-critical work.
 
 ## Current Code Shape
 
@@ -230,7 +230,7 @@ Current Phase 9 state:
 
 Next recommended phase:
 
-- Either complete production Clerk setup for launch readiness or begin Phase 25 Engagement and Personalization Loop. Keep Clerk production auth/domain setup visible as the remaining launch blocker.
+- Complete production Clerk setup and hosted signed-in verification for launch readiness.
 
 Current Phase 10 state:
 
@@ -775,7 +775,7 @@ Verification and deployment:
 
 ### Phase 20-25: Calculator Value and Visualization Roadmap
 
-Status: Phase 24 complete; Phase 25 planned.
+Status: Phase 25 complete; all planned calculator phases are complete for preview/development.
 
 Source of truth: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 High-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
@@ -798,7 +798,7 @@ Phase status:
 - Phase 22: Complete for preview/development. Loan, debt, home, and vehicle visualizers plus missing loan/mortgage calculator routes are implemented with optional payment/detail tables, custom period views, CSV export, and true multi-debt snowball vs avalanche comparison.
 - Phase 23: Complete for preview/development. Income, tax, budget, and protection calculators now have richer estimate logic and collapsed optional detail tables for gross-to-net, bracket/slab, runway, and protection-gap reads.
 - Phase 24: Complete for preview/development. Formula-aware route content, assumptions, FAQs, crawlable links, metadata/schema/sitemap tests, duplicate-content guards, and all-route no-auth smoke coverage are in place.
-- Phase 25: Engagement and personalization loop.
+- Phase 25: Complete for preview/development. Scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, input-only share links, and summary export are in place.
 
 Phase 21 verification and deployment:
 
@@ -833,26 +833,36 @@ Phase 24 verification and deployment:
 - Live HTTP smoke returned `200` for `/`, `/calculators/fire`, and `/transactions`; unauthenticated `GET /api/calculator-results` returned `401`.
 - Live mobile amortization checks confirmed the title, canonical, `index, follow`, WebApplication/FAQ schema, four related links, five visible FAQs, closed detail schedule, no console errors, and `390px` document width.
 
+Phase 25 verification and deployment:
+
+- No schema or Pages Function change was needed; Phase 25 reuses the existing user-scoped `saved_calculator_results` history.
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 1,019 frontend tests across 19 files, and production build.
+- Local agent-browser QA passed desktop mortgage comparison and sensitivity, shared SIP input/scenario restoration, copy-link and summary-export actions, signed-out history prompts, closed schedule details, console state, and desktop/mobile overflow.
+- The lightweight dashboard follow-up helper remains in the main bundle while the engagement engine stays in the lazy calculator chunk.
+- `npm run cf:deploy` deployed to `https://bd0e9f28.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- `npm run smoke:calculators -- https://bd0e9f28.interactive-fire-calculator.pages.dev` verified all 84 public calculator-library paths without authentication.
+- Live shared SIP restoration and mobile drawer checks passed; `/`, `/calculators/fire`, and `/dashboard` returned `200`; unauthenticated `GET /api/calculator-results` returned `401`.
+
 Deploy/handoff rule:
 
 - After each app deploy, record what shipped, preview URL, tests, smoke routes, percent complete, percent remaining, and blockers.
-- Current comprehensive calculator completion estimate is 92%; roughly 8% remains for saved scenario comparison, recent history, dashboard follow-ups, export/share, personalization, and final flow QA.
+- Current comprehensive calculator completion is 100%; 0% remains in the planned calculator roadmap. Production Clerk setup remains a separate launch blocker.
 
 ## Immediate Next Coding Session Recommendation
 
-Begin Phase 25 Engagement and Personalization Loop, unless product ownership chooses to pause product expansion and finish production Clerk setup first.
+Complete production Clerk setup and hosted signed-in verification.
 
 Recommended first slice:
 
-1. Add side-by-side scenario comparison using the existing calculator scenarios and saved-result model.
-2. Add recent signed-in calculator history and dashboard follow-up cards without mutating accounts or transactions unexpectedly.
-3. Add deterministic “what changed the outcome most” explanations.
-4. Add export/share for scenario summaries and existing schedule/detail tables.
-5. Run final signed-out draft recovery and signed-in save/history browser QA; continue tracking Clerk production auth/domain setup as a launch blocker.
+1. Run `clerk deploy` in a human terminal and configure the production instance for an owned domain.
+2. Pull and set production Clerk publishable and secret keys in the intended Cloudflare Pages environments.
+3. Verify real hosted sign-up, sign-in, sign-out, `/api/me`, signed-in route access, saved calculator history, and destination follow-ups.
+4. Re-run `./scripts/test_all.sh`, deploy, and smoke the public and authenticated paths.
+5. Keep production launch status blocked until this flow passes end to end.
 
 Reason:
 
-The product now has identity, persistence, reviewed imports, goals, versioned planning, rule-based insights, privacy controls, a manual Transactions ledger, a broad public calculator library, durable calculator saves, decision studios, comprehensive family visualizers, and hardened public content/metadata. The remaining calculator-program gap is turning scenarios and saved results into comparison, history, follow-up, and export workflows. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
+The product now has identity-ready auth integration, persistence, reviewed imports, goals, versioned planning, rule-based insights, privacy controls, a manual Transactions ledger, a broad public calculator library, durable calculator saves, decision studios, comprehensive family visualizers, hardened public content/metadata, comparison, deterministic sensitivity, history, follow-ups, and export/share. The planned calculator program is complete. Production auth still cannot be called launch-ready until a Clerk production instance/domain exists and the hosted production flow is verified end to end.
 
 ## Testing Requirements
 
@@ -918,9 +928,9 @@ docs/CALCULATOR_VALUE_ROADMAP.md
 
 The product scope has changed from a standalone FIRE calculator to a comprehensive personal financial tracker and planner platform. FIRE is now the first calculator module inside a larger app.
 
-Phases 1 and 3 through 24 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved plans and versions, accounts, balances, goals, import history, transactions, saved calculator results, and account-data export/delete readiness behind authenticated user-scoped Pages Functions. The public calculator library keeps all 82 calculator routes plus FIRE available without auth. Phase 24 adds formula-aware route descriptions and explanations, visible assumptions, five FAQs per route, crawlable hub/related links, tested titles/descriptions/canonicals/robots/schema/sitemap coverage, duplicate-content guards, and a deployed no-auth sweep of all 84 calculator-library paths. Phase 25 remains for saved comparison, recent history, dashboard follow-ups, export/share, and final flow QA.
+Phases 1 and 3 through 25 are complete for preview/development. Clerk development auth is integrated, but real production auth is blocked until a Clerk production instance/domain and production keys are configured. D1 stores profiles, saved plans and versions, accounts, balances, goals, import history, transactions, saved calculator results, and account-data export/delete readiness behind authenticated user-scoped Pages Functions. The public calculator library keeps all 82 calculator routes plus FIRE available without auth. The calculator program is 100% complete with route-specific content, tested metadata, comprehensive schedules, scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, share links, exports, and all-route public smoke coverage.
 
-Next goal: begin Phase 25 Engagement and Personalization Loop, unless product ownership chooses to pause product expansion and finish production Clerk setup first. Keep production Clerk setup as a launch blocker.
+Next goal: complete production Clerk setup and hosted signed-in verification. Keep production launch status blocked until that flow passes.
 
 Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when app behavior changes.
 ```

@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://45c8e45c.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://bd0e9f28.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -42,7 +42,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Preview/app complete | 100% | Added complete optional amortization/payment/payoff/refinance/prepayment/PMI/rent-buy tables, custom period views, CSV schedule export, true multi-debt snowball/avalanche comparison, and the missing loan/mortgage/India home-loan routes. |
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Preview/app complete | 100% | Gross-to-net tables, India old/new regime estimates, US bracket estimates, budget cashflow, emergency runway, and protection-gap planning are in place. |
 | Phase 24: Calculator Search Preservation and Content Quality | Preview/app complete | 100% | Stable URLs, formula-aware route content, visible assumptions and FAQs, tested canonicals/schema/sitemap coverage, crawlable internal links, duplicate-content guards, and no-auth smoke coverage for all public calculators are in place. |
-| Phase 25: Engagement and Personalization Loop | Planned | 0% | Add saved scenario comparisons, recent calculator history, dashboard follow-up cards, and export/share for schedules and summaries. |
+| Phase 25: Engagement and Personalization Loop | Preview/app complete | 100% | Side-by-side scenarios, deterministic outcome drivers, recent saved-run history, explicit reload, dashboard follow-ups, input-only share links, schedule CSVs, and scenario-summary export are in place. |
 
 ## Design System Milestone
 
@@ -458,7 +458,7 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
-- Current comprehensive-calculator completion estimate: 92%. The public routes, formula and visualization layers, durable save flow, family-specific schedules, route content, canonicals/schema/sitemap coverage, crawlable internal links, and all-route no-auth smoke coverage are in place; 8% remains for saved scenario comparison, recent history, dashboard follow-ups, export/share, personalization, and final flow QA.
+- Current comprehensive-calculator completion estimate: 100%. All planned calculator phases are complete for preview/development; 0% remains in the calculator roadmap. Production Clerk setup and hosted signed-in verification remain a separate launch blocker.
 - [x] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
 - [x] Phase 20: Add code-level calculator quality/studio contracts while preserving every existing public route.
 - [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
@@ -468,10 +468,10 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - [x] Phase 22: Add missing loan/mortgage calculators, including mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment, India foreclosure, India balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
 - [x] Phase 23: Upgrade income, tax, budget, and protection calculators with waterfalls, category/cashflow visuals, richer assumptions, and estimate disclaimers.
 - [x] Phase 24: Preserve stable public URLs with self-canonicals, sitemap coverage, route-specific content, structured data, crawlable internal links, duplicate-content guards, and public no-auth smoke coverage.
-- [ ] Phase 25: Add saved scenario comparison, recent calculator history, dashboard follow-up cards, and export/share options for schedules, payoff tables, deposit tables, withdrawal tables, and summaries.
-- [ ] Keep internal search/acquisition strategy out of user-facing copy.
-- [ ] Combine calculator implementations through shared studios, not by removing or redirecting public calculator routes.
-- [ ] After each app deploy, record preview URL, tests, smoke routes, completed work, completion percentage, remaining percentage, and blockers.
+- [x] Phase 25: Add saved scenario comparison, recent calculator history, dashboard follow-up cards, and export/share options for schedules, payoff tables, deposit tables, withdrawal tables, and summaries.
+- [x] Keep internal search/acquisition strategy out of user-facing copy.
+- [x] Combine calculator implementations through shared studios, not by removing or redirecting public calculator routes.
+- [x] After each app deploy, record preview URL, tests, smoke routes, completed work, completion percentage, remaining percentage, and blockers.
 
 ## Phase 20 High-Standard Foundation Checkpoint
 
@@ -582,6 +582,22 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - Live smoke: all 84 public calculator-library paths passed without auth; `/`, `/calculators/fire`, and `/transactions` returned `200`; unauthenticated `/api/calculator-results` returned `401`; live mobile amortization metadata/schema/link/disclosure/overflow checks passed.
 - Completion after implementation: comprehensive calculator program is 92% complete; 8% remains.
 - Remaining blockers: production Clerk setup is still the launch blocker; Phase 25 saved comparisons, history, follow-ups, export/share, and final flow QA remain.
+
+### Phase 25 completion checkpoint
+
+- Added a collapsed-by-default comparison drawer to every public calculator with conservative, base, and optimistic headline results and explicit changed-input labels.
+- Added deterministic one-input sensitivity analysis for every calculator; the top outcome drivers are ranked by headline-result movement in a bounded 10% test range.
+- Added recent signed-in history on calculator routes using the existing `saved_calculator_results` records. Selecting a run compares it with the current result; loading its inputs remains an explicit separate action.
+- Added dashboard follow-up labels and actions based on whether a saved result already created its goal, account, or plan destination. Transaction-oriented results direct users to real cashflow tracking without inventing ledger rows.
+- Added input-only share links with route-safe parsing, input clamping, scenario restoration, and no account data. Added scenario-summary CSV export while retaining existing schedule/detail CSV export.
+- Preserved lazy loading by splitting the lightweight dashboard follow-up helper from the calculator engagement engine; the main app chunk stayed near its Phase 24 size.
+- Added 167 Phase 25 engagement tests covering every calculator's finite sensitivity output and share-link round trip plus export and follow-up behavior. Frontend coverage is now 1,019 tests across 19 files.
+- Verification passed: `./scripts/test_all.sh` with 79 Python tests, TypeScript typecheck, 1,019 frontend tests, and production build.
+- Local browser QA passed desktop mortgage comparison/drivers, shared SIP restoration, copy/export actions, mobile layout, closed schedules, console state, and horizontal overflow.
+- Deploy: `npm run cf:deploy` deployed to `https://bd0e9f28.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live smoke: all 84 public calculator-library paths passed without auth; live shared SIP restoration and mobile comparison drawer checks passed; `/`, `/calculators/fire`, and `/dashboard` returned `200`; unauthenticated `/api/calculator-results` returned `401`.
+- Completion after implementation: comprehensive calculator program is 100% complete; 0% remains.
+- Remaining launch blocker: create/configure the Clerk production instance/domain and production keys, then verify the real hosted signed-in flow.
 
 ## Phase 12-19 Verification Notes
 
