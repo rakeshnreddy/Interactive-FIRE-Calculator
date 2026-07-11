@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://bd0e9f28.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://8fb17051.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -43,8 +43,19 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Preview/app complete | 100% | Gross-to-net tables, India old/new regime estimates, US bracket estimates, budget cashflow, emergency runway, and protection-gap planning are in place. |
 | Phase 24: Calculator Search Preservation and Content Quality | Preview/app complete | 100% | Stable URLs, formula-aware route content, visible assumptions and FAQs, tested canonicals/schema/sitemap coverage, crawlable internal links, duplicate-content guards, and no-auth smoke coverage for all public calculators are in place. |
 | Phase 25: Engagement and Personalization Loop | Preview/app complete | 100% | Side-by-side scenarios, deterministic outcome drivers, recent saved-run history, explicit reload, dashboard follow-ups, input-only share links, schedule CSVs, and scenario-summary export are in place. |
+| Post-roadmap: Calculator Consolidation and Visual System Refresh | Preview/app complete | 100% | All 82 exact routes remain, but the hub now presents 8 decision toolkits with exact search and progressive disclosure. Product/design contracts, a neutral teal-blue-coral light/dark system, restrained glass, persistent theme preference, and refreshed landing/detail/app surfaces are deployed at `https://8fb17051.interactive-fire-calculator.pages.dev`. |
 
 ## Design System Milestone
+
+The original Revolut-inspired milestone below is historical. The current visual source of truth is the post-Phase-25 precision-led system in `DESIGN.md` and `PRODUCT.md`.
+
+- [x] Consolidate the calculator hub into 8 decision toolkits while retaining all exact routes.
+- [x] Replace the purple/photo wash with neutral light and dark canvases, teal primary action, blue comparison data, and warm secondary emphasis.
+- [x] Restrict glass to navigation, search, and primary grouped work surfaces.
+- [x] Standardize cards and controls at 8px geometry with restrained borders and shadows.
+- [x] Make the full calculator library the primary landing action and retain FIRE as a direct secondary path.
+- [x] Persist color-mode preference and honor system preference on first visit.
+- [x] Add toolkit completeness tests and browser-check desktop/mobile light/dark layouts with no horizontal overflow.
 
 - [x] Add the requested Revolut-inspired `DESIGN.md` reference.
 - [x] Establish a FinPath-specific black, white, and restrained cobalt token system.
@@ -58,6 +69,15 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Deploy the design milestone to `https://61627f11.interactive-fire-calculator.pages.dev` and verify the live hero asset, console, and responsive framing.
 
 This milestone remains the visual baseline for the completed Planning Workspace and future product phases.
+
+Post-roadmap consolidation verification:
+
+- `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 1,111 frontend tests across 20 files, and production build.
+- Local desktop/mobile browser QA passed the landing page, toolkit hub, exact search, amortization detail, FIRE workspace, signed-out Dashboard gate, light/dark themes, theme persistence, console state, and document-width checks.
+- Toolkit coverage confirmed 8 panels expose all 82 exact routes exactly once; searching `mortgage refinance` returns the precise route and preserves the query in the URL.
+- `npm run cf:deploy` deployed to `https://8fb17051.interactive-fire-calculator.pages.dev`; `npm run smoke:calculators` verified all 84 public calculator-library paths without authentication.
+- Live `/`, `/calculators`, representative India/US/global calculators, `/calculators/fire`, and `/dashboard` returned `200`; unauthenticated `/api/calculator-results` returned `401`.
+- Calculator program and this consolidation/design checkpoint are 100% complete. The remaining launch blocker is still production Clerk instance/domain/keys and hosted signed-in verification.
 
 ## Phase 1 Completion Checklist
 

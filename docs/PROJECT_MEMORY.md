@@ -10,7 +10,7 @@ Last updated: July 12, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://bd0e9f28.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://8fb17051.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -42,6 +42,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Shared transaction validation, ownership checks, CRUD, and summary rules in `functions/_lib/transactions.ts`.
 - Transaction filtering, category suggestions, and cashflow rollups in `src/lib/transactionAnalytics.ts`.
 - Public calculator library in `src/CalculatorLibrary.tsx` and tested calculator engines/registry in `src/lib/seoCalculators.ts`.
+- User-facing calculator consolidation in `src/lib/calculatorToolkits.ts`: 82 exact routes are organized into 8 decision toolkits without removing stable paths.
 - Calculator decision-studio metadata, scenarios, chart primitives, examples, and related route rules in `src/lib/calculatorStudios.ts`.
 - Authenticated calculator result save/list endpoint in `functions/api/calculator-results/index.ts` with shared D1 save and downstream draft mapping rules in `functions/_lib/calculatorResults.ts`.
 - Public calculator sitemap and robots files in `public/sitemap.xml` and `public/robots.txt`.
@@ -50,7 +51,9 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
 - Legacy Flask/Jinja app remains in `app.py`, `project/`, `templates/`, and `static/` for reference/parity only.
-- `DESIGN.md` defines the Revolut-inspired FinPath visual language used by the React app.
+- `PRODUCT.md` defines the product audience, purpose, voice, and anti-references.
+- `DESIGN.md` defines the neutral precision-led light/dark visual system used by the React app.
+- `docs/CALCULATOR_LIBRARY_REVIEW.md` records formula overlap, route-retention rules, toolkit grouping, and the post-Phase-25 visual review.
 
 ## Completed Work
 
@@ -293,6 +296,7 @@ Calculator roadmap decision:
 - Phase 23 verification: `npm run typecheck` passed; `npm test` passed with 682 frontend tests across 16 files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 682 frontend tests, and production build. `npm run cf:deploy` deployed to `https://62099a61.interactive-fire-calculator.pages.dev`. Live HTTP smoke returned `200` for `/`, `/calculators`, `/calculators/income-tax-india`, `/calculators/income-tax-us`, `/calculators/paycheck`, `/calculators/fire`, and `/transactions`; unauthenticated `GET /api/calculator-results` returned `401`; live sitemap includes `income-tax-india`, `income-tax-us`, `paycheck`, `life-insurance-needs`, and `calculators/fire`.
 - Phase 24 verification: `npm run typecheck` passed; `npm test` passed with 852 frontend tests across 18 files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 852 frontend tests, and production build. Local browser QA covered the calculator hub plus India and US calculator pages at desktop and `390x844` with no errors or horizontal overflow. `npm run cf:deploy` deployed to `https://45c8e45c.interactive-fire-calculator.pages.dev`. The new smoke script verified all 84 public calculator-library paths without auth; `/`, `/calculators/fire`, and `/transactions` returned `200`; unauthenticated `GET /api/calculator-results` returned `401`; live mobile amortization metadata/schema/link/table-disclosure checks passed.
 - Phase 25 verification: no D1 migration or Pages Function change was needed because `saved_calculator_results` already preserves recent inputs, outputs, timestamps, and linked destination IDs. `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 1,019 frontend tests across 19 files, and production build. Local desktop/mobile browser QA passed scenario comparison, ranked outcome drivers, share-link copy and restoration, summary CSV export, signed-out history prompts, closed schedule disclosures, console state, and overflow. `npm run cf:deploy` deployed to `https://bd0e9f28.interactive-fire-calculator.pages.dev`. All 84 public calculator-library paths passed without auth; live shared SIP restoration and mobile drawer checks passed; `/`, `/calculators/fire`, and `/dashboard` returned `200`; unauthenticated `GET /api/calculator-results` returned `401`.
+- Post-roadmap consolidation verification: `PRODUCT.md`, the rewritten `DESIGN.md`, and `docs/CALCULATOR_LIBRARY_REVIEW.md` define the product, visual, and route-retention contracts. `src/lib/calculatorToolkits.ts` places all 82 exact calculator routes into 8 user-facing toolkits, and 92 toolkit tests cover complete one-to-one assignment plus featured-route validity. `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 1,111 frontend tests across 20 files, and production build. Local and live desktop/mobile browser QA passed light/dark themes, landing CTAs, exact-search URL state, 82 toolkit links, calculator detail context, closed amortization schedules, signed-out gating, console state, and horizontal overflow. `npm run cf:deploy` deployed to `https://8fb17051.interactive-fire-calculator.pages.dev`; all 84 public calculator-library paths passed without auth and unauthenticated `GET /api/calculator-results` returned `401`.
 - `/calculators/amortization` now has a full payment-by-payment monthly table with year labels, cumulative interest, period views, and CSV export. Future polish can deepen chart visuals and date-aware payment labels, but the route is no longer a placeholder schedule.
 - The same period-table standard now applies wherever users expect line-by-line detail: loan/EMI/mortgage schedules, debt payoff tables, SIP/deposit contribution schedules, SWP/retirement withdrawal schedules, tax/paycheck bracket or period tables, and cashflow/category breakdown tables.
 - Phase 22 implemented missing loan/mortgage routes such as mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only mortgage, balloon loan, closing costs, escrow, DTI, loan comparison, APR, FHA/VA, India loan prepayment/foreclosure/balance transfer, flat-vs-reducing rate, India eligibility, and stamp duty/registration.
@@ -395,7 +399,7 @@ Current state:
 Phases 1 and 3 through 25 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, import history, transactions, saved calculator results, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public hub with 82 calculator routes plus public FIRE. The complete calculator program includes durable saves, decision studios, optional schedules, family visualizers, content/metadata hardening, all-route no-auth smoke coverage, scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, input-only share links, and CSV export. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://bd0e9f28.interactive-fire-calculator.pages.dev
+https://8fb17051.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev

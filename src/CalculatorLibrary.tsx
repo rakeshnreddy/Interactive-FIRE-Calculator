@@ -1,7 +1,9 @@
 import { SignUpButton } from '@clerk/react';
 import {
   ArrowRight,
+  Banknote,
   Calculator,
+  ChartNoAxesCombined,
   ChevronDown,
   CircleHelp,
   CircleDollarSign,
@@ -12,9 +14,14 @@ import {
   FolderKanban,
   Gauge,
   History,
+  House,
+  Landmark,
+  ReceiptText,
   Search,
+  ShieldCheck,
   Table2,
-  Target
+  Target,
+  WalletCards
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type { MouseEvent } from 'react';
@@ -27,6 +34,13 @@ import {
   type CalculatorInputImpact
 } from './lib/calculatorEngagement';
 import { getCalculatorQualitySpec, type CalculatorQualitySpec } from './lib/calculatorQuality';
+import {
+  calculatorToolkits,
+  featuredToolkitCalculators,
+  getCalculatorToolkit,
+  type CalculatorToolkit,
+  type CalculatorToolkitIcon
+} from './lib/calculatorToolkits';
 import {
   buildCalculatorScenarios,
   buildCalculatorDetailSchedule,
@@ -46,7 +60,6 @@ import {
   calculatorPath,
   findSeoCalculator,
   seoCalculators,
-  type CalculatorCategory,
   type CalculatorMetric,
   type CalculatorResult,
   type SeoCalculator
@@ -92,30 +105,6 @@ type CalculatorLibraryProps = {
 
 const calculatorDraftStorageKey = 'finpath.calculatorDraft.v1';
 
-const categoryOrder: CalculatorCategory[] = ['Planning', 'Investing', 'Borrowing', 'Tax'];
-const categoryCopy: Record<CalculatorCategory, { description: string; title: string }> = {
-  Borrowing: {
-    description: 'Estimate payments, payoff timelines, refinancing, housing choices, and other liability decisions.',
-    title: 'Borrowing and payoff'
-  },
-  Investing: {
-    description: 'Project compounding, recurring investments, returns, and long-term growth estimates.',
-    title: 'Investing and growth'
-  },
-  Planning: {
-    description: 'Turn goals, retirement questions, net worth, and protection needs into a first estimate.',
-    title: 'Planning decisions'
-  },
-  Savings: {
-    description: 'Plan deposits, reserves, maturity values, and recurring savings targets.',
-    title: 'Savings tools'
-  },
-  Tax: {
-    description: 'Use simple rate-based estimates for paycheck, salary, tax, and deduction planning.',
-    title: 'Tax and income estimates'
-  }
-};
-
 export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, savedResults }: CalculatorLibraryProps) {
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
 
@@ -135,7 +124,9 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
 }
 
 function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(() => (
+    typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('q') ?? ''
+  ));
   const normalizedQuery = query.trim().toLowerCase();
   const visibleCalculators = useMemo(
     () =>
@@ -151,76 +142,160 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
     [normalizedQuery]
   );
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const url = new URL(window.location.href);
+    if (query.trim()) url.searchParams.set('q', query.trim());
+    else url.searchParams.delete('q');
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }, [query]);
+
   return (
     <section className="calculator-library route-shell" aria-labelledby="calculators-title">
       <div className="route-heading calculator-library-heading">
-        <p className="eyebrow">Planning tools</p>
-        <h1 id="calculators-title">Financial calculators for the decisions in front of you.</h1>
-        <p>Run a quick estimate, understand the moving parts, then save the next step into goals, accounts, plans, or transaction tracking.</p>
+        <p className="eyebrow">Decision toolkits</p>
+        <h1 id="calculators-title">Start with the question, not the formula.</h1>
+        <p>Choose a planning toolkit or search for an exact calculator. Every estimate includes explanations, scenarios, visual context, and detailed schedules where they add value.</p>
+        <div className="calculator-library-stats" aria-label="Calculator library summary">
+          <span><strong>{calculatorToolkits.length}</strong> planning toolkits</span>
+          <span><strong>{seoCalculators.length}</strong> focused calculators</span>
+          <span><strong>0</strong> account required</span>
+        </div>
       </div>
 
       <div className="calculator-search-panel">
         <Search size={18} />
         <input
           aria-label="Find calculators"
+          autoComplete="off"
+          name="calculator-search"
           type="search"
-          placeholder="Find SIP, EMI, mortgage, debt payoff, retirement..."
+          placeholder="Search mortgage, SIP, tax, debt payoff, retirement"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
+        {query ? (
+          <button className="calculator-search-clear" type="button" onClick={() => setQuery('')}>
+            Clear
+          </button>
+        ) : null}
       </div>
 
-      <div className="calculator-region-tabs" aria-label="Calculator sections">
-        {categoryOrder.map((category) => (
-          <a key={category} href={`#${category.toLowerCase()}-calculators`}>{categoryCopy[category].title}</a>
-        ))}
-      </div>
-
-      {categoryOrder.map((category) => {
-        const calculators = visibleCalculators.filter((calculator) => calculator.category === category);
-        const copy = categoryCopy[category];
-
-        if (!normalizedQuery && calculators.length === 0) return null;
-
-        return (
-          <section className="calculator-region-section" id={`${category.toLowerCase()}-calculators`} key={category}>
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">{category}</p>
-                <h2>{copy.title}</h2>
-                <p>{copy.description}</p>
-              </div>
-              <span>{calculators.length} calculators</span>
+      {normalizedQuery ? (
+        <section className="calculator-search-results" aria-live="polite" aria-label="Calculator search results">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Search results</p>
+              <h2>{visibleCalculators.length} {visibleCalculators.length === 1 ? 'match' : 'matches'}</h2>
             </div>
-            {calculators.length === 0 ? (
-              <article className="scenario-card empty-card">
-                <span>No calculators match this search</span>
-                <small>Try a broader term such as loan, tax, retirement, SIP, or mortgage.</small>
-              </article>
-            ) : (
-              <div className="calculator-card-grid">
-                {calculators.map((calculator) => (
-                  <a
-                    className="calculator-card"
-                    href={calculatorPath(calculator.slug)}
-                    key={calculator.slug}
-                    onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
-                  >
-                    <span className="calculator-card-meta">{calculator.category}</span>
-                    <strong>{calculator.title}</strong>
-                    <small>{calculator.description}</small>
-                    <em>
-                      Open calculator
-                      <ArrowRight size={14} />
-                    </em>
-                  </a>
-                ))}
-              </div>
-            )}
-          </section>
-        );
-      })}
+          </div>
+          {visibleCalculators.length === 0 ? (
+            <div className="calculator-empty-state">
+              <CircleHelp size={22} />
+              <strong>No calculator matches that phrase.</strong>
+              <span>Try a decision such as buying a home, paying off debt, saving for retirement, or estimating tax.</span>
+            </div>
+          ) : (
+            <div className="calculator-card-grid">
+              {visibleCalculators.map((calculator) => (
+                <CalculatorSearchCard calculator={calculator} key={calculator.slug} onNavigate={onNavigate} />
+              ))}
+            </div>
+          )}
+        </section>
+      ) : (
+        <div className="calculator-toolkit-grid">
+          {calculatorToolkits.map((toolkit) => (
+            <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} toolkit={toolkit} />
+          ))}
+        </div>
+      )}
     </section>
+  );
+}
+
+function CalculatorToolkitPanel({
+  onNavigate,
+  toolkit
+}: {
+  onNavigate: (route: string) => void;
+  toolkit: CalculatorToolkit;
+}) {
+  const Icon = toolkitIcon(toolkit.icon);
+  const featured = featuredToolkitCalculators(toolkit);
+  const remaining = toolkit.calculators.filter((calculator) => !toolkit.featuredSlugs.includes(calculator.slug));
+
+  return (
+    <article className={`calculator-toolkit toolkit-${toolkit.id}`}>
+      <header>
+        <span className="calculator-toolkit-icon"><Icon size={20} /></span>
+        <div>
+          <span>{toolkit.prompt}</span>
+          <h2>{toolkit.title}</h2>
+        </div>
+        <strong>{toolkit.calculators.length}</strong>
+      </header>
+      <p>{toolkit.description}</p>
+      <nav className="calculator-toolkit-featured" aria-label={`${toolkit.title} starting points`}>
+        {featured.map((calculator, index) => (
+          <a
+            href={calculatorPath(calculator.slug)}
+            key={calculator.slug}
+            onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
+          >
+            <span>{index === 0 ? 'Start here' : 'Also useful'}</span>
+            <strong>{calculator.title}</strong>
+            <ArrowRight size={15} />
+          </a>
+        ))}
+      </nav>
+      {remaining.length > 0 ? (
+        <details className="calculator-toolkit-more">
+          <summary>
+            View all {toolkit.calculators.length} calculators
+            <ChevronDown size={16} />
+          </summary>
+          <div>
+            {remaining.map((calculator) => (
+              <a
+                href={calculatorPath(calculator.slug)}
+                key={calculator.slug}
+                onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
+              >
+                {calculator.title}
+              </a>
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </article>
+  );
+}
+
+function CalculatorSearchCard({
+  calculator,
+  onNavigate
+}: {
+  calculator: SeoCalculator;
+  onNavigate: (route: string) => void;
+}) {
+  const toolkit = getCalculatorToolkit(calculator);
+
+  return (
+    <a
+      className="calculator-card"
+      href={calculatorPath(calculator.slug)}
+      onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
+    >
+      <span className="calculator-card-meta">{toolkit.title}</span>
+      <strong>{calculator.title}</strong>
+      <small>{calculator.description}</small>
+      <em>
+        Open calculator
+        <ArrowRight size={14} />
+      </em>
+    </a>
   );
 }
 
@@ -261,6 +336,7 @@ function CalculatorDetail({
     () => buildCalculatorDetailSchedule(calculator, scenarioValues, result),
     [calculator, result, scenarioValues]
   );
+  const toolkit = useMemo(() => getCalculatorToolkit(calculator), [calculator]);
   const qualitySpec = useMemo(() => getCalculatorQualitySpec(calculator), [calculator]);
   const inputImpacts = useMemo(
     () => buildCalculatorInputImpacts(calculator, scenarioValues),
@@ -392,9 +468,17 @@ function CalculatorDetail({
   return (
     <section className="calculator-library calculator-detail route-shell" aria-labelledby="calculator-detail-title">
       <div className="route-heading calculator-library-heading">
-        <p className="eyebrow">{calculator.category} calculator</p>
+        <p className="eyebrow">{toolkit.title}</p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
         <p>{calculator.description}</p>
+        <a
+          className="calculator-toolkit-backlink"
+          href="/calculators"
+          onClick={(event) => navigateInternalLink(event, '/calculators', onNavigate)}
+        >
+          <ArrowRight size={15} />
+          Explore the {toolkit.title} toolkit
+        </a>
       </div>
 
       <section className="calculator-context-panel" aria-label={`${calculator.title} overview`}>
@@ -407,8 +491,8 @@ function CalculatorDetail({
           <p>{qualitySpec.decisionUsefulness}</p>
         </article>
         <article>
-          <p className="eyebrow">Decision studio</p>
-          <p>{studioMetadata.summary}</p>
+          <p className="eyebrow">How it fits</p>
+          <p>{toolkit.description}</p>
         </article>
         <article>
           <p className="eyebrow">How to read it</p>
@@ -578,7 +662,7 @@ function CalculatorDetail({
 
       <CalculatorDecisionPanel calculator={calculator} qualitySpec={qualitySpec} />
 
-      <CalculatorRelatedPanel metadata={studioMetadata} onNavigate={onNavigate} />
+      <CalculatorRelatedPanel metadata={studioMetadata} onNavigate={onNavigate} toolkit={toolkit} />
 
       <section className="calculator-faq-panel" id="faq" aria-label={`${calculator.title} FAQ`}>
         <p className="eyebrow">FAQ</p>
@@ -1064,17 +1148,19 @@ function CalculatorDecisionPanel({
 
 function CalculatorRelatedPanel({
   metadata,
-  onNavigate
+  onNavigate,
+  toolkit
 }: {
   metadata: CalculatorStudioMetadata;
   onNavigate: (route: string) => void;
+  toolkit: CalculatorToolkit;
 }) {
   return (
-    <section className="calculator-related-panel" aria-label={`${metadata.studio} related calculators`}>
+    <section className="calculator-related-panel" aria-label={`${toolkit.title} related calculators`}>
       <div>
-        <p className="eyebrow">{metadata.studio}</p>
-        <h2>Compare the nearby decisions</h2>
-        <p>These calculators use the same decision workflow, so moving between them keeps the assumptions in context.</p>
+        <p className="eyebrow">{toolkit.title}</p>
+        <h2>Continue the same decision</h2>
+        <p>These tools answer nearby questions, so you can reuse what you learned without treating every calculation as a separate project.</p>
       </div>
       <div className="calculator-related-list">
         {metadata.relatedCalculators.map((related) => (
@@ -1091,6 +1177,17 @@ function CalculatorRelatedPanel({
       </div>
     </section>
   );
+}
+
+function toolkitIcon(icon: CalculatorToolkitIcon) {
+  if (icon === 'banknote') return Banknote;
+  if (icon === 'chart') return ChartNoAxesCombined;
+  if (icon === 'home') return House;
+  if (icon === 'landmark') return Landmark;
+  if (icon === 'receipt') return ReceiptText;
+  if (icon === 'shield') return ShieldCheck;
+  if (icon === 'target') return Target;
+  return WalletCards;
 }
 
 function navigateInternalLink(

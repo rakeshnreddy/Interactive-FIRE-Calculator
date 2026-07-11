@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://bd0e9f28.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://8fb17051.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -29,14 +29,15 @@ Recent commits on this branch:
 - `2282784 Refine calculator landing experience`
 - `2e1ac23 Add guided retirement assumptions`
 
-Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 25 are complete for preview/development. The financial tracker, goals, versioned planning, reviewed imports, deterministic insights, privacy controls, public calculator library, durable calculator saves, decision studios, comprehensive optional schedules, content/metadata hardening, side-by-side comparison, deterministic outcome drivers, recent history, dashboard follow-ups, and export/share loop are active. The calculator roadmap is 100% complete; production Clerk configuration and hosted signed-in verification are the remaining launch-critical work.
+Phase 1 Product Shell and IA is complete. Phase 2 has a provider-ready Clerk auth shell and Pages Function identity endpoint. Clerk development credentials are wired locally and into Cloudflare Pages preview secrets, but real production auth is blocked until a Clerk production instance/domain is configured. Phases 3 through 25 are complete for preview/development. The financial tracker, goals, versioned planning, reviewed imports, deterministic insights, privacy controls, public calculator library, durable calculator saves, decision studios, comprehensive optional schedules, content/metadata hardening, side-by-side comparison, deterministic outcome drivers, recent history, dashboard follow-ups, and export/share loop are active. A post-roadmap review now organizes the 82 exact calculator routes into 8 user-facing decision toolkits and applies the precision-led light/dark visual system in `PRODUCT.md` and `DESIGN.md`. The calculator roadmap is 100% complete; production Clerk configuration and hosted signed-in verification are the remaining launch-critical work.
 
 ## Current Code Shape
 
 Production target:
 
 - `src/` contains the TypeScript React app.
-- `DESIGN.md` contains the installed Revolut-inspired visual reference and FinPath design tokens.
+- `PRODUCT.md` contains the audience, product purpose, voice, principles, and anti-references.
+- `DESIGN.md` contains the current precision-led light/dark visual system and component rules.
 - `public/assets/finpath-product-hero.jpg` is the generated landing product hero asset.
 - `src/auth.tsx` contains the Clerk browser auth boundary and user identity projection.
 - `src/lib/fire.ts` contains the deterministic FIRE calculation engine.
@@ -51,11 +52,13 @@ Production target:
 - `src/TransactionImportPanel.tsx` contains the lazy-loaded transaction CSV review, commit, template, and history UI.
 - `src/lib/transactionCsv.ts` contains bounded local transaction CSV parsing and template generation.
 - `src/CalculatorLibrary.tsx` contains the public calculator hub and shared calculator detail layout.
+- `src/lib/calculatorToolkits.ts` maps every exact calculator route into 1 of 8 user-facing decision toolkits.
 - `src/lib/seoCalculators.ts` contains the tested public calculator registry and formula engine.
 - `src/lib/calculatorStudios.ts` contains decision-studio metadata, scenario values, chart primitives, route-specific examples, and related-calculator rules.
 - `functions/api/calculator-results/index.ts` and `functions/_lib/calculatorResults.ts` contain the authenticated calculator result save/list contract and downstream goal/account/plan draft mapping.
 - `docs/CALCULATOR_VALUE_ROADMAP.md` contains the per-calculator value audit, shared studio plan, visualization inventory, and Phase 20-25 roadmap.
 - `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md` contains the strict per-calculator implementation standard that keeps each route from shipping as a thin formula page.
+- `docs/CALCULATOR_LIBRARY_REVIEW.md` records the consolidation review, overlap decisions, route-retention standard, and UI/theme review.
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
 - `functions/api/me.ts` contains the Clerk-backed Pages Function identity endpoint.
 - `functions/api/profile.ts` contains the D1-backed authenticated profile endpoint.
@@ -842,6 +845,16 @@ Phase 25 verification and deployment:
 - `npm run cf:deploy` deployed to `https://bd0e9f28.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
 - `npm run smoke:calculators -- https://bd0e9f28.interactive-fire-calculator.pages.dev` verified all 84 public calculator-library paths without authentication.
 - Live shared SIP restoration and mobile drawer checks passed; `/`, `/calculators/fire`, and `/dashboard` returned `200`; unauthenticated `GET /api/calculator-results` returned `401`.
+
+Post-roadmap calculator consolidation and visual-system verification:
+
+- Kept all 82 exact calculator routes and reorganized the hub into 8 user-facing decision toolkits with progressive disclosure and exact search.
+- Added `PRODUCT.md`, rewrote `DESIGN.md`, and added `docs/CALCULATOR_LIBRARY_REVIEW.md` as the product, visual, and consolidation sources of truth.
+- Added 92 toolkit tests. `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 1,111 frontend tests across 20 files, and production build.
+- Local and live browser QA covered landing and calculator CTAs, all 8 toolkit panels, all 82 toolkit links, exact-search URL state, amortization detail/schedule disclosure, FIRE, signed-out Dashboard, light/dark persistence, console state, and desktop/mobile overflow.
+- `npm run cf:deploy` deployed to `https://8fb17051.interactive-fire-calculator.pages.dev`; `npm run smoke:calculators` verified all 84 public calculator-library paths without authentication.
+- Live representative routes returned `200`; unauthenticated `GET /api/calculator-results` returned `401`.
+- Calculator program and design consolidation are 100% complete. Production Clerk setup remains the separate launch blocker.
 
 Deploy/handoff rule:
 

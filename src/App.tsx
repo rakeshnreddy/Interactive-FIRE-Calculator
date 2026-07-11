@@ -553,6 +553,15 @@ function readRoute(): AppRoute {
   return normalizeRoute(window.location.pathname);
 }
 
+function readPreferredMode(): Mode {
+  if (typeof window === 'undefined') return 'light';
+
+  const saved = window.localStorage.getItem('finpath.colorMode');
+  if (saved === 'light' || saved === 'dark') return saved;
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 function isRouteActive(currentRoute: AppRoute, itemRoute: AppRoute): boolean {
   return currentRoute === itemRoute || currentRoute.startsWith(`${itemRoute}/`);
 }
@@ -4246,12 +4255,19 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
         <div className="landing-hero-scrim" aria-hidden="true" />
         <div className="landing-hero-inner">
           <div className="landing-hero-copy">
-            <p className="eyebrow">Plan with the full picture</p>
-            <h1 id="landing-title">Your money. One clear path.</h1>
-            <p>Track accounts, fund goals, and test retirement choices in one private workspace.</p>
+            <p className="eyebrow">Calculate first. Keep the plan moving.</p>
+            <h1 id="landing-title">FinPath for clearer money decisions.</h1>
+            <p>Explore a decision with a public calculator, compare the tradeoffs, then track the plan in one private workspace.</p>
             <div className="landing-actions">
+              <button
+                className="primary-button icon-text-button"
+                onClick={() => onNavigate('/calculators')}
+              >
+                <Calculator size={16} />
+                Browse calculators
+              </button>
               {auth.isSignedIn ? (
-                <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
+                <button className="secondary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
                   Open dashboard
                   <ArrowRight size={17} />
                 </button>
@@ -4259,7 +4275,7 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
                 <AuthActionButton
                   auth={auth}
                   kind="sign-up"
-                  className="primary-button icon-text-button"
+                  className="secondary-button icon-text-button"
                   onUnavailable={() => onNavigate('/dashboard')}
                 >
                   Create account
@@ -4267,19 +4283,17 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
                 </AuthActionButton>
               )}
               <button
-                className="secondary-button icon-text-button"
-                onClick={() => onNavigate('/calculators')}
-              >
-                <Calculator size={16} />
-                Browse calculators
-              </button>
-              <button
-                className="secondary-button icon-text-button"
+                className="landing-text-action icon-text-button"
                 onClick={() => onNavigate('/calculators/fire')}
               >
-                <Calculator size={16} />
-                FIRE planner
+                Try the FIRE planner
+                <ArrowRight size={16} />
               </button>
+            </div>
+            <div className="landing-hero-proof" aria-label="FinPath product highlights">
+              <span>Public calculators</span>
+              <span>Scenario comparisons</span>
+              <span>Private tracking</span>
             </div>
           </div>
         </div>
@@ -4287,8 +4301,8 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
 
       <section className="landing-capabilities" aria-labelledby="capabilities-title">
         <header>
-          <h2 id="capabilities-title">A financial plan you can keep current.</h2>
-          <p>Move from today&apos;s balances to tomorrow&apos;s decisions without rebuilding the story each time.</p>
+          <h2 id="capabilities-title">A calculation becomes useful when it leads somewhere.</h2>
+          <p>Move from a focused estimate to a current view of balances, goals, and plans without rebuilding the story each time.</p>
         </header>
 
         <div className="landing-feature-list">
@@ -4740,12 +4754,6 @@ function TopbarAuthActions({
   if (auth.isSignedIn) {
     return (
       <>
-        <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators')}>
-          Calculators
-        </button>
-        <button className="secondary-button topbar-link" onClick={() => onNavigate('/dashboard')}>
-          Dashboard
-        </button>
         <div className="topbar-profile" aria-label="Current user">
           <UserButton userProfileMode="modal" />
           <span>{auth.user.displayName}</span>
@@ -4762,9 +4770,6 @@ function TopbarAuthActions({
 
   return (
     <>
-      <button className="secondary-button topbar-link" onClick={() => onNavigate('/calculators')}>
-        Calculators
-      </button>
       {auth.status === 'loading' ? (
         <button className="secondary-button topbar-link" disabled>
           Checking
@@ -4821,7 +4826,7 @@ function App({ auth }: { auth: AuthState }) {
 
   const [plan, setPlan] = useState<PlanInput>(initialPlan);
   const [timeline, setTimeline] = useState<TimelineInput>(initialTimeline);
-  const [mode, setMode] = useState<Mode>('light');
+  const [mode, setMode] = useState<Mode>(readPreferredMode);
   const [calculatorPanel, setCalculatorPanel] = useState<CalculatorPanel>('planner');
   const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
   const [hasCalculated, setHasCalculated] = useState(false);
@@ -4874,6 +4879,15 @@ function App({ auth }: { auth: AuthState }) {
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    window.localStorage.setItem('finpath.colorMode', mode);
+    document.documentElement.style.colorScheme = mode;
+    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute(
+      'content',
+      mode === 'dark' ? '#111715' : '#f4f7f7'
+    );
+  }, [mode]);
 
   useEffect(() => {
     const handlePopState = () => {

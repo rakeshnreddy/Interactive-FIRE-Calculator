@@ -75,6 +75,8 @@ Current checkpoint:
 
 Keep all calculator routes, but route them into shared richer experiences with route-specific presets.
 
+The public browsing layer now presents these internal capabilities as 8 user-facing toolkits: Financial Checkup, Savings & Goals, Investment Returns, Debt Payoff, Loans & Payments, Home Buying & Mortgage, Income & Tax, and Retirement Planning. The exact route title remains the H1 on every calculator detail page. See `docs/CALCULATOR_LIBRARY_REVIEW.md` and `src/lib/calculatorToolkits.ts`.
+
 | Studio | Routes served | Shared value layer |
 | --- | --- | --- |
 | Growth and Goal Studio | `compound-interest`, `savings-goal`, `sip`, `step-up-sip`, `sip-goal`, `lumpsum-mutual-fund`, `fd`, `rd`, `ppf`, `epf`, `nps`, `401k`, `cd`, `hysa`, `inflation`, `down-payment` | Time-series projection, contribution vs growth split, goal date, monthly required, inflation-adjusted value, scenario comparison, save as goal/account. |
