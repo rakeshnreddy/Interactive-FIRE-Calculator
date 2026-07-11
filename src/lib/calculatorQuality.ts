@@ -44,37 +44,57 @@ type QualityOverride = Partial<
 const slugStudios: Record<string, CalculatorStudio> = {
   '401k': 'Retirement Income Studio',
   amortization: 'Loan and Home Studio',
+  apr: 'Loan and Home Studio',
+  'arm-mortgage': 'Loan and Home Studio',
   'auto-loan': 'Loan and Home Studio',
+  'balloon-loan': 'Loan and Home Studio',
   'balance-transfer': 'Debt Payoff Studio',
+  'biweekly-mortgage-payment': 'Loan and Home Studio',
   budget: 'Cashflow and Balance Sheet Studio',
   cagr: 'Return Analysis Studio',
   'capital-gains-tax': 'Income and Tax Studio',
   'car-loan-emi': 'Loan and Home Studio',
   cd: 'Growth and Goal Studio',
+  'closing-costs': 'Loan and Home Studio',
   'compound-interest': 'Growth and Goal Studio',
   'credit-card-payoff': 'Debt Payoff Studio',
   'debt-payoff': 'Debt Payoff Studio',
   'debt-snowball-avalanche': 'Debt Payoff Studio',
+  'debt-to-income': 'Loan and Home Studio',
   'down-payment': 'Growth and Goal Studio',
   emi: 'Loan and Home Studio',
   epf: 'Retirement Income Studio',
+  escrow: 'Loan and Home Studio',
   'emergency-fund': 'Cashflow and Balance Sheet Studio',
   fd: 'Growth and Goal Studio',
+  'fha-loan': 'Loan and Home Studio',
+  'fha-vs-conventional': 'Loan and Home Studio',
+  'flat-vs-reducing-rate': 'Loan and Home Studio',
   gratuity: 'Retirement Income Studio',
   gst: 'Income and Tax Studio',
   heloc: 'Loan and Home Studio',
+  'home-equity-loan': 'Loan and Home Studio',
   'home-loan-emi': 'Loan and Home Studio',
+  'home-loan-balance-transfer-india': 'Loan and Home Studio',
+  'home-loan-foreclosure': 'Loan and Home Studio',
+  'home-loan-prepayment': 'Loan and Home Studio',
   'hra-exemption': 'Income and Tax Studio',
   hysa: 'Growth and Goal Studio',
   'income-tax-india': 'Income and Tax Studio',
   'income-tax-us': 'Income and Tax Studio',
   inflation: 'Growth and Goal Studio',
+  'interest-only-mortgage': 'Loan and Home Studio',
   'investment-return': 'Return Analysis Studio',
   'lease-vs-buy': 'Loan and Home Studio',
   'life-insurance-needs': 'Cashflow and Balance Sheet Studio',
+  'loan-comparison': 'Loan and Home Studio',
+  'loan-eligibility-india': 'Loan and Home Studio',
   'lumpsum-mutual-fund': 'Growth and Goal Studio',
   mortgage: 'Loan and Home Studio',
   'mortgage-affordability': 'Loan and Home Studio',
+  'mortgage-payoff': 'Debt Payoff Studio',
+  'mortgage-points': 'Loan and Home Studio',
+  'mortgage-recast': 'Loan and Home Studio',
   'mortgage-refinance': 'Loan and Home Studio',
   'net-worth': 'Cashflow and Balance Sheet Studio',
   nps: 'Retirement Income Studio',
@@ -95,10 +115,12 @@ const slugStudios: Record<string, CalculatorStudio> = {
   sip: 'Growth and Goal Studio',
   'sip-goal': 'Growth and Goal Studio',
   'social-security-break-even': 'Retirement Income Studio',
+  'stamp-duty-registration': 'Loan and Home Studio',
   'step-up-sip': 'Growth and Goal Studio',
   'student-loan-payoff': 'Debt Payoff Studio',
   swp: 'Retirement Income Studio',
   tds: 'Income and Tax Studio',
+  'va-loan': 'Loan and Home Studio',
   xirr: 'Return Analysis Studio'
 };
 
@@ -347,6 +369,18 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
       'Compare payment increases against interest saved and time saved.'
     ]
   },
+  'debt-strategy': {
+    calculationRequirements: [
+      'Accept multiple debts with separate balances, APRs, and minimum payments.',
+      'Run snowball and avalanche payoff strategies side by side using the same monthly payoff budget.',
+      'Calculate payoff months, total interest, and strategy interest difference.'
+    ],
+    visualRequirements: [
+      'Snowball versus avalanche remaining-balance table.',
+      'Interest saved by strategy.',
+      'Month-by-month payoff calendar.'
+    ]
+  },
   'investment-return': {
     calculationRequirements: [
       'Calculate CAGR from starting value, ending value, and elapsed years.',
@@ -540,11 +574,33 @@ export function getCalculatorQualitySpec(calculator: SeoCalculator): CalculatorQ
 }
 
 function studioForFormula(formula: CalculatorFormula): CalculatorStudio {
-  if (formula === 'loan' || formula === 'amortization' || formula === 'refinance' || formula === 'pmi' || formula === 'rent-buy') {
+  if (
+    formula === 'loan' ||
+    formula === 'amortization' ||
+    formula === 'apr' ||
+    formula === 'balloon-loan' ||
+    formula === 'biweekly-loan' ||
+    formula === 'closing-costs' ||
+    formula === 'dti' ||
+    formula === 'escrow' ||
+    formula === 'fha-conventional' ||
+    formula === 'fha-loan' ||
+    formula === 'flat-rate-loan' ||
+    formula === 'interest-only-loan' ||
+    formula === 'loan-comparison' ||
+    formula === 'loan-eligibility' ||
+    formula === 'loan-prepayment' ||
+    formula === 'mortgage-recast' ||
+    formula === 'pmi' ||
+    formula === 'refinance' ||
+    formula === 'rent-buy' ||
+    formula === 'stamp-duty' ||
+    formula === 'va-loan'
+  ) {
     return 'Loan and Home Studio';
   }
 
-  if (formula === 'debt-payoff' || formula === 'balance-transfer') {
+  if (formula === 'debt-payoff' || formula === 'debt-strategy' || formula === 'balance-transfer') {
     return 'Debt Payoff Studio';
   }
 

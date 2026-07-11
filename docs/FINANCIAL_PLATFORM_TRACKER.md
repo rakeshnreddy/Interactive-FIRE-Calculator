@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: July 10, 2026
+Last updated: July 11, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://c41f598d.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://ca04df60.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -39,7 +39,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 19: Calculator UX and Formula Assurance | Preview/app complete | 100% | Calculator copy now uses user-facing decision framing, the landing hero links to the full library, detail pages explain inputs/results with hover/focus help, and every calculator has an individual expected-output test. |
 | Phase 20: Calculator Decision Studio Foundation | Preview/app complete | 100% | Shared decision-studio metadata, reusable scenario state, chart-ready visual primitives, route-specific example loaders, related-calculator navigation, and public-copy guard tests are in place for every current calculator route. |
 | Phase 21: Growth, Goal, and Retirement Visualizers | Preview/app complete | 100% | Expandable optional breakdown tables and schedule data now cover growth, goal, retirement, withdrawal, distribution, benefit, inflation, and return calculators while keeping the main result UI clean. |
-| Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Planned | 0% | Add complete monthly amortization/payment tables, yearly rollups, custom period views, payoff calendars, break-even charts, true multi-debt snowball/avalanche schedules, missing loan/mortgage routes, and liability/payoff save flows. |
+| Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Preview/app complete | 100% | Added complete optional amortization/payment/payoff/refinance/prepayment/PMI/rent-buy tables, custom period views, CSV schedule export, true multi-debt snowball/avalanche comparison, and the missing loan/mortgage/India home-loan routes. |
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Planned | 0% | Add gross-to-net waterfalls, richer India/US tax assumptions, budget cashflow visuals, emergency runway, and protection-gap planning. |
 | Phase 24: Calculator Search Preservation and Content Quality | Planned | 0% | Preserve stable URLs while adding unique route examples, assumptions, structured data, internal links, and no-auth smoke coverage for every calculator. |
 | Phase 25: Engagement and Personalization Loop | Planned | 0% | Add saved scenario comparisons, recent calculator history, dashboard follow-up cards, and export/share for schedules and summaries. |
@@ -458,14 +458,14 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
-- Current comprehensive-calculator completion estimate: 48%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, downstream goal/account/plan draft creation, shared decision-studio metadata, scenario state, chart primitives, route-specific examples, related calculators, and Phase 21 expandable growth/goal/retirement/return schedules are in place; 52% remains for loan/debt/home visualizers, fuller statutory/tax engines, missing routes, exports, and personalization.
+- Current comprehensive-calculator completion estimate: 66%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, downstream goal/account/plan draft creation, shared decision-studio metadata, scenario state, chart primitives, route-specific examples, related calculators, Phase 21 growth/goal/retirement/return schedules, and Phase 22 loan/debt/home/vehicle schedules are in place; 34% remains for income/tax/budget/protection deepening, route content hardening, broader smoke coverage, saved scenario comparison, recent history, dashboard follow-ups, and personalization.
 - [x] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
 - [x] Phase 20: Add code-level calculator quality/studio contracts while preserving every existing public route.
 - [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
 - [x] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
 - [x] Phase 21: Upgrade growth, goal, retirement, and return calculators with expandable optional schedule/detail tables for contribution/growth splits, goal funding paths, retirement corpus gaps, withdrawal runway, RMD distributions, Social Security break-even, inflation paths, and return/cashflow paths.
-- [ ] Phase 22: Upgrade loan, debt, home, and vehicle calculators with complete payment-by-payment amortization tables, yearly rollups, custom period views, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
-- [ ] Phase 22: Add missing loan/mortgage calculators, including mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment, India foreclosure, India balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
+- [x] Phase 22: Upgrade loan, debt, home, and vehicle calculators with complete payment-by-payment amortization tables, yearly rollups, custom period views, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
+- [x] Phase 22: Add missing loan/mortgage calculators, including mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment, India foreclosure, India balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
 - [ ] Phase 23: Upgrade income, tax, budget, and protection calculators with waterfalls, category/cashflow visuals, richer assumptions, and estimate disclaimers.
 - [ ] Phase 24: Preserve search value by keeping stable URLs, self-canonicals, sitemap coverage, route-specific content, structured data, and public no-auth smoke coverage.
 - [ ] Phase 25: Add saved scenario comparison, recent calculator history, dashboard follow-up cards, and export/share options for schedules, payoff tables, deposit tables, withdrawal tables, and summaries.
@@ -533,6 +533,23 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - Live expanded-table smoke: `/calculators/sip` mobile schedule disclosure was closed by default, opened on click, rendered 10 rows, kept internal table overflow at `680px`, and kept the document width at `390px`.
 - Completion after implementation: comprehensive calculator program is 48% complete; 52% remains.
 - Remaining blockers: production Clerk setup is still the launch blocker; Phase 22-25 loan/debt/home visualizers, full monthly amortization schedules, statutory/tax engines, missing routes, exports, and personalization remain.
+
+## Phase 22 Loan, Debt, Home, and Vehicle Visualizers Completion Checkpoint
+
+- Completed: `src/lib/seoCalculators.ts` now includes 82 public calculator routes, adding the Phase 22 borrowing backlog: mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only mortgage, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India home-loan prepayment/foreclosure/balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
+- Completed: `src/lib/calculatorStudios.ts` now builds collapsed-by-default detail tables for loan/EMI/mortgage amortization, debt payoff, true multi-debt snowball vs avalanche, balance transfer, refinance, mortgage points, recast, loan comparison, prepayment, balloon, biweekly, interest-only, PMI, rent-vs-buy, lease-vs-buy, closing-cost, escrow, DTI, APR, loan eligibility, and stamp duty routes.
+- Completed: `/calculators/amortization` now produces a full 360-row monthly payment schedule with payment number, year, payment, principal, interest, ending balance, cumulative interest, year-close notes, custom period views, and CSV export from the expandable schedule panel.
+- Completed: calculator detail pages now include a reusable schedule toolbar for first-year, first-five-year, final-year, and full-schedule views on long tables. CSV export downloads the complete table.
+- Completed: `debt-snowball-avalanche` now accepts multiple named debts with separate balances, APRs, minimum payments, and extra payoff budget instead of using a single weighted balance.
+- Completed: `public/sitemap.xml` includes the new Phase 22 calculator routes.
+- Completed: `src/lib/seoCalculators.test.ts` locks individual expected outputs for all 82 calculator routes; `src/lib/calculatorStudios.test.ts` verifies Phase 22 schedule coverage, full amortization row count, refinance break-even rows, and prepayment comparison rows.
+- Tests before deploy: `npm run typecheck` passed; `npm test` passed with 664 frontend tests across 16 files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 664 frontend tests, and production build.
+- Deploy: `npm run cf:deploy` deployed to `https://ca04df60.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live HTTP smoke: `/`, `/calculators`, `/calculators/amortization`, `/calculators/home-loan-prepayment`, `/calculators/mortgage-payoff`, `/calculators/fire`, and `/transactions` returned `200`.
+- Live API smoke: unauthenticated `GET /api/calculator-results` returned `401 {"error":"Unauthorized"}`.
+- Live sitemap smoke: `sitemap.xml` includes `mortgage-payoff`, `home-loan-prepayment`, `debt-to-income`, and `fha-vs-conventional`.
+- Completion after implementation: comprehensive calculator program is 66% complete; 34% remains.
+- Remaining blockers: production Clerk setup is still the launch blocker; Phase 23 income/tax/budget/protection deepening, Phase 24 content/structured-data hardening, and Phase 25 personalization/history/follow-up loops remain.
 
 ## Phase 12-19 Verification Notes
 

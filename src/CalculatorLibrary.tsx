@@ -6,6 +6,7 @@ import {
   CircleHelp,
   CircleDollarSign,
   ClipboardList,
+  Download,
   FolderKanban,
   Search,
   Table2,
@@ -486,11 +487,15 @@ function CalculatorSchedulePanel({
   calculator: SeoCalculator;
   schedule: CalculatorDetailSchedule | null;
 }) {
+  const [periodView, setPeriodView] = useState<'all' | 'final-year' | 'first-five-years' | 'first-year'>('all');
+
   if (!schedule || schedule.rows.length === 0) {
     return null;
   }
 
   const hasNotes = schedule.rows.some((row) => row.note);
+  const supportsPeriodView = schedule.rows.length > 24 && schedule.columns.some((column) => ['month', 'period'].includes(column.key));
+  const visibleRows = supportsPeriodView ? filterScheduleRows(schedule, periodView) : schedule.rows;
 
   return (
     <details className="calculator-breakdown-shell">
@@ -503,7 +508,30 @@ function CalculatorSchedulePanel({
         <ChevronDown size={17} />
       </summary>
       <div className="calculator-breakdown-body">
-        <p>{schedule.summary}</p>
+        <div className="calculator-breakdown-toolbar">
+          <p>{schedule.summary}</p>
+          <div className="calculator-breakdown-actions">
+            {supportsPeriodView ? (
+              <label className="calculator-period-select">
+                <span>Rows</span>
+                <select value={periodView} onChange={(event) => setPeriodView(event.target.value as typeof periodView)}>
+                  <option value="first-year">First year</option>
+                  <option value="first-five-years">First 5 years</option>
+                  <option value="final-year">Final year</option>
+                  <option value="all">Full schedule</option>
+                </select>
+              </label>
+            ) : null}
+            <button
+              className="secondary-button icon-text-button calculator-breakdown-download"
+              type="button"
+              onClick={() => downloadScheduleCsv(calculator, schedule)}
+            >
+              <Download size={16} />
+              CSV
+            </button>
+          </div>
+        </div>
         <div className="calculator-breakdown-table-wrap">
           <table aria-label={`${calculator.title} ${schedule.title}`}>
             <thead>
@@ -515,7 +543,7 @@ function CalculatorSchedulePanel({
               </tr>
             </thead>
             <tbody>
-              {schedule.rows.map((row) => (
+              {visibleRows.map((row) => (
                 <tr key={row.id}>
                   {schedule.columns.map((column) => (
                     <td key={column.key}>
@@ -531,6 +559,66 @@ function CalculatorSchedulePanel({
       </div>
     </details>
   );
+}
+
+function filterScheduleRows(
+  schedule: CalculatorDetailSchedule,
+  periodView: 'all' | 'final-year' | 'first-five-years' | 'first-year'
+): CalculatorDetailSchedule['rows'] {
+  if (periodView === 'all') return schedule.rows;
+
+  const lastYear = Math.max(...schedule.rows.map(scheduleRowYear));
+
+  return schedule.rows.filter((row) => {
+    const year = scheduleRowYear(row);
+
+    if (periodView === 'first-year') return year <= 1;
+    if (periodView === 'first-five-years') return year <= 5;
+    return year === lastYear;
+  });
+}
+
+function scheduleRowYear(row: CalculatorDetailSchedule['rows'][number]): number {
+  const explicitYear = Number(row.values.year);
+  if (Number.isFinite(explicitYear) && explicitYear > 0) return explicitYear;
+
+  const period = Number(row.values.month ?? row.values.period);
+  return Number.isFinite(period) && period > 0 ? Math.ceil(period / 12) : 1;
+}
+
+function downloadScheduleCsv(calculator: SeoCalculator, schedule: CalculatorDetailSchedule) {
+  const csv = scheduleToCsv(calculator, schedule);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `${calculator.slug}-${schedule.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.csv`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+function scheduleToCsv(calculator: SeoCalculator, schedule: CalculatorDetailSchedule): string {
+  const headers = schedule.columns.map((column) => column.label);
+  const hasNotes = schedule.rows.some((row) => row.note);
+  if (hasNotes) headers.push('Note');
+
+  const rows = schedule.rows.map((row) => {
+    const cells = schedule.columns.map((column) => formatScheduleCell(row.values[column.key], column.valueType, calculator));
+    if (hasNotes) cells.push(row.note ?? '');
+    return cells.map(csvEscape).join(',');
+  });
+
+  return [headers.map(csvEscape).join(','), ...rows].join('\n');
+}
+
+function csvEscape(value: string): string {
+  if (/[",\n]/.test(value)) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+
+  return value;
 }
 
 function CalculatorScenarioPanel({

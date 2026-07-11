@@ -38,6 +38,51 @@ const phase21ScheduleSlugs = [
   'cd',
   'hysa'
 ] as const;
+const phase22ScheduleSlugs = [
+  'emi',
+  'home-loan-emi',
+  'car-loan-emi',
+  'personal-loan-emi',
+  'home-loan-prepayment',
+  'home-loan-foreclosure',
+  'home-loan-balance-transfer-india',
+  'flat-vs-reducing-rate',
+  'loan-eligibility-india',
+  'stamp-duty-registration',
+  'mortgage',
+  'mortgage-affordability',
+  'mortgage-refinance',
+  'amortization',
+  'extra-mortgage-payment',
+  'mortgage-payoff',
+  'biweekly-mortgage-payment',
+  'mortgage-recast',
+  'mortgage-points',
+  '15-vs-30-year-mortgage',
+  'arm-mortgage',
+  'interest-only-mortgage',
+  'balloon-loan',
+  'closing-costs',
+  'escrow',
+  'debt-to-income',
+  'loan-comparison',
+  'apr',
+  'home-equity-loan',
+  'fha-loan',
+  'va-loan',
+  'fha-vs-conventional',
+  'rent-vs-buy',
+  'credit-card-payoff',
+  'debt-snowball-avalanche',
+  'auto-loan',
+  'personal-loan',
+  'student-loan-payoff',
+  'down-payment',
+  'pmi',
+  'heloc',
+  'balance-transfer',
+  'lease-vs-buy'
+] as const;
 
 function defaultValues(calculator: SeoCalculator): Record<string, number> {
   return Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]));
@@ -173,7 +218,7 @@ describe('calculator decision studios', () => {
     expect(optimistic.monthly).toBeGreaterThan(conservative.monthly);
   });
 
-  it.each(phase21ScheduleSlugs)('%s builds an optional detailed schedule table', (slug) => {
+  it.each([...phase21ScheduleSlugs, ...phase22ScheduleSlugs])('%s builds an optional detailed schedule table', (slug) => {
     const calculator = calculatorBySlug(slug);
     const values = defaultValues(calculator);
     const result = calculateSeoCalculator(calculator, values);
@@ -191,6 +236,49 @@ describe('calculator decision studios', () => {
         expect(row.values[column.key]).not.toBeUndefined();
       });
     });
+  });
+
+  it('amortization schedule includes every monthly payment with yearly close notes', () => {
+    const calculator = calculatorBySlug('amortization');
+    const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
+
+    expect(schedule?.title).toMatch(/monthly amortization/i);
+    expect(schedule?.columns.map((column) => column.key)).toEqual([
+      'period',
+      'year',
+      'payment',
+      'principalPaid',
+      'interest',
+      'endingBalance',
+      'cumulativeInterest'
+    ]);
+    expect(schedule?.rows).toHaveLength(360);
+    expect(schedule?.rows[11].note).toMatch(/year 1 close/i);
+    expect(Number(schedule?.rows.at(-1)?.values.endingBalance)).toBeCloseTo(0, 2);
+  });
+
+  it('refinance schedules expose the break-even month and net savings after costs', () => {
+    const calculator = calculatorBySlug('mortgage-refinance');
+    const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
+
+    expect(schedule?.columns.map((column) => column.key)).toContain('netAfterCosts');
+    expect(schedule?.rows.some((row) => row.note === 'Break-even month')).toBe(true);
+    expect(Number(schedule?.rows.at(-1)?.values.netAfterCosts)).toBeGreaterThan(0);
+  });
+
+  it('prepayment schedules compare original and accelerated balances', () => {
+    const calculator = calculatorBySlug('home-loan-prepayment');
+    const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
+
+    expect(schedule?.columns.map((column) => column.key)).toEqual([
+      'month',
+      'year',
+      'originalBalance',
+      'prepayBalance',
+      'interestSaved'
+    ]);
+    expect(Number(schedule?.rows[0].values.prepayBalance)).toBeLessThan(Number(schedule?.rows[0].values.originalBalance));
+    expect(Number(schedule?.rows.at(-1)?.values.interestSaved)).toBeGreaterThan(0);
   });
 
   it.each([
