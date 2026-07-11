@@ -67,6 +67,29 @@ export type CalculatorStudioChart = {
   type: CalculatorStudioChartType;
 };
 
+export type CalculatorDetailScheduleValueType = CalculatorMetric['valueType'] | 'text';
+
+export type CalculatorDetailScheduleColumn = {
+  description?: string;
+  key: string;
+  label: string;
+  valueType: CalculatorDetailScheduleValueType;
+};
+
+export type CalculatorDetailScheduleRow = {
+  id: string;
+  note?: string;
+  values: Record<string, number | string>;
+};
+
+export type CalculatorDetailSchedule = {
+  columns: CalculatorDetailScheduleColumn[];
+  description: string;
+  rows: CalculatorDetailScheduleRow[];
+  summary: string;
+  title: string;
+};
+
 type StudioDefault = Omit<CalculatorStudioMetadata, 'example' | 'relatedCalculators' | 'studio'>;
 
 const studioDefaults: Record<CalculatorStudio, StudioDefault> = {
@@ -201,6 +224,75 @@ export function buildCalculatorStudioChart(
   }
 
   return comparisonChart(calculator, values, result, metadata);
+}
+
+export function buildCalculatorDetailSchedule(
+  calculator: SeoCalculator,
+  values: Record<string, number>,
+  result: CalculatorResult = calculateSeoCalculator(calculator, values)
+): CalculatorDetailSchedule | null {
+  const normalized = normalizeInputValues(calculator, values);
+
+  switch (calculator.formula) {
+    case 'compound':
+      return recurringGrowthSchedule(normalized, {
+        description: 'Annual view of deposits, estimated growth, and projected ending value.',
+        principalKey: 'principal',
+        recurringKey: 'monthly',
+        recurringLabel: 'Annual deposits',
+        title: 'Contribution and growth schedule'
+      });
+    case 'sip':
+      return recurringGrowthSchedule(normalized, {
+        description: normalized.stepUp > 0
+          ? 'Annual view of stepped-up SIP deposits, estimated gains, and projected corpus.'
+          : 'Annual view of SIP deposits, estimated gains, and projected corpus.',
+        principalKey: null,
+        recurringKey: 'monthly',
+        recurringLabel: 'Annual SIP',
+        stepUpKey: 'stepUp',
+        title: normalized.stepUp > 0 ? 'Step-up SIP schedule' : 'SIP contribution schedule'
+      });
+    case 'savings-goal':
+      return savingsGoalSchedule(calculator, normalized, result);
+    case 'lumpsum':
+    case 'fd':
+      return singleDepositGrowthSchedule(calculator, normalized);
+    case 'rd':
+      return recurringGrowthSchedule(normalized, {
+        description: 'Annual view of recurring deposits, estimated interest, and maturity progress.',
+        principalKey: null,
+        recurringKey: 'monthly',
+        recurringLabel: 'Annual deposits',
+        title: 'Recurring deposit schedule'
+      });
+    case 'ppf':
+      return ppfSchedule(calculator, normalized);
+    case 'epf':
+      return epfSchedule(calculator, normalized);
+    case 'nps':
+      return npsSchedule(calculator, normalized);
+    case 'swp':
+      return swpSchedule(calculator, normalized);
+    case 'retirement':
+      return retirementSchedule(calculator, normalized, result);
+    case 'rmd':
+      return rmdSchedule(calculator, normalized);
+    case 'social-security':
+      return socialSecuritySchedule(calculator, normalized);
+    case 'gratuity':
+      return gratuitySchedule(calculator, normalized);
+    case 'investment-return':
+      return investmentReturnSchedule(calculator, normalized);
+    case 'xirr':
+      return xirrApproximationSchedule(calculator, normalized, result);
+    case 'inflation':
+      return inflationSchedule(calculator, normalized);
+    case 'rule-72':
+      return doublingSchedule(calculator, normalized);
+    default:
+      return null;
+  }
 }
 
 function normalizeInputValues(calculator: SeoCalculator, values: Record<string, number>): Record<string, number> {
@@ -513,6 +605,705 @@ function comparisonChart(
     title: metadata.chartTitle,
     type: 'comparison'
   };
+}
+
+const maxScheduleYears = 100;
+
+function recurringGrowthSchedule(
+  values: Record<string, number>,
+  options: {
+    description: string;
+    principalKey: string | null;
+    recurringKey: string;
+    recurringLabel: string;
+    stepUpKey?: string;
+    title: string;
+  }
+): CalculatorDetailSchedule | null {
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const years = scheduleYears(values.years ?? 0);
+  const months = Math.max(1, Math.round(years * 12));
+  const monthlyRate = rate / 12;
+  const startingBalance = options.principalKey ? Math.max(0, values[options.principalKey] ?? 0) : 0;
+  let balance = startingBalance;
+  let monthlyAmount = Math.max(0, values[options.recurringKey] ?? 0);
+  const stepUp = Math.max(0, values[options.stepUpKey ?? ''] ?? 0) / 100;
+  let annualDeposits = 0;
+  let annualGrowth = 0;
+  let cumulativeDeposits = startingBalance;
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let month = 1; month <= months; month += 1) {
+    if (stepUp > 0 && month > 1 && (month - 1) % 12 === 0) {
+      monthlyAmount *= 1 + stepUp;
+    }
+
+    const growth = balance * monthlyRate;
+    balance += growth + monthlyAmount;
+    annualGrowth += growth;
+    annualDeposits += monthlyAmount;
+    cumulativeDeposits += monthlyAmount;
+
+    if (month % 12 === 0 || month === months) {
+      const year = Math.ceil(month / 12);
+      rows.push({
+        id: `year-${year}`,
+        values: {
+          balance,
+          cumulativeDeposits,
+          deposits: annualDeposits,
+          growth: annualGrowth,
+          year
+        }
+      });
+      annualDeposits = 0;
+      annualGrowth = 0;
+    }
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('deposits', options.recurringLabel),
+      moneyColumn('growth', 'Estimated growth'),
+      moneyColumn('cumulativeDeposits', 'Total deposited'),
+      moneyColumn('balance', 'Ending value')
+    ],
+    description: options.description,
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, `Shows ${rows.length} annual ${rows.length === 1 ? 'row' : 'rows'} so the result is audit-friendly without crowding the main estimate.`),
+    title: options.title
+  };
+}
+
+function savingsGoalSchedule(
+  calculator: SeoCalculator,
+  values: Record<string, number>,
+  result: CalculatorResult
+): CalculatorDetailSchedule | null {
+  const target = Math.max(0, values.target ?? 0);
+  const monthlyNeeded = Math.max(0, result.metrics[0]?.value ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const years = scheduleYears(values.years ?? 0);
+  const months = Math.max(1, Math.round(years * 12));
+  const monthlyRate = rate / 12;
+  let balance = Math.max(0, values.current ?? 0);
+  let annualDeposits = 0;
+  let annualGrowth = 0;
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let month = 1; month <= months; month += 1) {
+    const growth = balance * monthlyRate;
+    balance += growth + monthlyNeeded;
+    annualGrowth += growth;
+    annualDeposits += monthlyNeeded;
+
+    if (month % 12 === 0 || month === months) {
+      const year = Math.ceil(month / 12);
+      rows.push({
+        id: `goal-year-${year}`,
+        values: {
+          balance,
+          deposits: annualDeposits,
+          gap: Math.max(0, target - balance),
+          growth: annualGrowth,
+          year
+        }
+      });
+      annualDeposits = 0;
+      annualGrowth = 0;
+    }
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('deposits', 'Savings added'),
+      moneyColumn('growth', 'Estimated growth'),
+      moneyColumn('balance', 'Projected savings'),
+      moneyColumn('gap', 'Remaining gap')
+    ],
+    description: 'Annual path from current savings to the target using the calculated monthly savings amount.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, `The table keeps the goal math visible: deposits, growth, projected balance, and remaining target gap.`),
+    title: 'Goal funding schedule'
+  };
+}
+
+function singleDepositGrowthSchedule(calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const principal = Math.max(0, values.principal ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const years = scheduleYears(values.years ?? 0);
+  const rows: CalculatorDetailScheduleRow[] = [];
+  let previousBalance = principal;
+
+  for (let year = 1; year <= years; year += 1) {
+    const balance = principal * (1 + rate) ** year;
+    rows.push({
+      id: `deposit-year-${year}`,
+      values: {
+        balance,
+        interest: balance - previousBalance,
+        totalInterest: balance - principal,
+        year
+      }
+    });
+    previousBalance = balance;
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('interest', 'Year interest'),
+      moneyColumn('totalInterest', 'Total interest'),
+      moneyColumn('balance', 'Maturity value')
+    ],
+    description: 'Annual interest and maturity path for a one-time deposit or lumpsum investment.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, `Shows how the single deposit compounds year by year.`),
+    title: calculator.formula === 'fd' ? 'Deposit maturity schedule' : 'Lumpsum growth schedule'
+  };
+}
+
+function ppfSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const annual = Math.max(0, values.annual ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const years = scheduleYears(values.years ?? 0);
+  let balance = 0;
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let year = 1; year <= years; year += 1) {
+    balance += annual;
+    const interest = balance * rate;
+    balance += interest;
+    rows.push({
+      id: `ppf-year-${year}`,
+      values: {
+        balance,
+        contribution: annual,
+        interest,
+        totalContributions: annual * year,
+        year
+      }
+    });
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('contribution', 'Contribution'),
+      moneyColumn('interest', 'Estimated interest'),
+      moneyColumn('totalContributions', 'Total contributions'),
+      moneyColumn('balance', 'Projected balance')
+    ],
+    description: 'Year-by-year PPF contribution, interest, and balance path using the assumed annual rate.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, 'Shows the lock-in style annual path instead of only the maturity amount.'),
+    title: 'PPF yearly schedule'
+  };
+}
+
+function epfSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const employee = Math.max(0, values.employee ?? 0);
+  const employer = Math.max(0, values.employer ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const years = scheduleYears(values.years ?? 0);
+  const months = Math.max(1, years * 12);
+  const monthlyRate = rate / 12;
+  let balance = 0;
+  let annualEmployee = 0;
+  let annualEmployer = 0;
+  let annualGrowth = 0;
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let month = 1; month <= months; month += 1) {
+    const monthlyContribution = employee + employer;
+    const growth = balance * monthlyRate;
+    balance += growth + monthlyContribution;
+    annualEmployee += employee;
+    annualEmployer += employer;
+    annualGrowth += growth;
+
+    if (month % 12 === 0 || month === months) {
+      const year = Math.ceil(month / 12);
+      rows.push({
+        id: `epf-year-${year}`,
+        values: {
+          balance,
+          employee: annualEmployee,
+          employer: annualEmployer,
+          growth: annualGrowth,
+          year
+        }
+      });
+      annualEmployee = 0;
+      annualEmployer = 0;
+      annualGrowth = 0;
+    }
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('employee', 'Employee'),
+      moneyColumn('employer', 'Employer'),
+      moneyColumn('growth', 'Estimated growth'),
+      moneyColumn('balance', 'Projected corpus')
+    ],
+    description: 'Annual EPF path split between employee contribution, employer contribution, growth, and projected corpus.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, 'Keeps payroll retirement savings visible by year.'),
+    title: 'EPF contribution schedule'
+  };
+}
+
+function npsSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const base = recurringGrowthSchedule(values, {
+    description: 'Annual NPS contribution path with projected corpus and the annuity/lump-sum split.',
+    principalKey: null,
+    recurringKey: 'monthly',
+    recurringLabel: 'Annual contribution',
+    title: 'NPS contribution schedule'
+  });
+
+  if (!base) return null;
+
+  const annuityPercent = Math.max(0, Math.min(100, values.annuityPercent ?? 0)) / 100;
+  return {
+    ...base,
+    columns: [
+      ...base.columns,
+      moneyColumn('lumpSum', 'Lump sum'),
+      moneyColumn('annuity', 'Annuity')
+    ],
+    rows: base.rows.map((row) => {
+      const balance = Number(row.values.balance) || 0;
+      return {
+        ...row,
+        values: {
+          ...row.values,
+          annuity: balance * annuityPercent,
+          lumpSum: balance * (1 - annuityPercent)
+        }
+      };
+    })
+  };
+}
+
+function swpSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const withdrawal = Math.max(0, values.withdrawal ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const monthlyRate = rate / 12;
+  let balance = Math.max(0, values.corpus ?? 0);
+  const rows: CalculatorDetailScheduleRow[] = [];
+  let annualWithdrawals = 0;
+  let annualGrowth = 0;
+  let yearStart = balance;
+
+  if (withdrawal <= 0 || balance <= 0) {
+    return null;
+  }
+
+  for (let month = 1; month <= maxScheduleYears * 12 && balance > 0; month += 1) {
+    const growth = balance * monthlyRate;
+    balance = Math.max(0, balance + growth - withdrawal);
+    annualGrowth += growth;
+    annualWithdrawals += withdrawal;
+
+    if (month % 12 === 0 || balance === 0) {
+      const year = Math.ceil(month / 12);
+      rows.push({
+        id: `swp-year-${year}`,
+        note: balance === 0 ? 'Corpus depleted in this period' : undefined,
+        values: {
+          balance,
+          growth: annualGrowth,
+          startingBalance: yearStart,
+          withdrawals: annualWithdrawals,
+          year
+        }
+      });
+      yearStart = balance;
+      annualGrowth = 0;
+      annualWithdrawals = 0;
+    }
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('startingBalance', 'Starting balance'),
+      moneyColumn('withdrawals', 'Withdrawals'),
+      moneyColumn('growth', 'Estimated growth'),
+      moneyColumn('balance', 'Ending balance')
+    ],
+    description: 'Yearly withdrawal runway showing starting balance, withdrawals, growth, and ending balance.',
+    rows,
+    summary: rows.length >= maxScheduleYears
+      ? `Shows the first ${maxScheduleYears} years because the withdrawal appears long-running under these assumptions.`
+      : `Shows the annual drawdown path until the corpus is depleted or the modeled period ends.`,
+    title: 'Withdrawal runway schedule'
+  };
+}
+
+function retirementSchedule(
+  _calculator: SeoCalculator,
+  values: Record<string, number>,
+  result: CalculatorResult
+): CalculatorDetailSchedule | null {
+  const currentAge = Math.max(0, values.currentAge ?? 0);
+  const rawSavingYears = Math.max(0, (values.retirementAge ?? 0) - currentAge);
+  const savingYears = scheduleYears(rawSavingYears);
+  const currentSavings = Math.max(0, values.currentSavings ?? 0);
+  const monthly = Math.max(0, values.monthly ?? 0);
+  const annualRate = Math.max(0, values.rate ?? 0) / 100;
+  const monthlyRate = annualRate / 12;
+  const needed = result.metrics.find((metric) => metric.label === 'Estimated need')?.value ?? 0;
+  let contributionBalance = 0;
+
+  if (rawSavingYears <= 0) {
+    return {
+      columns: [
+        textColumn('year', 'Period'),
+        textColumn('age', 'Age'),
+        moneyColumn('deposits', 'Contributions'),
+        moneyColumn('growth', 'Estimated growth'),
+        moneyColumn('balance', 'Projected savings'),
+        moneyColumn('gap', 'Gap / surplus')
+      ],
+      description: 'Retirement age has already been reached, so the schedule shows the current corpus position.',
+      rows: [{
+        id: 'retirement-now',
+        values: {
+          age: currentAge,
+          balance: currentSavings,
+          deposits: 0,
+          gap: currentSavings - needed,
+          growth: 0,
+          year: 'Now'
+        }
+      }],
+      summary: 'Shows the current retirement corpus position because there is no remaining accumulation period.',
+      title: 'Retirement savings schedule'
+    };
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      textColumn('age', 'Age'),
+      moneyColumn('deposits', 'Contributions'),
+      moneyColumn('growth', 'Estimated growth'),
+      moneyColumn('balance', 'Projected savings'),
+      moneyColumn('gap', 'Gap / surplus')
+    ],
+    description: 'Annual retirement savings path from today to the target retirement age.',
+    rows: Array.from({ length: savingYears }, (_, index) => {
+      const year = index + 1;
+      const monthsElapsed = year * 12;
+      const previousCurrentSavingsComponent = currentSavings * (1 + annualRate) ** (year - 1);
+      const currentSavingsComponent = currentSavings * (1 + annualRate) ** year;
+      const previousContributionBalance = contributionBalance;
+
+      for (let month = (year - 1) * 12 + 1; month <= monthsElapsed; month += 1) {
+        contributionBalance = contributionBalance * (1 + monthlyRate) + monthly;
+      }
+
+      const balance = currentSavingsComponent + contributionBalance;
+      const deposits = monthly * 12;
+      const growth =
+        (currentSavingsComponent - previousCurrentSavingsComponent) +
+        (contributionBalance - previousContributionBalance - deposits);
+
+      return {
+        id: `retirement-year-${year}`,
+        values: {
+          age: currentAge + year,
+          balance,
+          deposits,
+          gap: balance - needed,
+          growth,
+          year
+        }
+      };
+    }),
+    summary: scheduleCapSummary(savingYears, 'Shows how contributions and growth build toward the retirement corpus need.'),
+    title: 'Retirement savings schedule'
+  };
+}
+
+function rmdSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  let balance = Math.max(0, values.balance ?? 0);
+  const startingDivisor = Math.max(1, values.divisor ?? 1);
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let year = 1; year <= Math.min(10, maxScheduleYears) && balance > 0; year += 1) {
+    const divisor = Math.max(1, startingDivisor - (year - 1));
+    const distribution = balance / divisor;
+    balance = Math.max(0, balance - distribution);
+    rows.push({
+      id: `rmd-year-${year}`,
+      values: {
+        balance,
+        distribution,
+        divisor,
+        year
+      }
+    });
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      numberColumn('divisor', 'Divisor'),
+      moneyColumn('distribution', 'Distribution'),
+      moneyColumn('balance', 'Balance after distribution')
+    ],
+    description: 'Illustrative RMD schedule using the provided divisor and reducing it by one each year.',
+    rows,
+    summary: 'Shows the first 10 estimated distributions so the one-year RMD result has retirement-income context.',
+    title: 'RMD distribution schedule'
+  };
+}
+
+function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const early = Math.max(0, values.early ?? 0);
+  const full = Math.max(0, values.full ?? 0);
+  const delayYears = Math.max(0, values.delayYears ?? 0);
+  const monthlyIncrease = full - early;
+  const breakEvenYears = monthlyIncrease > 0 ? early * delayYears / monthlyIncrease : delayYears;
+  const years = Math.min(maxScheduleYears, Math.max(1, Math.ceil(delayYears + breakEvenYears + 5)));
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let year = 1; year <= years; year += 1) {
+    const earlyCumulative = early * 12 * year;
+    const delayedCumulative = full * 12 * Math.max(0, year - delayYears);
+    rows.push({
+      id: `benefit-year-${year}`,
+      note: delayedCumulative >= earlyCumulative && year > delayYears ? 'Delayed claim catches up' : undefined,
+      values: {
+        difference: delayedCumulative - earlyCumulative,
+        delayedCumulative,
+        earlyCumulative,
+        year
+      }
+    });
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year after early age'),
+      moneyColumn('earlyCumulative', 'Early claim total'),
+      moneyColumn('delayedCumulative', 'Delayed claim total'),
+      moneyColumn('difference', 'Delayed minus early')
+    ],
+    description: 'Cumulative benefit comparison for early claiming versus delaying.',
+    rows,
+    summary: 'Shows where the larger delayed benefit catches up after the years without payments.',
+    title: 'Benefit break-even schedule'
+  };
+}
+
+function gratuitySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const salary = Math.max(0, values.salary ?? 0);
+  const years = scheduleYears(values.years ?? 0);
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let year = 1; year <= years; year += 1) {
+    rows.push({
+      id: `gratuity-year-${year}`,
+      note: year < 5 ? 'Often below common vesting threshold' : undefined,
+      values: {
+        benefit: salary * 15 / 26 * year,
+        year
+      }
+    });
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Completed service'),
+      moneyColumn('benefit', 'Estimated gratuity')
+    ],
+    description: 'Benefit by completed service year using the simplified gratuity estimate.',
+    rows,
+    summary: 'Shows how the retirement benefit grows with each completed year of service.',
+    title: 'Service-year benefit schedule'
+  };
+}
+
+function investmentReturnSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const initial = Math.max(0, values.initial ?? 0);
+  const final = Math.max(0, values.final ?? 0);
+  const years = scheduleYears(values.years ?? 0);
+  const annualized = years > 0 && initial > 0 ? (final / initial) ** (1 / years) - 1 : 0;
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let year = 0; year <= years; year += 1) {
+    const value = year === years ? final : initial * (1 + annualized) ** year;
+    rows.push({
+      id: `return-year-${year}`,
+      values: {
+        annualized,
+        gain: value - initial,
+        value,
+        year: year === 0 ? 'Start' : year
+      }
+    });
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Period'),
+      moneyColumn('value', 'Implied value'),
+      moneyColumn('gain', 'Gain / loss'),
+      percentColumn('annualized', 'Annualized return')
+    ],
+    description: 'Implied annual value path that reconciles starting value, ending value, and elapsed time.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, 'Turns the annualized return into a year-by-year value path.'),
+    title: 'Return path table'
+  };
+}
+
+function xirrApproximationSchedule(
+  _calculator: SeoCalculator,
+  values: Record<string, number>,
+  result: CalculatorResult
+): CalculatorDetailSchedule | null {
+  const initial = Math.max(0, values.initial ?? 0);
+  const monthly = Math.max(0, values.monthly ?? 0);
+  const final = Math.max(0, values.final ?? 0);
+  const years = scheduleYears(values.years ?? 0);
+  const months = Math.max(1, years * 12);
+  const annualized = Number.isFinite(result.metrics[0]?.value) ? result.metrics[0].value : 0;
+  const monthlyRate = annualized / 12;
+  let cumulativeInvested = initial;
+  let impliedValue = initial;
+  let annualContribution = 0;
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let month = 1; month <= months; month += 1) {
+    impliedValue = impliedValue * (1 + monthlyRate) + monthly;
+    annualContribution += monthly;
+    cumulativeInvested += monthly;
+
+    if (month % 12 === 0 || month === months) {
+      const year = Math.ceil(month / 12);
+      const endingValue = year === years ? final : impliedValue;
+      rows.push({
+        id: `xirr-year-${year}`,
+        values: {
+          contribution: annualContribution,
+          cumulativeInvested,
+          endingValue,
+          gain: endingValue - cumulativeInvested,
+          year
+        }
+      });
+      annualContribution = 0;
+    }
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('contribution', 'Contributions'),
+      moneyColumn('cumulativeInvested', 'Cumulative invested'),
+      moneyColumn('endingValue', 'Ending value'),
+      moneyColumn('gain', 'Gain / loss')
+    ],
+    description: 'Cashflow-style annual table for the simplified XIRR estimate until exact dated cashflows are implemented.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, 'Shows why the current XIRR result is approximate: contribution timing is averaged by year.'),
+    title: 'Approximate cashflow table'
+  };
+}
+
+function inflationSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const principal = Math.max(0, values.principal ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const years = scheduleYears(values.years ?? 0);
+  const rows: CalculatorDetailScheduleRow[] = [];
+
+  for (let year = 1; year <= years; year += 1) {
+    const futureCost = principal * (1 + rate) ** year;
+    rows.push({
+      id: `inflation-year-${year}`,
+      values: {
+        increase: futureCost - principal,
+        purchasingPower: principal / ((1 + rate) ** year),
+        futureCost,
+        year
+      }
+    });
+  }
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('futureCost', 'Future cost'),
+      moneyColumn('increase', 'Increase'),
+      moneyColumn('purchasingPower', "Today's buying power")
+    ],
+    description: 'Annual inflation path showing future cost and the purchasing-power pressure behind it.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? years, 'Shows how inflation compounds over the planning period.'),
+    title: 'Inflation path table'
+  };
+}
+
+function doublingSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const rate = Math.max(0, values.rate ?? 0);
+  const yearsToDouble = rate > 0 ? 72 / rate : 0;
+  const rows: CalculatorDetailScheduleRow[] = [0, 0.25, 0.5, 0.75, 1].map((step) => ({
+    id: `double-${step}`,
+    values: {
+      period: step === 0 ? 'Start' : `${Math.round(step * 100)}% of path`,
+      ruleYears: yearsToDouble * step,
+      valueMultiple: 1 + step
+    }
+  }));
+
+  return {
+    columns: [
+      textColumn('period', 'Period'),
+      numberColumn('ruleYears', 'Rule years'),
+      numberColumn('valueMultiple', 'Approx. value multiple')
+    ],
+    description: 'Simple milestone table for the Rule of 72 doubling estimate.',
+    rows,
+    summary: 'Shows the doubling estimate as milestones rather than only one number.',
+    title: 'Doubling milestone table'
+  };
+}
+
+function scheduleYears(value: number): number {
+  return Math.max(1, Math.min(maxScheduleYears, Math.ceil(Number.isFinite(value) ? value : 1)));
+}
+
+function scheduleCapSummary(originalYears: number, summary: string): string {
+  if (Number.isFinite(originalYears) && originalYears > maxScheduleYears) {
+    return `${summary} Table is capped at the first ${maxScheduleYears} years to keep the page responsive.`;
+  }
+
+  return summary;
+}
+
+function textColumn(key: string, label: string, description?: string): CalculatorDetailScheduleColumn {
+  return { description, key, label, valueType: 'text' };
+}
+
+function moneyColumn(key: string, label: string, description?: string): CalculatorDetailScheduleColumn {
+  return { description, key, label, valueType: 'currency' };
+}
+
+function numberColumn(key: string, label: string, description?: string): CalculatorDetailScheduleColumn {
+  return { description, key, label, valueType: 'number' };
+}
+
+function percentColumn(key: string, label: string, description?: string): CalculatorDetailScheduleColumn {
+  return { description, key, label, valueType: 'percent' };
 }
 
 function firstFinite(values: Record<string, number>, keys: string[]): number | null {

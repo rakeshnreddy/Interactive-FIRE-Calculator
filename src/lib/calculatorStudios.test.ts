@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   buildCalculatorScenarios,
+  buildCalculatorDetailSchedule,
   buildCalculatorStudioChart,
   buildScenarioValues,
   getCalculatorStudioMetadata,
@@ -11,9 +12,55 @@ import { calculateSeoCalculator, seoCalculators, type SeoCalculator } from './se
 
 const internalStrategyPattern = /SEO|search-demand|traffic|ranking|ranked|long-tail|traffic cluster|acquisition/i;
 const chartTypes = new Set<CalculatorStudioChartType>(['amortization', 'comparison', 'timeline', 'waterfall']);
+const phase21ScheduleSlugs = [
+  'compound-interest',
+  'savings-goal',
+  'retirement',
+  'investment-return',
+  'sip',
+  'step-up-sip',
+  'sip-goal',
+  'lumpsum-mutual-fund',
+  'swp',
+  'fd',
+  'rd',
+  'ppf',
+  'epf',
+  'nps',
+  'gratuity',
+  '401k',
+  'social-security-break-even',
+  'rmd',
+  'cagr',
+  'xirr',
+  'inflation',
+  'rule-of-72',
+  'cd',
+  'hysa'
+] as const;
 
 function defaultValues(calculator: SeoCalculator): Record<string, number> {
   return Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]));
+}
+
+function calculatorBySlug(slug: string): SeoCalculator {
+  const calculator = seoCalculators.find((candidate) => candidate.slug === slug);
+  expect(calculator).toBeDefined();
+  return calculator!;
+}
+
+function lastNumericValue(slug: string, key: string): number {
+  const calculator = calculatorBySlug(slug);
+  const values = defaultValues(calculator);
+  const result = calculateSeoCalculator(calculator, values);
+  const schedule = buildCalculatorDetailSchedule(calculator, values, result);
+
+  expect(schedule).not.toBeNull();
+  const lastRow = schedule!.rows.at(-1);
+  expect(lastRow).toBeDefined();
+  const value = Number(lastRow!.values[key]);
+  expect(Number.isFinite(value)).toBe(true);
+  return value;
 }
 
 describe('calculator decision studios', () => {
@@ -124,5 +171,85 @@ describe('calculator decision studios', () => {
       expect(optimistic[input.key]).toBeGreaterThanOrEqual(input.min ?? 0);
     });
     expect(optimistic.monthly).toBeGreaterThan(conservative.monthly);
+  });
+
+  it.each(phase21ScheduleSlugs)('%s builds an optional detailed schedule table', (slug) => {
+    const calculator = calculatorBySlug(slug);
+    const values = defaultValues(calculator);
+    const result = calculateSeoCalculator(calculator, values);
+    const schedule = buildCalculatorDetailSchedule(calculator, values, result);
+
+    expect(schedule).not.toBeNull();
+    expect(schedule!.title.length).toBeGreaterThan(8);
+    expect(schedule!.description.length).toBeGreaterThan(30);
+    expect(schedule!.summary.length).toBeGreaterThan(30);
+    expect(schedule!.columns.length).toBeGreaterThanOrEqual(2);
+    expect(schedule!.rows.length).toBeGreaterThan(0);
+
+    schedule!.rows.forEach((row) => {
+      schedule!.columns.forEach((column) => {
+        expect(row.values[column.key]).not.toBeUndefined();
+      });
+    });
+  });
+
+  it.each([
+    ['compound-interest', 'balance'],
+    ['sip', 'balance'],
+    ['step-up-sip', 'balance'],
+    ['lumpsum-mutual-fund', 'balance'],
+    ['fd', 'balance'],
+    ['rd', 'balance'],
+    ['ppf', 'balance'],
+    ['epf', 'balance'],
+    ['nps', 'balance'],
+    ['401k', 'balance'],
+    ['hysa', 'balance'],
+    ['retirement', 'balance']
+  ])('%s detailed schedule reconciles with the headline projected value', (slug, scheduleKey) => {
+    const calculator = calculatorBySlug(slug);
+    const result = calculateSeoCalculator(calculator, defaultValues(calculator));
+    const finalScheduleValue = lastNumericValue(slug, scheduleKey);
+
+    expect(finalScheduleValue).toBeCloseTo(result.metrics[0].value, 3);
+  });
+
+  it('savings goal schedule ends at the target with the calculated monthly savings', () => {
+    const finalGap = lastNumericValue('savings-goal', 'gap');
+
+    expect(finalGap).toBeCloseTo(0, 3);
+  });
+
+  it('SWP schedule includes annual withdrawals and a runway balance', () => {
+    const calculator = calculatorBySlug('swp');
+    const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
+
+    expect(schedule?.columns.map((column) => column.key)).toContain('withdrawals');
+    expect(schedule?.rows[0].values.withdrawals).toBeGreaterThan(0);
+    expect(schedule?.rows.at(-1)?.values.balance).toBeDefined();
+  });
+
+  it('retirement schedule uses a current-position row when retirement age is already reached', () => {
+    const calculator = calculatorBySlug('retirement');
+    const schedule = buildCalculatorDetailSchedule(calculator, {
+      annualIncome: 80_000,
+      currentAge: 60,
+      currentSavings: 500_000,
+      monthly: 1_200,
+      rate: 7,
+      retirementAge: 60,
+      withdrawalRate: 4
+    });
+
+    expect(schedule?.rows).toHaveLength(1);
+    expect(schedule?.rows[0].values.year).toBe('Now');
+    expect(schedule?.rows[0].values.deposits).toBe(0);
+    expect(schedule?.rows[0].values.balance).toBe(500_000);
+  });
+
+  it('skips detailed period tables when a calculator has no repeated period to audit yet', () => {
+    const calculator = calculatorBySlug('net-worth');
+
+    expect(buildCalculatorDetailSchedule(calculator, defaultValues(calculator))).toBeNull();
   });
 });

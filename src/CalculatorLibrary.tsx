@@ -2,11 +2,13 @@ import { SignUpButton } from '@clerk/react';
 import {
   ArrowRight,
   Calculator,
+  ChevronDown,
   CircleHelp,
   CircleDollarSign,
   ClipboardList,
   FolderKanban,
   Search,
+  Table2,
   Target
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -14,9 +16,11 @@ import type { AuthState } from './auth';
 import { getCalculatorQualitySpec, type CalculatorQualitySpec } from './lib/calculatorQuality';
 import {
   buildCalculatorScenarios,
+  buildCalculatorDetailSchedule,
   buildCalculatorStudioChart,
   buildScenarioValues,
   getCalculatorStudioMetadata,
+  type CalculatorDetailSchedule,
   type CalculatorScenario,
   type CalculatorScenarioId,
   type CalculatorStudioChart,
@@ -210,6 +214,10 @@ function CalculatorDetail({
     () => buildCalculatorStudioChart(calculator, scenarioValues, result),
     [calculator, result, scenarioValues]
   );
+  const detailSchedule = useMemo(
+    () => buildCalculatorDetailSchedule(calculator, scenarioValues, result),
+    [calculator, result, scenarioValues]
+  );
   const qualitySpec = useMemo(() => getCalculatorQualitySpec(calculator), [calculator]);
   const ConversionIcon = conversionIcon(calculator.conversionRoute);
 
@@ -385,6 +393,7 @@ function CalculatorDetail({
             ))}
           </div>
           <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} />
+          <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} />
           <p className="calculator-result-narrative">{result.narrative}</p>
           <div className="calculator-conversion-panel">
             <span className="feature-icon"><ConversionIcon size={18} /></span>
@@ -467,6 +476,60 @@ function CalculatorDetail({
         </div>
       </section>
     </section>
+  );
+}
+
+function CalculatorSchedulePanel({
+  calculator,
+  schedule
+}: {
+  calculator: SeoCalculator;
+  schedule: CalculatorDetailSchedule | null;
+}) {
+  if (!schedule || schedule.rows.length === 0) {
+    return null;
+  }
+
+  const hasNotes = schedule.rows.some((row) => row.note);
+
+  return (
+    <details className="calculator-breakdown-shell">
+      <summary className="calculator-breakdown-summary">
+        <span className="feature-icon"><Table2 size={17} /></span>
+        <span>
+          <strong>{schedule.title}</strong>
+          <small>{schedule.description}</small>
+        </span>
+        <ChevronDown size={17} />
+      </summary>
+      <div className="calculator-breakdown-body">
+        <p>{schedule.summary}</p>
+        <div className="calculator-breakdown-table-wrap">
+          <table aria-label={`${calculator.title} ${schedule.title}`}>
+            <thead>
+              <tr>
+                {schedule.columns.map((column) => (
+                  <th key={column.key} title={column.description}>{column.label}</th>
+                ))}
+                {hasNotes ? <th className="calculator-note-column">Note</th> : null}
+              </tr>
+            </thead>
+            <tbody>
+              {schedule.rows.map((row) => (
+                <tr key={row.id}>
+                  {schedule.columns.map((column) => (
+                    <td key={column.key}>
+                      {formatScheduleCell(row.values[column.key], column.valueType, calculator)}
+                    </td>
+                  ))}
+                  {hasNotes ? <td className="calculator-note-column">{row.note ?? ''}</td> : null}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
   );
 }
 
@@ -717,6 +780,44 @@ function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): stri
   }
 
   return metric.value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+}
+
+function formatScheduleCell(
+  value: number | string | undefined,
+  valueType: CalculatorDetailSchedule['columns'][number]['valueType'],
+  calculator: SeoCalculator
+): string {
+  if (value === undefined || value === '') {
+    return '';
+  }
+
+  if (valueType === 'text') {
+    return String(value);
+  }
+
+  const numericValue = typeof value === 'number' ? value : Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return String(value);
+  }
+
+  if (valueType === 'currency') {
+    return new Intl.NumberFormat(undefined, {
+      currency: calculatorCurrency(calculator),
+      maximumFractionDigits: 0,
+      style: 'currency'
+    }).format(numericValue);
+  }
+
+  if (valueType === 'percent') {
+    return `${(numericValue * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+  }
+
+  if (valueType === 'years') {
+    return `${numericValue.toLocaleString(undefined, { maximumFractionDigits: 1 })} years`;
+  }
+
+  return numericValue.toLocaleString(undefined, { maximumFractionDigits: 2 });
 }
 
 type StoredCalculatorDraft = {

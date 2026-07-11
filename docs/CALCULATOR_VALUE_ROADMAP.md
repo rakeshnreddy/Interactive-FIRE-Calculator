@@ -112,15 +112,20 @@ Status: complete for preview/development.
 
 ### Phase 21: Growth, Goal, and Retirement Visualizers
 
+Status: complete for preview/development.
+
 - Upgrade growth calculators with contribution vs growth charts, inflation-adjusted value, milestone dates, and scenario comparison.
-- Upgrade goal calculators with monthly required, catch-up amount, target-date slider, and feasibility label.
-- Upgrade retirement/SWP/NPS/401(k)/EPF/PPF routes with corpus timeline, contribution gap, withdrawal runway, and account-mix visualization.
-- Add save-to-goal and save-to-plan flows from Phase 17 to these calculators first.
+- Add collapsed-by-default annual contribution/deposit, estimated growth, cumulative deposit, and ending-balance tables for compound, SIP, step-up SIP, RD, FD/CD, HYSA, lumpsum, and savings-goal routes.
+- Upgrade goal calculators with monthly required, catch-up amount, target-date view, and feasibility context.
+- Upgrade retirement/SWP/NPS/401(k)/EPF/PPF/RMD/Social Security/gratuity routes with corpus timeline, contribution gap, withdrawal runway, distribution schedule, benefit break-even, and account/product split context.
+- Add collapsed-by-default return path, approximate XIRR cashflow, Rule of 72 milestone, and inflation path tables for return and inflation calculators where a period-by-period breakdown adds value.
+- Reuse save-to-goal and save-to-plan flows from Phase 17; no route-specific save behavior was added.
 
 ### Phase 22: Loan, Debt, Home, and Vehicle Visualizers
 
 - Upgrade all loan/EMI/mortgage routes with full payment schedules, yearly rollups, custom period views, principal vs interest charts, payoff calendars, and prepayment sensitivity.
 - Make `/calculators/amortization` a true schedule calculator: complete payment-by-payment monthly table, yearly rollups, custom period view, remaining balance, cumulative interest, principal/interest chart, balance timeline, and export/share.
+- Keep full schedules collapsed and optional by default so the calculator page stays clean until the user asks for the detailed table.
 - Upgrade refinance, balance transfer, rent-vs-buy, lease-vs-buy, PMI, and affordability calculators with break-even charts.
 - Replace weighted debt-only snowball/avalanche with a true multi-debt table.
 - Add missing loan and mortgage routes from the planned calculator backlog below.
@@ -161,7 +166,7 @@ This is the implementation sequence to avoid losing progress. Deploy when app be
 | High-standard foundation checkpoint | Yes | 12% | 88% | Code-level quality contracts, baseline visual read, decision checks, and detailed high-standard implementation plan for every current calculator. |
 | Phase 17 deploy | Yes | 20% | 80% | Durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, and reusable mapping into goals/accounts/plans/transactions. Complete for preview/development. |
 | Phase 20 deploy | Yes | 32% | 68% | Decision studio metadata, scenario state, shared visualization primitives, related calculators, route-specific content scaffolding, and route guard tests. |
-| Phase 21 deploy | Yes | 48% | 52% | Growth, goal, and retirement calculators upgraded with timelines, contribution/growth visuals, inflation-adjusted results, corpus gaps, withdrawal runway, and save flows. |
+| Phase 21 deploy | Yes | 48% | 52% | Growth, goal, retirement, withdrawal, distribution, benefit, inflation, and return calculators upgraded with collapsed optional schedule/detail tables plus existing save flows. |
 | Phase 22 deploy | Yes | 66% | 34% | Full amortization schedules, loan/debt/home visualizers, missing loan/mortgage routes, multi-debt snowball/avalanche, payoff calendars, break-even charts, and exports. |
 | Phase 23 deploy | Yes | 80% | 20% | Income, tax, budget, and protection calculators upgraded with waterfalls, richer assumptions, estimate disclaimers, and cashflow/protection visuals. |
 | Phase 24 deploy | Yes | 92% | 8% | Route-specific content, canonicals, structured data, sitemap coverage, internal links, no-auth smoke coverage, and duplicate-content guard tests. |

@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://2e1c808a.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://c41f598d.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -38,7 +38,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 18: Calculator Library Scale-Out | Preview/app complete | 100% | CAGR, XIRR, inflation, Rule of 72, capital gains, GST/TDS, down payment, PMI, HELOC, balance transfer, CD/HYSA, insurance, lease-vs-buy, and ROI calculators are live. |
 | Phase 19: Calculator UX and Formula Assurance | Preview/app complete | 100% | Calculator copy now uses user-facing decision framing, the landing hero links to the full library, detail pages explain inputs/results with hover/focus help, and every calculator has an individual expected-output test. |
 | Phase 20: Calculator Decision Studio Foundation | Preview/app complete | 100% | Shared decision-studio metadata, reusable scenario state, chart-ready visual primitives, route-specific example loaders, related-calculator navigation, and public-copy guard tests are in place for every current calculator route. |
-| Phase 21: Growth, Goal, and Retirement Visualizers | Planned | 0% | Add contribution-vs-growth timelines, goal feasibility, inflation-adjusted values, retirement corpus gaps, and withdrawal runway visuals. |
+| Phase 21: Growth, Goal, and Retirement Visualizers | Preview/app complete | 100% | Expandable optional breakdown tables and schedule data now cover growth, goal, retirement, withdrawal, distribution, benefit, inflation, and return calculators while keeping the main result UI clean. |
 | Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Planned | 0% | Add complete monthly amortization/payment tables, yearly rollups, custom period views, payoff calendars, break-even charts, true multi-debt snowball/avalanche schedules, missing loan/mortgage routes, and liability/payoff save flows. |
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Planned | 0% | Add gross-to-net waterfalls, richer India/US tax assumptions, budget cashflow visuals, emergency runway, and protection-gap planning. |
 | Phase 24: Calculator Search Preservation and Content Quality | Planned | 0% | Preserve stable URLs while adding unique route examples, assumptions, structured data, internal links, and no-auth smoke coverage for every calculator. |
@@ -458,12 +458,12 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
-- Current comprehensive-calculator completion estimate: 32%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, downstream goal/account/plan draft creation, shared decision-studio metadata, scenario state, chart primitives, route-specific examples, and related calculators are in place; 68% remains for family-specific rich visualizations, missing routes, fuller statutory/tax/schedule engines, exports, and personalization.
+- Current comprehensive-calculator completion estimate: 48%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, downstream goal/account/plan draft creation, shared decision-studio metadata, scenario state, chart primitives, route-specific examples, related calculators, and Phase 21 expandable growth/goal/retirement/return schedules are in place; 52% remains for loan/debt/home visualizers, fuller statutory/tax engines, missing routes, exports, and personalization.
 - [x] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
 - [x] Phase 20: Add code-level calculator quality/studio contracts while preserving every existing public route.
 - [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
 - [x] Phase 20: Add shared scenario state, chart primitives, route-specific examples, and related-calculator navigation.
-- [ ] Phase 21: Upgrade growth, goal, and retirement calculators with timelines, inflation-adjusted outputs, contribution/growth splits, corpus gaps, and withdrawal runway visuals.
+- [x] Phase 21: Upgrade growth, goal, retirement, and return calculators with expandable optional schedule/detail tables for contribution/growth splits, goal funding paths, retirement corpus gaps, withdrawal runway, RMD distributions, Social Security break-even, inflation paths, and return/cashflow paths.
 - [ ] Phase 22: Upgrade loan, debt, home, and vehicle calculators with complete payment-by-payment amortization tables, yearly rollups, custom period views, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
 - [ ] Phase 22: Add missing loan/mortgage calculators, including mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment, India foreclosure, India balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
 - [ ] Phase 23: Upgrade income, tax, budget, and protection calculators with waterfalls, category/cashflow visuals, richer assumptions, and estimate disclaimers.
@@ -516,6 +516,23 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - Live visual smoke: Playwright CLI screenshot rendered `/calculators/sip` at `390x844`.
 - Completion after implementation: comprehensive calculator program is 32% complete; 68% remains.
 - Remaining blockers: production Clerk setup is still the launch blocker; Phase 21-25 rich family visualizations, full schedules, statutory/tax engines, missing route buildout, exports, and personalization remain.
+
+## Phase 21 Growth, Goal, Retirement, and Return Visualizers Completion Checkpoint
+
+- Completed: `src/lib/calculatorStudios.ts` now builds reusable detailed schedules for the Phase 21 calculator families instead of leaving them as one-number or chart-only results.
+- Completed: growth and savings calculators now expose optional annual contribution/deposit, growth, cumulative deposit, and ending-balance tables for compound interest, SIP, step-up SIP, RD, FD/CD, HYSA, lumpsum, and savings-goal routes.
+- Completed: retirement calculators now expose optional retirement savings, PPF, EPF, NPS, SWP withdrawal, RMD distribution, Social Security break-even, and gratuity/service-year schedules.
+- Completed: return and inflation calculators now expose optional return-path, approximate XIRR cashflow, Rule of 72 milestone, and inflation path tables where a period-by-period breakdown adds value.
+- Completed: calculator detail pages render these detailed breakdowns as collapsed-by-default glass panels with scroll-safe responsive tables, keeping the primary result and CTA clean.
+- Completed: `src/lib/calculatorStudios.test.ts` verifies schedule coverage for Phase 21 routes, reconciles key final schedule balances to headline calculator outputs, checks savings-goal gap closure, and confirms snapshot calculators do not get unnecessary period tables.
+- Tests before deploy: `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 480 frontend tests across 16 files, and production build.
+- Local visual smoke: Playwright CLI screenshots rendered `/calculators/sip` desktop/full-page and `/calculators/retirement` mobile/full-page. A Chrome-driven mobile check opened the SIP schedule disclosure and confirmed it is closed by default, opens on click, renders 10 rows, keeps table overflow inside the wrapper, and keeps the document width at `390px`.
+- Deploy: `npm run cf:deploy` deployed to `https://c41f598d.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live HTTP smoke: `/`, `/calculators`, `/calculators/sip`, `/calculators/retirement`, `/calculators/xirr`, `/calculators/fire`, and `/transactions` returned `200`.
+- Live API smoke: unauthenticated `GET /api/calculator-results` returned `401 {"error":"Unauthorized"}`.
+- Live expanded-table smoke: `/calculators/sip` mobile schedule disclosure was closed by default, opened on click, rendered 10 rows, kept internal table overflow at `680px`, and kept the document width at `390px`.
+- Completion after implementation: comprehensive calculator program is 48% complete; 52% remains.
+- Remaining blockers: production Clerk setup is still the launch blocker; Phase 22-25 loan/debt/home visualizers, full monthly amortization schedules, statutory/tax engines, missing routes, exports, and personalization remain.
 
 ## Phase 12-19 Verification Notes
 

@@ -90,6 +90,7 @@ Every calculator gets at least one baseline visual read. Comprehensive completio
 
 Calculators that imply repeated periods must ship a table or schedule in addition to charts:
 
+- Detailed tables should be collapsed by default, clearly labeled, keyboard accessible, and scroll-safe on mobile so the main result panel stays clean until the user asks for the deeper breakdown.
 - Amortization, mortgage, EMI, auto loan, personal loan, HELOC, refinance, loan comparison, extra-payment, and home-loan calculators: full monthly payment schedule with payment number/date, payment, principal, interest, fees/insurance/taxes when modeled, ending balance, cumulative interest, yearly rollups, custom period filters, and export-ready CSV data.
 - Credit card, student loan, debt payoff, snowball/avalanche, balance transfer, foreclosure, and prepayment calculators: month-by-month payoff table with balance, interest, principal, extra payment, promo-period status, payoff date, and strategy-specific debt order.
 - SIP, step-up SIP, RD, FD/CD ladders, HYSA, compound-interest, down-payment, 401(k), PPF, EPF, NPS, and savings-goal calculators: contribution/deposit schedule with period contribution, employer or step-up amount where relevant, interest/growth, ending balance, milestone dates, and yearly summaries.

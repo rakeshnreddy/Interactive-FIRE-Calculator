@@ -5150,6 +5150,7 @@ h2 {
 .calculator-decision-panel,
 .calculator-example-panel,
 .calculator-related-panel,
+.calculator-breakdown-shell,
 .calculator-faq-panel {
   min-width: 0;
   border: 1px solid var(--border);
@@ -5623,6 +5624,133 @@ h2 {
   font-weight: 750;
 }
 
+.calculator-breakdown-shell {
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--surface-soft);
+  box-shadow: none;
+}
+
+.calculator-breakdown-summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 62px;
+  padding: 0.8rem 0.85rem;
+  color: var(--heading);
+  list-style: none;
+  cursor: pointer;
+}
+
+.calculator-breakdown-summary::-webkit-details-marker {
+  display: none;
+}
+
+.calculator-breakdown-summary span:nth-child(2) {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.calculator-breakdown-summary strong {
+  overflow: hidden;
+  color: var(--heading);
+  font-size: 0.9rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calculator-breakdown-summary small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calculator-breakdown-summary > svg {
+  color: var(--muted);
+  transition: transform 160ms ease;
+}
+
+.calculator-breakdown-summary:hover,
+.calculator-breakdown-summary:focus-visible {
+  outline: 0;
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+
+.calculator-breakdown-shell[open] .calculator-breakdown-summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.calculator-breakdown-shell[open] .calculator-breakdown-summary > svg {
+  transform: rotate(180deg);
+}
+
+.calculator-breakdown-body {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.85rem;
+}
+
+.calculator-breakdown-body p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.calculator-breakdown-table-wrap {
+  max-height: 430px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-strong) 66%, transparent);
+}
+
+.calculator-breakdown-table-wrap table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  color: var(--text);
+}
+
+.calculator-breakdown-table-wrap th,
+.calculator-breakdown-table-wrap td {
+  padding: 0.65rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.calculator-breakdown-table-wrap th:first-child,
+.calculator-breakdown-table-wrap td:first-child,
+.calculator-breakdown-table-wrap .calculator-note-column {
+  text-align: left;
+}
+
+.calculator-breakdown-table-wrap th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: var(--muted-strong);
+  background: var(--surface-strong);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.calculator-breakdown-table-wrap tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.calculator-breakdown-table-wrap tbody tr:hover td {
+  background: var(--accent-wash);
+}
+
 .calculator-visual-bars {
   display: grid;
   gap: 0.65rem;
@@ -5874,6 +6002,7 @@ h2 {
   .calculator-decision-panel,
   .calculator-example-panel,
   .calculator-related-panel,
+  .calculator-breakdown-shell,
   .calculator-faq-panel {
     border-radius: 16px;
   }
@@ -5912,6 +6041,15 @@ h2 {
     grid-column: 1 / -1;
     width: 100%;
   }
+
+  .calculator-breakdown-summary {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .calculator-breakdown-summary strong,
+  .calculator-breakdown-summary small {
+    white-space: normal;
+  }
 }
 
 @supports not (backdrop-filter: blur(1px)) {
@@ -5924,6 +6062,7 @@ h2 {
   .calculator-decision-panel,
   .calculator-example-panel,
   .calculator-related-panel,
+  .calculator-breakdown-shell,
   .calculator-faq-panel {
     background: var(--surface-strong);
   }
@@ -5938,6 +6077,7 @@ h2 {
   .calculator-decision-panel,
   .calculator-example-panel,
   .calculator-related-panel,
+  .calculator-breakdown-shell,
   .calculator-faq-panel {
     background: var(--surface-strong);
     backdrop-filter: none;
