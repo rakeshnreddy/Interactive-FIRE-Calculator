@@ -5237,6 +5237,7 @@ h2 {
   padding: 1rem;
   color: var(--text);
   text-align: left;
+  text-decoration: none;
 }
 
 .calculator-card:hover {
@@ -5935,7 +5936,7 @@ h2 {
   gap: 0.65rem;
 }
 
-.calculator-related-list button {
+.calculator-related-list a {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.2rem 0.55rem;
@@ -5947,10 +5948,11 @@ h2 {
   color: var(--text);
   background: var(--surface-soft);
   text-align: left;
+  text-decoration: none;
 }
 
-.calculator-related-list button:hover,
-.calculator-related-list button:focus-visible {
+.calculator-related-list a:hover,
+.calculator-related-list a:focus-visible {
   border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
   background: var(--surface-strong);
   transform: translateY(-1px);

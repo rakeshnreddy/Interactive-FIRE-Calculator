@@ -13,6 +13,7 @@ import {
   Target
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import type { MouseEvent } from 'react';
 import type { AuthState } from './auth';
 import { getCalculatorQualitySpec, type CalculatorQualitySpec } from './lib/calculatorQuality';
 import {
@@ -161,11 +162,11 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
             ) : (
               <div className="calculator-card-grid">
                 {calculators.map((calculator) => (
-                  <button
+                  <a
                     className="calculator-card"
+                    href={calculatorPath(calculator.slug)}
                     key={calculator.slug}
-                    type="button"
-                    onClick={() => onNavigate(calculatorPath(calculator.slug))}
+                    onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
                   >
                     <span className="calculator-card-meta">{calculator.category}</span>
                     <strong>{calculator.title}</strong>
@@ -174,7 +175,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
                       Open calculator
                       <ArrowRight size={14} />
                     </em>
-                  </button>
+                  </a>
                 ))}
               </div>
             )}
@@ -444,7 +445,11 @@ function CalculatorDetail({
           <p>{calculator.explanation}</p>
         </div>
         <div className="calculator-assumption-list">
-          {(result.assumptions.length > 0 ? result.assumptions : ['This calculator is an estimate for planning and education.']).map((assumption) => (
+          {[...new Set([
+            ...calculator.assumptions,
+            ...result.assumptions,
+            'This calculator is an estimate for planning and education.'
+          ])].map((assumption) => (
             <span key={assumption}>{assumption}</span>
           ))}
         </div>
@@ -465,7 +470,7 @@ function CalculatorDetail({
 
       <CalculatorRelatedPanel metadata={studioMetadata} onNavigate={onNavigate} />
 
-      <section className="calculator-faq-panel" aria-label={`${calculator.title} FAQ`}>
+      <section className="calculator-faq-panel" id="faq" aria-label={`${calculator.title} FAQ`}>
         <p className="eyebrow">FAQ</p>
         <div className="calculator-faq-grid">
           {calculator.faq.map((item) => (
@@ -806,15 +811,29 @@ function CalculatorRelatedPanel({
       </div>
       <div className="calculator-related-list">
         {metadata.relatedCalculators.map((related) => (
-          <button key={related.slug} type="button" onClick={() => onNavigate(related.path)}>
+          <a
+            href={related.path}
+            key={related.slug}
+            onClick={(event) => navigateInternalLink(event, related.path, onNavigate)}
+          >
             <span>{related.title}</span>
             <small>{related.reason}</small>
             <ArrowRight size={15} />
-          </button>
+          </a>
         ))}
       </div>
     </section>
   );
+}
+
+function navigateInternalLink(
+  event: MouseEvent<HTMLAnchorElement>,
+  route: string,
+  onNavigate: (route: string) => void
+) {
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  onNavigate(route);
 }
 
 function conversionIcon(route: SeoCalculator['conversionRoute']) {

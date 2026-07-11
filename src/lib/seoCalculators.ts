@@ -1,3 +1,5 @@
+import { buildCalculatorPublicContent } from './calculatorContent';
+
 export type CalculatorRegion = 'Global' | 'India' | 'US';
 export type CalculatorCategory = 'Borrowing' | 'Investing' | 'Planning' | 'Tax' | 'Savings';
 export type CalculatorFormula =
@@ -85,6 +87,7 @@ export type CalculatorResult = {
 };
 
 export type SeoCalculator = {
+  assumptions: string[];
   category: CalculatorCategory;
   conversionLabel: string;
   conversionRoute: '/accounts' | '/goals' | '/plans' | '/transactions';
@@ -230,18 +233,29 @@ const borrowingFormulas = new Set<CalculatorFormula>([
 ]);
 
 function defineCalculator(
-  calculator: Omit<SeoCalculator, 'conversionLabel' | 'conversionRoute' | 'faq'> & {
+  calculator: Omit<SeoCalculator, 'assumptions' | 'conversionLabel' | 'conversionRoute' | 'faq'> & {
+    assumptions?: string[];
     faq?: SeoCalculator['faq'];
   }
 ): SeoCalculator {
+  const inputs = calculator.inputs.map((input) => ({
+    ...input,
+    helper: input.helper ?? defaultInputHelper(input)
+  }));
+  const publicContent = buildCalculatorPublicContent({
+    formula: calculator.formula,
+    inputs,
+    slug: calculator.slug,
+    title: calculator.title
+  });
   return {
     ...calculator,
     ...conversionByFormula[calculator.formula],
-    inputs: calculator.inputs.map((input) => ({
-      ...input,
-      helper: input.helper ?? defaultInputHelper(input)
-    })),
-    faq: [...(calculator.faq ?? []), ...commonFaq]
+    assumptions: [...publicContent.assumptions, ...(calculator.assumptions ?? [])],
+    description: publicContent.description,
+    explanation: publicContent.explanation,
+    faq: [...publicContent.faq, ...(calculator.faq ?? []), ...commonFaq],
+    inputs
   };
 }
 

@@ -63,6 +63,7 @@ import {
   type InsightPriority
 } from './lib/insights';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
+import { applyRouteMetadata } from './lib/routeMetadata';
 import {
   allTransactionAccountFilter,
   allTransactionCategoryFilter,
@@ -540,125 +541,6 @@ function normalizeRoute(pathname: string): AppRoute {
       }
 
       return '/';
-  }
-}
-
-const siteOrigin = 'https://interactive-fire-calculator.pages.dev';
-
-function applyRouteMetadata(route: AppRoute) {
-  if (typeof document === 'undefined') {
-    return;
-  }
-
-  const calculator = route !== '/calculators/fire' ? findSeoCalculator(route) : null;
-  const title = calculator
-    ? `${calculator.title} | FinPath`
-    : route === '/calculators'
-      ? 'Financial Calculators | FinPath'
-      : route === '/calculators/fire'
-        ? 'FIRE Calculator | FinPath'
-        : 'FinPath | FIRE Calculator and Financial Planning';
-  const description = calculator
-    ? calculator.description
-    : route === '/calculators'
-      ? 'Run financial calculators for loans, investing, savings, taxes, retirement, and planning, then save the next step into FinPath.'
-      : route === '/calculators/fire'
-        ? 'Use the public FIRE calculator to estimate retirement readiness, withdrawals, and portfolio scenarios.'
-        : 'Plan financial independence, retirement, savings, goals, accounts, and cash flow in FinPath.';
-  const canonicalPath = route === '/' ? '/' : route;
-
-  document.title = title;
-  upsertMetaTag('description', description);
-  upsertCanonical(canonicalPath);
-  upsertRouteJsonLd(canonicalPath, calculator);
-}
-
-function upsertMetaTag(name: string, content: string) {
-  const selector = `meta[name="${name}"]`;
-  const existing = document.head.querySelector<HTMLMetaElement>(selector);
-  const element = existing ?? document.createElement('meta');
-  element.name = name;
-  element.content = content;
-
-  if (!existing) {
-    document.head.appendChild(element);
-  }
-}
-
-function upsertCanonical(path: string) {
-  const href = `${siteOrigin}${path}`;
-  const existing = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-  const element = existing ?? document.createElement('link');
-  element.rel = 'canonical';
-  element.href = href;
-
-  if (!existing) {
-    document.head.appendChild(element);
-  }
-}
-
-function upsertRouteJsonLd(path: string, calculator: ReturnType<typeof findSeoCalculator>) {
-  const existing = document.head.querySelector<HTMLScriptElement>('#finpath-route-json-ld');
-  const element = existing ?? document.createElement('script');
-  const url = `${siteOrigin}${path}`;
-  const routeSchema = calculator
-    ? {
-        '@context': 'https://schema.org',
-        '@graph': [
-          {
-            '@type': 'WebApplication',
-            applicationCategory: 'FinanceApplication',
-            name: calculator.title,
-            operatingSystem: 'Any',
-            url
-          },
-          {
-            '@type': 'FAQPage',
-            mainEntity: calculator.faq.map((item) => ({
-              '@type': 'Question',
-              acceptedAnswer: {
-                '@type': 'Answer',
-                text: item.answer
-              },
-              name: item.question
-            }))
-          }
-        ]
-      }
-    : path === '/calculators'
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'CollectionPage',
-          name: 'Financial Calculators',
-          url,
-          hasPart: seoCalculators.slice(0, 24).map((item) => ({
-            '@type': 'WebApplication',
-            applicationCategory: 'FinanceApplication',
-            name: item.title,
-            url: `${siteOrigin}/calculators/${item.slug}`
-          }))
-        }
-      : path === '/calculators/fire'
-        ? {
-            '@context': 'https://schema.org',
-            '@type': 'WebApplication',
-            applicationCategory: 'FinanceApplication',
-            name: 'FIRE Calculator',
-            operatingSystem: 'Any',
-            url
-          }
-        : {
-            '@context': 'https://schema.org',
-            '@type': 'WebSite',
-            name: 'FinPath',
-            url: siteOrigin
-          };
-  element.id = 'finpath-route-json-ld';
-  element.type = 'application/ld+json';
-  element.textContent = JSON.stringify(routeSchema);
-
-  if (!existing) {
-    document.head.appendChild(element);
   }
 }
 
