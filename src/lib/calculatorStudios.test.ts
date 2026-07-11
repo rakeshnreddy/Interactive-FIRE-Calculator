@@ -83,6 +83,20 @@ const phase22ScheduleSlugs = [
   'balance-transfer',
   'lease-vs-buy'
 ] as const;
+const phase23ScheduleSlugs = [
+  'budget',
+  'emergency-fund',
+  'income-tax-india',
+  'salary-india',
+  'hra-exemption',
+  'paycheck',
+  'income-tax-us',
+  'roth-vs-traditional-ira',
+  'capital-gains-tax',
+  'gst',
+  'tds',
+  'life-insurance-needs'
+] as const;
 
 function defaultValues(calculator: SeoCalculator): Record<string, number> {
   return Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]));
@@ -218,7 +232,7 @@ describe('calculator decision studios', () => {
     expect(optimistic.monthly).toBeGreaterThan(conservative.monthly);
   });
 
-  it.each([...phase21ScheduleSlugs, ...phase22ScheduleSlugs])('%s builds an optional detailed schedule table', (slug) => {
+  it.each([...phase21ScheduleSlugs, ...phase22ScheduleSlugs, ...phase23ScheduleSlugs])('%s builds an optional detailed schedule table', (slug) => {
     const calculator = calculatorBySlug(slug);
     const values = defaultValues(calculator);
     const result = calculateSeoCalculator(calculator, values);
@@ -315,6 +329,58 @@ describe('calculator decision studios', () => {
     expect(schedule?.columns.map((column) => column.key)).toContain('withdrawals');
     expect(schedule?.rows[0].values.withdrawals).toBeGreaterThan(0);
     expect(schedule?.rows.at(-1)?.values.balance).toBeDefined();
+  });
+
+  it('India tax schedule compares old and new regime rows with separate cess', () => {
+    const calculator = calculatorBySlug('income-tax-india');
+    const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
+
+    expect(schedule?.title).toMatch(/old versus new/i);
+    expect(schedule?.columns.map((column) => column.key)).toEqual([
+      'regime',
+      'taxableIncome',
+      'baseTax',
+      'cess',
+      'totalTax',
+      'netIncome'
+    ]);
+    expect(schedule?.rows.map((row) => row.id)).toEqual(['old-regime', 'new-regime']);
+    expect(Number(schedule?.rows[1].values.totalTax)).toBeLessThan(Number(schedule?.rows[0].values.totalTax));
+    expect(Number(schedule?.rows[1].values.cess)).toBe(4_200);
+  });
+
+  it('US tax schedule exposes standard deduction, bracket rows, and state placeholder', () => {
+    const calculator = calculatorBySlug('income-tax-us');
+    const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
+
+    expect(schedule?.title).toMatch(/US tax bracket/i);
+    expect(schedule?.rows[0].id).toBe('standard-deduction');
+    expect(schedule?.rows[0].values.taxedAmount).toBe(16_100);
+    expect(schedule?.rows.some((row) => row.id === 'state-placeholder')).toBe(true);
+    expect(schedule?.rows.at(-1)?.id).toBe('total-tax');
+    expect(Number(schedule?.rows.at(-1)?.values.tax)).toBe(22_370);
+  });
+
+  it('paycheck and salary schedules show both recurring and annual take-home views', () => {
+    const paycheck = buildCalculatorDetailSchedule(calculatorBySlug('paycheck'), defaultValues(calculatorBySlug('paycheck')));
+    const salary = buildCalculatorDetailSchedule(calculatorBySlug('salary-india'), defaultValues(calculatorBySlug('salary-india')));
+
+    expect(paycheck?.columns.map((column) => column.key)).toContain('perPaycheck');
+    expect(paycheck?.rows.find((row) => row.id === 'take-home')?.values.perPaycheck).toBe(3_630);
+    expect(salary?.columns.map((column) => column.key)).toContain('monthly');
+    expect(salary?.rows.find((row) => row.id === 'take-home')?.values.monthly).toBe(167_024);
+  });
+
+  it('budget, emergency fund, and insurance tables turn cashflow/protection results into action steps', () => {
+    const budget = buildCalculatorDetailSchedule(calculatorBySlug('budget'), defaultValues(calculatorBySlug('budget')));
+    const emergency = buildCalculatorDetailSchedule(calculatorBySlug('emergency-fund'), defaultValues(calculatorBySlug('emergency-fund')));
+    const insurance = buildCalculatorDetailSchedule(calculatorBySlug('life-insurance-needs'), defaultValues(calculatorBySlug('life-insurance-needs')));
+
+    expect(budget?.rows.find((row) => row.id === 'annual-pace')?.values.amount).toBe(30_000);
+    expect(emergency?.rows).toHaveLength(6);
+    expect(emergency?.rows.at(-1)?.values.remainingTarget).toBe(0);
+    expect(insurance?.rows.find((row) => row.id === 'existing-coverage')?.values.amount).toBe(-100_000);
+    expect(insurance?.rows.find((row) => row.id === 'coverage-gap')?.values.amount).toBe(1_050_000);
   });
 
   it('retirement schedule uses a current-position row when retirement age is already reached', () => {

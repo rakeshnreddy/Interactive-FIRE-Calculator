@@ -247,6 +247,8 @@ export function buildCalculatorDetailSchedule(
       return balanceTransferSchedule(calculator, normalized);
     case 'biweekly-loan':
       return biweeklyLoanSchedule(calculator, normalized);
+    case 'budget':
+      return budgetSchedule(calculator, normalized);
     case 'closing-costs':
       return closingCostSchedule(calculator, normalized);
     case 'compound':
@@ -263,6 +265,8 @@ export function buildCalculatorDetailSchedule(
       return debtStrategySchedule(calculator, normalized);
     case 'down-payment':
       return downPaymentSchedule(calculator, normalized);
+    case 'emergency-fund':
+      return emergencyFundSchedule(calculator, normalized);
     case 'dti':
       return dtiBreakdownSchedule(calculator, normalized);
     case 'escrow':
@@ -273,6 +277,10 @@ export function buildCalculatorDetailSchedule(
       return flatRateComparisonSchedule(calculator, normalized);
     case 'interest-only-loan':
       return interestOnlySchedule(calculator, normalized);
+    case 'india-tax':
+      return indiaTaxComparisonSchedule(calculator, normalized);
+    case 'insurance':
+      return insuranceNeedsSchedule(calculator, normalized);
     case 'loan-comparison':
       return loanComparisonSchedule(calculator, normalized);
     case 'loan-eligibility':
@@ -281,6 +289,8 @@ export function buildCalculatorDetailSchedule(
       return loanPrepaymentSchedule(calculator, normalized);
     case 'mortgage-recast':
       return mortgageRecastSchedule(calculator, normalized);
+    case 'paycheck':
+      return paycheckSchedule(calculator, normalized);
     case 'sip':
       return recurringGrowthSchedule(normalized, {
         description: normalized.stepUp > 0
@@ -321,8 +331,20 @@ export function buildCalculatorDetailSchedule(
       return rmdSchedule(calculator, normalized);
     case 'social-security':
       return socialSecuritySchedule(calculator, normalized);
+    case 'salary':
+      return salaryTakeHomeSchedule(calculator, normalized);
     case 'stamp-duty':
       return stampDutySchedule(calculator, normalized);
+    case 'gst':
+    case 'tax-rate':
+    case 'capital-gains':
+      return simpleTaxBreakdownSchedule(calculator, normalized);
+    case 'hra':
+      return hraBreakdownSchedule(calculator, normalized);
+    case 'roth-traditional':
+      return rothTraditionalSchedule(calculator, normalized);
+    case 'us-tax':
+      return usTaxSchedule(calculator, normalized);
     case 'gratuity':
       return gratuitySchedule(calculator, normalized);
     case 'refinance':
@@ -927,6 +949,73 @@ function debtStrategySchedule(_calculator: SeoCalculator, values: Record<string,
   };
 }
 
+function budgetSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const income = Math.max(0, values.income ?? 0);
+  const expenses = Math.max(0, values.expenses ?? 0);
+  const surplus = income - expenses;
+  const savingsRate = income > 0 ? surplus / income : 0;
+
+  return lineItemSchedule({
+    description: 'Monthly cashflow breakdown showing income, spending, surplus, annual savings pace, and savings rate.',
+    rows: [
+      { amount: income, id: 'income', lineItem: 'Monthly income', note: 'Money available before expenses.', rate: null },
+      { amount: expenses, id: 'expenses', lineItem: 'Monthly expenses', note: 'Recurring monthly outflow being tested.', rate: income > 0 ? expenses / income : null },
+      { amount: surplus, id: 'surplus', lineItem: 'Monthly surplus', note: surplus >= 0 ? 'Amount available for goals or debt payoff.' : 'Shortfall to fix before saving.', rate: savingsRate },
+      { amount: surplus * 12, id: 'annual-pace', lineItem: 'Annual savings pace', note: 'Monthly surplus projected across a full year.', rate: null }
+    ],
+    summary: 'This table turns the budget result into a cashflow read: what comes in, what goes out, and what remains to track.',
+    title: 'Monthly cashflow breakdown'
+  });
+}
+
+function emergencyFundSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const monthlyExpenses = Math.max(0, values.monthlyExpenses ?? 0);
+  const months = Math.max(1, Math.min(60, Math.ceil(values.months ?? 1)));
+
+  return {
+    columns: [
+      textColumn('month', 'Coverage month'),
+      moneyColumn('monthlyExpenses', 'Monthly expenses'),
+      moneyColumn('targetToDate', 'Reserve target'),
+      moneyColumn('remainingTarget', 'Remaining target')
+    ],
+    description: 'Coverage-by-month emergency reserve target so the final number becomes a runway plan.',
+    rows: Array.from({ length: months }, (_, index) => {
+      const month = index + 1;
+      return {
+        id: `emergency-month-${month}`,
+        values: {
+          month,
+          monthlyExpenses,
+          remainingTarget: monthlyExpenses * (months - month),
+          targetToDate: monthlyExpenses * month
+        }
+      };
+    }),
+    summary: 'Each row adds one month of expense coverage, making the reserve target easier to build in stages.',
+    title: 'Emergency fund runway'
+  };
+}
+
+function insuranceNeedsSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const incomeReplacement = Math.max(0, values.income ?? 0) * Math.max(0, values.years ?? 0);
+  const debts = Math.max(0, values.debts ?? 0);
+  const savings = Math.max(0, values.savings ?? 0);
+  const need = Math.max(0, incomeReplacement + debts - savings);
+
+  return lineItemSchedule({
+    description: 'Protection gap breakdown separating income replacement, debts, and existing savings or coverage.',
+    rows: [
+      { amount: incomeReplacement, id: 'income-replacement', lineItem: 'Income replacement need', note: 'Annual income multiplied by support years.', rate: null },
+      { amount: debts, id: 'debts', lineItem: 'Debts and final expenses', note: 'Liabilities or one-time costs to cover.', rate: null },
+      { amount: -savings, id: 'existing-coverage', lineItem: 'Existing savings / coverage', note: 'Resources that reduce the coverage gap.', rate: null },
+      { amount: need, id: 'coverage-gap', lineItem: 'Coverage need', note: 'Estimated gap after existing resources.', rate: null }
+    ],
+    summary: 'This keeps the coverage result understandable: protection need is driven by support years, debts, and resources already available.',
+    title: 'Protection gap breakdown'
+  });
+}
+
 function dtiBreakdownSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const income = Math.max(0, values.income ?? 0);
   const debts = Math.max(0, values.debts ?? 0);
@@ -1299,6 +1388,82 @@ function pmiCancellationSchedule(_calculator: SeoCalculator, values: Record<stri
   };
 }
 
+function paycheckSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const periods = Math.max(1, Math.round(values.periods ?? 1));
+  const grossPerPeriod = Math.max(0, values.income ?? 0);
+  const preTaxPerPeriod = Math.max(0, values.preTaxDeductions ?? 0);
+  const postTaxPerPeriod = Math.max(0, values.postTaxDeductions ?? 0);
+  const annualGross = grossPerPeriod * periods;
+  const annualPreTax = preTaxPerPeriod * periods;
+  const annualPostTax = postTaxPerPeriod * periods;
+  const taxableWages = Math.max(0, annualGross - annualPreTax);
+  const withholding = taxableWages * Math.max(0, values.effectiveRate ?? 0) / 100;
+  const annualTakeHome = Math.max(0, annualGross - annualPreTax - withholding - annualPostTax);
+
+  return {
+    columns: [
+      textColumn('lineItem', 'Line item'),
+      moneyColumn('perPaycheck', 'Per paycheck'),
+      moneyColumn('annual', 'Annual'),
+      percentColumn('rate', 'Rate'),
+      textColumn('note', 'Meaning')
+    ],
+    description: 'Gross-to-net paycheck breakdown shown per paycheck and annualized.',
+    rows: [
+      {
+        id: 'gross-pay',
+        values: { annual: annualGross, lineItem: 'Gross pay', note: 'Pay before deductions and withholding.', perPaycheck: grossPerPeriod, rate: '' }
+      },
+      {
+        id: 'pre-tax',
+        values: { annual: annualPreTax, lineItem: 'Pre-tax deductions', note: 'Reduces taxable wages and take-home.', perPaycheck: preTaxPerPeriod, rate: annualGross > 0 ? annualPreTax / annualGross : '' }
+      },
+      {
+        id: 'withholding',
+        values: { annual: withholding, lineItem: 'Estimated withholding', note: 'Estimated from the withholding rate input.', perPaycheck: withholding / periods, rate: Math.max(0, values.effectiveRate ?? 0) / 100 }
+      },
+      {
+        id: 'post-tax',
+        values: { annual: annualPostTax, lineItem: 'Post-tax deductions', note: 'Reduces take-home but not taxable wages.', perPaycheck: postTaxPerPeriod, rate: annualGross > 0 ? annualPostTax / annualGross : '' }
+      },
+      {
+        id: 'take-home',
+        values: { annual: annualTakeHome, lineItem: 'Estimated take-home', note: 'Amount left after modeled deductions and withholding.', perPaycheck: annualTakeHome / periods, rate: annualGross > 0 ? annualTakeHome / annualGross : '' }
+      }
+    ],
+    summary: 'Shows why two paychecks with the same gross pay can produce different take-home: pre-tax deductions, withholding, and post-tax deductions are separated.',
+    title: 'Gross-to-net paycheck table'
+  };
+}
+
+function salaryTakeHomeSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const ctc = Math.max(0, values.income ?? 0);
+  const payrollDeductions = ctc * Math.max(0, values.employeePfRate ?? 0) / 100 + Math.max(0, values.professionalTax ?? 0);
+  const taxable = Math.max(0, ctc - payrollDeductions);
+  const incomeTax = taxable * Math.max(0, values.effectiveRate ?? 0) / 100;
+  const takeHome = Math.max(0, ctc - payrollDeductions - incomeTax);
+
+  return {
+    columns: [
+      textColumn('lineItem', 'Line item'),
+      moneyColumn('annual', 'Annual'),
+      moneyColumn('monthly', 'Monthly'),
+      percentColumn('rate', 'Rate'),
+      textColumn('note', 'Meaning')
+    ],
+    description: 'CTC-to-take-home breakdown with annual and monthly views.',
+    rows: [
+      { id: 'ctc', values: { annual: ctc, lineItem: 'Annual CTC', monthly: ctc / 12, note: 'Gross annual compensation input.', rate: '' } },
+      { id: 'payroll-deductions', values: { annual: payrollDeductions, lineItem: 'Payroll deductions', monthly: payrollDeductions / 12, note: 'Employee PF/payroll rate plus professional tax or other deductions.', rate: ctc > 0 ? payrollDeductions / ctc : '' } },
+      { id: 'taxable', values: { annual: taxable, lineItem: 'Estimated taxable pay', monthly: taxable / 12, note: 'CTC after modeled payroll deductions.', rate: '' } },
+      { id: 'tax', values: { annual: incomeTax, lineItem: 'Estimated income tax', monthly: incomeTax / 12, note: 'Estimated from the tax rate input.', rate: Math.max(0, values.effectiveRate ?? 0) / 100 } },
+      { id: 'take-home', values: { annual: takeHome, lineItem: 'Estimated take-home', monthly: takeHome / 12, note: 'Estimated usable salary after modeled deductions.', rate: ctc > 0 ? takeHome / ctc : '' } }
+    ],
+    summary: 'This table separates payroll deductions from income tax so take-home does not feel like a mystery discount from CTC.',
+    title: 'Salary take-home breakdown'
+  };
+}
+
 function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const closingCosts = Math.max(0, values.closingCosts ?? 0);
@@ -1402,6 +1567,208 @@ function stampDutySchedule(_calculator: SeoCalculator, values: Record<string, nu
     summary: 'The table separates each rate-driven cost so state-specific assumptions can be reviewed later.',
     title: 'Stamp duty and registration breakdown'
   });
+}
+
+function indiaTaxComparisonSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const oldRegime = indiaOldRegimeTax(values.income ?? 0, values.deductions ?? 0);
+  const newRegime = indiaNewRegimeTax(values.income ?? 0);
+
+  return {
+    columns: [
+      textColumn('regime', 'Regime'),
+      moneyColumn('taxableIncome', 'Taxable income'),
+      moneyColumn('baseTax', 'Base tax'),
+      moneyColumn('cess', 'Cess'),
+      moneyColumn('totalTax', 'Total tax'),
+      moneyColumn('netIncome', 'Net income')
+    ],
+    description: 'Old versus new regime estimate using simplified slab tax and cess assumptions.',
+    rows: [
+      {
+        id: 'old-regime',
+        note: 'Uses the deductions/exemptions input.',
+        values: {
+          baseTax: oldRegime.baseTax,
+          cess: oldRegime.cess,
+          netIncome: Math.max(0, (values.income ?? 0) - oldRegime.totalTax),
+          regime: 'Old regime',
+          taxableIncome: oldRegime.taxableIncome,
+          totalTax: oldRegime.totalTax
+        }
+      },
+      {
+        id: 'new-regime',
+        note: 'Ignores old-regime deductions in this simplified estimate.',
+        values: {
+          baseTax: newRegime.baseTax,
+          cess: newRegime.cess,
+          netIncome: Math.max(0, (values.income ?? 0) - newRegime.totalTax),
+          regime: 'New regime',
+          taxableIncome: newRegime.taxableIncome,
+          totalTax: newRegime.totalTax
+        }
+      }
+    ],
+    summary: 'The comparison keeps the lower-tax regime visible while showing why the estimate changed: taxable income, slab tax, and cess are separate.',
+    title: 'Old versus new regime table'
+  };
+}
+
+function usTaxSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const income = Math.max(0, values.income ?? 0);
+  const extraDeductions = Math.max(0, values.deductions ?? 0);
+  const taxableIncome = Math.max(0, income - usSingle2026StandardDeduction - extraDeductions);
+  const bracketRows = progressiveTaxRows(taxableIncome, usSingle2026Brackets);
+  const federalTax = bracketRows.reduce((sum, row) => sum + row.tax, 0);
+  const stateTax = income * Math.max(0, values.stateRate ?? 0) / 100;
+
+  return {
+    columns: [
+      textColumn('bracket', 'Bracket'),
+      moneyColumn('taxedAmount', 'Taxed amount'),
+      percentColumn('rate', 'Rate'),
+      moneyColumn('tax', 'Tax'),
+      textColumn('note', 'Meaning')
+    ],
+    description: 'Federal single-filer bracket table with standard deduction and state/local placeholder rows.',
+    rows: [
+      {
+        id: 'standard-deduction',
+        values: {
+          bracket: 'Standard deduction',
+          note: '2026 single-filer standard deduction subtracted before bracket tax.',
+          rate: '',
+          tax: 0,
+          taxedAmount: usSingle2026StandardDeduction
+        }
+      },
+      ...bracketRows.map((row, index) => ({
+        id: `us-bracket-${index}`,
+        values: {
+          bracket: row.label,
+          note: 'Federal income taxed within this bracket.',
+          rate: row.rate,
+          tax: row.tax,
+          taxedAmount: row.amount
+        }
+      })),
+      {
+        id: 'state-placeholder',
+        values: {
+          bracket: 'State/local placeholder',
+          note: 'Flat placeholder from the rate input, not a state-specific calculation.',
+          rate: Math.max(0, values.stateRate ?? 0) / 100,
+          tax: stateTax,
+          taxedAmount: income
+        }
+      },
+      {
+        id: 'total-tax',
+        values: {
+          bracket: 'Total estimate',
+          note: 'Federal bracket tax plus state/local placeholder.',
+          rate: income > 0 ? (federalTax + stateTax) / income : '',
+          tax: federalTax + stateTax,
+          taxedAmount: taxableIncome
+        }
+      }
+    ],
+    summary: 'The table keeps federal bracket math separate from the state/local placeholder so users can see which assumption drives the estimate.',
+    title: 'US tax bracket estimate'
+  };
+}
+
+function simpleTaxBreakdownSchedule(calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  if (calculator.formula === 'gst') {
+    const amount = Math.max(0, values.principal ?? 0);
+    const tax = amount * Math.max(0, values.rate ?? 0) / 100;
+    return lineItemSchedule({
+      description: 'GST amount and total price using the rate provided.',
+      rows: [
+        { amount, id: 'base', lineItem: 'Pre-tax amount', note: 'Amount before GST.', rate: null },
+        { amount: tax, id: 'tax', lineItem: 'Estimated GST', note: 'Pre-tax amount multiplied by GST rate.', rate: Math.max(0, values.rate ?? 0) / 100 },
+        { amount: amount + tax, id: 'total', lineItem: 'Total including GST', note: 'Estimated amount after GST.', rate: null }
+      ],
+      summary: 'This separates the tax from the total so the user can audit the percentage quickly.',
+      title: 'GST breakdown'
+    });
+  }
+
+  const base = Math.max(0, values.income ?? values.gain ?? values.principal ?? 0);
+  const deductions = Math.max(0, values.deductions ?? 0);
+  const taxable = Math.max(0, base - deductions);
+  const taxRate = Math.max(0, values.effectiveRate ?? values.rate ?? 0) / 100;
+  const tax = taxable * taxRate;
+
+  return lineItemSchedule({
+    description: 'Estimated tax breakdown from gross amount to taxable base, tax, and net amount.',
+    rows: [
+      { amount: base, id: 'base', lineItem: calculator.formula === 'capital-gains' ? 'Capital gain' : 'Gross amount', note: 'Starting amount before deductions or exemptions.', rate: null },
+      { amount: deductions, id: 'deductions', lineItem: 'Deductions / exempt amount', note: 'Amount removed before applying the estimate rate.', rate: null },
+      { amount: taxable, id: 'taxable', lineItem: 'Taxable base', note: 'Amount multiplied by the rate input.', rate: null },
+      { amount: tax, id: 'tax', lineItem: 'Estimated tax', note: 'Taxable base multiplied by the rate input.', rate: taxRate },
+      { amount: base - tax, id: 'net', lineItem: 'Estimated net amount', note: 'Gross amount after estimated tax.', rate: null }
+    ],
+    summary: 'The table makes rate-based tax calculators auditable even when the final statutory engine is intentionally simplified.',
+    title: `${calculator.title} breakdown`
+  });
+}
+
+function hraBreakdownSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const salary = Math.max(0, values.salary ?? 0);
+  const hra = Math.max(0, values.hra ?? 0);
+  const rentOverTenPercent = Math.max(0, (values.rent ?? 0) - salary * 0.1);
+  const salaryCap = salary * Math.max(0, values.metroPercent ?? 0) / 100;
+  const exemption = Math.max(0, Math.min(hra, rentOverTenPercent, salaryCap));
+
+  return lineItemSchedule({
+    description: 'HRA exemption components; the estimate uses the lowest eligible amount.',
+    rows: [
+      { amount: hra, id: 'hra', lineItem: 'HRA received', note: 'Maximum exemption cannot exceed HRA received.', rate: null },
+      { amount: rentOverTenPercent, id: 'rent-over-ten', lineItem: 'Rent above 10% salary', note: 'Annual rent less 10% of salary.', rate: null },
+      { amount: salaryCap, id: 'salary-cap', lineItem: 'Salary cap', note: 'Salary multiplied by the metro/non-metro cap input.', rate: Math.max(0, values.metroPercent ?? 0) / 100 },
+      { amount: exemption, id: 'exemption', lineItem: 'Estimated HRA exemption', note: 'Lowest of the eligible HRA components.', rate: null },
+      { amount: Math.max(0, hra - exemption), id: 'taxable-hra', lineItem: 'Taxable HRA estimate', note: 'HRA left after exemption.', rate: null }
+    ],
+    summary: 'The exemption is easier to trust when all three limiting amounts are visible side by side.',
+    title: 'HRA exemption breakdown'
+  });
+}
+
+function rothTraditionalSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const contribution = Math.max(0, values.income ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const futureTaxRate = Math.max(0, values.futureTaxRate ?? 0) / 100;
+  const currentTaxSavings = contribution * Math.max(0, values.currentTaxRate ?? 0) / 100;
+  const years = scheduleYears(values.years ?? 0);
+
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('rothValue', 'Roth value'),
+      moneyColumn('traditionalAfterTax', 'Traditional after-tax'),
+      moneyColumn('rothAdvantage', 'Roth advantage'),
+      moneyColumn('currentTaxSavings', 'Current tax savings')
+    ],
+    description: 'Annual Roth versus traditional value path using the same contribution, return, and retirement tax-rate assumptions.',
+    rows: Array.from({ length: years }, (_, index) => {
+      const year = index + 1;
+      const rothValue = contribution * (1 + rate) ** year;
+      const traditionalAfterTax = rothValue * (1 - futureTaxRate);
+      return {
+        id: `roth-traditional-${year}`,
+        values: {
+          currentTaxSavings,
+          rothAdvantage: rothValue - traditionalAfterTax,
+          rothValue,
+          traditionalAfterTax,
+          year
+        }
+      };
+    }),
+    summary: 'This table separates future tax drag from today’s traditional deduction benefit so the comparison is easier to read.',
+    title: 'Roth versus traditional value path'
+  };
 }
 
 function recurringGrowthSchedule(
@@ -2100,6 +2467,48 @@ type StrategyRow = {
   month: number;
   paidOffName?: string;
 };
+type ProgressiveTaxBracket = {
+  rate: number;
+  upTo: number;
+};
+type ProgressiveTaxRow = {
+  amount: number;
+  label: string;
+  rate: number;
+  tax: number;
+};
+type IncomeTaxEstimate = {
+  baseTax: number;
+  cess: number;
+  taxableIncome: number;
+  totalTax: number;
+};
+
+const indiaOldRegimeBrackets: ProgressiveTaxBracket[] = [
+  { rate: 0, upTo: 250_000 },
+  { rate: 0.05, upTo: 500_000 },
+  { rate: 0.2, upTo: 1_000_000 },
+  { rate: 0.3, upTo: Number.POSITIVE_INFINITY }
+];
+const indiaNewRegimeBrackets: ProgressiveTaxBracket[] = [
+  { rate: 0, upTo: 400_000 },
+  { rate: 0.05, upTo: 800_000 },
+  { rate: 0.1, upTo: 1_200_000 },
+  { rate: 0.15, upTo: 1_600_000 },
+  { rate: 0.2, upTo: 2_000_000 },
+  { rate: 0.25, upTo: 2_400_000 },
+  { rate: 0.3, upTo: Number.POSITIVE_INFINITY }
+];
+const usSingle2026Brackets: ProgressiveTaxBracket[] = [
+  { rate: 0.1, upTo: 12_400 },
+  { rate: 0.12, upTo: 50_400 },
+  { rate: 0.22, upTo: 105_700 },
+  { rate: 0.24, upTo: 201_775 },
+  { rate: 0.32, upTo: 256_225 },
+  { rate: 0.35, upTo: 640_600 },
+  { rate: 0.37, upTo: Number.POSITIVE_INFINITY }
+];
+const usSingle2026StandardDeduction = 16_100;
 
 function amortizationColumns(): CalculatorDetailScheduleColumn[] {
   return [
@@ -2309,6 +2718,69 @@ function presentValueFromPayment(payment: number, annualRate: number, years: num
   return monthlyRate === 0
     ? payment * months
     : payment * (1 - (1 + monthlyRate) ** -months) / monthlyRate;
+}
+
+function indiaOldRegimeTax(income: number, deductions: number): IncomeTaxEstimate {
+  const taxableIncome = Math.max(0, income - Math.max(0, deductions));
+  const baseTaxBeforeRebate = progressiveTax(taxableIncome, indiaOldRegimeBrackets);
+  const baseTax = taxableIncome <= 500_000 ? Math.max(0, baseTaxBeforeRebate - 12_500) : baseTaxBeforeRebate;
+  const cess = baseTax * 0.04;
+
+  return {
+    baseTax,
+    cess,
+    taxableIncome,
+    totalTax: baseTax + cess
+  };
+}
+
+function indiaNewRegimeTax(income: number): IncomeTaxEstimate {
+  const taxableIncome = Math.max(0, income);
+  const baseTaxBeforeRebate = progressiveTax(taxableIncome, indiaNewRegimeBrackets);
+  const baseTax = taxableIncome <= 1_200_000 ? 0 : baseTaxBeforeRebate;
+  const cess = baseTax * 0.04;
+
+  return {
+    baseTax,
+    cess,
+    taxableIncome,
+    totalTax: baseTax + cess
+  };
+}
+
+function progressiveTax(taxableIncome: number, brackets: ProgressiveTaxBracket[]): number {
+  return progressiveTaxRows(taxableIncome, brackets).reduce((sum, row) => sum + row.tax, 0);
+}
+
+function progressiveTaxRows(taxableIncome: number, brackets: ProgressiveTaxBracket[]): ProgressiveTaxRow[] {
+  let lowerBound = 0;
+  const rows: ProgressiveTaxRow[] = [];
+
+  for (const bracket of brackets) {
+    const upperBound = bracket.upTo;
+    const amount = Math.max(0, Math.min(taxableIncome, upperBound) - lowerBound);
+
+    if (amount > 0 || rows.length === 0) {
+      rows.push({
+        amount,
+        label: Number.isFinite(upperBound)
+          ? `${formatBracketAmount(lowerBound)} to ${formatBracketAmount(upperBound)}`
+          : `${formatBracketAmount(lowerBound)} and above`,
+        rate: bracket.rate,
+        tax: amount * bracket.rate
+      });
+    }
+
+    lowerBound = upperBound;
+    if (taxableIncome <= upperBound) break;
+  }
+
+  return rows;
+}
+
+function formatBracketAmount(value: number): string {
+  if (!Number.isFinite(value)) return 'above';
+  return value === 0 ? '0' : value.toLocaleString('en-US', { maximumFractionDigits: 0 });
 }
 
 function approximateApr(principal: number, fees: number, payment: number, years: number): number {

@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://ca04df60.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://62099a61.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -40,7 +40,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 20: Calculator Decision Studio Foundation | Preview/app complete | 100% | Shared decision-studio metadata, reusable scenario state, chart-ready visual primitives, route-specific example loaders, related-calculator navigation, and public-copy guard tests are in place for every current calculator route. |
 | Phase 21: Growth, Goal, and Retirement Visualizers | Preview/app complete | 100% | Expandable optional breakdown tables and schedule data now cover growth, goal, retirement, withdrawal, distribution, benefit, inflation, and return calculators while keeping the main result UI clean. |
 | Phase 22: Loan, Debt, Home, and Vehicle Visualizers | Preview/app complete | 100% | Added complete optional amortization/payment/payoff/refinance/prepayment/PMI/rent-buy tables, custom period views, CSV schedule export, true multi-debt snowball/avalanche comparison, and the missing loan/mortgage/India home-loan routes. |
-| Phase 23: Income, Tax, Budget, and Protection Deepening | Planned | 0% | Add gross-to-net waterfalls, richer India/US tax assumptions, budget cashflow visuals, emergency runway, and protection-gap planning. |
+| Phase 23: Income, Tax, Budget, and Protection Deepening | Preview/app complete | 100% | Gross-to-net tables, India old/new regime estimates, US bracket estimates, budget cashflow, emergency runway, and protection-gap planning are in place. |
 | Phase 24: Calculator Search Preservation and Content Quality | Planned | 0% | Preserve stable URLs while adding unique route examples, assumptions, structured data, internal links, and no-auth smoke coverage for every calculator. |
 | Phase 25: Engagement and Personalization Loop | Planned | 0% | Add saved scenario comparisons, recent calculator history, dashboard follow-up cards, and export/share for schedules and summaries. |
 
@@ -458,7 +458,7 @@ This milestone remains the visual baseline for the completed Planning Workspace 
 Detailed audit and implementation plan: `docs/CALCULATOR_VALUE_ROADMAP.md`.
 Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md`.
 
-- Current comprehensive-calculator completion estimate: 66%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, downstream goal/account/plan draft creation, shared decision-studio metadata, scenario state, chart primitives, route-specific examples, related calculators, Phase 21 growth/goal/retirement/return schedules, and Phase 22 loan/debt/home/vehicle schedules are in place; 34% remains for income/tax/budget/protection deepening, route content hardening, broader smoke coverage, saved scenario comparison, recent history, dashboard follow-ups, and personalization.
+- Current comprehensive-calculator completion estimate: 80%. Existing public routes, base formulas, tests, high-standard quality contracts, baseline result visuals, durable save-result infrastructure, signed-out draft preservation, dashboard saved-result cards, downstream goal/account/plan draft creation, shared decision-studio metadata, scenario state, chart primitives, route-specific examples, related calculators, Phase 21 growth/goal/retirement/return schedules, Phase 22 loan/debt/home/vehicle schedules, and Phase 23 income/tax/budget/protection breakdowns are in place; 20% remains for route content hardening, broader smoke coverage, saved scenario comparison, recent history, dashboard follow-ups, and personalization.
 - [x] Phase 17: Complete durable calculator save flows before deeper calculator expansion.
 - [x] Phase 20: Add code-level calculator quality/studio contracts while preserving every existing public route.
 - [x] Phase 20: Add baseline visual-read and decision-check UI to calculator detail pages.
@@ -466,7 +466,7 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - [x] Phase 21: Upgrade growth, goal, retirement, and return calculators with expandable optional schedule/detail tables for contribution/growth splits, goal funding paths, retirement corpus gaps, withdrawal runway, RMD distributions, Social Security break-even, inflation paths, and return/cashflow paths.
 - [x] Phase 22: Upgrade loan, debt, home, and vehicle calculators with complete payment-by-payment amortization tables, yearly rollups, custom period views, payoff calendars, prepayment sensitivity, break-even charts, and multi-debt strategy comparison.
 - [x] Phase 22: Add missing loan/mortgage calculators, including mortgage payoff, biweekly mortgage, recast, points/rate buydown, 15-vs-30, ARM, interest-only, balloon loan, closing costs, escrow, DTI, loan comparison, APR, home equity loan, FHA, VA, FHA-vs-conventional, India prepayment, India foreclosure, India balance transfer, flat-vs-reducing rate, India loan eligibility, and stamp duty/registration.
-- [ ] Phase 23: Upgrade income, tax, budget, and protection calculators with waterfalls, category/cashflow visuals, richer assumptions, and estimate disclaimers.
+- [x] Phase 23: Upgrade income, tax, budget, and protection calculators with waterfalls, category/cashflow visuals, richer assumptions, and estimate disclaimers.
 - [ ] Phase 24: Preserve search value by keeping stable URLs, self-canonicals, sitemap coverage, route-specific content, structured data, and public no-auth smoke coverage.
 - [ ] Phase 25: Add saved scenario comparison, recent calculator history, dashboard follow-up cards, and export/share options for schedules, payoff tables, deposit tables, withdrawal tables, and summaries.
 - [ ] Keep internal search/acquisition strategy out of user-facing copy.
@@ -550,6 +550,24 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - Live sitemap smoke: `sitemap.xml` includes `mortgage-payoff`, `home-loan-prepayment`, `debt-to-income`, and `fha-vs-conventional`.
 - Completion after implementation: comprehensive calculator program is 66% complete; 34% remains.
 - Remaining blockers: production Clerk setup is still the launch blocker; Phase 23 income/tax/budget/protection deepening, Phase 24 content/structured-data hardening, and Phase 25 personalization/history/follow-up loops remain.
+
+## Phase 23 Income, Tax, Budget, and Protection Deepening Completion Checkpoint
+
+- Completed: `src/lib/seoCalculators.ts` now uses richer route-specific engines for India old-vs-new income tax, US single-filer income-tax estimates, paycheck take-home, salary take-home, and Roth-vs-traditional IRA comparison instead of generic effective-rate shortcuts.
+- Completed: India income tax now shows simplified AY 2026-27 old/new regime slab estimates with deductions, rebate handling, 4% cess, old/new tax, lower-regime net income, and explicit planning-estimate assumptions.
+- Completed: US income tax now shows a simplified 2026 single-filer federal bracket estimate with the 2026 standard deduction and a clearly separated state/local placeholder rate.
+- Completed: paycheck and salary calculators now model pre-tax/post-tax deductions, withholding/payroll deductions, annual and recurring take-home, and taxable wages/pay.
+- Completed: `src/lib/calculatorStudios.ts` now builds collapsed-by-default detail tables for budget cashflow, emergency runway, life-insurance protection gap, India tax comparison, US bracket estimate, paycheck gross-to-net, salary gross-to-net, HRA, GST, TDS, capital gains, and Roth-vs-traditional routes.
+- Completed: the shared calculator detail UI already keeps these tables optional through collapsed glass panels, responsive table wrappers, period filters for long schedules, and CSV export where table data exists.
+- Completed: `src/lib/calculatorQuality.ts` codifies the new India tax, US tax, paycheck/salary, and Roth/traditional calculation and visual expectations.
+- Completed: `src/lib/seoCalculators.test.ts` locks the changed expected outputs and adds route-specific India/US tax assertions; `src/lib/calculatorStudios.test.ts` verifies Phase 23 schedule coverage plus old/new regime rows, US bracket rows, paycheck/salary recurring views, emergency runway, budget annual pace, and protection gap rows.
+- Tests before deploy: `npm run typecheck` passed; `npm test` passed with 682 frontend tests across 16 files; `npm run build` passed; `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 682 frontend tests, and production build.
+- Deploy: `npm run cf:deploy` deployed to `https://62099a61.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live HTTP smoke: `/`, `/calculators`, `/calculators/income-tax-india`, `/calculators/income-tax-us`, `/calculators/paycheck`, `/calculators/fire`, and `/transactions` returned `200`.
+- Live API smoke: unauthenticated `GET /api/calculator-results` returned `401 {"error":"Unauthorized"}`.
+- Live sitemap smoke: `sitemap.xml` includes `income-tax-india`, `income-tax-us`, `paycheck`, `life-insurance-needs`, and `calculators/fire`.
+- Completion after implementation: comprehensive calculator program is 80% complete; 20% remains.
+- Remaining blockers: production Clerk setup is still the launch blocker; Phase 24 content/structured-data hardening and Phase 25 personalization/history/follow-up loops remain.
 
 ## Phase 12-19 Verification Notes
 

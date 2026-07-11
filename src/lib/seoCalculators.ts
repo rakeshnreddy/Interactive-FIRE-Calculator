@@ -28,6 +28,7 @@ export type CalculatorFormula =
   | 'insurance'
   | 'interest-only-loan'
   | 'investment-return'
+  | 'india-tax'
   | 'loan'
   | 'loan-comparison'
   | 'loan-eligibility'
@@ -53,6 +54,8 @@ export type CalculatorFormula =
   | 'stamp-duty'
   | 'swp'
   | 'tax-rate'
+  | 'roth-traditional'
+  | 'us-tax'
   | 'va-loan'
   | 'xirr';
 
@@ -166,6 +169,7 @@ const conversionByFormula: Record<CalculatorFormula, Pick<SeoCalculator, 'conver
   insurance: { conversionLabel: 'Create protection goal', conversionRoute: '/goals' },
   'interest-only-loan': { conversionLabel: 'Compare loan plan', conversionRoute: '/plans' },
   'investment-return': { conversionLabel: 'Save as investment goal', conversionRoute: '/goals' },
+  'india-tax': { conversionLabel: 'Save tax planning note', conversionRoute: '/plans' },
   loan: { conversionLabel: 'Track this liability', conversionRoute: '/accounts' },
   'loan-comparison': { conversionLabel: 'Compare loan plan', conversionRoute: '/plans' },
   'loan-eligibility': { conversionLabel: 'Create affordability plan', conversionRoute: '/plans' },
@@ -191,6 +195,8 @@ const conversionByFormula: Record<CalculatorFormula, Pick<SeoCalculator, 'conver
   'stamp-duty': { conversionLabel: 'Create home plan', conversionRoute: '/plans' },
   swp: { conversionLabel: 'Save withdrawal plan', conversionRoute: '/plans' },
   'tax-rate': { conversionLabel: 'Save tax planning note', conversionRoute: '/plans' },
+  'roth-traditional': { conversionLabel: 'Save tax planning note', conversionRoute: '/plans' },
+  'us-tax': { conversionLabel: 'Save tax planning note', conversionRoute: '/plans' },
   'va-loan': { conversionLabel: 'Track this liability', conversionRoute: '/accounts' },
   xirr: { conversionLabel: 'Save investment goal', conversionRoute: '/goals' }
 };
@@ -356,8 +362,8 @@ export const seoCalculators: SeoCalculator[] = [
     ['home-loan-emi', 'Home Loan EMI Calculator', 'loan', [money('principal', 'Home loan amount', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Tenure', 20, 'yrs')]],
     ['car-loan-emi', 'Car Loan EMI Calculator', 'loan', [money('principal', 'Car loan amount', 1000000), percent('rate', 'Interest rate', 9.5), number('years', 'Tenure', 5, 'yrs')]],
     ['personal-loan-emi', 'Personal Loan EMI Calculator', 'loan', [money('principal', 'Personal loan amount', 500000), percent('rate', 'Interest rate', 13), number('years', 'Tenure', 5, 'yrs')]],
-    ['income-tax-india', 'Income Tax Calculator Old vs New Regime', 'tax-rate', [money('income', 'Taxable income', 1500000), percent('effectiveRate', 'Estimated effective tax rate', 18), money('deductions', 'Eligible deductions', 150000)]],
-    ['salary-india', 'Salary / Take-home Pay Calculator', 'salary', [money('income', 'Annual CTC', 2400000), percent('effectiveRate', 'Estimated tax and deductions', 22)]],
+    ['income-tax-india', 'Income Tax Calculator Old vs New Regime', 'india-tax', [money('income', 'Annual taxable income before deductions', 1500000), money('deductions', 'Old-regime deductions and exemptions', 150000)]],
+    ['salary-india', 'Salary / Take-home Pay Calculator', 'salary', [money('income', 'Annual CTC', 2400000), percent('effectiveRate', 'Estimated income tax rate', 12), percent('employeePfRate', 'Employee PF / payroll deduction rate', 5), money('professionalTax', 'Annual professional tax / other deductions', 2400)]],
     ['hra-exemption', 'HRA Exemption Calculator', 'hra', [money('salary', 'Basic salary', 1200000), money('hra', 'HRA received', 500000), money('rent', 'Annual rent paid', 600000), percent('metroPercent', 'Salary exemption cap', 50)]],
     ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000), ...termInputs]],
     ['rd', 'RD Calculator', 'rd', [money('monthly', 'Monthly deposit', 10000), ...termInputs]],
@@ -372,7 +378,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['loan-eligibility-india', 'Loan Eligibility Calculator India', 'loan-eligibility', [money('income', 'Monthly income', 150000), money('debts', 'Existing monthly obligations', 30000), percent('rate', 'Interest rate', 8.5), number('years', 'Tenure', 20, 'yrs'), percent('maxDti', 'Max EMI-to-income', 45)]],
     ['stamp-duty-registration', 'Stamp Duty and Registration Calculator', 'stamp-duty', [money('homePrice', 'Property value', 8000000), percent('rate', 'Stamp duty rate', 6), percent('registrationRate', 'Registration rate', 1)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
-    category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'tax-rate' || formula === 'salary' || formula === 'hra' ? 'Tax' : 'Investing',
+    category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'india-tax' || formula === 'salary' || formula === 'hra' ? 'Tax' : 'Investing',
     description: `${title} for a quick planning estimate you can turn into a goal, account, or plan.`,
     explanation: `${title} uses the inputs you provide to estimate the main outcome and show the supporting amount behind it.`,
     formula: formula as CalculatorFormula,
@@ -424,13 +430,13 @@ export const seoCalculators: SeoCalculator[] = [
     ['personal-loan', 'Personal Loan Calculator', 'loan', [money('principal', 'Personal loan amount', 15000), percent('rate', 'Interest rate', 11), number('years', 'Term', 4, 'yrs')]],
     ['student-loan-payoff', 'Student Loan Payoff Calculator', 'debt-payoff', [money('balance', 'Student loan balance', 45000), percent('rate', 'Interest rate', 6), money('payment', 'Monthly payment', 600)]],
     ['401k', '401(k) Calculator', 'compound', [money('principal', 'Current 401(k)', 50000), money('monthly', 'Monthly contribution', 900), ...termInputs]],
-    ['roth-vs-traditional-ira', 'Roth vs Traditional IRA Calculator', 'tax-rate', [money('income', 'Annual contribution', 7000), percent('effectiveRate', 'Expected tax rate spread', 22), money('deductions', 'Already taxed basis', 0)]],
-    ['paycheck', 'Paycheck Calculator', 'paycheck', [money('income', 'Gross pay per period', 5000), percent('effectiveRate', 'Taxes and deductions', 28), number('periods', 'Pay periods per year', 26)]],
-    ['income-tax-us', 'Income Tax Estimator', 'tax-rate', [money('income', 'Taxable income', 120000), percent('effectiveRate', 'Estimated effective tax rate', 24), money('deductions', 'Deductions / credits estimate', 15000)]],
+    ['roth-vs-traditional-ira', 'Roth vs Traditional IRA Calculator', 'roth-traditional', [money('income', 'Annual IRA contribution', 7000), percent('currentTaxRate', 'Current marginal tax rate', 22), percent('futureTaxRate', 'Retirement tax rate', 22), percent('rate', 'Annual return', 7), number('years', 'Years to retirement', 25, 'yrs')]],
+    ['paycheck', 'Paycheck Calculator', 'paycheck', [money('income', 'Gross pay per period', 5000), percent('effectiveRate', 'Estimated withholding rate', 22), number('periods', 'Pay periods per year', 26), money('preTaxDeductions', 'Pre-tax deductions per period', 250), money('postTaxDeductions', 'Post-tax deductions per period', 75)]],
+    ['income-tax-us', 'Income Tax Estimator', 'us-tax', [money('income', 'Annual gross income', 120000), money('deductions', 'Extra deductions beyond standard deduction', 0), percent('stateRate', 'State/local placeholder rate', 4)]],
     ['social-security-break-even', 'Social Security Break-even Calculator', 'social-security', [money('early', 'Early monthly benefit', 1800), money('full', 'Full monthly benefit', 2600), number('delayYears', 'Years delayed', 5, 'yrs')]],
     ['rmd', 'Required Minimum Distribution Calculator', 'rmd', [money('balance', 'Retirement account balance', 800000), number('divisor', 'IRS life expectancy divisor', 26.5)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
-    category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'tax-rate' || formula === 'paycheck' || formula === 'rmd' ? 'Tax' : 'Planning',
+    category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'us-tax' || formula === 'roth-traditional' || formula === 'paycheck' || formula === 'rmd' ? 'Tax' : 'Planning',
     description: `${title} for a quick planning estimate you can turn into a goal, account, or plan.`,
     explanation: `${title} uses the inputs you provide to estimate the main outcome and show the supporting amount behind it.`,
     formula: formula as CalculatorFormula,
@@ -834,20 +840,84 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
         metric('Estimated GST', get('principal') * get('rate') / 100, 'currency', 'warning'),
         metric('Pre-tax amount', get('principal'), 'currency')
       ]);
-    case 'tax-rate':
-    case 'capital-gains':
-    case 'paycheck':
+    case 'india-tax': {
+      const oldRegime = indiaOldRegimeTax(get('income'), get('deductions'));
+      const newRegime = indiaNewRegimeTax(get('income'));
+      const bestRegime = newRegime.totalTax <= oldRegime.totalTax ? newRegime : oldRegime;
+      return result('Estimated lower-regime net income', Math.max(0, get('income') - bestRegime.totalTax), 'Compares simplified old and new regime income-tax estimates and uses the lower tax outcome.', [
+        'Uses a simplified India individual under-60 estimate for assessment year 2026-27.',
+        'Old regime applies the deductions/exemptions input; new regime ignores that input.',
+        'Cess is modeled at 4% and surcharge, special rates, rebates edge cases, and employer-specific salary components are excluded.'
+      ], [
+        metric('Old regime tax estimate', oldRegime.totalTax, 'currency', 'warning'),
+        metric('New regime tax estimate', newRegime.totalTax, 'currency', 'warning'),
+        metric('Estimated tax saved', Math.abs(oldRegime.totalTax - newRegime.totalTax), 'currency', 'positive')
+      ]);
+    }
+    case 'us-tax': {
+      const estimate = usSingleFederalTaxEstimate(get('income'), get('deductions'), get('stateRate') / 100);
+      return result('Estimated after-tax income', estimate.netIncome ?? Math.max(0, get('income') - estimate.totalTax), 'Simplified US federal single-filer estimate with a state/local placeholder rate.', [
+        'Uses 2026 IRS single-filer federal brackets and the 2026 standard deduction.',
+        'State and local tax are modeled with the placeholder rate you provide.',
+        'Credits, payroll tax, AMT, itemization rules, filing statuses, and state-specific rules are excluded.'
+      ], [
+        metric('Estimated federal tax', estimate.federalTax ?? estimate.baseTax, 'currency', 'warning'),
+        metric('State/local placeholder tax', estimate.stateTax ?? 0, 'currency', 'warning'),
+        metric('Taxable income after deductions', estimate.taxableIncome, 'currency')
+      ]);
+    }
+    case 'paycheck': {
+      const annualGross = get('income') * get('periods');
+      const preTax = get('preTaxDeductions') * get('periods');
+      const postTax = get('postTaxDeductions') * get('periods');
+      const taxable = Math.max(0, annualGross - preTax);
+      const withholding = taxable * get('effectiveRate') / 100;
+      const annualTakeHome = Math.max(0, annualGross - preTax - withholding - postTax);
+      return result('Estimated annual take-home', annualTakeHome, 'Annualized paycheck estimate after pre-tax deductions, estimated withholding, and post-tax deductions.', [
+        'Withholding is modeled from the percentage you provide, not from Form W-4 tables.',
+        'Pre-tax deductions reduce taxable wages; post-tax deductions reduce take-home only.'
+      ], [
+        metric('Estimated take-home per paycheck', get('periods') > 0 ? annualTakeHome / get('periods') : 0, 'currency'),
+        metric('Estimated withholding', withholding, 'currency', 'warning'),
+        metric('Taxable wages', taxable, 'currency')
+      ]);
+    }
     case 'salary': {
+      const payrollDeductions = get('income') * get('employeePfRate') / 100 + get('professionalTax');
+      const taxable = Math.max(0, get('income') - payrollDeductions);
+      const incomeTax = taxable * get('effectiveRate') / 100;
+      const annualTakeHome = Math.max(0, get('income') - payrollDeductions - incomeTax);
+      return result('Estimated annual take-home', annualTakeHome, 'CTC-to-take-home estimate after payroll deductions and an estimated income-tax rate.', [
+        'This is a salary planning estimate, not payroll or filing advice.',
+        'Employee PF/payroll deductions and professional tax are modeled from the inputs you provide.'
+      ], [
+        metric('Estimated monthly take-home', annualTakeHome / 12, 'currency'),
+        metric('Payroll deductions', payrollDeductions, 'currency', 'warning'),
+        metric('Estimated income tax', incomeTax, 'currency', 'warning')
+      ]);
+    }
+    case 'roth-traditional': {
+      const futureValue = get('income') * (1 + get('rate') / 100) ** years;
+      const traditionalAfterTax = futureValue * (1 - get('futureTaxRate') / 100);
+      const currentTaxSavings = get('income') * get('currentTaxRate') / 100;
+      return result('Roth after-tax value', futureValue, 'Compares a Roth contribution with the after-tax value of the same traditional IRA contribution.', [
+        'Contribution limits, eligibility, required distributions, and state tax are excluded.',
+        'Traditional value is reduced by the retirement tax rate you provide.',
+        'Current traditional tax savings are shown separately instead of assumed reinvested.'
+      ], [
+        metric('Traditional after-tax value', traditionalAfterTax, 'currency'),
+        metric('Roth minus traditional', futureValue - traditionalAfterTax, 'currency', futureValue >= traditionalAfterTax ? 'positive' : 'warning'),
+        metric('Current traditional tax savings', currentTaxSavings, 'currency')
+      ]);
+    }
+    case 'tax-rate':
+    case 'capital-gains': {
       const base = Math.max(0, get('income') || get('gain') || get('principal'));
       const deductions = get('deductions');
-      const taxable = calculator.formula === 'paycheck'
-        ? Math.max(0, base * get('periods') - deductions)
-        : Math.max(0, base - deductions);
+      const taxable = Math.max(0, base - deductions);
       const tax = taxable * (get('effectiveRate') || get('rate')) / 100;
-      const net = calculator.formula === 'paycheck'
-        ? base * get('periods') - tax
-        : base - tax;
-      return result(calculator.formula === 'paycheck' ? 'Estimated annual take-home' : 'Estimated net amount', net, 'Estimated using the rate you provide, not statutory tax tables.', [
+      const net = base - tax;
+      return result('Estimated net amount', net, 'Estimated using the rate you provide, not statutory tax tables.', [
         'Tax calculators are planning estimates, not filing advice.',
         'Use your effective rate or confirm details with a tax professional.'
       ], [
@@ -1061,6 +1131,110 @@ function loanPayment(principal: number, annualRate: number, years: number): numb
   return monthlyRate === 0
     ? principal / months
     : principal * monthlyRate / (1 - (1 + monthlyRate) ** -months);
+}
+
+type ProgressiveBracket = {
+  rate: number;
+  upTo: number;
+};
+
+type TaxEstimate = {
+  baseTax: number;
+  cess?: number;
+  federalTax?: number;
+  netIncome?: number;
+  stateTax?: number;
+  taxableIncome: number;
+  totalTax: number;
+};
+
+const indiaOldRegimeBrackets: ProgressiveBracket[] = [
+  { rate: 0, upTo: 250_000 },
+  { rate: 0.05, upTo: 500_000 },
+  { rate: 0.2, upTo: 1_000_000 },
+  { rate: 0.3, upTo: Number.POSITIVE_INFINITY }
+];
+
+const indiaNewRegimeBrackets: ProgressiveBracket[] = [
+  { rate: 0, upTo: 400_000 },
+  { rate: 0.05, upTo: 800_000 },
+  { rate: 0.1, upTo: 1_200_000 },
+  { rate: 0.15, upTo: 1_600_000 },
+  { rate: 0.2, upTo: 2_000_000 },
+  { rate: 0.25, upTo: 2_400_000 },
+  { rate: 0.3, upTo: Number.POSITIVE_INFINITY }
+];
+
+const usSingle2026Brackets: ProgressiveBracket[] = [
+  { rate: 0.1, upTo: 12_400 },
+  { rate: 0.12, upTo: 50_400 },
+  { rate: 0.22, upTo: 105_700 },
+  { rate: 0.24, upTo: 201_775 },
+  { rate: 0.32, upTo: 256_225 },
+  { rate: 0.35, upTo: 640_600 },
+  { rate: 0.37, upTo: Number.POSITIVE_INFINITY }
+];
+
+const usSingle2026StandardDeduction = 16_100;
+
+function indiaOldRegimeTax(income: number, deductions: number): TaxEstimate {
+  const taxableIncome = Math.max(0, income - Math.max(0, deductions));
+  const baseTaxBeforeRebate = progressiveTax(taxableIncome, indiaOldRegimeBrackets);
+  const baseTax = taxableIncome <= 500_000 ? Math.max(0, baseTaxBeforeRebate - 12_500) : baseTaxBeforeRebate;
+  const cess = baseTax * 0.04;
+
+  return {
+    baseTax,
+    cess,
+    taxableIncome,
+    totalTax: baseTax + cess
+  };
+}
+
+function indiaNewRegimeTax(income: number): TaxEstimate {
+  const taxableIncome = Math.max(0, income);
+  const baseTaxBeforeRebate = progressiveTax(taxableIncome, indiaNewRegimeBrackets);
+  const baseTax = taxableIncome <= 1_200_000 ? 0 : baseTaxBeforeRebate;
+  const cess = baseTax * 0.04;
+
+  return {
+    baseTax,
+    cess,
+    taxableIncome,
+    totalTax: baseTax + cess
+  };
+}
+
+function usSingleFederalTaxEstimate(income: number, extraDeductions: number, stateRate: number): TaxEstimate {
+  const grossIncome = Math.max(0, income);
+  const taxableIncome = Math.max(0, grossIncome - usSingle2026StandardDeduction - Math.max(0, extraDeductions));
+  const federalTax = progressiveTax(taxableIncome, usSingle2026Brackets);
+  const stateTax = grossIncome * Math.max(0, stateRate);
+  const totalTax = federalTax + stateTax;
+
+  return {
+    baseTax: federalTax,
+    federalTax,
+    netIncome: Math.max(0, grossIncome - totalTax),
+    stateTax,
+    taxableIncome,
+    totalTax
+  };
+}
+
+function progressiveTax(taxableIncome: number, brackets: ProgressiveBracket[]): number {
+  let lowerBound = 0;
+  let tax = 0;
+
+  for (const bracket of brackets) {
+    const amountInBracket = Math.max(0, Math.min(taxableIncome, bracket.upTo) - lowerBound);
+    tax += amountInBracket * bracket.rate;
+    lowerBound = bracket.upTo;
+
+    if (taxableIncome <= bracket.upTo) break;
+  }
+
+  return tax;
 }
 
 function presentValueFromPayment(payment: number, annualRate: number, years: number): number {

@@ -27,8 +27,8 @@ const expectedOutputs = [
   ['home-loan-emi', 'Monthly payment', 52_069.394002, 'currency', 'INR'],
   ['car-loan-emi', 'Monthly payment', 21_001.86131, 'currency', 'INR'],
   ['personal-loan-emi', 'Monthly payment', 11_376.536522, 'currency', 'INR'],
-  ['income-tax-india', 'Estimated net amount', 1_257_000, 'currency', 'INR'],
-  ['salary-india', 'Estimated net amount', 1_872_000, 'currency', 'INR'],
+  ['income-tax-india', 'Estimated lower-regime net income', 1_390_800, 'currency', 'INR'],
+  ['salary-india', 'Estimated annual take-home', 2_004_288, 'currency', 'INR'],
   ['hra-exemption', 'Estimated HRA exemption', 480_000, 'currency', 'INR'],
   ['fd', 'Maturity value', 1_079_462.498636, 'currency', 'INR'],
   ['rd', 'Maturity value', 1_829_460.351817, 'currency', 'INR'],
@@ -71,9 +71,9 @@ const expectedOutputs = [
   ['personal-loan', 'Monthly payment', 387.682839, 'currency', 'USD'],
   ['student-loan-payoff', 'Payoff time', 7.916667, 'years', 'USD'],
   ['401k', 'Projected value', 275_633.443391, 'currency', 'USD'],
-  ['roth-vs-traditional-ira', 'Estimated net amount', 5_460, 'currency', 'USD'],
-  ['paycheck', 'Estimated annual take-home', 93_600, 'currency', 'USD'],
-  ['income-tax-us', 'Estimated net amount', 94_800, 'currency', 'USD'],
+  ['roth-vs-traditional-ira', 'Roth after-tax value', 37_992.028481, 'currency', 'USD'],
+  ['paycheck', 'Estimated annual take-home', 94_380, 'currency', 'USD'],
+  ['income-tax-us', 'Estimated after-tax income', 97_630, 'currency', 'USD'],
   ['social-security-break-even', 'Break-even years after delaying', 11.25, 'years', 'USD'],
   ['rmd', 'Estimated RMD', 30_188.679245, 'currency', 'USD'],
   ['cagr', 'Annualized return', 0.124746, 'percent', 'USD'],
@@ -213,7 +213,32 @@ describe('calculateSeoCalculator', () => {
     });
 
     expect(result.metrics[0].value).toBe(78_000);
-    expect(result.metrics.find((metric) => metric.label === 'Estimated tax')?.value).toBe(26_000);
+    expect(result.metrics.find((metric) => metric.label === 'Estimated withholding')?.value).toBe(26_000);
+  });
+
+  it('compares India old and new regime estimates from slab assumptions', () => {
+    const calculator = getCalculator('income-tax-india');
+    const result = calculateSeoCalculator(calculator, {
+      deductions: 150_000,
+      income: 1_500_000
+    });
+
+    expect(result.metrics[0]).toMatchObject({ label: 'Estimated lower-regime net income', value: 1_390_800 });
+    expect(result.metrics.find((metric) => metric.label === 'Old regime tax estimate')?.value).toBe(226_200);
+    expect(result.metrics.find((metric) => metric.label === 'New regime tax estimate')?.value).toBe(109_200);
+  });
+
+  it('uses US 2026 single-filer brackets before the state placeholder', () => {
+    const calculator = getCalculator('income-tax-us');
+    const result = calculateSeoCalculator(calculator, {
+      deductions: 0,
+      income: 120_000,
+      stateRate: 4
+    });
+
+    expect(result.metrics[0]).toMatchObject({ label: 'Estimated after-tax income', value: 97_630 });
+    expect(result.metrics.find((metric) => metric.label === 'Estimated federal tax')?.value).toBe(17_570);
+    expect(result.metrics.find((metric) => metric.label === 'State/local placeholder tax')?.value).toBe(4_800);
   });
 
   it('uses the payment input when comparing balance transfers', () => {

@@ -69,7 +69,7 @@ Current checkpoint:
 - Phase 20 adds reusable decision-studio metadata, conservative/base/optimistic scenario state, chart-ready primitives, route-specific examples, related-calculator navigation, and public-copy guard tests for every current route.
 - Phase 21 adds expandable optional growth, goal, retirement, withdrawal, distribution, benefit, inflation, and return tables.
 - Phase 22 adds borrowing-route expansion, complete optional amortization/payoff/refinance/prepayment/detail tables, custom period views, CSV schedule export, and true multi-debt snowball vs avalanche comparison.
-- This raises the comprehensive calculator program to 66% complete. It does not complete income/tax/budget/protection deepening, content hardening, broader smoke coverage, saved scenario comparison, recent history, dashboard follow-ups, or personalization; 34% remains.
+- This raises the comprehensive calculator program to 80% complete. It does not complete content hardening, broader smoke coverage, saved scenario comparison, recent history, dashboard follow-ups, or personalization; 20% remains.
 
 ## Shared Decision Studios
 
@@ -137,11 +137,14 @@ Status: complete for preview/development.
 
 ### Phase 23: Income, Tax, Budget, and Protection Deepening
 
+Status: complete for preview/development.
+
 - Upgrade budget, paycheck, salary, and tax calculators with waterfall views and monthly cashflow mapping.
 - Add India tax old/new regime slab logic and assumptions.
-- Add US tax/paycheck filing status, pay frequency, deductions, and state placeholder architecture.
+- Add US tax/paycheck pay frequency, deductions, standard deduction, bracket logic, and state placeholder architecture.
 - Add HRA, GST, TDS, capital gains, Roth/traditional, and RMD calculators as estimate tools with clear assumptions and saved tax-plan notes.
 - Upgrade life insurance and emergency fund calculators with protection gap, runway, and priority recommendations.
+- Keep statutory calculators clearly labeled as planning estimates, not filing advice.
 
 ### Phase 24: Search Preservation and Content Quality Hardening
 

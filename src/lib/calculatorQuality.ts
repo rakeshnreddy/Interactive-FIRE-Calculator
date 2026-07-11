@@ -423,10 +423,42 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
       'Monthly cost waterfall.'
     ]
   },
+  'india-tax': {
+    calculationRequirements: [
+      'Compare simplified old and new regime estimates with deductions, slab tax, cess, and lower-regime outcome visible.',
+      'Label the assessment-year assumptions and excluded surcharge, special-rate, and filing-specific cases.'
+    ],
+    visualRequirements: [
+      'Old versus new regime comparison table.',
+      'Taxable income, base tax, cess, total tax, and net income by regime.',
+      'Savings from the lower-tax regime.'
+    ]
+  },
+  'roth-traditional': {
+    calculationRequirements: [
+      'Compare Roth future value with traditional after-tax value using current tax rate, future tax rate, return, and time.',
+      'Show current traditional tax savings separately instead of assuming reinvestment.'
+    ],
+    visualRequirements: [
+      'Roth versus traditional after-tax value comparison.',
+      'Tax savings and future tax drag breakdown.'
+    ]
+  },
   'tax-rate': {
     calculationRequirements: [
       'Separate deductions, taxable base, estimated tax, and net amount.',
       'Replace effective-rate shortcuts with route-specific slab or bracket logic when comprehensive tax phases are implemented.'
+    ]
+  },
+  'us-tax': {
+    calculationRequirements: [
+      'Calculate federal tax from a documented bracket table and standard deduction before applying any placeholder state/local tax.',
+      'Keep filing status, payroll tax, credits, and state-specific limitations explicit until richer controls are added.'
+    ],
+    visualRequirements: [
+      'Federal bracket table.',
+      'Standard deduction and taxable income breakdown.',
+      'Federal versus state/local placeholder split.'
     ]
   },
   xirr: {
@@ -604,7 +636,7 @@ function studioForFormula(formula: CalculatorFormula): CalculatorStudio {
     return 'Debt Payoff Studio';
   }
 
-  if (formula === 'tax-rate' || formula === 'capital-gains' || formula === 'gst' || formula === 'hra' || formula === 'paycheck' || formula === 'salary') {
+  if (formula === 'tax-rate' || formula === 'capital-gains' || formula === 'gst' || formula === 'hra' || formula === 'india-tax' || formula === 'paycheck' || formula === 'roth-traditional' || formula === 'salary' || formula === 'us-tax') {
     return 'Income and Tax Studio';
   }
 
