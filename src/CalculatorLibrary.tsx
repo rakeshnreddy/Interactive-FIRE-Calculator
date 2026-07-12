@@ -65,6 +65,8 @@ import {
   type SeoCalculator
 } from './lib/seoCalculators';
 
+const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment']);
+
 export type CalculatorSaveRequest = {
   calculator: SeoCalculator;
   currency: 'INR' | 'USD';
@@ -401,6 +403,38 @@ function CalculatorDetail({
     }));
   };
 
+  const standardInputs = calculator.inputs.filter((input) => !optionalCalculatorInputKeys.has(input.key));
+  const optionalInputs = calculator.inputs.filter((input) => optionalCalculatorInputKeys.has(input.key));
+  const renderInput = (input: SeoCalculator['inputs'][number]) => (
+    <label className="field" key={input.key}>
+      <span className="calculator-field-label">
+        <span>{input.label}</span>
+        <span
+          className="calculator-help-dot"
+          title={input.helper}
+          aria-label={`${input.label}: ${input.helper}`}
+          tabIndex={0}
+        >
+          <CircleHelp size={14} />
+        </span>
+      </span>
+      <div className="calculator-input-control">
+        {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
+        <input
+          type="number"
+          min={input.min}
+          max={input.max}
+          step={input.type === 'percent' ? '0.01' : '1'}
+          value={values[input.key] ?? 0}
+          onChange={(event) => setValue(input.key, event.target.value)}
+        />
+        {input.type === 'percent' ? <small>%</small> : null}
+        {input.suffix ? <small>{input.suffix}</small> : null}
+      </div>
+      {input.helper ? <small>{input.helper}</small> : null}
+    </label>
+  );
+
   const persistSignedOutDraft = () => {
     writeCalculatorDraft({
       result,
@@ -509,36 +543,22 @@ function CalculatorDetail({
             </div>
           </div>
           <div className="calculator-input-grid">
-            {calculator.inputs.map((input) => (
-              <label className="field" key={input.key}>
-                <span className="calculator-field-label">
-                  <span>{input.label}</span>
-                  <span
-                    className="calculator-help-dot"
-                    title={input.helper}
-                    aria-label={`${input.label}: ${input.helper}`}
-                    tabIndex={0}
-                  >
-                    <CircleHelp size={14} />
-                  </span>
-                </span>
-                <div className="calculator-input-control">
-                  {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
-                  <input
-                    type="number"
-                    min={input.min}
-                    max={input.max}
-                    step={input.type === 'percent' ? '0.01' : '1'}
-                    value={values[input.key] ?? 0}
-                    onChange={(event) => setValue(input.key, event.target.value)}
-                  />
-                  {input.type === 'percent' ? <small>%</small> : null}
-                  {input.suffix ? <small>{input.suffix}</small> : null}
-                </div>
-                {input.helper ? <small>{input.helper}</small> : null}
-              </label>
-            ))}
+            {standardInputs.map(renderInput)}
           </div>
+          {optionalInputs.length > 0 ? (
+            <details className="calculator-options-shell">
+              <summary>
+                <span>
+                  <strong>{optionalInputs.some((input) => input.key.startsWith('extra')) ? 'Additional payments' : 'Additional contributions'}</strong>
+                  <small>Optional. Defaults to zero.</small>
+                </span>
+                <ChevronDown size={17} />
+              </summary>
+              <div className="calculator-input-grid calculator-options-grid">
+                {optionalInputs.map(renderInput)}
+              </div>
+            </details>
+          ) : null}
           <CalculatorScenarioPanel
             scenarios={scenarios}
             selectedScenarioId={selectedScenarioId}

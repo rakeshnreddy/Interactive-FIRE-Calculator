@@ -574,6 +574,8 @@ function amortizationChart(
   const rate = Math.max(0, firstFinite(values, ['rate', 'currentRate', 'newRate']) ?? 0) / 100;
   const months = Math.max(1, Math.round(years * 12));
   const payment = loanPayment(principal, rate, years);
+  const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
+  const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
   const selectedMonths = Array.from(new Set([0, Math.round(months * 0.25), Math.round(months * 0.5), Math.round(months * 0.75), months]));
   let balance = principal;
   let cumulativeInterest = 0;
@@ -581,8 +583,9 @@ function amortizationChart(
 
   for (let month = 1; month <= months; month += 1) {
     const monthlyInterest = balance * rate / 12;
+    const paymentThisMonth = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
     cumulativeInterest += monthlyInterest;
-    balance = Math.max(0, balance + monthlyInterest - payment);
+    balance = Math.max(0, balance + monthlyInterest - paymentThisMonth);
 
     if (selectedMonths.includes(month)) {
       monthRows.set(month, { balance, interest: cumulativeInterest });
@@ -684,11 +687,13 @@ function loanAmortizationSchedule(calculator: SeoCalculator, values: Record<stri
   const years = Math.max(1, values.years ?? 1);
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const payment = loanPayment(principal, rate, years);
-  const rows = amortizationRows(principal, rate, years, payment);
+  const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
+  const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
+  const rows = amortizationRows(principal, rate, years, payment, undefined, extraMonthlyPayment, extraAnnualPayment);
 
   return {
     columns: amortizationColumns(),
-    description: 'Expandable month-by-month payment schedule with principal, interest, ending balance, and cumulative interest.',
+    description: 'Expandable month-by-month payment schedule with required and additional payments, principal, interest, ending balance, and cumulative interest.',
     rows,
     summary: monthlyScheduleCapSummary(years, `Shows ${rows.length} payment rows with the year noted on each row so monthly and yearly payment patterns are visible together.`),
     title: 'Monthly amortization schedule'
@@ -862,6 +867,8 @@ function closingCostSchedule(_calculator: SeoCalculator, values: Record<string, 
 function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const balance = Math.max(0, values.balance ?? 0);
   const payment = Math.max(0, values.payment ?? 0);
+  const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
+  const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
   const monthlyRate = Math.max(0, values.rate ?? 0) / 100 / 12;
   let currentBalance = balance;
   let cumulativeInterest = 0;
@@ -871,14 +878,21 @@ function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, n
 
   for (let month = 1; month <= maxMonthlyScheduleMonths && currentBalance > 0; month += 1) {
     const interest = currentBalance * monthlyRate;
-    const actualPayment = Math.min(payment, currentBalance + interest);
+    const plannedPayment = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
+    const actualPayment = Math.min(plannedPayment, currentBalance + interest);
     const principalPaid = Math.max(0, actualPayment - interest);
     cumulativeInterest += interest;
     currentBalance = Math.max(0, currentBalance + interest - actualPayment);
 
     rows.push({
       id: `debt-month-${month}`,
-      note: principalPaid <= 0 ? 'Payment does not reduce principal' : month % 12 === 0 || currentBalance === 0 ? `Year ${Math.ceil(month / 12)} close` : undefined,
+      note: principalPaid <= 0
+        ? 'Payment does not reduce principal'
+        : currentBalance === 0
+          ? 'Final payment'
+          : month % 12 === 0
+            ? extraAnnualPayment > 0 ? `Year ${Math.ceil(month / 12)} close; yearly extra applied` : `Year ${Math.ceil(month / 12)} close`
+            : undefined,
       values: {
         cumulativeInterest,
         endingBalance: currentBalance,
@@ -890,7 +904,7 @@ function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, n
       }
     });
 
-    if (principalPaid <= 0) break;
+    if (principalPaid <= 0 && extraAnnualPayment <= 0) break;
   }
 
   return {
@@ -903,7 +917,7 @@ function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, n
       moneyColumn('endingBalance', 'Ending balance'),
       moneyColumn('cumulativeInterest', 'Cumulative interest')
     ],
-    description: 'Payoff schedule showing how each payment is split between interest and principal.',
+    description: 'Payoff schedule showing how required, monthly extra, and yearly extra payments are split between interest and principal.',
     rows,
     summary: monthlyScheduleCapSummary(rows.length / 12, 'Shows the payoff path and flags when the payment is not enough to reduce principal.'),
     title: 'Debt payoff schedule'
@@ -1263,6 +1277,8 @@ function loanPrepaymentSchedule(_calculator: SeoCalculator, values: Record<strin
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const years = Math.max(1, values.years ?? 1);
   const payment = loanPayment(principal, rate, years);
+  const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
+  const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
   let originalBalance = principal;
   let prepayBalance = Math.max(0, principal - prepayment);
   let originalInterest = 0;
@@ -1271,7 +1287,8 @@ function loanPrepaymentSchedule(_calculator: SeoCalculator, values: Record<strin
 
   for (let month = 1; month <= maxMonthlyScheduleMonths && (originalBalance > 0 || prepayBalance > 0); month += 1) {
     const original = stepAmortizingBalance(originalBalance, rate, payment);
-    const accelerated = stepAmortizingBalance(prepayBalance, rate, payment);
+    const acceleratedPayment = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
+    const accelerated = stepAmortizingBalance(prepayBalance, rate, acceleratedPayment);
     originalBalance = original.balance;
     prepayBalance = accelerated.balance;
     originalInterest += original.interest;
@@ -1298,7 +1315,7 @@ function loanPrepaymentSchedule(_calculator: SeoCalculator, values: Record<strin
       moneyColumn('prepayBalance', 'After prepayment balance'),
       moneyColumn('interestSaved', 'Interest saved')
     ],
-    description: 'Compares the original balance path with the balance after applying the prepayment immediately.',
+    description: 'Compares the original balance path with an accelerated path that applies the immediate prepayment plus optional monthly and yearly additional payments.',
     rows,
     summary: 'The schedule shows when the prepayment path reaches zero and how interest savings accumulate.',
     title: 'Prepayment payoff comparison'
@@ -1312,8 +1329,10 @@ function mortgageRecastSchedule(_calculator: SeoCalculator, values: Record<strin
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const oldPayment = loanPayment(principal, rate, years);
   const newPayment = loanPayment(recastBalance, rate, years);
+  const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
+  const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
   const originalRows = amortizationRows(principal, rate, years, oldPayment);
-  const recastRows = amortizationRows(recastBalance, rate, years, newPayment);
+  const recastRows = amortizationRows(recastBalance, rate, years, newPayment, undefined, extraMonthlyPayment, extraAnnualPayment);
   const rowCount = Math.max(originalRows.length, recastRows.length);
 
   return {
@@ -1325,7 +1344,7 @@ function mortgageRecastSchedule(_calculator: SeoCalculator, values: Record<strin
       moneyColumn('newBalance', 'Recast balance path'),
       moneyColumn('paymentSavings', 'Payment savings')
     ],
-    description: 'Month-by-month comparison of the current payment path and the recast payment path.',
+    description: 'Month-by-month comparison of the current payment path and the recast path with optional additional payments.',
     rows: Array.from({ length: rowCount }, (_, index) => ({
       id: `recast-${index + 1}`,
       values: {
@@ -1790,6 +1809,7 @@ function recurringGrowthSchedule(
   let balance = startingBalance;
   let monthlyAmount = Math.max(0, values[options.recurringKey] ?? 0);
   const stepUp = Math.max(0, values[options.stepUpKey ?? ''] ?? 0) / 100;
+  const annualTopUp = Math.max(0, values.annualTopUp ?? 0);
   let annualDeposits = 0;
   let annualGrowth = 0;
   let cumulativeDeposits = startingBalance;
@@ -1805,6 +1825,12 @@ function recurringGrowthSchedule(
     annualGrowth += growth;
     annualDeposits += monthlyAmount;
     cumulativeDeposits += monthlyAmount;
+
+    if (month % 12 === 0) {
+      balance += annualTopUp;
+      annualDeposits += annualTopUp;
+      cumulativeDeposits += annualTopUp;
+    }
 
     if (month % 12 === 0 || month === months) {
       const year = Math.ceil(month / 12);
@@ -1972,9 +1998,11 @@ function epfSchedule(_calculator: SeoCalculator, values: Record<string, number>)
   const years = scheduleYears(values.years ?? 0);
   const months = Math.max(1, years * 12);
   const monthlyRate = rate / 12;
+  const annualTopUp = Math.max(0, values.annualTopUp ?? 0);
   let balance = 0;
   let annualEmployee = 0;
   let annualEmployer = 0;
+  let yearlyTopUp = 0;
   let annualGrowth = 0;
   const rows: CalculatorDetailScheduleRow[] = [];
 
@@ -1986,6 +2014,11 @@ function epfSchedule(_calculator: SeoCalculator, values: Record<string, number>)
     annualEmployer += employer;
     annualGrowth += growth;
 
+    if (month % 12 === 0) {
+      balance += annualTopUp;
+      yearlyTopUp += annualTopUp;
+    }
+
     if (month % 12 === 0 || month === months) {
       const year = Math.ceil(month / 12);
       rows.push({
@@ -1995,12 +2028,14 @@ function epfSchedule(_calculator: SeoCalculator, values: Record<string, number>)
           employee: annualEmployee,
           employer: annualEmployer,
           growth: annualGrowth,
+          topUp: yearlyTopUp,
           year
         }
       });
       annualEmployee = 0;
       annualEmployer = 0;
       annualGrowth = 0;
+      yearlyTopUp = 0;
     }
   }
 
@@ -2009,6 +2044,7 @@ function epfSchedule(_calculator: SeoCalculator, values: Record<string, number>)
       textColumn('year', 'Year'),
       moneyColumn('employee', 'Employee'),
       moneyColumn('employer', 'Employer'),
+      moneyColumn('topUp', 'Yearly top-up'),
       moneyColumn('growth', 'Estimated growth'),
       moneyColumn('balance', 'Projected corpus')
     ],
@@ -2118,6 +2154,7 @@ function retirementSchedule(
   const savingYears = scheduleYears(rawSavingYears);
   const currentSavings = Math.max(0, values.currentSavings ?? 0);
   const monthly = Math.max(0, values.monthly ?? 0);
+  const annualTopUp = Math.max(0, values.annualTopUp ?? 0);
   const annualRate = Math.max(0, values.rate ?? 0) / 100;
   const monthlyRate = annualRate / 12;
   const needed = result.metrics.find((metric) => metric.label === 'Estimated need')?.value ?? 0;
@@ -2169,10 +2206,11 @@ function retirementSchedule(
 
       for (let month = (year - 1) * 12 + 1; month <= monthsElapsed; month += 1) {
         contributionBalance = contributionBalance * (1 + monthlyRate) + monthly;
+        if (month % 12 === 0) contributionBalance += annualTopUp;
       }
 
       const balance = currentSavingsComponent + contributionBalance;
-      const deposits = monthly * 12;
+      const deposits = monthly * 12 + annualTopUp;
       const growth =
         (currentSavingsComponent - previousCurrentSavingsComponent) +
         (contributionBalance - previousContributionBalance - deposits);
@@ -2527,7 +2565,9 @@ function amortizationRows(
   annualRate: number,
   years: number,
   payment: number,
-  forcedMonthCap?: number
+  forcedMonthCap?: number,
+  extraMonthlyPayment = 0,
+  extraAnnualPayment = 0
 ): CalculatorDetailScheduleRow[] {
   const months = Math.max(1, Math.min(forcedMonthCap ?? maxMonthlyScheduleMonths, Math.round(years * 12), maxMonthlyScheduleMonths));
   let balance = Math.max(0, principal);
@@ -2535,13 +2575,19 @@ function amortizationRows(
   const rows: CalculatorDetailScheduleRow[] = [];
 
   for (let month = 1; month <= months && balance > 0; month += 1) {
-    const step = stepAmortizingBalance(balance, annualRate, payment);
+    const paymentThisMonth = payment + Math.max(0, extraMonthlyPayment)
+      + (month % 12 === 0 ? Math.max(0, extraAnnualPayment) : 0);
+    const step = stepAmortizingBalance(balance, annualRate, paymentThisMonth);
     balance = step.balance;
     cumulativeInterest += step.interest;
 
     rows.push({
       id: `amortization-${month}`,
-      note: balance === 0 ? 'Final payment' : month % 12 === 0 ? `Year ${Math.ceil(month / 12)} close` : undefined,
+      note: balance === 0
+        ? 'Final payment'
+        : month % 12 === 0
+          ? extraAnnualPayment > 0 ? `Year ${Math.ceil(month / 12)} close; yearly extra applied` : `Year ${Math.ceil(month / 12)} close`
+          : undefined,
       values: {
         cumulativeInterest,
         endingBalance: balance,

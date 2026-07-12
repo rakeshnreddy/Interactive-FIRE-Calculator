@@ -271,6 +271,38 @@ describe('calculator decision studios', () => {
     expect(Number(schedule?.rows.at(-1)?.values.endingBalance)).toBeCloseTo(0, 2);
   });
 
+  it('amortization schedule applies monthly and yearly extras and ends sooner', () => {
+    const calculator = calculatorBySlug('amortization');
+    const defaults = defaultValues(calculator);
+    const baseline = buildCalculatorDetailSchedule(calculator, defaults);
+    const accelerated = buildCalculatorDetailSchedule(calculator, {
+      ...defaults,
+      extraAnnualPayment: 2_000,
+      extraMonthlyPayment: 250
+    });
+
+    expect(accelerated?.rows.length).toBeLessThan(baseline!.rows.length);
+    expect(Number(accelerated?.rows[0].values.payment)).toBeGreaterThan(Number(baseline?.rows[0].values.payment));
+    expect(Number(accelerated?.rows[11].values.payment)).toBeGreaterThan(Number(accelerated?.rows[10].values.payment));
+    expect(accelerated?.rows[11].note).toMatch(/yearly extra applied/i);
+    expect(Number(accelerated?.rows.at(-1)?.values.endingBalance)).toBeCloseTo(0, 2);
+  });
+
+  it('debt payoff schedule reconciles required and optional additional payments', () => {
+    const calculator = calculatorBySlug('credit-card-payoff');
+    const defaults = defaultValues(calculator);
+    const baseline = buildCalculatorDetailSchedule(calculator, defaults);
+    const accelerated = buildCalculatorDetailSchedule(calculator, {
+      ...defaults,
+      extraAnnualPayment: 500,
+      extraMonthlyPayment: 50
+    });
+
+    expect(accelerated?.rows.length).toBeLessThan(baseline!.rows.length);
+    expect(Number(accelerated?.rows[0].values.payment)).toBeCloseTo(defaults.payment + 50, 2);
+    expect(Number(accelerated?.rows[11].values.payment)).toBeCloseTo(defaults.payment + 50 + 500, 2);
+  });
+
   it('refinance schedules expose the break-even month and net savings after costs', () => {
     const calculator = calculatorBySlug('mortgage-refinance');
     const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
@@ -293,6 +325,32 @@ describe('calculator decision studios', () => {
     ]);
     expect(Number(schedule?.rows[0].values.prepayBalance)).toBeLessThan(Number(schedule?.rows[0].values.originalBalance));
     expect(Number(schedule?.rows.at(-1)?.values.interestSaved)).toBeGreaterThan(0);
+  });
+
+  it('prepayment schedule includes recurring extras in the accelerated path', () => {
+    const calculator = calculatorBySlug('home-loan-prepayment');
+    const defaults = defaultValues(calculator);
+    const baseline = buildCalculatorDetailSchedule(calculator, defaults);
+    const accelerated = buildCalculatorDetailSchedule(calculator, {
+      ...defaults,
+      extraAnnualPayment: 100_000,
+      extraMonthlyPayment: 10_000
+    });
+
+    const baselinePayoffRow = baseline?.rows.findIndex((row) => Number(row.values.prepayBalance) === 0) ?? -1;
+    const acceleratedPayoffRow = accelerated?.rows.findIndex((row) => Number(row.values.prepayBalance) === 0) ?? -1;
+    expect(acceleratedPayoffRow).toBeGreaterThanOrEqual(0);
+    expect(acceleratedPayoffRow).toBeLessThan(baselinePayoffRow);
+  });
+
+  it('yearly investment top-ups reconcile with detailed growth schedules', () => {
+    const calculator = calculatorBySlug('compound-interest');
+    const values: Record<string, number> = { ...defaultValues(calculator), annualTopUp: 2_000 };
+    const result = calculateSeoCalculator(calculator, values);
+    const schedule = buildCalculatorDetailSchedule(calculator, values, result);
+
+    expect(Number(schedule?.rows.at(-1)?.values.balance)).toBeCloseTo(result.metrics[0].value, 3);
+    expect(Number(schedule?.rows[0].values.deposits)).toBeCloseTo(values.monthly * 12 + values.annualTopUp, 3);
   });
 
   it.each([

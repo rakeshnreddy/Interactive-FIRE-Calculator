@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://8fb17051.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://baadb7c6.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -641,6 +641,20 @@ Per-calculator high-standard contract: `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTA
 - `npm run cf:deploy` deployed Phase 19 to `https://afdbe589.interactive-fire-calculator.pages.dev`.
 - Live browser smoke passed for `/`, `/calculators`, `/calculators/sip`, `/calculators/mortgage`, `/calculators/fire`, and signed-out `/transactions` at mobile width with no console errors or horizontal overflow.
 - Live API smoke returned unauthenticated `401` for `GET /api/imports/transactions`, `POST /api/imports/transactions/preview`, and `POST /api/imports/transactions/commit`.
+
+## Post-Phase-25 Payoff and Visual Quality Checkpoint
+
+- Completed: loan, EMI, mortgage, amortization, debt-payoff, home-loan prepayment/foreclosure, and mortgage recast routes now expose zero-default additional monthly and yearly payments where they materially change the payoff.
+- Completed: payoff results show the required payment, accelerated payoff period, time saved, total interest, interest saved, and total paid; monthly schedules and charts use the same simulation and apply yearly extras every 12th payment.
+- Completed: compound interest, SIP, step-up SIP, RD, EPF, NPS, retirement, 401(k), and HYSA routes now support a zero-default additional yearly contribution with reconciled projections and schedules.
+- Completed: optional payment and contribution fields are collapsed by default to keep calculator input panels clean.
+- Completed: the landing page now has a quieter hero, direct calculator paths, three solid decision-family bands, and a focused private-workspace CTA. Desktop navigation exposes four frequent routes and groups the rest in an accessible workspace dropdown; mobile uses a collapsed workspace disclosure.
+- Completed: `DESIGN.md` now defines the vivid precision color roles, selective glass treatment, navigation grouping, and optional calculator-input contract for both light and dark modes.
+- Verification: dedicated formula and schedule tests cover zero defaults, route coverage, payoff acceleration, interest savings, yearly payment timing, prepayment combinations, and yearly investment top-ups.
+- Verification: `./scripts/test_all.sh` passed with 79 Python tests, TypeScript typecheck, 1,146 frontend tests across 20 files, and production build. Desktop and `390x844` browser QA passed the landing page, light/dark palette tokens, desktop dropdown, collapsed mobile workspace group, optional mortgage payments, accelerated result metrics, and horizontal-overflow checks.
+- Deploy: `npm run cf:deploy` deployed to `https://baadb7c6.interactive-fire-calculator.pages.dev`; the branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Live smoke: all 84 public calculator-library paths passed without authentication. Hosted landing and mortgage checks confirmed the new navigation, final theme tokens, collapsed optional payments, default 360-month mortgage path, and no horizontal overflow.
+- Product completion remains 100% for the planned calculator roadmap. Remaining launch work is unchanged: production Clerk domain/instance/keys and hosted signed-in verification.
 
 ## Required Verification Before Push
 

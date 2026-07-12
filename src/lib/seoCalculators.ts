@@ -144,6 +144,11 @@ const percent = (key: string, label: string, defaultValue: number, helper?: stri
 
 const termInputs = [number('years', 'Years', 10, 'yrs'), percent('rate', 'Annual return / rate', 8)] as const;
 const loanInputs = [money('principal', 'Loan amount', 300000), percent('rate', 'Interest rate', 6.5), number('years', 'Term', 30, 'yrs')] as const;
+const additionalPaymentInputs = [
+  money('extraMonthlyPayment', 'Additional monthly payment', 0, 'Optional amount paid above the regular payment every month.'),
+  money('extraAnnualPayment', 'Additional yearly payment', 0, 'Optional lump sum paid after every 12th regular payment.')
+] as const;
+const annualTopUpInput = money('annualTopUp', 'Additional yearly contribution', 0, 'Optional contribution added once at the end of each year.');
 const conversionByFormula: Record<CalculatorFormula, Pick<SeoCalculator, 'conversionLabel' | 'conversionRoute'>> = {
   amortization: { conversionLabel: 'Track this loan', conversionRoute: '/accounts' },
   apr: { conversionLabel: 'Compare loan plan', conversionRoute: '/plans' },
@@ -268,7 +273,7 @@ export const seoCalculators: SeoCalculator[] = [
     explanation: 'Compound interest estimates future value by applying an annual return to the starting balance and recurring monthly additions.',
     formula: 'compound',
     h1: 'Compound Interest Calculator',
-    inputs: [money('principal', 'Starting amount', 10000), money('monthly', 'Monthly contribution', 500), ...termInputs],
+    inputs: [money('principal', 'Starting amount', 10000), money('monthly', 'Monthly contribution', 500), annualTopUpInput, ...termInputs],
     keywords: ['compound interest calculator', 'investment growth calculator'],
     region: 'Global',
     slug: 'compound-interest',
@@ -333,6 +338,7 @@ export const seoCalculators: SeoCalculator[] = [
       number('retirementAge', 'Retirement age', 60),
       money('currentSavings', 'Current savings', 100000),
       money('monthly', 'Monthly contribution', 1200),
+      annualTopUpInput,
       percent('rate', 'Annual return', 7),
       money('annualIncome', 'Desired annual income', 80000),
       percent('withdrawalRate', 'Withdrawal rate', 4)
@@ -348,7 +354,7 @@ export const seoCalculators: SeoCalculator[] = [
     explanation: 'Debt payoff projects how long a fixed monthly payment may take at the current APR.',
     formula: 'debt-payoff',
     h1: 'Debt Payoff Calculator',
-    inputs: [money('balance', 'Debt balance', 12000), percent('rate', 'APR', 19.99), money('payment', 'Monthly payment', 500)],
+    inputs: [money('balance', 'Debt balance', 12000), percent('rate', 'APR', 19.99), money('payment', 'Required monthly payment', 500), ...additionalPaymentInputs],
     keywords: ['debt payoff calculator', 'credit card payoff calculator'],
     region: 'Global',
     slug: 'debt-payoff',
@@ -367,26 +373,26 @@ export const seoCalculators: SeoCalculator[] = [
     title: 'Investment Return Calculator'
   }),
   ...([
-    ['sip', 'SIP Calculator', 'sip', [money('monthly', 'Monthly SIP', 10000), ...termInputs]],
-    ['step-up-sip', 'Step-up SIP Calculator', 'sip', [money('monthly', 'Starting monthly SIP', 10000), percent('stepUp', 'Annual step-up', 10), ...termInputs]],
+    ['sip', 'SIP Calculator', 'sip', [money('monthly', 'Monthly SIP', 10000), annualTopUpInput, ...termInputs]],
+    ['step-up-sip', 'Step-up SIP Calculator', 'sip', [money('monthly', 'Starting monthly SIP', 10000), percent('stepUp', 'Annual step-up', 10), annualTopUpInput, ...termInputs]],
     ['sip-goal', 'SIP Goal Calculator', 'savings-goal', [money('target', 'Target corpus', 10000000), money('current', 'Current savings', 0), ...termInputs]],
     ['lumpsum-mutual-fund', 'Lumpsum Mutual Fund Calculator', 'lumpsum', [money('principal', 'Lumpsum investment', 500000), ...termInputs]],
     ['swp', 'SWP Calculator', 'swp', [money('corpus', 'Starting corpus', 10000000), money('withdrawal', 'Monthly withdrawal', 60000), percent('rate', 'Annual return', 7)]],
-    ['emi', 'EMI Calculator', 'loan', [money('principal', 'Loan amount', 2000000), percent('rate', 'Interest rate', 9), number('years', 'Tenure', 10, 'yrs')]],
-    ['home-loan-emi', 'Home Loan EMI Calculator', 'loan', [money('principal', 'Home loan amount', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Tenure', 20, 'yrs')]],
-    ['car-loan-emi', 'Car Loan EMI Calculator', 'loan', [money('principal', 'Car loan amount', 1000000), percent('rate', 'Interest rate', 9.5), number('years', 'Tenure', 5, 'yrs')]],
-    ['personal-loan-emi', 'Personal Loan EMI Calculator', 'loan', [money('principal', 'Personal loan amount', 500000), percent('rate', 'Interest rate', 13), number('years', 'Tenure', 5, 'yrs')]],
+    ['emi', 'EMI Calculator', 'loan', [money('principal', 'Loan amount', 2000000), percent('rate', 'Interest rate', 9), number('years', 'Tenure', 10, 'yrs'), ...additionalPaymentInputs]],
+    ['home-loan-emi', 'Home Loan EMI Calculator', 'loan', [money('principal', 'Home loan amount', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Tenure', 20, 'yrs'), ...additionalPaymentInputs]],
+    ['car-loan-emi', 'Car Loan EMI Calculator', 'loan', [money('principal', 'Car loan amount', 1000000), percent('rate', 'Interest rate', 9.5), number('years', 'Tenure', 5, 'yrs'), ...additionalPaymentInputs]],
+    ['personal-loan-emi', 'Personal Loan EMI Calculator', 'loan', [money('principal', 'Personal loan amount', 500000), percent('rate', 'Interest rate', 13), number('years', 'Tenure', 5, 'yrs'), ...additionalPaymentInputs]],
     ['income-tax-india', 'Income Tax Calculator Old vs New Regime', 'india-tax', [money('income', 'Annual taxable income before deductions', 1500000), money('deductions', 'Old-regime deductions and exemptions', 150000)]],
     ['salary-india', 'Salary / Take-home Pay Calculator', 'salary', [money('income', 'Annual CTC', 2400000), percent('effectiveRate', 'Estimated income tax rate', 12), percent('employeePfRate', 'Employee PF / payroll deduction rate', 5), money('professionalTax', 'Annual professional tax / other deductions', 2400)]],
     ['hra-exemption', 'HRA Exemption Calculator', 'hra', [money('salary', 'Basic salary', 1200000), money('hra', 'HRA received', 500000), money('rent', 'Annual rent paid', 600000), percent('metroPercent', 'Salary exemption cap', 50)]],
     ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000), ...termInputs]],
-    ['rd', 'RD Calculator', 'rd', [money('monthly', 'Monthly deposit', 10000), ...termInputs]],
+    ['rd', 'RD Calculator', 'rd', [money('monthly', 'Monthly deposit', 10000), annualTopUpInput, ...termInputs]],
     ['ppf', 'PPF Calculator', 'ppf', [money('annual', 'Annual contribution', 150000), percent('rate', 'Annual return', 7.1), number('years', 'Years', 15, 'yrs')]],
-    ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), ...termInputs]],
-    ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), ...termInputs, percent('annuityPercent', 'Annuity allocation', 40)]],
+    ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, ...termInputs]],
+    ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), annualTopUpInput, ...termInputs, percent('annuityPercent', 'Annuity allocation', 40)]],
     ['gratuity', 'Gratuity Calculator', 'gratuity', [money('salary', 'Last drawn basic + DA', 120000), number('years', 'Completed service', 8, 'yrs')]],
-    ['home-loan-prepayment', 'Home Loan Prepayment Calculator', 'loan-prepayment', [money('principal', 'Current loan balance', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Remaining tenure', 15, 'yrs'), money('prepayment', 'One-time prepayment', 500000)]],
-    ['home-loan-foreclosure', 'Home Loan Foreclosure Calculator', 'loan-prepayment', [money('principal', 'Current loan balance', 3500000), percent('rate', 'Interest rate', 8.5), number('years', 'Remaining tenure', 8, 'yrs'), money('prepayment', 'Foreclosure payment', 3500000)]],
+    ['home-loan-prepayment', 'Home Loan Prepayment Calculator', 'loan-prepayment', [money('principal', 'Current loan balance', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Remaining tenure', 15, 'yrs'), money('prepayment', 'One-time prepayment', 500000), ...additionalPaymentInputs]],
+    ['home-loan-foreclosure', 'Home Loan Foreclosure Calculator', 'loan-prepayment', [money('principal', 'Current loan balance', 3500000), percent('rate', 'Interest rate', 8.5), number('years', 'Remaining tenure', 8, 'yrs'), money('prepayment', 'Foreclosure payment', 3500000), ...additionalPaymentInputs]],
     ['home-loan-balance-transfer-india', 'Home Loan Balance Transfer Calculator India', 'refinance', [money('principal', 'Current loan balance', 5000000), percent('currentRate', 'Current rate', 9), percent('newRate', 'New lender rate', 8.25), number('years', 'Remaining tenure', 15, 'yrs'), money('closingCosts', 'Transfer fees', 50000)]],
     ['flat-vs-reducing-rate', 'Flat vs Reducing Interest Rate Calculator', 'flat-rate-loan', [money('principal', 'Loan amount', 500000), percent('rate', 'Quoted flat rate', 10), number('years', 'Tenure', 5, 'yrs')]],
     ['loan-eligibility-india', 'Loan Eligibility Calculator India', 'loan-eligibility', [money('income', 'Monthly income', 150000), money('debts', 'Existing monthly obligations', 30000), percent('rate', 'Interest rate', 8.5), number('years', 'Tenure', 20, 'yrs'), percent('maxDti', 'Max EMI-to-income', 45)]],
@@ -404,17 +410,17 @@ export const seoCalculators: SeoCalculator[] = [
     title: title as string
   })),
   ...([
-    ['mortgage', 'Mortgage Payment Calculator', 'loan', loanInputs],
+    ['mortgage', 'Mortgage Payment Calculator', 'loan', [...loanInputs, ...additionalPaymentInputs]],
     ['mortgage-affordability', 'Mortgage Affordability Calculator', 'loan', [money('principal', 'Affordable loan target', 350000), percent('rate', 'Mortgage rate', 6.75), number('years', 'Term', 30, 'yrs')]],
     ['mortgage-refinance', 'Mortgage Refinance Calculator', 'refinance', [money('principal', 'Current balance', 300000), percent('currentRate', 'Current rate', 7.25), percent('newRate', 'New rate', 6.25), number('years', 'New term', 30, 'yrs'), money('closingCosts', 'Closing costs', 6000)]],
-    ['amortization', 'Amortization Schedule Calculator', 'amortization', loanInputs],
-    ['extra-mortgage-payment', 'Extra Mortgage Payment Calculator', 'debt-payoff', [money('balance', 'Mortgage balance', 300000), percent('rate', 'Interest rate', 6.75), money('payment', 'Monthly payment with extra', 2400)]],
-    ['mortgage-payoff', 'Mortgage Payoff Calculator', 'debt-payoff', [money('balance', 'Mortgage balance', 300000), percent('rate', 'Interest rate', 6.75), money('payment', 'Monthly payment', 2400)]],
+    ['amortization', 'Amortization Schedule Calculator', 'amortization', [...loanInputs, ...additionalPaymentInputs]],
+    ['extra-mortgage-payment', 'Extra Mortgage Payment Calculator', 'debt-payoff', [money('balance', 'Mortgage balance', 300000), percent('rate', 'Interest rate', 6.75), money('payment', 'Required monthly payment', 2400), ...additionalPaymentInputs]],
+    ['mortgage-payoff', 'Mortgage Payoff Calculator', 'debt-payoff', [money('balance', 'Mortgage balance', 300000), percent('rate', 'Interest rate', 6.75), money('payment', 'Required monthly payment', 2400), ...additionalPaymentInputs]],
     ['biweekly-mortgage-payment', 'Biweekly Mortgage Payment Calculator', 'biweekly-loan', loanInputs],
-    ['mortgage-recast', 'Mortgage Recast Calculator', 'mortgage-recast', [money('principal', 'Current mortgage balance', 300000), money('prepayment', 'Recast principal payment', 50000), percent('rate', 'Interest rate', 6.5), number('years', 'Remaining term', 25, 'yrs')]],
+    ['mortgage-recast', 'Mortgage Recast Calculator', 'mortgage-recast', [money('principal', 'Current mortgage balance', 300000), money('prepayment', 'Recast principal payment', 50000), percent('rate', 'Interest rate', 6.5), number('years', 'Remaining term', 25, 'yrs'), ...additionalPaymentInputs]],
     ['mortgage-points', 'Mortgage Points Calculator', 'refinance', [money('principal', 'Loan amount', 350000), percent('currentRate', 'No-points rate', 6.88), percent('newRate', 'Discounted rate', 6.5), number('years', 'Term', 30, 'yrs'), money('closingCosts', 'Points cost', 7000)]],
     ['15-vs-30-year-mortgage', '15 vs 30 Year Mortgage Calculator', 'loan-comparison', [money('principal', 'Loan amount', 350000), percent('currentRate', '15-year rate', 6.25), percent('newRate', '30-year rate', 6.75), number('compareYears', 'Short term', 15, 'yrs'), number('years', 'Long term', 30, 'yrs')]],
-    ['arm-mortgage', 'ARM Mortgage Calculator', 'loan', [money('principal', 'Loan amount', 350000), percent('rate', 'Initial ARM rate', 5.75), number('years', 'Amortization term', 30, 'yrs')]],
+    ['arm-mortgage', 'ARM Mortgage Calculator', 'loan', [money('principal', 'Loan amount', 350000), percent('rate', 'Initial ARM rate', 5.75), number('years', 'Amortization term', 30, 'yrs'), ...additionalPaymentInputs]],
     ['interest-only-mortgage', 'Interest Only Mortgage Calculator', 'interest-only-loan', loanInputs],
     ['balloon-loan', 'Balloon Loan Calculator', 'balloon-loan', [money('principal', 'Loan amount', 250000), percent('rate', 'Interest rate', 6.5), number('years', 'Amortization term', 30, 'yrs'), number('balloonYears', 'Balloon due after', 5, 'yrs')]],
     ['closing-costs', 'Closing Costs Calculator', 'closing-costs', [money('homePrice', 'Home price', 450000), money('downPayment', 'Down payment', 90000), percent('rate', 'Closing cost rate', 3)]],
@@ -422,12 +428,12 @@ export const seoCalculators: SeoCalculator[] = [
     ['debt-to-income', 'Debt-to-Income Ratio Calculator', 'dti', [money('income', 'Gross monthly income', 9000), money('debts', 'Monthly debts', 1200), money('payment', 'Proposed housing payment', 2600)]],
     ['loan-comparison', 'Loan Comparison Calculator', 'loan-comparison', [money('principal', 'Loan amount', 300000), percent('currentRate', 'Option A rate', 6.5), percent('newRate', 'Option B rate', 7), number('compareYears', 'Option A term', 15, 'yrs'), number('years', 'Option B term', 30, 'yrs')]],
     ['apr', 'APR Calculator', 'apr', [money('principal', 'Loan amount', 300000), percent('rate', 'Note interest rate', 6.5), number('years', 'Term', 30, 'yrs'), money('closingCosts', 'Finance charges / fees', 6000)]],
-    ['home-equity-loan', 'Home Equity Loan Calculator', 'loan', [money('principal', 'Home equity loan amount', 50000), percent('rate', 'Interest rate', 8), number('years', 'Term', 10, 'yrs')]],
+    ['home-equity-loan', 'Home Equity Loan Calculator', 'loan', [money('principal', 'Home equity loan amount', 50000), percent('rate', 'Interest rate', 8), number('years', 'Term', 10, 'yrs'), ...additionalPaymentInputs]],
     ['fha-loan', 'FHA Loan Calculator', 'fha-loan', [money('homePrice', 'Home price', 350000), money('downPayment', 'Down payment', 12250), percent('rate', 'Interest rate', 6.5), number('years', 'Term', 30, 'yrs'), percent('feeRate', 'Upfront MIP / funding fee', 1.75), percent('pmiRate', 'Annual MIP rate', 0.55)]],
     ['va-loan', 'VA Loan Calculator', 'va-loan', [money('homePrice', 'Home price', 350000), money('downPayment', 'Down payment', 0), percent('rate', 'Interest rate', 6.25), number('years', 'Term', 30, 'yrs'), percent('feeRate', 'Funding fee', 2.15)]],
     ['fha-vs-conventional', 'FHA vs Conventional Loan Calculator', 'fha-conventional', [money('homePrice', 'Home price', 350000), money('downPayment', 'Down payment', 17500), percent('rate', 'Base mortgage rate', 6.5), number('years', 'Term', 30, 'yrs'), percent('pmiRate', 'Conventional PMI rate', 0.5)]],
     ['rent-vs-buy', 'Rent vs Buy Calculator', 'rent-buy', [money('rent', 'Monthly rent', 2500), money('homePrice', 'Home price', 450000), money('downPayment', 'Down payment', 90000), percent('rate', 'Mortgage rate', 6.75), number('years', 'Compare years', 7, 'yrs')]],
-    ['credit-card-payoff', 'Credit Card Payoff Calculator', 'debt-payoff', [money('balance', 'Credit card balance', 8000), percent('rate', 'APR', 22), money('payment', 'Monthly payment', 350)]],
+    ['credit-card-payoff', 'Credit Card Payoff Calculator', 'debt-payoff', [money('balance', 'Credit card balance', 8000), percent('rate', 'APR', 22), money('payment', 'Required monthly payment', 350), ...additionalPaymentInputs]],
     ['debt-snowball-avalanche', 'Debt Snowball vs Avalanche Calculator', 'debt-strategy', [
       money('debt1Balance', 'Credit card balance', 8000),
       percent('debt1Rate', 'Credit card APR', 22),
@@ -440,10 +446,10 @@ export const seoCalculators: SeoCalculator[] = [
       money('debt3Minimum', 'Student loan minimum payment', 120),
       money('extraPayment', 'Extra monthly payoff budget', 220)
     ]],
-    ['auto-loan', 'Auto Loan Calculator', 'loan', [money('principal', 'Auto loan amount', 32000), percent('rate', 'Interest rate', 7), number('years', 'Term', 5, 'yrs')]],
-    ['personal-loan', 'Personal Loan Calculator', 'loan', [money('principal', 'Personal loan amount', 15000), percent('rate', 'Interest rate', 11), number('years', 'Term', 4, 'yrs')]],
-    ['student-loan-payoff', 'Student Loan Payoff Calculator', 'debt-payoff', [money('balance', 'Student loan balance', 45000), percent('rate', 'Interest rate', 6), money('payment', 'Monthly payment', 600)]],
-    ['401k', '401(k) Calculator', 'compound', [money('principal', 'Current 401(k)', 50000), money('monthly', 'Monthly contribution', 900), ...termInputs]],
+    ['auto-loan', 'Auto Loan Calculator', 'loan', [money('principal', 'Auto loan amount', 32000), percent('rate', 'Interest rate', 7), number('years', 'Term', 5, 'yrs'), ...additionalPaymentInputs]],
+    ['personal-loan', 'Personal Loan Calculator', 'loan', [money('principal', 'Personal loan amount', 15000), percent('rate', 'Interest rate', 11), number('years', 'Term', 4, 'yrs'), ...additionalPaymentInputs]],
+    ['student-loan-payoff', 'Student Loan Payoff Calculator', 'debt-payoff', [money('balance', 'Student loan balance', 45000), percent('rate', 'Interest rate', 6), money('payment', 'Required monthly payment', 600), ...additionalPaymentInputs]],
+    ['401k', '401(k) Calculator', 'compound', [money('principal', 'Current 401(k)', 50000), money('monthly', 'Monthly contribution', 900), annualTopUpInput, ...termInputs]],
     ['roth-vs-traditional-ira', 'Roth vs Traditional IRA Calculator', 'roth-traditional', [money('income', 'Annual IRA contribution', 7000), percent('currentTaxRate', 'Current marginal tax rate', 22), percent('futureTaxRate', 'Retirement tax rate', 22), percent('rate', 'Annual return', 7), number('years', 'Years to retirement', 25, 'yrs')]],
     ['paycheck', 'Paycheck Calculator', 'paycheck', [money('income', 'Gross pay per period', 5000), percent('effectiveRate', 'Estimated withholding rate', 22), number('periods', 'Pay periods per year', 26), money('preTaxDeductions', 'Pre-tax deductions per period', 250), money('postTaxDeductions', 'Post-tax deductions per period', 75)]],
     ['income-tax-us', 'Income Tax Estimator', 'us-tax', [money('income', 'Annual gross income', 120000), money('deductions', 'Extra deductions beyond standard deduction', 0), percent('stateRate', 'State/local placeholder rate', 4)]],
@@ -471,10 +477,10 @@ export const seoCalculators: SeoCalculator[] = [
     ['tds', 'TDS Calculator', 'tax-rate', [money('income', 'Payment amount', 100000), percent('effectiveRate', 'TDS rate', 10), money('deductions', 'Exempt amount', 0)]],
     ['down-payment', 'Down Payment Calculator', 'down-payment', [money('homePrice', 'Home price', 450000), percent('downPercent', 'Down payment percent', 20)]],
     ['pmi', 'PMI Calculator', 'pmi', [money('homePrice', 'Home price', 450000), money('downPayment', 'Down payment', 45000), percent('rate', 'Annual PMI rate', 0.6)]],
-    ['heloc', 'HELOC Calculator', 'loan', [money('principal', 'HELOC balance', 50000), percent('rate', 'Interest rate', 8.5), number('years', 'Repayment years', 10, 'yrs')]],
+    ['heloc', 'HELOC Calculator', 'loan', [money('principal', 'HELOC balance', 50000), percent('rate', 'Interest rate', 8.5), number('years', 'Repayment years', 10, 'yrs'), ...additionalPaymentInputs]],
     ['balance-transfer', 'Balance Transfer Calculator', 'balance-transfer', [money('balance', 'Balance transferred', 8000), percent('currentRate', 'Current APR', 22), percent('newRate', 'Promo APR', 3), percent('feeRate', 'Transfer fee', 3), money('payment', 'Monthly payment', 400)]],
     ['cd', 'CD Calculator', 'fd', [money('principal', 'Deposit amount', 10000), percent('rate', 'APY', 4.5), number('years', 'Term', 2, 'yrs')]],
-    ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
+    ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
     ['life-insurance-needs', 'Life Insurance Needs Calculator', 'insurance', [money('income', 'Annual income to replace', 100000), number('years', 'Years of support', 10, 'yrs'), money('debts', 'Debts and final expenses', 150000), money('savings', 'Existing savings/coverage', 100000)]],
     ['lease-vs-buy', 'Lease vs Buy Calculator', 'rent-buy', [money('rent', 'Monthly lease payment', 450), money('homePrice', 'Vehicle purchase price', 35000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan rate', 7), number('years', 'Compare years', 4, 'yrs')]],
     ['roi', 'ROI Calculator', 'roi', [money('gain', 'Net gain', 5000), money('cost', 'Cost', 20000)]]
@@ -515,13 +521,15 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
 
   switch (calculator.formula) {
     case 'compound': {
-      const futureValue = get('principal') * (1 + monthlyRate) ** months + get('monthly') * fvFactor;
+      const projection = projectRecurringBalance(get('principal'), get('monthly'), get('annualTopUp'), monthlyRate, months);
+      const futureValue = projection.balance;
       return result('Projected value', futureValue, 'Projected value after contributions and compounding.', [
         'Contributions are assumed monthly.',
+        get('annualTopUp') > 0 ? 'The additional yearly contribution is added after every 12th monthly contribution.' : 'No additional yearly contribution is applied.',
         'Returns are annualized and compounded monthly.'
       ], [
-        metric('Total contributions', get('principal') + get('monthly') * months, 'currency'),
-        metric('Estimated growth', futureValue - get('principal') - get('monthly') * months, 'currency', 'positive')
+        metric('Total contributions', projection.contributions, 'currency'),
+        metric('Estimated growth', futureValue - projection.contributions, 'currency', 'positive')
       ]);
     }
     case 'sip': {
@@ -533,10 +541,15 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
         if (stepUp > 0 && month > 1 && (month - 1) % 12 === 0) monthly *= 1 + stepUp;
         futureValue = futureValue * (1 + monthlyRate) + monthly;
         contribution += monthly;
+        if (month % 12 === 0) {
+          futureValue += get('annualTopUp');
+          contribution += get('annualTopUp');
+        }
       }
       return result('Projected corpus', futureValue, 'Estimated future value of recurring SIP contributions.', [
         'SIP contributions are monthly.',
-        stepUp > 0 ? 'Monthly SIP increases once each year.' : 'No annual SIP step-up is applied.'
+        stepUp > 0 ? 'Monthly SIP increases once each year.' : 'No annual SIP step-up is applied.',
+        get('annualTopUp') > 0 ? 'The additional yearly contribution is added after every 12th SIP.' : 'No separate yearly top-up is applied.'
       ], [
         metric('Total invested', contribution, 'currency'),
         metric('Estimated gains', futureValue - contribution, 'currency', 'positive')
@@ -575,25 +588,38 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const savingYears = Math.max(0, get('retirementAge') - get('currentAge'));
       const savingMonths = Math.max(1, savingYears * 12);
       const savingRate = get('rate') / 100 / 12;
+      const contributionProjection = projectRecurringBalance(0, get('monthly'), get('annualTopUp'), savingRate, savingMonths);
       const projected = get('currentSavings') * (1 + get('rate') / 100) ** savingYears
-        + get('monthly') * (savingRate === 0 ? savingMonths : ((1 + savingRate) ** savingMonths - 1) / savingRate);
+        + contributionProjection.balance;
       const needed = get('withdrawalRate') > 0 ? get('annualIncome') / (get('withdrawalRate') / 100) : 0;
       return result('Projected retirement savings', projected, 'Projected savings compared with the portfolio implied by desired annual income.', [
         'Withdrawal need uses the provided withdrawal rate.',
-        'Contributions are assumed monthly.'
+        'Contributions are assumed monthly.',
+        get('annualTopUp') > 0 ? 'A separate contribution is added at each year end.' : 'No additional yearly contribution is applied.'
       ], [
         metric('Estimated need', needed, 'currency'),
         metric('Gap / surplus', projected - needed, 'currency', projected >= needed ? 'positive' : 'warning')
       ]);
     }
     case 'debt-payoff': {
-      const payoff = payoffDebt(get('balance'), get('rate') / 100, get('payment'));
+      const baseline = payoffDebt(get('balance'), get('rate') / 100, get('payment'));
+      const payoff = payoffDebt(
+        get('balance'),
+        get('rate') / 100,
+        get('payment'),
+        get('extraMonthlyPayment'),
+        get('extraAnnualPayment')
+      );
       return result('Payoff time', payoff.months / 12, 'Estimated years to pay off the balance.', [
-        'Payment is assumed fixed every month.',
+        'The required payment and additional monthly amount are applied every month.',
+        get('extraAnnualPayment') > 0 ? 'The additional yearly payment is applied every 12th month.' : 'No additional yearly payment is applied.',
         'No new charges are added.'
       ], [
         metric('Months to payoff', payoff.months, 'number'),
-        metric('Total interest', payoff.interest, 'currency', 'warning')
+        metric('Time saved', Math.max(0, baseline.months - payoff.months), 'number', 'positive'),
+        metric('Total interest', payoff.interest, 'currency', 'warning'),
+        metric('Interest saved', Math.max(0, baseline.interest - payoff.interest), 'currency', 'positive'),
+        metric('Total paid', payoff.totalPaid, 'currency')
       ]);
     }
     case 'debt-strategy': {
@@ -612,12 +638,25 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'loan':
     case 'amortization': {
       const payment = loanPayment(get('principal'), get('rate') / 100, years);
+      const baseline = payoffDebt(get('principal'), get('rate') / 100, payment);
+      const accelerated = payoffDebt(
+        get('principal'),
+        get('rate') / 100,
+        payment,
+        get('extraMonthlyPayment'),
+        get('extraAnnualPayment')
+      );
       return result('Monthly payment', payment, 'Estimated fixed monthly payment.', [
         'Taxes, insurance, fees, and variable-rate changes are excluded.',
-        'Payment assumes standard monthly amortization.'
+        'The headline is the required payment before optional additional payments.',
+        get('extraAnnualPayment') > 0 ? 'The additional yearly payment is applied every 12th month.' : 'No additional yearly payment is applied.'
       ], [
-        metric('Total paid', payment * months, 'currency'),
-        metric('Total interest', payment * months - get('principal'), 'currency', 'warning')
+        metric('Monthly outflow with extra', payment + get('extraMonthlyPayment'), 'currency'),
+        metric('Payoff months', accelerated.months, 'number'),
+        metric('Time saved', Math.max(0, baseline.months - accelerated.months), 'number', 'positive'),
+        metric('Total interest', accelerated.interest, 'currency', 'warning'),
+        metric('Interest saved', Math.max(0, baseline.interest - accelerated.interest), 'currency', 'positive'),
+        metric('Total paid', accelerated.totalPaid, 'currency')
       ]);
     }
     case 'apr': {
@@ -781,14 +820,23 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'loan-prepayment': {
       const principal = get('principal');
       const payment = loanPayment(principal, get('rate') / 100, years);
-      const originalInterest = payment * months - principal;
+      const baseline = payoffDebt(principal, get('rate') / 100, payment);
       const remainingAfterPrepay = Math.max(0, principal - get('prepayment'));
-      const accelerated = payoffDebt(remainingAfterPrepay, get('rate') / 100, payment);
-      return result('Estimated interest saved', Math.max(0, originalInterest - accelerated.interest), 'Interest avoided after applying the prepayment now.', [
+      const accelerated = payoffDebt(
+        remainingAfterPrepay,
+        get('rate') / 100,
+        payment,
+        get('extraMonthlyPayment'),
+        get('extraAnnualPayment')
+      );
+      return result('Estimated interest saved', Math.max(0, baseline.interest - accelerated.interest), 'Interest avoided after applying the prepayment now.', [
         'Prepayment is modeled as an immediate principal reduction.',
-        'The original EMI is kept the same to estimate faster payoff.'
+        'The original EMI is kept the same to estimate faster payoff.',
+        'Optional monthly and yearly additional payments are applied after the immediate prepayment.'
       ], [
         metric('New payoff months', accelerated.months, 'number'),
+        metric('Time saved', Math.max(0, baseline.months - accelerated.months), 'number', 'positive'),
+        metric('Interest after prepayment', accelerated.interest, 'currency', 'warning'),
         metric('Remaining balance after prepayment', remainingAfterPrepay, 'currency')
       ]);
     }
@@ -796,12 +844,17 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const oldPayment = loanPayment(get('principal'), get('rate') / 100, years);
       const newBalance = Math.max(0, get('principal') - get('prepayment'));
       const newPayment = loanPayment(newBalance, get('rate') / 100, years);
+      const baseline = payoffDebt(newBalance, get('rate') / 100, newPayment);
+      const accelerated = payoffDebt(newBalance, get('rate') / 100, newPayment, get('extraMonthlyPayment'), get('extraAnnualPayment'));
       return result('Monthly payment after recast', newPayment, 'Estimated payment after applying a principal recast and keeping the remaining term.', [
         'The recast lowers the balance used to calculate the payment.',
         'Fees, servicer rules, and escrow changes are excluded.'
       ], [
         metric('Monthly payment reduction', oldPayment - newPayment, 'currency', 'positive'),
-        metric('Recast balance', newBalance, 'currency')
+        metric('Recast balance', newBalance, 'currency'),
+        metric('Payoff months after recast', accelerated.months, 'number'),
+        metric('Time saved by additional payments', Math.max(0, baseline.months - accelerated.months), 'number', 'positive'),
+        metric('Additional-payment interest savings', Math.max(0, baseline.interest - accelerated.interest), 'currency', 'positive')
       ]);
     }
     case 'investment-return': {
@@ -830,10 +883,11 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'rd': {
-      const futureValue = get('monthly') * fvFactor;
+      const projection = projectRecurringBalance(0, get('monthly'), get('annualTopUp'), monthlyRate, months);
+      const futureValue = projection.balance;
       return result('Maturity value', futureValue, 'Estimated recurring deposit maturity value.', [], [
-        metric('Total deposits', get('monthly') * months, 'currency'),
-        metric('Estimated interest', futureValue - get('monthly') * months, 'currency', 'positive')
+        metric('Total deposits', projection.contributions, 'currency'),
+        metric('Estimated interest', futureValue - projection.contributions, 'currency', 'positive')
       ]);
     }
     case 'swp': {
@@ -970,14 +1024,15 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     }
     case 'epf': {
       const monthly = get('employee') + get('employer');
-      const futureValue = monthly * fvFactor;
+      const projection = projectRecurringBalance(0, monthly, get('annualTopUp'), monthlyRate, months);
+      const futureValue = projection.balance;
       return result('Estimated EPF corpus', futureValue, 'Employee plus employer monthly contributions compounded over time.', [], [
-        metric('Total contributions', monthly * months, 'currency'),
-        metric('Estimated growth', futureValue - monthly * months, 'currency', 'positive')
+        metric('Total contributions', projection.contributions, 'currency'),
+        metric('Estimated growth', futureValue - projection.contributions, 'currency', 'positive')
       ]);
     }
     case 'nps': {
-      const corpus = get('monthly') * fvFactor;
+      const corpus = projectRecurringBalance(0, get('monthly'), get('annualTopUp'), monthlyRate, months).balance;
       return result('Estimated NPS corpus', corpus, 'Monthly contribution compounded at the assumed annual rate.', [], [
         metric('Lump sum portion', corpus * (1 - get('annuityPercent') / 100), 'currency'),
         metric('Annuity portion', corpus * get('annuityPercent') / 100, 'currency')
@@ -1293,25 +1348,62 @@ function approximateApr(principal: number, fees: number, payment: number, years:
   return (low + high) / 2;
 }
 
-function payoffDebt(balance: number, annualRate: number, payment: number): { interest: number; months: number } {
-  if (payment <= 0 || balance <= 0) return { interest: 0, months: 0 };
+function projectRecurringBalance(
+  startingBalance: number,
+  monthlyContribution: number,
+  annualTopUp: number,
+  monthlyRate: number,
+  months: number
+): { balance: number; contributions: number } {
+  let balance = Math.max(0, startingBalance);
+  let contributions = balance;
+
+  for (let month = 1; month <= months; month += 1) {
+    balance = balance * (1 + monthlyRate) + Math.max(0, monthlyContribution);
+    contributions += Math.max(0, monthlyContribution);
+
+    if (month % 12 === 0) {
+      balance += Math.max(0, annualTopUp);
+      contributions += Math.max(0, annualTopUp);
+    }
+  }
+
+  return { balance, contributions };
+}
+
+function payoffDebt(
+  balance: number,
+  annualRate: number,
+  payment: number,
+  extraMonthlyPayment = 0,
+  extraAnnualPayment = 0
+): { interest: number; months: number; totalPaid: number } {
+  if (balance <= 0 || (payment <= 0 && extraMonthlyPayment <= 0 && extraAnnualPayment <= 0)) {
+    return { interest: 0, months: 0, totalPaid: 0 };
+  }
   let currentBalance = balance;
   let interest = 0;
   let months = 0;
+  let totalPaid = 0;
   const monthlyRate = annualRate / 12;
 
   while (currentBalance > 0 && months < 1200) {
     const monthlyInterest = currentBalance * monthlyRate;
+    const nextMonth = months + 1;
+    const scheduledPayment = Math.max(0, payment) + Math.max(0, extraMonthlyPayment)
+      + (nextMonth % 12 === 0 ? Math.max(0, extraAnnualPayment) : 0);
+    const actualPayment = Math.min(scheduledPayment, currentBalance + monthlyInterest);
     interest += monthlyInterest;
-    currentBalance = currentBalance + monthlyInterest - payment;
-    months += 1;
+    totalPaid += actualPayment;
+    currentBalance = Math.max(0, currentBalance + monthlyInterest - actualPayment);
+    months = nextMonth;
 
-    if (monthlyRate >= 0 && currentBalance > 0 && payment <= monthlyInterest) {
-      return { interest, months: 1200 };
+    if (monthlyRate >= 0 && currentBalance > 0 && actualPayment <= monthlyInterest && extraAnnualPayment <= 0) {
+      return { interest, months: 1200, totalPaid };
     }
   }
 
-  return { interest: Math.max(0, interest), months };
+  return { interest: Math.max(0, interest), months, totalPaid };
 }
 
 type DebtStrategyName = 'avalanche' | 'snowball';

@@ -3,6 +3,7 @@ import {
   ArrowRight,
   BarChart3,
   Calculator,
+  ChevronDown,
   ChevronRight,
   CircleDollarSign,
   CircleGauge,
@@ -406,15 +407,25 @@ const transactionTypeOptions: Array<{ label: string; value: TransactionType }> =
   { label: 'Adjustment', value: 'adjustment' }
 ];
 
-const routeItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
+const primaryRouteItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/accounts', label: 'Accounts', icon: CircleDollarSign },
   { path: '/transactions', label: 'Transactions', icon: ClipboardList },
   { path: '/goals', label: 'Goals', icon: Target },
+  { path: '/calculators', label: 'Calculators', icon: Calculator }
+];
+
+const workspaceRouteItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
+  { path: '/accounts', label: 'Accounts', icon: CircleDollarSign },
   { path: '/plans', label: 'Plans', icon: FolderKanban },
-  { path: '/calculators', label: 'Calculators', icon: Calculator },
   { path: '/reports', label: 'Reports', icon: BarChart3 },
   { path: '/settings', label: 'Settings', icon: Settings }
+];
+
+const popularCalculatorLinks: Array<{ label: string; path: AppRoute }> = [
+  { label: 'Mortgage', path: '/calculators/mortgage' },
+  { label: 'Debt payoff', path: '/calculators/debt-payoff' },
+  { label: 'Compound interest', path: '/calculators/compound-interest' },
+  { label: 'FIRE', path: '/calculators/fire' }
 ];
 
 const calculatorPanels: Array<{ id: CalculatorPanel; label: string; icon: typeof Calculator }> = [
@@ -2416,23 +2427,18 @@ function YearByYearTable({ rows, label }: { rows: YearResult[]; label: string })
 
 const landingFeatures = [
   {
-    title: 'See the whole balance sheet',
-    body: 'Track assets, liabilities, and current net worth from balances you control.',
+    title: 'Explore the decision',
+    body: 'Use a focused calculator with scenarios, charts, and the full breakdown behind the answer.',
+    icon: Calculator
+  },
+  {
+    title: 'Make the result actionable',
+    body: 'Turn the useful number into a goal, account, payoff plan, or cash-flow habit.',
     icon: CircleDollarSign
   },
   {
-    title: 'Fund goals with context',
-    body: 'Set targets, dates, and funding progress inside the same financial workspace.',
-    icon: Target
-  },
-  {
-    title: 'Keep plans revisitable',
-    body: 'Save FIRE assumptions and return to them as your priorities change.',
-    icon: FolderKanban
-  },
-  {
-    title: 'Compare before deciding',
-    body: 'Stress-test spending, returns, and inflation before a long-term decision.',
+    title: 'See progress over time',
+    body: 'Return to current balances and compare the plan as income, priorities, or markets change.',
     icon: BarChart3
   }
 ];
@@ -4240,6 +4246,90 @@ function AuthGate({
   );
 }
 
+function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate: (route: AppRoute) => void }) {
+  const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const workspaceIsActive = workspaceRouteItems.some((item) => isRouteActive(route, item.path));
+
+  useEffect(() => {
+    const closeOnOutsideInteraction = (event: PointerEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) setIsWorkspaceOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsWorkspaceOpen(false);
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsideInteraction);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideInteraction);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
+
+  return (
+    <nav className="desktop-nav" aria-label="Primary">
+      {primaryRouteItems.map((item) => {
+        const Icon = item.icon;
+        return (
+          <a
+            key={item.path}
+            href={item.path}
+            className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
+            aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
+            onClick={(event) => {
+              event.preventDefault();
+              onNavigate(item.path);
+            }}
+          >
+            <Icon size={17} />
+            {item.label}
+          </a>
+        );
+      })}
+      <div className="desktop-nav-menu" ref={menuRef}>
+        <button
+          className={workspaceIsActive ? 'nav-button active' : 'nav-button'}
+          type="button"
+          aria-expanded={isWorkspaceOpen}
+          aria-haspopup="menu"
+          onClick={() => setIsWorkspaceOpen((open) => !open)}
+        >
+          <FolderKanban size={17} />
+          Workspace
+          <ChevronDown className={isWorkspaceOpen ? 'nav-chevron open' : 'nav-chevron'} size={15} />
+        </button>
+        {isWorkspaceOpen && (
+          <div className="desktop-nav-dropdown" role="menu">
+            {workspaceRouteItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.path}
+                  href={item.path}
+                  role="menuitem"
+                  className={isRouteActive(route, item.path) ? 'active' : undefined}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setIsWorkspaceOpen(false);
+                    onNavigate(item.path);
+                  }}
+                >
+                  <Icon size={17} />
+                  <span>
+                    <strong>{item.label}</strong>
+                    <small>{item.path === '/accounts' ? 'Balances and net worth' : item.path === '/plans' ? 'Saved scenarios' : item.path === '/reports' ? 'Progress and insights' : 'Profile and preferences'}</small>
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}
+
 function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
   return (
     <>
@@ -4256,8 +4346,8 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
         <div className="landing-hero-inner">
           <div className="landing-hero-copy">
             <p className="eyebrow">Calculate first. Keep the plan moving.</p>
-            <h1 id="landing-title">FinPath for clearer money decisions.</h1>
-            <p>Explore a decision with a public calculator, compare the tradeoffs, then track the plan in one private workspace.</p>
+            <h1 id="landing-title">Make the number mean something.</h1>
+            <p>Model a financial decision, understand what changes the outcome, and keep the next step connected to your real plan.</p>
             <div className="landing-actions">
               <button
                 className="primary-button icon-text-button"
@@ -4282,27 +4372,50 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
                   <ArrowRight size={17} />
                 </AuthActionButton>
               )}
-              <button
-                className="landing-text-action icon-text-button"
-                onClick={() => onNavigate('/calculators/fire')}
-              >
-                Try the FIRE planner
-                <ArrowRight size={16} />
-              </button>
             </div>
-            <div className="landing-hero-proof" aria-label="FinPath product highlights">
-              <span>Public calculators</span>
-              <span>Scenario comparisons</span>
-              <span>Private tracking</span>
-            </div>
+            <nav className="landing-popular-paths" aria-label="Popular calculators">
+              <span>Popular starts</span>
+              {popularCalculatorLinks.map(({ path, label }) => (
+                <a
+                  key={path}
+                  href={path}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onNavigate(path);
+                  }}
+                >
+                  {label}
+                  <ChevronRight size={14} />
+                </a>
+              ))}
+            </nav>
           </div>
         </div>
       </section>
 
+      <section className="landing-path-strip" aria-label="Choose a planning path">
+        <button onClick={() => onNavigate('/calculators/mortgage')}>
+          <CircleDollarSign size={22} />
+          <span><small>Borrowing</small><strong>Pay less over time</strong></span>
+          <ArrowRight size={18} />
+        </button>
+        <button onClick={() => onNavigate('/calculators/compound-interest')}>
+          <TrendingUp size={22} />
+          <span><small>Growing wealth</small><strong>Test a contribution plan</strong></span>
+          <ArrowRight size={18} />
+        </button>
+        <button onClick={() => onNavigate('/calculators/fire')}>
+          <Target size={22} />
+          <span><small>Long-term planning</small><strong>Find the path to freedom</strong></span>
+          <ArrowRight size={18} />
+        </button>
+      </section>
+
       <section className="landing-capabilities" aria-labelledby="capabilities-title">
         <header>
-          <h2 id="capabilities-title">A calculation becomes useful when it leads somewhere.</h2>
-          <p>Move from a focused estimate to a current view of balances, goals, and plans without rebuilding the story each time.</p>
+          <p className="eyebrow">From answer to action</p>
+          <h2 id="capabilities-title">One clear thread through your financial life.</h2>
+          <p>Start with the question that matters today, then keep the useful result connected to what changes tomorrow.</p>
         </header>
 
         <div className="landing-feature-list">
@@ -4323,45 +4436,28 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
         </div>
       </section>
 
-      <section className="landing-ready-band" aria-labelledby="ready-title">
-        <div className="landing-ready-copy">
-          <h2 id="ready-title">Start with the decision in front of you.</h2>
-          <p>Use public calculators first, then keep accounts, goals, and plans together when you sign in.</p>
+      <section className="landing-continuity-band" aria-labelledby="continuity-title">
+        <div>
+          <p className="eyebrow">Your private workspace</p>
+          <h2 id="continuity-title">Keep the decision alive after the calculator closes.</h2>
+          <p>Connect saved results to balances, goals, transactions, and plans so progress has context.</p>
         </div>
-        <div className="landing-ready-actions">
-          <button className="landing-module-link landing-module-primary" onClick={() => onNavigate('/calculators')}>
-            <Calculator size={22} />
-            <span>
-              <strong>Calculator library</strong>
-              <small>Estimate loans, taxes, goals, investing, and retirement.</small>
-            </span>
-            <ArrowRight size={18} />
+        {auth.isSignedIn ? (
+          <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
+            Open dashboard
+            <ArrowRight size={17} />
           </button>
-          <button className="landing-module-link" onClick={() => onNavigate('/calculators/fire')}>
-            <Calculator size={22} />
-            <span>
-              <strong>FIRE planning</strong>
-              <small>Model retirement income or a target portfolio.</small>
-            </span>
-            <ArrowRight size={18} />
-          </button>
-          <button className="landing-module-link" onClick={() => onNavigate('/accounts')}>
-            <CircleDollarSign size={22} />
-            <span>
-              <strong>Accounts</strong>
-              <small>Keep net worth current.</small>
-            </span>
-            <ArrowRight size={18} />
-          </button>
-          <button className="landing-module-link" onClick={() => onNavigate('/goals')}>
-            <Target size={22} />
-            <span>
-              <strong>Goals</strong>
-              <small>Track funding and dates.</small>
-            </span>
-            <ArrowRight size={18} />
-          </button>
-        </div>
+        ) : (
+          <AuthActionButton
+            auth={auth}
+            kind="sign-up"
+            className="primary-button icon-text-button"
+            onUnavailable={() => onNavigate('/dashboard')}
+          >
+            Create free account
+            <ArrowRight size={17} />
+          </AuthActionButton>
+        )}
       </section>
 
       <section className="privacy-band" aria-labelledby="privacy-title">
@@ -6433,26 +6529,7 @@ function App({ auth }: { auth: AuthState }) {
           <span>FinPath</span>
         </a>
 
-        <nav className="desktop-nav" aria-label="Primary">
-          {routeItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <a
-                key={item.path}
-                href={item.path}
-                className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-                aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-                onClick={(event) => {
-                  event.preventDefault();
-                  navigateTo(item.path);
-                }}
-              >
-                <Icon size={17} />
-                {item.label}
-              </a>
-            );
-          })}
-        </nav>
+        <DesktopNavigation route={route} onNavigate={navigateTo} />
 
         <div className="topbar-actions">
           <TopbarAuthActions auth={auth} onNavigate={navigateTo} />
@@ -6477,30 +6554,46 @@ function App({ auth }: { auth: AuthState }) {
 
       {isMenuOpen && (
         <nav className="mobile-nav" id="mobile-primary-navigation" aria-label="Mobile primary">
-          {routeItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.path}
-                className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-                aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-                onClick={() => navigateTo(item.path)}
-              >
-                <Icon size={17} />
-                {item.label}
-              </button>
-            );
-          })}
-          <button className="nav-button mobile-cta" onClick={() => navigateTo('/calculators')}>
-            <Calculator size={17} />
-            Calculator library
-          </button>
+          <span className="mobile-nav-heading">Plan</span>
+          {primaryRouteItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.path}
+                  className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
+                  aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
+                  onClick={() => navigateTo(item.path)}
+                >
+                  <Icon size={17} />
+                  {item.label}
+                </button>
+              );
+            })}
+          <details className="mobile-nav-group">
+            <summary>
+              <FolderKanban size={17} />
+              Workspace
+              <ChevronDown size={16} />
+            </summary>
+            <div>
+              {workspaceRouteItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.path}
+                    className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
+                    aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
+                    onClick={() => navigateTo(item.path)}
+                  >
+                    <Icon size={17} />
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </details>
           {auth.isSignedIn ? (
             <>
-              <button className="nav-button mobile-cta" onClick={() => navigateTo('/dashboard')}>
-                <LayoutDashboard size={17} />
-                Open dashboard
-              </button>
               <SignOutButton redirectUrl="/">
                 <button className="nav-button mobile-cta">
                   <LogOut size={17} />

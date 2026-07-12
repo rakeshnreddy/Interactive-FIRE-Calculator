@@ -18,7 +18,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://8fb17051.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://baadb7c6.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
@@ -876,6 +876,7 @@ Current checkpoint:
 - The Pages production secret set is empty.
 - Production preflight and deployment guards are implemented and intentionally fail until those external requirements are satisfied.
 - Phase 2 is 90% complete. The next required input is the owned production domain and DNS access.
+- Calculator payoff inputs and the public shell have completed a post-Phase-25 quality pass: recurring monthly/yearly extra payments, yearly investment top-ups, reconciled schedules, a calmer dropdown-based navigation, and the vivid precision light/dark visual system are implemented. These do not remove the production Clerk blocker.
 
 Recommended first slice:
 

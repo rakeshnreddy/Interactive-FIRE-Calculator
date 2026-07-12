@@ -10,7 +10,7 @@ Last updated: July 12, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://8fb17051.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://baadb7c6.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -374,6 +374,9 @@ The product has pivoted from a standalone FIRE calculator to a comprehensive per
 Current status:
 Phases 1 and 3 through 25 are complete for preview/development. The comprehensive calculator program is 100% complete. Phase 2 still has one launch blocker: Clerk needs a production instance/domain, production keys, and hosted signed-in verification.
 
+Latest product-quality checkpoint:
+Loan, EMI, mortgage, amortization, debt-payoff, prepayment, and recast calculators now accept optional monthly and yearly additional payments with zero defaults. Results expose payoff time, time saved, interest saved, total interest, and total paid; expandable schedules use the same payment simulation. Compound interest, SIP, RD, EPF, NPS, retirement, 401(k), and HYSA routes accept an optional yearly contribution. The landing page and navigation use the vivid precision design system, four direct desktop destinations plus a workspace dropdown, a collapsed mobile workspace group, and clearer calculator paths.
+
 Next goal:
 Complete production Clerk setup and hosted signed-in verification for launch readiness.
 
@@ -405,7 +408,7 @@ Current state:
 Phases 1 and 3 through 25 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, import history, transactions, saved calculator results, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public hub with 82 calculator routes plus public FIRE. The complete calculator program includes durable saves, decision studios, optional schedules, family visualizers, content/metadata hardening, all-route no-auth smoke coverage, scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, input-only share links, and CSV export. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://8fb17051.interactive-fire-calculator.pages.dev
+https://baadb7c6.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev

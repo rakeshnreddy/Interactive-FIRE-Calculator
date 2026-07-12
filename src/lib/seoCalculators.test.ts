@@ -192,6 +192,92 @@ describe('calculateSeoCalculator', () => {
     expect(result.metrics.find((metric) => metric.label === 'Total interest')?.value).toBe(0);
   });
 
+  it.each([
+    'emi',
+    'home-loan-emi',
+    'car-loan-emi',
+    'personal-loan-emi',
+    'mortgage',
+    'amortization',
+    'arm-mortgage',
+    'home-equity-loan',
+    'auto-loan',
+    'personal-loan',
+    'heloc',
+    'debt-payoff',
+    'extra-mortgage-payment',
+    'mortgage-payoff',
+    'credit-card-payoff',
+    'student-loan-payoff',
+    'home-loan-prepayment',
+    'home-loan-foreclosure',
+    'mortgage-recast'
+  ])('%s exposes zero-default monthly and yearly additional payments', (slug) => {
+    const calculator = getCalculator(slug);
+
+    expect(calculator.inputs.find((input) => input.key === 'extraMonthlyPayment')).toMatchObject({ defaultValue: 0 });
+    expect(calculator.inputs.find((input) => input.key === 'extraAnnualPayment')).toMatchObject({ defaultValue: 0 });
+  });
+
+  it('shows the payoff and interest impact of monthly and yearly loan overpayments', () => {
+    const calculator = getCalculator('mortgage');
+    const baseline = calculateSeoCalculator(calculator, defaultValues(calculator));
+    const accelerated = calculateSeoCalculator(calculator, {
+      ...defaultValues(calculator),
+      extraAnnualPayment: 2_000,
+      extraMonthlyPayment: 250
+    });
+
+    expect(accelerated.metrics[0]).toEqual(baseline.metrics[0]);
+    expect(accelerated.metrics.find((metric) => metric.label === 'Payoff months')?.value)
+      .toBeLessThan(baseline.metrics.find((metric) => metric.label === 'Payoff months')!.value);
+    expect(accelerated.metrics.find((metric) => metric.label === 'Time saved')?.value).toBeGreaterThan(0);
+    expect(accelerated.metrics.find((metric) => metric.label === 'Interest saved')?.value).toBeGreaterThan(0);
+    expect(accelerated.metrics.find((metric) => metric.label === 'Total interest')?.value)
+      .toBeLessThan(baseline.metrics.find((metric) => metric.label === 'Total interest')!.value);
+  });
+
+  it('combines required, monthly extra, and yearly extra debt payments', () => {
+    const calculator = getCalculator('debt-payoff');
+    const baseline = calculateSeoCalculator(calculator, defaultValues(calculator));
+    const accelerated = calculateSeoCalculator(calculator, {
+      ...defaultValues(calculator),
+      extraAnnualPayment: 1_000,
+      extraMonthlyPayment: 100
+    });
+
+    expect(accelerated.metrics[0].value).toBeLessThan(baseline.metrics[0].value);
+    expect(accelerated.metrics.find((metric) => metric.label === 'Interest saved')?.value).toBeGreaterThan(0);
+    expect(accelerated.assumptions.join(' ')).toMatch(/every 12th month/i);
+  });
+
+  it('applies recurring extras after an immediate home-loan prepayment', () => {
+    const calculator = getCalculator('home-loan-prepayment');
+    const baseline = calculateSeoCalculator(calculator, defaultValues(calculator));
+    const accelerated = calculateSeoCalculator(calculator, {
+      ...defaultValues(calculator),
+      extraAnnualPayment: 100_000,
+      extraMonthlyPayment: 10_000
+    });
+
+    expect(accelerated.metrics[0].value).toBeGreaterThan(baseline.metrics[0].value);
+    expect(accelerated.metrics.find((metric) => metric.label === 'New payoff months')?.value)
+      .toBeLessThan(baseline.metrics.find((metric) => metric.label === 'New payoff months')!.value);
+  });
+
+  it.each(['compound-interest', 'sip', 'step-up-sip', 'rd', 'epf', 'nps', 'retirement', '401k', 'hysa'])(
+    '%s applies an optional yearly contribution without changing the zero-default projection',
+    (slug) => {
+      const calculator = getCalculator(slug);
+      const defaults = defaultValues(calculator);
+      const baseline = calculateSeoCalculator(calculator, defaults);
+      const withTopUp = calculateSeoCalculator(calculator, { ...defaults, annualTopUp: 1_000 });
+
+      expect(calculator.inputs.find((input) => input.key === 'annualTopUp')).toMatchObject({ defaultValue: 0 });
+      expect(withTopUp.metrics[0].value).toBeGreaterThan(baseline.metrics[0].value);
+    }
+  );
+
   it('handles zero-rate PPF contributions without dividing by zero', () => {
     const calculator = getCalculator('ppf');
     const result = calculateSeoCalculator(calculator, {

@@ -2,7 +2,7 @@
 
 ## Direction
 
-FinPath uses a precision-led product aesthetic: quiet neutral surfaces, crisp typography, restrained borders, and a small multi-hue data palette. The interface should feel like a well-made financial workbook translated into a modern application. It is minimal without becoming sterile and polished without becoming promotional.
+FinPath uses a vivid precision aesthetic: calm operational surfaces, crisp typography, restrained borders, and a purposeful full-palette decision system. The interface should feel like a well-made financial workbook translated into a modern application, with enough color to create energy and orientation without becoming promotional or noisy.
 
 ## Color
 
@@ -36,7 +36,7 @@ FinPath uses a precision-led product aesthetic: quiet neutral surfaces, crisp ty
 - Warning: `#e4b15f`
 - Danger: `#f18491`
 
-Teal identifies primary actions and current state. Blue supports charts and comparison. Warm coral is reserved for secondary data emphasis. Semantic colors retain their meaning. No gradient text and no decorative color fields.
+Teal identifies primary actions and current state. Cobalt supports growth, charts, and comparison. Warm coral identifies long-term or consequential decisions. Gold is reserved for warnings and select chart emphasis. Solid color bands may identify major decision families on public pages; operational pages use the same hues as thin hierarchy accents. Semantic colors retain their meaning. Never use gradient text, color blobs, or color without an information role.
 
 ## Typography
 
@@ -53,7 +53,7 @@ Use Inter Variable throughout. Product headings use 600-680 weight; body copy us
 
 ## Surfaces
 
-Ordinary content surfaces are opaque and border-led with a minimal shadow. Glass is reserved for sticky navigation and primary grouped work surfaces, using a solid fallback and reduced-transparency override. Avoid large diffuse shadows and decorative blur.
+Ordinary content surfaces are opaque and border-led with a minimal shadow. Glass is reserved for sticky navigation, dropdown menus, and primary grouped work surfaces, using a solid fallback and reduced-transparency override. Full-width public decision bands may use solid teal, cobalt, coral, or deep blue. Avoid large diffuse shadows, decorative blur, and glass applied to every item.
 
 ## Components
 
@@ -64,6 +64,9 @@ Ordinary content surfaces are opaque and border-led with a minimal shadow. Glass
 - Segmented controls: compact, bordered, and used only for mutually exclusive views.
 - Toolkit panel: one decision-family summary with a small route list, never a card grid inside a card.
 - Detail table: collapsed by default where long, scroll-contained on small screens, and exportable when the underlying schedule is useful.
+- Optional calculator inputs: collapsed by default, explicitly labeled as optional, and initialized to a neutral zero value.
+- Additional payments: show required payment, payoff period, time saved, total interest, interest saved, and a schedule that reconciles with the headline result.
+- Navigation: expose frequent destinations directly and group lower-frequency account, plan, report, and settings destinations in an accessible disclosure.
 
 ## Motion
 
