@@ -59,6 +59,9 @@ Production target:
 - `docs/CALCULATOR_VALUE_ROADMAP.md` contains the per-calculator value audit, shared studio plan, visualization inventory, and Phase 20-25 roadmap.
 - `docs/CALCULATOR_HIGH_STANDARD_IMPLEMENTATION_PLAN.md` contains the strict per-calculator implementation standard that keeps each route from shipping as a thin formula page.
 - `docs/CALCULATOR_LIBRARY_REVIEW.md` records the consolidation review, overlap decisions, route-retention standard, and UI/theme review.
+- `docs/PRODUCTION_AUTH_RUNBOOK.md` records the fail-closed production domain, Clerk, Cloudflare secret, deployment, and verification process.
+- `scripts/check_production_auth.mjs` verifies production configuration and hosted signed-out behavior without printing key values.
+- `scripts/deploy_production.sh` refuses unsafe branches or development-key bundles before a production Pages deployment.
 - `functions/api/health.ts` contains a Cloudflare Pages Function health endpoint.
 - `functions/api/me.ts` contains the Clerk-backed Pages Function identity endpoint.
 - `functions/api/profile.ts` contains the D1-backed authenticated profile endpoint.
@@ -865,13 +868,23 @@ Deploy/handoff rule:
 
 Complete production Clerk setup and hosted signed-in verification.
 
+Current checkpoint:
+
+- Clerk CLI `2.1.0` is installed.
+- Clerk production status is `not_started` with no production domain or instance.
+- The Pages project has no custom domain beyond `interactive-fire-calculator.pages.dev`.
+- The Pages production secret set is empty.
+- Production preflight and deployment guards are implemented and intentionally fail until those external requirements are satisfied.
+- Phase 2 is 90% complete. The next required input is the owned production domain and DNS access.
+
 Recommended first slice:
 
-1. Run `clerk deploy` in a human terminal and configure the production instance for an owned domain.
-2. Pull and set production Clerk publishable and secret keys in the intended Cloudflare Pages environments.
-3. Verify real hosted sign-up, sign-in, sign-out, `/api/me`, signed-in route access, saved calculator history, and destination follow-ups.
-4. Re-run `./scripts/test_all.sh`, deploy, and smoke the public and authenticated paths.
-5. Keep production launch status blocked until this flow passes end to end.
+1. Choose an owned production hostname and attach it to `interactive-fire-calculator` in Cloudflare Pages.
+2. Follow `docs/PRODUCTION_AUTH_RUNBOOK.md` to run `clerk deploy`, add DNS records, and complete any OAuth setup.
+3. Set the production frontend key and Pages Function secrets, then run `npm run auth:preflight`.
+4. Merge to `main` and run `npm run cf:deploy:production`.
+5. Verify real hosted sign-up, sign-in, sign-out, `/api/me`, signed-in route access, saved calculator history, destination follow-ups, export/delete, and cleanup.
+6. Keep production launch status blocked until this flow passes end to end.
 
 Reason:
 

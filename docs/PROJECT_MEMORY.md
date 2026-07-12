@@ -54,6 +54,8 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - `PRODUCT.md` defines the product audience, purpose, voice, and anti-references.
 - `DESIGN.md` defines the neutral precision-led light/dark visual system used by the React app.
 - `docs/CALCULATOR_LIBRARY_REVIEW.md` records formula overlap, route-retention rules, toolkit grouping, and the post-Phase-25 visual review.
+- `scripts/check_production_auth.mjs` and `scripts/deploy_production.sh` provide fail-closed production Clerk and Cloudflare deployment checks.
+- `docs/PRODUCTION_AUTH_RUNBOOK.md` is the source of truth for the remaining owned-domain, Clerk production, secret, deployment, and hosted verification steps.
 
 ## Completed Work
 
@@ -81,6 +83,9 @@ Phase 2 provider-ready auth shell is implemented and Clerk development credentia
 - Local ignored env files are present: `.env.local` from `clerk env pull` and `.dev.vars` for Pages Functions local dev.
 - Cloudflare Pages preview secrets now include `VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_PUBLISHABLE_KEY`, and `CLERK_SECRET_KEY`; production secrets are intentionally empty until Clerk production keys exist.
 - `clerk doctor --spotlight` reports no production instance configured. `clerk deploy status` says production deployment is `not_started` and requires a human terminal/domain setup.
+- Clerk CLI is updated to `2.1.0`. The Cloudflare Pages project currently exposes only `interactive-fire-calculator.pages.dev`, which cannot replace Clerk's owned-domain production requirement, and the Pages production secret list is empty.
+- `npm run auth:preflight` now fails closed until a `pk_live_` frontend key, owned HTTPS origin, completed Clerk production instance, and required Pages Function secret names exist.
+- `npm run cf:deploy:production` refuses non-`main` branches, runs the full suite, verifies the exact live key is baked into the client bundle, rejects the configured development key, and deploys explicitly to the Pages production branch.
 - `npm run cf:deploy` deployed the gated auth-ready state to `https://3894ea1a.interactive-fire-calculator.pages.dev`.
 - Verification passed with `./scripts/test_all.sh` and browser QA at `1280x720` and `390x844`.
 
@@ -305,11 +310,12 @@ Calculator roadmap decision:
 
 Remaining Phase 2 work:
 
-1. Verify real sign up, sign in, sign out, signed-in route access, and `/api/me` on the Cloudflare Pages preview with a test user.
-2. Run `clerk deploy` in a human terminal and configure the Clerk production instance for an owned domain.
-3. Pull/set production Clerk keys when the production instance exists.
-4. Re-run `./scripts/test_all.sh`, redeploy, and verify the production auth flow.
-5. Do not call production auth launch-ready until a Clerk production instance/domain and production keys exist.
+1. Provide an owned production domain and DNS access, then attach that domain to the Cloudflare Pages project.
+2. Run `clerk deploy` in a human terminal and complete production instance, DNS, and any OAuth requirements for that exact domain.
+3. Configure `.env.production.local` plus the production Pages Function secrets described in `docs/PRODUCTION_AUTH_RUNBOOK.md`.
+4. Run `npm run auth:preflight` and deploy from merged `main` with `npm run cf:deploy:production`.
+5. Verify real sign up, sign in, sign out, `/api/me`, signed-in routes, calculator history, downstream follow-ups, export/delete, and test-data cleanup on the owned domain.
+6. Do not call production auth launch-ready until the hosted flow passes end to end.
 
 Launch next slice:
 

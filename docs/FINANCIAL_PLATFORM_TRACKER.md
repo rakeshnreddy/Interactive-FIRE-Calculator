@@ -19,7 +19,7 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase | Status | Completion | Notes |
 | --- | --- | ---: | --- |
 | Phase 1: Product Shell and IA | Complete | 100% | Public landing, app shell, target IA placeholders, FIRE module route, compact calculator UX, and progressive disclosure are in place. |
-| Phase 2: Auth and User Accounts | Dev credentials wired, production instance blocked | 85% | Clerk selected and integrated; sign-up/sign-in/sign-out controls, signed-in shell state, route gates, `/api/me`, local dev env, and Cloudflare Pages preview secrets exist. Real production auth needs a Clerk production instance/domain before it can be marked complete. |
+| Phase 2: Auth and User Accounts | Code and deployment safeguards complete; owned domain blocked | 90% | Clerk integration, route gates, `/api/me`, identity-scoped persistence, production preflight, live-key bundle guard, explicit production-branch deployment, and runbook are complete. An owned domain, Clerk production instance/DNS, production secrets, and hosted signed-in verification remain. |
 | Phase 3: Server Persistence | Preview/server complete | 100% | D1 schema, shared auth/DB helpers, authenticated profile API, user-owned FIRE plan APIs, account-backed plan saves, Settings profile form, and signed-out local demo saves are in place. Production usage still depends on the Phase 2 Clerk production instance/domain. |
 | Phase 4: Financial Tracker MVP | Preview/server complete | 100% | Manual accounts, assets, liabilities, balance history, account archival, and dashboard net worth summaries are in place. |
 | Phase 5: Goals System | Preview/server complete | 100% | User-owned goal CRUD, progress and deadline tracking, signed-in Goals workspace, and dashboard goal summaries are in place. |
@@ -78,6 +78,16 @@ Post-roadmap consolidation verification:
 - `npm run cf:deploy` deployed to `https://8fb17051.interactive-fire-calculator.pages.dev`; `npm run smoke:calculators` verified all 84 public calculator-library paths without authentication.
 - Live `/`, `/calculators`, representative India/US/global calculators, `/calculators/fire`, and `/dashboard` returned `200`; unauthenticated `/api/calculator-results` returned `401`.
 - Calculator program and this consolidation/design checkpoint are 100% complete. The remaining launch blocker is still production Clerk instance/domain/keys and hosted signed-in verification.
+
+Production auth readiness checkpoint:
+
+- Clerk CLI updated from `1.5.0` to `2.1.0`; diagnostics pass except for the intentionally unconfigured production instance.
+- `clerk deploy --mode agent` reports `not_started`, no domain, no production instance ID, and no pending DNS records because production creation has not begun.
+- Cloudflare Pages currently lists only `interactive-fire-calculator.pages.dev`; no owned custom domain is attached and the production Pages secret set is empty.
+- Added `.env.production.example`, `npm run auth:preflight`, and `npm run cf:deploy:production`.
+- Preflight validates a live frontend key, owned HTTPS origin, Clerk completion, required Pages secret names, exact bundle key, absence of the configured development key, and hosted public/API status.
+- Production deploy refuses non-`main` branches by default and explicitly deploys with `--branch main` after the full repository suite and bundle checks.
+- Added `docs/PRODUCTION_AUTH_RUNBOOK.md`. Phase 2 is now 90% complete; the remaining 10% requires the product owner's domain/DNS choice and real hosted identity flow.
 
 ## Phase 1 Completion Checklist
 

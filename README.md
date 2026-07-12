@@ -51,6 +51,21 @@ Cloudflare settings:
 - Project name: `interactive-fire-calculator`
 - Config: `wrangler.toml`
 
+Preview deployments from feature branches use:
+
+```bash
+npm run cf:deploy
+```
+
+Production authentication and deployment use the fail-closed runbook:
+
+```bash
+npm run auth:preflight
+npm run cf:deploy:production
+```
+
+Read [Production authentication runbook](docs/PRODUCTION_AUTH_RUNBOOK.md) before either command. Production requires an owned custom domain and completed Clerk production instance; the deployment script rejects the configured development Clerk key and non-production branches.
+
 ## Product Scope
 
 The calculator supports:
@@ -62,7 +77,7 @@ The calculator supports:
 - Desired final portfolio value
 - Signed one-off cash flows
 - Base, guardrail, and upside comparison views
-- Three visual moods with light and dark modes
+- Persistent light and dark product themes
 
 ## Calculation Contract
 
@@ -73,5 +88,6 @@ Rates are nominal annual returns. Inflation adjusts the withdrawal amount after 
 ## Documentation
 
 - [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md)
+- [Production authentication runbook](docs/PRODUCTION_AUTH_RUNBOOK.md)
 - [Comprehensive rebuild plan](docs/FIRE_REBUILD_PLAN.md)
 - [Cloudflare Pages deployment notes](docs/CLOUDFLARE_PAGES.md)
