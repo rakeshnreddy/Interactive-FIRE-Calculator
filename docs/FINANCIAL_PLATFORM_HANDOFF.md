@@ -1,5 +1,21 @@
 # Financial Platform Handoff
 
+## Phase 26 active handoff — Compound Interest excellence pass
+
+- Date: July 27, 2026.
+- Completed calculator: `/calculators/compound-interest` (1 of 82).
+- Next calculator: `/calculators/savings-goal`.
+- Remaining high-standard calculator passes: 81.
+- Engine: `src/lib/compoundInterestCalculator.ts`, formula version `finpath-compound-v2`.
+- Route UI: `src/CompoundInterestCalculator.tsx`, isolated by slug before the generic calculator detail.
+- Research and formula contract: `docs/COMPOUND_INTEREST_RESEARCH.md`.
+- Preserve: the registry entry, stable URL/title/defaults, shared `calculateSeoCalculator` compound case, 401(k), HYSA, all public routes, and `src/lib/fire.ts`.
+- Default oracle: `113669.41993630132` with $10,000 principal, $500 end-of-month, 10 years, 8% nominal, monthly compounding.
+- Shipped contract: nominal/APY, independent frequencies/timing, fractional terms, annual contribution increase/top-up, fee/fee drag, inflation/real value, target basis and timing, one future deposit/withdrawal, scenarios, sensitivity, milestones, real schedules/charts, exact locale/currency display, v1/v2 links, per-route browser draft, raw CSV, save and history loading.
+- Deferred: taxes, live rates/CPI/FX, Monte Carlo, sequence risk, exact bank ledgers, product-specific fee/rate tiers, negative balances, arbitrary cash-flow ledgers, and required-contribution solving.
+- Verification before handoff close: full suite, production build, desktop/mobile light/dark browser QA, Cloudflare preview deploy, all-route public smoke, direct Compound smoke, and unauthenticated API `401`.
+- Production Clerk remains a separate launch blocker and is not part of this public calculator pass.
+
 Last updated: July 12, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.

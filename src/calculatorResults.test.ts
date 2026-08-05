@@ -79,4 +79,61 @@ describe('calculator result save payload validation', () => {
     expect(destinationTypeForRoute('/plans')).toBe('plan');
     expect(destinationTypeForRoute('/transactions')).toBe('transaction');
   });
+
+  it('accepts the versioned Compound Interest numeric save boundary', () => {
+    const compoundPayload = {
+      ...validPayload,
+      calculatorCategory: 'Investing',
+      calculatorSlug: 'compound-interest',
+      calculatorTitle: 'Compound Interest Calculator',
+      conversionLabel: 'Save as wealth goal',
+      currency: 'EUR',
+      inputValues: {
+        annualContributionIncreasePercent: 3,
+        annualFeePercent: 0.4,
+        annualTopUp: 1000,
+        compoundingFrequency: 12,
+        contributionFrequency: 12,
+        contributionTiming: 0,
+        inflationPercent: 2.5,
+        monthly: 500,
+        principal: 10000,
+        rate: 8,
+        rateBasis: 0,
+        recurringContribution: 500,
+        target: 150000,
+        targetBasis: 0,
+        years: 10.5
+      },
+      result: {
+        assumptions: ['Formula version finpath-compound-v2.'],
+        metrics: [
+          {
+            description: 'Projected ending value.',
+            label: 'Projected value',
+            tone: 'accent',
+            value: 140000,
+            valueType: 'currency'
+          },
+          {
+            description: 'Inflation-adjusted value.',
+            label: 'Today’s buying power',
+            value: 109000,
+            valueType: 'currency'
+          }
+        ],
+        narrative: 'Projection under constant assumptions.'
+      }
+    } as const;
+
+    const parsed = parseCalculatorSavePayload(compoundPayload);
+
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.value.calculatorSlug).toBe('compound-interest');
+      expect(parsed.value.currency).toBe('EUR');
+      expect(parsed.value.inputValues.target).toBe(150000);
+      expect(parsed.value.inputValues.contributionFrequency).toBe(12);
+    }
+  });
 });

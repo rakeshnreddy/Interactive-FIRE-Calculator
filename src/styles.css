@@ -4448,6 +4448,817 @@ h2 {
   }
 }
 
+/* Phase 26: calculator-local Compound Interest experience. */
+.compound-calculator {
+  --compound-growth: var(--data-blue);
+  --compound-capital: var(--accent);
+  gap: 1rem;
+}
+
+.compound-calculator .route-heading > a {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  width: fit-content;
+  color: var(--accent);
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.compound-calculator .route-heading > a:hover,
+.compound-calculator .route-heading > a:focus-visible {
+  color: var(--heading);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.compound-trust-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-strong);
+}
+
+.compound-trust-strip > span {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.15rem 0.6rem;
+  align-items: center;
+  min-width: 0;
+  min-height: 72px;
+  padding: 0.85rem 1rem;
+  border-right: 1px solid var(--border);
+}
+
+.compound-trust-strip > span:last-child {
+  border-right: 0;
+}
+
+.compound-trust-strip svg {
+  grid-row: 1 / span 2;
+  color: var(--accent);
+}
+
+.compound-trust-strip strong {
+  color: var(--heading);
+  font-size: 0.86rem;
+}
+
+.compound-trust-strip small {
+  color: var(--muted);
+}
+
+.compound-workspace .calculator-input-panel,
+.compound-workspace .calculator-result-panel,
+.compound-analysis-card,
+.compound-history-panel,
+.compound-related-panel {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.compound-workspace .calculator-input-panel {
+  border-top: 3px solid var(--accent);
+}
+
+.compound-workspace .compound-result-panel {
+  position: sticky;
+  top: 78px;
+  border-top: 3px solid var(--data-blue);
+}
+
+.compound-workspace .panel-heading {
+  align-items: flex-start;
+}
+
+.compound-workspace .calculator-field-label svg {
+  flex: 0 0 auto;
+  color: var(--muted);
+}
+
+.compound-workspace .field > small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.compound-workspace .field.has-error .calculator-input-control {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+.compound-workspace .field .field-error {
+  color: var(--danger);
+  font-weight: 750;
+}
+
+.compound-select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 2.5rem 0 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--heading);
+  background: var(--field-bg);
+  font: inherit;
+}
+
+.compound-select:hover {
+  border-color: var(--border-strong);
+}
+
+.compound-select:focus-visible,
+.compound-workspace input:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 2px;
+}
+
+.compound-default-convention {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  border-left: 3px solid var(--accent);
+  color: var(--muted-strong);
+  background: var(--accent-wash);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.compound-disclosure {
+  overflow: clip;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.compound-disclosure > summary,
+.compound-analysis-card > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 60px;
+  padding: 0.75rem 0.85rem;
+  color: var(--heading);
+  list-style: none;
+  cursor: pointer;
+}
+
+.compound-disclosure > summary::-webkit-details-marker,
+.compound-analysis-card > summary::-webkit-details-marker {
+  display: none;
+}
+
+.compound-disclosure > summary > span,
+.compound-analysis-card > summary > span {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.compound-disclosure > summary small,
+.compound-analysis-card > summary small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.compound-disclosure > summary svg,
+.compound-analysis-card > summary svg {
+  color: var(--muted);
+  transition: transform 160ms ease;
+}
+
+.compound-disclosure[open] > summary svg,
+.compound-analysis-card[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+.compound-disclosure > summary:focus-visible,
+.compound-analysis-card > summary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  outline-offset: -3px;
+}
+
+.compound-advanced-body {
+  display: grid;
+  gap: 1rem;
+  padding: 0.85rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface-strong);
+}
+
+.compound-advanced-body fieldset,
+.compound-scenario-picker {
+  min-width: 0;
+  margin: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.compound-advanced-body legend,
+.compound-scenario-picker legend {
+  padding: 0 0.35rem;
+  color: var(--heading);
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.compound-inline-note {
+  display: grid;
+  gap: 0.25rem;
+  align-content: center;
+  min-height: 94px;
+  padding: 0.75rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  color: var(--heading);
+  background: var(--accent-wash);
+}
+
+.compound-inline-note small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.compound-scenario-picker {
+  display: grid;
+  gap: 0.65rem;
+  background: var(--surface-soft);
+}
+
+.compound-scenario-picker > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.compound-scenario-picker > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.compound-scenario-picker label {
+  position: relative;
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+  min-height: 82px;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  background: var(--surface-strong);
+  cursor: pointer;
+}
+
+.compound-scenario-picker input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.compound-scenario-picker label:has(input:checked) {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.compound-scenario-picker label:has(input:focus-visible) {
+  outline: 3px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 2px;
+}
+
+.compound-scenario-picker span {
+  color: var(--accent);
+  font-size: 0.73rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.compound-scenario-picker strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--heading);
+  font-size: 0.92rem;
+}
+
+.compound-scenario-picker small {
+  color: var(--muted);
+}
+
+.compound-version {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.compound-headline {
+  display: grid;
+  gap: 0.15rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.compound-headline > strong {
+  color: var(--heading);
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.compound-headline > span {
+  color: var(--data-blue);
+  font-weight: 800;
+}
+
+.compound-headline > small {
+  color: var(--muted);
+}
+
+.compound-error-summary {
+  padding: 0.85rem;
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  color: var(--text);
+  background: var(--danger-soft);
+}
+
+.compound-error-summary strong {
+  color: var(--danger);
+}
+
+.compound-error-summary ul {
+  margin: 0.55rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.compound-warning-list {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.compound-warning-list p {
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border-left: 3px solid var(--warning);
+  color: var(--muted-strong);
+  background: color-mix(in srgb, var(--warning) 9%, transparent);
+  font-size: 0.8rem;
+}
+
+.compound-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.compound-growth-chart {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.compound-growth-chart figcaption {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.compound-growth-chart figcaption strong {
+  color: var(--heading);
+}
+
+.compound-growth-chart figcaption small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.compound-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.compound-chart-legend span {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.compound-chart-legend span::before {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: currentColor;
+  content: "";
+}
+
+.compound-chart-legend .is-balance {
+  color: var(--compound-growth);
+}
+
+.compound-chart-legend .is-capital {
+  color: var(--compound-capital);
+}
+
+.compound-chart-plot {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(36px, 1fr));
+  gap: 0.4rem;
+  min-height: 190px;
+  overflow-x: auto;
+}
+
+.compound-chart-column {
+  display: grid;
+  grid-template-rows: minmax(120px, 1fr) auto auto;
+  gap: 0.25rem;
+  min-width: 36px;
+  align-items: end;
+  text-align: center;
+}
+
+.compound-chart-values {
+  display: flex;
+  gap: 3px;
+  align-items: end;
+  align-self: stretch;
+  justify-content: center;
+  padding-top: 0.3rem;
+  border-bottom: 1px solid var(--chart-grid);
+}
+
+.compound-chart-values i {
+  display: block;
+  width: min(13px, 40%);
+  min-height: 3px;
+  border-radius: 3px 3px 0 0;
+}
+
+.compound-chart-values .is-balance {
+  background: var(--compound-growth);
+}
+
+.compound-chart-values .is-capital {
+  background: var(--compound-capital);
+}
+
+.compound-chart-column > strong {
+  color: var(--heading);
+  font-size: 0.66rem;
+  white-space: nowrap;
+}
+
+.compound-chart-column > small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.62rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compound-analysis-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.compound-analysis-card {
+  overflow: clip;
+}
+
+.compound-analysis-card[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.compound-analysis-body {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 0.9rem;
+}
+
+.compound-analysis-body > p {
+  margin: 0;
+  color: var(--muted-strong);
+  line-height: 1.55;
+}
+
+.compound-schedule-toolbar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.compound-schedule-toolbar label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.compound-schedule-toolbar select {
+  min-height: 40px;
+  padding: 0 2rem 0 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--heading);
+  background: var(--field-bg);
+  font: inherit;
+}
+
+.compound-analysis-card .calculator-breakdown-table-wrap:focus-visible,
+.compound-sensitivity-wrap:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 2px;
+}
+
+.compound-analysis-card table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.compound-analysis-card tbody th {
+  color: var(--heading);
+  background: transparent;
+  font-weight: 750;
+  text-align: left;
+}
+
+.compound-sensitivity-wrap {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.compound-sensitivity-wrap table {
+  width: 100%;
+  min-width: 580px;
+  border-collapse: collapse;
+}
+
+.compound-sensitivity-wrap th,
+.compound-sensitivity-wrap td {
+  padding: 0.75rem;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-align: right;
+}
+
+.compound-sensitivity-wrap th {
+  color: var(--heading);
+  background: var(--surface-soft);
+}
+
+.compound-sensitivity-wrap th:first-child {
+  text-align: left;
+}
+
+.compound-sensitivity-wrap td.is-base {
+  color: var(--heading);
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 2px var(--accent);
+  font-weight: 850;
+}
+
+.compound-milestone-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.compound-milestone-list span {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.7rem;
+  border-left: 3px solid var(--data-blue);
+  color: var(--heading);
+  background: var(--data-blue-soft);
+}
+
+.compound-milestone-list small {
+  color: var(--muted);
+}
+
+.compound-methodology ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.compound-methodology a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.compound-source-date {
+  font-size: 0.78rem;
+}
+
+.compound-history-panel {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.6fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+}
+
+.compound-history-panel h2,
+.compound-history-panel p {
+  margin: 0;
+}
+
+.compound-history-panel p {
+  color: var(--muted);
+}
+
+.compound-history-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.compound-history-list button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.15rem 0.45rem;
+  min-height: 74px;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  text-align: left;
+}
+
+.compound-history-list button:hover,
+.compound-history-list button:focus-visible {
+  border-color: var(--accent);
+  background: var(--surface-strong);
+}
+
+.compound-history-list svg {
+  grid-row: 1 / span 3;
+  color: var(--accent);
+}
+
+.compound-history-list strong,
+.compound-history-list small {
+  grid-column: 2;
+}
+
+.compound-history-list strong {
+  color: var(--heading);
+  overflow-wrap: anywhere;
+}
+
+.compound-related-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.compound-related-panel a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 88px;
+  padding: 1rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.compound-related-panel a:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.compound-related-panel a:hover,
+.compound-related-panel a:focus-visible {
+  background: var(--accent-wash);
+}
+
+.compound-related-panel a > span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.compound-related-panel strong {
+  color: var(--heading);
+}
+
+.compound-related-panel small {
+  color: var(--muted);
+}
+
+.compound-related-panel svg {
+  color: var(--accent);
+}
+
+.compound-calculator .calculator-help-dot {
+  width: 28px;
+  height: 28px;
+}
+
+@media (max-width: 1040px) {
+  .compound-workspace .compound-result-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .compound-trust-strip,
+  .compound-history-panel,
+  .compound-related-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .compound-trust-strip > span {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compound-trust-strip > span:last-child,
+  .compound-related-panel a:first-child {
+    border-bottom: 0;
+  }
+
+  .compound-related-panel a:first-child {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compound-scenario-picker > div,
+  .compound-history-list,
+  .compound-milestone-list {
+    grid-template-columns: 1fr;
+  }
+
+  .compound-chart-plot {
+    grid-template-columns: repeat(8, minmax(46px, 1fr));
+  }
+
+  .compound-action-row,
+  .compound-action-row button,
+  .compound-schedule-toolbar,
+  .compound-schedule-toolbar button {
+    width: 100%;
+  }
+
+  .compound-schedule-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compound-disclosure > summary svg,
+  .compound-analysis-card > summary svg {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .compound-scenario-picker label:has(input:checked),
+  .compound-sensitivity-wrap td.is-base {
+    outline: 3px solid Highlight;
+  }
+
+  .compound-chart-values i,
+  .compound-chart-legend span::before {
+    border: 1px solid CanvasText;
+    forced-color-adjust: none;
+  }
+}
+
 /* FinPath vivid precision layer: a calmer shell with purposeful full-palette color. */
 .app {
   --canvas: #f1f6f5;

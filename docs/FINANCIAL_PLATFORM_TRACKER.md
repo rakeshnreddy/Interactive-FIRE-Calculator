@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: July 12, 2026
+Last updated: July 27, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -43,7 +43,22 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Preview/app complete | 100% | Gross-to-net tables, India old/new regime estimates, US bracket estimates, budget cashflow, emergency runway, and protection-gap planning are in place. |
 | Phase 24: Calculator Search Preservation and Content Quality | Preview/app complete | 100% | Stable URLs, formula-aware route content, visible assumptions and FAQs, tested canonicals/schema/sitemap coverage, crawlable internal links, duplicate-content guards, and no-auth smoke coverage for all public calculators are in place. |
 | Phase 25: Engagement and Personalization Loop | Preview/app complete | 100% | Side-by-side scenarios, deterministic outcome drivers, recent saved-run history, explicit reload, dashboard follow-ups, input-only share links, schedule CSVs, and scenario-summary export are in place. |
+| Phase 26: Calculator-by-Calculator Excellence Pass | In progress | 1.2% | Calculator 1 of 82, Compound Interest, has a dedicated versioned engine and high-standard public experience. 81 calculators remain; Savings Goal is next. |
 | Post-roadmap: Calculator Consolidation and Visual System Refresh | Preview/app complete | 100% | All 82 exact routes remain, but the hub now presents 8 decision toolkits with exact search and progressive disclosure. Product/design contracts, a neutral teal-blue-coral light/dark system, restrained glass, persistent theme preference, and refreshed landing/detail/app surfaces are deployed at `https://8fb17051.interactive-fire-calculator.pages.dev`. |
+
+## Phase 26 Calculator 1 Checkpoint
+
+- [x] Research authoritative formula conventions, official calculators, competitors, uncertainty language, accessibility, locale formatting, and CSV interoperability.
+- [x] Preserve the legacy Compound default and keep 401(k), HYSA, and FIRE behavior unchanged.
+- [x] Add the typed `finpath-compound-v2` dated-cash-flow engine with explicit validation and finite-output safeguards.
+- [x] Add beginner Quick Start, collapsed Advanced Options, and expandable expert analysis.
+- [x] Add true chart data, annual/event schedules, fee drag, real value, target gap/timing, milestones, and 3×3 sensitivity.
+- [x] Add versioned share/restoration, route-specific draft, raw CSV, signed-in save boundary, and saved-run reload.
+- [x] Add exact locale/currency display controls without implying FX conversion.
+- [x] Add finance golden tests, timing/frequency matrix, validation/overflow cases, invariants, save-payload integration, and full shared regressions.
+- [ ] Record final commit, pushed branch, preview URL, and deployed smoke results after release.
+
+Research and exact deferred decisions: `docs/COMPOUND_INTEREST_RESEARCH.md`.
 
 ## Design System Milestone
 

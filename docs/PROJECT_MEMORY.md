@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: July 12, 2026
+Last updated: July 27, 2026
 
 ## Repository
 
@@ -56,6 +56,16 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - `docs/CALCULATOR_LIBRARY_REVIEW.md` records formula overlap, route-retention rules, toolkit grouping, and the post-Phase-25 visual review.
 - `scripts/check_production_auth.mjs` and `scripts/deploy_production.sh` provide fail-closed production Clerk and Cloudflare deployment checks.
 - `docs/PRODUCTION_AUTH_RUNBOOK.md` is the source of truth for the remaining owned-domain, Clerk production, secret, deployment, and hosted verification steps.
+- Compound Interest now has a dedicated route-local experience in `src/CompoundInterestCalculator.tsx` and typed engine in `src/lib/compoundInterestCalculator.ts`; formula research and deferred-scope decisions are recorded in `docs/COMPOUND_INTEREST_RESEARCH.md`.
+
+## Phase 26 Calculator Excellence Pass
+
+- Calculator 1 of 82 is complete in code: `/calculators/compound-interest`.
+- The route preserves the original $10,000 / $500 monthly / 10 years / 8% nominal monthly-compounding default and exact unrounded result.
+- New route-local behavior covers nominal versus APY semantics, independent contribution/compounding frequencies, beginning/end timing, fractional terms, step-ups, anniversary top-ups, annual asset fees, inflation, a target basis, one future deposit and withdrawal, deterministic scenarios, sensitivity, milestones, reconciled annual/event schedules, locale/currency display, v1/v2 link restoration, per-route draft, raw CSV, and saved-run loading.
+- The shared `compound` formula remains untouched for 401(k) and HYSA; `src/lib/fire.ts` remains untouched.
+- High-standard pass progress: 1 of 82 calculators complete; 81 remain.
+- Next calculator: `/calculators/savings-goal`.
 
 ## Completed Work
 

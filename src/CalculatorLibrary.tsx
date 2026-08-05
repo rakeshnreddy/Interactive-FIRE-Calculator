@@ -26,6 +26,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { AuthState } from './auth';
+import { CompoundInterestCalculator } from './CompoundInterestCalculator';
 import {
   buildCalculatorInputImpacts,
   buildCalculatorShareUrl,
@@ -69,7 +70,7 @@ const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment'
 
 export type CalculatorSaveRequest = {
   calculator: SeoCalculator;
-  currency: 'INR' | 'USD';
+  currency: string;
   result: ReturnType<typeof calculateSeoCalculator>;
   values: Record<string, number>;
 };
@@ -111,6 +112,18 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
 
   if (calculator) {
+    if (calculator.slug === 'compound-interest') {
+      return (
+        <CompoundInterestCalculator
+          auth={auth}
+          calculator={calculator}
+          onNavigate={onNavigate}
+          onSaveResult={onSaveResult}
+          savedResults={savedResults}
+        />
+      );
+    }
+
     return (
       <CalculatorDetail
         auth={auth}
@@ -1060,14 +1073,14 @@ function CalculatorStudioVisual({
         <small>{chart.description}</small>
       </div>
       <div className="calculator-studio-chart" aria-label={chart.summary}>
-        {chart.entries.map((entry) => {
+        {chart.entries.map((entry, entryIndex) => {
           const primaryWidth = Math.max(8, Math.min(100, Math.abs(entry.primary) / maxChartValue * 100));
           const secondaryWidth = entry.secondary === undefined
             ? 0
             : Math.max(8, Math.min(100, Math.abs(entry.secondary) / maxChartValue * 100));
 
           return (
-            <div className="calculator-studio-chart-row" key={entry.label}>
+            <div className="calculator-studio-chart-row" key={`${entry.label}-${entryIndex}`}>
               <div>
                 <span>{entry.label}</span>
                 <strong>{formatChartValue(entry.primary, calculator)}</strong>

@@ -120,7 +120,7 @@ const routeAngles: Record<string, string> = {
   'car-loan-emi': 'It keeps the estimate centered on an India car-loan amount and tenure.',
   cagr: 'It is intended for a clean point-to-point CAGR with no intermediate cashflows.',
   cd: 'It frames compounding around a fixed-term US certificate of deposit and its APY.',
-  'compound-interest': 'It provides a general-purpose growth projection for a starting balance plus recurring deposits.',
+  'compound-interest': 'Its dedicated experience makes rate basis, contribution timing, fees, inflation, target basis, and future cash flows explicit while preserving the legacy monthly default.',
   'credit-card-payoff': 'It treats the balance as revolving card debt and highlights whether the payment overcomes a high APR.',
   emi: 'It provides a general India EMI estimate before loan-specific fees or protections are added.',
   'extra-mortgage-payment': 'The entered payment is treated as the regular payment plus the extra principal commitment.',
