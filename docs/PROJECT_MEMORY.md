@@ -10,7 +10,7 @@ Last updated: July 27, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://baadb7c6.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://89f4cb56.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -66,6 +66,9 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - The shared `compound` formula remains untouched for 401(k) and HYSA; `src/lib/fire.ts` remains untouched.
 - High-standard pass progress: 1 of 82 calculators complete; 81 remain.
 - Next calculator: `/calculators/savings-goal`.
+- Implementation commit: `cd13ac6` (`Elevate compound interest calculator`).
+- Preview: `https://89f4cb56.interactive-fire-calculator.pages.dev`.
+- Verification: 79 Python tests, TypeScript, 1,187 frontend tests across 21 files, production build, desktop/mobile/light/dark/reduced-motion/zoom-equivalent browser QA, all 84 public calculator routes, and unauthenticated calculator-save API `401`.
 
 ## Completed Work
 

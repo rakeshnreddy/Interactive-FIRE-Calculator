@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://baadb7c6.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://89f4cb56.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -56,9 +56,11 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Add versioned share/restoration, route-specific draft, raw CSV, signed-in save boundary, and saved-run reload.
 - [x] Add exact locale/currency display controls without implying FX conversion.
 - [x] Add finance golden tests, timing/frequency matrix, validation/overflow cases, invariants, save-payload integration, and full shared regressions.
-- [ ] Record final commit, pushed branch, preview URL, and deployed smoke results after release.
+- [x] Record implementation commit `cd13ac6`, pushed branch, preview `https://89f4cb56.interactive-fire-calculator.pages.dev`, 84-route public smoke, direct Compound/401(k)/HYSA/FIRE `200`, and unauthenticated save API `401`.
 
 Research and exact deferred decisions: `docs/COMPOUND_INTEREST_RESEARCH.md`.
+
+Verification passed with 79 Python tests, TypeScript typecheck, 1,187 frontend tests across 21 files, and the production build. Local and deployed browser QA covered 320px, 390px dark/reduced-motion, 720px zoom-equivalent, 1,440px desktop, validation, APY semantics, Indian formatting, legacy/v2 share restoration, schedule reconciliation, navigation, console state, and document overflow.
 
 ## Design System Milestone
 

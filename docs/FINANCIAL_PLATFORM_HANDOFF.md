@@ -15,6 +15,10 @@
 - Deferred: taxes, live rates/CPI/FX, Monte Carlo, sequence risk, exact bank ledgers, product-specific fee/rate tiers, negative balances, arbitrary cash-flow ledgers, and required-contribution solving.
 - Verification before handoff close: full suite, production build, desktop/mobile light/dark browser QA, Cloudflare preview deploy, all-route public smoke, direct Compound smoke, and unauthenticated API `401`.
 - Production Clerk remains a separate launch blocker and is not part of this public calculator pass.
+- Implementation commit: `cd13ac6` (`Elevate compound interest calculator`), pushed to `origin/codex/cloudflare-pages-theme-plan`.
+- Preview verified: `https://89f4cb56.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Full gate: 79 Python tests, TypeScript, 1,187 frontend tests across 21 files, and production build.
+- Live gate: all 84 public calculator paths passed without authentication; Compound, 401(k), HYSA, and FIRE returned `200`; unauthenticated `/api/calculator-results` returned `401`; deployed desktop/mobile browser checks had no console errors, failed resources, overlays, or horizontal overflow.
 
 Last updated: July 12, 2026
 
