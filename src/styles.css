@@ -4764,6 +4764,13 @@ h2 {
   font-weight: 800;
 }
 
+.compound-model-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-end;
+}
+
 .compound-headline {
   display: grid;
   gap: 0.15rem;
@@ -4785,6 +4792,16 @@ h2 {
 
 .compound-headline > small {
   color: var(--muted);
+}
+
+.compound-interpretation {
+  margin: 0;
+  padding: 0.75rem;
+  border-left: 3px solid var(--data-blue);
+  color: var(--muted-strong);
+  background: var(--data-blue-soft);
+  font-size: 0.86rem;
+  line-height: 1.55;
 }
 
 .compound-error-summary {
@@ -4872,12 +4889,21 @@ h2 {
   content: "";
 }
 
-.compound-chart-legend .is-balance {
+.compound-chart-legend .is-capital {
+  color: var(--compound-capital);
+}
+
+.compound-chart-legend .is-growth {
   color: var(--compound-growth);
 }
 
-.compound-chart-legend .is-capital {
-  color: var(--compound-capital);
+.compound-chart-legend .is-real {
+  color: var(--warm);
+}
+
+.compound-chart-legend .is-real::before {
+  border: 2px solid currentColor;
+  background: transparent;
 }
 
 .compound-chart-plot {
@@ -4899,7 +4925,8 @@ h2 {
 
 .compound-chart-values {
   display: flex;
-  gap: 3px;
+  position: relative;
+  gap: 5px;
   align-items: end;
   align-self: stretch;
   justify-content: center;
@@ -4907,19 +4934,58 @@ h2 {
   border-bottom: 1px solid var(--chart-grid);
 }
 
-.compound-chart-values i {
+.compound-chart-values i,
+.compound-chart-stack {
   display: block;
-  width: min(13px, 40%);
-  min-height: 3px;
+  width: min(15px, 42%);
   border-radius: 3px 3px 0 0;
 }
 
-.compound-chart-values .is-balance {
-  background: var(--compound-growth);
+.compound-chart-stack {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column-reverse;
+  align-self: end;
+  min-height: 0;
+  border: 1px solid color-mix(in srgb, var(--compound-capital) 64%, var(--border));
 }
 
-.compound-chart-values .is-capital {
+.compound-chart-stack .is-capital {
+  width: 100%;
+  border-radius: 0;
   background: var(--compound-capital);
+}
+
+.compound-chart-stack .is-growth {
+  width: 100%;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--compound-growth),
+    var(--compound-growth) 4px,
+    color-mix(in srgb, var(--compound-growth) 72%, var(--surface)) 4px,
+    color-mix(in srgb, var(--compound-growth) 72%, var(--surface)) 7px
+  );
+}
+
+.compound-chart-stack .is-loss {
+  width: 100%;
+  border-radius: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--danger),
+    var(--danger) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+.compound-chart-values > .is-real {
+  align-self: end;
+  min-height: 0;
+  border: 2px solid var(--warm);
+  border-bottom: 0;
+  background: color-mix(in srgb, var(--warm) 8%, transparent);
 }
 
 .compound-chart-column > strong {
@@ -4939,6 +5005,21 @@ h2 {
 .compound-analysis-grid {
   display: grid;
   gap: 0.75rem;
+}
+
+.compound-analysis-heading {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.45rem 0;
+}
+
+.compound-analysis-heading h2,
+.compound-analysis-heading p {
+  margin: 0;
+}
+
+.compound-analysis-heading > p:last-child {
+  color: var(--muted);
 }
 
 .compound-analysis-card {
@@ -4985,6 +5066,19 @@ h2 {
   color: var(--heading);
   background: var(--field-bg);
   font: inherit;
+}
+
+.compound-schedule-pagination {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compound-schedule-pagination p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
 .compound-analysis-card .calculator-breakdown-table-wrap:focus-visible,
@@ -5046,6 +5140,61 @@ h2 {
   background: var(--accent-wash);
   box-shadow: inset 0 0 0 2px var(--accent);
   font-weight: 850;
+}
+
+.compound-base-label {
+  display: block;
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.compound-duration-sensitivity {
+  display: grid;
+  gap: 0.55rem;
+  padding-top: 0.2rem;
+}
+
+.compound-duration-sensitivity > strong {
+  color: var(--heading);
+}
+
+.compound-duration-sensitivity > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.compound-duration-sensitivity > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.compound-duration-sensitivity span {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.compound-duration-sensitivity span.is-base {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.compound-duration-sensitivity small {
+  color: var(--muted);
+}
+
+.compound-duration-sensitivity span > strong {
+  overflow-wrap: anywhere;
+  color: var(--heading);
 }
 
 .compound-milestone-list {
@@ -5188,6 +5337,38 @@ h2 {
   height: 28px;
 }
 
+.compound-calculator .calculator-metric-label {
+  position: relative;
+}
+
+.compound-metric-tooltip {
+  position: absolute;
+  z-index: 8;
+  right: 0;
+  bottom: calc(100% + 7px);
+  width: min(240px, calc(100vw - 48px));
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  color: var(--heading);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(3px);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.compound-calculator .calculator-help-dot:hover + .compound-metric-tooltip,
+.compound-calculator .calculator-help-dot:focus + .compound-metric-tooltip,
+.compound-calculator .calculator-metric-label:focus-within .compound-metric-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @media (max-width: 1040px) {
   .compound-workspace .compound-result-panel {
     position: static;
@@ -5218,7 +5399,8 @@ h2 {
 
   .compound-scenario-picker > div,
   .compound-history-list,
-  .compound-milestone-list {
+  .compound-milestone-list,
+  .compound-duration-sensitivity > div {
     grid-template-columns: 1fr;
   }
 
@@ -5237,11 +5419,17 @@ h2 {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .compound-schedule-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .compound-disclosure > summary svg,
-  .compound-analysis-card > summary svg {
+  .compound-analysis-card > summary svg,
+  .compound-metric-tooltip {
     transition: none;
   }
 }
@@ -5253,9 +5441,19 @@ h2 {
   }
 
   .compound-chart-values i,
+  .compound-chart-stack,
   .compound-chart-legend span::before {
     border: 1px solid CanvasText;
-    forced-color-adjust: none;
+    forced-color-adjust: auto;
+  }
+
+  .compound-chart-stack .is-growth {
+    border-top: 3px double CanvasText;
+  }
+
+  .compound-chart-values > .is-real {
+    border: 3px dashed CanvasText;
+    border-bottom: 0;
   }
 }
 

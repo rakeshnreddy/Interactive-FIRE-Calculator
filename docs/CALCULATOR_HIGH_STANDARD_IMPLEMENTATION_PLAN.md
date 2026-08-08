@@ -1,6 +1,6 @@
 # Calculator High Standard Implementation Plan
 
-Last updated: July 10, 2026
+Last updated: August 8, 2026
 
 ## Purpose
 
@@ -37,6 +37,20 @@ Completion estimate:
 - Comprehensive calculator program: 32% complete.
 - Remaining work: 68%.
 - Why not higher: family-specific full studio charts, amortization schedules, statutory tax engines, missing loan routes, exports, and personalization are still pending.
+
+## Phase 26 Excellence-Pass Clarifications
+
+The shared foundation above remains historical context. Phase 26 now reviews one stable calculator route at a time against a stricter completion gate. Compound Interest is calculator 1 of 82; Savings Goal is next.
+
+The Compound Interest pass clarifies the reusable standard for later growth calculators:
+
+- Quick Start contains only essential assumptions and an interpretable headline result.
+- Advanced Options and every Expert Analysis disclosure are collapsed by default.
+- Sensitivity covers every material axis claimed by the route; Compound Interest includes return, contribution, and duration.
+- Charts must expose a relationship that headline metrics cannot, use a tabular or textual equivalent, distinguish series without color alone, and never draw a positive-height mark for a true zero value.
+- A valid projection must contain finite values in every returned scalar, milestone, and schedule field—not only the headline.
+- Share links, drafts, saved inputs, and CSVs are versioned and tested as restorable audit boundaries.
+- Long detailed schedules may render in bounded increments, but the complete reconciled data remains exportable.
 
 ## Universal Definition Of Done
 

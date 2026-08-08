@@ -31,6 +31,24 @@ describe('compound interest calculator v2', () => {
     expect(result.endingValue).toBeCloseTo(10_000 * (1 + 0.06 / 12) ** 120, 8);
   });
 
+  it.each([365, 12, 4, 2, 1] as const)(
+    'matches the principal-only nominal formula with %i compoundings per year',
+    (compoundingFrequency) => {
+      const result = project({
+        annualRatePercent: 6,
+        compoundingFrequency,
+        principal: 10_000,
+        recurringContribution: 0,
+        years: 2.5
+      });
+
+      expect(result.endingValue).toBeCloseTo(
+        10_000 * (1 + 0.06 / compoundingFrequency) ** (compoundingFrequency * 2.5),
+        8
+      );
+    }
+  );
+
   it('matches a published ordinary-annuity example', () => {
     const result = project({
       annualRatePercent: 3.75,
@@ -50,12 +68,35 @@ describe('compound interest calculator v2', () => {
     expect(result.netGrowth).toBe(0);
   });
 
+  it('returns a finite zero projection without inventing milestones when no capital is supplied', () => {
+    const result = project({ principal: 0, recurringContribution: 0 });
+
+    expect(result.validation.isValid).toBe(true);
+    expect(result.endingValue).toBe(0);
+    expect(result.milestones).toEqual([]);
+    expect(Object.values(result).some((value) => typeof value === 'number' && !Number.isFinite(value))).toBe(false);
+  });
+
   it('makes beginning contributions worth more at a positive rate', () => {
     const ending = project({ annualRatePercent: 6, contributionTiming: 'end' });
     const beginning = project({ annualRatePercent: 6, contributionTiming: 'beginning' });
 
     expect(beginning.endingValue).toBeGreaterThan(ending.endingValue);
     expect(beginning.investedCapital).toBe(ending.investedCapital);
+  });
+
+  it('matches the annuity-due formula for beginning-of-month contributions', () => {
+    const result = project({
+      annualRatePercent: 6,
+      contributionTiming: 'beginning',
+      principal: 0,
+      recurringContribution: 500,
+      years: 10
+    });
+    const monthlyRate = 0.06 / 12;
+    const ordinaryAnnuity = 500 * (((1 + monthlyRate) ** 120 - 1) / monthlyRate);
+
+    expect(result.endingValue).toBeCloseTo(ordinaryAnnuity * (1 + monthlyRate), 8);
   });
 
   it('includes the end contribution at the horizon and excludes the next beginning contribution', () => {
@@ -208,6 +249,21 @@ describe('compound interest calculator v2', () => {
     expect(afterFee.feeDrag).toBeCloseTo(noFee.endingValue - afterFee.endingValue, 8);
   });
 
+  it('matches the documented after-growth annual fee convention', () => {
+    const result = project({
+      annualFeePercent: 2,
+      annualRatePercent: 10,
+      principal: 10_000,
+      rateBasis: 'apy',
+      recurringContribution: 0,
+      years: 1
+    });
+
+    expect(result.endingValue).toBeCloseTo(10_000 * 1.1 * 0.98, 10);
+    expect(result.feesPaid).toBeCloseTo(220, 10);
+    expect(result.feeDrag).toBeCloseTo(220, 10);
+  });
+
   it('changes real purchasing power without changing nominal value', () => {
     const nominal = project({ inflationPercent: 0 });
     const inflated = project({ inflationPercent: 2.5 });
@@ -251,7 +307,7 @@ describe('compound interest calculator v2', () => {
     });
 
     expect(result.validation.isValid).toBe(true);
-    expect(result.endingValue).toBeLessThan(10_000);
+    expect(result.endingValue).toBeCloseTo(10_000 * (1 - 0.1 / 12) ** 24, 8);
     expect(result.netGrowth).toBeLessThan(0);
   });
 
@@ -277,6 +333,17 @@ describe('compound interest calculator v2', () => {
     expect(result.detailedSchedule.at(-1)?.closingBalance).toBeCloseTo(result.endingValue, 10);
     expect(result.annualSchedule.at(-1)?.closingBalance).toBeCloseTo(result.endingValue, 10);
     expect(result.endingValue).toBeCloseTo(result.netContributions + result.netGrowth, 8);
+
+    result.annualSchedule.forEach((annualRow, annualIndex) => {
+      const year = annualIndex + 1;
+      const detailedRows = result.detailedSchedule.filter((row) => Math.max(1, Math.ceil(row.time - 1e-9)) === year);
+      expect(annualRow.openingBalance).toBeCloseTo(detailedRows[0].openingBalance, 8);
+      expect(annualRow.deposits).toBeCloseTo(detailedRows.reduce((sum, row) => sum + row.deposits, 0), 8);
+      expect(annualRow.withdrawals).toBeCloseTo(detailedRows.reduce((sum, row) => sum + row.withdrawals, 0), 8);
+      expect(annualRow.grossReturn).toBeCloseTo(detailedRows.reduce((sum, row) => sum + row.grossReturn, 0), 8);
+      expect(annualRow.fees).toBeCloseTo(detailedRows.reduce((sum, row) => sum + row.fees, 0), 8);
+      expect(annualRow.closingBalance).toBeCloseTo(detailedRows.at(-1)?.closingBalance ?? 0, 8);
+    });
   });
 
   it('keeps every supported valid-frequency output finite', () => {
@@ -325,5 +392,21 @@ describe('compound interest calculator v2', () => {
     expect(result.validation.isValid).toBe(false);
     expect(result.validation.errors.result).toContain('too large');
     expect(result.endingValue).toBe(0);
+  });
+
+  it.each([
+    { inflationPercent: -99.999999999999, years: 100 },
+    { annualFeePercent: 99.999999999999, annualRatePercent: 10_000, years: 100 }
+  ])('rejects non-finite derived outputs for extreme valid-domain inputs', (overrides) => {
+    const result = project(overrides);
+
+    expect(result.validation.isValid).toBe(false);
+    expect(result.validation.errors.result).toContain('too large');
+    expect([
+      result.endingValue,
+      result.realEndingValue,
+      result.feeDrag,
+      result.realAnnualReturn
+    ].every(Number.isFinite)).toBe(true);
   });
 });

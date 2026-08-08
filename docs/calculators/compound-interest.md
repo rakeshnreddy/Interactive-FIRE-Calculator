@@ -1,6 +1,6 @@
 # Compound Interest Calculator Research and Formula Contract
 
-Last updated: July 27, 2026
+Last updated: August 8, 2026
 
 Route: `/calculators/compound-interest`
 
@@ -111,10 +111,11 @@ All calculations retain full JavaScript numeric precision. Formatting is applied
 
 ## Authoritative sources
 
-Every source below was accessed July 27, 2026.
+Every source below was accessed August 8, 2026.
 
 - [CFPB Regulation DD definitions](https://www.consumerfinance.gov/rules-policy/regulations/1030/2/) distinguishes an annual interest rate that does not include compounding.
-- [CFPB Regulation DD Appendix A](https://www.consumerfinance.gov/rules-policy/regulations/1030/2011-12-30/a/) defines APY calculation conventions.
+- [CFPB Regulation DD Appendix A](https://www.consumerfinance.gov/rules-policy/regulations/1030/a/) defines APY calculation conventions.
+- [CFPB: interest rate versus APR](https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-loan-interest-rate-and-the-apr-en-733/) explains why a generic investment return should not be mislabeled as a lending APR that may include fees.
 - [CFPB Regulation DD payment of interest](https://www.consumerfinance.gov/rules-policy/regulations/1030/7/) distinguishes accrual and crediting conventions.
 - [OpenStax: stated versus effective rates](https://openstax.org/books/principles-finance/pages/8-4-stated-versus-effective-rates) explains effective-rate conversion.
 - [OpenStax: compound interest](https://openstax.org/books/contemporary-mathematics/pages/6-4-compound-interest) documents nominal compound formulas.
@@ -127,12 +128,12 @@ Every source below was accessed July 27, 2026.
 - [FINRA calculator disclaimer](https://www.finra.org/investors/tools-and-calculators/tools-and-calculators-disclaimer) describes calculator results as hypothetical approximations.
 - [BLS purchasing power and constant dollars](https://www.bls.gov/cpi/factsheets/purchasing-power-constant-dollars.htm) supports the real-value calculation.
 - [ECMA-402](https://402.ecma-international.org/) defines locale-aware number and currency formatting.
-- [WCAG 2.2](https://www.w3.org/TR/WCAG22/) governs labels, errors, status messages, keyboard access, and non-color communication.
+- [WCAG 2.2 labels and instructions](https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html), [error suggestions](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html), and [non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast) govern input definitions, error recovery, chart contrast, and non-color communication.
 - [RFC 4180](https://www.rfc-editor.org/info/rfc4180/) provides the CSV interoperability reference.
 
 ## Competitor feature audit
 
-Every competitor page below was reviewed July 27, 2026. Competitors informed feature discovery only; formula decisions use the authoritative sources above.
+Every competitor page below was reviewed August 8, 2026. Competitors informed feature discovery only; formula decisions use the authoritative sources above.
 
 | Tool | Useful observed behavior | FinPath decision |
 | --- | --- | --- |
@@ -158,11 +159,33 @@ Every competitor page below was reviewed July 27, 2026. Competitors informed fea
 - Inflation-adjusted value and exact real annual return.
 - Optional target in future money or today’s purchasing power.
 - One future deposit and one future withdrawal with depletion handling.
-- Lower/base/higher return sensitivity, 3×3 rate/contribution grid, and milestones.
-- True annual balance chart plus annual and detailed reconciling schedules.
+- Lower/base/higher return sensitivity, 3×3 rate/contribution grid, duration sensitivity, and milestones.
+- True annual stacked capital/growth chart with real-value comparison plus annual and detailed reconciling schedules.
 - USD, INR, EUR, GBP, CAD, AUD, and JPY display with browser, US, Indian, and German grouping; currency selection does not convert value.
 - Versioned v2 share links, legacy v1 link restoration, per-route browser draft, raw CSV, signed-in save boundary, and saved-run reload.
 - Visible validation, live result/status messages, radio semantics, captions, scoped headers, keyboard-scroll tables, forced-colors treatment, reduced motion, and 28px help targets.
+
+## Feature organization
+
+### Quick Start
+
+- Starting principal, recurring contribution, fractional elapsed term, and annual rate.
+- Ending value, starting capital, future contributions, total invested capital, net growth, growth share, and a plain-language interpretation.
+- A stacked capital-versus-growth path with an adjacent real-value comparison and immediate share, export, and save actions.
+
+### Advanced Options
+
+- Nominal rate versus APY, nominal compounding frequency, contribution frequency and timing, annual contribution increase, anniversary top-up, annual percentage-of-assets fee, inflation, optional target, one future deposit and withdrawal, and currency/locale display.
+- The section is collapsed by default and opens only when the user asks for more assumptions.
+
+### Expert Analysis
+
+- Conservative/base/optimistic constant-rate comparisons, the rate-by-contribution grid, duration sensitivity, milestones, target checkpoints, annual and event schedules, CSV audit data, formula conventions, worked example, limitations, and sources.
+- Every Expert Analysis disclosure is collapsed by default. The detailed event table renders in bounded increments while CSV always includes the complete schedule.
+
+### Deferred
+
+- Only the reliability-, jurisdiction-, product-, or clarity-dependent items listed below are deferred. Implementation effort is not a reason for deferral.
 
 ## Deferred with reasons
 
@@ -175,6 +198,15 @@ Every competitor page below was reviewed July 27, 2026. Competitors informed fea
 - Negative investment balances: debt behavior belongs in lending calculators.
 - Multiple arbitrary cash-flow rows: one deposit and one withdrawal cover the common planning need without turning the beginner flow into a ledger.
 - Required contribution or required time solving: owned by `/calculators/savings-goal`, the next calculator in the excellence pass.
+
+## August 8 verification corrections
+
+- Derived fee, inflation, target, milestone, and schedule values now pass a complete finite-number guard before a valid result can be returned.
+- A zero-principal, zero-contribution projection no longer reports a false “growth matches contributions” milestone.
+- Share links and browser drafts preserve the selected scenario; unknown v2 formula versions are rejected instead of being silently interpreted.
+- Browser drafts preserve only finite, valid assumptions and now work consistently for signed-in and signed-out users.
+- Duration sensitivity, growth share, a numeric worked example, checkpoint-qualified target timing, standard currency display precision, and cumulative net-capital schedule columns are explicit.
+- The chart no longer gives true zero values a minimum visible bar, uses stacked capital/growth plus a distinct real-value bar, and has a keyboard-scrollable labeled region plus tabular alternative.
 
 ## Verification boundary
 

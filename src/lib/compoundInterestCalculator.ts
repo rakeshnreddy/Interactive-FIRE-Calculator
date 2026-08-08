@@ -234,21 +234,12 @@ export function calculateCompoundInterest(
   if (!validation.isValid) return emptyProjection(validation);
 
   const core = simulateCore(inputs);
-  if (!Number.isFinite(core.endingValue) || core.detailedSchedule.some((row) => (
-    !Number.isFinite(row.closingBalance) ||
-    !Number.isFinite(row.grossReturn) ||
-    !Number.isFinite(row.fees)
-  ))) {
-    return emptyProjection({
-      ...validation,
-      errors: { ...validation.errors, result: 'These assumptions produce a number too large to calculate safely. Reduce the amount, rate, increase, or term.' },
-      isValid: false
-    });
-  }
+  if (!isFiniteCoreProjection(core)) return unsafeProjection(validation);
 
   const noFee = inputs.annualFeePercent > 0
     ? simulateCore({ ...inputs, annualFeePercent: 0 })
     : core;
+  if (!isFiniteCoreProjection(noFee)) return unsafeProjection(validation);
   const targetValue = inputs.targetAmount > 0
     ? inputs.targetBasis === 'today'
       ? inputs.targetAmount * ((1 + inputs.inflationPercent / 100) ** inputs.years)
@@ -267,12 +258,12 @@ export function calculateCompoundInterest(
     warnings.push('A future withdrawal exceeds the available balance; the unfunded portion is shown and the balance does not go below zero.');
   }
   if (targetValue !== null && targetReachedAt === null) {
-    warnings.push('The target is not reached within the 100-year search horizon under these assumptions.');
+    warnings.push('The target is not reached at any modeled checkpoint within the 100-year search horizon.');
   } else if (targetValue !== null && targetReachedAt !== null && targetReachedAt > inputs.years) {
-    warnings.push('The target is reached after the selected projection term, assuming the same inputs continue.');
+    warnings.push('The target first appears at a modeled checkpoint after the selected term, assuming the same inputs continue.');
   }
 
-  return {
+  const projection: CompoundInterestProjection = {
     ...core,
     feeDrag: noFee.endingValue - core.endingValue,
     milestones,
@@ -280,6 +271,8 @@ export function calculateCompoundInterest(
     targetReachedAt,
     validation: { ...validation, warnings }
   };
+
+  return isFiniteProjection(projection) ? projection : unsafeProjection(validation);
 }
 
 function simulateCore(inputs: CompoundInterestInputs): CoreProjection {
@@ -520,7 +513,7 @@ function buildMilestones(
   const crossover = core.detailedSchedule.find((row) => {
     cumulativeWithdrawals += row.withdrawals;
     const netContributionsAtRow = row.cumulativeContributions - cumulativeWithdrawals;
-    return row.closingBalance - netContributionsAtRow >= netContributionsAtRow;
+    return netContributionsAtRow > 0 && row.closingBalance - netContributionsAtRow >= netContributionsAtRow;
   });
   if (crossover) milestones.push({ label: 'Growth matches net contributions', time: crossover.time, value: crossover.closingBalance });
   return milestones.filter((milestone, index, list) => (
@@ -550,6 +543,60 @@ function emptyProjection(validation: CompoundInterestValidation): CompoundIntere
     validation,
     withdrawals: 0
   };
+}
+
+function unsafeProjection(validation: CompoundInterestValidation): CompoundInterestProjection {
+  return emptyProjection({
+    ...validation,
+    errors: {
+      ...validation.errors,
+      result: 'These assumptions produce a number too large to calculate safely. Reduce the amount, rate, increase, inflation range, fee, or term.'
+    },
+    isValid: false
+  });
+}
+
+function isFiniteCoreProjection(projection: CoreProjection): boolean {
+  return [
+    projection.effectiveAnnualRate,
+    projection.endingValue,
+    projection.feesPaid,
+    projection.grossReturn,
+    projection.investedCapital,
+    projection.netContributions,
+    projection.netGrowth,
+    projection.realAnnualReturn,
+    projection.realEndingValue,
+    projection.totalDeposits,
+    projection.unfundedWithdrawals,
+    projection.withdrawals
+  ].every(Number.isFinite) && [
+    ...projection.annualSchedule,
+    ...projection.detailedSchedule
+  ].every(isFiniteScheduleRow);
+}
+
+function isFiniteProjection(projection: CompoundInterestProjection): boolean {
+  return isFiniteCoreProjection(projection) &&
+    Number.isFinite(projection.feeDrag) &&
+    (projection.targetDifference === null || Number.isFinite(projection.targetDifference)) &&
+    (projection.targetReachedAt === null || Number.isFinite(projection.targetReachedAt)) &&
+    projection.milestones.every((milestone) => Number.isFinite(milestone.time) && Number.isFinite(milestone.value));
+}
+
+function isFiniteScheduleRow(row: CompoundInterestScheduleRow): boolean {
+  return [
+    row.closingBalance,
+    row.cumulativeContributions,
+    row.deposits,
+    row.fees,
+    row.grossReturn,
+    row.netGrowth,
+    row.openingBalance,
+    row.realClosingBalance,
+    row.time,
+    row.withdrawals
+  ].every(Number.isFinite);
 }
 
 function normalizeTime(value: number): number {

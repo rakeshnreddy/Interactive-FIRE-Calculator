@@ -95,6 +95,10 @@ describe('calculator result save payload validation', () => {
         compoundingFrequency: 12,
         contributionFrequency: 12,
         contributionTiming: 0,
+        futureDepositAmount: 5000,
+        futureDepositYear: 2.25,
+        futureWithdrawalAmount: 1500,
+        futureWithdrawalYear: 7.5,
         inflationPercent: 2.5,
         monthly: 500,
         principal: 10000,
@@ -134,6 +138,8 @@ describe('calculator result save payload validation', () => {
       expect(parsed.value.currency).toBe('EUR');
       expect(parsed.value.inputValues.target).toBe(150000);
       expect(parsed.value.inputValues.contributionFrequency).toBe(12);
+      expect(parsed.value.inputValues.futureDepositYear).toBe(2.25);
+      expect(parsed.value.inputValues.futureWithdrawalAmount).toBe(1500);
     }
   });
 });

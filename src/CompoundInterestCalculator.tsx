@@ -24,6 +24,7 @@ import {
   calculateCompoundInterest,
   compoundInterestFormulaVersion,
   defaultCompoundInterestInputs,
+  validateCompoundInterestInputs,
   type CompoundInterestInputs,
   type CompoundInterestProjection,
   type CompoundInterestScheduleRow,
@@ -35,16 +36,17 @@ import {
 } from './lib/compoundInterestCalculator';
 import type { CalculatorResult, SeoCalculator } from './lib/seoCalculators';
 
-type CurrencyCode = 'AUD' | 'CAD' | 'EUR' | 'GBP' | 'INR' | 'JPY' | 'USD';
-type LocaleCode = 'auto' | 'de-DE' | 'en-IN' | 'en-US';
-type ScenarioId = 'base' | 'higher' | 'lower';
+export type CurrencyCode = 'AUD' | 'CAD' | 'EUR' | 'GBP' | 'INR' | 'JPY' | 'USD';
+export type LocaleCode = 'auto' | 'de-DE' | 'en-IN' | 'en-US';
+export type ScenarioId = 'base' | 'higher' | 'lower';
 type SchedulePeriod = 'annual' | 'detailed';
 
-type CompoundDraft = {
+export type CompoundDraft = {
   currency: CurrencyCode;
   formulaVersion: typeof compoundInterestFormulaVersion;
   inputs: CompoundInterestInputs;
   locale: LocaleCode;
+  scenarioId?: ScenarioId;
   updatedAt: string;
 };
 
@@ -120,6 +122,7 @@ export function CompoundInterestCalculator({
     ? projection.annualSchedule
     : projection.detailedSchedule;
   const resolvedLocale = locale === 'auto' ? undefined : locale;
+  const growthShare = projection.endingValue === 0 ? 0 : projection.netGrowth / projection.endingValue;
 
   useEffect(() => {
     const restored = restoreState();
@@ -127,18 +130,20 @@ export function CompoundInterestCalculator({
     setInputs(restored.inputs);
     setCurrency(restored.currency);
     setLocale(restored.locale);
+    setScenarioId(restored.scenarioId ?? 'base');
     setMessage(restored.source === 'share'
       ? 'Shared projection loaded. Review every assumption before relying on it.'
       : 'Your last browser draft was restored.');
   }, []);
 
   useEffect(() => {
-    if (auth.status === 'signed-in') return;
+    if (!validateDraftInputs(inputs)) return;
     const draft: CompoundDraft = {
       currency,
       formulaVersion: compoundInterestFormulaVersion,
       inputs,
       locale,
+      scenarioId,
       updatedAt: new Date().toISOString()
     };
     try {
@@ -146,7 +151,7 @@ export function CompoundInterestCalculator({
     } catch {
       // A blocked localStorage should never block the public calculator.
     }
-  }, [auth.status, currency, inputs, locale]);
+  }, [currency, inputs, locale, scenarioId]);
 
   const setNumber = (key: NumericInputKey, raw: string) => {
     setScenarioId('base');
@@ -170,7 +175,7 @@ export function CompoundInterestCalculator({
 
   const copyShareLink = async () => {
     try {
-      await copyText(buildShareUrl(inputs, currency, locale));
+      await copyText(buildShareUrl(inputs, currency, locale, scenarioId));
       setMessage('Share link copied. It contains assumptions only—never account data.');
     } catch {
       setMessage('The share link could not be copied in this browser.');
@@ -292,7 +297,7 @@ export function CompoundInterestCalculator({
             />
             <NumberField
               error={projection.validation.errors.years}
-              helper="Fractional years are allowed; 2.5 years means 30 equal months."
+              helper="Fractional elapsed years are allowed; scheduled events at or before the exact endpoint are included."
               inputKey="years"
               label="Term"
               min={0.01}
@@ -520,26 +525,6 @@ export function CompoundInterestCalculator({
             </div>
           </details>
 
-          <fieldset className="compound-scenario-picker">
-            <legend>Return sensitivity</legend>
-            <p>Lower and higher cases move only the annual rate by 2 percentage points. They are not probabilities.</p>
-            <div>
-              {scenarios.map((scenario) => (
-                <label key={scenario.id}>
-                  <input
-                    checked={scenarioId === scenario.id}
-                    name="compound-scenario"
-                    type="radio"
-                    value={scenario.id}
-                    onChange={() => setScenarioId(scenario.id)}
-                  />
-                  <span>{scenarioLabel(scenario.id)}</span>
-                  <strong>{scenario.projection.validation.isValid ? money(scenario.projection.endingValue) : 'Invalid'}</strong>
-                  <small>{formatPercent(scenario.inputs.annualRatePercent / 100, resolvedLocale)}</small>
-                </label>
-              ))}
-            </div>
-          </fieldset>
         </section>
 
         <section className="calculator-result-panel compound-result-panel" aria-labelledby="compound-result-title">
@@ -548,7 +533,10 @@ export function CompoundInterestCalculator({
               <p className="eyebrow">Projection</p>
               <h2 id="compound-result-title">Ending value</h2>
             </div>
-            <span className="compound-version">Model v2</span>
+            <div className="compound-model-badges">
+              <span className="compound-version">{scenarioLabel(scenarioId)} case</span>
+              <span className="compound-version">Model v2</span>
+            </div>
           </div>
 
           {!projection.validation.isValid ? (
@@ -563,12 +551,15 @@ export function CompoundInterestCalculator({
               <div className="compound-headline" aria-live="polite" aria-atomic="true">
                 <strong>{money(projection.endingValue)}</strong>
                 <span>after {formatDuration(scenarioInputs.years)}</span>
-                <small>{money(projection.endingValue, 2)} exact to cents for display</small>
+                <small>{money(projection.endingValue, currencyFractionDigits(currency))} at standard {currency} display precision; calculations retain full precision</small>
               </div>
 
               <div className="calculator-result-metrics">
+                <ResultMetric help="Capital present at the beginning of the projection." label="Starting amount" value={money(scenarioInputs.principal)} />
+                <ResultMetric help="Recurring contributions, annual top-ups, and the modeled future deposit after the start." label="Future contributions" value={money(projection.totalDeposits)} />
                 <ResultMetric help="Starting amount plus every deposit, before subtracting withdrawals." label="Total invested" value={money(projection.investedCapital)} />
                 <ResultMetric help="Ending balance minus net contributed capital. This can be negative." label="Net growth" tone={projection.netGrowth < 0 ? 'warning' : 'positive'} value={money(projection.netGrowth)} />
+                <ResultMetric help="Estimated net growth divided by ending value. Withdrawals can make this percentage exceed ordinary ranges." label="Growth share" tone={projection.netGrowth < 0 ? 'warning' : 'positive'} value={formatPercent(growthShare, resolvedLocale)} />
                 <ResultMetric help="The annual rate after the selected compounding convention." label="Effective annual rate" value={formatPercent(projection.effectiveAnnualRate, resolvedLocale)} />
                 <ResultMetric help="Ending balance divided by the cumulative inflation factor." label="Today’s buying power" value={money(projection.realEndingValue)} />
                 {scenarioInputs.annualFeePercent > 0 ? (
@@ -586,6 +577,10 @@ export function CompoundInterestCalculator({
                   />
                 ) : null}
               </div>
+
+              <p className="compound-interpretation">
+                {projectionInterpretation(projection, scenarioInputs, money, resolvedLocale)}
+              </p>
 
               <CompoundGrowthChart
                 currency={currency}
@@ -620,7 +615,7 @@ export function CompoundInterestCalculator({
                   </button>
                 ) : auth.status === 'not-configured' ? (
                   <button className="primary-button" type="button" onClick={() => onNavigate(calculator.conversionRoute)}>
-                    Continue
+                    {calculator.conversionLabel}
                   </button>
                 ) : (
                   <SignUpButton mode="modal">
@@ -637,13 +632,45 @@ export function CompoundInterestCalculator({
 
       {projection.validation.isValid ? (
         <section className="compound-analysis-grid" aria-label="Expert analysis">
-          <details className="compound-analysis-card" open>
+          <div className="compound-analysis-heading">
+            <p className="eyebrow">Expert analysis</p>
+            <h2>Audit and stress-test the projection</h2>
+            <p>Open only the comparison, schedule, or methodology you need. Every section is collapsed by default.</p>
+          </div>
+
+          <details className="compound-analysis-card">
+            <summary><span><strong>Scenario comparison</strong><small>Lower, base, and higher constant-rate cases</small></span><ChevronDown size={17} /></summary>
+            <div className="compound-analysis-body">
+              <fieldset className="compound-scenario-picker">
+                <legend>Choose the case shown in the headline</legend>
+                <p>Conservative and optimistic cases move only the annual rate by 2 percentage points. They are deterministic comparisons, not probabilities.</p>
+                <div>
+                  {scenarios.map((scenario) => (
+                    <label key={scenario.id}>
+                      <input
+                        checked={scenarioId === scenario.id}
+                        name="compound-scenario"
+                        type="radio"
+                        value={scenario.id}
+                        onChange={() => setScenarioId(scenario.id)}
+                      />
+                      <span>{scenarioLabel(scenario.id)}</span>
+                      <strong>{scenario.projection.validation.isValid ? money(scenario.projection.endingValue) : 'Invalid'}</strong>
+                      <small>{formatPercent(scenario.inputs.annualRatePercent / 100, resolvedLocale)}{scenarioId === scenario.id ? ' · Selected' : ''}</small>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </div>
+          </details>
+
+          <details className="compound-analysis-card">
             <summary><span><strong>Schedule and audit trail</strong><small>Every row uses the same engine as the headline</small></span><ChevronDown size={17} /></summary>
             <div className="compound-analysis-body">
               <div className="compound-schedule-toolbar">
                 <label>
                   <span>Schedule detail</span>
-                  <select value={schedulePeriod} onChange={(event) => setSchedulePeriod(event.target.value as SchedulePeriod)}>
+                  <select autoComplete="off" name="compound-schedule-detail" value={schedulePeriod} onChange={(event) => setSchedulePeriod(event.target.value as SchedulePeriod)}>
                     <option value="annual">Annual summary</option>
                     <option value="detailed">Cash-flow events</option>
                   </select>
@@ -670,6 +697,7 @@ export function CompoundInterestCalculator({
                         <th scope="row">{formatPercent(rate / 100, resolvedLocale)}</th>
                         {sensitivity.values[rowIndex].map((value, columnIndex) => (
                           <td className={rowIndex === 1 && columnIndex === 1 ? 'is-base' : ''} key={`sensitivity-${rowIndex}-${columnIndex}`}>
+                            {rowIndex === 1 && columnIndex === 1 ? <small className="compound-base-label">Base</small> : null}
                             {Number.isFinite(value) ? money(value) : 'Invalid'}
                           </td>
                         ))}
@@ -677,6 +705,18 @@ export function CompoundInterestCalculator({
                     ))}
                   </tbody>
                 </table>
+              </div>
+              <div className="compound-duration-sensitivity" aria-label="Duration sensitivity">
+                <strong>Duration sensitivity</strong>
+                <p>Only the elapsed term changes; every other base assumption stays fixed.</p>
+                <div>
+                  {sensitivity.durations.map((item) => (
+                    <span className={Math.abs(item.years - inputs.years) < 1e-9 ? 'is-base' : ''} key={item.years}>
+                      <small>{item.label} · {formatDuration(item.years)}</small>
+                      <strong>{Number.isFinite(item.value) ? money(item.value) : 'Invalid'}</strong>
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </details>
@@ -695,7 +735,7 @@ export function CompoundInterestCalculator({
                 </div>
               ) : <p>Add a target or use a longer-growing scenario to reveal milestones.</p>}
               {projection.targetReachedAt !== null ? (
-                <p><strong>Target timing:</strong> first reached around year {formatNumber(projection.targetReachedAt, resolvedLocale, 2)} under the same constant assumptions.</p>
+                <p><strong>Target timing:</strong> first modeled checkpoint at or above the target is year {formatNumber(projection.targetReachedAt, resolvedLocale, 2)} under the same constant assumptions.</p>
               ) : null}
             </div>
           </details>
@@ -706,15 +746,17 @@ export function CompoundInterestCalculator({
               <p><strong>Rate basis.</strong> Nominal mode uses (1 + annual rate ÷ compounds per year) raised to elapsed compound periods. APY mode uses (1 + APY) raised to elapsed years; compounding frequency is intentionally not applied twice.</p>
               <p><strong>Cash-flow timing.</strong> End contributions at the horizon are included; beginning contributions at the horizon are excluded. Annual top-ups occur on full-year anniversaries. One-time deposits are applied before same-time withdrawals.</p>
               <p><strong>Fees and inflation.</strong> The percentage-of-assets fee is applied proportionally after gross return over each interval. Inflation changes the real-value report, not the nominal account balance. Full precision is retained until display.</p>
+              <p><strong>Reconciliation.</strong> Every row uses closing balance = opening balance + deposits − funded withdrawals + gross return − fees. The final row equals the headline result.</p>
+              <p><strong>Worked default.</strong> $10,000 initially plus $500 at each month-end for 10 years at an 8% nominal rate compounded monthly produces $113,669.42: $70,000 invested capital and $43,669.42 estimated growth.</p>
               <p><strong>Limits.</strong> This equal-period model does not reproduce product-specific daily-balance ledgers, taxes, live APYs, FX conversion, tiered or transaction fees, variable market returns, or Monte Carlo probabilities.</p>
               <ul>
-                <li><a href="https://www.consumerfinance.gov/rules-policy/regulations/1030/2011-12-30/a/" target="_blank" rel="noreferrer">CFPB Regulation DD: APY calculation</a></li>
+                <li><a href="https://www.consumerfinance.gov/rules-policy/regulations/1030/a/" target="_blank" rel="noreferrer">CFPB Regulation DD: APY calculation</a></li>
                 <li><a href="https://www.investor.gov/financial-tools-calculators/calculators/compound-interest-calculator" target="_blank" rel="noreferrer">Investor.gov Compound Interest Calculator</a></li>
                 <li><a href="https://support.microsoft.com/en-us/excel/functions/fv-function" target="_blank" rel="noreferrer">Microsoft FV timing convention</a></li>
                 <li><a href="https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated" target="_blank" rel="noreferrer">Investor.gov: how fees affect a portfolio</a></li>
                 <li><a href="https://www.bls.gov/cpi/factsheets/purchasing-power-constant-dollars.htm" target="_blank" rel="noreferrer">BLS: purchasing power and constant dollars</a></li>
               </ul>
-              <p className="compound-source-date">Sources accessed July 27, 2026. Formula version: {compoundInterestFormulaVersion}.</p>
+              <p className="compound-source-date">Sources accessed August 8, 2026. Formula version: {compoundInterestFormulaVersion}.</p>
             </div>
           </details>
         </section>
@@ -805,11 +847,13 @@ function NumberField({
       <div className="calculator-input-control">
         {currency ? <small aria-hidden="true">{currency}</small> : null}
         <input
+          autoComplete="off"
           aria-describedby={`${helpId}${error ? ` ${errorId}` : ''}`}
           aria-invalid={Boolean(error)}
           id={`compound-${inputKey}`}
           inputMode="decimal"
           min={min}
+          name={`compound-${inputKey}`}
           step={step}
           type="number"
           value={Number.isFinite(value) ? value : ''}
@@ -843,9 +887,11 @@ function SelectField({
     <label className="field" htmlFor={`compound-${inputKey}`}>
       <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} /></span>
       <select
+        autoComplete="off"
         aria-describedby={helpId}
         className="compound-select"
         id={`compound-${inputKey}`}
+        name={`compound-${inputKey}`}
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
@@ -867,13 +913,15 @@ function ResultMetric({
   tone?: 'neutral' | 'positive' | 'warning';
   value: string;
 }) {
+  const helpId = `compound-metric-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-help`;
   return (
     <article className={`calculator-result-metric metric-${tone}`}>
       <span className="calculator-metric-label">
         <span>{label}</span>
-        <span className="calculator-help-dot" title={help} aria-label={`${label}: ${help}`} tabIndex={0}>
+        <span className="calculator-help-dot" aria-describedby={helpId} aria-label={`About ${label}`} tabIndex={0}>
           <CircleHelp aria-hidden="true" size={15} />
         </span>
+        <span className="compound-metric-tooltip" id={helpId} role="tooltip">{help}</span>
       </span>
       <strong>{value}</strong>
     </article>
@@ -889,26 +937,56 @@ function CompoundGrowthChart({
   locale: string | undefined;
   rows: CompoundInterestScheduleRow[];
 }) {
-  const visibleRows = sampleRows(rows, 8);
-  const maximum = Math.max(1, ...visibleRows.map((row) => Math.max(row.closingBalance, row.cumulativeContributions)));
+  let cumulativeWithdrawals = 0;
+  const chartRows = rows.map((row) => {
+    cumulativeWithdrawals += row.withdrawals;
+    const netCapital = row.cumulativeContributions - cumulativeWithdrawals;
+    return { ...row, growthToDate: row.closingBalance - netCapital, netCapital };
+  });
+  const visibleRows = sampleRows(chartRows, 8);
+  const maximum = Math.max(1, ...visibleRows.map((row) => Math.max(
+    row.closingBalance,
+    row.netCapital,
+    row.realClosingBalance
+  )));
   return (
     <figure className="compound-growth-chart">
       <figcaption>
-        <strong>Balance path</strong>
-        <small>Exact contributed capital and ending balance at each shown year. The schedule below is the full text alternative.</small>
+        <strong>Where the balance comes from</strong>
+        <small>Net contributed capital and estimated growth stack to the nominal balance. The outlined bar shows the same balance in today’s purchasing power.</small>
       </figcaption>
-      <div className="compound-chart-legend"><span className="is-balance">Ending balance</span><span className="is-capital">Contributed capital</span></div>
-      <div className="compound-chart-plot">
-        {visibleRows.map((row) => (
-          <div className="compound-chart-column" key={row.time}>
-            <span className="compound-chart-values">
-              <i className="is-balance" style={{ height: `${Math.max(3, row.closingBalance / maximum * 100)}%` }} />
-              <i className="is-capital" style={{ height: `${Math.max(3, row.cumulativeContributions / maximum * 100)}%` }} />
-            </span>
-            <strong>{row.label.replace(' (partial)', '')}</strong>
-            <small>{formatCurrency(row.closingBalance, currency, locale)}</small>
-          </div>
-        ))}
+      <div className="compound-chart-legend">
+        <span className="is-capital">Net contributed capital</span>
+        <span className="is-growth">Estimated growth</span>
+        <span className="is-real">Today’s buying power</span>
+      </div>
+      <div className="compound-chart-plot" role="region" aria-label="Scrollable contribution, growth, and real-value timeline" tabIndex={0}>
+        {visibleRows.map((row) => {
+          const closingBalance = Math.max(0, row.closingBalance);
+          const netCapital = Math.max(0, row.netCapital);
+          const growth = row.growthToDate;
+          const capitalSegment = growth >= 0 ? Math.min(netCapital, closingBalance) : closingBalance;
+          const changeSegment = growth >= 0
+            ? Math.max(0, closingBalance - capitalSegment)
+            : Math.abs(growth);
+          const stackValue = capitalSegment + changeSegment;
+          return (
+            <div className="compound-chart-column" key={row.time}>
+              <span className="compound-chart-values" aria-hidden="true">
+                <span className="compound-chart-stack" style={{ height: visualPercent(stackValue, maximum) }}>
+                  <i className="is-capital" style={{ height: segmentPercent(capitalSegment, stackValue) }} />
+                  {changeSegment > 0 ? <i className={growth >= 0 ? 'is-growth' : 'is-loss'} style={{ height: segmentPercent(changeSegment, stackValue) }} /> : null}
+                </span>
+                <i className="is-real" style={{ height: visualPercent(row.realClosingBalance, maximum) }} />
+              </span>
+              <strong>{row.label.replace(' (partial)', '')}</strong>
+              <small>{formatCurrency(row.closingBalance, currency, locale)}</small>
+              <span className="visually-hidden">
+                {row.label}: nominal ending value {formatCurrency(row.closingBalance, currency, locale, 2)}, net contributed capital {formatCurrency(row.netCapital, currency, locale, 2)}, estimated growth {formatCurrency(row.growthToDate, currency, locale, 2)}, and today’s buying power {formatCurrency(row.realClosingBalance, currency, locale, 2)}.
+              </span>
+            </div>
+          );
+        })}
       </div>
     </figure>
   );
@@ -923,33 +1001,54 @@ function ScheduleTable({
   locale: string | undefined;
   rows: CompoundInterestScheduleRow[];
 }) {
+  const [visibleCount, setVisibleCount] = useState(250);
+  useEffect(() => setVisibleCount(250), [rows]);
+  let cumulativeWithdrawals = 0;
+  const enrichedRows = rows.map((row) => {
+    cumulativeWithdrawals += row.withdrawals;
+    const netCapital = row.cumulativeContributions - cumulativeWithdrawals;
+    return { ...row, growthToDate: row.closingBalance - netCapital, netCapital };
+  });
+  const visibleRows = enrichedRows.slice(0, visibleCount);
   return (
-    <div className="calculator-breakdown-table-wrap" role="region" aria-label="Compound interest schedule" tabIndex={0}>
-      <table>
-        <caption>Compound interest balance reconciliation</caption>
-        <thead><tr>
-          <th scope="col">Period</th><th scope="col">Opening</th><th scope="col">Deposits</th><th scope="col">Withdrawals</th><th scope="col">Gross return</th><th scope="col">Fees</th><th scope="col">Ending</th><th scope="col">Real ending</th>
-        </tr></thead>
-        <tbody>
-          {rows.map((row, index) => (
-            <tr key={`${row.time}-${index}`}>
-              <th scope="row">{row.label}</th>
-              <td>{formatCurrency(row.openingBalance, currency, locale, 2)}</td>
-              <td>{formatCurrency(row.deposits, currency, locale, 2)}</td>
-              <td>{formatCurrency(row.withdrawals, currency, locale, 2)}</td>
-              <td>{formatCurrency(row.grossReturn, currency, locale, 2)}</td>
-              <td>{formatCurrency(row.fees, currency, locale, 2)}</td>
-              <td>{formatCurrency(row.closingBalance, currency, locale, 2)}</td>
-              <td>{formatCurrency(row.realClosingBalance, currency, locale, 2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className="calculator-breakdown-table-wrap" role="region" aria-label="Compound interest schedule" tabIndex={0}>
+        <table>
+          <caption>Compound interest balance reconciliation</caption>
+          <thead><tr>
+            <th scope="col">Period</th><th scope="col">Opening</th><th scope="col">Deposits</th><th scope="col">Withdrawals</th><th scope="col">Gross return</th><th scope="col">Fees</th><th scope="col">Net capital</th><th scope="col">Growth to date</th><th scope="col">Ending</th><th scope="col">Real ending</th>
+          </tr></thead>
+          <tbody>
+            {visibleRows.map((row, index) => (
+              <tr key={`${row.time}-${index}`}>
+                <th scope="row">{row.label}</th>
+                <td>{formatCurrency(row.openingBalance, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.deposits, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.withdrawals, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.grossReturn, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.fees, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.netCapital, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.growthToDate, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.closingBalance, currency, locale, 2)}</td>
+                <td>{formatCurrency(row.realClosingBalance, currency, locale, 2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {visibleRows.length < enrichedRows.length ? (
+        <div className="compound-schedule-pagination">
+          <p role="status">Showing {visibleRows.length.toLocaleString()} of {enrichedRows.length.toLocaleString()} rows. CSV export always includes the complete schedule.</p>
+          <button className="secondary-button" type="button" onClick={() => setVisibleCount((current) => Math.min(current + 250, enrichedRows.length))}>
+            Show next {Math.min(250, enrichedRows.length - visibleRows.length).toLocaleString()} rows
+          </button>
+        </div>
+      ) : null}
+    </>
   );
 }
 
-function applyScenario(inputs: CompoundInterestInputs, scenario: ScenarioId): CompoundInterestInputs {
+export function applyScenario(inputs: CompoundInterestInputs, scenario: ScenarioId): CompoundInterestInputs {
   if (scenario === 'base') return inputs;
   return {
     ...inputs,
@@ -957,15 +1056,30 @@ function applyScenario(inputs: CompoundInterestInputs, scenario: ScenarioId): Co
   };
 }
 
-function buildSensitivity(inputs: CompoundInterestInputs) {
+export function buildSensitivity(inputs: CompoundInterestInputs) {
   const rates = [inputs.annualRatePercent - 2, inputs.annualRatePercent, inputs.annualRatePercent + 2];
   const contributions = [
     inputs.recurringContribution * 0.8,
     inputs.recurringContribution,
     inputs.recurringContribution * 1.2
   ];
+  const durationSpan = Math.max(1, inputs.years * 0.25);
+  const durationCandidates = [
+    { label: 'Shorter', years: Math.max(0.01, inputs.years - durationSpan) },
+    { label: 'Base', years: inputs.years },
+    { label: 'Longer', years: Math.min(100, inputs.years + durationSpan) }
+  ].filter((item, index, items) => (
+    items.findIndex((candidate) => Math.abs(candidate.years - item.years) < 1e-9) === index
+  ));
   return {
     contributions,
+    durations: durationCandidates.map((item) => {
+      const durationProjection = calculateCompoundInterest({ ...inputs, years: item.years });
+      return {
+        ...item,
+        value: durationProjection.validation.isValid ? durationProjection.endingValue : Number.NaN
+      };
+    }),
     rates,
     values: rates.map((rate) => contributions.map((recurringContribution) => {
       const projection = calculateCompoundInterest({ ...inputs, annualRatePercent: rate, recurringContribution });
@@ -989,8 +1103,11 @@ function toCalculatorResult(
     ],
     metrics: [
       { description: 'Projected ending value.', label: 'Projected value', tone: 'accent', value: projection.endingValue, valueType: 'currency' },
+      { description: 'Capital present at the start.', label: 'Starting amount', value: inputs.principal, valueType: 'currency' },
+      { description: 'Deposits made after the start.', label: 'Future contributions', value: projection.totalDeposits, valueType: 'currency' },
       { description: 'Starting amount plus deposits.', label: 'Total invested', value: projection.investedCapital, valueType: 'currency' },
       { description: 'Ending value minus net contributions.', label: 'Estimated net growth', tone: projection.netGrowth >= 0 ? 'positive' : 'warning', value: projection.netGrowth, valueType: 'currency' },
+      { description: 'Estimated net growth divided by ending value.', label: 'Growth share', value: projection.endingValue === 0 ? 0 : projection.netGrowth / projection.endingValue, valueType: 'percent' },
       { description: 'Inflation-adjusted ending value.', label: 'Today’s buying power', value: projection.realEndingValue, valueType: 'currency' },
       { description: 'Fees deducted over the projection.', label: 'Fees charged', value: projection.feesPaid, valueType: 'currency' },
       { description: 'Effective annual return before fees.', label: 'Effective annual rate', value: projection.effectiveAnnualRate, valueType: 'percent' }
@@ -999,7 +1116,7 @@ function toCalculatorResult(
   };
 }
 
-function toNumericSaveValues(inputs: CompoundInterestInputs): Record<string, number> {
+export function toNumericSaveValues(inputs: CompoundInterestInputs): Record<string, number> {
   return {
     annualContributionIncreasePercent: inputs.annualContributionIncreasePercent,
     annualFeePercent: inputs.annualFeePercent,
@@ -1023,7 +1140,7 @@ function toNumericSaveValues(inputs: CompoundInterestInputs): Record<string, num
   };
 }
 
-function inputsFromSaved(values: Record<string, number>): CompoundInterestInputs {
+export function inputsFromSaved(values: Record<string, number>): CompoundInterestInputs {
   return {
     ...defaultCompoundInterestInputs,
     annualContributionIncreasePercent: finiteOr(values.annualContributionIncreasePercent, 0),
@@ -1047,14 +1164,23 @@ function inputsFromSaved(values: Record<string, number>): CompoundInterestInputs
   };
 }
 
-function restoreState(): (CompoundDraft & { source: 'draft' | 'share' }) | null {
+export function restoreState(): (CompoundDraft & { scenarioId: ScenarioId; source: 'draft' | 'share' }) | null {
   if (typeof window === 'undefined') return null;
   const params = new URLSearchParams(window.location.search);
   if (params.get('fp') === '2') {
+    if (params.get('formula') !== compoundInterestFormulaVersion) return null;
     const inputs = deserializeInputs(params);
     const currency = currencyCodes.includes(params.get('currency') as CurrencyCode) ? params.get('currency') as CurrencyCode : 'USD';
     const locale = localeCodes.includes(params.get('locale') as LocaleCode) ? params.get('locale') as LocaleCode : 'auto';
-    return { currency, formulaVersion: compoundInterestFormulaVersion, inputs, locale, source: 'share', updatedAt: new Date().toISOString() };
+    return {
+      currency,
+      formulaVersion: compoundInterestFormulaVersion,
+      inputs,
+      locale,
+      scenarioId: supportedScenario(params.get('scenario')),
+      source: 'share',
+      updatedAt: new Date().toISOString()
+    };
   }
   if (params.get('fp') === '1') {
     return {
@@ -1069,6 +1195,7 @@ function restoreState(): (CompoundDraft & { source: 'draft' | 'share' }) | null 
         years: finiteParam(params, 'years', defaultCompoundInterestInputs.years)
       },
       locale: 'auto',
+      scenarioId: 'base',
       source: 'share',
       updatedAt: new Date().toISOString()
     };
@@ -1076,23 +1203,30 @@ function restoreState(): (CompoundDraft & { source: 'draft' | 'share' }) | null 
   try {
     const parsed = JSON.parse(window.localStorage.getItem(draftStorageKey) ?? 'null') as unknown;
     if (!isCompoundDraft(parsed)) return null;
-    return { ...parsed, source: 'draft' };
+    return { ...parsed, scenarioId: supportedScenario(parsed.scenarioId), source: 'draft' };
   } catch {
     return null;
   }
 }
 
-function buildShareUrl(inputs: CompoundInterestInputs, currency: CurrencyCode, locale: LocaleCode): string {
-  const url = new URL('/calculators/compound-interest', window.location.origin);
+export function buildShareUrl(
+  inputs: CompoundInterestInputs,
+  currency: CurrencyCode,
+  locale: LocaleCode,
+  scenarioId: ScenarioId = 'base',
+  origin = window.location.origin
+): string {
+  const url = new URL('/calculators/compound-interest', origin);
   url.searchParams.set('fp', '2');
   url.searchParams.set('formula', compoundInterestFormulaVersion);
   Object.entries(inputs).forEach(([key, value]) => url.searchParams.set(key, String(value)));
   url.searchParams.set('currency', currency);
   url.searchParams.set('locale', locale);
+  url.searchParams.set('scenario', scenarioId);
   return url.toString();
 }
 
-function deserializeInputs(params: URLSearchParams): CompoundInterestInputs {
+export function deserializeInputs(params: URLSearchParams): CompoundInterestInputs {
   const defaults = defaultCompoundInterestInputs;
   return {
     annualContributionIncreasePercent: finiteParam(params, 'annualContributionIncreasePercent', defaults.annualContributionIncreasePercent),
@@ -1116,7 +1250,7 @@ function deserializeInputs(params: URLSearchParams): CompoundInterestInputs {
   };
 }
 
-function isCompoundDraft(value: unknown): value is CompoundDraft {
+export function isCompoundDraft(value: unknown): value is CompoundDraft {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const record = value as Record<string, unknown>;
   if (record.formulaVersion !== compoundInterestFormulaVersion || !record.inputs || typeof record.inputs !== 'object') return false;
@@ -1128,6 +1262,7 @@ function isCompoundDraft(value: unknown): value is CompoundDraft {
   return (
     typeof record.updatedAt === 'string' &&
     validNumbers &&
+    (record.scenarioId === undefined || ['base', 'lower', 'higher'].includes(String(record.scenarioId))) &&
     ['beginning', 'end'].includes(String(restored.contributionTiming)) &&
     ['nominal', 'apy'].includes(String(restored.rateBasis)) &&
     ['future', 'today'].includes(String(restored.targetBasis)) &&
@@ -1136,20 +1271,17 @@ function isCompoundDraft(value: unknown): value is CompoundDraft {
   );
 }
 
-function buildProjectionCsv(
+export function buildProjectionCsv(
   inputs: CompoundInterestInputs,
   projection: CompoundInterestProjection,
   currency: CurrencyCode,
   locale: LocaleCode
 ): string {
-  const rows: Array<Array<string | number>> = [
-    ['Metadata', 'Formula version', compoundInterestFormulaVersion],
-    ['Metadata', 'Currency', currency],
-    ['Metadata', 'Display locale', locale],
-    ...Object.entries(inputs).map(([key, value]) => ['Input', key, value]),
-    [],
-    ['Period', 'Time (years)', 'Opening balance', 'Deposits', 'Withdrawals', 'Gross return', 'Fees', 'Net growth', 'Ending balance', 'Cumulative contributions', 'Real ending balance'],
-    ...projection.detailedSchedule.map((row) => [
+  let cumulativeWithdrawals = 0;
+  const scheduleRows = projection.detailedSchedule.map((row) => {
+    cumulativeWithdrawals += row.withdrawals;
+    const netCapital = row.cumulativeContributions - cumulativeWithdrawals;
+    return [
       row.label,
       rawNumber(row.time),
       rawNumber(row.openingBalance),
@@ -1160,13 +1292,25 @@ function buildProjectionCsv(
       rawNumber(row.netGrowth),
       rawNumber(row.closingBalance),
       rawNumber(row.cumulativeContributions),
+      rawNumber(cumulativeWithdrawals),
+      rawNumber(netCapital),
+      rawNumber(row.closingBalance - netCapital),
       rawNumber(row.realClosingBalance)
-    ])
+    ];
+  });
+  const rows: Array<Array<string | number>> = [
+    ['Metadata', 'Formula version', compoundInterestFormulaVersion],
+    ['Metadata', 'Currency', currency],
+    ['Metadata', 'Display locale', locale],
+    ...Object.entries(inputs).map(([key, value]) => ['Input', key, value]),
+    [],
+    ['Period', 'Time (years)', 'Opening balance', 'Deposits', 'Withdrawals', 'Gross return', 'Fees', 'Interval net growth', 'Ending balance', 'Cumulative contributions', 'Cumulative withdrawals', 'Net contributed capital', 'Growth to date', 'Real ending balance'],
+    ...scheduleRows
   ];
   return rows.map((row) => row.map((cell) => csvEscape(String(cell))).join(',')).join('\r\n');
 }
 
-function sampleRows(rows: CompoundInterestScheduleRow[], limit: number): CompoundInterestScheduleRow[] {
+function sampleRows<Row>(rows: Row[], limit: number): Row[] {
   if (rows.length <= limit) return rows;
   const indexes = new Set<number>([0, rows.length - 1]);
   for (let index = 1; index < limit - 1; index += 1) {
@@ -1175,7 +1319,7 @@ function sampleRows(rows: CompoundInterestScheduleRow[], limit: number): Compoun
   return [...indexes].sort((a, b) => a - b).map((index) => rows[index]);
 }
 
-function formatCurrency(
+export function formatCurrency(
   value: number,
   currency: CurrencyCode,
   locale: string | undefined,
@@ -1188,6 +1332,10 @@ function formatCurrency(
     minimumFractionDigits: maximumFractionDigits,
     style: 'currency'
   }).format(value);
+}
+
+export function currencyFractionDigits(currency: CurrencyCode): number {
+  return new Intl.NumberFormat('en', { currency, style: 'currency' }).resolvedOptions().maximumFractionDigits ?? 2;
 }
 
 function formatPercent(value: number, locale: string | undefined): string {
@@ -1204,8 +1352,8 @@ function formatDuration(years: number): string {
 }
 
 function scenarioLabel(id: ScenarioId): string {
-  if (id === 'lower') return 'Lower rate';
-  if (id === 'higher') return 'Higher rate';
+  if (id === 'lower') return 'Conservative';
+  if (id === 'higher') return 'Optimistic';
   return 'Base';
 }
 
@@ -1226,6 +1374,14 @@ function supportedCompounding(value: number): CompoundingFrequency {
 
 function supportedContribution(value: number): ContributionFrequency {
   return [52, 26, 24, 12, 4, 2, 1].includes(value) ? value as ContributionFrequency : 12;
+}
+
+function supportedScenario(value: unknown): ScenarioId {
+  return value === 'lower' || value === 'higher' ? value : 'base';
+}
+
+function validateDraftInputs(inputs: CompoundInterestInputs): boolean {
+  return validateCompoundInterestInputs(inputs).isValid;
 }
 
 function finiteParam(params: URLSearchParams, key: string, fallback: number): number {
@@ -1257,10 +1413,12 @@ async function copyText(value: string): Promise<void> {
   textarea.setAttribute('readonly', '');
   textarea.style.position = 'fixed';
   textarea.style.opacity = '0';
+  const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
   document.body.appendChild(textarea);
   textarea.select();
   const copied = document.execCommand('copy');
   textarea.remove();
+  previousFocus?.focus();
   if (!copied) throw new Error('Clipboard unavailable');
 }
 
@@ -1281,4 +1439,33 @@ function rawNumber(value: number): string {
 
 function csvEscape(value: string): string {
   return /[",\r\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+}
+
+function visualPercent(value: number, maximum: number): string {
+  if (value <= 0 || maximum <= 0) return '0%';
+  return `${Math.max(2, value / maximum * 100)}%`;
+}
+
+function segmentPercent(value: number, total: number): string {
+  if (value <= 0 || total <= 0) return '0%';
+  return `${value / total * 100}%`;
+}
+
+function projectionInterpretation(
+  projection: CompoundInterestProjection,
+  inputs: CompoundInterestInputs,
+  money: (value: number, maximumFractionDigits?: number) => string,
+  locale: string | undefined
+): string {
+  const share = projection.endingValue === 0 ? 0 : projection.netGrowth / projection.endingValue;
+  const growthPhrase = projection.netGrowth >= 0
+    ? `${money(projection.netGrowth)} of estimated growth makes up ${formatPercent(share, locale)} of the ending value.`
+    : `The constant assumptions produce ${money(Math.abs(projection.netGrowth))} of net loss, or ${formatPercent(Math.abs(share), locale)} of the ending value.`;
+  const withdrawalPhrase = projection.withdrawals > 0
+    ? ` The ending value also reflects ${money(projection.withdrawals)} of funded withdrawals.`
+    : '';
+  const realPhrase = inputs.inflationPercent === 0
+    ? ''
+    : ` In today’s purchasing power, the ending value is ${money(projection.realEndingValue)}.`;
+  return `${money(inputs.principal)} starts the projection and ${money(projection.totalDeposits)} is added later. ${growthPhrase}${withdrawalPhrase}${realPhrase}`;
 }

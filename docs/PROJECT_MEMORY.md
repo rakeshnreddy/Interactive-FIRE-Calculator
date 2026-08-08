@@ -56,7 +56,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - `docs/CALCULATOR_LIBRARY_REVIEW.md` records formula overlap, route-retention rules, toolkit grouping, and the post-Phase-25 visual review.
 - `scripts/check_production_auth.mjs` and `scripts/deploy_production.sh` provide fail-closed production Clerk and Cloudflare deployment checks.
 - `docs/PRODUCTION_AUTH_RUNBOOK.md` is the source of truth for the remaining owned-domain, Clerk production, secret, deployment, and hosted verification steps.
-- Compound Interest now has a dedicated route-local experience in `src/CompoundInterestCalculator.tsx` and typed engine in `src/lib/compoundInterestCalculator.ts`; formula research and deferred-scope decisions are recorded in `docs/COMPOUND_INTEREST_RESEARCH.md`.
+- Compound Interest now has a dedicated route-local experience in `src/CompoundInterestCalculator.tsx` and typed engine in `src/lib/compoundInterestCalculator.ts`; formula research and deferred-scope decisions are recorded in `docs/calculators/compound-interest.md`.
 
 ## Phase 26 Calculator Excellence Pass
 
