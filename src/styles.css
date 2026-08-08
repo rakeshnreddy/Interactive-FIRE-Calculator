@@ -4910,6 +4910,9 @@ h2 {
   display: grid;
   grid-template-columns: repeat(8, minmax(36px, 1fr));
   gap: 0.4rem;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 190px;
   overflow-x: auto;
 }
