@@ -5408,7 +5408,7 @@ h2 {
   }
 
   .compound-chart-plot {
-    grid-template-columns: repeat(8, minmax(46px, 1fr));
+    grid-template-columns: repeat(8, minmax(30px, 1fr));
   }
 
   .compound-action-row,
