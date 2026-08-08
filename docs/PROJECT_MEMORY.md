@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: August 8, 2026
+Last updated: August 9, 2026
 
 ## Repository
 
@@ -10,7 +10,7 @@ Last updated: August 8, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://8e49bd2f.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://5ac16caf.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -64,14 +64,15 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Calculators 1 and 2 of 82 are complete in code: `/calculators/compound-interest` and `/calculators/savings-goal`.
 - The route preserves the original $10,000 / $500 monthly / 10 years / 8% nominal monthly-compounding default and exact unrounded result.
 - New route-local behavior covers nominal versus APY semantics, independent contribution/compounding frequencies, beginning/end timing, fractional terms, step-ups, anniversary top-ups, annual asset fees, inflation, a target basis, one future deposit and withdrawal, deterministic scenarios, sensitivity, milestones, reconciled annual/event schedules, locale/currency display, v1/v2 link restoration, per-route draft, raw CSV, and saved-run loading.
+- Compound Interest usability hardening keeps contribution and compounding cadence in Quick Start, shows an auditable amount × deposit-count equation, renames the total to “Deposits after start,” displays inflation-adjusted output only for non-zero inflation, and stacks the workspace before its panels become compressed.
 - The shared `compound` formula remains untouched for 401(k) and HYSA; `src/lib/fire.ts` remains untouched.
 - Savings Goal corrects its route-only default from the legacy hybrid `$428.600434` to a consistent nominal-monthly `$425.281683`, while the shared generic formula and SIP Goal remain unchanged.
 - Savings Goal v2 covers exact fractional deadlines, nominal/APY semantics, independent frequencies/timing, current-plan and catch-up analysis, step-ups, anniversary top-ups, balance fees, target inflation, milestones, isolated scenarios, target/deadline sensitivity, reconciled schedules, locale/currency display, versioned share/draft/save boundaries, and honest USD-only Goal conversion.
 - High-standard pass progress: 2 of 82 calculators complete; 80 remain.
 - Next calculator: `/calculators/net-worth`.
-- Excellence-pass commits include `2c5bf90` (`Harden compound interest experience`), `a75cb9d` (`Constrain compound chart on mobile`), `7843c11` (`Fit compound chart at narrow widths`), and `854bb44` (`Build savings goal excellence experience`).
-- Preview: `https://e25810bb.interactive-fire-calculator.pages.dev`; branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
-- Current verification: 79 Python tests, TypeScript, 1,234 frontend tests across 24 files, production build, desktop/mobile/light/dark/reduced-motion/forced-colors/200%-scale browser QA, all 84 public calculator routes, direct Savings Goal/SIP Goal/Compound/FIRE `200`, unauthenticated save API `401`, remote D1 migration status clean, and no deployed browser console/resource/overflow failures.
+- Excellence-pass commits include `2c5bf90` (`Harden compound interest experience`), `a75cb9d` (`Constrain compound chart on mobile`), `7843c11` (`Fit compound chart at narrow widths`), `854bb44` (`Build savings goal excellence experience`), and `6b18058` (`Clarify compound contribution schedules`).
+- Preview: `https://5ac16caf.interactive-fire-calculator.pages.dev`; branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Current verification: 79 Python tests, TypeScript, 1,235 frontend tests across 24 files, production build, desktop/mobile/light/dark/reduced-motion/forced-colors/200%-scale browser QA, all 84 public calculator routes, direct Savings Goal/SIP Goal/Compound/FIRE `200`, unauthenticated save API `401`, remote D1 migration status clean, and no deployed calculator failures or horizontal overflow. The known app-wide missing `/favicon.ico` request is unrelated to calculator behavior.
 
 ## Completed Work
 

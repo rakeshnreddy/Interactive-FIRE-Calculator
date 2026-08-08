@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://8e49bd2f.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://5ac16caf.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -57,6 +57,7 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Add exact locale/currency display controls without implying FX conversion.
 - [x] Add finance golden tests, timing/frequency matrix, validation/overflow cases, invariants, save-payload integration, and full shared regressions.
 - [x] Record hardening commits `2c5bf90`, `a75cb9d`, and `7843c11`, pushed branch, preview `https://8e49bd2f.interactive-fire-calculator.pages.dev`, 84-route public smoke, direct Compound/401(k)/HYSA/FIRE `200`, and unauthenticated save API `401`.
+- [x] Follow-up clarity correction `6b18058`: expose contribution/return cadence in Quick Start, reconcile recurring-deposit counts at input and result, make inflation-adjusted output conditional, stack panels at `1180px`, and verify preview `https://5ac16caf.interactive-fire-calculator.pages.dev` across all 84 routes and 320px–1280px browser widths.
 
 Research and exact deferred decisions: `docs/calculators/compound-interest.md`.
 

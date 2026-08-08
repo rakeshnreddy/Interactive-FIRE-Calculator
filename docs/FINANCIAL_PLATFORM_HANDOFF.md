@@ -21,6 +21,7 @@
 - Preview verified: `https://e25810bb.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
 - Full gate: 79 Python tests, TypeScript, 1,234 frontend tests across 24 files, and production build.
 - Live gate: all 84 public calculator paths passed without authentication; Savings Goal, SIP Goal, Compound Interest, and FIRE returned `200`; unauthenticated `/api/calculator-results` returned `401`; deployed desktop/mobile browser checks had no console errors, failed resources, overlays, or horizontal overflow.
+- Compound Interest follow-up: commit `6b18058` moves contribution and compounding cadence into Quick Start, visibly reconciles `$10,000 × 120` monthly deposits versus `$10,000 × 10` annual deposits, removes the zero-inflation buying-power output, and stacks panels at `1180px`. Full verification passed with 1,235 frontend tests; all 84 routes and direct Compound/Savings Goal/SIP Goal/FIRE checks passed at `https://5ac16caf.interactive-fire-calculator.pages.dev`, with the save API correctly returning `401` signed out.
 
 Last updated: August 9, 2026
 
@@ -40,7 +41,7 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://baadb7c6.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://5ac16caf.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
