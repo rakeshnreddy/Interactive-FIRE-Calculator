@@ -69,9 +69,9 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Savings Goal v2 covers exact fractional deadlines, nominal/APY semantics, independent frequencies/timing, current-plan and catch-up analysis, step-ups, anniversary top-ups, balance fees, target inflation, milestones, isolated scenarios, target/deadline sensitivity, reconciled schedules, locale/currency display, versioned share/draft/save boundaries, and honest USD-only Goal conversion.
 - High-standard pass progress: 2 of 82 calculators complete; 80 remain.
 - Next calculator: `/calculators/net-worth`.
-- Excellence-pass hardening commits: `2c5bf90` (`Harden compound interest experience`), `a75cb9d` (`Constrain compound chart on mobile`), and `7843c11` (`Fit compound chart at narrow widths`).
-- Preview: `https://8e49bd2f.interactive-fire-calculator.pages.dev`.
-- Current verification: 79 Python tests, TypeScript, 1,234 frontend tests across 24 files, production build, desktop/mobile/light/dark/reduced-motion/forced-colors/200%-scale browser QA, all 84 public calculator routes, direct Savings Goal/SIP Goal/Compound/FIRE `200`, and remote D1 migration status clean.
+- Excellence-pass commits include `2c5bf90` (`Harden compound interest experience`), `a75cb9d` (`Constrain compound chart on mobile`), `7843c11` (`Fit compound chart at narrow widths`), and `854bb44` (`Build savings goal excellence experience`).
+- Preview: `https://e25810bb.interactive-fire-calculator.pages.dev`; branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Current verification: 79 Python tests, TypeScript, 1,234 frontend tests across 24 files, production build, desktop/mobile/light/dark/reduced-motion/forced-colors/200%-scale browser QA, all 84 public calculator routes, direct Savings Goal/SIP Goal/Compound/FIRE `200`, unauthenticated save API `401`, remote D1 migration status clean, and no deployed browser console/resource/overflow failures.
 
 ## Completed Work
 

@@ -71,10 +71,11 @@ Research and exact deferred decisions: `docs/calculators/compound-interest.md`.
 - [x] Add route-local versioned links/drafts, legacy restoration, save/reload values, resolved-target persistence, and fractional Goal dates.
 - [x] Preserve currency/locale display without FX conversion and block non-USD Goal conversion until Goals store currency explicitly.
 - [x] Add formula goldens, reconciliation/monotonicity/overflow tests, semantic route tests, persistence tests, browser QA, and public-route smoke.
+- [x] Push implementation commit `854bb44`, deploy `https://e25810bb.interactive-fire-calculator.pages.dev`, verify all 84 public calculator routes, direct Savings Goal/SIP Goal/Compound/FIRE `200`, unauthenticated save API `401`, and deployed desktop/mobile browser behavior.
 
 Research and exact deferred decisions: `docs/calculators/savings-goal.md`.
 
-Verification passed with 79 Python tests, TypeScript typecheck, 1,234 frontend tests across 24 files, and the production build. Local browser QA covered 320px and 390px mobile, 720px at 200% scale, 1,440px desktop, light/dark, reduced motion, forced colors, validation, APY semantics, Indian formatting, impossible and funded states, v1/v2 restoration, schedule reconciliation/pagination, keyboard disclosures, console state, and document overflow. Remote D1 reports no pending migrations.
+Verification passed with 79 Python tests, TypeScript typecheck, 1,234 frontend tests across 24 files, and the production build. Local browser QA covered 320px and 390px mobile, 720px at 200% scale, 1,440px desktop, light/dark, reduced motion, forced colors, validation, APY semantics, Indian formatting, impossible and funded states, v1/v2 restoration, schedule reconciliation/pagination, keyboard disclosures, console state, and document overflow. Remote D1 reports no pending migrations. Deployed QA at `https://e25810bb.interactive-fire-calculator.pages.dev` found no console errors, failed resources, or desktop/mobile document overflow.
 
 ## Design System Milestone
 

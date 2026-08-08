@@ -15,14 +15,14 @@
 - Currency boundary: calculator/share/export support seven currencies; Goal creation is visibly limited to USD until the Goals schema/API/UI store currency.
 - Deferred: Goal currency migration, taxes, live APY/CPI/FX, exact product ledgers, tiered/transaction fees, Monte Carlo, arbitrary cash-flow ledgers, and multi-goal optimization.
 - Local verification: 79 Python tests, 1,234 frontend tests across 24 files, TypeScript, production build, 84-route public smoke, direct Savings Goal/SIP Goal/Compound/FIRE `200`, desktop/mobile/theme/forced-colors/reduced-motion browser QA, and no pending remote D1 migrations.
-- Verification before handoff close: commit, push, Cloudflare preview deploy, deployed 84-route smoke, direct Savings Goal/SIP Goal/Compound/FIRE `200`, and unauthenticated API `401`.
+- Verification complete: implementation committed and pushed, Cloudflare preview deployed, all 84 calculator routes passed, Savings Goal/SIP Goal/Compound/FIRE returned `200`, and the unauthenticated save API returned `401`.
 - Production Clerk remains a separate launch blocker and is not part of this public calculator pass.
-- Hardening commits: `2c5bf90` (`Harden compound interest experience`), `a75cb9d` (`Constrain compound chart on mobile`), and `7843c11` (`Fit compound chart at narrow widths`), pushed to `origin/codex/cloudflare-pages-theme-plan`.
-- Preview verified: `https://8e49bd2f.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
-- Full gate: 79 Python tests, TypeScript, 1,205 frontend tests across 22 files, and production build.
-- Live gate: all 84 public calculator paths passed without authentication; Compound, 401(k), HYSA, and FIRE returned `200`; unauthenticated `/api/calculator-results` returned `401`; deployed desktop/mobile browser checks had no console errors, failed resources, overlays, or horizontal overflow.
+- Implementation commit: `854bb44` (`Build savings goal excellence experience`), pushed to `origin/codex/cloudflare-pages-theme-plan`.
+- Preview verified: `https://e25810bb.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Full gate: 79 Python tests, TypeScript, 1,234 frontend tests across 24 files, and production build.
+- Live gate: all 84 public calculator paths passed without authentication; Savings Goal, SIP Goal, Compound Interest, and FIRE returned `200`; unauthenticated `/api/calculator-results` returned `401`; deployed desktop/mobile browser checks had no console errors, failed resources, overlays, or horizontal overflow.
 
-Last updated: August 8, 2026
+Last updated: August 9, 2026
 
 This document captures the current product direction, technical context, current repo state, and next implementation plan for a fresh coding session.
 
