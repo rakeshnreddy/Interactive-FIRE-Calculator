@@ -5,6 +5,7 @@ import {
   CompoundInterestCalculator,
   applyScenario,
   buildProjectionCsv,
+  buildRecurringContributionSummary,
   buildSensitivity,
   buildShareUrl,
   currencyFractionDigits,
@@ -177,6 +178,18 @@ describe('Compound Interest engagement and presentation contract', () => {
     expect(sensitivity.durations[2].value).toBeGreaterThan(sensitivity.durations[1].value);
   });
 
+  it('makes monthly versus annual contribution counts explicit', () => {
+    expect(buildRecurringContributionSummary({
+      ...defaultCompoundInterestInputs,
+      recurringContribution: 10_000
+    })).toEqual({ count: 120, total: 1_200_000 });
+    expect(buildRecurringContributionSummary({
+      ...defaultCompoundInterestInputs,
+      contributionFrequency: 1,
+      recurringContribution: 10_000
+    })).toEqual({ count: 10, total: 100_000 });
+  });
+
   it('renders labeled controls, explicit result definitions, chart alternatives, and closed disclosures', () => {
     const calculator = findSeoCalculator('/calculators/compound-interest');
     expect(calculator).toBeDefined();
@@ -210,6 +223,12 @@ describe('Compound Interest engagement and presentation contract', () => {
     expect(document.body.textContent).toContain('Growth share');
     expect(document.body.textContent).toContain('Net contributed capital');
     expect(document.body.textContent).toContain('Duration sensitivity');
+    expect(document.body.textContent).toContain('$500 × 120 monthly deposits = $60,000');
+    expect(document.body.textContent).toContain('8% nominal annual rate compounded monthly = 8.3% effective per year');
+    expect(document.body.textContent).not.toContain('Today’s buying power');
+    expect(document.body.textContent).not.toContain('Inflation-adjusted ending value');
+    expect(document.querySelector('#compound-contributionFrequency')?.closest('details')).toBeNull();
+    expect(document.querySelector('#compound-compoundingFrequency')?.closest('details')).toBeNull();
     expect(document.querySelector('.compound-chart-plot')?.getAttribute('tabindex')).toBe('0');
     expect(document.querySelector('.compound-sensitivity-wrap td.is-base')?.textContent).toContain('Base');
   });

@@ -4448,6 +4448,79 @@ h2 {
   }
 }
 
+/* Compound Interest clarity and responsive placement hardening. */
+.compound-quick-grid {
+  align-items: start;
+}
+
+.compound-quick-note {
+  min-height: 0;
+}
+
+.compound-plan-summary {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.compound-plan-summary > span {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border-left: 3px solid var(--accent);
+}
+
+.compound-plan-summary > span + span {
+  border-top: 1px solid var(--border);
+  border-left-color: var(--data-blue);
+}
+
+.compound-plan-summary strong {
+  color: var(--heading);
+  font-size: 0.8rem;
+}
+
+.compound-plan-summary small {
+  color: var(--muted-strong);
+  line-height: 1.45;
+}
+
+.compound-deposit-proof {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border-left: 3px solid var(--accent);
+  color: var(--muted-strong);
+  background: var(--accent-wash);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.compound-deposit-proof strong {
+  color: var(--heading);
+}
+
+@media (max-width: 1180px) {
+  .calculator-detail-grid.compound-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .compound-workspace .compound-result-panel {
+    position: static;
+  }
+}
+
+@media (forced-colors: active) {
+  .compound-plan-summary,
+  .compound-deposit-proof {
+    border-color: CanvasText;
+  }
+}
+
 /* Savings Goal v2 extends the audited calculator workspace with a two-plan runway. */
 .savings-goal-calculator {
   --savings-required: var(--accent);

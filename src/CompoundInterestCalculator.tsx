@@ -123,6 +123,9 @@ export function CompoundInterestCalculator({
     : projection.detailedSchedule;
   const resolvedLocale = locale === 'auto' ? undefined : locale;
   const growthShare = projection.endingValue === 0 ? 0 : projection.netGrowth / projection.endingValue;
+  const recurringSummary = useMemo(() => buildRecurringContributionSummary(inputs), [inputs]);
+  const showInflationAdjusted = Math.abs(scenarioInputs.inflationPercent) > 1e-12;
+  const additionalDeposits = Math.max(0, projection.totalDeposits - recurringSummary.total);
 
   useEffect(() => {
     const restored = restoreState();
@@ -274,7 +277,7 @@ export function CompoundInterestCalculator({
             </button>
           </div>
 
-          <div className="calculator-input-grid">
+          <div className="calculator-input-grid compound-quick-grid">
             <NumberField
               currency={currency}
               error={projection.validation.errors.principal}
@@ -284,16 +287,6 @@ export function CompoundInterestCalculator({
               min={0}
               onChange={setNumber}
               value={inputs.principal}
-            />
-            <NumberField
-              currency={currency}
-              error={projection.validation.errors.recurringContribution}
-              helper="Amount added each contribution period. The default period is monthly."
-              inputKey="recurringContribution"
-              label="Recurring contribution"
-              min={0}
-              onChange={setNumber}
-              value={inputs.recurringContribution}
             />
             <NumberField
               error={projection.validation.errors.years}
@@ -307,31 +300,71 @@ export function CompoundInterestCalculator({
               value={inputs.years}
             />
             <NumberField
+              currency={currency}
+              error={projection.validation.errors.recurringContribution}
+              helper={`Amount added ${frequencyLabel(inputs.contributionFrequency)}. The frequency selector beside this field controls how often it repeats.`}
+              inputKey="recurringContribution"
+              label="Recurring contribution"
+              min={0}
+              onChange={setNumber}
+              value={inputs.recurringContribution}
+            />
+            <SelectField
+              helper="How often the recurring contribution is deposited."
+              inputKey="contributionFrequency"
+              label="Contribution repeats"
+              onChange={(value) => setChoice('contributionFrequency', Number(value) as ContributionFrequency)}
+              options={contributionFrequencyOptions}
+              value={inputs.contributionFrequency}
+            />
+            <NumberField
               error={projection.validation.errors.annualRatePercent}
               helper={inputs.rateBasis === 'nominal'
                 ? 'Nominal annual rate before within-year compounding.'
                 : 'APY already includes within-year compounding.'}
               inputKey="annualRatePercent"
-              label="Annual return or rate"
+              label="Annual return or interest rate"
               onChange={setNumber}
               step={0.01}
               suffix="%"
               value={inputs.annualRatePercent}
             />
+            {inputs.rateBasis === 'nominal' ? (
+              <SelectField
+                helper="How often the entered annual nominal rate compounds. Choose annually for once-a-year compounding."
+                inputKey="compoundingFrequency"
+                label="Return compounds"
+                onChange={(value) => setChoice('compoundingFrequency', Number(value) as CompoundingFrequency)}
+                options={compoundingFrequencyOptions}
+                value={inputs.compoundingFrequency}
+              />
+            ) : (
+              <div className="compound-inline-note compound-quick-note">
+                <strong>APY already includes compounding</strong>
+                <small>The compounding selector is hidden because applying it again would double-count growth.</small>
+              </div>
+            )}
           </div>
 
-          <p className="compound-default-convention">
-            Default convention: nominal annual rate, monthly compounding, and end-of-month contributions.
-          </p>
+          <div className="compound-plan-summary" aria-live="polite" aria-atomic="true">
+            <span>
+              <strong>Contribution schedule</strong>
+              <small>{contributionScheduleCopy(inputs, recurringSummary, money, resolvedLocale)}</small>
+            </span>
+            <span>
+              <strong>Return schedule</strong>
+              <small>{returnScheduleCopy(inputs, scenarios.find((scenario) => scenario.id === 'base')?.projection.effectiveAnnualRate ?? projection.effectiveAnnualRate, resolvedLocale)}</small>
+            </span>
+          </div>
 
           <details className="compound-disclosure calculator-options-shell">
             <summary>
-              <span><strong>Advanced options</strong><small>Timing, frequencies, fees, inflation, target, and future events</small></span>
+              <span><strong>Advanced options</strong><small>Timing, rate basis, fees, inflation, target, and future events</small></span>
               <ChevronDown size={17} />
             </summary>
             <div className="compound-advanced-body">
               <fieldset>
-                <legend>Rate and contribution timing</legend>
+                <legend>Rate basis and contribution timing</legend>
                 <div className="calculator-input-grid">
                   <SelectField
                     helper="APY/effective rate already includes compounding."
@@ -340,29 +373,6 @@ export function CompoundInterestCalculator({
                     onChange={(value) => setChoice('rateBasis', value as RateBasis)}
                     options={rateBasisOptions}
                     value={inputs.rateBasis}
-                  />
-                  {inputs.rateBasis === 'nominal' ? (
-                    <SelectField
-                      helper="How often a nominal annual rate is credited in this equal-period model."
-                      inputKey="compoundingFrequency"
-                      label="Compounding frequency"
-                      onChange={(value) => setChoice('compoundingFrequency', Number(value) as CompoundingFrequency)}
-                      options={compoundingFrequencyOptions}
-                      value={inputs.compoundingFrequency}
-                    />
-                  ) : (
-                    <div className="compound-inline-note">
-                      <strong>Compounding is included in APY</strong>
-                      <small>Changing a compounding frequency would double-count it, so that control is hidden.</small>
-                    </div>
-                  )}
-                  <SelectField
-                    helper="The contribution amount is applied once per selected period."
-                    inputKey="contributionFrequency"
-                    label="Contribution frequency"
-                    onChange={(value) => setChoice('contributionFrequency', Number(value) as ContributionFrequency)}
-                    options={contributionFrequencyOptions}
-                    value={inputs.contributionFrequency}
                   />
                   <SelectField
                     helper="Beginning contributions receive one more period of growth than end contributions."
@@ -379,7 +389,7 @@ export function CompoundInterestCalculator({
               </fieldset>
 
               <fieldset>
-                <legend>Changing contributions and purchasing power</legend>
+                <legend>Changing contributions, fees, and inflation</legend>
                 <div className="calculator-input-grid">
                   <NumberField
                     currency={currency}
@@ -414,9 +424,9 @@ export function CompoundInterestCalculator({
                   />
                   <NumberField
                     error={projection.validation.errors.inflationPercent}
-                    helper="Used only to translate the ending balance into today’s purchasing power."
+                    helper="Optional. When non-zero, the calculator shows what the ending value represents after adjusting for this inflation assumption."
                     inputKey="inflationPercent"
-                    label="Inflation"
+                    label="Inflation assumption"
                     onChange={setNumber}
                     step={0.01}
                     suffix="%"
@@ -439,13 +449,13 @@ export function CompoundInterestCalculator({
                     value={inputs.targetAmount}
                   />
                   <SelectField
-                    helper="Today’s-money targets are increased by inflation before comparison."
+                    helper="Inflation-adjusted targets are increased over time before comparison."
                     inputKey="targetBasis"
                     label="Target basis"
                     onChange={(value) => setChoice('targetBasis', value as TargetBasis)}
                     options={[
                       { label: 'Future money', value: 'future' },
-                      { label: 'Today’s purchasing power', value: 'today' }
+                      { label: 'Inflation-adjusted target', value: 'today' }
                     ]}
                     value={inputs.targetBasis}
                   />
@@ -556,12 +566,14 @@ export function CompoundInterestCalculator({
 
               <div className="calculator-result-metrics">
                 <ResultMetric help="Capital present at the beginning of the projection." label="Starting amount" value={money(scenarioInputs.principal)} />
-                <ResultMetric help="Recurring contributions, annual top-ups, and the modeled future deposit after the start." label="Future contributions" value={money(projection.totalDeposits)} />
+                <ResultMetric help={`${recurringSummary.count.toLocaleString(resolvedLocale)} ${depositCadenceLabel(inputs.contributionFrequency)} recurring deposits, plus any anniversary top-ups or modeled future deposit.`} label="Deposits after start" value={money(projection.totalDeposits)} />
                 <ResultMetric help="Starting amount plus every deposit, before subtracting withdrawals." label="Total invested" value={money(projection.investedCapital)} />
                 <ResultMetric help="Ending balance minus net contributed capital. This can be negative." label="Net growth" tone={projection.netGrowth < 0 ? 'warning' : 'positive'} value={money(projection.netGrowth)} />
                 <ResultMetric help="Estimated net growth divided by ending value. Withdrawals can make this percentage exceed ordinary ranges." label="Growth share" tone={projection.netGrowth < 0 ? 'warning' : 'positive'} value={formatPercent(growthShare, resolvedLocale)} />
                 <ResultMetric help="The annual rate after the selected compounding convention." label="Effective annual rate" value={formatPercent(projection.effectiveAnnualRate, resolvedLocale)} />
-                <ResultMetric help="Ending balance divided by the cumulative inflation factor." label="Today’s buying power" value={money(projection.realEndingValue)} />
+                {showInflationAdjusted ? (
+                  <ResultMetric help={`Ending balance adjusted by the entered ${formatPercent(scenarioInputs.inflationPercent / 100, resolvedLocale)} annual inflation assumption.`} label="Inflation-adjusted ending value" value={money(projection.realEndingValue)} />
+                ) : null}
                 {scenarioInputs.annualFeePercent > 0 ? (
                   <>
                     <ResultMetric help="Asset fees deducted over the modeled intervals." label="Fees charged" tone="warning" value={money(projection.feesPaid)} />
@@ -578,6 +590,11 @@ export function CompoundInterestCalculator({
                 ) : null}
               </div>
 
+              <p className="compound-deposit-proof">
+                <strong>How deposits are counted</strong>
+                <span>{depositBreakdownCopy(projection.totalDeposits, recurringSummary, additionalDeposits, inputs, money, resolvedLocale)}</span>
+              </p>
+
               <p className="compound-interpretation">
                 {projectionInterpretation(projection, scenarioInputs, money, resolvedLocale)}
               </p>
@@ -586,6 +603,7 @@ export function CompoundInterestCalculator({
                 currency={currency}
                 locale={resolvedLocale}
                 rows={projection.annualSchedule}
+                showInflationAdjusted={showInflationAdjusted}
               />
 
               {projection.validation.warnings.length > 0 ? (
@@ -679,7 +697,7 @@ export function CompoundInterestCalculator({
                   <Download size={15} /> Raw CSV
                 </button>
               </div>
-              <ScheduleTable currency={currency} locale={resolvedLocale} rows={schedule} />
+              <ScheduleTable currency={currency} locale={resolvedLocale} rows={schedule} showInflationAdjusted={showInflationAdjusted} />
             </div>
           </details>
 
@@ -745,7 +763,7 @@ export function CompoundInterestCalculator({
             <div className="compound-analysis-body compound-methodology">
               <p><strong>Rate basis.</strong> Nominal mode uses (1 + annual rate ÷ compounds per year) raised to elapsed compound periods. APY mode uses (1 + APY) raised to elapsed years; compounding frequency is intentionally not applied twice.</p>
               <p><strong>Cash-flow timing.</strong> End contributions at the horizon are included; beginning contributions at the horizon are excluded. Annual top-ups occur on full-year anniversaries. One-time deposits are applied before same-time withdrawals.</p>
-              <p><strong>Fees and inflation.</strong> The percentage-of-assets fee is applied proportionally after gross return over each interval. Inflation changes the real-value report, not the nominal account balance. Full precision is retained until display.</p>
+              <p><strong>Fees and inflation.</strong> The percentage-of-assets fee is applied proportionally after gross return over each interval. Inflation does not change the nominal account balance; an inflation-adjusted ending value appears only when a non-zero inflation assumption is entered. Full precision is retained until display.</p>
               <p><strong>Reconciliation.</strong> Every row uses closing balance = opening balance + deposits − funded withdrawals + gross return − fees. The final row equals the headline result.</p>
               <p><strong>Worked default.</strong> $10,000 initially plus $500 at each month-end for 10 years at an 8% nominal rate compounded monthly produces $113,669.42: $70,000 invested capital and $43,669.42 estimated growth.</p>
               <p><strong>Limits.</strong> This equal-period model does not reproduce product-specific daily-balance ledgers, taxes, live APYs, FX conversion, tiered or transaction fees, variable market returns, or Monte Carlo probabilities.</p>
@@ -793,6 +811,7 @@ export function CompoundInterestCalculator({
         </div>
         <div className="calculator-faq-grid">
           <article><strong>Is the annual rate nominal or APY?</strong><p>The default is nominal with monthly compounding. Choose APY when the quoted rate already includes compounding.</p></article>
+          <article><strong>How are recurring contributions counted?</strong><p>The visible frequency selector controls the count. For example, 10 years means 120 monthly deposits or 10 annual deposits; the calculator shows the multiplication beside the inputs and results.</p></article>
           <article><strong>Why does contribution timing matter?</strong><p>A beginning-of-period contribution receives one more interval of growth than an end-of-period contribution.</p></article>
           <article><strong>Is the lower case a safe forecast?</strong><p>No. All three cases are deterministic examples under constant rates, not confidence levels or probabilities.</p></article>
           <article><strong>Does changing currency convert the money?</strong><p>No. It changes display formatting only; every numeric amount stays unchanged.</p></article>
@@ -931,11 +950,13 @@ function ResultMetric({
 function CompoundGrowthChart({
   currency,
   locale,
-  rows
+  rows,
+  showInflationAdjusted
 }: {
   currency: CurrencyCode;
   locale: string | undefined;
   rows: CompoundInterestScheduleRow[];
+  showInflationAdjusted: boolean;
 }) {
   let cumulativeWithdrawals = 0;
   const chartRows = rows.map((row) => {
@@ -947,20 +968,22 @@ function CompoundGrowthChart({
   const maximum = Math.max(1, ...visibleRows.map((row) => Math.max(
     row.closingBalance,
     row.netCapital,
-    row.realClosingBalance
+    showInflationAdjusted ? row.realClosingBalance : 0
   )));
   return (
     <figure className="compound-growth-chart">
       <figcaption>
         <strong>Where the balance comes from</strong>
-        <small>Net contributed capital and estimated growth stack to the nominal balance. The outlined bar shows the same balance in today’s purchasing power.</small>
+        <small>{showInflationAdjusted
+          ? 'Net contributed capital and estimated growth stack to the ending balance. The outlined bar shows the inflation-adjusted ending value.'
+          : 'Net contributed capital and estimated growth stack to the ending balance. Add an inflation assumption in Advanced Options to compare an inflation-adjusted value.'}</small>
       </figcaption>
       <div className="compound-chart-legend">
         <span className="is-capital">Net contributed capital</span>
         <span className="is-growth">Estimated growth</span>
-        <span className="is-real">Today’s buying power</span>
+        {showInflationAdjusted ? <span className="is-real">Inflation-adjusted value</span> : null}
       </div>
-      <div className="compound-chart-plot" role="region" aria-label="Scrollable contribution, growth, and real-value timeline" tabIndex={0}>
+      <div className="compound-chart-plot" role="region" aria-label={showInflationAdjusted ? 'Scrollable contribution, growth, and inflation-adjusted timeline' : 'Scrollable contribution and growth timeline'} tabIndex={0}>
         {visibleRows.map((row) => {
           const closingBalance = Math.max(0, row.closingBalance);
           const netCapital = Math.max(0, row.netCapital);
@@ -977,12 +1000,12 @@ function CompoundGrowthChart({
                   <i className="is-capital" style={{ height: segmentPercent(capitalSegment, stackValue) }} />
                   {changeSegment > 0 ? <i className={growth >= 0 ? 'is-growth' : 'is-loss'} style={{ height: segmentPercent(changeSegment, stackValue) }} /> : null}
                 </span>
-                <i className="is-real" style={{ height: visualPercent(row.realClosingBalance, maximum) }} />
+                {showInflationAdjusted ? <i className="is-real" style={{ height: visualPercent(row.realClosingBalance, maximum) }} /> : null}
               </span>
               <strong>{row.label.replace(' (partial)', '')}</strong>
               <small>{formatCurrency(row.closingBalance, currency, locale)}</small>
               <span className="visually-hidden">
-                {row.label}: nominal ending value {formatCurrency(row.closingBalance, currency, locale, 2)}, net contributed capital {formatCurrency(row.netCapital, currency, locale, 2)}, estimated growth {formatCurrency(row.growthToDate, currency, locale, 2)}, and today’s buying power {formatCurrency(row.realClosingBalance, currency, locale, 2)}.
+                {row.label}: ending value {formatCurrency(row.closingBalance, currency, locale, 2)}, net contributed capital {formatCurrency(row.netCapital, currency, locale, 2)}, and estimated growth {formatCurrency(row.growthToDate, currency, locale, 2)}{showInflationAdjusted ? `, with an inflation-adjusted value of ${formatCurrency(row.realClosingBalance, currency, locale, 2)}` : ''}.
               </span>
             </div>
           );
@@ -995,11 +1018,13 @@ function CompoundGrowthChart({
 function ScheduleTable({
   currency,
   locale,
-  rows
+  rows,
+  showInflationAdjusted
 }: {
   currency: CurrencyCode;
   locale: string | undefined;
   rows: CompoundInterestScheduleRow[];
+  showInflationAdjusted: boolean;
 }) {
   const [visibleCount, setVisibleCount] = useState(250);
   useEffect(() => setVisibleCount(250), [rows]);
@@ -1016,7 +1041,7 @@ function ScheduleTable({
         <table>
           <caption>Compound interest balance reconciliation</caption>
           <thead><tr>
-            <th scope="col">Period</th><th scope="col">Opening</th><th scope="col">Deposits</th><th scope="col">Withdrawals</th><th scope="col">Gross return</th><th scope="col">Fees</th><th scope="col">Net capital</th><th scope="col">Growth to date</th><th scope="col">Ending</th><th scope="col">Real ending</th>
+            <th scope="col">Period</th><th scope="col">Opening</th><th scope="col">Deposits</th><th scope="col">Withdrawals</th><th scope="col">Gross return</th><th scope="col">Fees</th><th scope="col">Net capital</th><th scope="col">Growth to date</th><th scope="col">Ending</th>{showInflationAdjusted ? <th scope="col">Inflation-adjusted ending</th> : null}
           </tr></thead>
           <tbody>
             {visibleRows.map((row, index) => (
@@ -1030,7 +1055,7 @@ function ScheduleTable({
                 <td>{formatCurrency(row.netCapital, currency, locale, 2)}</td>
                 <td>{formatCurrency(row.growthToDate, currency, locale, 2)}</td>
                 <td>{formatCurrency(row.closingBalance, currency, locale, 2)}</td>
-                <td>{formatCurrency(row.realClosingBalance, currency, locale, 2)}</td>
+                {showInflationAdjusted ? <td>{formatCurrency(row.realClosingBalance, currency, locale, 2)}</td> : null}
               </tr>
             ))}
           </tbody>
@@ -1088,6 +1113,39 @@ export function buildSensitivity(inputs: CompoundInterestInputs) {
   };
 }
 
+export type RecurringContributionSummary = {
+  count: number;
+  total: number;
+};
+
+export function buildRecurringContributionSummary(
+  inputs: CompoundInterestInputs
+): RecurringContributionSummary {
+  if (
+    !Number.isFinite(inputs.years) ||
+    !Number.isFinite(inputs.recurringContribution) ||
+    !Number.isFinite(inputs.annualContributionIncreasePercent) ||
+    inputs.years <= 0 ||
+    inputs.recurringContribution < 0 ||
+    ![52, 26, 24, 12, 4, 2, 1].includes(inputs.contributionFrequency)
+  ) {
+    return { count: 0, total: 0 };
+  }
+
+  const epsilon = 1e-9;
+  const count = inputs.contributionTiming === 'beginning'
+    ? Math.ceil(inputs.years * inputs.contributionFrequency - epsilon)
+    : Math.floor(inputs.years * inputs.contributionFrequency + epsilon);
+  let total = 0;
+  for (let index = 0; index < count; index += 1) {
+    const completedContributionYears = Math.floor(index / inputs.contributionFrequency);
+    total += inputs.recurringContribution * (
+      (1 + inputs.annualContributionIncreasePercent / 100) ** completedContributionYears
+    );
+  }
+  return Number.isFinite(total) ? { count, total } : { count: 0, total: 0 };
+}
+
 function toCalculatorResult(
   projection: CompoundInterestProjection,
   inputs: CompoundInterestInputs
@@ -1104,11 +1162,11 @@ function toCalculatorResult(
     metrics: [
       { description: 'Projected ending value.', label: 'Projected value', tone: 'accent', value: projection.endingValue, valueType: 'currency' },
       { description: 'Capital present at the start.', label: 'Starting amount', value: inputs.principal, valueType: 'currency' },
-      { description: 'Deposits made after the start.', label: 'Future contributions', value: projection.totalDeposits, valueType: 'currency' },
+      { description: 'Recurring deposits, top-ups, and future deposits made after the start.', label: 'Deposits after start', value: projection.totalDeposits, valueType: 'currency' },
       { description: 'Starting amount plus deposits.', label: 'Total invested', value: projection.investedCapital, valueType: 'currency' },
       { description: 'Ending value minus net contributions.', label: 'Estimated net growth', tone: projection.netGrowth >= 0 ? 'positive' : 'warning', value: projection.netGrowth, valueType: 'currency' },
       { description: 'Estimated net growth divided by ending value.', label: 'Growth share', value: projection.endingValue === 0 ? 0 : projection.netGrowth / projection.endingValue, valueType: 'percent' },
-      { description: 'Inflation-adjusted ending value.', label: 'Today’s buying power', value: projection.realEndingValue, valueType: 'currency' },
+      ...(Math.abs(inputs.inflationPercent) > 1e-12 ? [{ description: 'Ending value after the entered inflation assumption.', label: 'Inflation-adjusted ending value', value: projection.realEndingValue, valueType: 'currency' as const }] : []),
       { description: 'Fees deducted over the projection.', label: 'Fees charged', value: projection.feesPaid, valueType: 'currency' },
       { description: 'Effective annual return before fees.', label: 'Effective annual rate', value: projection.effectiveAnnualRate, valueType: 'percent' }
     ],
@@ -1368,6 +1426,71 @@ function frequencyLabel(frequency: number): string {
   return 'annually';
 }
 
+function depositCadenceLabel(frequency: ContributionFrequency): string {
+  if (frequency === 52) return 'weekly';
+  if (frequency === 26) return 'biweekly';
+  if (frequency === 24) return 'twice-monthly';
+  if (frequency === 12) return 'monthly';
+  if (frequency === 4) return 'quarterly';
+  if (frequency === 2) return 'semiannual';
+  return 'annual';
+}
+
+function contributionScheduleCopy(
+  inputs: CompoundInterestInputs,
+  summary: RecurringContributionSummary,
+  money: (value: number, maximumFractionDigits?: number) => string,
+  locale: string | undefined
+): string {
+  if (summary.count === 0 || inputs.recurringContribution === 0) {
+    return `No recurring deposits are modeled. Choose an amount and whether it repeats weekly, monthly, quarterly, or annually.`;
+  }
+  const count = summary.count.toLocaleString(locale);
+  const enteredAmount = money(inputs.recurringContribution, Number.isInteger(inputs.recurringContribution) ? 0 : 2);
+  if (inputs.annualContributionIncreasePercent === 0) {
+    return `${enteredAmount} × ${count} ${depositCadenceLabel(inputs.contributionFrequency)} deposits = ${money(summary.total)} over ${formatDuration(inputs.years)}, before growth.`;
+  }
+  return `${count} ${depositCadenceLabel(inputs.contributionFrequency)} deposits start at ${enteredAmount} and rise ${formatPercent(inputs.annualContributionIncreasePercent / 100, locale)} each year, totaling ${money(summary.total)} before growth.`;
+}
+
+function returnScheduleCopy(
+  inputs: CompoundInterestInputs,
+  effectiveAnnualRate: number,
+  locale: string | undefined
+): string {
+  if (!Number.isFinite(inputs.annualRatePercent) || !Number.isFinite(effectiveAnnualRate)) {
+    return 'Enter a valid return or interest-rate assumption.';
+  }
+  if (inputs.rateBasis === 'apy') {
+    return `${formatPercent(inputs.annualRatePercent / 100, locale)} APY already includes compounding; no additional compounding frequency is applied.`;
+  }
+  return `${formatPercent(inputs.annualRatePercent / 100, locale)} nominal annual rate compounded ${frequencyLabel(inputs.compoundingFrequency)} = ${formatPercent(effectiveAnnualRate, locale)} effective per year.`;
+}
+
+function depositBreakdownCopy(
+  totalDeposits: number,
+  recurringSummary: RecurringContributionSummary,
+  additionalDeposits: number,
+  inputs: CompoundInterestInputs,
+  money: (value: number, maximumFractionDigits?: number) => string,
+  locale: string | undefined
+): string {
+  if (recurringSummary.total === 0 && additionalDeposits === 0) {
+    return 'No deposits after the starting amount are modeled.';
+  }
+  const count = recurringSummary.count.toLocaleString(locale);
+  const enteredAmount = money(inputs.recurringContribution, Number.isInteger(inputs.recurringContribution) ? 0 : 2);
+  if (additionalDeposits <= 1e-8 && inputs.annualContributionIncreasePercent === 0) {
+    return `${money(totalDeposits)} = ${enteredAmount} × ${count} ${depositCadenceLabel(inputs.contributionFrequency)} deposits. The starting amount is separate.`;
+  }
+  const recurringPhrase = inputs.annualContributionIncreasePercent === 0
+    ? `${money(recurringSummary.total)} from ${enteredAmount} × ${count} ${depositCadenceLabel(inputs.contributionFrequency)} deposits`
+    : `${money(recurringSummary.total)} from ${count} stepped ${depositCadenceLabel(inputs.contributionFrequency)} deposits`;
+  return additionalDeposits > 1e-8
+    ? `${money(totalDeposits)} total: ${recurringPhrase}, plus ${money(additionalDeposits)} of anniversary top-ups or the modeled future deposit.`
+    : `${money(totalDeposits)} total from ${count} stepped ${depositCadenceLabel(inputs.contributionFrequency)} deposits.`;
+}
+
 function supportedCompounding(value: number): CompoundingFrequency {
   return [365, 12, 4, 2, 1].includes(value) ? value as CompoundingFrequency : 12;
 }
@@ -1466,6 +1589,6 @@ function projectionInterpretation(
     : '';
   const realPhrase = inputs.inflationPercent === 0
     ? ''
-    : ` In today’s purchasing power, the ending value is ${money(projection.realEndingValue)}.`;
+    : ` After adjusting the ending value for ${formatPercent(inputs.inflationPercent / 100, locale)} annual inflation, it is ${money(projection.realEndingValue)}.`;
   return `${money(inputs.principal)} starts the projection and ${money(projection.totalDeposits)} is added later. ${growthPhrase}${withdrawalPhrase}${realPhrase}`;
 }

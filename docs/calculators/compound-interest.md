@@ -1,6 +1,6 @@
 # Compound Interest Calculator Research and Formula Contract
 
-Last updated: August 8, 2026
+Last updated: August 9, 2026
 
 Route: `/calculators/compound-interest`
 
@@ -157,10 +157,10 @@ Every competitor page below was reviewed August 8, 2026. Competitors informed fe
 - Annual contribution increase and anniversary top-up.
 - Annual percentage-of-assets fee, fees charged, and ending-value fee drag.
 - Inflation-adjusted value and exact real annual return.
-- Optional target in future money or today’s purchasing power.
+- Optional target in future money or as an inflation-adjusted target.
 - One future deposit and one future withdrawal with depletion handling.
 - Lower/base/higher return sensitivity, 3×3 rate/contribution grid, duration sensitivity, and milestones.
-- True annual stacked capital/growth chart with real-value comparison plus annual and detailed reconciling schedules.
+- True annual stacked capital/growth chart with an optional inflation-adjusted comparison plus annual and detailed reconciling schedules.
 - USD, INR, EUR, GBP, CAD, AUD, and JPY display with browser, US, Indian, and German grouping; currency selection does not convert value.
 - Versioned v2 share links, legacy v1 link restoration, per-route browser draft, raw CSV, signed-in save boundary, and saved-run reload.
 - Visible validation, live result/status messages, radio semantics, captions, scoped headers, keyboard-scroll tables, forced-colors treatment, reduced motion, and 28px help targets.
@@ -169,13 +169,14 @@ Every competitor page below was reviewed August 8, 2026. Competitors informed fe
 
 ### Quick Start
 
-- Starting principal, recurring contribution, fractional elapsed term, and annual rate.
-- Ending value, starting capital, future contributions, total invested capital, net growth, growth share, and a plain-language interpretation.
-- A stacked capital-versus-growth path with an adjacent real-value comparison and immediate share, export, and save actions.
+- Starting principal, recurring contribution, fractional elapsed term, annual rate, contribution frequency, and nominal compounding frequency.
+- A visible contribution equation reconciles amount × deposit count to deposits after the start; the return line distinguishes the annual nominal rate from its effective annual result.
+- Ending value, starting capital, deposits after the start, total invested capital, net growth, growth share, and a plain-language interpretation.
+- A stacked capital-versus-growth path with an inflation-adjusted comparison only when inflation is non-zero, plus immediate share, export, and save actions.
 
 ### Advanced Options
 
-- Nominal rate versus APY, nominal compounding frequency, contribution frequency and timing, annual contribution increase, anniversary top-up, annual percentage-of-assets fee, inflation, optional target, one future deposit and withdrawal, and currency/locale display.
+- Nominal rate versus APY, contribution timing, annual contribution increase, anniversary top-up, annual percentage-of-assets fee, inflation, optional target, one future deposit and withdrawal, and currency/locale display.
 - The section is collapsed by default and opens only when the user asks for more assumptions.
 
 ### Expert Analysis
@@ -207,6 +208,14 @@ Every competitor page below was reviewed August 8, 2026. Competitors informed fe
 - Browser drafts preserve only finite, valid assumptions and now work consistently for signed-in and signed-out users.
 - Duration sensitivity, growth share, a numeric worked example, checkpoint-qualified target timing, standard currency display precision, and cumulative net-capital schedule columns are explicit.
 - The chart no longer gives true zero values a minimum visible bar, uses stacked capital/growth plus a distinct real-value bar, and has a keyboard-scrollable labeled region plus tabular alternative.
+
+## August 9 usability correction
+
+- Contribution frequency and nominal compounding frequency now sit in Quick Start beside the amounts and rate they qualify instead of being hidden in Advanced Options.
+- A recurring amount of `$10,000` over 10 years now visibly reconciles as `$10,000 × 120 = $1,200,000` for monthly deposits and `$10,000 × 10 = $100,000` for annual deposits, before growth; the starting amount is explicitly separate.
+- “Future contributions” is now “Deposits after start,” and the result repeats the deposit equation so the total is auditable at the point of use.
+- The ambiguous “Today’s buying power” result is removed. An “Inflation-adjusted ending value” appears only after a non-zero inflation assumption is entered, and the chart and schedules follow the same rule.
+- Input and result panels stack at `1180px` and below, preventing the dense two-column workspace from compressing controls before the mobile layout takes over.
 
 ## Verification boundary
 
