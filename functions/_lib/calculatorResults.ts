@@ -338,7 +338,7 @@ async function createDestinationDraft(
   return null;
 }
 
-function goalPayloadFromCalculator(payload: CalculatorSavePayload): GoalCreatePayload | null {
+export function goalPayloadFromCalculator(payload: CalculatorSavePayload): GoalCreatePayload | null {
   const targetAmountCents = targetAmountCentsForGoal(payload);
 
   if (targetAmountCents === null || targetAmountCents <= 0) {
@@ -406,6 +406,11 @@ function targetAmountCentsForGoal(payload: CalculatorSavePayload): number | null
     const homePrice = inputNumber(payload, 'homePrice');
     const downPercent = inputNumber(payload, 'downPercent');
     if (homePrice !== null && downPercent !== null) return toCents(homePrice * downPercent / 100);
+  }
+
+  if (payload.calculatorSlug === 'savings-goal') {
+    const resolvedTarget = inputNumber(payload, 'resolvedTarget');
+    if (resolvedTarget !== null && resolvedTarget > 0) return toCents(resolvedTarget);
   }
 
   const directTarget = firstInputNumber(payload, ['target', 'goal', 'homePrice']);
@@ -499,13 +504,21 @@ function firstCurrencyMetricCents(payload: CalculatorSavePayload): number | null
   return value === null ? null : Math.max(0, toCents(value));
 }
 
-function targetDateForYears(years: number | null): string | null {
+export function targetDateForYears(years: number | null, start = new Date()): string | null {
   if (years === null || years <= 0) {
     return null;
   }
 
-  const date = new Date();
-  date.setFullYear(date.getFullYear() + Math.max(1, Math.round(years)));
+  const date = new Date(start);
+  const totalMonths = years * 12;
+  const wholeMonths = Math.floor(totalMonths);
+  const fractionalMonthDays = Math.round((totalMonths - wholeMonths) * (365.2425 / 12));
+  const startDay = date.getUTCDate();
+  date.setUTCDate(1);
+  date.setUTCMonth(date.getUTCMonth() + wholeMonths);
+  const daysInTargetMonth = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate();
+  date.setUTCDate(Math.min(startDay, daysInTargetMonth));
+  date.setUTCDate(date.getUTCDate() + fractionalMonthDays);
   return date.toISOString().slice(0, 10);
 }
 

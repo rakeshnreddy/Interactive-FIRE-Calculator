@@ -43,10 +43,10 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Preview/app complete | 100% | Gross-to-net tables, India old/new regime estimates, US bracket estimates, budget cashflow, emergency runway, and protection-gap planning are in place. |
 | Phase 24: Calculator Search Preservation and Content Quality | Preview/app complete | 100% | Stable URLs, formula-aware route content, visible assumptions and FAQs, tested canonicals/schema/sitemap coverage, crawlable internal links, duplicate-content guards, and no-auth smoke coverage for all public calculators are in place. |
 | Phase 25: Engagement and Personalization Loop | Preview/app complete | 100% | Side-by-side scenarios, deterministic outcome drivers, recent saved-run history, explicit reload, dashboard follow-ups, input-only share links, schedule CSVs, and scenario-summary export are in place. |
-| Phase 26: Calculator-by-Calculator Excellence Pass | In progress | 1.2% | Calculator 1 of 82, Compound Interest, has a dedicated versioned engine and high-standard public experience. 81 calculators remain; Savings Goal is next. |
+| Phase 26: Calculator-by-Calculator Excellence Pass | In progress | 2.4% | Calculators 1–2 of 82, Compound Interest and Savings Goal, have dedicated versioned engines and high-standard public experiences. 80 remain; Net Worth is next. |
 | Post-roadmap: Calculator Consolidation and Visual System Refresh | Preview/app complete | 100% | All 82 exact routes remain, but the hub now presents 8 decision toolkits with exact search and progressive disclosure. Product/design contracts, a neutral teal-blue-coral light/dark system, restrained glass, persistent theme preference, and refreshed landing/detail/app surfaces are deployed at `https://8fb17051.interactive-fire-calculator.pages.dev`. |
 
-## Phase 26 Calculator 1 Checkpoint
+## Phase 26 Calculators 1–2 Checkpoint
 
 - [x] Research authoritative formula conventions, official calculators, competitors, uncertainty language, accessibility, locale formatting, and CSV interoperability.
 - [x] Preserve the legacy Compound default and keep 401(k), HYSA, and FIRE behavior unchanged.
@@ -60,7 +60,21 @@ This tracker is the working source of truth for moving the product from a standa
 
 Research and exact deferred decisions: `docs/calculators/compound-interest.md`.
 
-Verification passed with 79 Python tests, TypeScript typecheck, 1,205 frontend tests across 22 files, and the production build. Local and deployed browser QA covered 390px mobile, 720px at 200% scale, 1,440px desktop, light/dark, reduced motion, forced colors, validation, APY semantics, Indian formatting, v1/v2 share restoration, schedule reconciliation, keyboard disclosures/tooltips, console state, and document overflow.
+### Savings Goal
+
+- [x] Research official goal/annuity/rate/inflation guidance, competitor workflows, uncertainty language, locale behavior, accessibility, and persistence boundaries.
+- [x] Isolate `/calculators/savings-goal` from the shared formula also used by SIP Goal.
+- [x] Correct the mixed legacy rate convention and masked schedule overshoot with the typed `finpath-savings-goal-v2` inverse-solve engine.
+- [x] Add exact fractional deadlines, nominal/APY semantics, independent frequencies/timing, contribution step-ups, anniversary top-ups, balance fees, target inflation, and finite-output guards.
+- [x] Add total required contribution, practical minor-unit guidance, current-plan shortfall/surplus, periodic increase/margin, catch-up today, first modeled target checkpoint, and milestones.
+- [x] Add required/current runway, isolated rate cases, target/deadline sensitivity, annual/event schedules, signed differences, and raw reconciling CSV.
+- [x] Add route-local versioned links/drafts, legacy restoration, save/reload values, resolved-target persistence, and fractional Goal dates.
+- [x] Preserve currency/locale display without FX conversion and block non-USD Goal conversion until Goals store currency explicitly.
+- [x] Add formula goldens, reconciliation/monotonicity/overflow tests, semantic route tests, persistence tests, browser QA, and public-route smoke.
+
+Research and exact deferred decisions: `docs/calculators/savings-goal.md`.
+
+Verification passed with 79 Python tests, TypeScript typecheck, 1,234 frontend tests across 24 files, and the production build. Local browser QA covered 320px and 390px mobile, 720px at 200% scale, 1,440px desktop, light/dark, reduced motion, forced colors, validation, APY semantics, Indian formatting, impossible and funded states, v1/v2 restoration, schedule reconciliation/pagination, keyboard disclosures, console state, and document overflow. Remote D1 reports no pending migrations.
 
 ## Design System Milestone
 

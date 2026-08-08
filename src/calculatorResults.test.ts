@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import {
   destinationTypeForRoute,
-  parseCalculatorSavePayload
+  goalPayloadFromCalculator,
+  parseCalculatorSavePayload,
+  targetDateForYears
 } from '../functions/_lib/calculatorResults';
 
 const validPayload = {
@@ -78,6 +80,30 @@ describe('calculator result save payload validation', () => {
     expect(destinationTypeForRoute('/accounts')).toBe('account');
     expect(destinationTypeForRoute('/plans')).toBe('plan');
     expect(destinationTypeForRoute('/transactions')).toBe('transaction');
+  });
+
+  it('preserves fractional-year goal deadlines instead of rounding to whole years', () => {
+    expect(targetDateForYears(2.5, new Date('2026-08-09T00:00:00.000Z'))).toBe('2029-02-09');
+    expect(targetDateForYears(0.25, new Date('2026-08-09T00:00:00.000Z'))).toBe('2026-11-09');
+    expect(targetDateForYears(1 / 12, new Date('2027-01-31T18:30:00.000Z'))).toBe('2027-02-28');
+    expect(targetDateForYears(1 / 12, new Date('2028-01-31T18:30:00.000Z'))).toBe('2028-02-29');
+    expect(targetDateForYears(0, new Date('2026-08-09T00:00:00.000Z'))).toBeNull();
+  });
+
+  it('uses the inflation-resolved Savings Goal target at the Goal persistence boundary', () => {
+    const parsed = parseCalculatorSavePayload({
+      ...validPayload,
+      inputValues: {
+        ...validPayload.inputValues,
+        resolvedTarget: 13_439.16,
+        targetBasis: 1
+      }
+    });
+
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(goalPayloadFromCalculator(parsed.value)?.targetAmountCents).toBe(1_343_916);
+    }
   });
 
   it('accepts the versioned Compound Interest numeric save boundary', () => {

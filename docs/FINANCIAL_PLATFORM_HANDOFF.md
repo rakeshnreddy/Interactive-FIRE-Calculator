@@ -1,19 +1,21 @@
 # Financial Platform Handoff
 
-## Phase 26 active handoff — Compound Interest excellence pass
+## Phase 26 active handoff — Savings Goal excellence pass
 
-- Date: August 8, 2026.
-- Completed calculator: `/calculators/compound-interest` (1 of 82).
-- Next calculator: `/calculators/savings-goal`.
-- Remaining high-standard calculator passes: 81.
-- Engine: `src/lib/compoundInterestCalculator.ts`, formula version `finpath-compound-v2`.
-- Route UI: `src/CompoundInterestCalculator.tsx`, isolated by slug before the generic calculator detail.
-- Research and formula contract: `docs/calculators/compound-interest.md`.
-- Preserve: the registry entry, stable URL/title/defaults, shared `calculateSeoCalculator` compound case, 401(k), HYSA, all public routes, and `src/lib/fire.ts`.
-- Default oracle: `113669.41993630132` with $10,000 principal, $500 end-of-month, 10 years, 8% nominal, monthly compounding.
-- Shipped contract: nominal/APY, independent frequencies/timing, fractional terms, annual contribution increase/top-up, fee/fee drag, inflation/real value, target basis and timing, one future deposit/withdrawal, scenarios, sensitivity, milestones, real schedules/charts, exact locale/currency display, v1/v2 links, per-route browser draft, raw CSV, save and history loading.
-- Deferred: taxes, live rates/CPI/FX, Monte Carlo, sequence risk, exact bank ledgers, product-specific fee/rate tiers, negative balances, arbitrary cash-flow ledgers, and required-contribution solving.
-- Verification before handoff close: full suite, production build, desktop/mobile light/dark browser QA, Cloudflare preview deploy, all-route public smoke, direct Compound smoke, and unauthenticated API `401`.
+- Date: August 9, 2026.
+- Completed calculators: `/calculators/compound-interest` and `/calculators/savings-goal` (2 of 82).
+- Next calculator: `/calculators/net-worth`.
+- Remaining high-standard calculator passes: 80.
+- Engine: `src/lib/savingsGoalCalculator.ts`, formula version `finpath-savings-goal-v2`.
+- Route UI: `src/SavingsGoalCalculator.tsx`, isolated by slug before the generic calculator detail.
+- Research and formula contract: `docs/calculators/savings-goal.md`.
+- Preserve: the stable Savings Goal URL/title/default inputs, the legacy shared `savings-goal` formula and `$428.600434` registry oracle, SIP Goal’s `54660.927689` oracle, all public routes, and `src/lib/fire.ts`.
+- Corrected route oracle: `425.28168253155314` for a $100,000 goal, $10,000 current savings, 10 years, and an 8% nominal rate compounded monthly with month-end contributions.
+- Shipped contract: exact inverse solve, nominal/APY, independent frequencies/timing, fractional terms, current-plan and catch-up analysis, contribution step-up/top-up, balance fee, target inflation/basis, milestones, isolated scenarios, target/deadline sensitivity, true runway, reconciling schedules, locale/currency display, v1/v2 links, route draft, raw CSV, save values, resolved Goal target, precise Goal deadline, and saved-run reload.
+- Currency boundary: calculator/share/export support seven currencies; Goal creation is visibly limited to USD until the Goals schema/API/UI store currency.
+- Deferred: Goal currency migration, taxes, live APY/CPI/FX, exact product ledgers, tiered/transaction fees, Monte Carlo, arbitrary cash-flow ledgers, and multi-goal optimization.
+- Local verification: 79 Python tests, 1,234 frontend tests across 24 files, TypeScript, production build, 84-route public smoke, direct Savings Goal/SIP Goal/Compound/FIRE `200`, desktop/mobile/theme/forced-colors/reduced-motion browser QA, and no pending remote D1 migrations.
+- Verification before handoff close: commit, push, Cloudflare preview deploy, deployed 84-route smoke, direct Savings Goal/SIP Goal/Compound/FIRE `200`, and unauthenticated API `401`.
 - Production Clerk remains a separate launch blocker and is not part of this public calculator pass.
 - Hardening commits: `2c5bf90` (`Harden compound interest experience`), `a75cb9d` (`Constrain compound chart on mobile`), and `7843c11` (`Fit compound chart at narrow widths`), pushed to `origin/codex/cloudflare-pages-theme-plan`.
 - Preview verified: `https://8e49bd2f.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.

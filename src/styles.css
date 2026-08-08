@@ -4448,6 +4448,155 @@ h2 {
   }
 }
 
+/* Savings Goal v2 extends the audited calculator workspace with a two-plan runway. */
+.savings-goal-calculator {
+  --savings-required: var(--accent);
+  --savings-current: var(--data-blue);
+  --savings-target: var(--warm);
+}
+
+.savings-goal-calculator .calculator-result-metrics > div > small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.savings-goal-calculator .calculator-result-metric.metric-positive {
+  border-color: color-mix(in srgb, var(--success) 34%, var(--border));
+  background: color-mix(in srgb, var(--success) 8%, var(--surface-soft));
+}
+
+.savings-goal-calculator .calculator-result-metric.metric-warning {
+  border-color: color-mix(in srgb, var(--warning) 34%, var(--border));
+  background: color-mix(in srgb, var(--warning) 8%, var(--surface-soft));
+}
+
+.savings-runway-chart .compound-chart-legend .is-required { color: var(--savings-required); }
+.savings-runway-chart .compound-chart-legend .is-current { color: var(--savings-current); }
+.savings-runway-chart .compound-chart-legend .is-target { color: var(--savings-target); }
+
+.savings-runway-chart .compound-chart-legend .is-current::before {
+  background: repeating-linear-gradient(135deg, currentColor, currentColor 3px, transparent 3px, transparent 6px);
+}
+
+.savings-runway-chart .compound-chart-legend .is-target::before {
+  height: 3px;
+  border-radius: 0;
+}
+
+.savings-runway-plot {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(34px, 1fr));
+  gap: 0.4rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 190px;
+  overflow-x: auto;
+}
+
+.savings-runway-column {
+  display: grid;
+  grid-template-rows: minmax(128px, 1fr) auto auto;
+  gap: 0.25rem;
+  min-width: 34px;
+  text-align: center;
+}
+
+.savings-runway-column > div {
+  display: flex;
+  position: relative;
+  gap: 5px;
+  align-items: end;
+  align-self: stretch;
+  justify-content: center;
+  border-bottom: 1px solid var(--chart-grid);
+}
+
+.savings-runway-column i {
+  display: block;
+  width: min(15px, 42%);
+  min-height: 0;
+  border-radius: 3px 3px 0 0;
+}
+
+.savings-runway-column i.is-required { background: var(--savings-required); }
+
+.savings-runway-column i.is-current {
+  border: 1px solid color-mix(in srgb, var(--savings-current) 75%, var(--border));
+  background: repeating-linear-gradient(
+    135deg,
+    var(--savings-current),
+    var(--savings-current) 4px,
+    color-mix(in srgb, var(--savings-current) 60%, var(--surface)) 4px,
+    color-mix(in srgb, var(--savings-current) 60%, var(--surface)) 7px
+  );
+}
+
+.savings-runway-column b {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: var(--savings-target);
+  transform: translateY(1px);
+}
+
+.savings-runway-column > strong,
+.savings-runway-column > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.savings-runway-column > strong { color: var(--heading); font-size: 0.66rem; }
+.savings-runway-column > small { color: var(--muted); font-size: 0.62rem; }
+
+.savings-chart-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.savings-plan-comparison {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.savings-plan-comparison span {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.8rem;
+  border-right: 1px solid var(--border);
+  background: var(--surface-soft);
+}
+
+.savings-plan-comparison span:last-child { border-right: 0; }
+.savings-plan-comparison small { color: var(--muted); }
+.savings-plan-comparison strong { overflow-wrap: anywhere; color: var(--heading); }
+
+@media (max-width: 720px) {
+  .savings-plan-comparison { grid-template-columns: 1fr; }
+  .savings-plan-comparison span { border-right: 0; border-bottom: 1px solid var(--border); }
+  .savings-plan-comparison span:last-child { border-bottom: 0; }
+  .savings-runway-plot { grid-template-columns: repeat(8, minmax(30px, 1fr)); }
+}
+
+@media (forced-colors: active) {
+  .savings-runway-column i,
+  .savings-runway-column b,
+  .savings-runway-chart .compound-chart-legend span::before {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .savings-runway-column i.is-current { border-top: 3px double CanvasText; }
+}
+
 /* Phase 26: calculator-local Compound Interest experience. */
 .compound-calculator {
   --compound-growth: var(--data-blue);
