@@ -1,6 +1,6 @@
 # Project Memory
 
-Last updated: July 27, 2026
+Last updated: August 8, 2026
 
 ## Repository
 
@@ -10,7 +10,7 @@ Last updated: July 27, 2026
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://89f4cb56.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://8e49bd2f.interactive-fire-calculator.pages.dev`
 
 ## Product Direction
 
@@ -66,9 +66,9 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - The shared `compound` formula remains untouched for 401(k) and HYSA; `src/lib/fire.ts` remains untouched.
 - High-standard pass progress: 1 of 82 calculators complete; 81 remain.
 - Next calculator: `/calculators/savings-goal`.
-- Implementation commit: `cd13ac6` (`Elevate compound interest calculator`).
-- Preview: `https://89f4cb56.interactive-fire-calculator.pages.dev`.
-- Verification: 79 Python tests, TypeScript, 1,187 frontend tests across 21 files, production build, desktop/mobile/light/dark/reduced-motion/zoom-equivalent browser QA, all 84 public calculator routes, and unauthenticated calculator-save API `401`.
+- Excellence-pass hardening commits: `2c5bf90` (`Harden compound interest experience`), `a75cb9d` (`Constrain compound chart on mobile`), and `7843c11` (`Fit compound chart at narrow widths`).
+- Preview: `https://8e49bd2f.interactive-fire-calculator.pages.dev`.
+- Verification: 79 Python tests, TypeScript, 1,205 frontend tests across 22 files, production build, desktop/mobile/light/dark/reduced-motion/forced-colors/200%-scale browser QA, all 84 public calculator routes, direct Compound/401(k)/HYSA/FIRE `200`, and unauthenticated calculator-save API `401`.
 
 ## Completed Work
 
@@ -421,7 +421,7 @@ Current state:
 Phases 1 and 3 through 25 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, import history, transactions, saved calculator results, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public hub with 82 calculator routes plus public FIRE. The complete calculator program includes durable saves, decision studios, optional schedules, family visualizers, content/metadata hardening, all-route no-auth smoke coverage, scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, input-only share links, and CSV export. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
 Latest known Cloudflare Pages preview:
-https://baadb7c6.interactive-fire-calculator.pages.dev
+https://8e49bd2f.interactive-fire-calculator.pages.dev
 
 Branch alias:
 https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev

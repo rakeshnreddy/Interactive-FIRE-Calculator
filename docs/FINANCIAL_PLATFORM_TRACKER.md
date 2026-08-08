@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: July 27, 2026
+Last updated: August 8, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://89f4cb56.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://8e49bd2f.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -52,15 +52,15 @@ This tracker is the working source of truth for moving the product from a standa
 - [x] Preserve the legacy Compound default and keep 401(k), HYSA, and FIRE behavior unchanged.
 - [x] Add the typed `finpath-compound-v2` dated-cash-flow engine with explicit validation and finite-output safeguards.
 - [x] Add beginner Quick Start, collapsed Advanced Options, and expandable expert analysis.
-- [x] Add true chart data, annual/event schedules, fee drag, real value, target gap/timing, milestones, and 3×3 sensitivity.
+- [x] Add a stacked capital/growth chart with real-value comparison, annual/event schedules, fee drag, real value, target gap/timing, milestones, and rate/contribution/duration sensitivity.
 - [x] Add versioned share/restoration, route-specific draft, raw CSV, signed-in save boundary, and saved-run reload.
 - [x] Add exact locale/currency display controls without implying FX conversion.
 - [x] Add finance golden tests, timing/frequency matrix, validation/overflow cases, invariants, save-payload integration, and full shared regressions.
-- [x] Record implementation commit `cd13ac6`, pushed branch, preview `https://89f4cb56.interactive-fire-calculator.pages.dev`, 84-route public smoke, direct Compound/401(k)/HYSA/FIRE `200`, and unauthenticated save API `401`.
+- [x] Record hardening commits `2c5bf90`, `a75cb9d`, and `7843c11`, pushed branch, preview `https://8e49bd2f.interactive-fire-calculator.pages.dev`, 84-route public smoke, direct Compound/401(k)/HYSA/FIRE `200`, and unauthenticated save API `401`.
 
 Research and exact deferred decisions: `docs/calculators/compound-interest.md`.
 
-Verification passed with 79 Python tests, TypeScript typecheck, 1,187 frontend tests across 21 files, and the production build. Local and deployed browser QA covered 320px, 390px dark/reduced-motion, 720px zoom-equivalent, 1,440px desktop, validation, APY semantics, Indian formatting, legacy/v2 share restoration, schedule reconciliation, navigation, console state, and document overflow.
+Verification passed with 79 Python tests, TypeScript typecheck, 1,205 frontend tests across 22 files, and the production build. Local and deployed browser QA covered 390px mobile, 720px at 200% scale, 1,440px desktop, light/dark, reduced motion, forced colors, validation, APY semantics, Indian formatting, v1/v2 share restoration, schedule reconciliation, keyboard disclosures/tooltips, console state, and document overflow.
 
 ## Design System Milestone
 
