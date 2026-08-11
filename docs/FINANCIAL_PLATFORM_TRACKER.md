@@ -1,6 +1,6 @@
 # Financial Platform Tracker
 
-Last updated: August 8, 2026
+Last updated: August 9, 2026
 
 This tracker is the working source of truth for moving the product from a standalone FIRE calculator into a full personal financial tracker and planner.
 
@@ -10,7 +10,7 @@ This tracker is the working source of truth for moving the product from a standa
 - Draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview: `https://5ac16caf.interactive-fire-calculator.pages.dev`
+- Latest known preview: `https://98c5b984.interactive-fire-calculator.pages.dev`
 - Current production target: React, TypeScript, Vite, Cloudflare Pages
 - Legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
 
@@ -43,10 +43,10 @@ This tracker is the working source of truth for moving the product from a standa
 | Phase 23: Income, Tax, Budget, and Protection Deepening | Preview/app complete | 100% | Gross-to-net tables, India old/new regime estimates, US bracket estimates, budget cashflow, emergency runway, and protection-gap planning are in place. |
 | Phase 24: Calculator Search Preservation and Content Quality | Preview/app complete | 100% | Stable URLs, formula-aware route content, visible assumptions and FAQs, tested canonicals/schema/sitemap coverage, crawlable internal links, duplicate-content guards, and no-auth smoke coverage for all public calculators are in place. |
 | Phase 25: Engagement and Personalization Loop | Preview/app complete | 100% | Side-by-side scenarios, deterministic outcome drivers, recent saved-run history, explicit reload, dashboard follow-ups, input-only share links, schedule CSVs, and scenario-summary export are in place. |
-| Phase 26: Calculator-by-Calculator Excellence Pass | In progress | 2.4% | Calculators 1–2 of 82, Compound Interest and Savings Goal, have dedicated versioned engines and high-standard public experiences. 80 remain; Net Worth is next. |
+| Phase 26: Calculator-by-Calculator Excellence Pass | In progress | 6.1% | Calculators 1–5 of 82—Compound Interest, Savings Goal, Net Worth, Budget, and Emergency Fund—have dedicated versioned engines and high-standard public experiences. 77 remain; Retirement is next. |
 | Post-roadmap: Calculator Consolidation and Visual System Refresh | Preview/app complete | 100% | All 82 exact routes remain, but the hub now presents 8 decision toolkits with exact search and progressive disclosure. Product/design contracts, a neutral teal-blue-coral light/dark system, restrained glass, persistent theme preference, and refreshed landing/detail/app surfaces are deployed at `https://8fb17051.interactive-fire-calculator.pages.dev`. |
 
-## Phase 26 Calculators 1–2 Checkpoint
+## Phase 26 Calculators 1–5 Checkpoint
 
 - [x] Research authoritative formula conventions, official calculators, competitors, uncertainty language, accessibility, locale formatting, and CSV interoperability.
 - [x] Preserve the legacy Compound default and keep 401(k), HYSA, and FIRE behavior unchanged.
@@ -76,7 +76,20 @@ Research and exact deferred decisions: `docs/calculators/compound-interest.md`.
 
 Research and exact deferred decisions: `docs/calculators/savings-goal.md`.
 
-Verification passed with 79 Python tests, TypeScript typecheck, 1,234 frontend tests across 24 files, and the production build. Local browser QA covered 320px and 390px mobile, 720px at 200% scale, 1,440px desktop, light/dark, reduced motion, forced colors, validation, APY semantics, Indian formatting, impossible and funded states, v1/v2 restoration, schedule reconciliation/pagination, keyboard disclosures, console state, and document overflow. Remote D1 reports no pending migrations. Deployed QA at `https://e25810bb.interactive-fire-calculator.pages.dev` found no console errors, failed resources, or desktop/mobile document overflow.
+### Cashflow and Balance Sheet Studio
+
+- [x] Isolate Net Worth, Budget, and Emergency Fund from the shared generic renderer without changing their stable routes or legacy registry oracles.
+- [x] Add typed `finpath-net-worth-v2`, `finpath-budget-v2`, and `finpath-emergency-fund-v2` engines with explicit validation, finite bounds, and reconciled outputs.
+- [x] Turn Net Worth into a dated category-level balance sheet with liquidity, leverage, valuation sensitivity, raw CSV, and saved snapshot reload.
+- [x] Turn Budget into a category-level monthly plan that separates spending from planned saving, exposes unassigned cash, treats 50/30/20 as an editable reference, and stress-tests income/flexible spending.
+- [x] Turn Emergency Fund into a liquidity-tier plan with runway, target/gap/excess, a no-growth funding schedule, and a labeled risk-based planning heuristic.
+- [x] Add responsive route-specific visuals, audit tables, collapsed analysis, accessible field/error/live-region semantics, locale/currency formatting without FX conversion, versioned links/drafts, save boundaries, and raw CSV exports.
+- [x] Preserve the original visible defaults: `$175,000` Net Worth, `$2,500` monthly Budget surplus, and `$27,000` Emergency Fund target.
+- [x] Push implementation commit `fea0811`, deploy `https://98c5b984.interactive-fire-calculator.pages.dev`, verify all 84 public calculator routes, direct Net Worth/Budget/Emergency Fund/Retirement/FIRE `200`, unauthenticated save API `401`, and deployed desktop/mobile browser behavior.
+
+Research and exact deferred decisions: `docs/calculators/net-worth.md`, `docs/calculators/budget.md`, and `docs/calculators/emergency-fund.md`.
+
+Verification passed with 79 Python tests, TypeScript typecheck, 1,268 frontend tests across 26 files, and the production build. Local browser QA covered 320px, 390px, 720px at 200% scale, 1,180px, and 1,440px; light/dark, reduced motion, forced colors, keyboard focus, validation/warning states, route-specific recalculation, disclosure defaults, console state, panel geometry, and document overflow. Deployed QA at `https://98c5b984.interactive-fire-calculator.pages.dev` found no console errors, failed resources, overlays, or desktop/mobile document overflow.
 
 ## Design System Milestone
 

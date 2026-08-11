@@ -40,7 +40,7 @@ Completion estimate:
 
 ## Phase 26 Excellence-Pass Clarifications
 
-The shared foundation above remains historical context. Phase 26 now reviews one stable calculator route at a time against a stricter completion gate. Compound Interest is calculator 1 of 82; Savings Goal is next.
+The shared foundation above remains historical context. Phase 26 now reviews stable calculator routes against a stricter completion gate. Calculators 1–5 of 82 are complete: Compound Interest, Savings Goal, Net Worth, Budget, and Emergency Fund. Retirement is next.
 
 The Compound Interest pass clarifies the reusable standard for later growth calculators:
 

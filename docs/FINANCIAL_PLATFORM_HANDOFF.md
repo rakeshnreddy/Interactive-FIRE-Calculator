@@ -1,26 +1,25 @@
 # Financial Platform Handoff
 
-## Phase 26 active handoff — Savings Goal excellence pass
+## Phase 26 active handoff — Cashflow and Balance Sheet excellence pass
 
 - Date: August 9, 2026.
-- Completed calculators: `/calculators/compound-interest` and `/calculators/savings-goal` (2 of 82).
-- Next calculator: `/calculators/net-worth`.
-- Remaining high-standard calculator passes: 80.
-- Engine: `src/lib/savingsGoalCalculator.ts`, formula version `finpath-savings-goal-v2`.
-- Route UI: `src/SavingsGoalCalculator.tsx`, isolated by slug before the generic calculator detail.
-- Research and formula contract: `docs/calculators/savings-goal.md`.
-- Preserve: the stable Savings Goal URL/title/default inputs, the legacy shared `savings-goal` formula and `$428.600434` registry oracle, SIP Goal’s `54660.927689` oracle, all public routes, and `src/lib/fire.ts`.
-- Corrected route oracle: `425.28168253155314` for a $100,000 goal, $10,000 current savings, 10 years, and an 8% nominal rate compounded monthly with month-end contributions.
-- Shipped contract: exact inverse solve, nominal/APY, independent frequencies/timing, fractional terms, current-plan and catch-up analysis, contribution step-up/top-up, balance fee, target inflation/basis, milestones, isolated scenarios, target/deadline sensitivity, true runway, reconciling schedules, locale/currency display, v1/v2 links, route draft, raw CSV, save values, resolved Goal target, precise Goal deadline, and saved-run reload.
-- Currency boundary: calculator/share/export support seven currencies; Goal creation is visibly limited to USD until the Goals schema/API/UI store currency.
-- Deferred: Goal currency migration, taxes, live APY/CPI/FX, exact product ledgers, tiered/transaction fees, Monte Carlo, arbitrary cash-flow ledgers, and multi-goal optimization.
-- Local verification: 79 Python tests, 1,234 frontend tests across 24 files, TypeScript, production build, 84-route public smoke, direct Savings Goal/SIP Goal/Compound/FIRE `200`, desktop/mobile/theme/forced-colors/reduced-motion browser QA, and no pending remote D1 migrations.
-- Verification complete: implementation committed and pushed, Cloudflare preview deployed, all 84 calculator routes passed, Savings Goal/SIP Goal/Compound/FIRE returned `200`, and the unauthenticated save API returned `401`.
+- Completed calculators: Compound Interest, Savings Goal, Net Worth, Budget, and Emergency Fund (5 of 82).
+- Next calculator: `/calculators/retirement`.
+- Remaining high-standard calculator passes: 77.
+- Engines: `src/lib/cashflowPlanningCalculators.ts`, with `finpath-net-worth-v2`, `finpath-budget-v2`, and `finpath-emergency-fund-v2` formula versions.
+- Route UI: `src/CashflowPlanningCalculator.tsx`, isolated by the three exact slugs before the generic calculator detail.
+- Research and formula contracts: `docs/calculators/net-worth.md`, `docs/calculators/budget.md`, and `docs/calculators/emergency-fund.md`.
+- Preserve: stable routes/titles, original visible defaults (`$175,000`, `$2,500`, and `$27,000`), generic registry oracles used elsewhere, all 84 public routes, and `src/lib/fire.ts`.
+- Shipped contract: category-level inputs, clear cashflow/balance-sheet conventions, validation and finite guards, route visuals, audit tables, scenarios, schedules where useful, locale/currency display without FX conversion, v2 share links and drafts, raw CSV, signed-in saves, signed-out browser drafts, and saved-run reload.
+- Currency boundary: calculator/share/export support seven currencies; Emergency Fund Goal creation is visibly limited to USD until Goals store currency.
+- Deferred: account/transaction imports, longitudinal forecasting, taxes, live feeds/FX, appraisal, probabilistic job-loss modeling, insurance adequacy, and multi-currency Goal storage.
+- Local verification: 79 Python tests, 1,268 frontend tests across 26 files, TypeScript, production build, 84-route public smoke, direct Net Worth/Budget/Emergency Fund/Retirement/FIRE `200`, and desktop/mobile/theme/forced-colors/reduced-motion browser QA.
+- Verification complete: implementation committed and pushed, Cloudflare preview deployed, all 84 calculator routes passed, direct routes returned `200`, and the unauthenticated save API returned `401`.
 - Production Clerk remains a separate launch blocker and is not part of this public calculator pass.
-- Implementation commit: `854bb44` (`Build savings goal excellence experience`), pushed to `origin/codex/cloudflare-pages-theme-plan`.
-- Preview verified: `https://e25810bb.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
-- Full gate: 79 Python tests, TypeScript, 1,234 frontend tests across 24 files, and production build.
-- Live gate: all 84 public calculator paths passed without authentication; Savings Goal, SIP Goal, Compound Interest, and FIRE returned `200`; unauthenticated `/api/calculator-results` returned `401`; deployed desktop/mobile browser checks had no console errors, failed resources, overlays, or horizontal overflow.
+- Implementation commit: `fea0811` (`Build cashflow planning calculator experiences`), pushed to `origin/codex/cloudflare-pages-theme-plan`.
+- Preview verified: `https://98c5b984.interactive-fire-calculator.pages.dev`; branch alias remains `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`.
+- Full gate: 79 Python tests, TypeScript, 1,268 frontend tests across 26 files, and production build.
+- Live gate: all 84 public calculator paths passed without authentication; Net Worth, Budget, Emergency Fund, Retirement, and FIRE returned `200`; unauthenticated `/api/calculator-results` returned `401`; deployed desktop/mobile browser checks had no console errors, failed resources, overlays, or horizontal overflow.
 - Compound Interest follow-up: commit `6b18058` moves contribution and compounding cadence into Quick Start, visibly reconciles `$10,000 × 120` monthly deposits versus `$10,000 × 10` annual deposits, removes the zero-inflation buying-power output, and stacks panels at `1180px`. Full verification passed with 1,235 frontend tests; all 84 routes and direct Compound/Savings Goal/SIP Goal/FIRE checks passed at `https://5ac16caf.interactive-fire-calculator.pages.dev`, with the save API correctly returning `401` signed out.
 
 Last updated: August 9, 2026
@@ -41,11 +40,13 @@ The target product is a full personal finance platform where individual users ca
 - Deployment target: Cloudflare Pages
 - Cloudflare Pages project: `interactive-fire-calculator`
 - Branch alias: `https://codex-cloudflare-pages-theme.interactive-fire-calculator.pages.dev`
-- Latest known preview from this branch: `https://5ac16caf.interactive-fire-calculator.pages.dev`
+- Latest known preview from this branch: `https://98c5b984.interactive-fire-calculator.pages.dev`
 - Existing draft PR: `https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/137`
 
 Recent commits on this branch:
 
+- `fea0811 Build cashflow planning calculator experiences`
+- `6b18058 Clarify compound contribution schedules`
 - `d456c59 Create financial platform shell`
 - `dbd158e Add financial platform handoff context`
 - `98723ac Replace stress ending hero metric`
