@@ -1,0 +1,10 @@
+# Cloudflare Pages Functions local config for `npm run cf:dev`.
+# Keep real values in `.dev.vars` or Cloudflare Pages environment variables.
+CLERK_PUBLISHABLE_KEY=pk_test_replace_me
+CLERK_SECRET_KEY=sk_test_replace_me
+
+# Comma-separated origins allowed to present Clerk session tokens to Pages Functions.
+CLERK_AUTHORIZED_PARTIES=http://127.0.0.1:8788,http://localhost:8788
+
+# Optional: Clerk JWT public key for networkless verification.
+# CLERK_JWT_KEY="-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"

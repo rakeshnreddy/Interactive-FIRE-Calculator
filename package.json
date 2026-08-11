@@ -1,0 +1,47 @@
+{
+  "name": "interactive-fire-calculator",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A modern TypeScript FIRE planning calculator designed for Cloudflare Pages.",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "auth:preflight": "node scripts/check_production_auth.mjs --check-cloudflare",
+    "preview": "vite preview --host 127.0.0.1",
+    "smoke:calculators": "node scripts/smoke_public_calculators.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check:local": "./scripts/check_local.sh",
+    "cf:dev": "npm run build && wrangler pages dev dist --compatibility-date=2026-06-06",
+    "cf:deploy": "npm run build && wrangler pages deploy dist --project-name interactive-fire-calculator",
+    "cf:deploy:production": "./scripts/deploy_production.sh"
+  },
+  "dependencies": {
+    "@clerk/backend": "^3.5.0",
+    "@clerk/react": "^6.7.3",
+    "@fontsource-variable/inter": "^5.2.8",
+    "lucide-react": "^1.17.0",
+    "papaparse": "^5.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260606.1",
+    "@types/papaparse": "^5.5.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^6.0.2",
+    "jsdom": "^29.1.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8",
+    "wrangler": "^4.103.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

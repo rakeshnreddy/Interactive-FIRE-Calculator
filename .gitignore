@@ -12,7 +12,19 @@ __pycache__/
 venv/
 env/
 .env
+.env.*
+!.env.example
+!.env.production.example
 *.env
+.dev.vars
+
+# Node / Cloudflare Pages
+node_modules/
+dist/
+.vite/
+.wrangler/
+*.tsbuildinfo
+npm-debug.log*
 
 # IDE / Editor specific
 .vscode/

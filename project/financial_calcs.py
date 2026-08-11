@@ -255,33 +255,26 @@ def find_max_annual_expense(P, withdrawal_time, rates_periods, desired_final_val
 
     lower = 0.0
 
-    # Heuristic for upper bound
-    if total_T_from_periods > 0:
-        # Estimate based on average withdrawal if portfolio just depletes to desired_final_value
-        # This is a very rough estimate.
-        avg_r = sum(p['r'] * p['duration'] for p in rates_periods) / total_T_from_periods if total_T_from_periods > 0 else 0
-        # Effective principal available for withdrawals over the period
-        P_adjusted_for_dfv = P - (desired_final_value / ((1 + avg_r)**total_T_from_periods if (1 + avg_r) > 0 else 1))
+    if simulate_final_balance(P, lower, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) < 0:
+        return 0.0
 
-        if P_adjusted_for_dfv <= 0: # If P is not enough to even reach DFV without withdrawals
-            upper = 0.0
-        else:
-            # Simple average withdrawal guess
-            upper = (P_adjusted_for_dfv / (total_T_from_periods / 1.5)) if total_T_from_periods > 0 else 0 # Added safety factor 1.5
-            upper = max(upper, current_app.config.get('W_MIN_GUESS_FOR_MAX_EXPENSE', 1.0))
-    else: # total_T_from_periods is 0
-        upper = 0.0
+    min_guess = current_app.config.get('W_MIN_GUESS_FOR_MAX_EXPENSE', 1.0)
+    upper = max(min_guess, P / max(total_T_from_periods, 1))
 
-    upper = max(upper, current_app.config.get('W_MIN_GUESS_FOR_MAX_EXPENSE', 1.0))
-    if P <= 0 and desired_final_value <=0 : # If portfolio is zero or negative, and no positive target, max W is 0
-        upper = 0.0
-
-    # If P is positive but upper is 0 (e.g. P_adjusted_for_dfv was negative), check if W=0 is valid
-    if upper == 0.0 and P > 0:
-        if simulate_final_balance(P, 0, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) >= 0:
-            return 0.0 # W=0 is sustainable
-        # else: P is not enough even for W=0 to reach DFV, so need to find a negative W if that's allowed, or stick to 0.
-        # Assuming W must be non-negative.
+    # Bisection needs an unsustainable upper bound. The previous implementation
+    # used a single heuristic upper and could silently cap the answer too low.
+    max_upper = current_app.config.get('PV_MAX_GUESS_LIMIT', 1_000_000_000)
+    upper_bound_iterations = 0
+    max_upper_bound_iterations = 100
+    while simulate_final_balance(P, upper, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) >= 0:
+        lower = upper
+        upper *= 2.0
+        upper_bound_iterations += 1
+        if upper_bound_iterations > max_upper_bound_iterations or upper > max_upper:
+            upper = max_upper
+            if simulate_final_balance(P, upper, withdrawal_time, rates_periods, desired_final_value, one_off_events=one_off_events) >= 0:
+                return upper
+            break
 
 
     # Bisection search for W_initial

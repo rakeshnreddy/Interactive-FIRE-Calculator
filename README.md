@@ -1,100 +1,93 @@
 # Interactive FIRE Calculator
 
-## Overview
-The Interactive FIRE (Financial Independence, Retire Early) Calculator is a web application designed to help users plan and visualize their path to financial independence. It allows for detailed scenario analysis, including multi-period rate configurations, and provides clear visual feedback through interactive charts and tables.
+A modern retirement and FIRE planning calculator for exploring required portfolio size, sustainable annual spending, withdrawal timing, inflation, return periods, one-off cash flows, and scenario comparisons.
 
-## Features
-- **Dynamic Calculations**: Instantly see the impact of changing financial variables.
-- **Expense Mode**: Calculate the total portfolio (FIRE number) needed based on desired annual expenses.
-- **FIRE Mode**: Determine the maximum sustainable annual expense from a target FIRE number.
-- **Multi-Period Analysis**: Define different expected investment returns and inflation rates for various periods within your financial plan (e.g., early accumulation, pre-retirement, retirement).
-- **Scenario Comparison**: Analyze and compare up to four different financial scenarios side-by-side.
-- **Data Visualization**: Interactive charts for portfolio balance and annual withdrawals over time.
-- **Yearly Data Table**: Detailed year-by-year breakdown of financial projections.
-- **Desired Final Portfolio Value**: Option to specify a target amount to remain at the end of the term.
-- **Withdrawal Timing**: Choose between start-of-year or end-of-year withdrawals.
-- **Responsive Design**: User-friendly interface adaptable to different screen sizes.
-- **Theme Customization**: Light, Dark, and System theme options, with settings for font size and panel opacity.
-- **Data Export**: Export calculation results to CSV and plots/tables to PDF (via print-to-PDF).
-- **Save/Load Scenarios**: Save comparison scenario configurations to local browser storage.
-- **Informative Tooltips**: Helpful hints and explanations for various input fields.
+## Product Direction Update
 
-## Technologies Used
-- **Backend**: Python (Flask)
-- **Frontend**: HTML, CSS, JavaScript
-- **Charting**: Plotly.js
-- **Styling**: Bootstrap 5
+The product scope has expanded beyond a standalone FIRE calculator. The current target is a comprehensive personal financial tracker and planner where users can create accounts, store financial data, track goals, and save planning scenarios. The FIRE calculator is now the first planning module inside that broader platform.
 
-## Getting Started
+For a clean coding-session handoff, read [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md) first.
 
-### Prerequisites
-- Python 3.8+
-- pip (Python package installer)
+## Current Direction
 
-### Installation & Running
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository_url>
-    cd <repository_directory>
-    ```
-2.  **Create a virtual environment (recommended):**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-    (Note: Ensure `requirements.txt` includes Flask, NumPy, and Plotly.)
+This repository is moving from a legacy Flask/Jinja app to a TypeScript, React, and Vite app designed for Cloudflare Pages.
 
-4.  **Run the application:**
-    ```bash
-    flask run
-    # Or, for development mode:
-    # flask --app project --debug run
-    ```
-    The application will typically be available at `http://127.0.0.1:5000/`.
+- Production target: `src/` TypeScript app built to `dist/`
+- Deployment target: Cloudflare Pages
+- Legacy reference: `app.py`, `project/`, `templates/`, and `static/`
+- Calculation parity: Python tests plus TypeScript Vitest tests
 
-## Usage
-- **Home Page**: Input your financial details, choose between Expense Mode or FIRE Mode, and configure single or multi-period rates. Click "Calculate" to see results.
-- **Results Page**: Adjust common parameters (return, inflation, duration, withdrawal timing) and see both modes update in real-time. Explore interactive plots and yearly data tables. Export data as needed.
-- **Compare Page**: Set up multiple scenarios with different parameters to compare their outcomes, including combined plots and a summary table.
-- **Settings Page**: Customize the application theme (Light, Dark, System), base font size, and UI panel opacity.
-- **Navigation**: Use the header navigation links (Home, Compare, Settings) and footer links (About, FAQ) to move between pages.
+## Run Locally
 
-## File Structure
-```
-/your-repo-root
-|-- project/
-|   |-- __init__.py             # Initializes the Flask application
-|   |-- routes.py               # Defines application routes and view logic
-|   |-- financial_calcs.py      # Core financial calculation functions
-|   |-- constants.py            # Application-wide constants
-|   |-- static/
-|   |   |-- css/main.css        # Custom CSS styles
-|   |   |-- js/theme.js         # Theme management (light/dark/system)
-|   |   |-- js/validation.js    # Form validation logic (if any)
-|   |-- templates/
-|   |   |-- base.html           # Base template with header, footer, navigation
-|   |   |-- index.html          # Main calculator input form
-|   |   |-- result.html         # Page to display calculation results
-|   |   |-- compare.html        # Scenario comparison page
-|   |   |-- settings.html       # Application settings page
-|   |   |-- about.html          # About page
-|   |   |-- faq.html            # FAQ page
-|-- venv/                       # Virtual environment directory (if created)
-|-- requirements.txt            # Python package dependencies
-|-- README.md                   # This file
-|-- PLANNED_ENHANCEMENTS.md     # Document outlining future features
-|-- LICENSE                     # Project license file
-|-- run.py                      # Script to run the Flask application (alternative to `flask run`)
+```bash
+./scripts/bootstrap_node.sh
+./scripts/run_local.sh
 ```
 
-## Contributing
-Contributions are welcome! Please feel free to submit issues, fork the repository, and create pull requests.
-For major changes, please open an issue first to discuss what you would like to change.
+The new app runs with Vite. To run the legacy Flask app:
 
-## License
-This project is licensed under the MIT License - see the `LICENSE` file for details.
-(If a `LICENSE` file does not exist, one should be added, typically containing the standard MIT License text.)
+```bash
+APP_TARGET=legacy ./scripts/run_local.sh
+```
+
+## Test
+
+```bash
+./scripts/test_all.sh
+```
+
+This runs the legacy Python tests when Python dependencies are available, then runs TypeScript type checks, Vitest, and the Vite build when `npm` is available.
+
+## Cloudflare Pages
+
+```bash
+./scripts/deploy_cloudflare_pages.sh
+```
+
+Cloudflare settings:
+
+- Build command: `npm run build`
+- Output directory: `dist`
+- Project name: `interactive-fire-calculator`
+- Config: `wrangler.toml`
+
+Preview deployments from feature branches use:
+
+```bash
+npm run cf:deploy
+```
+
+Production authentication and deployment use the fail-closed runbook:
+
+```bash
+npm run auth:preflight
+npm run cf:deploy:production
+```
+
+Read [Production authentication runbook](docs/PRODUCTION_AUTH_RUNBOOK.md) before either command. Production requires an owned custom domain and completed Clerk production instance; the deployment script rejects the configured development Clerk key and non-production branches.
+
+## Product Scope
+
+The calculator supports:
+
+- Required FIRE number from annual expenses
+- Maximum sustainable annual expense from an existing portfolio
+- Multi-period return and inflation assumptions
+- Start-of-year and end-of-year withdrawal timing
+- Desired final portfolio value
+- Signed one-off cash flows
+- Base, guardrail, and upside comparison views
+- Persistent light and dark product themes
+
+## Calculation Contract
+
+One-off years are relative plan years starting at `1`. Positive one-off amounts are inflows; negative amounts are expenses.
+
+Rates are nominal annual returns. Inflation adjusts the withdrawal amount after each year. The desired final value is currently treated as a nominal ending balance target.
+
+## Documentation
+
+- [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md)
+- [Production authentication runbook](docs/PRODUCTION_AUTH_RUNBOOK.md)
+- [Comprehensive rebuild plan](docs/FIRE_REBUILD_PLAN.md)
+- [Cloudflare Pages deployment notes](docs/CLOUDFLARE_PAGES.md)

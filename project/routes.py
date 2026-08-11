@@ -355,14 +355,20 @@ def compare():
         current_app.logger.info(f"[CompareDebug] Received POST /compare request. Form data: {request.form.to_dict(flat=False)}")
         form_data = request.form
         scenarios_data_for_template = []
+
+        def get_scenario_value(scenario_number, field_name, default=""):
+            current_key = f"scenario{scenario_number}_{field_name}_form"
+            legacy_key = f"scenario{scenario_number}_{field_name}"
+            return form_data.get(current_key, form_data.get(legacy_key, default))
+
         for n in range(1, MAX_SCENARIOS_COMPARE + 1):
             scenario_input = {'n': n, 'enabled': form_data.get(f"scenario{n}_enabled") == "on"}
 
             # Correctly read core form fields
             form_field_keys = ['W_form', 'r_form', 'i_form', 'T_form', 'D_form', 'withdrawal_time_form']
             for key_suffix in form_field_keys:
-                actual_form_data_key = f"scenario{n}_{key_suffix}"
-                value = form_data.get(actual_form_data_key, "")
+                field_name = key_suffix[:-5] if key_suffix.endswith('_form') else key_suffix
+                value = get_scenario_value(n, field_name)
                 scenario_input[key_suffix] = value # e.g., scenario_input['W_form'] = form_data.get('scenario1_W_form')
 
             for p_num in range(1, 4):
@@ -426,7 +432,13 @@ def compare():
                 current_app.logger.info(f"[CompareDebug] Scenario {n} calc params: W={W_val}, D={D_val}, time={withdrawal_time_val}, rates={scenario_rates_periods}, one_offs={scenario_one_off_events}")
                 scenario_input['rates_periods_data'] = scenario_rates_periods
 
-                portfolio = find_required_portfolio(W_val, withdrawal_time_val, scenario_rates_periods, D_val, one_off_events=scenario_one_off_events)
+                portfolio = find_required_portfolio(
+                    W_val,
+                    withdrawal_time_val,
+                    scenario_rates_periods,
+                    desired_final_value=D_val,
+                    one_off_events=scenario_one_off_events
+                )
                 if portfolio == float('inf'):
                     scenario_input.update({'error': gettext("Scenario %(n)s: Cannot find suitable portfolio (inputs unrealistic).", n=n), 'fire_number': gettext("N/A"), 'years_data': [], 'balances_data': [], 'withdrawals_data': []})
                 else:
@@ -550,4 +562,3 @@ def register_app_routes(app_instance):
     app_instance.logger.info("Attempting to register project_blueprint (with restored routes).")
     app_instance.register_blueprint(project_blueprint)
     app_instance.logger.info("project_blueprint (with restored routes) registered.")
-

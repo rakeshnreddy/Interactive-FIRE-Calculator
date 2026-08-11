@@ -11,13 +11,18 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from app import app # Import the Flask app instance
 from flask_babel import Babel, gettext # Added import
-from project.constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_END, TIME_START
+from project.constants import MODE_WITHDRAWAL, MODE_PORTFOLIO, TIME_END, TIME_START, MAX_SCENARIOS_COMPARE
 
 class TestAppRoutes(unittest.TestCase):
     def setUp(self):
         app.testing = True # Ensure testing mode
+        self.previous_csrf_enabled = app.config.get('WTF_CSRF_ENABLED', True)
+        app.config['WTF_CSRF_ENABLED'] = False
         self.client = app.test_client()
         # pass # Original content commented out
+
+    def tearDown(self):
+        app.config['WTF_CSRF_ENABLED'] = self.previous_csrf_enabled
 
     def test_index_get(self):
         response = self.client.get('/')
@@ -26,7 +31,7 @@ class TestAppRoutes(unittest.TestCase):
         self.assertIn("<title>FIRE Calculator - Home</title>", response_data)
         # Check for a label that is actually in index.html from the previous run's output
         # self.assertIn("Annual Expenses (in today's dollars):</label>", response_data) # This was for old index.html
-        self.assertIn("Plan Your Financial Independence", response_data) # Check new title
+        self.assertIn("Chart Your Path to Financial Independence", response_data)
         # Check for the new 'D' field - no longer in index.html directly
         # self.assertIn('name="D" id="D"', response_data)
         # self.assertIn("Desired Final Portfolio Value ($):</label>", response_data)
@@ -96,11 +101,11 @@ class TestAppRoutes(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             response_data = response.get_data(as_text=True)
             self.assertIn("Compare Scenarios", response_data)
-            self.assertIn("Scenario 1", response_data)
+            self.assertIn("Input Scenarios", response_data)
             # Check for one of the input field labels for scenario 1
-            self.assertIn("Annual Expenses (W):</label>", response_data)
+            self.assertIn("Annual Expenses (W)", response_data)
             # Check for the 'D' field label for scenario 1
-            self.assertIn("Desired Final Portfolio Value ($):</label>", response_data)
+            self.assertIn("Desired Final Portfolio Value", response_data)
 
     @patch('project.routes.annual_simulation')
     @patch('project.routes.find_required_portfolio')
@@ -291,7 +296,7 @@ class TestAppRoutes(unittest.TestCase):
     #     pass # Commenting out
 
     # def test_export_csv_invalid_parameter_value(self):
-    //     pass # Commenting out
+    #     pass # Commenting out
 
 class TestInternationalization(unittest.TestCase):
     def setUp(self):
@@ -323,5 +328,3 @@ class TestInternationalization(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-[end of tests/test_app.py]

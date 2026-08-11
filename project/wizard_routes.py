@@ -72,8 +72,12 @@ def wizard_one_offs_step():
 
 @wizard_bp.route('/summary', methods=['GET'])
 def wizard_summary_step():
-    if not all(key in session for key in ['wizard_expenses', 'wizard_rates', 'wizard_one_offs']):
+    if 'wizard_expenses' not in session:
         return redirect(url_for('wizard_bp.wizard_expenses_step'))
+    if 'wizard_rates' not in session:
+        return redirect(url_for('wizard_bp.wizard_rates_step'))
+    if 'wizard_one_offs' not in session:
+        return redirect(url_for('wizard_bp.wizard_one_offs_step'))
     expenses_data = session.get('wizard_expenses', {})
     rates_data = session.get('wizard_rates', {})
     one_offs_data = session.get('wizard_one_offs', {})
@@ -291,7 +295,7 @@ def wizard_calculate_step():
 @wizard_bp.route('/recalculate_interactive', methods=['POST'])
 def wizard_recalculate_interactive():
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if not data:
             return jsonify({'error': gettext('Invalid request: No JSON data received.')}), 400 # Changed
 

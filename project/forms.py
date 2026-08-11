@@ -15,7 +15,7 @@ class OneOffEntryForm(FlaskForm):
 
 class ExpensesForm(FlaskForm):
     '''Form for capturing all annual expenses.'''
-    annual_expenses = FloatField('Total Current Annual Expenses', validators=[DataRequired(), NumberRange(min=0)])
+    annual_expenses = FloatField('Total Current Annual Expenses', validators=[Optional(), NumberRange(min=0)])
     housing = FloatField('Housing (e.g., rent/mortgage, property tax, insurance)', validators=[Optional(), NumberRange(min=0)])
     food = FloatField('Food (groceries, dining out)', validators=[Optional(), NumberRange(min=0)])
     transportation = FloatField('Transportation (car payments, fuel, public transport, maintenance)', validators=[Optional(), NumberRange(min=0)])
@@ -25,6 +25,22 @@ class ExpensesForm(FlaskForm):
     healthcare = FloatField('Healthcare (insurance premiums, medical expenses)', validators=[Optional(), NumberRange(min=0)])
     other_expenses = FloatField('Other Miscellaneous Expenses', validators=[Optional(), NumberRange(min=0)])
     submit = SubmitField('Next: Rates')
+
+    def validate(self, extra_validators=None):
+        if not super().validate(extra_validators=extra_validators):
+            return False
+
+        itemized_sum = sum(
+            getattr(self, field_name).data or 0
+            for field_name in [
+                'housing', 'food', 'transportation', 'utilities',
+                'personal_care', 'entertainment', 'healthcare', 'other_expenses'
+            ]
+        )
+        if not (self.annual_expenses.data or itemized_sum > 0):
+            self.annual_expenses.errors.append('Enter annual expenses or itemized expenses.')
+            return False
+        return True
 
 class RatesForm(FlaskForm):
     '''Form for capturing investment return rates and inflation.'''

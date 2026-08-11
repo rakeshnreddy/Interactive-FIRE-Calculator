@@ -1,8 +1,8 @@
 import os
 import logging # Make sure logging is imported
-from flask import Flask, request # request for get_locale_selector
+from flask import Flask, request, url_for # request for get_locale_selector
 from flask_wtf.csrf import CSRFProtect
-from flask_babel import Babel, get_locale as flask_babel_get_locale
+from flask_babel import Babel, get_locale as flask_babel_get_locale, gettext
 from babel.numbers import format_currency
 
 # Create the Flask app instance
@@ -28,6 +28,7 @@ app.config['LANGUAGES'] = {
     'en': 'English',
     'es': 'Spanish'
 }
+app.config['BABEL_TRANSLATION_DIRECTORIES'] = os.path.join(os.path.dirname(__file__), 'project', 'translations')
 # Initialize Babel with the locale selector
 babel = Babel(app, locale_selector=get_locale_selector) # Pass the function here
 app.logger.info("Flask-Babel initialized with locale_selector.") # Log moved after actual init
@@ -68,6 +69,38 @@ app.jinja_env.globals['format_currency'] = format_currency
 app.jinja_env.globals['get_locale'] = flask_babel_get_locale # Use the one from Flask-Babel for context
 app.jinja_env.globals['DEFAULT_CURRENCY'] = app.config['DEFAULT_CURRENCY']
 app.logger.info("Jinja globals for Babel set.")
+
+@app.context_processor
+def inject_navigation_context():
+    endpoint = request.endpoint
+    if not endpoint or endpoint == 'project.index':
+        return {'breadcrumbs': []}
+
+    route_labels = {
+        'project.compare': gettext('Compare'),
+        'project.faq': gettext('FAQ'),
+        'project.about': gettext('About'),
+        'project.settings': gettext('Settings'),
+        'project.update': gettext('Update'),
+        'project.export_csv': gettext('Export CSV'),
+        'wizard_bp.wizard_expenses_step': gettext('Expenses'),
+        'wizard_bp.wizard_rates_step': gettext('Rates'),
+        'wizard_bp.wizard_one_offs_step': gettext('One-Offs'),
+        'wizard_bp.wizard_summary_step': gettext('Summary'),
+        'wizard_bp.wizard_calculate_step': gettext('Results'),
+        'wizard_bp.export_csv': gettext('Export CSV'),
+        'wizard_bp.export_pdf': gettext('Export PDF'),
+    }
+
+    breadcrumbs = [{'label': gettext('Home'), 'url': url_for('project.index')}]
+
+    if endpoint.startswith('wizard_bp.'):
+        breadcrumbs.append({'label': gettext('Wizard'), 'url': url_for('wizard_bp.wizard_expenses_step')})
+
+    if endpoint in route_labels:
+        breadcrumbs.append({'label': route_labels[endpoint], 'url': request.path})
+
+    return {'breadcrumbs': breadcrumbs}
 
 # --- Health Check Endpoint ---
 @app.route('/healthz')
