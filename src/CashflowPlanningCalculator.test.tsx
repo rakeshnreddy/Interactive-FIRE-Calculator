@@ -25,6 +25,15 @@ const auth: AuthState = {
   user: { displayName: 'Test user', id: 'user-1' }
 };
 
+const publicOnlyAuth: AuthState = {
+  provider: 'clerk',
+  status: 'not-configured',
+  isConfigured: false,
+  isSignedIn: false,
+  missingEnv: ['VITE_CLERK_PUBLISHABLE_KEY'],
+  user: null
+};
+
 beforeEach(() => {
   const values = new Map<string, string>();
   Object.defineProperty(window, 'localStorage', {
@@ -112,6 +121,16 @@ describe('cashflow planning route presentation', () => {
     expect(document.body.textContent).toContain('Short notice');
     expect(document.body.textContent).toContain('Market exposed');
     expect(document.body.textContent).toContain('no assumed growth');
+  });
+
+  it('renders public-only save controls without requiring ClerkProvider', () => {
+    const calculator = findSeoCalculator('/calculators/net-worth')!;
+    const html = renderToStaticMarkup(
+      <CashflowPlanningCalculator auth={publicOnlyAuth} calculator={calculator} onNavigate={() => undefined} onSaveResult={async () => ({ destinationRoute: '/accounts', message: 'Saved', savedResultId: 'saved-1' })} savedResults={[]} />
+    );
+    document.body.innerHTML = html;
+    expect(document.body.textContent).toContain('Keep browser draft');
+    expect(document.body.textContent).not.toContain('Create account to save');
   });
 });
 

@@ -140,7 +140,9 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
 
   const saveResult = async () => {
     if (!projection.validation.isValid) return setMessage('Fix the balance-sheet errors before saving.');
-    if (auth.status !== 'signed-in') return setMessage('Draft saved in this browser. Create an account to keep balance-sheet snapshots in FinPath.');
+    if (auth.status !== 'signed-in') return setMessage(auth.status === 'not-configured'
+      ? 'Draft saved in this browser. Account features are unavailable on this public-only deployment.'
+      : 'Draft saved in this browser. Create an account to keep balance-sheet snapshots in FinPath.');
     setIsSaving(true);
     setMessage('Saving net worth snapshot…');
     try {
@@ -310,7 +312,9 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
 
   const saveResult = async () => {
     if (!projection.validation.isValid) return setMessage('Fix the budget errors before saving.');
-    if (auth.status !== 'signed-in') return setMessage('Draft saved in this browser. Create an account to keep budget snapshots in FinPath.');
+    if (auth.status !== 'signed-in') return setMessage(auth.status === 'not-configured'
+      ? 'Draft saved in this browser. Account features are unavailable on this public-only deployment.'
+      : 'Draft saved in this browser. Create an account to keep budget snapshots in FinPath.');
     setIsSaving(true);
     setMessage('Saving budget snapshot…');
     try {
@@ -497,7 +501,9 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
   const saveResult = async () => {
     if (!projection.validation.isValid) return setMessage('Fix the reserve-plan errors before saving.');
     if (currency !== 'USD') return setMessage('Share and export work in this currency, but the Goal workspace currently stores USD only. Switch to USD before creating a Goal.');
-    if (auth.status !== 'signed-in') return setMessage('Draft saved in this browser. Create an account to keep emergency-fund plans in FinPath.');
+    if (auth.status !== 'signed-in') return setMessage(auth.status === 'not-configured'
+      ? 'Draft saved in this browser. Account features are unavailable on this public-only deployment.'
+      : 'Draft saved in this browser. Create an account to keep emergency-fund plans in FinPath.');
     setIsSaving(true);
     setMessage('Saving emergency-fund plan…');
     try {
@@ -786,7 +792,9 @@ function ActionRow({ auth, disabled = false, isSaving, message, onCopy, onExport
       <div className="compound-action-row">
         <button className="secondary-button icon-text-button" type="button" onClick={onCopy}><Copy size={15} /> Copy link</button>
         <button className="secondary-button icon-text-button" type="button" onClick={onExport}><Download size={15} /> Export CSV</button>
-        {auth.status === 'signed-in' ? <button className="primary-button" disabled={disabled || isSaving} type="button" onClick={onSave}>{isSaving ? 'Saving…' : saveLabel}</button> : (
+        {auth.status === 'signed-in' ? <button className="primary-button" disabled={disabled || isSaving} type="button" onClick={onSave}>{isSaving ? 'Saving…' : saveLabel}</button> : auth.status === 'not-configured' ? (
+          <button className="primary-button" disabled={disabled} type="button" onClick={onSave}>Keep browser draft</button>
+        ) : (
           <SignUpButton mode="modal"><button className="primary-button" type="button" onClick={onSave}>Create account to save</button></SignUpButton>
         )}
       </div>
