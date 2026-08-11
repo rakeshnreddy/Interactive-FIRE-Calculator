@@ -4448,6 +4448,340 @@ h2 {
   }
 }
 
+/* Phase 26: Cashflow and Balance Sheet excellence routes. */
+.cashflow-planning-calculator {
+  --cashflow-asset: var(--accent);
+  --cashflow-liability: var(--warm);
+  --cashflow-net: var(--data-blue);
+  gap: 1rem;
+}
+
+.cashflow-workspace {
+  align-items: start;
+}
+
+.cashflow-workspace .calculator-input-panel,
+.cashflow-workspace .calculator-result-panel {
+  gap: 0.9rem;
+}
+
+.cashflow-input-section {
+  min-width: 0;
+  margin: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.cashflow-input-section legend {
+  display: grid;
+  gap: 0.1rem;
+  max-width: calc(100% - 0.75rem);
+  padding: 0 0.35rem;
+}
+
+.cashflow-input-section legend strong {
+  color: var(--heading);
+  font-size: 0.88rem;
+}
+
+.cashflow-input-section legend small {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.cashflow-input-grid {
+  align-items: start;
+}
+
+.cashflow-convention {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border-left: 3px solid var(--accent);
+  color: var(--muted-strong);
+  background: var(--accent-wash);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.cashflow-convention strong {
+  color: var(--heading);
+}
+
+.cashflow-headline.is-warning > strong {
+  color: var(--warning);
+}
+
+.cashflow-headline.is-positive > strong {
+  color: var(--heading);
+}
+
+.cashflow-figure {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.cashflow-figure figcaption {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.cashflow-figure figcaption strong {
+  color: var(--heading);
+}
+
+.cashflow-figure figcaption small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.cashflow-bar-chart,
+.cashflow-scenario-bars {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.cashflow-bar-row,
+.cashflow-scenario-bars > div {
+  display: grid;
+  grid-template-columns: minmax(96px, 0.65fr) minmax(110px, 1fr) minmax(90px, auto);
+  gap: 0.55rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.cashflow-bar-row > span,
+.cashflow-scenario-bars span {
+  color: var(--muted-strong);
+  font-size: 0.77rem;
+  font-weight: 750;
+}
+
+.cashflow-bar-row > div,
+.cashflow-scenario-bars > div > div {
+  height: 11px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--chart-grid);
+}
+
+.cashflow-bar-row i,
+.cashflow-scenario-bars i {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  background: var(--cashflow-net);
+}
+
+.cashflow-bar-row i.is-asset,
+.cashflow-scenario-bars .is-base i {
+  background: var(--cashflow-asset);
+}
+
+.cashflow-bar-row i.is-liability,
+.cashflow-bar-row i.is-negative,
+.cashflow-scenario-bars i.is-negative {
+  background: var(--cashflow-liability);
+  background-image: repeating-linear-gradient(135deg, transparent 0 4px, color-mix(in srgb, var(--surface-strong) 55%, transparent) 4px 6px);
+}
+
+.cashflow-bar-row i.is-need {
+  background: var(--data-blue);
+}
+
+.cashflow-bar-row i.is-want {
+  background: var(--warm);
+}
+
+.cashflow-bar-row strong,
+.cashflow-scenario-bars strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--heading);
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+.cashflow-scenario-bars > div {
+  min-height: 44px;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-soft);
+}
+
+.cashflow-scenario-bars > div.is-base {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.cashflow-analysis-note,
+.cashflow-table-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.cashflow-reference-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.cashflow-reference-grid > span {
+  display: grid;
+  gap: 0.18rem;
+  padding: 0.7rem;
+  border-left: 3px solid var(--data-blue);
+  color: var(--heading);
+  background: var(--data-blue-soft);
+}
+
+.cashflow-reference-grid small,
+.cashflow-reference-grid em {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-style: normal;
+}
+
+.emergency-progress {
+  height: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--surface-strong);
+}
+
+.emergency-progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.emergency-progress-labels {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.emergency-progress-labels strong {
+  color: var(--heading);
+  text-align: center;
+}
+
+.emergency-progress-labels span:last-child {
+  text-align: right;
+}
+
+.reserve-tier-bar {
+  display: flex;
+  height: 22px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--surface-strong);
+}
+
+.reserve-tier-bar i {
+  display: block;
+  height: 100%;
+}
+
+.reserve-tier-bar .is-immediate { background: var(--accent); }
+.reserve-tier-bar .is-near { background: var(--data-blue); }
+.reserve-tier-bar .is-market {
+  border-left: 2px solid var(--surface-strong);
+  background: transparent;
+  box-shadow: inset 0 0 0 3px var(--warm);
+}
+
+.cashflow-history-empty {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 72px;
+  padding: 0.75rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  color: var(--muted);
+  background: var(--surface-soft);
+}
+
+.cashflow-history-empty svg {
+  color: var(--accent);
+}
+
+.cashflow-planning-calculator .compound-table-wrap {
+  max-height: 520px;
+}
+
+@media (max-width: 1180px) and (min-width: 721px) {
+  .cashflow-workspace .cashflow-input-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .cashflow-input-grid,
+  .cashflow-reference-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cashflow-bar-row,
+  .cashflow-scenario-bars > div {
+    grid-template-columns: minmax(80px, 0.75fr) minmax(72px, 1fr);
+  }
+
+  .cashflow-bar-row strong,
+  .cashflow-scenario-bars strong {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+
+  .emergency-progress-labels {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .emergency-progress-labels strong {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+}
+
+@media (forced-colors: active) {
+  .cashflow-input-section,
+  .cashflow-figure,
+  .cashflow-scenario-bars > div,
+  .emergency-progress,
+  .reserve-tier-bar,
+  .cashflow-history-empty {
+    border-color: CanvasText;
+  }
+
+  .cashflow-bar-row i,
+  .cashflow-scenario-bars i,
+  .emergency-progress i,
+  .reserve-tier-bar i {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+}
+
 /* Compound Interest clarity and responsive placement hardening. */
 .compound-quick-grid {
   align-items: start;

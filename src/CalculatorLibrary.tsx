@@ -26,6 +26,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { AuthState } from './auth';
+import { CashflowPlanningCalculator } from './CashflowPlanningCalculator';
 import { CompoundInterestCalculator } from './CompoundInterestCalculator';
 import { SavingsGoalCalculator } from './SavingsGoalCalculator';
 import {
@@ -128,6 +129,18 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
     if (calculator.slug === 'savings-goal') {
       return (
         <SavingsGoalCalculator
+          auth={auth}
+          calculator={calculator}
+          onNavigate={onNavigate}
+          onSaveResult={onSaveResult}
+          savedResults={savedResults}
+        />
+      );
+    }
+
+    if (['net-worth', 'budget', 'emergency-fund'].includes(calculator.slug)) {
+      return (
+        <CashflowPlanningCalculator
           auth={auth}
           calculator={calculator}
           onNavigate={onNavigate}
