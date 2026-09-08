@@ -4,13 +4,14 @@
 
 ## P0: safety and executable proof
 
-- [ ] **B01 — Ready: full verification must not silently skip runtimes.**
+- [x] **B01 — Complete: full verification must not silently skip runtimes.**
   - User problem/evidence: incorrect calculations could ship under a misleading green check; runner has skip branches; PR has only a Pages check.
   - Outcome/scope: require Python/Node/npm before running; regression-test runner failure/success paths; locked npm install; automatic least-privilege PR full-suite workflow.
   - Non-goals/files: no UI/formula/auth/data changes or merge-policy edits. `scripts/test_all.sh`, new `scripts/test_all.test.mjs`, `.github/workflows/verify.yml`, README test instructions.
   - Acceptance: missing runtimes exit nonzero before work; compile, Python test, typecheck, Vitest and build failures stop chain; success executes all; real suite and hosted CI pass.
   - Analytics: CI full-suite success and skipped-stage count zero; no user events.
   - Tests/privacy/dependencies: isolated temporary subprocess fixtures then real full suite; official action SHA pins, contents read-only, no secrets or deployment step. Requires existing runtimes only.
+  - Completion evidence: implementation `1664043`; 13 runner regression tests, 79 Python tests plus 21 subtests, 1,269 Vitest tests, typecheck and build passed. [Hosted full suite](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34194698348) passed; [preview](https://75358a37.interactive-fire-calculator.pages.dev) passed all 84 public HTTP route checks. Next: B02.
   - Migration/rollback/effort: no migration; revert delivery commit. Human 0.5–1 day; agent 1–2 hours plus CI.
 
 - [ ] **B02 — Ready: reject incompatible currency conversion into goals.**
@@ -49,10 +50,10 @@
   - Dependencies/rollback/effort: B04; local only, remove harness configuration if faulty. Human 3–5 days; agent 8–16 hours. Split auth and D1 harness into sequential PRs if needed.
 
 - [ ] **B06 — Owner-blocked: working hosted auth and lifecycle.**
-  - Problem/evidence: both previews missing browser key; 0/6 production preflight.
-  - Outcome/scope: approved preview Clerk config; disposable hosted user sign-up/in/out, refresh, save/reload, profile, import/export/delete; separate owned production setup and eventual release approval.
+  - Problem/evidence: both previews missing browser key; 0/6 production preflight; Cloudflare preview DB currently matches configured production database.
+  - Outcome/scope: first configure and verify an approved isolated preview database using effective deployment metadata, then approved preview Clerk config; disposable hosted user sign-up/in/out, refresh, save/reload, profile, import/export/delete; separate owned production setup and eventual release approval.
   - Non-goals/files: no DNS/production changes without owner authorization; runbook and hosted test evidence only, secure provider settings.
-  - Acceptance: end-to-end identity/save/export/delete and second-user isolation pass; public routes still work; production preflight remains fail-closed until all genuine prerequisites complete.
+  - Acceptance: preview DB differs from production before all write tests; end-to-end identity/save/export/delete and second-user isolation pass; public routes still work; production preflight remains fail-closed until all genuine prerequisites complete.
   - Analytics/tests: journey pass/fail and durations, no tokens; desktop/mobile actual sessions and expiry.
   - Privacy/dependencies: owner supplies exact origin and secure settings, disposable identity; B02–B05. Never use an existing personal identity to test deletion.
   - Rollback/effort: revert preview config safely; preserve production guard. Human 1–3 days plus DNS/provider waits; agent 4–8 hours after setup.

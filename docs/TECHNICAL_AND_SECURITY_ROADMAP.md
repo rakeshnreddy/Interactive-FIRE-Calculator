@@ -9,6 +9,7 @@ Assets: financial records and assumptions, identities/session credentials, impor
 | Boundary | Existing control | Threat / required proof |
 |---|---|---|
 | Auth | Clerk session verification; missing config 503, invalid session 401; no-store JSON | Prove expired/wrong-origin/wrong-token rejection against current SDK, configuration mismatch and token refresh. Enforce exact authorized parties before production |
+| Preview data boundary | Separate preview ID exists in local config | Effective Cloudflare preview binding points at configured production DB. Prove distinct effective binding before any authenticated mutation test |
 | Tenant authorization | `user_id` predicates in helpers and ownership checks for associations | Two actual D1 tenants: enumerate/cross-reference IDs on all CRUD, versions, imports, exports and delete; no 200/side effects for foreign IDs. SQL fakes do not prove this |
 | Currency | Accounts/save records store code; some public UI guards | Mixed cents summed, goals lack currency; prevent contamination on server before accepting private INR or mixed currency data |
 | Saves | Payload validation, prepared statements | Destination then save record are separate writes. Atomicity, idempotency and stale-write tests required |
@@ -26,6 +27,8 @@ Assets: financial records and assumptions, identities/session credentials, impor
 Privacy notice, service terms, support contact, retention schedule and incident owner were not found as public product routes. Before private pilot, owner/counsel must define them. [SEC investment-adviser guidance](https://www.sec.gov/interps/legal/slbim11.htm) and [SEBI's investor explanation](https://investor.sebi.gov.in/investment_advisor.html) make individualized advice a substantive concern; “not advice” copy does not by itself settle applicability. No regulated recommendation engine is in scope.
 
 ## Delivery plan
+
+P0 configuration prerequisite: correct effective preview DB binding to an approved isolated test database and verify deployed binding metadata before any authenticated write/delete. The local `preview_database_id` does not prove Pages preview isolation. No database/config binding changes were performed in this milestone.
 
 P0 code work: fail-closed full verification; currency-safe summaries/conversions; atomic idempotent calculator saves; disposable real-D1 tenancy and lifecycle tests; correct preview-auth configuration and demonstrate a full disposable-user journey. P0 external work: owned origin, Clerk production setup, exact secrets/authorized parties, data policies and explicit production permission. Treat these as separate tracks.
 
@@ -48,6 +51,7 @@ Acceptance: absent runtime fails before any test stage; every nonzero stage stop
 | Dependency | Smallest input / action | When |
 |---|---|---|
 | Pilot users | 8 primary users to interview and consent to observation; no records or credentials in chat | Now |
+| Preview database | Confirm approved disposable database; configure distinct preview binding and verify effective deployed metadata before any write | Before hosted private QA |
 | Preview auth | Identify approved Clerk development instance and enter its public build key/compatible server configuration through existing secure settings | Before authenticated preview QA; no new paid service |
 | Owned domain | Exact owned HTTPS origin and DNS provider; explicit authorization for eventual DNS changes | Before production; not changed in this review |
 | Clerk production | Complete deployment wizard/DNS/OAuth; confirm ready status; enter secrets in provider UI/interactive secret tooling | Before production; [official deployment guide](https://clerk.com/docs/guides/development/deployment/production) |

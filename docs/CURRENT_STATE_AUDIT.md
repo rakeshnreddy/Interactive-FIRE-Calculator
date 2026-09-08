@@ -23,6 +23,7 @@ The largest immediate obstacle is that neither the supplied preview nor the late
 | Production setup | `npm run auth:preflight`: expected failure, 0/6 checks pass. Guard preserved |
 | Hosted HTTP | `npm run smoke:calculators -- <latest-preview>`: 84 paths pass: library + FIRE + 82 registry calculators |
 | API probes | Node fetch: `/api/health` 200; all 11 protected GET endpoints below 401; all `Cache-Control: no-store` |
+| Preview database isolation | Cloudflare project API `deployment_configs.preview.d1_databases.DB.id` matches the configured `finpath-production` database, not `preview_database_id`; no DB writes performed |
 | Browser auth | Both previews: `/dashboard` says “Connect Clerk before opening account routes.” Missing frontend key. Backend 401 does not demonstrate working browser auth |
 
 Protected GET probes: `/api/me`, `/api/profile`, `/api/dashboard`, `/api/accounts`, `/api/transactions`, `/api/goals`, `/api/plans`, `/api/calculator-results`, `/api/account-data/export`, `/api/imports/transactions`, `/api/imports/account-balances`. Python urllib was blocked with edge 403, including health; Node fetch reached the application. Distinguish edge rejection from application authorization.
@@ -109,6 +110,7 @@ Scores use 0=absent, 5=implemented with material gaps, 10=verified under real us
 
 ## Technical risk register
 
+0. **P0 preview isolation:** live project configuration binds preview `DB` to the configured production database despite a separate `preview_database_id` in `wrangler.toml`. Do not run authenticated write/delete tests until explicit environment bindings and effective deployed metadata prove isolation. A preview hostname does not isolate data.
 1. **P0 currency correctness:** `functions/_lib/accounts.ts:summarizeAccounts` adds USD and INR balances without conversion; `goalPayloadFromCalculator` drops currency into currency-less goals. UI-only USD guards do not protect the API. Avoid real mixed-currency data until server contracts are fixed.
 2. **P0 persistence integrity:** `createSavedCalculatorResult` creates a destination before separately inserting the saved result. Failure/retry can orphan or duplicate destinations; no idempotency key. Tests need real local D1 fault/concurrency coverage.
 3. **P0 lifecycle:** deletion is not full account erasure; concurrent writes/recovery may resurrect data. Export reads tables sequentially, so it is not a consistent multi-table snapshot. No documented restoration drill or deletion replay.
@@ -211,3 +213,11 @@ Generated from committed `public/sitemap.xml`; classification cross-checked agai
 | `/calculators/life-insurance-needs` | Public utility | Shared studio |
 | `/calculators/lease-vs-buy` | Public utility | Shared studio |
 | `/calculators/roi` | Public utility | Shared studio |
+
+## First implementation milestone — 2026-09-07
+
+B01 is implemented in `1664043`, with planning corrections through `10ccc1a`. The runner fails when required runtimes are missing and stops on every failed stage. Thirteen isolated runner tests passed, followed by 79 Python tests plus 21 subtests, 1,269 Vitest tests, TypeScript and the production build. The [hosted Verify workflow](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34194698348) passed all steps, including npm audit. GitHub reported an action-runtime deprecation annotation; this is maintenance work, not a failed test.
+
+[PR 139](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/139) remains unmerged. The [immutable implementation preview](https://75358a37.interactive-fire-calculator.pages.dev) was deployed from `10ccc1a`; all 84 public HTTP route smoke checks passed, health returned 200, and 11 signed-out protected GET endpoints returned 401 with no-store caching. These HTTP checks do not prove calculator math or authenticated persistence. Earlier browser findings in this audit apply to the unchanged UI; no new UI was introduced by B01. No production deployment or database write was performed.
+
+Metric to watch: no skipped verification stages and a passing full-suite check on each PR. Remaining priority risks include currency integrity, non-atomic saves, incomplete hosted authentication, and preview database isolation. The exact next implementation item is B02, server-side rejection of incompatible currency conversion into goals.
