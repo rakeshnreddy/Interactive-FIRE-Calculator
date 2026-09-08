@@ -36,7 +36,7 @@ APP_TARGET=legacy ./scripts/run_local.sh
 ./scripts/test_all.sh
 ```
 
-This runs the legacy Python tests when Python dependencies are available, then runs TypeScript type checks, Vitest, and the Vite build when `npm` is available.
+This requires Python, Node.js, and npm and fails if any are missing. It verifies the test runner's failure paths, then runs Python parity tests, TypeScript checks, Vitest, and the production build. Missing Node dependencies are installed with `npm ci` from the lockfile. Install Python dependencies from `requirements.txt` and `requirements-dev.txt` first. The GitHub `Full suite` PR check runs the same command without application or deployment secrets; production-auth verification remains a separate mandatory release gate.
 
 ## Cloudflare Pages
 
