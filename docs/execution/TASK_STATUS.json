@@ -238,13 +238,13 @@
       "id": "B15",
       "title": "Repair light/dark contrast defects",
       "checkpoint": "C01",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B15.md",
       "submission": null,
-      "owner": null,
+      "owner": "Codex implementing session 2026-09-09",
       "code_sha": null,
       "review": null,
       "blocked_reason": null

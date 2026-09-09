@@ -67,6 +67,12 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+.topbar .topbar-link {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #edf7f4;
+  background: transparent;
+}
+
 .brand {
   color: #ffffff;
 }
@@ -91,6 +97,24 @@
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.09);
+}
+
+.topbar .topbar-link:focus-visible {
+  outline-color: #8ee7d9;
+  box-shadow: 0 0 0 2px #0b2421;
+}
+
+.topbar .topbar-link:active {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.topbar .topbar-link:disabled {
+  color: rgba(237, 247, 244, 0.68);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 1;
 }
 
 .topbar .nav-button.active {
@@ -174,6 +198,40 @@
 .landing-feature:last-child {
   padding-right: 0;
   border-right: 0;
+}
+
+.landing-continuity-band h2 {
+  color: #ffffff;
+}
+
+.landing-continuity-band .primary-button {
+  color: #102b28;
+  border-color: #8ee7d9;
+  background: #8ee7d9;
+}
+
+.landing-continuity-band .primary-button:hover {
+  color: #0a211f;
+  border-color: #b0f0e6;
+  background: #b0f0e6;
+}
+
+.landing-continuity-band .primary-button:focus-visible {
+  outline-color: #ffffff;
+  box-shadow: 0 0 0 2px #173b52;
+}
+
+.landing-continuity-band .primary-button:active {
+  color: #102b28;
+  border-color: #75d7c8;
+  background: #75d7c8;
+}
+
+.landing-continuity-band .primary-button:disabled {
+  color: rgba(16, 43, 40, 0.72);
+  border-color: #8ee7d9;
+  background: #8ee7d9;
+  opacity: 0.72;
 }
 
 .calculator-input-panel {
