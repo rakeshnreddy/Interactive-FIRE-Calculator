@@ -1,5 +1,7 @@
 # Calculator High Standard Implementation Plan
 
+> Current-state correction (2026-09-07): see [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) and [EXECUTION_BACKLOG.md](EXECUTION_BACKLOG.md). Older paths, PRs, previews, counts and percentages below are historical checkpoints. The shared 82-route roadmap and the 5-of-82 excellence pass use different completion criteria. Neither proves hosted authenticated readiness or production launch readiness.
+
 Last updated: August 8, 2026
 
 ## Purpose

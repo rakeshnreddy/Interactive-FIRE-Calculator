@@ -4,22 +4,28 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 if [ -x venv/bin/python ]; then
-  venv/bin/python -m compileall -q app.py project tests
-  venv/bin/python -m pytest -q
+  FINPATH_TEST_PYTHON=venv/bin/python
 elif command -v python3 >/dev/null 2>&1; then
-  python3 -m compileall -q app.py project tests
-  python3 -m pytest -q
+  FINPATH_TEST_PYTHON=python3
 else
-  echo "Python was not found; skipping legacy Flask tests." >&2
+  echo "Python is required for the full suite; install python3 or create venv/bin/python." >&2
+  exit 1
 fi
 
-if command -v npm >/dev/null 2>&1; then
-  if [ ! -d node_modules ]; then
-    npm install
+for FINPATH_TEST_RUNTIME in node npm; do
+  if ! command -v "$FINPATH_TEST_RUNTIME" >/dev/null 2>&1; then
+    echo "$FINPATH_TEST_RUNTIME is required for the full suite; run ./scripts/bootstrap_node.sh." >&2
+    exit 1
   fi
-  npm run typecheck
-  npm test
-  npm run build
-else
-  echo "npm was not found; skipping TypeScript tests and build." >&2
+done
+
+node --test scripts/test_all.test.mjs
+"$FINPATH_TEST_PYTHON" -m compileall -q app.py project tests
+"$FINPATH_TEST_PYTHON" -m pytest -q
+
+if [ ! -d node_modules ]; then
+  npm ci
 fi
+npm run typecheck
+npm test
+npm run build

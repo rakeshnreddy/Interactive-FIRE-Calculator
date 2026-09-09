@@ -75,3 +75,7 @@ Use 120-180ms opacity, color, border, and transform transitions. Movement is lim
 ## Content
 
 Use exact calculator phrases for calculator page titles. Use user-centered toolkit names for browsing. Explain what a calculator answers, what each input means, what each result means, and which assumptions can change the outcome. Never mention search rankings, SEO, traffic, conversion funnels, or internal regional targeting in product copy.
+
+## Owner-directed material update (2026-09-08)
+
+The owner requested glassmorphism and gradients in both light and dark themes. [COLOR_AND_GLASS_SYSTEM.md](docs/COLOR_AND_GLASS_SYSTEM.md) now defines the target palette and material behavior; [VISUAL_DESIGN_SPEC.md](docs/VISUAL_DESIGN_SPEC.md) defines composition and verification. This supersedes earlier blanket anti-gradient restrictions while preserving legible opaque text, correct chart semantics, bounded blur and solid accessibility fallbacks. B16 establishes token ownership; B32 implements the palette/material update. These are planned changes, not a claim that this document's current color table is already applied.
