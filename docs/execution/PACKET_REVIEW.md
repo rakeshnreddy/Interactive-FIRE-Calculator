@@ -1,0 +1,12 @@
+# Planning packet verification
+
+2026-09-08. This record verifies the planning artifacts, not completion of B15–B33.
+
+- 33 task prompts, 15 implementation checkpoints plus historical C00. B01 remains the only accepted implementation task. C01 is the sole released checkpoint.
+- Structural validator passed IDs, prompt links, backlink/status agreement, dependency existence/order/cycles and approval-record requirements. Temporary mutation checks correctly rejected an unknown dependency, unapproved closure and a future prerequisite. It does not authenticate reviewers or certify aesthetics.
+- Read-only independent review found two material workflow gaps: isolation only before test writes (too late for automatic backend deployments), and per-task SHA evidence that could hide regressions in later provisional work. B33/C01I now gates backend publication; all checkpoint tasks must pass on one final candidate revision. Follow-up review required the owner-authorized configuration-only bootstrap exception for B33; this is now explicit in shared prompts/protocol. No changed API or financial write is allowed by that exception.
+- Color ownership is explicit: B16 consolidates baseline roles/primitives; B32 implements the owner's glass/gradient palette. Theme material must not be implemented twice or overwrite B15 contrast repairs.
+- Local theme board: light/dark controls and solid fallback worked. Desktop 1440, mobile 390 and 320 captures inspected; input 16px, no 320px body overflow, fonts loaded and console errors absent at checkpoints. These checks are for the proposal only. Full platform/assistive-technology acceptance remains required for actual product changes.
+- Standard `./scripts/test_all.sh` ultimately passed: 13 runner checks, 79 Python tests plus 21 subtests, 1,269 Vitest tests across 26 files, TypeScript and build. [Durable full-suite log](evidence/planning-full-suite.txt).
+- Initial standard run failed with four worker-start timeouts after 1,253 tests passed. A two-worker Vitest retry passed all 1,269; the subsequent unmodified standard full suite passed. No test was removed or weakened. Host load was elevated, but the exact transient cause is not established. Existing >500kB chunk warning remains.
+- Product React/CSS, formulas, APIs, migrations and production configuration were not changed by this planning milestone. New local theme-board HTML is a documentation artifact, excluded from the Vite app build. No production merge/deployment or remote data write was performed.

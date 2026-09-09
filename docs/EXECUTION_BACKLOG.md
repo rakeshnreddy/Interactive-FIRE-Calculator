@@ -1,6 +1,6 @@
 # Ordered execution backlog
 
-2026-09-07. Start with the first unchecked **Ready** item. **Owner-blocked** items stay visible but do not prevent unrelated Ready work. Do not re-plan the product before executing an item. Each item is a bounded PR; split if its acceptance criteria cannot fit the estimate. [Audit](CURRENT_STATE_AUDIT.md), [security roadmap](TECHNICAL_AND_SECURITY_ROADMAP.md), [measurement](MEASUREMENT_AND_EXPERIMENT_PLAN.md) define contracts. No merge/production deployment is authorized.
+2026-09-07. For delegated execution, follow [the checkpoint order](execution/CHECKPOINTS.md), not numeric ID order. Start only within the released checkpoint. Only the primary reviewer may check an item complete. See [task prompts and status](execution/README.md). **Owner-blocked** items stay visible but do not prevent unrelated Ready work. Do not re-plan the product before executing an item. Each item is a bounded PR; split if its acceptance criteria cannot fit the estimate. [Audit](CURRENT_STATE_AUDIT.md), [security roadmap](TECHNICAL_AND_SECURITY_ROADMAP.md), [measurement](MEASUREMENT_AND_EXPERIMENT_PLAN.md) define contracts. No merge/production deployment is authorized.
 
 ## P0: safety and executable proof
 
@@ -126,6 +126,238 @@
   - Acceptance: companion document's stable-contract/retention/security thresholds met and owner budget authorized; prototype improves task completion, not just installs.
   - Analytics/tests/privacy: review completion and notification opt-outs; device/session/revocation/offline-deletion threat tests if built. B11–B12 and matured M3 cohort.
   - Rollback/effort: remove opt-in prototype, preserve web; discovery 1 week human, agent 1–2 days excluding observation.
+
+## Visual and UI quality work and safe preview prerequisite (B15–B33)
+
+Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL_DESIGN_SPEC.md). Every item below remains unimplemented until independently accepted.
+
+- [ ] **B15 — Planned: Repair light/dark contrast defects.**
+  - User problem/evidence: Invisible Sign in and low-contrast continuity heading prevent basic reading. Visual audit V01–V02.
+  - Expected outcome/scope: Sign in is visibly labeled in light/dark mode; homepage inverse heading meets large-text contrast; normal button text meets 4.5:1; focus remains visible; no other header or calculator color regresses.
+  - Non-goals: No redesign, token-wide migration, auth setup, formula change or hidden controls.
+  - Files likely affected: src/vivid-theme.css; src/styles.css; src/App.tsx header and LandingPage; new contrast/browser regression evidence.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B01 (complete). Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 0.5–1 day; agent 2–4 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B15.md](execution/prompts/B15.md).
+
+- [ ] **B16 — Planned: Establish authoritative design tokens and primitives.**
+  - User problem/evidence: Conflicting generations of CSS make consistent polish unreliable. Visual audit V03/V11.
+  - Expected outcome/scope: One canonical token table matches rendered colors; changed inputs 16px at default settings; buttons have documented hit areas; inverse headings retain contrast; shared style changes pass representative light/dark screenshots.
+  - Non-goals: No wholesale 10k-line rewrite, font replacement, framework install, giant App extraction or automatic deletion of unproven unused CSS.
+  - Files likely affected: src/styles.css; src/vivid-theme.css; src/main.tsx; DESIGN.md; optional src/components/ui/ for actually reused primitives.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B15. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B16.md](execution/prompts/B16.md).
+
+- [ ] **B17 — Planned: Polish public/account navigation and keyboard behavior.**
+  - User problem/evidence: Signed-out visitors see private destinations first and mobile disclosure ignores Escape. Visual audit V05–V06.
+  - Expected outcome/scope: Mobile Escape closes and returns focus; no hidden focusable navigation; selected route exposed; public primary path works without auth; native link behavior and back/forward pass.
+  - Non-goals: No auth bypass, new routing framework, production setup or unrelated route renaming.
+  - Files likely affected: src/App.tsx DesktopNavigation/TopbarAuthActions/mobile navigation; src/styles.css; new navigation tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B16. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B17.md](execution/prompts/B17.md).
+
+- [ ] **B18 — Planned: Replace generic homepage hero with authentic product composition.**
+  - User problem/evidence: Phone/card imagery obscures the actual calculator and suggests unsupported products. Visual audit V04.
+  - Expected outcome/scope: At 1440x900 public CTA and real example answer visible; at 390px primary action within 600px at normal text; example visibly synthetic; no unsupported product claims; all existing useful routes retained.
+  - Non-goals: No banking/mobile launch claims, invented testimonials, new legal policy, pricing or tracking SDK.
+  - Files likely affected: src/App.tsx LandingPage; src/styles.css landing rules; existing public/assets hero reference; optional dedicated LandingPage component.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B16, B17. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B18.md](execution/prompts/B18.md).
+
+- [ ] **B19 — Planned: Make calculator discovery concise and distinctive.**
+  - User problem/evidence: Repetitive panels and counts distract from choosing the right calculator. Visual audit V13.
+  - Expected outcome/scope: All public tools reachable; FIRE discoverable; search state robust; no-match helpful; route link semantics native; consistent light/dark mobile/desktop hierarchy.
+  - Non-goals: No new calculators, ranking copy, new search service or changed calculator metadata math.
+  - Files likely affected: src/CalculatorLibrary.tsx CalculatorHub/ToolkitPanel/SearchCard; src/lib/calculatorToolkits.ts; src/styles.css; discovery tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B16, B17. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B19.md](execution/prompts/B19.md).
+
+- [ ] **B20 — Planned: Reorder generic calculators around inputs and the answer.**
+  - User problem/evidence: India tax first input begins at y=1206 on a 390px phone. Visual audit V07–V08/V12.
+  - Expected outcome/scope: Representative first control at or before y=650 at 390px normal text; no essential assumption removed; main answer visually dominant; keyboard order logical; no forced global overflow hiding.
+  - Non-goals: No formula rewrite, chart truth implementation (B21), saving API changes or broad replacement of dedicated calculators.
+  - Files likely affected: src/CalculatorLibrary.tsx CalculatorDetail/ScenarioPanel/SchedulePanel; src/styles.css; generic component tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B16, B19. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B20.md](execution/prompts/B20.md).
+
+- [ ] **B21 — Planned: Make shared charts numerically honest and accessible.**
+  - User problem/evidence: Mixed-unit bars and minimum 8% zero bars imply false comparisons. Visual audit V09.
+  - Expected outcome/scope: Zero never appears as a positive bar; sign visible; unrelated units never share scale; both series values accessible; no financial engine diff.
+  - Non-goals: No engine math, invented forecast, chart animation dependency or hiding unfavorable outcomes.
+  - Files likely affected: src/CalculatorLibrary.tsx CalculatorStudioVisual; src/lib/calculatorStudios.ts types only if necessary; src/styles.css; chart rendering tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B20. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B21.md](execution/prompts/B21.md).
+
+- [ ] **B22 — Planned: Unify compound-interest and savings-goal presentation.**
+  - User problem/evidence: Dedicated growth tools have excessive framing and inconsistent savings input text. Visual audit V10–V11.
+  - Expected outcome/scope: Both tools use consistent visual primitives; savings input font fixed; preserved numeric goldens; essential result visible and useful details discoverable.
+  - Non-goals: No merging the two engines, shared formula changes, FX conversion or replacing specialized tools with generic ones.
+  - Files likely affected: src/CompoundInterestCalculator.tsx; src/SavingsGoalCalculator.tsx; src/styles.css; respective component tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B16, B20, B21. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B22.md](execution/prompts/B22.md).
+
+- [ ] **B23 — Planned: Unify budget, net-worth and emergency-fund presentation.**
+  - User problem/evidence: Cash-flow tools need consistent hierarchy without losing different accounting meanings. Visual audit V10.
+  - Expected outcome/scope: All three tools follow the visual contract; units and accounting meaning remain explicit; outputs unchanged; no input or warning hidden.
+  - Non-goals: No account aggregation, formula change, gamification or currency relabeling.
+  - Files likely affected: src/CashflowPlanningCalculator.tsx; src/styles.css; src/CashflowPlanningCalculator.test.tsx.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B16, B20, B21. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B23.md](execution/prompts/B23.md).
+
+- [ ] **B24 — Planned: Refine FIRE calculator into the flagship decision experience.**
+  - User problem/evidence: FIRE needs the clearest result/assumption hierarchy and concise accessible labels. Visual audit V10/V12.
+  - Expected outcome/scope: Both modes and advanced tools preserved; primary result and warnings easy to read; input help not repeated in name; no engine diff; changed interactions regression-tested.
+  - Non-goals: No FIRE formula changes, new forecasting model, automatic saved-plan update or financial recommendations.
+  - Files likely affected: src/App.tsx FIRE calculator sections; src/styles.css; existing FIRE tests plus new component/interaction tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B16, B20, B21. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B24.md](execution/prompts/B24.md).
+
+- [ ] **B25 — Planned: Build isolated operational UI fixtures for visual verification.**
+  - User problem/evidence: Hosted auth blocks inspection of populated/error operational states. Visual audit V15.
+  - Expected outcome/scope: All target real components render reproducible synthetic states locally; no fixture/auth bypass in production output; no network writes; harness instructions executable.
+  - Non-goals: No copied static mock workspace, real records, production auth bypass or database seeding.
+  - Files likely affected: new local-only fixture entry/config; src/App.tsx panel exports if required; src/PlanningWorkspace.tsx; synthetic fixture data and harness tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B05, B07, B16. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B25.md](execution/prompts/B25.md).
+
+- [ ] **B26 — Planned: Polish dashboard and account overview.**
+  - User problem/evidence: Repeated use needs a dated financial picture and clear next decision. Visual audit V15.
+  - Expected outcome/scope: No ambiguous totals; evidence dates visible; next action honest; account data edits persist in approved test environment; mobile rows and keyboard pass.
+  - Non-goals: No banking connection, fake history, new account schema or combined FX total.
+  - Files likely affected: src/App.tsx DashboardPanel/AccountsPanel; src/styles.css; fixture cases and component tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B25, B03, B06. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B26.md](execution/prompts/B26.md).
+
+- [ ] **B27 — Planned: Polish transactions and import review.**
+  - User problem/evidence: Dense ledger/import interactions must remain clear on phones and during errors. Visual audit V15.
+  - Expected outcome/scope: User can inspect what will change before commit; row errors and totals reconcile; filters/mobile/keyboard usable; retry does not duplicate records.
+  - Non-goals: No parser replacement, increased limits, balance mutation or real statement upload.
+  - Files likely affected: src/App.tsx TransactionsPanel/import UI; src/styles.css; import/component tests and fixtures.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B25, B06, B05. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B27.md](execution/prompts/B27.md).
+
+- [ ] **B28 — Planned: Polish goals and monthly plan-review workflow.**
+  - User problem/evidence: Goals and saved reviews must show current evidence and a clear decision. Visual audit V15.
+  - Expected outcome/scope: Review can be completed without ambiguity; source/version/dates visible; unsaved edits protected; no cosmetic false completion; B11 behavior retained.
+  - Non-goals: No new reminder channel, auto-advice, collaboration or additional review schema.
+  - Files likely affected: src/App.tsx GoalsPanel; src/PlanningWorkspace.tsx; src/styles.css; review fixtures/tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B10, B11, B25. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B28.md](execution/prompts/B28.md).
+
+- [ ] **B29 — Planned: Polish reports and readable financial evidence.**
+  - User problem/evidence: Reports need honest scope, readable charts and usable exports. Visual audit V15.
+  - Expected outcome/scope: Report scope and gaps clear; exported values agree; no color-only interpretation or misleading missing-data chart.
+  - Non-goals: No AI financial advice, invented projections, new paid report product or new PDF service.
+  - Files likely affected: src/App.tsx InsightsPanel/reports route; src/PlanningWorkspace.tsx report rendering if used; src/styles.css; report tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B25, B06, B21. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B29.md](execution/prompts/B29.md).
+
+- [ ] **B30 — Planned: Polish settings and privacy lifecycle controls.**
+  - User problem/evidence: Privacy settings must be as understandable as the calculator. Visual audit V15.
+  - Expected outcome/scope: Privacy actions visible, accurate and recoverable on failure; no premature deletion success; actual erasure boundary reflected in copy.
+  - Non-goals: No new retention policy, live-user deletion, hidden export paywall or auth-provider lifecycle expansion.
+  - Files likely affected: src/App.tsx ProfileSettingsPanel/PrivacyControlsPanel; src/styles.css; lifecycle UI tests.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B07, B25, B06. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B30.md](execution/prompts/B30.md).
+
+- [ ] **B31 — Planned: Close visual accessibility and performance acceptance matrix.**
+  - User problem/evidence: Individual polished screens do not prove a coherent accessible product. Visual audit V16.
+  - Expected outcome/scope: All objective visual gates have evidence; no unresolved major issue; subjective rubric justified; full suite/CI/preview verified at submitted code SHA.
+  - Non-goals: No production launch, waived missing tests, blanket WCAG certification or new broad refactor.
+  - Files likely affected: docs/design validation matrix; targeted UI/styles fixes only; existing tests; build/evidence reports.
+  - Acceptance/tests: follow the task-specific prompt and VISUAL_DESIGN_SPEC; preserve engine/API regressions; verify changed UI with actual browser evidence and full suite before push.
+  - Analytics: no new collection; measure task completion/readability with synthetic checks, use only B12-approved events if already implemented.
+  - Security/privacy: public tools stay public; no real records or bypass; hosted writes require B06 isolation; no secrets in output.
+  - Dependencies: B18, B19, B20, B21, B22, B23, B24, B26, B27, B28, B29, B30, B12. Checkpoint release is additionally required.
+  - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 2–3 days; agent 6–12 hours, estimates excluding review/provider waits.
+  - Detailed implementer prompt: [prompts/B31.md](execution/prompts/B31.md).
+
+- [ ] **B32 — Planned: implement the light/dark glass and gradient color system.**
+  - User problem/evidence: owner explicitly requested glassmorphism and gradients on 2026-09-08; current theme has contrast collisions and uncoordinated late overrides (V01–V03).
+  - Expected outcome/scope: implement COLOR_AND_GLASS_SYSTEM.md in actual React surfaces using B16's canonical roles; coherent light/dark palette, bounded glass and gradients, solid/unsupported/print/forced-colors fallbacks.
+  - Non-goals: no new homepage layout (B18), formula/auth changes, dependency, new font, animated background or glass behind editable values.
+  - Files likely affected: src/styles.css; src/vivid-theme.css or B16 token owner; DESIGN.md; color acceptance evidence. theme-board.html is a reference, not copied product markup.
+  - Acceptance: B15 contrast remains fixed; full opacity text; paired action states; actual composited contrast on all gradient regions; keyboard/200%/mobile/dark/light/reduced transparency; no unexplained performance regression; no new console errors.
+  - Analytics/tests: no collection; before/after computed style/contrast and screenshots, relevant behavior regressions, full suite and public smoke.
+  - Security/privacy: synthetic examples only; no deployed test bypass or remote data writes; auth fail-closed unchanged.
+  - Dependencies: B16, B17; C01T release. Subsequent public visual composition consumes this accepted palette.
+  - Migration/rollback: no schema; revert material/theme commit while preserving B15/B16 repairs. Human 1–2 days; agent 4–8 hours plus review.
+  - Detailed implementer prompt: [B32](execution/prompts/B32.md).
+
+- [ ] **B33 — Owner-blocked: isolate preview infrastructure before backend publication.**
+  - User problem/evidence: effective preview DB binding matched the production-named DB; publishing changed APIs can expose production-bound functions even without intentional test writes.
+  - Expected outcome/scope: verify every automatic/manual preview deployment path, obtain scoped owner approval for the isolated preview DB, configure preview-only binding and confirm deployed effective metadata before any backend-code push/deploy.
+  - Non-goals: no production DB/DNS changes, no copying production data, no auth bypass, no disabling unrelated deployments without authorization.
+  - Files likely affected: wrangler.toml only if necessary; preview configuration evidence and runbook. Remote Pages preview settings require explicit scoped owner authorization.
+  - Acceptance: effective preview DB differs from production; every branch/automatic deployment path to be used is verified or safely excluded with authorization; migration state of isolated DB known; authenticated financial APIs are never newly published against production bindings.
+  - Analytics/tests: no telemetry; read-only configuration inspection, redacted deployment metadata and public health/auth boundary checks; synthetic writes only after isolation and task authorization.
+  - Security/privacy: request only approved preview DB identity and preview-binding authorization, not credentials in chat. Do not inspect or seed real financial rows.
+  - Dependencies: B01; checkpoint C01I release. B02–B05 backend publication and B06 hosted testing require this accepted gate.
+  - Migration/rollback: apply only reviewed migrations to the approved isolated target with authorization; rollback means disable/defer unsafe preview publication, never bind preview back to production. Human 0.5–1 day plus owner setup; agent 2–4 hours.
+  - Detailed implementer prompt: [B33](execution/prompts/B33.md).
 
 ## Milestone reporting
 

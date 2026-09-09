@@ -1,0 +1,560 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-08",
+  "closure_owner": "primary-reviewer",
+  "tasks": [
+    {
+      "id": "B01",
+      "title": "full verification must not silently skip runtimes",
+      "checkpoint": "C00",
+      "status": "done",
+      "dependencies": [],
+      "prompt": "prompts/B01.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": "1664043",
+      "review": "reviews/C00.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B02",
+      "title": "reject incompatible currency conversion into goals",
+      "checkpoint": "C02",
+      "status": "pending",
+      "dependencies": [
+        "B01",
+        "B33"
+      ],
+      "prompt": "prompts/B02.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B03",
+      "title": "prevent mixed-currency account totals",
+      "checkpoint": "C02",
+      "status": "pending",
+      "dependencies": [
+        "B02"
+      ],
+      "prompt": "prompts/B03.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B04",
+      "title": "atomic, retry-safe calculator save",
+      "checkpoint": "C02",
+      "status": "pending",
+      "dependencies": [
+        "B02",
+        "B03"
+      ],
+      "prompt": "prompts/B04.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B05",
+      "title": "executable tenancy/auth boundary harness",
+      "checkpoint": "C06",
+      "status": "pending",
+      "dependencies": [
+        "B04",
+        "B33"
+      ],
+      "prompt": "prompts/B05.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B06",
+      "title": "working hosted auth and lifecycle",
+      "checkpoint": "C07",
+      "status": "pending",
+      "dependencies": [
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B33"
+      ],
+      "prompt": "prompts/B06.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B07",
+      "title": "deletion and recovery contract",
+      "checkpoint": "C06",
+      "status": "pending",
+      "dependencies": [
+        "B05"
+      ],
+      "prompt": "prompts/B07.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B08",
+      "title": "mortgage payoff reconciliation regression",
+      "checkpoint": "C04",
+      "status": "pending",
+      "dependencies": [
+        "B01"
+      ],
+      "prompt": "prompts/B08.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B09",
+      "title": "remove internal instructions from calculator copy",
+      "checkpoint": "C03",
+      "status": "pending",
+      "dependencies": [
+        "B01",
+        "B17"
+      ],
+      "prompt": "prompts/B09.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B10",
+      "title": "restore the exact saved FIRE decision",
+      "checkpoint": "C09",
+      "status": "pending",
+      "dependencies": [
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06"
+      ],
+      "prompt": "prompts/B10.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B11",
+      "title": "complete one monthly plan review",
+      "checkpoint": "C09",
+      "status": "pending",
+      "dependencies": [
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B10"
+      ],
+      "prompt": "prompts/B11.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B12",
+      "title": "consented minimal measurement",
+      "checkpoint": "C11",
+      "status": "pending",
+      "dependencies": [
+        "B07"
+      ],
+      "prompt": "prompts/B12.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B13",
+      "title": "first paid offer",
+      "checkpoint": "C12",
+      "status": "pending",
+      "dependencies": [
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "B10",
+        "B11",
+        "B12"
+      ],
+      "prompt": "prompts/B13.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B14",
+      "title": "mobile capability study",
+      "checkpoint": "C13",
+      "status": "pending",
+      "dependencies": [
+        "B11",
+        "B12"
+      ],
+      "prompt": "prompts/B14.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B15",
+      "title": "Repair light/dark contrast defects",
+      "checkpoint": "C01",
+      "status": "pending",
+      "dependencies": [
+        "B01"
+      ],
+      "prompt": "prompts/B15.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B16",
+      "title": "Establish authoritative design tokens and primitives",
+      "checkpoint": "C01",
+      "status": "pending",
+      "dependencies": [
+        "B15"
+      ],
+      "prompt": "prompts/B16.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B17",
+      "title": "Polish public/account navigation and keyboard behavior",
+      "checkpoint": "C01",
+      "status": "pending",
+      "dependencies": [
+        "B16"
+      ],
+      "prompt": "prompts/B17.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B18",
+      "title": "Replace generic homepage hero with authentic product composition",
+      "checkpoint": "C03",
+      "status": "pending",
+      "dependencies": [
+        "B16",
+        "B17",
+        "B32"
+      ],
+      "prompt": "prompts/B18.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B19",
+      "title": "Make calculator discovery concise and distinctive",
+      "checkpoint": "C03",
+      "status": "pending",
+      "dependencies": [
+        "B16",
+        "B17",
+        "B32"
+      ],
+      "prompt": "prompts/B19.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B20",
+      "title": "Reorder generic calculators around inputs and the answer",
+      "checkpoint": "C04",
+      "status": "pending",
+      "dependencies": [
+        "B16",
+        "B19"
+      ],
+      "prompt": "prompts/B20.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B21",
+      "title": "Make shared charts numerically honest and accessible",
+      "checkpoint": "C04",
+      "status": "pending",
+      "dependencies": [
+        "B20"
+      ],
+      "prompt": "prompts/B21.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B22",
+      "title": "Unify compound-interest and savings-goal presentation",
+      "checkpoint": "C05",
+      "status": "pending",
+      "dependencies": [
+        "B16",
+        "B20",
+        "B21"
+      ],
+      "prompt": "prompts/B22.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B23",
+      "title": "Unify budget, net-worth and emergency-fund presentation",
+      "checkpoint": "C05",
+      "status": "pending",
+      "dependencies": [
+        "B16",
+        "B20",
+        "B21"
+      ],
+      "prompt": "prompts/B23.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B24",
+      "title": "Refine FIRE calculator into the flagship decision experience",
+      "checkpoint": "C05",
+      "status": "pending",
+      "dependencies": [
+        "B16",
+        "B20",
+        "B21"
+      ],
+      "prompt": "prompts/B24.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B25",
+      "title": "Build isolated operational UI fixtures for visual verification",
+      "checkpoint": "C06",
+      "status": "pending",
+      "dependencies": [
+        "B05",
+        "B07",
+        "B16"
+      ],
+      "prompt": "prompts/B25.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B26",
+      "title": "Polish dashboard and account overview",
+      "checkpoint": "C08",
+      "status": "pending",
+      "dependencies": [
+        "B25",
+        "B03",
+        "B06"
+      ],
+      "prompt": "prompts/B26.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B27",
+      "title": "Polish transactions and import review",
+      "checkpoint": "C08",
+      "status": "pending",
+      "dependencies": [
+        "B25",
+        "B06",
+        "B05"
+      ],
+      "prompt": "prompts/B27.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B28",
+      "title": "Polish goals and monthly plan-review workflow",
+      "checkpoint": "C09",
+      "status": "pending",
+      "dependencies": [
+        "B10",
+        "B11",
+        "B25"
+      ],
+      "prompt": "prompts/B28.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B29",
+      "title": "Polish reports and readable financial evidence",
+      "checkpoint": "C10",
+      "status": "pending",
+      "dependencies": [
+        "B25",
+        "B06",
+        "B21"
+      ],
+      "prompt": "prompts/B29.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B30",
+      "title": "Polish settings and privacy lifecycle controls",
+      "checkpoint": "C10",
+      "status": "pending",
+      "dependencies": [
+        "B07",
+        "B25",
+        "B06"
+      ],
+      "prompt": "prompts/B30.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B31",
+      "title": "Close visual accessibility and performance acceptance matrix",
+      "checkpoint": "C11",
+      "status": "pending",
+      "dependencies": [
+        "B18",
+        "B19",
+        "B20",
+        "B21",
+        "B22",
+        "B23",
+        "B24",
+        "B26",
+        "B27",
+        "B28",
+        "B29",
+        "B30",
+        "B12",
+        "B32"
+      ],
+      "prompt": "prompts/B31.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B32",
+      "title": "Implement light/dark glass and gradient material system",
+      "checkpoint": "C01T",
+      "status": "pending",
+      "dependencies": [
+        "B16",
+        "B17"
+      ],
+      "prompt": "prompts/B32.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B33",
+      "title": "Isolate preview infrastructure before backend publication",
+      "checkpoint": "C01I",
+      "status": "pending",
+      "dependencies": [
+        "B01"
+      ],
+      "prompt": "prompts/B33.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    }
+  ]
+}
