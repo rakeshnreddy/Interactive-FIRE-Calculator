@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-08",
+  "updated": "2026-09-09",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -560,7 +560,7 @@
       "id": "B34",
       "title": "Repair newly reported development-tool advisories",
       "checkpoint": "C00R",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B01"
       ],
@@ -568,7 +568,7 @@
       "submission": "submissions/B34.md",
       "owner": "Codex implementing session 2026-09-08",
       "code_sha": "b48ac00328f356746bd501921562e727feb7a8e5",
-      "review": null,
+      "review": "reviews/C00R.md",
       "blocked_reason": null
     }
   ]

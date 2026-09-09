@@ -1,6 +1,6 @@
 # FinPath current-state audit
 
-> B34 candidate update 2026-09-08: code candidate `b48ac00328f356746bd501921562e727feb7a8e5` resolves Vitest/mocker to 4.1.11 and Wrangler/Miniflare/sharp to 4.130.0/5.20260908.0-alpha/0.35.4. An isolated audit reports zero findings, the full suite passes, and hosted CI passes on the exact code SHA. This is implementation evidence awaiting primary review, not an accepted audit result. See `execution/submissions/B34.md`.
+> B34 accepted update 2026-09-09: code candidate `b48ac00328f356746bd501921562e727feb7a8e5` resolves Vitest/mocker to 4.1.11 and Wrangler/Miniflare/sharp to 4.130.0/5.20260908.0-alpha/0.35.4. An isolated audit reports zero findings, the full suite passes, and hosted CI passes on the exact code SHA. Primary review independently reproduced clean install, zero audit, full suite and Wrangler compilation; B34 is accepted. See [C00R review](execution/reviews/C00R.md).
 >
 > Historical alert from 2026-09-08: the zero-vulnerability result in the 2026-09-07 baseline below became stale when CI 34300491728 reported 5 findings (2 moderate, 3 high) involving Vitest/mocker and sharp/miniflare/Wrangler. B34 preserves that baseline and its repair evidence separately.
 

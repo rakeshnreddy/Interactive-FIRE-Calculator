@@ -359,7 +359,8 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: apply only reviewed migrations to the approved isolated target with authorization; rollback means disable/defer unsafe preview publication, never bind preview back to production. Human 0.5–1 day plus owner setup; agent 2–4 hours.
   - Detailed implementer prompt: [B33](execution/prompts/B33.md).
 
-- [ ] **B34 — Ready: repair newly reported development-tool dependency advisories.**
+- [x] **B34 — Accepted: repair newly reported development-tool dependency advisories.**
+  - Closure: [C00R independent review](execution/reviews/C00R.md), code `b48ac00328f356746bd501921562e727feb7a8e5`, 2026-09-09.
   - User problem/evidence: hosted CI 34300491728 passes tests/build but fails npm audit, reporting two moderate and three high findings across Vitest/mocker and sharp/miniflare/Wrangler. Earlier zero-audit evidence is historical.
   - Expected outcome/scope: choose supported patched development-tool versions with a reproducible lockfile; verify full suite, audit and Wrangler compilation. Distinguish package findings from demonstrated production exploitability.
   - Non-goals: no npm audit fix --force, arbitrary Wrangler downgrade, suppressed audit, production deployment or unrelated runtime upgrade.

@@ -106,7 +106,7 @@ The exact order is in CHECKPOINTS.md; ID order is retained here for lookup.
 
 B33 bootstrap exception: with explicit owner authorization, publish configuration only using unchanged, identified backend code. Verify intended isolated preview binding before publication and effective deployed binding afterward. This is the narrow setup operation needed to prove isolation, not permission to publish changed APIs or perform financial writes. Those remain blocked until B33 is accepted. If the provider cannot establish the intended binding safely before publication, stop and request a separate isolated target.
 
-Latest release status: C00R/B34 is the first task following newly reported dependency advisories. C01 is now locked until B34 passes; always read CHECKPOINTS.md rather than older narrative examples.
+Latest release status (2026-09-09): C00R/B34 is accepted; C01 (B15 → B16 → B17) is released. Always read CHECKPOINTS.md rather than older narrative examples.
 
 | Task | Prompt | Checkpoint | Initial status |
 |---|---|---|---|
