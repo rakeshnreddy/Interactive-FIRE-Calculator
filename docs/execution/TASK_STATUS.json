@@ -560,14 +560,14 @@
       "id": "B34",
       "title": "Repair newly reported development-tool advisories",
       "checkpoint": "C00R",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B34.md",
-      "submission": null,
+      "submission": "submissions/B34.md",
       "owner": "Codex implementing session 2026-09-08",
-      "code_sha": null,
+      "code_sha": "b48ac00328f356746bd501921562e727feb7a8e5",
       "review": null,
       "blocked_reason": null
     }

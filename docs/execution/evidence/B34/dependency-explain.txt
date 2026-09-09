@@ -1,0 +1,27 @@
+vitest@4.1.11 dev
+node_modules/vitest
+  dev vitest@"^4.1.11" from the root project
+
+@vitest/mocker@4.1.11 dev
+node_modules/@vitest/mocker
+  @vitest/mocker@"4.1.11" from vitest@4.1.11 dev
+  node_modules/vitest
+    dev vitest@"^4.1.11" from the root project
+
+wrangler@4.130.0 dev
+node_modules/wrangler
+  dev wrangler@"^4.130.0" from the root project
+
+miniflare@5.20260908.0-alpha dev
+node_modules/miniflare
+  miniflare@"5.20260908.0-alpha" from wrangler@4.130.0 dev
+  node_modules/wrangler
+    dev wrangler@"^4.130.0" from the root project
+
+sharp@0.35.4 dev overridden
+node_modules/sharp
+  overridden sharp@"0.35.4" (was "0.35.2") from miniflare@5.20260908.0-alpha dev
+  node_modules/miniflare
+    miniflare@"5.20260908.0-alpha" from wrangler@4.130.0 dev
+    node_modules/wrangler
+      dev wrangler@"^4.130.0" from the root project
