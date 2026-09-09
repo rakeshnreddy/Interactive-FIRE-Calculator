@@ -1,5 +1,7 @@
 # FinPath current-state audit
 
+> Update 2026-09-08: the zero-vulnerability result below is historical. CI 34300491728 now reports 5 findings (2 moderate,3 high) involving Vitest/mocker and sharp/miniflare/Wrangler; tests and build pass. See execution/prompts/B34.md and execution/PACKET_REVIEW.md. Dependency repair is the first released checkpoint.
+
 Evidence date: 2026-09-07. Baseline: `e18c517927b75f325e0e8fe482c1877b1c36bf45` on `codex/dependency-security-refresh`. Checkout: `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. This audit distinguishes observed behavior, code findings, and hypotheses. Historical completion percentages are not launch criteria.
 
 ## Executive verdict

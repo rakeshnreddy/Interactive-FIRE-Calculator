@@ -1,11 +1,12 @@
 # Checkpoints and release ledger
 
-Only C01 is released for implementation now. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+Only C00R is released for implementation now. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
 | C00 | Existing verification foundation | B01 | accepted | 1664043 | [record](reviews/C00.md) |
-| C01 | Visible defects and design foundation | B15 → B16 → B17 | released | — | — |
+| C00R | Development-tool security repair | B34 | released | — | — |
+| C01 | Visible defects and design foundation | B15 → B16 → B17 | locked | — | — |
 | C01T | Light/dark glass and gradient palette | B32 | locked | — | — |
 | C01I | Isolated preview publication prerequisite | B33 | locked | — | — |
 | C02 | Currency and save integrity | B02 → B03 → B04 | locked | — | — |
@@ -37,3 +38,5 @@ Safety amendment: C01I/B33 precedes C02. It covers automatic Git deployments as 
 Acceptance amendment: all tasks in a checkpoint must satisfy their applicable criteria on one final candidate code SHA and immutable preview. Earlier per-task SHAs are historical evidence only. Retest any provisional or accepted task affected by a later edit before requesting checkpoint closure.
 
 B33 bootstrap exception: with explicit owner authorization, publish configuration only using unchanged, identified backend code. Verify intended isolated preview binding before publication and effective deployed binding afterward. This is the narrow setup operation needed to prove isolation, not permission to publish changed APIs or perform financial writes. Those remain blocked until B33 is accepted. If the provider cannot establish the intended binding safely before publication, stop and request a separate isolated target.
+
+Latest audit amendment (2026-09-08): C00R/B34 is now the first released checkpoint because hosted npm audit detected current advisories. C01 and all other implementation checkpoints are locked. This is a newly discovered dependency issue, not a failure of B01’s fail-closed runner. No historical acceptance is rewritten.

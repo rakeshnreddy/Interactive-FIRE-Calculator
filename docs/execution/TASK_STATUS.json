@@ -555,6 +555,21 @@
       "code_sha": null,
       "review": null,
       "blocked_reason": null
+    },
+    {
+      "id": "B34",
+      "title": "Repair newly reported development-tool advisories",
+      "checkpoint": "C00R",
+      "status": "pending",
+      "dependencies": [
+        "B01"
+      ],
+      "prompt": "prompts/B34.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ]
 }

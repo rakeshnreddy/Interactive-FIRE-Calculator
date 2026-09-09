@@ -2,7 +2,7 @@
 
 2026-09-08. This record verifies the planning artifacts, not completion of B15–B33.
 
-- 33 task prompts, 15 implementation checkpoints plus historical C00. B01 remains the only accepted implementation task. C01 is the sole released checkpoint.
+- 34 task prompts, 16 implementation checkpoints plus historical C00. B01 remains the only accepted implementation task. C00R/B34 is the sole released checkpoint after the latest dependency-audit finding.
 - Structural validator passed IDs, prompt links, backlink/status agreement, dependency existence/order/cycles and approval-record requirements. Temporary mutation checks correctly rejected an unknown dependency, unapproved closure and a future prerequisite. It does not authenticate reviewers or certify aesthetics.
 - Read-only independent review found two material workflow gaps: isolation only before test writes (too late for automatic backend deployments), and per-task SHA evidence that could hide regressions in later provisional work. B33/C01I now gates backend publication; all checkpoint tasks must pass on one final candidate revision. Follow-up review required the owner-authorized configuration-only bootstrap exception for B33; this is now explicit in shared prompts/protocol. No changed API or financial write is allowed by that exception.
 - Color ownership is explicit: B16 consolidates baseline roles/primitives; B32 implements the owner's glass/gradient palette. Theme material must not be implemented twice or overwrite B15 contrast repairs.
@@ -10,3 +10,5 @@
 - Standard `./scripts/test_all.sh` ultimately passed: 13 runner checks, 79 Python tests plus 21 subtests, 1,269 Vitest tests across 26 files, TypeScript and build. [Durable full-suite log](evidence/planning-full-suite.txt).
 - Initial standard run failed with four worker-start timeouts after 1,253 tests passed. A two-worker Vitest retry passed all 1,269; the subsequent unmodified standard full suite passed. No test was removed or weakened. Host load was elevated, but the exact transient cause is not established. Existing >500kB chunk warning remains.
 - Product React/CSS, formulas, APIs, migrations and production configuration were not changed by this planning milestone. New local theme-board HTML is a documentation artifact, excluded from the Vite app build. No production merge/deployment or remote data write was performed.
+
+Hosted result: [CI 34300491728](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34300491728) passes tests/build but fails npm audit (2 moderate,3 high). B34 is now the first implementation task. Sources: [Vitest advisory](https://github.com/advisories/GHSA-82fw-gwwq-j7x9), [sharp advisory](https://github.com/advisories/GHSA-rgj7-g3m4-5g8c), checked 2026-09-08. This packet is complete with an explicit open CI/security concern; it does not claim current zero vulnerabilities or launch readiness.
