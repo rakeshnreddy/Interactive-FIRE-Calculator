@@ -376,3 +376,5 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
 For each item record commit, changed files, red/green tests, local full-suite result, PR/CI URL, immutable preview URL and hosted verification scope. Report remaining risks and the exact next Ready item. Production readiness is never inferred from document completion or preview deployment.
 
 C01 acceptance 2026-09-10: B15/B16/B17 accepted together at `ccebac7d5bcaf645721e2e67ea490a7f447e1db9`; [independent review](execution/reviews/C01.md). Next released task: B32 in C01T.
+
+Landing review amendment 2026-09-10: [image, copy and theme findings](LANDING_PAGE_REVIEW.md) expand B32 with a visibly theme-responsive existing hero and B18 with an engine-backed product example, exact copy baseline, honest account availability and detailed review gates. Follow their amended prompts; C03 remains locked. No task was closed or renumbered.
