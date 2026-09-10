@@ -28,7 +28,7 @@ At the B16 baseline, missing-config visitors saw Dashboard, Transactions, Goals,
 | Theme state | Light rendered `Switch to dark mode`, `aria-pressed=false`; activation rendered `Switch to light mode`, `aria-pressed=true`. |
 | Target size | Mobile primary/Workspace anchors and disclosure summary measured 48px high. |
 
-The Playwright semantic snapshot exposed a named Primary navigation containing Calculators, FIRE, and Workspace; a named theme toggle; Skip to content; real route links; and the page headings. This is a screen-reader smoke check, not a conformance certification.
+The Playwright semantic snapshot exposed a named Primary navigation containing Calculators, FIRE, and Workspace; a named theme toggle; Skip to content; real route links; and the page headings. This is accessibility-tree evidence, not an actual screen-reader smoke. The real reader run is recorded separately in [`../C01-rework/voiceover.md`](../C01-rework/voiceover.md).
 
 ## Responsive and theme evidence
 
