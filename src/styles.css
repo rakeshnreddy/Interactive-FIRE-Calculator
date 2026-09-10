@@ -3755,7 +3755,7 @@ body {
 }
 
 .landing-footer a,
-.landing-footer button {
+.landing-footer .landing-footer-action {
   display: inline-flex;
   gap: 0.55rem;
   align-items: center;
@@ -3773,7 +3773,7 @@ body {
   text-align: center;
 }
 
-.landing-footer button {
+.landing-footer .landing-footer-action {
   min-height: 44px;
   padding: 0;
   border: 0;
@@ -4054,7 +4054,7 @@ h2 {
 .primary-button:focus-visible,
 .secondary-button:focus-visible,
 .landing-module-link:focus-visible,
-.landing-footer button:focus-visible,
+.landing-footer .landing-footer-action:focus-visible,
 .landing-footer a:focus-visible,
 .advanced-summary:focus-visible,
 .panel-tabs button:focus-visible,
@@ -6158,7 +6158,7 @@ h2 {
   width: 100%;
 }
 
-.landing-path-strip button {
+.landing-path-strip a {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 20px;
   gap: 0.9rem;
@@ -6169,36 +6169,37 @@ h2 {
   border-radius: 0;
   color: #ffffff;
   text-align: left;
+  text-decoration: none;
 }
 
-.landing-path-strip button:nth-child(1) {
+.landing-path-strip a:nth-child(1) {
   background: #00776d;
 }
 
-.landing-path-strip button:nth-child(2) {
+.landing-path-strip a:nth-child(2) {
   background: #3159c7;
 }
 
-.landing-path-strip button:nth-child(3) {
+.landing-path-strip a:nth-child(3) {
   background: #c45438;
 }
 
-.landing-path-strip button:hover {
+.landing-path-strip a:hover {
   filter: brightness(1.08);
 }
 
-.landing-path-strip button span {
+.landing-path-strip a span {
   display: grid;
   gap: 0.22rem;
 }
 
-.landing-path-strip button small {
+.landing-path-strip a small {
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.72rem;
   font-weight: 650;
 }
 
-.landing-path-strip button strong {
+.landing-path-strip a strong {
   color: #ffffff;
   font-size: 0.98rem;
   font-weight: 650;
@@ -6404,7 +6405,7 @@ h2 {
     grid-template-columns: 1fr;
   }
 
-  .landing-path-strip button {
+  .landing-path-strip a {
     min-height: 88px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }

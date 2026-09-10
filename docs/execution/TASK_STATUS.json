@@ -268,13 +268,13 @@
       "id": "B17",
       "title": "Polish public/account navigation and keyboard behavior",
       "checkpoint": "C01",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B16"
       ],
       "prompt": "prompts/B17.md",
       "submission": null,
-      "owner": null,
+      "owner": "Codex implementing session 2026-09-09",
       "code_sha": null,
       "review": null,
       "blocked_reason": null

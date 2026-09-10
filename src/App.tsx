@@ -32,7 +32,7 @@ import {
   X
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import type { ChangeEvent, ReactNode } from 'react';
+import type { ChangeEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import type {
   CalculatorSaveOutcome,
   CalculatorSaveRequest
@@ -82,6 +82,13 @@ import {
   type TransactionType
 } from './lib/transactionAnalytics';
 import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
+import {
+  activeNavigationPath,
+  primaryNavigationFor,
+  shouldHandleNavigationClick,
+  workspaceNavigation,
+  type AppRoute
+} from './lib/navigation';
 import type { AuthState } from './auth';
 
 const BalanceImportPanel = lazy(() =>
@@ -101,18 +108,6 @@ const ProjectionChart = lazy(() =>
 );
 
 type Mode = 'light' | 'dark';
-type AppRoute =
-  | '/'
-  | '/dashboard'
-  | '/accounts'
-  | '/transactions'
-  | '/goals'
-  | '/plans'
-  | '/calculators'
-  | '/calculators/fire'
-  | `/calculators/${string}`
-  | '/reports'
-  | '/settings';
 type PlatformRoute = Exclude<AppRoute, '/' | '/calculators' | `/calculators/${string}`>;
 type CalculatorPanel = 'planner' | 'results' | 'compare';
 type CalculatorMode = 'fire-number' | 'withdrawal-income';
@@ -407,19 +402,17 @@ const transactionTypeOptions: Array<{ label: string; value: TransactionType }> =
   { label: 'Adjustment', value: 'adjustment' }
 ];
 
-const primaryRouteItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/transactions', label: 'Transactions', icon: ClipboardList },
-  { path: '/goals', label: 'Goals', icon: Target },
-  { path: '/calculators', label: 'Calculators', icon: Calculator }
-];
-
-const workspaceRouteItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
-  { path: '/accounts', label: 'Accounts', icon: CircleDollarSign },
-  { path: '/plans', label: 'Plans', icon: FolderKanban },
-  { path: '/reports', label: 'Reports', icon: BarChart3 },
-  { path: '/settings', label: 'Settings', icon: Settings }
-];
+const navigationIconByPath: Record<string, typeof Calculator> = {
+  '/accounts': CircleDollarSign,
+  '/calculators': Calculator,
+  '/calculators/fire': Target,
+  '/dashboard': LayoutDashboard,
+  '/goals': Target,
+  '/plans': FolderKanban,
+  '/reports': BarChart3,
+  '/settings': Settings,
+  '/transactions': ClipboardList
+};
 
 const popularCalculatorLinks: Array<{ label: string; path: AppRoute }> = [
   { label: 'Mortgage', path: '/calculators/mortgage' },
@@ -573,8 +566,24 @@ function readPreferredMode(): Mode {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function isRouteActive(currentRoute: AppRoute, itemRoute: AppRoute): boolean {
-  return currentRoute === itemRoute || currentRoute.startsWith(`${itemRoute}/`);
+function handleNavigationAnchorClick(
+  event: ReactMouseEvent<HTMLAnchorElement>,
+  route: AppRoute,
+  onNavigate: (route: AppRoute) => void,
+  beforeNavigate?: () => void
+) {
+  if (
+    !shouldHandleNavigationClick(event, {
+      download: event.currentTarget.hasAttribute('download'),
+      target: event.currentTarget.target
+    })
+  ) {
+    return;
+  }
+
+  event.preventDefault();
+  beforeNavigate?.();
+  onNavigate(route);
 }
 
 function modeledDurationFromTimeline(timeline: TimelineInput): number {
@@ -4246,17 +4255,36 @@ function AuthGate({
   );
 }
 
-function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate: (route: AppRoute) => void }) {
+function DesktopNavigation({
+  authStatus,
+  route,
+  onNavigate
+}: {
+  authStatus: AuthState['status'];
+  route: AppRoute;
+  onNavigate: (route: AppRoute) => void;
+}) {
   const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const workspaceIsActive = workspaceRouteItems.some((item) => isRouteActive(route, item.path));
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const primaryItems = primaryNavigationFor(authStatus);
+  const activePrimaryPath = activeNavigationPath(route, primaryItems);
+  const activeWorkspacePath = activeNavigationPath(route, workspaceNavigation);
+  const workspaceIsActive = activeWorkspacePath !== null;
+
+  useEffect(() => {
+    setIsWorkspaceOpen(false);
+  }, [route]);
 
   useEffect(() => {
     const closeOnOutsideInteraction = (event: PointerEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setIsWorkspaceOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsWorkspaceOpen(false);
+      if (event.key !== 'Escape' || !isWorkspaceOpen) return;
+      event.preventDefault();
+      setIsWorkspaceOpen(false);
+      triggerRef.current?.focus();
     };
 
     document.addEventListener('pointerdown', closeOnOutsideInteraction);
@@ -4265,22 +4293,20 @@ function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate:
       document.removeEventListener('pointerdown', closeOnOutsideInteraction);
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, []);
+  }, [isWorkspaceOpen]);
 
   return (
     <nav className="desktop-nav" aria-label="Primary">
-      {primaryRouteItems.map((item) => {
-        const Icon = item.icon;
+      {primaryItems.map((item) => {
+        const Icon = navigationIconByPath[item.path];
+        const isActive = activePrimaryPath === item.path;
         return (
           <a
             key={item.path}
             href={item.path}
-            className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-            aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-            onClick={(event) => {
-              event.preventDefault();
-              onNavigate(item.path);
-            }}
+            className={isActive ? 'nav-button active' : 'nav-button'}
+            aria-current={isActive ? 'page' : undefined}
+            onClick={(event) => handleNavigationAnchorClick(event, item.path, onNavigate)}
           >
             <Icon size={17} />
             {item.label}
@@ -4289,10 +4315,12 @@ function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate:
       })}
       <div className="desktop-nav-menu" ref={menuRef}>
         <button
+          ref={triggerRef}
           className={workspaceIsActive ? 'nav-button active' : 'nav-button'}
           type="button"
+          aria-controls="desktop-workspace-navigation"
+          aria-current={workspaceIsActive ? 'page' : undefined}
           aria-expanded={isWorkspaceOpen}
-          aria-haspopup="menu"
           onClick={() => setIsWorkspaceOpen((open) => !open)}
         >
           <FolderKanban size={17} />
@@ -4300,20 +4328,19 @@ function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate:
           <ChevronDown className={isWorkspaceOpen ? 'nav-chevron open' : 'nav-chevron'} size={15} />
         </button>
         {isWorkspaceOpen && (
-          <div className="desktop-nav-dropdown" role="menu">
-            {workspaceRouteItems.map((item) => {
-              const Icon = item.icon;
+          <div className="desktop-nav-dropdown" id="desktop-workspace-navigation">
+            {workspaceNavigation.map((item) => {
+              const Icon = navigationIconByPath[item.path];
+              const isActive = activeWorkspacePath === item.path;
               return (
                 <a
                   key={item.path}
                   href={item.path}
-                  role="menuitem"
-                  className={isRouteActive(route, item.path) ? 'active' : undefined}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setIsWorkspaceOpen(false);
-                    onNavigate(item.path);
-                  }}
+                  className={isActive ? 'active' : undefined}
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={(event) =>
+                    handleNavigationAnchorClick(event, item.path, onNavigate, () => setIsWorkspaceOpen(false))
+                  }
                 >
                   <Icon size={17} />
                   <span>
@@ -4349,18 +4376,23 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
             <h1 id="landing-title">Make the number mean something.</h1>
             <p>Model a financial decision, understand what changes the outcome, and keep the next step connected to your real plan.</p>
             <div className="landing-actions">
-              <button
+              <a
+                href="/calculators"
                 className="primary-button icon-text-button"
-                onClick={() => onNavigate('/calculators')}
+                onClick={(event) => handleNavigationAnchorClick(event, '/calculators', onNavigate)}
               >
                 <Calculator size={16} />
                 Browse calculators
-              </button>
+              </a>
               {auth.isSignedIn ? (
-                <button className="secondary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
+                <a
+                  href="/dashboard"
+                  className="secondary-button icon-text-button"
+                  onClick={(event) => handleNavigationAnchorClick(event, '/dashboard', onNavigate)}
+                >
                   Open dashboard
                   <ArrowRight size={17} />
-                </button>
+                </a>
               ) : (
                 <AuthActionButton
                   auth={auth}
@@ -4379,10 +4411,7 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
                 <a
                   key={path}
                   href={path}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    onNavigate(path);
-                  }}
+                  onClick={(event) => handleNavigationAnchorClick(event, path, onNavigate)}
                 >
                   {label}
                   <ChevronRight size={14} />
@@ -4394,21 +4423,30 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
       </section>
 
       <section className="landing-path-strip" aria-label="Choose a planning path">
-        <button onClick={() => onNavigate('/calculators/mortgage')}>
+        <a
+          href="/calculators/mortgage"
+          onClick={(event) => handleNavigationAnchorClick(event, '/calculators/mortgage', onNavigate)}
+        >
           <CircleDollarSign size={22} />
           <span><small>Borrowing</small><strong>Pay less over time</strong></span>
           <ArrowRight size={18} />
-        </button>
-        <button onClick={() => onNavigate('/calculators/compound-interest')}>
+        </a>
+        <a
+          href="/calculators/compound-interest"
+          onClick={(event) => handleNavigationAnchorClick(event, '/calculators/compound-interest', onNavigate)}
+        >
           <TrendingUp size={22} />
           <span><small>Growing wealth</small><strong>Test a contribution plan</strong></span>
           <ArrowRight size={18} />
-        </button>
-        <button onClick={() => onNavigate('/calculators/fire')}>
+        </a>
+        <a
+          href="/calculators/fire"
+          onClick={(event) => handleNavigationAnchorClick(event, '/calculators/fire', onNavigate)}
+        >
           <Target size={22} />
           <span><small>Long-term planning</small><strong>Find the path to freedom</strong></span>
           <ArrowRight size={18} />
-        </button>
+        </a>
       </section>
 
       <section className="landing-capabilities" aria-labelledby="capabilities-title">
@@ -4471,20 +4509,21 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
       <footer className="landing-footer">
         <a
           href="/"
-          onClick={(event) => {
-            event.preventDefault();
-            onNavigate('/');
-          }}
+          onClick={(event) => handleNavigationAnchorClick(event, '/', onNavigate)}
           aria-label="FinPath home"
         >
           <PiggyBank size={22} />
           <strong>FinPath</strong>
         </a>
         <p>Track today. Test tomorrow. Keep the assumptions yours.</p>
-        <button onClick={() => onNavigate('/calculators')}>
+        <a
+          className="landing-footer-action"
+          href="/calculators"
+          onClick={(event) => handleNavigationAnchorClick(event, '/calculators', onNavigate)}
+        >
           Browse calculators
           <ArrowRight size={16} />
-        </button>
+        </a>
       </footer>
     </>
   );
@@ -4910,10 +4949,23 @@ function App({ auth }: { auth: AuthState }) {
     }
 
     previousRouteRef.current = route;
-    const heading = mainRef.current?.querySelector<HTMLElement>('h1');
+    const focusRouteHeading = () => {
+      const heading = mainRef.current?.querySelector<HTMLElement>('h1');
+      if (!heading) return false;
 
-    heading?.setAttribute('tabindex', '-1');
-    heading?.focus();
+      heading.setAttribute('tabindex', '-1');
+      heading.focus();
+      return true;
+    };
+
+    if (focusRouteHeading()) return;
+
+    const observer = new MutationObserver(() => {
+      if (focusRouteHeading()) observer.disconnect();
+    });
+
+    if (mainRef.current) observer.observe(mainRef.current, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [route]);
 
   useEffect(() => {
@@ -4975,6 +5027,7 @@ function App({ auth }: { auth: AuthState }) {
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     window.localStorage.setItem('finpath.colorMode', mode);
@@ -4994,6 +5047,29 @@ function App({ auth }: { auth: AuthState }) {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const desktopBreakpoint = window.matchMedia('(min-width: 1041px)');
+    const closeAtDesktopBreakpoint = (event: MediaQueryListEvent | MediaQueryList) => {
+      if (event.matches) setIsMenuOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setIsMenuOpen(false);
+      window.requestAnimationFrame(() => mobileMenuButtonRef.current?.focus());
+    };
+
+    closeAtDesktopBreakpoint(desktopBreakpoint);
+    document.addEventListener('keydown', closeOnEscape);
+    desktopBreakpoint.addEventListener('change', closeAtDesktopBreakpoint);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      desktopBreakpoint.removeEventListener('change', closeAtDesktopBreakpoint);
+    };
+  }, [isMenuOpen]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -6520,28 +6596,29 @@ function App({ auth }: { auth: AuthState }) {
         <a
           href="/"
           className="brand"
-          onClick={(event) => {
-            event.preventDefault();
-            navigateTo('/');
-          }}
+          onClick={(event) => handleNavigationAnchorClick(event, '/', navigateTo)}
         >
           <PiggyBank size={26} />
           <span>FinPath</span>
         </a>
 
-        <DesktopNavigation route={route} onNavigate={navigateTo} />
+        <DesktopNavigation authStatus={auth.status} route={route} onNavigate={navigateTo} />
 
         <div className="topbar-actions">
           <TopbarAuthActions auth={auth} onNavigate={navigateTo} />
           <button
             className="icon-button"
-            aria-label="Toggle light and dark mode"
+            type="button"
+            aria-label={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            aria-pressed={mode === 'dark'}
             onClick={() => setMode((current) => (current === 'light' ? 'dark' : 'light'))}
           >
             {mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
           <button
+            ref={mobileMenuButtonRef}
             className="icon-button mobile-menu-button"
+            type="button"
             aria-controls="mobile-primary-navigation"
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'Close navigation' : 'Open navigation'}
@@ -6554,19 +6631,21 @@ function App({ auth }: { auth: AuthState }) {
 
       {isMenuOpen && (
         <nav className="mobile-nav" id="mobile-primary-navigation" aria-label="Mobile primary">
-          <span className="mobile-nav-heading">Plan</span>
-          {primaryRouteItems.map((item) => {
-              const Icon = item.icon;
+          <span className="mobile-nav-heading">{auth.isSignedIn ? 'Plan' : 'Explore'}</span>
+          {primaryNavigationFor(auth.status).map((item) => {
+              const Icon = navigationIconByPath[item.path];
+              const isActive = activeNavigationPath(route, primaryNavigationFor(auth.status)) === item.path;
               return (
-                <button
+                <a
                   key={item.path}
-                  className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-                  aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-                  onClick={() => navigateTo(item.path)}
+                  href={item.path}
+                  className={isActive ? 'nav-button active' : 'nav-button'}
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={(event) => handleNavigationAnchorClick(event, item.path, navigateTo)}
                 >
                   <Icon size={17} />
                   {item.label}
-                </button>
+                </a>
               );
             })}
           <details className="mobile-nav-group">
@@ -6576,18 +6655,20 @@ function App({ auth }: { auth: AuthState }) {
               <ChevronDown size={16} />
             </summary>
             <div>
-              {workspaceRouteItems.map((item) => {
-                const Icon = item.icon;
+              {workspaceNavigation.map((item) => {
+                const Icon = navigationIconByPath[item.path];
+                const isActive = activeNavigationPath(route, workspaceNavigation) === item.path;
                 return (
-                  <button
+                  <a
                     key={item.path}
-                    className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-                    aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-                    onClick={() => navigateTo(item.path)}
+                    href={item.path}
+                    className={isActive ? 'nav-button active' : 'nav-button'}
+                    aria-current={isActive ? 'page' : undefined}
+                    onClick={(event) => handleNavigationAnchorClick(event, item.path, navigateTo)}
                   >
                     <Icon size={17} />
                     {item.label}
-                  </button>
+                  </a>
                 );
               })}
             </div>
@@ -6631,7 +6712,12 @@ function App({ auth }: { auth: AuthState }) {
         </nav>
       )}
 
-      <main id="main-content" ref={mainRef} className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
+      <main
+        id="main-content"
+        ref={mainRef}
+        className={route === '/' ? 'workspace landing-workspace' : 'workspace'}
+        tabIndex={-1}
+      >
         {route === '/' ? (
           <LandingPage auth={auth} onNavigate={navigateTo} />
         ) : route === '/calculators' || (route.startsWith('/calculators/') && route !== '/calculators/fire') ? (
