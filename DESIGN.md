@@ -8,33 +8,33 @@ FinPath uses a vivid precision aesthetic: calm operational surfaces, crisp typog
 
 ### Light
 
-- Canvas: `#f4f7f7`
-- Surface: `#ffffff`
-- Soft surface: `#edf2f1`
-- Ink: `#17211f`
-- Muted ink: `#5c6966`
-- Border: `#d9e1df`
-- Primary teal: `#087f72`
-- Data blue: `#3267c8`
+- Canvas: `#f4f8fb`
+- Surface: `#fbfdff`
+- Soft surface: `#eef4f7`
+- Ink: `#102c35`
+- Muted ink: `#526873`
+- Border: `#cfdee4`
+- Primary teal: `#006b60`
+- Data blue: `#2455a6`
 - Warm accent: `#b34e30`
-- Success: `#247a56`
-- Warning: `#9a5c12`
-- Danger: `#b63e4d`
+- Success: `#1d714f`
+- Warning: `#885100`
+- Danger: `#a32d48`
 
 ### Dark
 
-- Canvas: `#111715`
-- Surface: `#18201e`
-- Soft surface: `#202a27`
-- Ink: `#f1f5f3`
-- Muted ink: `#aab7b3`
-- Border: `#34413d`
-- Primary teal: `#5bc7b5`
-- Data blue: `#83a9f4`
+- Canvas: `#08151c`
+- Surface: `#10232c`
+- Soft surface: `#0b1b23`
+- Ink: `#eaf6f7`
+- Muted ink: `#a4bbc4`
+- Border: `#304b57`
+- Primary teal: `#69e3ca`
+- Data blue: `#8abaff`
 - Warm accent: `#ef916f`
-- Success: `#75cda4`
-- Warning: `#e4b15f`
-- Danger: `#f18491`
+- Success: `#83ddb0`
+- Warning: `#f0bf72`
+- Danger: `#ff9aae`
 
 Teal identifies primary actions and current state. Cobalt supports growth, charts, and comparison. Warm coral identifies long-term or consequential decisions. Gold is reserved for warnings and select chart emphasis. Solid color bands may identify major decision families on public pages; operational pages use the same hues as thin hierarchy accents. Semantic colors retain their meaning. Never use gradient text, color blobs, or color without an information role.
 
@@ -99,4 +99,4 @@ Use exact calculator phrases for calculator page titles. Use user-centered toolk
 
 ## Owner-directed material update (2026-09-08)
 
-The owner requested glassmorphism and gradients in both light and dark themes. [COLOR_AND_GLASS_SYSTEM.md](docs/COLOR_AND_GLASS_SYSTEM.md) now defines the target palette and material behavior; [VISUAL_DESIGN_SPEC.md](docs/VISUAL_DESIGN_SPEC.md) defines composition and verification. This supersedes earlier blanket anti-gradient restrictions while preserving legible opaque text, correct chart semantics, bounded blur and solid accessibility fallbacks. B16 establishes token ownership; B32 implements the palette/material update. These are planned changes, not a claim that this document's current color table is already applied.
+The owner requested glassmorphism and gradients in both light and dark themes. [COLOR_AND_GLASS_SYSTEM.md](docs/COLOR_AND_GLASS_SYSTEM.md) defines the target palette and material behavior; [VISUAL_DESIGN_SPEC.md](docs/VISUAL_DESIGN_SPEC.md) defines composition and verification. Task B32 applies the luminous mineral palette, bounded glass for navigation and overlay surfaces with solid fallbacks, static atmosphere gradients on public stages, action gradients with paired hover/pressed states, and a distinctly light/dark hero treatment while maintaining strictly opaque reading surfaces behind financial inputs and calculator results.
