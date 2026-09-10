@@ -1,0 +1,386 @@
+{
+  "timestamp": "2026-09-10T15:37:13.349Z",
+  "heroMeasurements": {
+    "light": {
+      "heroBg": "linear-gradient(125deg, rgb(233, 250, 243) 0%, rgb(234, 242, 255) 55%, rgb(241, 238, 254) 100%)",
+      "mediaOpacity": "0.12",
+      "scrimBg": "linear-gradient(90deg, rgba(244, 248, 251, 0.98) 0%, rgba(244, 248, 251, 0.88) 45%, rgba(234, 242, 255, 0.45) 75%, rgba(241, 238, 254, 0.12) 100%)",
+      "h1Color": "rgb(16, 44, 53)",
+      "h1FontSize": "72.8px",
+      "pColor": "rgb(82, 104, 115)",
+      "eyebrowColor": "rgb(0, 107, 96)",
+      "primaryBtnBg": "linear-gradient(110deg, rgb(0, 107, 96) 0%, rgb(36, 85, 166) 100%)",
+      "primaryBtnColor": "rgb(255, 255, 255)",
+      "secondaryBtnBg": "rgb(251, 253, 255)",
+      "secondaryBtnColor": "rgb(16, 44, 53)",
+      "secondaryBtnBorder": "rgb(113, 133, 142)",
+      "pathsSpanColor": "rgb(82, 104, 115)",
+      "pathsLinkColor": "rgb(16, 44, 53)"
+    },
+    "dark": {
+      "heroBg": "linear-gradient(125deg, rgb(16, 53, 47) 0%, rgb(18, 41, 67) 55%, rgb(38, 33, 62) 100%)",
+      "mediaOpacity": "0.85",
+      "scrimBg": "linear-gradient(90deg, rgba(8, 21, 28, 0.97) 0%, rgba(8, 21, 28, 0.88) 45%, rgba(18, 41, 67, 0.4) 75%, rgba(38, 33, 62, 0.12) 100%)",
+      "h1Color": "rgb(234, 246, 247)",
+      "h1FontSize": "72.8px",
+      "pColor": "rgb(164, 187, 196)",
+      "eyebrowColor": "rgb(105, 227, 202)",
+      "primaryBtnBg": "linear-gradient(110deg, rgb(105, 227, 202) 0%, rgb(138, 186, 255) 100%)",
+      "primaryBtnColor": "rgb(8, 21, 28)",
+      "secondaryBtnBg": "rgb(16, 35, 44)",
+      "secondaryBtnColor": "rgb(234, 246, 247)",
+      "secondaryBtnBorder": "rgb(102, 131, 143)",
+      "pathsSpanColor": "rgb(164, 187, 196)",
+      "pathsLinkColor": "rgb(234, 246, 247)"
+    }
+  },
+  "contrastAudit": [
+    {
+      "element": "Light Hero H1",
+      "fg": "rgb(16, 44, 53)",
+      "bg": "rgb(244, 248, 251)",
+      "ratio": 13.71724161758137,
+      "required": 4.5
+    },
+    {
+      "element": "Light Hero Body Paragraph",
+      "fg": "rgb(82, 104, 115)",
+      "bg": "rgb(244, 248, 251)",
+      "ratio": 5.483573635475539,
+      "required": 4.5
+    },
+    {
+      "element": "Light Hero Eyebrow",
+      "fg": "rgb(0, 107, 96)",
+      "bg": "rgb(244, 248, 251)",
+      "ratio": 6.010600581647859,
+      "required": 4.5
+    },
+    {
+      "element": "Light Hero Primary Button (Teal stop)",
+      "fg": "rgb(255, 255, 255)",
+      "bg": "rgb(0, 107, 96)",
+      "ratio": 6.418124952642381,
+      "required": 4.5
+    },
+    {
+      "element": "Light Hero Primary Button (Blue stop)",
+      "fg": "rgb(255, 255, 255)",
+      "bg": "rgb(36, 85, 166)",
+      "ratio": 7.179368903346905,
+      "required": 4.5
+    },
+    {
+      "element": "Light Hero Secondary Button",
+      "fg": "rgb(16, 44, 53)",
+      "bg": "rgb(251, 253, 255)",
+      "ratio": 14.365468226750874,
+      "required": 4.5
+    },
+    {
+      "element": "Dark Hero H1",
+      "fg": "rgb(234, 246, 247)",
+      "bg": "rgb(8, 21, 28)",
+      "ratio": 16.770591856141248,
+      "required": 4.5
+    },
+    {
+      "element": "Dark Hero Body Paragraph",
+      "fg": "rgb(164, 187, 196)",
+      "bg": "rgb(8, 21, 28)",
+      "ratio": 9.241991774829128,
+      "required": 4.5
+    },
+    {
+      "element": "Dark Hero Eyebrow",
+      "fg": "rgb(105, 227, 202)",
+      "bg": "rgb(8, 21, 28)",
+      "ratio": 11.849105097145753,
+      "required": 4.5
+    },
+    {
+      "element": "Dark Hero Primary Button (Mint stop)",
+      "fg": "rgb(8, 21, 28)",
+      "bg": "rgb(105, 227, 202)",
+      "ratio": 11.849105097145753,
+      "required": 4.5
+    },
+    {
+      "element": "Dark Hero Primary Button (Blue stop)",
+      "fg": "rgb(8, 21, 28)",
+      "bg": "rgb(138, 186, 255)",
+      "ratio": 9.298834712756985,
+      "required": 4.5
+    },
+    {
+      "element": "Dark Hero Secondary Button",
+      "fg": "rgb(234, 246, 247)",
+      "bg": "rgb(16, 35, 44)",
+      "ratio": 14.647106546426908,
+      "required": 4.5
+    }
+  ],
+  "viewportMatrix": [
+    {
+      "route": "/",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 1024,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 320,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/calculators",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Start with the question, not the formula."
+    },
+    {
+      "route": "/calculators/fire",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "FIRE Calculator"
+    },
+    {
+      "route": "/calculators/fire",
+      "width": 390,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "FIRE Calculator"
+    },
+    {
+      "route": "/calculators/mortgage",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Mortgage Payment Calculator"
+    },
+    {
+      "route": "/calculators/savings-goal",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Savings Goal Calculator"
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Connect Clerk before opening account routes."
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 1024,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 320,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/calculators",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Start with the question, not the formula."
+    },
+    {
+      "route": "/calculators/fire",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "FIRE Calculator"
+    },
+    {
+      "route": "/calculators/fire",
+      "width": 390,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "FIRE Calculator"
+    },
+    {
+      "route": "/calculators/mortgage",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Mortgage Payment Calculator"
+    },
+    {
+      "route": "/calculators/savings-goal",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Savings Goal Calculator"
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputsCount": 0,
+      "h1": "Connect Clerk before opening account routes."
+    }
+  ],
+  "journeys": [
+    {
+      "test": "Skip to main content link",
+      "pass": true,
+      "detail": "Focused element ID: main-content"
+    },
+    {
+      "test": "Workspace disclosure Enter/Tab/Escape and focus return",
+      "pass": true,
+      "detail": "open=true, firstLink=/accounts, expandedAfter=false, focusReturned=true"
+    },
+    {
+      "test": "Public SPA navigation back/forward/reload",
+      "pass": true,
+      "detail": "back=/, forward=/calculators"
+    },
+    {
+      "test": "Mobile menu Open/Tab/Escape and focus return",
+      "pass": true,
+      "detail": "firstLink=/calculators, menuCountAfterEscape=0, focusReturned=true"
+    },
+    {
+      "test": "Savings Goal negative input error alert and aria-invalid",
+      "pass": true,
+      "detail": "aria-invalid=true"
+    }
+  ],
+  "fallbacks": {
+    "reducedTransparency": {
+      "light": {
+        "topbarBg": "rgb(11, 36, 33)",
+        "topbarBackdrop": "none",
+        "triggerColor": "rgba(255, 255, 255, 0.8)",
+        "triggerBg": "rgba(0, 0, 0, 0)",
+        "dropdownBg": "rgb(251, 253, 255)",
+        "dropdownBackdrop": "none",
+        "dropdownBorder": "rgb(113, 133, 142)",
+        "linkColor": "rgb(32, 58, 67)"
+      },
+      "dark": {
+        "topbarBg": "rgb(8, 21, 28)",
+        "topbarBackdrop": "none",
+        "triggerColor": "rgba(255, 255, 255, 0.8)",
+        "triggerBg": "rgba(0, 0, 0, 0)",
+        "dropdownBg": "rgb(20, 42, 52)",
+        "dropdownBackdrop": "none",
+        "dropdownBorder": "rgb(102, 131, 143)",
+        "linkColor": "rgb(216, 231, 234)"
+      }
+    },
+    "zoom200": {
+      "overflow": false,
+      "h1Size": "48px"
+    },
+    "forcedColors": {},
+    "print": {}
+  },
+  "performance": {
+    "runs": [
+      {
+        "fcp": 84,
+        "dcl": 25,
+        "load": 26,
+        "encodedBytes": 953683
+      },
+      {
+        "fcp": 80,
+        "dcl": 26,
+        "load": 26,
+        "encodedBytes": 953683
+      },
+      {
+        "fcp": 76,
+        "dcl": 22,
+        "load": 22,
+        "encodedBytes": 953683
+      }
+    ],
+    "median": {
+      "fcp": 80,
+      "dcl": 25,
+      "load": 26,
+      "encodedBytes": 953683
+    }
+  }
+}
