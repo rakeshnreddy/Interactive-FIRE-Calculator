@@ -6,7 +6,7 @@ Only C01 is released for implementation now. C00R/B34 was accepted on 2026-09-09
 |---|---|---|---|---|---|
 | C00 | Existing verification foundation | B01 | accepted | 1664043 | [record](reviews/C00.md) |
 | C00R | Development-tool security repair | B34 | accepted | b48ac00328f356746bd501921562e727feb7a8e5 | [record](reviews/C00R.md) |
-| C01 | Visible defects and design foundation | B15 → B16 → B17 | released | — | — |
+| C01 | Visible defects and design foundation | B15 → B16 → B17 | released | — | [changes requested](reviews/C01.md) |
 | C01T | Light/dark glass and gradient palette | B32 | locked | — | — |
 | C01I | Isolated preview publication prerequisite | B33 | locked | — | — |
 | C02 | Currency and save integrity | B02 → B03 → B04 | locked | — | — |
@@ -42,3 +42,5 @@ B33 bootstrap exception: with explicit owner authorization, publish configuratio
 Latest audit amendment (2026-09-08): C00R/B34 is now the first released checkpoint because hosted npm audit detected current advisories. C01 and all other implementation checkpoints are locked. This is a newly discovered dependency issue, not a failure of B01’s fail-closed runner. No historical acceptance is rewritten.
 
 Reviewer release 2026-09-09: C00R/B34 accepted at `b48ac00328f356746bd501921562e727feb7a8e5`; [independent review](reviews/C00R.md). This supersedes the September 8 release amendment. C01 alone is released, beginning B15. Later checkpoints remain locked.
+
+C01 review 2026-09-09: CHANGES_REQUESTED at code `ad580088938fc9f2a0e499eb70f0608be0c89aff`; no C01 task accepted. Same-checkpoint rework order: fix R1 in B16 first, then refresh all B15/B16/B17 evidence and satisfy R2–R4 in [C01 review](reviews/C01.md). C01 remains released for this rework only; C01T and later checkpoints remain locked.
