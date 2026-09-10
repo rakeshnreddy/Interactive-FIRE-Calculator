@@ -268,14 +268,14 @@
       "id": "B17",
       "title": "Polish public/account navigation and keyboard behavior",
       "checkpoint": "C01",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B16"
       ],
       "prompt": "prompts/B17.md",
-      "submission": null,
+      "submission": "submissions/B17.md",
       "owner": "Codex implementing session 2026-09-09",
-      "code_sha": null,
+      "code_sha": "ad580088938fc9f2a0e499eb70f0608be0c89aff",
       "review": null,
       "blocked_reason": null
     },

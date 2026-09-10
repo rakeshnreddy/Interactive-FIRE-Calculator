@@ -1,0 +1,48 @@
+B17 exact-code verification — 2026-09-09
+
+Candidate code commit:
+  ad580088938fc9f2a0e499eb70f0608be0c89aff
+
+Isolation:
+  git archive --format=tar ad58008 -o /tmp/finpath-b17.QGMe23/source.tar
+  tar -xf source.tar
+  npm ci
+  ln -s /Users/Rakesh/Projects/Interactive-FIRE-Calculator/venv venv
+
+Clean install:
+  added 265 packages, and audited 266 packages
+  found 0 vulnerabilities
+
+Command:
+  ./scripts/test_all.sh
+
+Exit:
+  0
+
+Runner contract:
+  tests 13
+  pass 13
+  fail 0
+
+Python:
+  79 passed, 21 subtests passed in 4.28s
+
+TypeScript:
+  tsc --noEmit
+  exit 0
+
+Vitest:
+  Vitest 4.1.11
+  Test Files  27 passed (27)
+  Tests       1276 passed (1276)
+  Duration    8.86s
+
+Production build:
+  vite v8.0.16
+  2403 modules transformed
+  exit 0
+  dist/assets/index-DKZsD9ZH.js  513.78 kB / 140.98 kB gzip
+  dist/assets/index-BCs6S8G2.css 158.84 kB / 26.33 kB gzip
+
+Known non-failing build advisory:
+  The existing entry chunk remains above Vite's 500 kB advisory threshold.
