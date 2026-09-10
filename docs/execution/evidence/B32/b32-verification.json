@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-10T15:37:13.349Z",
+  "timestamp": "2026-09-10T16:40:22.595Z",
   "heroMeasurements": {
     "light": {
       "heroBg": "linear-gradient(125deg, rgb(233, 250, 243) 0%, rgb(234, 242, 255) 55%, rgb(241, 238, 254) 100%)",
@@ -358,29 +358,29 @@
   "performance": {
     "runs": [
       {
-        "fcp": 84,
-        "dcl": 25,
-        "load": 26,
-        "encodedBytes": 953683
-      },
-      {
-        "fcp": 80,
-        "dcl": 26,
-        "load": 26,
-        "encodedBytes": 953683
+        "fcp": 88,
+        "dcl": 27,
+        "load": 28,
+        "encodedBytes": 954964
       },
       {
         "fcp": 76,
-        "dcl": 22,
-        "load": 22,
-        "encodedBytes": 953683
+        "dcl": 25,
+        "load": 25,
+        "encodedBytes": 954964
+      },
+      {
+        "fcp": 80,
+        "dcl": 25,
+        "load": 25,
+        "encodedBytes": 954964
       }
     ],
     "median": {
       "fcp": 80,
       "dcl": 25,
-      "load": 26,
-      "encodedBytes": 953683
+      "load": 25,
+      "encodedBytes": 954964
     }
   }
 }
