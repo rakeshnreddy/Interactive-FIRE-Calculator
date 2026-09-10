@@ -1,62 +1,219 @@
-/* Loaded after the legacy phase stylesheet so the current design contract owns shared tokens. */
+/*
+ * Canonical FinPath design tokens.
+ *
+ * This file is imported after the historical component stylesheet. New component
+ * rules consume the semantic --color-* / --space-* / --radius-* roles below.
+ * The short aliases are kept only as a migration bridge for existing selectors;
+ * their values are defined here, not in the legacy phase layers.
+ */
 .app {
-  --canvas: #f1f6f5;
-  --surface: #ffffff;
-  --surface-strong: #ffffff;
-  --surface-soft: #e8f0ee;
-  --field-bg: #f7faf9;
-  --heading: #122522;
-  --text: #263c38;
-  --muted: #62736f;
-  --muted-strong: #415550;
-  --border: #d4dfdc;
-  --border-strong: #aebfba;
-  --accent: #00776d;
-  --accent-hover: #005f58;
-  --accent-contrast: #ffffff;
-  --accent-soft: rgba(0, 119, 109, 0.14);
-  --accent-wash: rgba(0, 119, 109, 0.07);
-  --data-blue: #3159c7;
-  --data-blue-soft: rgba(49, 89, 199, 0.12);
-  --warm: #c45438;
-  --warm-soft: rgba(196, 84, 56, 0.12);
-  --warning: #9b6500;
-  --chart-primary: #00776d;
-  --chart-secondary: #3159c7;
+  --color-canvas: #f4f7f7;
+  --color-surface: #ffffff;
+  --color-surface-strong: #ffffff;
+  --color-surface-inset: #edf2f1;
+  --color-field-surface: #f8faf9;
+  --color-heading: #17211f;
+  --color-body: #293431;
+  --color-muted: #5c6966;
+  --color-muted-strong: #46534f;
+  --color-border: #d9e1df;
+  --color-control-border: #71827d;
+  --color-primary-bg: #087f72;
+  --color-primary-hover-bg: #05695f;
+  --color-primary-pressed-bg: #04554e;
+  --color-primary-fg: #ffffff;
+  --color-focus: #3267c8;
+  --color-success: #247a56;
+  --color-warning: #9a5c12;
+  --color-danger: #b63e4d;
+  --color-data-1: #087f72;
+  --color-data-2: #3267c8;
+  --color-data-3: #b34e30;
+  --color-data-4: #9a5c12;
+  --color-inverse-surface: #173b52;
+  --color-inverse-heading: #ffffff;
+  --color-inverse-body: #dce9ec;
+  --color-inverse-border: rgba(255, 255, 255, 0.34);
+  --color-nav-surface: #0b2421;
+  --color-nav-text: #edf7f4;
+  --color-nav-accent: #8ee7d9;
+  --shadow-overlay: 0 16px 40px rgba(19, 40, 34, 0.09);
+  --shadow-rest: 0 1px 2px rgba(19, 40, 34, 0.06);
+  --font-body-size: 1rem;
+  --font-body-line: 1.5;
+  --font-label-size: 0.875rem;
+  --font-label-line: 1.4;
+  --font-caption-size: 0.75rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-18: 4.5rem;
+  --radius-badge: 0.25rem;
+  --radius-control: 0.375rem;
+  --radius-panel: 0.5rem;
+  --control-hit-size: 2.75rem;
+
+  --canvas: var(--color-canvas);
+  --surface: var(--color-surface);
+  --surface-strong: var(--color-surface-strong);
+  --surface-soft: var(--color-surface-inset);
+  --field-bg: var(--color-field-surface);
+  --heading: var(--color-heading);
+  --text: var(--color-body);
+  --muted: var(--color-muted);
+  --muted-strong: var(--color-muted-strong);
+  --border: var(--color-border);
+  --border-strong: var(--color-control-border);
+  --shadow: var(--shadow-overlay);
+  --shadow-soft: var(--shadow-rest);
+  --accent: var(--color-primary-bg);
+  --accent-hover: var(--color-primary-hover-bg);
+  --accent-contrast: var(--color-primary-fg);
+  --accent-soft: rgba(8, 127, 114, 0.12);
+  --accent-wash: rgba(8, 127, 114, 0.07);
+  --data-blue: var(--color-data-2);
+  --data-blue-soft: rgba(50, 103, 200, 0.11);
+  --warm: var(--color-data-3);
+  --warm-soft: rgba(179, 78, 48, 0.11);
+  --success: var(--color-success);
+  --success-soft: rgba(36, 122, 86, 0.11);
+  --warning: var(--color-warning);
+  --danger: var(--color-danger);
+  --danger-soft: rgba(182, 62, 77, 0.1);
+  --chart-primary: var(--color-data-1);
+  --chart-secondary: var(--color-data-2);
+  --chart-grid: rgba(70, 83, 79, 0.15);
+  --page-glaze: rgba(255, 255, 255, 0.42);
   background: var(--canvas);
 }
 
 .app[data-mode="dark"] {
-  --canvas: #0d1515;
-  --surface: #16201f;
-  --surface-strong: #1a2624;
-  --surface-soft: #202d2b;
-  --field-bg: #111b1a;
-  --heading: #f1f7f5;
-  --text: #d6e1de;
-  --muted: #9db0ab;
-  --muted-strong: #c1d0cc;
-  --border: #30423e;
-  --border-strong: #506660;
-  --accent: #63d3c2;
-  --accent-hover: #83e0d1;
-  --accent-contrast: #09231f;
-  --accent-soft: rgba(99, 211, 194, 0.16);
-  --accent-wash: rgba(99, 211, 194, 0.09);
-  --data-blue: #92afff;
-  --data-blue-soft: rgba(146, 175, 255, 0.15);
-  --warm: #ff9a7d;
-  --warm-soft: rgba(255, 154, 125, 0.14);
-  --warning: #efbf64;
-  --chart-primary: #63d3c2;
-  --chart-secondary: #92afff;
+  --color-canvas: #111715;
+  --color-surface: #18201e;
+  --color-surface-strong: #1c2522;
+  --color-surface-inset: #202a27;
+  --color-field-surface: #141b19;
+  --color-heading: #f1f5f3;
+  --color-body: #dce5e2;
+  --color-muted: #aab7b3;
+  --color-muted-strong: #c5cfcc;
+  --color-border: #34413d;
+  --color-control-border: #6b827b;
+  --color-primary-bg: #5bc7b5;
+  --color-primary-hover-bg: #75d4c4;
+  --color-primary-pressed-bg: #47aa99;
+  --color-primary-fg: #0d2420;
+  --color-focus: #83a9f4;
+  --color-success: #75cda4;
+  --color-warning: #e4b15f;
+  --color-danger: #f18491;
+  --color-data-1: #5bc7b5;
+  --color-data-2: #83a9f4;
+  --color-data-3: #ef916f;
+  --color-data-4: #e4b15f;
+  --shadow-overlay: 0 18px 44px rgba(0, 0, 0, 0.28);
+  --shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --accent-soft: rgba(91, 199, 181, 0.14);
+  --accent-wash: rgba(91, 199, 181, 0.08);
+  --data-blue-soft: rgba(131, 169, 244, 0.14);
+  --warm-soft: rgba(239, 145, 111, 0.14);
+  --success-soft: rgba(117, 205, 164, 0.13);
+  --danger-soft: rgba(241, 132, 145, 0.13);
+  --chart-grid: rgba(170, 183, 179, 0.15);
+  --page-glaze: rgba(4, 7, 13, 0.38);
+}
+
+/* Shared control primitives: 44px targets, native semantics, and one focus role. */
+.app.app button {
+  min-block-size: var(--control-hit-size);
+  min-height: var(--control-hit-size);
+}
+
+.app.app .breadcrumbs button {
+  min-block-size: auto;
+  min-height: auto;
+}
+
+.app :where(.primary-button, .secondary-button, .nav-button, .icon-button, .topbar-link) {
+  border-radius: var(--radius-control);
+}
+
+.app :where(.primary-button, .secondary-button) {
+  min-height: var(--control-hit-size);
+}
+
+.app .primary-button {
+  border-color: var(--color-primary-bg);
+  color: var(--color-primary-fg);
+  background: var(--color-primary-bg);
+  box-shadow: var(--shadow-rest);
+}
+
+.app .primary-button:hover:not(:disabled) {
+  border-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-fg);
+  background: var(--color-primary-hover-bg);
+  box-shadow: var(--shadow-rest);
+  filter: none;
+}
+
+.app .primary-button:active:not(:disabled),
+.app .primary-button[aria-pressed="true"] {
+  border-color: var(--color-primary-pressed-bg);
+  color: var(--color-primary-fg);
+  background: var(--color-primary-pressed-bg);
+}
+
+.app .secondary-button {
+  border-color: var(--color-control-border);
+  color: var(--color-heading);
+  background: var(--color-surface);
+}
+
+.app .secondary-button:hover:not(:disabled) {
+  border-color: var(--color-primary-bg);
+  color: var(--color-heading);
+  background: var(--color-surface-inset);
+}
+
+.app :where(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.app button[aria-busy="true"] {
+  cursor: progress;
+}
+
+.app.app :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]), select, textarea) {
+  min-height: var(--control-hit-size);
+  font-size: var(--font-body-size);
+  line-height: var(--font-body-line);
+}
+
+.app :where(.field input, .field select, .compound-select, .calculator-input-control) {
+  border-color: var(--color-control-border);
+  border-radius: var(--radius-control);
+}
+
+.app :where(.field-has-issue input, .field.has-error .calculator-input-control, [aria-invalid="true"]) {
+  border-color: var(--color-danger);
+}
+
+.app .icon-button {
+  width: var(--control-hit-size);
+  height: var(--control-hit-size);
 }
 
 .topbar {
   min-height: 64px;
   padding-block: 0.55rem;
   border-color: rgba(255, 255, 255, 0.12);
-  background: color-mix(in srgb, #0b2421 88%, transparent);
+  background: color-mix(in srgb, var(--color-nav-surface) 88%, transparent);
   box-shadow: 0 8px 28px rgba(5, 25, 22, 0.18);
 }
 
@@ -69,7 +226,7 @@
 
 .topbar .topbar-link {
   border-color: rgba(255, 255, 255, 0.24);
-  color: #edf7f4;
+  color: var(--color-nav-text);
   background: transparent;
 }
 
@@ -78,14 +235,14 @@
 }
 
 .brand svg {
-  color: #67d8c7;
+  color: var(--color-nav-accent);
 }
 
 .topbar .nav-button {
   gap: 0.42rem;
-  min-height: 40px;
+  min-height: var(--control-hit-size);
   padding-inline: 0.7rem;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   border-color: transparent;
   background: transparent;
 }
@@ -100,8 +257,8 @@
 }
 
 .topbar .topbar-link:focus-visible {
-  outline-color: #8ee7d9;
-  box-shadow: 0 0 0 2px #0b2421;
+  outline-color: var(--color-nav-accent);
+  box-shadow: 0 0 0 2px var(--color-nav-surface);
 }
 
 .topbar .topbar-link:active {
@@ -118,15 +275,15 @@
 }
 
 .topbar .nav-button.active {
-  color: #8be4d6;
+  color: var(--color-nav-accent);
   background: rgba(99, 211, 194, 0.12);
 }
 
 .topbar .topbar-primary,
 .topbar .topbar-primary:hover {
   color: #0a2420;
-  border-color: #80dfd1;
-  background: #80dfd1;
+  border-color: var(--color-nav-accent);
+  background: var(--color-nav-accent);
 }
 
 .landing-hero,
@@ -201,13 +358,13 @@
 }
 
 .landing-continuity-band h2 {
-  color: #ffffff;
+  color: var(--color-inverse-heading);
 }
 
 .landing-continuity-band .primary-button {
   color: #102b28;
-  border-color: #8ee7d9;
-  background: #8ee7d9;
+  border-color: var(--color-nav-accent);
+  background: var(--color-nav-accent);
 }
 
 .landing-continuity-band .primary-button:hover {
@@ -217,8 +374,8 @@
 }
 
 .landing-continuity-band .primary-button:focus-visible {
-  outline-color: #ffffff;
-  box-shadow: 0 0 0 2px #173b52;
+  outline-color: var(--color-inverse-heading);
+  box-shadow: 0 0 0 2px var(--color-inverse-surface);
 }
 
 .landing-continuity-band .primary-button:active {
@@ -229,8 +386,8 @@
 
 .landing-continuity-band .primary-button:disabled {
   color: rgba(16, 43, 40, 0.72);
-  border-color: #8ee7d9;
-  background: #8ee7d9;
+  border-color: var(--color-nav-accent);
+  background: var(--color-nav-accent);
   opacity: 0.72;
 }
 
@@ -294,7 +451,19 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
+  .topbar,
+  .mobile-nav,
+  .desktop-nav-menu {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   .topbar {
-    background: #0b2421;
+    background: var(--color-nav-surface);
+  }
+
+  .mobile-nav,
+  .desktop-nav-menu {
+    background: var(--color-surface-strong);
   }
 }

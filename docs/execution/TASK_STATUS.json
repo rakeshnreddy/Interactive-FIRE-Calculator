@@ -253,13 +253,13 @@
       "id": "B16",
       "title": "Establish authoritative design tokens and primitives",
       "checkpoint": "C01",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B15"
       ],
       "prompt": "prompts/B16.md",
       "submission": null,
-      "owner": null,
+      "owner": "Codex implementing session 2026-09-09",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
