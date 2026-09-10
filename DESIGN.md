@@ -10,31 +10,39 @@ FinPath uses a vivid precision aesthetic: calm operational surfaces, crisp typog
 
 - Canvas: `#f4f8fb`
 - Surface: `#fbfdff`
+- Surface strong: `#ffffff`
 - Soft surface: `#eef4f7`
 - Ink: `#102c35`
 - Muted ink: `#526873`
 - Border: `#cfdee4`
+- Control border: `#71858e`
 - Primary teal: `#006b60`
 - Data blue: `#2455a6`
+- Supporting violet: `#6552a5`
 - Warm accent: `#b34e30`
 - Success: `#1d714f`
 - Warning: `#885100`
 - Danger: `#a32d48`
+- Focus ring: `#2455a6` plus surface gap
 
 ### Dark
 
 - Canvas: `#08151c`
 - Surface: `#10232c`
+- Surface strong: `#132b37`
 - Soft surface: `#0b1b23`
 - Ink: `#eaf6f7`
 - Muted ink: `#a4bbc4`
 - Border: `#304b57`
+- Control border: `#66838f`
 - Primary teal: `#69e3ca`
 - Data blue: `#8abaff`
+- Supporting violet: `#bba9ef`
 - Warm accent: `#ef916f`
 - Success: `#83ddb0`
 - Warning: `#f0bf72`
 - Danger: `#ff9aae`
+- Focus ring: `#8abaff` plus surface gap
 
 Teal identifies primary actions and current state. Cobalt supports growth, charts, and comparison. Warm coral identifies long-term or consequential decisions. Gold is reserved for warnings and select chart emphasis. Solid color bands may identify major decision families on public pages; operational pages use the same hues as thin hierarchy accents. Semantic colors retain their meaning. Never use gradient text, color blobs, or color without an information role.
 
