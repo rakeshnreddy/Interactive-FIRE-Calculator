@@ -1,4 +1,6 @@
-# C01 final-candidate recheck
+# C01 initial candidate recheck (historical)
+
+> Superseded by [the corrected final candidate](../C01-rework/final-candidate.md) and [accepted review](../../reviews/C01.md). The blocked items below describe the earlier submission.
 
 Evidence date: 2026-09-09. Final code candidate: `ad580088938fc9f2a0e499eb70f0608be0c89aff` (B17). Evidence-only commits after this SHA do not change the candidate product code.
 

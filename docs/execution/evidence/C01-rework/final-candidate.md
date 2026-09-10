@@ -8,7 +8,7 @@ Final code candidate: `ccebac7d5bcaf645721e2e67ea490a7f447e1db9`
 
 PR: [#140](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/140), base `codex/dependency-security-refresh`, branch `codex/finpath-quality-execution`. The PR remains unmerged.
 
-Immutable static preview: [f05b7516](https://f05b7516.interactive-fire-calculator.pages.dev), deployment `f05b7516-bcbc-4e07-9925-5de3385d9e0f`, provider branch `codex/finpath-quality-execution`, provider source `ccebac7`. Only the verified static `dist` directory was published from an isolated temporary working directory; no Functions, backend, database binding, or hosted write was included.
+Immutable static preview: [f05b7516](https://f05b7516.interactive-fire-calculator.pages.dev), deployment `f05b7516-bcbc-4e07-9925-5de3385d9e0f`, provider branch `codex/finpath-quality-execution`, provider source `ccebac7`. Only the verified static `dist` directory was published from an isolated temporary working directory; no Functions, backend code, or hosted write was included.
 
 ## Review corrections
 
@@ -24,3 +24,5 @@ The unmodified `./scripts/test_all.sh` passed from a clean `git archive` of the 
 GitHub Actions `Verify` [run 34461062495](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34461062495) passed at the exact full SHA. Later packet-only changes do not modify product/config files.
 
 Known non-blocking advisory: Vite still reports the pre-existing main entry chunk above 500 kB. Production deployment remains out of scope; C01 is submitted for review only.
+
+Reviewer clarification 2026-09-10: Cloudflare reports `uses_functions=false` for this static deployment, but its metadata still lists the shared D1 binding. This is not proof of database isolation; B33 remains unaccepted.

@@ -238,14 +238,14 @@
       "id": "B15",
       "title": "Repair light/dark contrast defects",
       "checkpoint": "C01",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B15.md",
       "submission": "submissions/B15.md",
       "owner": "Codex implementing session 2026-09-10",
-      "code_sha": "7057cb220d488a3dc049dc11c544c466c0fa1b58",
+      "code_sha": "ccebac7d5bcaf645721e2e67ea490a7f447e1db9",
       "review": "reviews/C01.md",
       "blocked_reason": null
     },
@@ -253,7 +253,7 @@
       "id": "B16",
       "title": "Establish authoritative design tokens and primitives",
       "checkpoint": "C01",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B15"
       ],
@@ -268,14 +268,14 @@
       "id": "B17",
       "title": "Polish public/account navigation and keyboard behavior",
       "checkpoint": "C01",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B16"
       ],
       "prompt": "prompts/B17.md",
       "submission": "submissions/B17.md",
       "owner": "Codex implementing session 2026-09-10",
-      "code_sha": "ad580088938fc9f2a0e499eb70f0608be0c89aff",
+      "code_sha": "ccebac7d5bcaf645721e2e67ea490a7f447e1db9",
       "review": "reviews/C01.md",
       "blocked_reason": null
     },

@@ -8,7 +8,7 @@ GitHub Actions `Verify` run [34461062495](https://github.com/rakeshnreddy/Intera
 
 ## Successful immutable static preview
 
-After explicit owner authorization, only the exact candidate's static `dist` directory was published from `/tmp/finpath-static-deploy.QXa4Qy`, which contained no repository `functions/` directory or `wrangler.toml`. The command used the explicit preview branch, project, full commit hash, and `--commit-dirty=false`. It did not publish Functions, backend code, or a database binding.
+After explicit owner authorization, only the exact candidate's static `dist` directory was published from `/tmp/finpath-static-deploy.QXa4Qy`, which contained no repository `functions/` directory or `wrangler.toml`. The command used the explicit preview branch, project, full commit hash, and `--commit-dirty=false`. It did not publish Functions or backend code.
 
 Cloudflare reports:
 
@@ -39,3 +39,5 @@ Installed Chrome 152.0.7977.83 rendered the immutable preview through Playwright
 - Calculator library desktop render: [`hosted-calculators-1440x900.png`](../../../../output/playwright/C01/B16-rework/hosted-calculators-1440x900.png).
 
 No production deploy, hosted write, auth bypass, save, import, deletion, real identity, or financial record was used.
+
+Reviewer clarification 2026-09-10: Cloudflare reports `uses_functions=false` for this static deployment, but its metadata still lists the shared D1 binding. This is not proof of database isolation; B33 remains unaccepted.

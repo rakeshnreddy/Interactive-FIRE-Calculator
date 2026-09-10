@@ -1,13 +1,13 @@
 # Checkpoints and release ledger
 
-Only C01 is released for implementation now. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+Only C01T is released for implementation now. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
 | C00 | Existing verification foundation | B01 | accepted | 1664043 | [record](reviews/C00.md) |
 | C00R | Development-tool security repair | B34 | accepted | b48ac00328f356746bd501921562e727feb7a8e5 | [record](reviews/C00R.md) |
-| C01 | Visible defects and design foundation | B15 → B16 → B17 | released | — | [changes requested](reviews/C01.md) |
-| C01T | Light/dark glass and gradient palette | B32 | locked | — | — |
+| C01 | Visible defects and design foundation | B15 → B16 → B17 | accepted | ccebac7d5bcaf645721e2e67ea490a7f447e1db9 | [record](reviews/C01.md) |
+| C01T | Light/dark glass and gradient palette | B32 | released | — | — |
 | C01I | Isolated preview publication prerequisite | B33 | locked | — | — |
 | C02 | Currency and save integrity | B02 → B03 → B04 | locked | — | — |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | locked | — | — |
@@ -43,4 +43,6 @@ Latest audit amendment (2026-09-08): C00R/B34 is now the first released checkpoi
 
 Reviewer release 2026-09-09: C00R/B34 accepted at `b48ac00328f356746bd501921562e727feb7a8e5`; [independent review](reviews/C00R.md). This supersedes the September 8 release amendment. C01 alone is released, beginning B15. Later checkpoints remain locked.
 
-C01 review 2026-09-09: CHANGES_REQUESTED at code `ad580088938fc9f2a0e499eb70f0608be0c89aff`; no C01 task accepted. Same-checkpoint rework order: fix R1 in B16 first, then refresh all B15/B16/B17 evidence and satisfy R2–R4 in [C01 review](reviews/C01.md). C01 remains released for this rework only; C01T and later checkpoints remain locked.
+C01 review 2026-09-09: CHANGES_REQUESTED at code `ad580088938fc9f2a0e499eb70f0608be0c89aff`; no C01 task accepted. Same-checkpoint rework order: fix R1 in B16 first, then refresh all B15/B16/B17 evidence and satisfy R2–R4 in [initial C01 review](reviews/C01-initial.md). C01 remains released for this rework only; C01T and later checkpoints remain locked.
+
+C01 acceptance 2026-09-10: all three tasks accepted at `ccebac7d5bcaf645721e2e67ea490a7f447e1db9` on immutable static preview f05b7516. [Review](reviews/C01.md) supersedes the earlier rework-only release. C01T/B32 alone is now released; C01I/B33 and later work remain locked. This does not establish database isolation or production readiness.

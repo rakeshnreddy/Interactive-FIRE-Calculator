@@ -131,7 +131,7 @@
 
 Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL_DESIGN_SPEC.md). Every item below remains unimplemented until independently accepted.
 
-- [ ] **B15 — Planned: Repair light/dark contrast defects.**
+- [x] **B15 — Accepted: Repair light/dark contrast defects.**
   - User problem/evidence: Invisible Sign in and low-contrast continuity heading prevent basic reading. Visual audit V01–V02.
   - Expected outcome/scope: Sign in is visibly labeled in light/dark mode; homepage inverse heading meets large-text contrast; normal button text meets 4.5:1; focus remains visible; no other header or calculator color regresses.
   - Non-goals: No redesign, token-wide migration, auth setup, formula change or hidden controls.
@@ -143,7 +143,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 0.5–1 day; agent 2–4 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B15.md](execution/prompts/B15.md).
 
-- [ ] **B16 — Planned: Establish authoritative design tokens and primitives.**
+- [x] **B16 — Accepted: Establish authoritative design tokens and primitives.**
   - User problem/evidence: Conflicting generations of CSS make consistent polish unreliable. Visual audit V03/V11.
   - Expected outcome/scope: One canonical token table matches rendered colors; changed inputs 16px at default settings; buttons have documented hit areas; inverse headings retain contrast; shared style changes pass representative light/dark screenshots.
   - Non-goals: No wholesale 10k-line rewrite, font replacement, framework install, giant App extraction or automatic deletion of unproven unused CSS.
@@ -155,7 +155,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B16.md](execution/prompts/B16.md).
 
-- [ ] **B17 — Planned: Polish public/account navigation and keyboard behavior.**
+- [x] **B17 — Accepted: Polish public/account navigation and keyboard behavior.**
   - User problem/evidence: Signed-out visitors see private destinations first and mobile disclosure ignores Escape. Visual audit V05–V06.
   - Expected outcome/scope: Mobile Escape closes and returns focus; no hidden focusable navigation; selected route exposed; public primary path works without auth; native link behavior and back/forward pass.
   - Non-goals: No auth bypass, new routing framework, production setup or unrelated route renaming.
@@ -374,3 +374,5 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
 ## Milestone reporting
 
 For each item record commit, changed files, red/green tests, local full-suite result, PR/CI URL, immutable preview URL and hosted verification scope. Report remaining risks and the exact next Ready item. Production readiness is never inferred from document completion or preview deployment.
+
+C01 acceptance 2026-09-10: B15/B16/B17 accepted together at `ccebac7d5bcaf645721e2e67ea490a7f447e1db9`; [independent review](execution/reviews/C01.md). Next released task: B32 in C01T.
