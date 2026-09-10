@@ -529,15 +529,15 @@
       "id": "B32",
       "title": "Implement light/dark glass and gradient material system",
       "checkpoint": "C01T",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B16",
         "B17"
       ],
       "prompt": "prompts/B32.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B32.md",
+      "owner": "Codex implementing session 2026-09-10",
+      "code_sha": "1b1b476f52f0916d57ca5ff1d473f3ddc41cb6c6",
       "review": null,
       "blocked_reason": null
     },
