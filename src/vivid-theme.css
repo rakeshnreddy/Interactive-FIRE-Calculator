@@ -453,7 +453,7 @@
 @media (prefers-reduced-transparency: reduce) {
   .topbar,
   .mobile-nav,
-  .desktop-nav-menu {
+  .desktop-nav-dropdown {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -463,7 +463,7 @@
   }
 
   .mobile-nav,
-  .desktop-nav-menu {
+  .desktop-nav-dropdown {
     background: var(--color-surface-strong);
   }
 }

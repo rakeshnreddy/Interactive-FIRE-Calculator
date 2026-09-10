@@ -253,7 +253,7 @@
       "id": "B16",
       "title": "Establish authoritative design tokens and primitives",
       "checkpoint": "C01",
-      "status": "changes_requested",
+      "status": "in_progress",
       "dependencies": [
         "B15"
       ],
