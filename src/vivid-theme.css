@@ -256,6 +256,11 @@
   height: var(--control-hit-size);
 }
 
+body,
+.app {
+  overflow-x: clip;
+}
+
 /* Base navigation and overlays: solid default with glass progressive enhancement */
 .topbar {
   min-height: 64px;
@@ -718,28 +723,126 @@
 }
 
 @media print {
-  .topbar,
+  .app,
+  .app[data-mode="dark"] {
+    --color-canvas: #ffffff !important;
+    --color-surface: #ffffff !important;
+    --color-surface-strong: #ffffff !important;
+    --color-surface-inset: #ffffff !important;
+    --color-heading: #000000 !important;
+    --color-body: #000000 !important;
+    --color-muted: #333333 !important;
+    --color-border: #d0d7de !important;
+    --color-control-border: #000000 !important;
+    --color-nav-surface: #ffffff !important;
+    --color-nav-text: #000000 !important;
+    --color-nav-accent: #000000 !important;
+    --hero-heading: #000000 !important;
+    --hero-body: #000000 !important;
+    --hero-eyebrow: #000000 !important;
+    --hero-paths-border: #d0d7de !important;
+    --hero-paths-span: #000000 !important;
+    --hero-paths-link: #000000 !important;
+    --hero-paths-link-hover: #000000 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+  }
+
+  /* Decorative media and overlays: do not print dark photo or dark scrim */
+  .landing-hero-media,
+  .landing-hero-scrim {
+    display: none !important;
+  }
+
+  /* Non-essential navigation overlays */
   .mobile-nav,
-  .desktop-nav-dropdown,
-  .landing-hero {
+  .desktop-nav-dropdown {
+    display: none !important;
+  }
+
+  /* Header: pair every retained element with readable foreground/background */
+  .topbar {
     background: #ffffff !important;
     color: #000000 !important;
+    border-bottom: 1px solid #d0d7de !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
   }
 
-  .landing-hero-copy h1,
-  .landing-hero-copy p,
-  .landing-hero-copy .eyebrow,
-  .landing-popular-paths span,
-  .landing-popular-paths a {
+  .topbar :where(a, button, span, strong, svg, div) {
     color: #000000 !important;
+    background: transparent !important;
+    border-color: #000000 !important;
+    box-shadow: none !important;
   }
 
-  .app .primary-button {
-    background: none !important;
+  .topbar-brand,
+  .topbar-brand svg,
+  .brand,
+  .brand svg {
+    color: #000000 !important;
+    fill: #000000 !important;
+  }
+
+  .topbar .nav-button,
+  .topbar .nav-link {
+    color: #000000 !important;
+    background: transparent !important;
+  }
+
+  .topbar .topbar-primary {
+    background: transparent !important;
     color: #000000 !important;
     border: 1px solid #000000 !important;
   }
+
+  /* Landing hero */
+  .landing-hero {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    border-bottom: 1px solid #d0d7de !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    min-height: auto !important;
+  }
+
+  .landing-hero-copy :where(h1, p, span, strong, a, .eyebrow) {
+    color: #000000 !important;
+  }
+
+  .landing-popular-paths :where(span, a) {
+    color: #000000 !important;
+    border-color: #d0d7de !important;
+  }
+
+  /* Planning path strip */
+  .landing-path-strip,
+  .landing-path-strip a,
+  .landing-path-strip a:nth-child(1),
+  .landing-path-strip a:nth-child(2),
+  .landing-path-strip a:nth-child(3) {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #d0d7de !important;
+  }
+
+  .landing-path-strip :where(strong, small, span, svg) {
+    color: #000000 !important;
+  }
+
+  /* Interactive buttons */
+  .app :where(.primary-button, .secondary-button, button) {
+    background: transparent !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+    box-shadow: none !important;
+  }
 }
+
