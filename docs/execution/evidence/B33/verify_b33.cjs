@@ -18,6 +18,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const {
   evaluateB33Results,
+  parseAuthPreflightOutput,
   APPROVED_PREVIEW_DB_ID,
   EXPECTED_PRODUCTION_DB_ID
 } = require('./evaluator.cjs');
@@ -30,9 +31,76 @@ const PROJECT_NAME = 'interactive-fire-calculator';
 const TARGET_BRANCH = 'codex/finpath-quality-execution';
 const STATIC_PREVIEW_URL = 'https://03cba125.interactive-fire-calculator.pages.dev';
 
-async function main() {
-  console.log('=== FinPath B33 Preview Isolation Audit Suite ===');
+function parseArgs(argv) {
+  const options = {
+    fixture: null,
+    output: path.join(EVIDENCE_DIR, 'b33-verification.json'),
+    deploymentId: null
+  };
+  for (let i = 2; i < argv.length; i++) {
+    if (argv[i] === '--fixture' && argv[i + 1]) {
+      options.fixture = path.resolve(argv[++i]);
+    } else if (argv[i] === '--output' && argv[i + 1]) {
+      options.output = path.resolve(argv[++i]);
+    } else if (argv[i] === '--deployment-id' && argv[i + 1]) {
+      options.deploymentId = argv[++i];
+    }
+  }
+  return options;
+}
+
+async function main(argv = process.argv) {
+  const options = parseArgs(argv);
   const timestamp = new Date().toISOString();
+
+  // If running in fixture mode (used for offline subprocess integration tests)
+  if (options.fixture) {
+    if (!fs.existsSync(options.fixture)) {
+      console.error(`Error: Fixture file not found: ${options.fixture}`);
+      process.exit(1);
+    }
+    const fixtureRaw = fs.readFileSync(options.fixture, 'utf8');
+    const fixtureData = JSON.parse(fixtureRaw);
+
+    const payload = fixtureData.evidence ? {
+      approved_target_id: APPROVED_PREVIEW_DB_ID,
+      project_metadata: {
+        preview_d1_id: fixtureData.evidence.project?.preview_d1_binding,
+        production_d1_id: fixtureData.evidence.project?.production_d1_binding
+      },
+      deployment_metadata: {
+        id: fixtureData.evidence.deployment?.id,
+        short_id: fixtureData.evidence.deployment?.short_id,
+        url: fixtureData.evidence.deployment?.url,
+        environment: fixtureData.evidence.deployment?.environment || 'preview',
+        uses_functions: fixtureData.evidence.deployment?.uses_functions,
+        latest_stage_status: fixtureData.evidence.deployment?.latest_stage_status || 'success',
+        effective_d1_id: fixtureData.evidence.deployment?.effective_d1_id
+      },
+      git_policy: {
+        target_branch: fixtureData.evidence.git_source?.target_branch || TARGET_BRANCH,
+        preview_deployment_setting: fixtureData.evidence.git_source?.setting,
+        preview_branch_includes: fixtureData.evidence.git_source?.branch_includes,
+        preview_branch_excludes: fixtureData.evidence.git_source?.branch_excludes
+      },
+      migration_evidence: fixtureData.evidence.migrations,
+      endpoint_probes: fixtureData.evidence.endpoints?.active_preview,
+      auth_preflight: fixtureData.evidence.auth_preflight
+    } : fixtureData;
+
+    const outcome = evaluateB33Results(payload);
+    const report = {
+      timestamp,
+      evaluation: outcome,
+      evidence: fixtureData.evidence || payload
+    };
+
+    fs.writeFileSync(options.output, JSON.stringify(report, null, 2) + '\n');
+    console.log(`B33 Fixture Verification: ${outcome.status} (exit ${outcome.exitCode})`);
+    process.exit(outcome.exitCode);
+  }
+
+  console.log('=== FinPath B33 Preview Isolation Audit Suite ===');
 
   // 1. Read OAuth token from wrangler config or environment
   let token = process.env.CLOUDFLARE_API_TOKEN;
@@ -71,15 +139,11 @@ async function main() {
   const previewSetting = source.preview_deployment_setting || 'none';
   const branchIncludes = source.preview_branch_includes || [];
   const branchExcludes = source.preview_branch_excludes || [];
-  const isBranchAutoDeploying = branchIncludes.includes(TARGET_BRANCH);
 
   console.log(`Preview Deployment Setting: ${previewSetting}`);
   console.log(`Preview Branch Includes: ${JSON.stringify(branchIncludes)}`);
+  console.log(`Preview Branch Excludes: ${JSON.stringify(branchExcludes)}`);
   console.log(`Target Branch: ${TARGET_BRANCH}`);
-  console.log(`Auto-deploying on Push: ${isBranchAutoDeploying}`);
-  if (!isBranchAutoDeploying) {
-    console.log(`Notice: Branch ${TARGET_BRANCH} is not in preview_branch_includes; git push events produce idle/skipped stages (is_skipped: true, skip_reason: path_config).`);
-  }
 
   // 4. Fetch Deployments & Identify Active Preview Deployment
   console.log('\n--- Step 3: Inspecting Active Preview Deployments ---');
@@ -91,19 +155,27 @@ async function main() {
     throw new Error(`Failed to fetch deployments: ${JSON.stringify(depListData.errors)}`);
   }
 
-  // Find latest successful preview deployment on our branch with functions
-  const candidateDeployments = depListData.result.filter(d =>
-    d.environment === 'preview' &&
-    d.deployment_trigger?.metadata?.branch === TARGET_BRANCH &&
-    d.latest_stage?.status === 'success' &&
-    !d.is_skipped
-  );
+  let activeDeployment = null;
+  if (options.deploymentId) {
+    activeDeployment = depListData.result.find(d => d.id === options.deploymentId || d.short_id === options.deploymentId);
+    if (!activeDeployment) {
+      throw new Error(`Specified deployment ID ${options.deploymentId} not found in deployments list`);
+    }
+  } else {
+    // Find latest successful preview deployment on our branch with functions
+    const candidateDeployments = depListData.result.filter(d =>
+      d.environment === 'preview' &&
+      d.deployment_trigger?.metadata?.branch === TARGET_BRANCH &&
+      d.latest_stage?.status === 'success' &&
+      !d.is_skipped
+    );
 
-  if (candidateDeployments.length === 0) {
-    throw new Error(`No active preview deployment found for branch ${TARGET_BRANCH}`);
+    if (candidateDeployments.length === 0) {
+      throw new Error(`No active preview deployment found for branch ${TARGET_BRANCH}`);
+    }
+    activeDeployment = candidateDeployments[0];
   }
 
-  const activeDeployment = candidateDeployments[0];
   const activeDeployD1 = activeDeployment.d1_databases?.DB?.id;
   const activeDeployUrl = activeDeployment.url;
 
@@ -113,11 +185,11 @@ async function main() {
   console.log(`Active Deployment Uses Functions: ${activeDeployment.uses_functions}`);
   console.log(`Active Deployment Effective D1 ID: ${activeDeployD1}`);
 
-  // 5. Read-only Schema & Migrations Collection from Preview D1
-  console.log('\n--- Step 4: Collecting Read-only D1 Schema & Migrations from finpath-preview ---');
+  // 5. Read-only Schema & Migrations Collection from Preview D1 using Approved UUID directly
+  console.log(`\n--- Step 4: Collecting Read-only D1 Schema & Migrations (${APPROVED_PREVIEW_DB_ID}) ---`);
   let migrationEvidence = null;
   try {
-    const tableCmd = 'PATH="/opt/homebrew/opt/node/bin:$PATH" npx wrangler d1 execute finpath-preview --remote --command "SELECT name, type FROM sqlite_master WHERE type IN (\'table\', \'view\') ORDER BY name;" --json';
+    const tableCmd = `PATH="/opt/homebrew/opt/node/bin:$PATH" npx wrangler d1 execute ${APPROVED_PREVIEW_DB_ID} --remote --command "SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY name;" --json`;
     const tableOutRaw = execFileSync('sh', ['-c', tableCmd], {
       cwd: REPO_ROOT,
       encoding: 'utf8',
@@ -126,7 +198,7 @@ async function main() {
     const tableJson = JSON.parse(tableOutRaw);
     const rawTables = tableJson[0]?.results || [];
 
-    const migCmd = 'PATH="/opt/homebrew/opt/node/bin:$PATH" npx wrangler d1 execute finpath-preview --remote --command "SELECT id, name, applied_at FROM d1_migrations ORDER BY id;" --json';
+    const migCmd = `PATH="/opt/homebrew/opt/node/bin:$PATH" npx wrangler d1 execute ${APPROVED_PREVIEW_DB_ID} --remote --command "SELECT id, name, applied_at FROM d1_migrations ORDER BY id;" --json`;
     const migOutRaw = execFileSync('sh', ['-c', migCmd], {
       cwd: REPO_ROOT,
       encoding: 'utf8',
@@ -219,7 +291,7 @@ async function main() {
     console.log(`Endpoint /api/health: ERROR (${err.message})`);
   }
 
-  // Private probes
+  // Private probes (canonical set)
   const privatePaths = ['/api/me', '/api/profile', '/api/plans', '/api/accounts'];
   for (const p of privatePaths) {
     try {
@@ -259,34 +331,19 @@ async function main() {
   console.log('\n--- Step 7: Running Production Auth Preflight Diagnostic ---');
   let authPreflightResult = null;
   try {
-    const preflightOut = execFileSync(
+    const stdout = execFileSync(
       'node',
       ['scripts/check_production_auth.mjs', '--check-cloudflare'],
       { cwd: REPO_ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
     );
-    const passMatches = preflightOut.match(/^PASS\s+/gm) || [];
-    authPreflightResult = {
-      status: 'EXECUTED',
-      exit_code: 0,
-      passed_checks: passMatches.length,
-      total_checks: 6,
-      recognized: true,
-      raw_summary: preflightOut.split('\n').filter(l => l.startsWith('PASS') || l.startsWith('FAIL')).join('; ')
-    };
-    console.log(`Auth preflight executed cleanly: ${passMatches.length}/6 passed (diagnostic fail-closed status verified)`);
+    authPreflightResult = parseAuthPreflightOutput({ stdout, stderr: '', exitCode: 0 });
+    console.log(`Auth preflight executed cleanly: ${authPreflightResult.passed_checks}/${authPreflightResult.total_checks} passed (diagnostic fail-closed status verified)`);
   } catch (err) {
-    const fullOut = (err.stdout || '') + (err.stderr || '');
-    const passMatches = fullOut.match(/^PASS\s+/gm) || [];
-    const recognized = fullOut.includes('Production auth preflight') || fullOut.includes('CLERK');
-    authPreflightResult = {
-      status: 'EXECUTED',
-      exit_code: err.status || 1,
-      passed_checks: passMatches.length,
-      total_checks: 6,
-      recognized,
-      raw_summary: fullOut.split('\n').filter(l => l.startsWith('PASS') || l.startsWith('FAIL')).join('; ')
-    };
-    console.log(`Auth preflight exited with code ${err.status}: ${passMatches.length}/6 passed (fail-closed verified)`);
+    const stdout = err.stdout?.toString() || '';
+    const stderr = err.stderr?.toString() || '';
+    const exitCode = err.status ?? 1;
+    authPreflightResult = parseAuthPreflightOutput({ stdout, stderr, exitCode });
+    console.log(`Auth preflight exited with code ${exitCode}: ${authPreflightResult.passed_checks}/${authPreflightResult.total_checks} passed (fail-closed verified)`);
   }
 
   // 8. Run Pure Evaluator
@@ -305,6 +362,7 @@ async function main() {
       url: activeDeployUrl,
       environment: activeDeployment.environment,
       uses_functions: activeDeployment.uses_functions,
+      latest_stage_status: activeDeployment.latest_stage?.status,
       effective_d1_id: activeDeployD1
     },
     git_policy: {
@@ -319,16 +377,18 @@ async function main() {
   };
 
   const outcome = evaluateB33Results(evaluationPayload);
+  const isBranchAutoDeploying = outcome.checks.git_deployment_policy?.auto_deploying || false;
 
   console.log(`\n======================================================`);
   console.log(`B33 VERIFICATION OUTCOME: ${outcome.status} (Exit Code: ${outcome.exitCode})`);
   console.log(`Summary: ${outcome.summary}`);
+  console.log(`Branch Auto-Deploying: ${isBranchAutoDeploying}`);
   console.log(`======================================================`);
   for (const [name, check] of Object.entries(outcome.checks)) {
     console.log(`[${check.status}] ${name}: ${check.details}`);
   }
 
-  // Save complete report to b33-verification.json
+  // Save complete report
   const finalReport = {
     timestamp,
     evaluation: outcome,
@@ -365,14 +425,20 @@ async function main() {
     }
   };
 
-  const outputPath = path.join(EVIDENCE_DIR, 'b33-verification.json');
-  fs.writeFileSync(outputPath, JSON.stringify(finalReport, null, 2) + '\n');
-  console.log(`\nPersisted complete B33 verification evidence to: ${outputPath}`);
+  fs.writeFileSync(options.output, JSON.stringify(finalReport, null, 2) + '\n');
+  console.log(`\nPersisted complete B33 verification evidence to: ${options.output}`);
 
   process.exit(outcome.exitCode);
 }
 
-main().catch(err => {
-  console.error('\nFatal error during B33 verification execution:', err);
-  process.exit(1);
-});
+module.exports = {
+  main,
+  parseArgs
+};
+
+if (require.main === module) {
+  main().catch(err => {
+    console.error('\nFatal error during B33 verification execution:', err);
+    process.exit(1);
+  });
+}

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-11T03:09:16.891Z",
+  "timestamp": "2026-09-11T03:26:54.760Z",
   "evaluation": {
     "status": "PASS",
     "exitCode": 0,
@@ -30,8 +30,7 @@
       },
       "endpoint_probes": {
         "status": "PASS",
-        "failures": [],
-        "details": "Public health returns JSON 200 with matching schema; private endpoints return 401 fail-closed"
+        "details": "Public health returns JSON 200 with matching schema; all canonical private endpoints return 401 fail-closed"
       },
       "production_auth_guard": {
         "status": "PASS",
@@ -71,7 +70,7 @@
       "status": "COLLECTED",
       "database_name": "finpath-preview",
       "database_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
-      "collected_at": "2026-09-11T03:09:16.891Z",
+      "collected_at": "2026-09-11T03:26:54.760Z",
       "queries": [
         "SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY name;",
         "SELECT id, name, applied_at FROM d1_migrations ORDER BY id;"
@@ -198,10 +197,36 @@
     },
     "auth_preflight": {
       "status": "EXECUTED",
+      "recognized": true,
       "exit_code": 1,
       "passed_checks": 0,
       "total_checks": 6,
-      "recognized": true,
+      "checks": [
+        {
+          "name": "Frontend key",
+          "passed": false
+        },
+        {
+          "name": "Production origin",
+          "passed": false
+        },
+        {
+          "name": "Clerk production instance",
+          "passed": false
+        },
+        {
+          "name": "Cloudflare publishable key",
+          "passed": false
+        },
+        {
+          "name": "Cloudflare server credential",
+          "passed": false
+        },
+        {
+          "name": "Cloudflare authorized parties",
+          "passed": false
+        }
+      ],
       "raw_summary": "FAIL  Frontend key; FAIL  Production origin; FAIL  Clerk production instance; FAIL  Cloudflare publishable key; FAIL  Cloudflare server credential; FAIL  Cloudflare authorized parties"
     }
   }
