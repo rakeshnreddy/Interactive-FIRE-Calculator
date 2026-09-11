@@ -545,16 +545,16 @@
       "id": "B33",
       "title": "Isolate preview infrastructure before backend publication",
       "checkpoint": "C01I",
-      "status": "pending",
+      "status": "blocked",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B33.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B33.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "452fbdca849c28233ba6474a38f36b732949c4a0",
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": "Owner authorization required to update Cloudflare Pages preview D1 binding from finpath-production (a5860350-0a50-4ebe-9f5f-1d9916a908e6) to isolated finpath-preview (0dbad68e-7493-452f-8504-98d4c61ee5da)."
     },
     {
       "id": "B34",
