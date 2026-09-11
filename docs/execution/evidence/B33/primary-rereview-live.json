@@ -1,0 +1,77 @@
+{
+  "checkedAt": "2026-09-11T03:14:08.040Z",
+  "project": {
+    "preview": {
+      "DB": {
+        "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+      }
+    },
+    "production": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    },
+    "policy": "custom",
+    "includes": [
+      "codex/cloudflare-pages-theme-plan"
+    ]
+  },
+  "deployment": {
+    "id": "b8f9d6ec-99d3-4cdc-acb4-a6b2f71be5b3",
+    "url": "https://b8f9d6ec.interactive-fire-calculator.pages.dev",
+    "environment": "preview",
+    "uses_functions": true,
+    "d1": {
+      "DB": {
+        "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+      }
+    },
+    "stage": {
+      "name": "deploy",
+      "started_on": null,
+      "ended_on": "2026-09-11T03:05:06.688112Z",
+      "status": "success"
+    },
+    "trigger": {
+      "type": "ad_hoc",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "092a4a2cd0a59a889fe06a47bb4b2b1de1bec861",
+        "commit_message": "docs: simplify landing copy and require relevant product example",
+        "commit_dirty": true
+      }
+    }
+  },
+  "probes": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "health": {
+        "ok": true,
+        "app": "interactive-fire-calculator",
+        "runtime": "cloudflare-pages"
+      }
+    },
+    {
+      "path": "/api/me",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/profile",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/plans",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/accounts",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    }
+  ]
+}

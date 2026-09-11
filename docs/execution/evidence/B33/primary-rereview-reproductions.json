@@ -1,0 +1,27 @@
+[
+  {
+    "name": "missing_private_probes",
+    "status": "PASS",
+    "auto_deploying": false
+  },
+  {
+    "name": "missing_production_id",
+    "status": "PASS",
+    "auto_deploying": false
+  },
+  {
+    "name": "wrong_migration_database",
+    "status": "PASS",
+    "auto_deploying": false
+  },
+  {
+    "name": "wrong_health_runtime",
+    "status": "PASS",
+    "auto_deploying": false
+  },
+  {
+    "name": "unsupported_glob",
+    "status": "PASS",
+    "auto_deploying": false
+  }
+]
