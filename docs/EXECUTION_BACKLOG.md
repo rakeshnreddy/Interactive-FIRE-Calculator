@@ -386,3 +386,5 @@ C01T re-review of 12b3546: B32 remains changes_requested. Hero print improved; l
 C01T third review of dd47fa3: whole-page print verified fixed; bounded native200% layout checks completed. Remaining evaluator missing-telemetry false PASS and manual reader/interaction proof keep B32 open. Follow latest review and bounded rework prompt; no new task accepted.
 
 C01T final acceptance: B32 accepted at `32584da7e47307a35730911e3567f02f9095550b` under the owner’s explicit actual-reader deferral, tracked in B31. This supersedes earlier C01T changes-requested notes. Accepted total 6/34 (17.6% by task count). C01I/B33 is released for its scoped isolation work; remote setup still needs its specified owner authorization. See [final review](execution/reviews/C01T.md).
+
+C01I primary review: B33 requires audit reliability repairs and scoped preview-binding authorization. No acceptance; C02 stays locked. See [review](execution/reviews/C01I.md) and [rework prompt](execution/C01I_REWORK_PROMPT.md).

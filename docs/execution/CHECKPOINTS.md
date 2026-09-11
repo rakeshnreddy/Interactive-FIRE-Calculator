@@ -8,7 +8,7 @@ Only C01I is released for its scoped isolation work now. C01T is accepted with t
 | C00R | Development-tool security repair | B34 | accepted | b48ac00328f356746bd501921562e727feb7a8e5 | [record](reviews/C00R.md) |
 | C01 | Visible defects and design foundation | B15 → B16 → B17 | accepted | ccebac7d5bcaf645721e2e67ea490a7f447e1db9 | [record](reviews/C01.md) |
 | C01T | Light/dark glass and gradient palette | B32 | accepted | 32584da7e47307a35730911e3567f02f9095550b | [accepted with reader deferral](reviews/C01T.md) |
-| C01I | Isolated preview publication prerequisite | B33 | released | — | — |
+| C01I | Isolated preview publication prerequisite | B33 | released | — | [changes requested; owner blocker](reviews/C01I.md) |
 | C02 | Currency and save integrity | B02 → B03 → B04 | locked | — | — |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | locked | — | — |
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | locked | — | — |
