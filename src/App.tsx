@@ -4351,7 +4351,7 @@ export function AccountsPanel({
   );
 }
 
-function AuthGate({
+export function AuthGate({
   auth,
   route,
   onNavigate
@@ -4364,15 +4364,15 @@ function AuthGate({
   const Icon = page.icon;
   const title =
     auth.status === 'not-configured'
-      ? 'Connect Clerk before opening account routes.'
+      ? 'Account features are currently unavailable.'
       : auth.status === 'loading'
         ? 'Checking your session.'
         : `Sign in to open ${page.eyebrow}.`;
   const description =
     auth.status === 'not-configured'
-      ? 'The app is wired for Clerk, but this environment is missing the public browser key. The public calculator library remains available without an account.'
+      ? 'Saved plans, accounts, and cross-device sync require account services that are not active in this preview. You can use all interactive financial calculators without an account.'
       : auth.status === 'loading'
-        ? 'FinPath is confirming whether there is an active Clerk session for this browser.'
+        ? 'FinPath is confirming whether there is an active session for this browser.'
         : `${page.eyebrow} is part of the account-backed planning shell. You can still use the public calculator library without signing in.`;
 
   return (
@@ -4387,22 +4387,18 @@ function AuthGate({
           <p>{description}</p>
         </div>
 
-        {auth.status === 'not-configured' && (
-          <div className="auth-env-list" aria-label="Required Clerk environment variables">
-            <span>Required before production auth can run</span>
-            <code>VITE_CLERK_PUBLISHABLE_KEY</code>
-            <code>CLERK_PUBLISHABLE_KEY</code>
-            <code>CLERK_SECRET_KEY</code>
-            <code>CLERK_AUTHORIZED_PARTIES</code>
-          </div>
-        )}
-
         <div className="auth-gate-actions">
           {auth.status === 'loading' ? (
-            <button className="primary-button icon-text-button" disabled>
-              <LogIn size={17} />
-              Checking session
-            </button>
+            <>
+              <button className="primary-button icon-text-button" disabled>
+                <LogIn size={17} />
+                Checking session
+              </button>
+              <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
+                <Calculator size={16} />
+                Browse calculators
+              </button>
+            </>
           ) : auth.status === 'signed-out' ? (
             <>
               <AuthActionButton
@@ -4423,17 +4419,23 @@ function AuthGate({
                 Create account
                 <ArrowRight size={17} />
               </AuthActionButton>
+              <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
+                <Calculator size={16} />
+                Browse calculators
+              </button>
             </>
           ) : (
-            <button className="primary-button icon-text-button" disabled>
-              <LockKeyhole size={17} />
-              Auth not configured
-            </button>
+            <>
+              <button className="primary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
+                <Calculator size={16} />
+                Explore public calculators
+              </button>
+              <button className="secondary-button icon-text-button" disabled aria-disabled="true">
+                <LockKeyhole size={17} />
+                Account features unavailable
+              </button>
+            </>
           )}
-          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
-            <Calculator size={16} />
-            Browse calculators
-          </button>
         </div>
       </div>
     </section>
@@ -4695,10 +4697,10 @@ function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void
     <section className="route-shell" aria-labelledby="calculators-title">
       <div className="route-heading">
         <p className="eyebrow">Calculators</p>
-        <h1 id="calculators-title">Planning modules will live here.</h1>
+        <h1 id="calculators-title">Financial calculators</h1>
         <p>
-          FIRE is available now as the first task-focused calculator. Additional modules are parked
-          as clear placeholders so the product no longer depends on one front-page tool.
+          Explore task-focused financial calculators designed to help you plan savings, debt payoff,
+          home purchases, and retirement.
         </p>
       </div>
 
