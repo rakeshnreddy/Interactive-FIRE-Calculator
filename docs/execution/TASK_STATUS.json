@@ -529,7 +529,7 @@
       "id": "B32",
       "title": "Implement light/dark glass and gradient material system",
       "checkpoint": "C01T",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B16",
         "B17"
@@ -539,7 +539,7 @@
       "owner": "Codex implementing session 2026-09-10",
       "code_sha": "12b35463c1b6e387d268d8cc9fb7a6d9fb26a88b",
       "review": "reviews/C01T.md",
-      "blocked_reason": null
+      "blocked_reason": "Re-review: lower print section unreadable; native zoom mislabeled; fallback contamination and incomplete outcome aggregation. See latest C01T review."
     },
     {
       "id": "B33",

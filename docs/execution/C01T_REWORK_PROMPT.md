@@ -1,11 +1,34 @@
-# C01T worker rework handoff
+# C01T rework round 2 — implementing agent
 
-Continue in /Users/Rakesh/Projects/Interactive-FIRE-Calculator on codex/finpath-quality-execution. Read AGENTS.md, MASTER_WORKER_PROMPT.md, CHECKPOINTS.md, TASK_STATUS.json, prompts/B32.md and reviews/C01T.md. Preserve other work and synchronize safely; do not reset or force-push.
+You implement; the master reviewer alone closes tasks and releases checkpoints.
 
-B32 is changes_requested. Work only within C01T. The review covers code 02650c44509340cf698bfeb0a26708164d4dddf6 and preview https://6567c09b.interactive-fire-calculator.pages.dev, including the later worker polish. Do not reapply already completed path-strip/toolkit changes.
+## Establish context
 
-Implement R1 first: dark-mode print still keeps the dark hero image/scrim beneath new black text. Make all retained print layers and header descendants readable. Capture before/after actual print evidence in both themes, with background graphics enabled and disabled. Keep the accepted palette and B18 scope unchanged.
+Work in /Users/Rakesh/Projects/Interactive-FIRE-Calculator on codex/finpath-quality-execution, PR140. Inspect AGENTS.md, working tree and current remote; safely synchronize, preserve other work. Read MASTER_WORKER_PROMPT.md, CHECKPOINTS.md, TASK_STATUS.json, prompts/B32.md and reviews/C01T.md. The new review covers candidate 12b35463c1b6e387d268d8cc9fb7a6d9fb26a88b. Do not redo the palette or already fixed hero print.
 
-Then complete R2–R5 exactly as written in the review: actual composed contrast and all material fallbacks; real browser 200% zoom and real screen-reader smoke; second-engine coverage; three-run baseline/candidate loading and scrolling comparison; a harness that exits nonzero for failures and accurately records console errors. Correct CI attribution rather than relabeling a documentation run as a code-SHA run. Missing mandatory capabilities must be marked blocked with the exact missing capability.
+## Implement in this order
 
-Run relevant checks after the repair and ./scripts/test_all.sh before push. Publish only the permitted static preview, respecting B33 isolation restrictions and no hosted financial writes. Record one final candidate SHA/immutable preview and exact CI run identity. Update submissions/B32.md with every R1–R5 result and durable evidence. Mark ready_for_review only with complete evidence, otherwise blocked. Stop for master review; do not close B32, release C01I, start B18, merge main or deploy production.
+1. **Whole-page print repair.** Reproduce the lower continuity-band black-on-dark button/eyebrow in the review screenshot. Inspect inverse tokens and print selectors. Make that section white with explicit dark text/controls in print, keeping normal screen styling unchanged. Check the entire PDF in light/dark with print backgrounds on/off. Wait for transitions or disable decorative print transitions. Retain direct before/after evidence.
+
+2. **Test the evidence evaluator before relying on it.** Extract a small pure evaluator from the verification script. Define required check IDs and PASS/FAIL/BLOCKED; missing required checks are blocked, never pass. Aggregate journeys, viewport/clipping, contrast, material fallbacks, browser coverage, native zoom, reader, console/page errors and comparative performance. Do not coerce unknown into success. Keep optional diagnostics separate. Build fixtures and a CLI test verifying actual exit code and persisted JSON for every case below:
+   - All required checks pass: exit 0.
+   - One false journey, failed fallback, overflow/clipping, low contrast, console error, page exception or performance regression: nonzero and exact failing check.
+   - Missing required check or blocked reader/native zoom: nonzero and BLOCKED summary.
+   - Page exception recorded late: included in saved JSON as well as final status.
+   Use existing test tooling or node:test; no new dependency. Derive performance acceptance rather than hard-code true. Write report only after final aggregation, then clean up browser/server and set process.exitCode. Prove the fixtures fail against old behavior, then pass after repair.
+
+3. **Repair actual material checks.** Use a fresh context per fallback so forced colors/reduced transparency cannot contaminate unsupported-filter evidence. To simulate unsupported filter, exclude the feature-support enhancement in a test-only stylesheet transformation; keep the actual opaque base rules. Do not inject opaque backgrounds to make the test pass. Assert actual background alpha, foreground/focus visibility and menu usability in both themes. Sample normal/hover/focus/pressed actions and open desktop/mobile glass on relevant light/dark/scrolled backgrounds, not just hero defaults. Preserve element geometry while hiding foreground for pixel sampling. Record actual method and limitations.
+
+4. **Use available WebKit.** Matching Playwright WebKit2336 is now installed in /Users/Rakesh/Library/Caches/ms-playwright. Use the bundled Playwright runtime, not a repository dependency upgrade. The reviewer verified 48 route/theme/viewport renders and Option-Tab/Escape menus. Extend that to material/print states. In WebKit default keyboard mode use Option-Tab to traverse links; report the actual setting/method. Do not hard-code missing-binary claims.
+
+5. **Native accessibility handoff.** Remove “real browser zoom” labels from CSS zoom/device emulation evidence. Do not pretend CSS zoom is native zoom. Attempt approved native browser tooling if available; otherwise explicitly request reviewer assistance for the stable final candidate. The master needs real 200% browser UI zoom across the six required routes in both themes and an actual screen-reader smoke. Record unperformed/manual checks as BLOCKED. Do not claim TCC denied access unless you observed an actual denial. Do not change privacy permissions. Account setup, real records or auth bypasses are unnecessary.
+
+6. **Performance and final attribution.** Keep the existing 3+3 raw comparison if normal-render code is unchanged; document equivalence and rAF interval limitations. If normal rendering changes, rerun the affected comparison. Never equate zero dropped-frame delta with zero dropped frames. Correct actual CI SHA attribution and rollback scope.
+
+## Submission and stop
+
+Run relevant tests during work and ./scripts/test_all.sh before pushing. Validate the execution packet and git diff. Use small commits and the existing PR. Deploy only the allowed static preview under B33 restrictions; no financial writes, production deployment, main merge, dependency churn or formulas/auth/backend changes.
+
+Update submissions/B32.md against every latest review finding. Include exact code SHA, actual CI head/link, immutable preview, complete PDFs, measured contrast, evaluator fixture/CLI logs, browser versions, full-suite log and honest manual gaps. Do not overwrite master reviews. If native evidence remains outstanding, set B32 blocked with precise requested assistance and stop; otherwise ready_for_review. Never done. C01I and B18 remain locked.
+
+The master reviewer will verify the final candidate and provide native accessibility assistance where available. No automated all-passed message may override a required blocked check.

@@ -1,0 +1,14 @@
+[
+  {
+    "width": 390,
+    "method": "WebKit Option-Tab for link traversal, await render/focus",
+    "href": "/calculators",
+    "focusReturned": true
+  },
+  {
+    "width": 1440,
+    "method": "WebKit Option-Tab for link traversal, await render/focus",
+    "href": "/accounts",
+    "focusReturned": true
+  }
+]
