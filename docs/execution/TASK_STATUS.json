@@ -300,16 +300,16 @@
       "id": "B19",
       "title": "Make calculator discovery concise and distinctive",
       "checkpoint": "C03",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B16",
         "B17",
         "B32"
       ],
       "prompt": "prompts/B19.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B19.md",
+      "owner": "Codex implementing session 2026-09-11",
+      "code_sha": "cb5b0b931437f538c3441388bb9ff0f171510314",
       "review": null,
       "blocked_reason": null
     },
