@@ -1,0 +1,109 @@
+{
+  "timestamp": "2026-09-11T02:46:35.519Z",
+  "status": "BLOCKED",
+  "checks": {
+    "preview_d1_isolated": {
+      "status": "FAIL",
+      "preview_d1_id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6",
+      "production_d1_id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6",
+      "expected_preview_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+      "details": "DEFECT: Pages preview deployment config binds DB to production database ID (a5860350-0a50-4ebe-9f5f-1d9916a908e6) instead of isolated preview database ID (0dbad68e-7493-452f-8504-98d4c61ee5da)"
+    },
+    "branch_auto_deploy_controlled": {
+      "status": "PASS",
+      "branch": "codex/finpath-quality-execution",
+      "auto_deploying": false,
+      "details": "Branch codex/finpath-quality-execution is NOT in preview_branch_includes ([\"codex/cloudflare-pages-theme-plan\"]); safe from accidental automatic backend deployment"
+    },
+    "d1_migrations": {
+      "status": "PASS",
+      "preview_db": {
+        "name": "finpath-preview",
+        "id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "migrations_applied": 4,
+        "tables": 16
+      },
+      "production_db": {
+        "name": "finpath-production",
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6",
+        "migrations_applied": 4,
+        "tables": 16
+      },
+      "details": "Both finpath-preview and finpath-production have all 4 repository migrations (0001..0004) applied cleanly with 16 tables"
+    },
+    "auth_preflight": {
+      "status": "PASS",
+      "passed_checks": 0,
+      "total_checks": 6,
+      "details": "Auth preflight correctly fails closed with 0/6 checks passed as expected: live keys and Clerk production domain are not configured"
+    },
+    "deployed_endpoints": {
+      "status": "PASS",
+      "probes": {
+        "public_health": {
+          "path": "/api/health",
+          "status": 200,
+          "expected": 200,
+          "pass": true
+        },
+        "auth_protection_me": {
+          "path": "/api/me",
+          "status": 401,
+          "expected": 401,
+          "pass": true
+        },
+        "auth_protection_profile": {
+          "path": "/api/profile",
+          "status": 401,
+          "expected": 401,
+          "pass": true
+        },
+        "auth_protection_plans": {
+          "path": "/api/plans",
+          "status": 401,
+          "expected": 401,
+          "pass": true
+        },
+        "auth_protection_accounts": {
+          "path": "/api/accounts",
+          "status": 401,
+          "expected": 401,
+          "pass": true
+        }
+      }
+    }
+  },
+  "inventory": {
+    "project": {
+      "name": "interactive-fire-calculator",
+      "production_branch": "main",
+      "preview_d1_binding": "a5860350-0a50-4ebe-9f5f-1d9916a908e6",
+      "production_d1_binding": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+    },
+    "git_source": {
+      "repo": "rakeshnreddy/Interactive-FIRE-Calculator",
+      "production_branch": "main",
+      "production_deployments_enabled": false,
+      "preview_deployment_setting": "custom",
+      "preview_branch_includes": [
+        "codex/cloudflare-pages-theme-plan"
+      ]
+    }
+  },
+  "owner_action_required": {
+    "action": "Authorize Cloudflare Pages preview D1 binding update",
+    "target_project": "interactive-fire-calculator",
+    "current_preview_binding": {
+      "name": "DB",
+      "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6",
+      "database": "finpath-production"
+    },
+    "requested_isolated_binding": {
+      "name": "DB",
+      "id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+      "database": "finpath-preview"
+    },
+    "smallest_exact_command": "curl -X PATCH \"https://api.cloudflare.com/client/v4/accounts/4e1b7f6a7440770a01779a67602ec5e9/pages/projects/interactive-fire-calculator\" -H \"Authorization: Bearer <CLOUDFLARE_API_TOKEN>\" -H \"Content-Type: application/json\" -d '{\"deployment_configs\":{\"preview\":{\"d1_databases\":{\"DB\":{\"id\":\"0dbad68e-7493-452f-8504-98d4c61ee5da\"}}}}}'"
+  },
+  "exitCode": 2
+}
