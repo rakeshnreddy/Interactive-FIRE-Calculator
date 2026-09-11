@@ -529,7 +529,7 @@
       "id": "B32",
       "title": "Implement light/dark glass and gradient material system",
       "checkpoint": "C01T",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B16",
         "B17"
@@ -537,9 +537,9 @@
       "prompt": "prompts/B32.md",
       "submission": "submissions/B32.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "dd47fa3e87e4c3f1cd06c5af78490b2ab9874191",
+      "code_sha": "32584da7e47307a35730911e3567f02f9095550b",
       "review": "reviews/C01T.md",
-      "blocked_reason": "Manual reviewer assistance required for native 200% browser UI zoom and VoiceOver screen reader verification on stable candidate."
+      "blocked_reason": null
     },
     {
       "id": "B33",
