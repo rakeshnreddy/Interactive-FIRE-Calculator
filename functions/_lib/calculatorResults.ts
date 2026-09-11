@@ -102,6 +102,14 @@ export class IdempotencyConflictError extends Error {
   }
 }
 
+export const IDEMPOTENCY_KEY_MISMATCH_CODE = 'IDEMPOTENCY_KEY_MISMATCH';
+export const IDEMPOTENCY_KEY_MISMATCH_MESSAGE =
+  'Idempotency-Key header and request body idempotencyKey do not match.';
+
+export type ParseCalculatorSavePayloadOptions = {
+  idempotencyHeader?: string | null;
+};
+
 type SavedCalculatorResultRow = {
   calculator_category: string;
   calculator_region: string;
@@ -540,7 +548,10 @@ export type CalculatorSaveParseError = {
   ok: false;
 };
 
-export function parseCalculatorSavePayload(value: unknown):
+export function parseCalculatorSavePayload(
+  value: unknown,
+  options?: ParseCalculatorSavePayloadOptions
+):
   | { ok: true; value: CalculatorSavePayload }
   | CalculatorSaveParseError {
   if (!isRecord(value)) {
@@ -576,7 +587,7 @@ export function parseCalculatorSavePayload(value: unknown):
     };
   }
 
-  const idempotencyKey = parseOptionalText(value.idempotencyKey, 'idempotencyKey', 120);
+  const idempotencyKey = resolveIdempotencyKey(value.idempotencyKey, options?.idempotencyHeader);
   if (!idempotencyKey.ok) return idempotencyKey;
 
   const inputValues = parseInputValues(value.inputValues);
@@ -1090,34 +1101,70 @@ function isRecord(value: unknown): value is JsonRecord {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function parseOptionalText(
-  value: unknown,
-  fieldName: string,
-  maxLength: number
-): { ok: true; value: string | null | undefined } | { error: string; ok: false } {
-  if (value === undefined) {
-    return { ok: true, value: undefined };
+export function resolveIdempotencyKey(
+  bodyKey: unknown,
+  headerKey?: string | null
+): { ok: true; value: string | null | undefined } | { code?: string; error: string; ok: false } {
+  let normalizedBodyKey: string | null | undefined = undefined;
+  if (bodyKey !== undefined) {
+    if (bodyKey === null || bodyKey === '') {
+      normalizedBodyKey = null;
+    } else if (typeof bodyKey !== 'string') {
+      return { error: 'idempotencyKey must be a string.', ok: false };
+    } else {
+      const trimmed = bodyKey.trim();
+      if (!trimmed) {
+        normalizedBodyKey = null;
+      } else if (trimmed.length > 120) {
+        return { error: 'idempotencyKey must be 120 characters or fewer.', ok: false };
+      } else {
+        normalizedBodyKey = trimmed;
+      }
+    }
   }
 
-  if (value === null || value === '') {
+  let normalizedHeaderKey: string | null | undefined = undefined;
+  if (headerKey !== undefined && headerKey !== null) {
+    if (typeof headerKey !== 'string') {
+      return { error: 'Idempotency-Key header must be a string.', ok: false };
+    }
+    const trimmed = headerKey.trim();
+    if (!trimmed) {
+      normalizedHeaderKey = null;
+    } else if (trimmed.length > 120) {
+      return { error: 'Idempotency-Key header must be 120 characters or fewer.', ok: false };
+    } else {
+      normalizedHeaderKey = trimmed;
+    }
+  }
+
+  const hasBody = normalizedBodyKey !== undefined && normalizedBodyKey !== null;
+  const hasHeader = normalizedHeaderKey !== undefined && normalizedHeaderKey !== null;
+
+  if (hasBody && hasHeader) {
+    if (normalizedBodyKey !== normalizedHeaderKey) {
+      return {
+        code: IDEMPOTENCY_KEY_MISMATCH_CODE,
+        error: IDEMPOTENCY_KEY_MISMATCH_MESSAGE,
+        ok: false
+      };
+    }
+    return { ok: true, value: normalizedBodyKey };
+  }
+
+  if (hasBody) {
+    return { ok: true, value: normalizedBodyKey };
+  }
+
+  if (hasHeader) {
+    return { ok: true, value: normalizedHeaderKey };
+  }
+
+  if (normalizedBodyKey === null || normalizedHeaderKey === null) {
     return { ok: true, value: null };
   }
 
-  if (typeof value !== 'string') {
-    return { error: `${fieldName} must be a string.`, ok: false };
-  }
-
-  const trimmed = value.trim();
-
-  if (!trimmed) {
-    return { ok: true, value: null };
-  }
-
-  if (trimmed.length > maxLength) {
-    return { error: `${fieldName} must be ${maxLength} characters or fewer.`, ok: false };
-  }
-
-  return { ok: true, value: trimmed };
+  return { ok: true, value: undefined };
 }
 
 export async function hashCalculatorPayload(payload: CalculatorSavePayload): Promise<string> {
@@ -1136,17 +1183,14 @@ export async function hashCalculatorPayload(payload: CalculatorSavePayload): Pro
         return acc;
       }, {}),
     result: {
-      assumptions: payload.result.assumptions.slice().sort(),
-      metrics: payload.result.metrics
-        .slice()
-        .sort((a, b) => a.label.localeCompare(b.label))
-        .map((metric) => ({
-          description: metric.description ?? '',
-          label: metric.label,
-          tone: metric.tone ?? '',
-          value: metric.value,
-          valueType: metric.valueType
-        })),
+      assumptions: [...payload.result.assumptions],
+      metrics: payload.result.metrics.map((metric) => ({
+        description: metric.description ?? '',
+        label: metric.label,
+        tone: metric.tone ?? '',
+        value: metric.value,
+        valueType: metric.valueType
+      })),
       narrative: payload.result.narrative
     }
   };

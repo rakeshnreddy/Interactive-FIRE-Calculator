@@ -37,6 +37,7 @@ import type {
   CalculatorSaveOutcome,
   CalculatorSaveRequest
 } from './CalculatorLibrary';
+import { CalculatorSaveCoordinator } from './lib/calculatorSaveManager';
 import type {
   PlanVersionDetail,
   PlanningSaveDraft,
@@ -114,7 +115,7 @@ type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
 type ProjectionBasis = 'fire-number' | 'current-portfolio';
 type ScenarioField = 'spendingDelta' | 'portfolioDelta' | 'returnDelta' | 'inflationDelta';
-type TimelineInput = {
+export type TimelineInput = {
   currentAge: number;
   retirementAge: number;
   planEndAge: number;
@@ -186,7 +187,7 @@ type AccountBalance = {
   id: string;
 };
 
-type FinancialAccount = {
+export type FinancialAccount = {
   accountType: FinancialAccountType;
   archivedAt?: string | null;
   balanceHistory: AccountBalance[];
@@ -202,7 +203,7 @@ type FinancialAccount = {
   updatedAt: string;
 };
 
-type CurrencyAccountSummary = {
+export type CurrencyAccountSummary = {
   accountCount: number;
   assetsCents: number;
   currency: string;
@@ -211,7 +212,7 @@ type CurrencyAccountSummary = {
   netWorthCents: number;
 };
 
-type AccountSummary = {
+export type AccountSummary = {
   accountCount: number;
   assetsCents: number | null;
   byCurrency: Record<string, CurrencyAccountSummary>;
@@ -304,7 +305,7 @@ type Goal = {
   updatedAt: string;
 };
 
-type GoalSummary = {
+export type GoalSummary = {
   activeGoalCount: number;
   completedGoalCount: number;
   fundedPercent: number;
@@ -476,7 +477,7 @@ const calculatorModeCopy: Record<
   }
 };
 
-const initialPlan: PlanInput = {
+export const initialPlan: PlanInput = {
   annualExpense: 80_000,
   initialPortfolio: 750_000,
   withdrawalTiming: 'end',
@@ -509,7 +510,7 @@ const initialPlan: PlanInput = {
   ]
 };
 
-const initialTimeline: TimelineInput = {
+export const initialTimeline: TimelineInput = {
   currentAge: 40,
   retirementAge: 50,
   planEndAge: 80
@@ -705,11 +706,12 @@ async function loadSavedCalculatorResults(
     : [];
 }
 
-async function createCalculatorResultRecord(
+export async function createCalculatorResultRecord(
   auth: Extract<AuthState, { status: 'signed-in' }>,
-  request: CalculatorSaveRequest
+  request: CalculatorSaveRequest,
+  idempotencyKey?: string
 ): Promise<CalculatorSaveApiResponse> {
-  const idempotencyKey = crypto.randomUUID();
+  const resolvedKey = idempotencyKey || crypto.randomUUID();
   const response = await authenticatedJsonRequest(auth, '/api/calculator-results', {
     body: JSON.stringify({
       calculatorCategory: request.calculator.category,
@@ -719,12 +721,12 @@ async function createCalculatorResultRecord(
       conversionLabel: request.calculator.conversionLabel,
       conversionRoute: request.calculator.conversionRoute,
       currency: request.currency,
-      idempotencyKey,
+      idempotencyKey: resolvedKey,
       inputValues: request.values,
       result: request.result
     }),
     headers: {
-      'Idempotency-Key': idempotencyKey
+      'Idempotency-Key': resolvedKey
     },
     method: 'POST'
   });
@@ -1558,7 +1560,7 @@ function toTransactionSummary(value: unknown): TransactionSummary | null {
   };
 }
 
-function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
+export function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
   const activeAccounts = accounts.filter(
     (account) => account.isActive !== false && !account.archivedAt
   );
@@ -1895,7 +1897,7 @@ function toGoalSummary(value: unknown): GoalSummary | null {
   };
 }
 
-function summarizeGoalList(goals: Goal[]): GoalSummary {
+export function summarizeGoalList(goals: Goal[]): GoalSummary {
   const counts = goals.reduce(
     (summary, goal) => ({
       activeGoalCount: summary.activeGoalCount + (goal.status === 'active' ? 1 : 0),
@@ -2107,7 +2109,7 @@ function formatCents(value: number): string {
   return formatMoney(value / 100);
 }
 
-function formatAccountMetric(
+export function formatAccountMetric(
   amountCents: number | null,
   summary: AccountSummary
 ): string {
@@ -2117,7 +2119,7 @@ function formatAccountMetric(
   return formatMoney(amountCents / 100, { currency: summary.primaryCurrency ?? 'USD' });
 }
 
-function formatCurrencyBreakdown(
+export function formatCurrencyBreakdown(
   summary: AccountSummary,
   field: 'assetsCents' | 'liabilitiesCents' | 'netWorthCents'
 ): string | null {
@@ -2966,7 +2968,7 @@ function PrivacyControlsPanel({
   );
 }
 
-function DashboardPanel({
+export function DashboardPanel({
   accounts,
   cashflow,
   calculatorResultMessage,
@@ -2997,7 +2999,9 @@ function DashboardPanel({
   savedCalculatorResults: SavedCalculatorResult[];
   summary: AccountSummary;
 }) {
-  const recentAccounts = accounts.slice(0, 5);
+  const recentAccounts = accounts
+    .filter((account) => account.isActive !== false && !account.archivedAt)
+    .slice(0, 5);
   const recentGoals = goals.slice(0, 3);
   const recentCalculatorResults = savedCalculatorResults.slice(0, 4);
 
@@ -4081,7 +4085,7 @@ function GoalsPanel({
   );
 }
 
-function AccountsPanel({
+export function AccountsPanel({
   accounts,
   auth,
   balanceDrafts,
@@ -4229,14 +4233,16 @@ function AccountsPanel({
             <span>Loading accounts</span>
             <small>Checking saved account balances.</small>
           </article>
-        ) : accounts.length === 0 ? (
+        ) : accounts.filter((a) => a.isActive !== false && !a.archivedAt).length === 0 ? (
           <article className="scenario-card empty-card">
             <span>No accounts yet</span>
             <small>Assets and debt balances will appear here.</small>
           </article>
         ) : (
           <div className="account-card-list">
-            {accounts.map((account) => {
+            {accounts
+              .filter((a) => a.isActive !== false && !a.archivedAt)
+              .map((account) => {
               const balanceDraft = balanceDrafts[account.id] ?? emptyBalanceDraft();
 
               return (
@@ -5179,6 +5185,15 @@ function App({ auth }: { auth: AuthState }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const saveCoordinatorRef = useRef(
+    new CalculatorSaveCoordinator<Extract<AuthState, { status: 'signed-in' }>, CalculatorSaveApiResponse>(
+      (currentAuth) => currentAuth.user.id
+    )
+  );
+
+  useEffect(() => {
+    saveCoordinatorRef.current.handleAccountTransition(auth.status === 'signed-in' ? auth.user.id : null);
+  }, [auth]);
 
   useEffect(() => {
     window.localStorage.setItem('finpath.colorMode', mode);
@@ -6447,55 +6462,66 @@ function App({ auth }: { auth: AuthState }) {
 
     setCalculatorResultMessage('Saving calculator result...');
 
-    const saved = await createCalculatorResultRecord(auth, request);
-    const nextSavedResults = [
-      saved.savedResult,
-      ...savedCalculatorResults.filter((item) => item.id !== saved.savedResult.id)
-    ].slice(0, 12);
+    try {
+      const saved = await saveCoordinatorRef.current.executeSave(
+        auth,
+        request,
+        (currentAuth, requestSnapshot, idempotencyKey) =>
+          createCalculatorResultRecord(currentAuth, requestSnapshot, idempotencyKey)
+      );
+      const nextSavedResults = [
+        saved.savedResult,
+        ...savedCalculatorResults.filter((item) => item.id !== saved.savedResult.id)
+      ].slice(0, 12);
 
-    setSavedCalculatorResults(nextSavedResults);
+      setSavedCalculatorResults(nextSavedResults);
 
-    if (saved.createdEntity?.type === 'goal') {
-      const goal = toGoal(saved.createdEntity.entity);
+      if (saved.createdEntity?.type === 'goal') {
+        const goal = toGoal(saved.createdEntity.entity);
 
-      if (goal) {
-        const nextGoals = [goal, ...goals.filter((item) => item.id !== goal.id)];
-        setGoals(nextGoals);
-        setGoalSummary(summarizeGoalList(nextGoals));
-        setGoalUpdateDrafts((current) => ({
-          ...current,
-          [goal.id]: goalToUpdateDraft(goal)
-        }));
-        setGoalMessage('Goal draft created from calculator result.');
+        if (goal) {
+          const nextGoals = [goal, ...goals.filter((item) => item.id !== goal.id)];
+          setGoals(nextGoals);
+          setGoalSummary(summarizeGoalList(nextGoals));
+          setGoalUpdateDrafts((current) => ({
+            ...current,
+            [goal.id]: goalToUpdateDraft(goal)
+          }));
+          setGoalMessage('Goal draft created from calculator result.');
+        }
       }
-    }
 
-    if (saved.createdEntity?.type === 'account') {
-      const account = toFinancialAccount(saved.createdEntity.entity);
+      if (saved.createdEntity?.type === 'account') {
+        const account = toFinancialAccount(saved.createdEntity.entity);
 
-      if (account) {
-        const nextAccounts = [account, ...financialAccounts.filter((item) => item.id !== account.id)];
-        setFinancialAccounts(nextAccounts);
-        setBalanceDrafts((current) => ({
-          ...current,
-          [account.id]: emptyBalanceDraft()
-        }));
-        setAccountMessage('Account draft created from calculator result.');
+        if (account) {
+          const nextAccounts = [account, ...financialAccounts.filter((item) => item.id !== account.id)];
+          setFinancialAccounts(nextAccounts);
+          setBalanceDrafts((current) => ({
+            ...current,
+            [account.id]: emptyBalanceDraft()
+          }));
+          setAccountMessage('Account draft created from calculator result.');
+        }
       }
+
+      if (saved.createdEntity?.type === 'plan') {
+        setPlanStorageMessage('Plan draft created from calculator result.');
+      }
+
+      const message = calculatorSaveMessage(saved);
+      setCalculatorResultMessage(message);
+
+      return {
+        destinationRoute: saved.savedResult.conversionRoute,
+        message,
+        savedResultId: saved.savedResult.id
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to save calculator result.';
+      setCalculatorResultMessage(message);
+      throw error;
     }
-
-    if (saved.createdEntity?.type === 'plan') {
-      setPlanStorageMessage('Plan draft created from calculator result.');
-    }
-
-    const message = calculatorSaveMessage(saved);
-    setCalculatorResultMessage(message);
-
-    return {
-      destinationRoute: saved.savedResult.conversionRoute,
-      message,
-      savedResultId: saved.savedResult.id
-    };
   };
 
   const saveCurrentPlan = async () => {

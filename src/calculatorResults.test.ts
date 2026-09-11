@@ -11,10 +11,13 @@ import {
   hashCalculatorPayload,
   IDEMPOTENCY_CONFLICT_CODE,
   IdempotencyConflictError,
+  IDEMPOTENCY_KEY_MISMATCH_CODE,
+  IDEMPOTENCY_KEY_MISMATCH_MESSAGE,
   INCOMPATIBLE_GOAL_CURRENCY_CODE,
   IncompatibleGoalCurrencyError,
   listSavedCalculatorResults,
   parseCalculatorSavePayload,
+  resolveIdempotencyKey,
   targetDateForYears,
   type CalculatorSavePayload
 } from '../functions/_lib/calculatorResults';
@@ -627,6 +630,250 @@ describe('B04: atomic, retry-safe calculator save with real SQLite D1 harness', 
     expect(body).toEqual({
       code: IDEMPOTENCY_CONFLICT_CODE,
       error: 'Idempotency key was previously used with a different calculator payload.'
+    });
+  });
+
+  it('inverts hash reproduction: reordered destination-affecting metrics produce distinct hashes and 409 conflict under reused key (R2)', async () => {
+    const raw = {
+      calculatorCategory: 'Planning',
+      calculatorRegion: 'Global',
+      calculatorSlug: 'retirement',
+      calculatorTitle: 'Retirement',
+      conversionLabel: 'Create goal',
+      conversionRoute: '/goals' as const,
+      currency: 'USD',
+      idempotencyKey: 'reorder_metric_key',
+      inputValues: { years: 3 },
+      result: {
+        assumptions: [],
+        metrics: [
+          { label: 'A', value: 100, valueType: 'currency' as const },
+          { label: 'B', value: 200, valueType: 'currency' as const }
+        ],
+        narrative: 'Example'
+      }
+    };
+    const a = parseCalculatorSavePayload(raw);
+    const b = parseCalculatorSavePayload({
+      ...raw,
+      result: { ...raw.result, metrics: [...raw.result.metrics].reverse() }
+    });
+    if (!a.ok || !b.ok) throw new Error('invalid fixture');
+
+    // Inverted expectation: hashes MUST differ because array order of metrics is preserved
+    const hashA = await hashCalculatorPayload(a.value);
+    const hashB = await hashCalculatorPayload(b.value);
+    expect(hashA).not.toBe(hashB);
+
+    // Destination values depend on metric order (first currency metric)
+    expect(goalPayloadFromCalculator(a.value)?.targetAmountCents).toBe(10000);
+    expect(goalPayloadFromCalculator(b.value)?.targetAmountCents).toBe(20000);
+
+    // Reusing the same key with the reordered payload triggers 409 IdempotencyConflictError
+    const { database, sqlite } = createRealD1();
+    const firstSave = await createSavedCalculatorResult(database, 'user_reorder', a.value);
+    expect(firstSave.saveStatus).toBe('committed-save');
+
+    await expect(
+      createSavedCalculatorResult(database, 'user_reorder', b.value)
+    ).rejects.toThrow(IdempotencyConflictError);
+
+    // Verify zero duplicate rows in database
+    const rows = sqlite
+      .prepare('SELECT COUNT(*) as count FROM saved_calculator_results WHERE idempotency_key = ?')
+      .get('reorder_metric_key') as { count: number };
+    expect(rows.count).toBe(1);
+  });
+
+  describe('R3 Key Input Table and Unified Normalization', () => {
+    it('validates all cells of the Key Input Table directly via resolveIdempotencyKey', () => {
+      // 1. Body only
+      expect(resolveIdempotencyKey('key_body_only')).toEqual({ ok: true, value: 'key_body_only' });
+
+      // 2. Header only
+      expect(resolveIdempotencyKey(undefined, 'key_header_only')).toEqual({
+        ok: true,
+        value: 'key_header_only'
+      });
+
+      // 3. Matching both
+      expect(resolveIdempotencyKey('key_both', 'key_both')).toEqual({ ok: true, value: 'key_both' });
+
+      // 4. Mismatched both
+      expect(resolveIdempotencyKey('key_a', 'key_b')).toEqual({
+        code: IDEMPOTENCY_KEY_MISMATCH_CODE,
+        error: IDEMPOTENCY_KEY_MISMATCH_MESSAGE,
+        ok: false
+      });
+
+      // 5. Whitespace trimming matching
+      expect(resolveIdempotencyKey('  key_trimmed  ', 'key_trimmed')).toEqual({
+        ok: true,
+        value: 'key_trimmed'
+      });
+
+      // 6. Whitespace only treated as null/empty
+      expect(resolveIdempotencyKey('   ', '   ')).toEqual({ ok: true, value: null });
+      expect(resolveIdempotencyKey('   ')).toEqual({ ok: true, value: null });
+      expect(resolveIdempotencyKey(undefined, '   ')).toEqual({ ok: true, value: null });
+
+      // 7. Oversized header (> 120 chars)
+      expect(resolveIdempotencyKey(undefined, 'a'.repeat(121))).toEqual({
+        error: 'Idempotency-Key header must be 120 characters or fewer.',
+        ok: false
+      });
+
+      // 8. Oversized body (> 120 chars)
+      expect(resolveIdempotencyKey('a'.repeat(121), undefined)).toEqual({
+        error: 'idempotencyKey must be 120 characters or fewer.',
+        ok: false
+      });
+
+      // 9. Invalid body type
+      expect(resolveIdempotencyKey(12345 as any, undefined)).toEqual({
+        error: 'idempotencyKey must be a string.',
+        ok: false
+      });
+      expect(resolveIdempotencyKey(true as any, undefined)).toEqual({
+        error: 'idempotencyKey must be a string.',
+        ok: false
+      });
+
+      // 10. Missing key (both undefined)
+      expect(resolveIdempotencyKey(undefined, undefined)).toEqual({
+        ok: true,
+        value: undefined
+      });
+    });
+
+    it('enforces HTTP 400 and zero database writes for invalid/mismatched keys via onRequestPost', async () => {
+      const { database, sqlite } = createRealD1();
+      vi.spyOn(sessionModule, 'requireClerkAuth').mockResolvedValue({
+        auth: { userId: 'user_r3_test' } as any,
+        ok: true
+      });
+
+      const countAllWrites = () => {
+        const results = sqlite.prepare('SELECT COUNT(*) as c FROM saved_calculator_results').get() as { c: number };
+        const goals = sqlite.prepare('SELECT COUNT(*) as c FROM goals').get() as { c: number };
+        const accounts = sqlite.prepare('SELECT COUNT(*) as c FROM financial_accounts').get() as { c: number };
+        const plans = sqlite.prepare('SELECT COUNT(*) as c FROM plans').get() as { c: number };
+        return results.c + goals.c + accounts.c + plans.c;
+      };
+
+      const initialWrites = countAllWrites();
+
+      // Case A: Mismatched keys -> 400 with IDEMPOTENCY_KEY_MISMATCH
+      const mismatchReq = new Request('https://finpath.app/api/calculator-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotency-Key': 'header_key_123'
+        },
+        body: JSON.stringify({
+          ...validPayload,
+          idempotencyKey: 'body_key_456'
+        })
+      });
+
+      const mismatchResp = await onRequestPost({
+        data: {},
+        env: { DB: database },
+        functionPath: '/api/calculator-results',
+        next: () => Promise.resolve(new Response()),
+        params: {},
+        request: mismatchReq,
+        waitUntil: () => {}
+      } as any);
+
+      expect(mismatchResp.status).toBe(400);
+      const mismatchBody = await mismatchResp.json();
+      expect(mismatchBody).toEqual({
+        code: IDEMPOTENCY_KEY_MISMATCH_CODE,
+        error: IDEMPOTENCY_KEY_MISMATCH_MESSAGE
+      });
+      expect(countAllWrites()).toBe(initialWrites); // ZERO writes
+
+      // Case B: Oversized header -> 400
+      const oversizedHeaderReq = new Request('https://finpath.app/api/calculator-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotency-Key': 'h'.repeat(121)
+        },
+        body: JSON.stringify(validPayload)
+      });
+
+      const oversizedHeaderResp = await onRequestPost({
+        data: {},
+        env: { DB: database },
+        functionPath: '/api/calculator-results',
+        next: () => Promise.resolve(new Response()),
+        params: {},
+        request: oversizedHeaderReq,
+        waitUntil: () => {}
+      } as any);
+
+      expect(oversizedHeaderResp.status).toBe(400);
+      const oversizedHeaderBody = await oversizedHeaderResp.json();
+      expect(oversizedHeaderBody).toEqual({
+        error: 'Idempotency-Key header must be 120 characters or fewer.'
+      });
+      expect(countAllWrites()).toBe(initialWrites); // ZERO writes
+
+      // Case C: Oversized body -> 400
+      const oversizedBodyReq = new Request('https://finpath.app/api/calculator-results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...validPayload,
+          idempotencyKey: 'b'.repeat(121)
+        })
+      });
+
+      const oversizedBodyResp = await onRequestPost({
+        data: {},
+        env: { DB: database },
+        functionPath: '/api/calculator-results',
+        next: () => Promise.resolve(new Response()),
+        params: {},
+        request: oversizedBodyReq,
+        waitUntil: () => {}
+      } as any);
+
+      expect(oversizedBodyResp.status).toBe(400);
+      const oversizedBodyJson = await oversizedBodyResp.json();
+      expect(oversizedBodyJson).toEqual({
+        error: 'idempotencyKey must be 120 characters or fewer.'
+      });
+      expect(countAllWrites()).toBe(initialWrites); // ZERO writes
+
+      // Case D: Invalid body type (number) -> 400
+      const invalidTypeReq = new Request('https://finpath.app/api/calculator-results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...validPayload,
+          idempotencyKey: 99999
+        })
+      });
+
+      const invalidTypeResp = await onRequestPost({
+        data: {},
+        env: { DB: database },
+        functionPath: '/api/calculator-results',
+        next: () => Promise.resolve(new Response()),
+        params: {},
+        request: invalidTypeReq,
+        waitUntil: () => {}
+      } as any);
+
+      expect(invalidTypeResp.status).toBe(400);
+      const invalidTypeJson = await invalidTypeResp.json();
+      expect(invalidTypeJson).toEqual({
+        error: 'idempotencyKey must be a string.'
+      });
+      expect(countAllWrites()).toBe(initialWrites); // ZERO writes
     });
   });
 

@@ -39,7 +39,8 @@ export const onRequestPost: PagesFunction<CalculatorResultsEnv> = async ({ reque
   }
 
   const body = await readJsonBody(request);
-  const parsed = parseCalculatorSavePayload(body);
+  const idempotencyHeader = request.headers.get('Idempotency-Key');
+  const parsed = parseCalculatorSavePayload(body, { idempotencyHeader });
 
   if (!parsed.ok) {
     return json(
@@ -48,14 +49,8 @@ export const onRequestPost: PagesFunction<CalculatorResultsEnv> = async ({ reque
     );
   }
 
-  const idempotencyHeader = request.headers.get('Idempotency-Key')?.trim() || null;
-  const payload = {
-    ...parsed.value,
-    idempotencyKey: parsed.value.idempotencyKey ?? idempotencyHeader
-  };
-
   try {
-    const saved = await createSavedCalculatorResult(context.database, context.userId, payload);
+    const saved = await createSavedCalculatorResult(context.database, context.userId, parsed.value);
     const status = saved.saveStatus === CALCULATOR_SAVE_STATUS.RETRY ? 200 : 201;
     return json(saved, status);
   } catch (error) {
