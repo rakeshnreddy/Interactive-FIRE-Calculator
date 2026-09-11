@@ -9,7 +9,7 @@ Only C02 is released for implementation now. C01I is accepted. C01T is accepted 
 | C01 | Visible defects and design foundation | B15 → B16 → B17 | accepted | ccebac7d5bcaf645721e2e67ea490a7f447e1db9 | [record](reviews/C01.md) |
 | C01T | Light/dark glass and gradient palette | B32 | accepted | 32584da7e47307a35730911e3567f02f9095550b | [accepted with reader deferral](reviews/C01T.md) |
 | C01I | Isolated preview publication prerequisite | B33 | accepted | 78df4f850112ee3c1fbc76853b6e071a7c75bf2e | [approved](reviews/C01I.md) |
-| C02 | Currency and save integrity | B02 → B03 → B04 | released | — | — |
+| C02 | Currency and save integrity | B02 → B03 → B04 | released | — | [changes requested](reviews/C02.md) |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | locked | — | — |
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | locked | — | — |
 | C05 | Dedicated calculator families | B22 → B23 → B24 | locked | — | — |

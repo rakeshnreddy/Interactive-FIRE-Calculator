@@ -20,7 +20,7 @@
       "id": "B02",
       "title": "reject incompatible currency conversion into goals",
       "checkpoint": "C02",
-      "status": "ready_for_review",
+      "status": "blocked",
       "dependencies": [
         "B01",
         "B33"
@@ -29,14 +29,14 @@
       "submission": "submissions/B02.md",
       "owner": "FinPath implementation agent",
       "code_sha": "df14ff034f198ccfd62a54acb8bf3fb0c50b270d",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C02.md",
+      "blocked_reason": "C02 final candidate CI/preview and migration evidence missing; see reviews/C02.md."
     },
     {
       "id": "B03",
       "title": "prevent mixed-currency account totals",
       "checkpoint": "C02",
-      "status": "ready_for_review",
+      "status": "blocked",
       "dependencies": [
         "B02"
       ],
@@ -44,14 +44,14 @@
       "submission": "submissions/B03.md",
       "owner": "FinPath implementation agent",
       "code_sha": "d66e6939841a49da73b07676b343d9dc09175281",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C02.md",
+      "blocked_reason": "C02 final candidate CI/preview and migration evidence missing; see reviews/C02.md. B03 rendered summary-state evidence also required."
     },
     {
       "id": "B04",
       "title": "atomic, retry-safe calculator save",
       "checkpoint": "C02",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B02",
         "B03"
@@ -60,8 +60,8 @@
       "submission": "submissions/B04.md",
       "owner": "FinPath implementation agent",
       "code_sha": "e363d307e781765d3491d4595ea465f8964a5f0b",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C02.md",
+      "blocked_reason": "C02 final candidate CI/preview and migration evidence missing; see reviews/C02.md. Client retry-key lifetime, semantic hashing and key validation require fixes."
     },
     {
       "id": "B05",
