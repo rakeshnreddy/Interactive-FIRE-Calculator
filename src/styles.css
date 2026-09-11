@@ -835,7 +835,7 @@ svg {
 
 .account-form-grid {
   display: grid;
-  grid-template-columns: minmax(150px, 1.1fr) minmax(140px, 0.9fr) minmax(150px, 1fr) 76px minmax(116px, 0.8fr) 148px auto;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   gap: 0.7rem;
   align-items: end;
 }

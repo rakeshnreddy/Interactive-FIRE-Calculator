@@ -2105,8 +2105,8 @@ function moneyInputToCents(value: string): number | null {
   return Math.round(parsed * 100);
 }
 
-function formatCents(value: number): string {
-  return formatMoney(value / 100);
+function formatCents(value: number, currency = 'USD'): string {
+  return formatMoney(value / 100, { currency });
 }
 
 export function formatAccountMetric(
@@ -3283,7 +3283,7 @@ export function DashboardPanel({
                 </div>
                 <span className={account.category === 'liability' ? 'amount-negative' : 'amount-positive'}>
                   {account.category === 'liability' ? '-' : ''}
-                  {formatCents(account.latestBalanceCents)}
+                  {formatCents(account.latestBalanceCents, account.currency)}
                 </span>
               </article>
             ))}
@@ -4260,7 +4260,7 @@ export function AccountsPanel({
                     </div>
                     <div className="account-balance">
                       <span>{account.latestBalanceDate ?? 'No balance date'}</span>
-                      <strong>{formatCents(account.latestBalanceCents)}</strong>
+                      <strong>{formatCents(account.latestBalanceCents, account.currency)}</strong>
                     </div>
                   </div>
 
@@ -4308,7 +4308,7 @@ export function AccountsPanel({
                       {account.balanceHistory.slice(0, 4).map((balance) => (
                         <span key={balance.id}>
                           {balance.balanceDate}
-                          <strong>{formatCents(balance.balanceCents)}</strong>
+                          <strong>{formatCents(balance.balanceCents, account.currency)}</strong>
                         </span>
                       ))}
                     </div>

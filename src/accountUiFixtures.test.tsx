@@ -204,6 +204,8 @@ describe('B03 Rendered Local UI Fixtures (R5 Verification)', () => {
       );
       expect(overviewStrip).not.toContain('$');
       expect(overviewStrip).not.toContain('Unavailable');
+      expect(accountsHtml).not.toContain('$5,000,000');
+      expect(accountsHtml).not.toContain('$1,000,000');
     });
   });
 
@@ -275,6 +277,9 @@ describe('B03 Rendered Local UI Fixtures (R5 Verification)', () => {
       // No false arithmetic sum like $8,045,000 or ₹8,045,000
       expect(dashHtml).not.toContain('$8,045,000');
       expect(dashHtml).not.toContain('₹8,045,000');
+      const snapshot = dashHtml.slice(dashHtml.indexOf('dashboard-account-list'));
+      expect(snapshot).toContain('₹8,000,000');
+      expect(snapshot).not.toContain('$8,000,000');
     });
   });
 
