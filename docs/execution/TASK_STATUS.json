@@ -36,14 +36,14 @@
       "id": "B03",
       "title": "prevent mixed-currency account totals",
       "checkpoint": "C02",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B02"
       ],
       "prompt": "prompts/B03.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B03.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "d66e6939841a49da73b07676b343d9dc09175281",
       "review": null,
       "blocked_reason": null
     },
