@@ -361,7 +361,9 @@ type SavedCalculatorResult = {
   currency: string;
   destinationType: SavedCalculatorDestinationType;
   id: string;
+  idempotencyKey?: string | null;
   inputValues: Record<string, number>;
+  payloadHash?: string | null;
   result: SavedCalculatorResultSnapshot;
   updatedAt: string;
 };
@@ -374,6 +376,7 @@ type CalculatorSaveApiResponse = {
     type: 'account' | 'goal' | 'plan';
   } | null;
   savedResult: SavedCalculatorResult;
+  saveStatus?: 'committed-save' | 'retry';
 };
 
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
@@ -706,6 +709,7 @@ async function createCalculatorResultRecord(
   auth: Extract<AuthState, { status: 'signed-in' }>,
   request: CalculatorSaveRequest
 ): Promise<CalculatorSaveApiResponse> {
+  const idempotencyKey = crypto.randomUUID();
   const response = await authenticatedJsonRequest(auth, '/api/calculator-results', {
     body: JSON.stringify({
       calculatorCategory: request.calculator.category,
@@ -715,9 +719,13 @@ async function createCalculatorResultRecord(
       conversionLabel: request.calculator.conversionLabel,
       conversionRoute: request.calculator.conversionRoute,
       currency: request.currency,
+      idempotencyKey,
       inputValues: request.values,
       result: request.result
     }),
+    headers: {
+      'Idempotency-Key': idempotencyKey
+    },
     method: 'POST'
   });
   const body: unknown = await response.json().catch(() => null);
@@ -734,7 +742,8 @@ async function createCalculatorResultRecord(
 
   return {
     createdEntity: toCalculatorCreatedEntity(isRecord(body) ? body.createdEntity : null),
-    savedResult
+    savedResult,
+    saveStatus: isRecord(body) && (body.saveStatus === 'retry' || body.saveStatus === 'committed-save') ? body.saveStatus : undefined
   };
 }
 
@@ -793,7 +802,9 @@ function toSavedCalculatorResult(value: unknown): SavedCalculatorResult | null {
     currency: value.currency,
     destinationType: value.destinationType,
     id: value.id,
+    idempotencyKey: typeof value.idempotencyKey === 'string' ? value.idempotencyKey : null,
     inputValues: value.inputValues,
+    payloadHash: typeof value.payloadHash === 'string' ? value.payloadHash : null,
     result,
     updatedAt: value.updatedAt
   };
