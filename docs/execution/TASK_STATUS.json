@@ -132,15 +132,15 @@
       "id": "B09",
       "title": "remove internal instructions from calculator copy",
       "checkpoint": "C03",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B01",
         "B17"
       ],
       "prompt": "prompts/B09.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B09.md",
+      "owner": "Codex implementing session 2026-09-11",
+      "code_sha": "fcc011e3914fdc63fee8dc577491533d0211754b",
       "review": null,
       "blocked_reason": null
     },
