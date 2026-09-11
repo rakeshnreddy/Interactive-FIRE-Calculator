@@ -188,6 +188,7 @@ type AccountBalance = {
 
 type FinancialAccount = {
   accountType: FinancialAccountType;
+  archivedAt?: string | null;
   balanceHistory: AccountBalance[];
   category: AccountCategory;
   createdAt: string;
@@ -201,12 +202,25 @@ type FinancialAccount = {
   updatedAt: string;
 };
 
-type AccountSummary = {
+type CurrencyAccountSummary = {
   accountCount: number;
   assetsCents: number;
+  currency: string;
   liabilityAccountCount: number;
   liabilitiesCents: number;
   netWorthCents: number;
+};
+
+type AccountSummary = {
+  accountCount: number;
+  assetsCents: number | null;
+  byCurrency: Record<string, CurrencyAccountSummary>;
+  currencies: string[];
+  hasMixedCurrencies: boolean;
+  liabilityAccountCount: number;
+  liabilitiesCents: number | null;
+  netWorthCents: number | null;
+  primaryCurrency: string | null;
 };
 
 type AccountDraft = {
@@ -1292,20 +1306,47 @@ function toAccountSummary(value: unknown): AccountSummary | null {
 
   if (
     typeof value.accountCount !== 'number' ||
-    typeof value.assetsCents !== 'number' ||
-    typeof value.liabilityAccountCount !== 'number' ||
-    typeof value.liabilitiesCents !== 'number' ||
-    typeof value.netWorthCents !== 'number'
+    typeof value.liabilityAccountCount !== 'number'
   ) {
     return null;
   }
 
+  const hasMixedCurrencies = Boolean(value.hasMixedCurrencies);
+  const primaryCurrency = typeof value.primaryCurrency === 'string' ? value.primaryCurrency : null;
+  const currencies = Array.isArray(value.currencies)
+    ? value.currencies.filter((c): c is string => typeof c === 'string')
+    : [];
+
+  const assetsCents = typeof value.assetsCents === 'number' ? value.assetsCents : null;
+  const liabilitiesCents = typeof value.liabilitiesCents === 'number' ? value.liabilitiesCents : null;
+  const netWorthCents = typeof value.netWorthCents === 'number' ? value.netWorthCents : null;
+
+  const byCurrency: Record<string, CurrencyAccountSummary> = {};
+  if (isRecord(value.byCurrency)) {
+    for (const [curr, summary] of Object.entries(value.byCurrency)) {
+      if (isRecord(summary) && typeof summary.currency === 'string') {
+        byCurrency[curr] = {
+          accountCount: typeof summary.accountCount === 'number' ? summary.accountCount : 0,
+          assetsCents: typeof summary.assetsCents === 'number' ? summary.assetsCents : 0,
+          currency: summary.currency,
+          liabilityAccountCount: typeof summary.liabilityAccountCount === 'number' ? summary.liabilityAccountCount : 0,
+          liabilitiesCents: typeof summary.liabilitiesCents === 'number' ? summary.liabilitiesCents : 0,
+          netWorthCents: typeof summary.netWorthCents === 'number' ? summary.netWorthCents : 0
+        };
+      }
+    }
+  }
+
   return {
     accountCount: value.accountCount,
-    assetsCents: value.assetsCents,
+    assetsCents,
+    byCurrency,
+    currencies,
+    hasMixedCurrencies,
     liabilityAccountCount: value.liabilityAccountCount,
-    liabilitiesCents: value.liabilitiesCents,
-    netWorthCents: value.netWorthCents
+    liabilitiesCents,
+    netWorthCents,
+    primaryCurrency
   };
 }
 
@@ -1507,33 +1548,85 @@ function toTransactionSummary(value: unknown): TransactionSummary | null {
 }
 
 function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
-  const summary = accounts.reduce<AccountSummary>(
-    (current, account) => {
-      if (account.category === 'liability') {
-        return {
-          ...current,
-          liabilitiesCents: current.liabilitiesCents + account.latestBalanceCents,
-          liabilityAccountCount: current.liabilityAccountCount + 1
-        };
-      }
-
-      return {
-        ...current,
-        assetsCents: current.assetsCents + account.latestBalanceCents
-      };
-    },
-    {
-      accountCount: accounts.length,
-      assetsCents: 0,
-      liabilityAccountCount: 0,
-      liabilitiesCents: 0,
-      netWorthCents: 0
-    }
+  const activeAccounts = accounts.filter(
+    (account) => account.isActive !== false && !account.archivedAt
   );
 
+  if (activeAccounts.length === 0) {
+    return {
+      accountCount: 0,
+      assetsCents: 0,
+      byCurrency: {},
+      currencies: [],
+      hasMixedCurrencies: false,
+      liabilityAccountCount: 0,
+      liabilitiesCents: 0,
+      netWorthCents: 0,
+      primaryCurrency: null
+    };
+  }
+
+  const byCurrency: Record<string, CurrencyAccountSummary> = {};
+
+  for (const account of activeAccounts) {
+    const currency = (account.currency || 'USD').trim().toUpperCase();
+    if (!byCurrency[currency]) {
+      byCurrency[currency] = {
+        accountCount: 0,
+        assetsCents: 0,
+        currency,
+        liabilityAccountCount: 0,
+        liabilitiesCents: 0,
+        netWorthCents: 0
+      };
+    }
+
+    const cur = byCurrency[currency];
+    cur.accountCount += 1;
+
+    if (account.category === 'liability') {
+      cur.liabilityAccountCount += 1;
+      cur.liabilitiesCents += account.latestBalanceCents;
+    } else {
+      cur.assetsCents += account.latestBalanceCents;
+    }
+
+    cur.netWorthCents = cur.assetsCents - cur.liabilitiesCents;
+  }
+
+  const currencies = Object.keys(byCurrency).sort();
+  const totalLiabilityAccounts = Object.values(byCurrency).reduce(
+    (sum, cur) => sum + cur.liabilityAccountCount,
+    0
+  );
+
+  if (currencies.length === 1) {
+    const primaryCurrency = currencies[0];
+    const single = byCurrency[primaryCurrency];
+
+    return {
+      accountCount: activeAccounts.length,
+      assetsCents: single.assetsCents,
+      byCurrency,
+      currencies,
+      hasMixedCurrencies: false,
+      liabilityAccountCount: totalLiabilityAccounts,
+      liabilitiesCents: single.liabilitiesCents,
+      netWorthCents: single.netWorthCents,
+      primaryCurrency
+    };
+  }
+
   return {
-    ...summary,
-    netWorthCents: summary.assetsCents - summary.liabilitiesCents
+    accountCount: activeAccounts.length,
+    assetsCents: null,
+    byCurrency,
+    currencies,
+    hasMixedCurrencies: true,
+    liabilityAccountCount: totalLiabilityAccounts,
+    liabilitiesCents: null,
+    netWorthCents: null,
+    primaryCurrency: null
   };
 }
 
@@ -2001,6 +2094,32 @@ function moneyInputToCents(value: string): number | null {
 
 function formatCents(value: number): string {
   return formatMoney(value / 100);
+}
+
+function formatAccountMetric(
+  amountCents: number | null,
+  summary: AccountSummary
+): string {
+  if (summary.hasMixedCurrencies || amountCents === null) {
+    return 'Unavailable';
+  }
+  return formatMoney(amountCents / 100, { currency: summary.primaryCurrency ?? 'USD' });
+}
+
+function formatCurrencyBreakdown(
+  summary: AccountSummary,
+  field: 'assetsCents' | 'liabilitiesCents' | 'netWorthCents'
+): string | null {
+  if (!summary.hasMixedCurrencies || summary.currencies.length === 0) {
+    return null;
+  }
+  return summary.currencies
+    .map((currency) => {
+      const curSummary = summary.byCurrency[currency];
+      const amount = curSummary ? curSummary[field] / 100 : 0;
+      return `${currency}: ${formatMoney(amount, { currency })}`;
+    })
+    .join(' · ');
 }
 
 function formatSignedCents(value: number): string {
@@ -2876,18 +2995,30 @@ function DashboardPanel({
       <div className="dashboard-summary-grid">
         <article className="tracker-metric tracker-metric-primary">
           <span>Net worth</span>
-          <strong>{formatCents(summary.netWorthCents)}</strong>
-          <small>{summary.accountCount} active accounts</small>
+          <strong>{formatAccountMetric(summary.netWorthCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'netWorthCents')}</small>
+          ) : (
+            <small>{summary.accountCount} active accounts</small>
+          )}
         </article>
         <article className="tracker-metric">
           <span>Assets</span>
-          <strong>{formatCents(summary.assetsCents)}</strong>
-          <small>Cash, investments, property, and other assets</small>
+          <strong>{formatAccountMetric(summary.assetsCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'assetsCents')}</small>
+          ) : (
+            <small>Cash, investments, property, and other assets</small>
+          )}
         </article>
         <article className="tracker-metric">
           <span>Liabilities</span>
-          <strong>{formatCents(summary.liabilitiesCents)}</strong>
-          <small>{summary.liabilityAccountCount} debt accounts</small>
+          <strong>{formatAccountMetric(summary.liabilitiesCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'liabilitiesCents')}</small>
+          ) : (
+            <small>{summary.liabilityAccountCount} debt accounts</small>
+          )}
         </article>
         <article className="tracker-metric">
           <span>Goals funded</span>
@@ -3975,15 +4106,24 @@ function AccountsPanel({
       <div className="account-overview-strip">
         <article>
           <span>Net worth</span>
-          <strong>{formatCents(summary.netWorthCents)}</strong>
+          <strong>{formatAccountMetric(summary.netWorthCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'netWorthCents')}</small>
+          ) : null}
         </article>
         <article>
           <span>Assets</span>
-          <strong>{formatCents(summary.assetsCents)}</strong>
+          <strong>{formatAccountMetric(summary.assetsCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'assetsCents')}</small>
+          ) : null}
         </article>
         <article>
           <span>Liabilities</span>
-          <strong>{formatCents(summary.liabilitiesCents)}</strong>
+          <strong>{formatAccountMetric(summary.liabilitiesCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'liabilitiesCents')}</small>
+          ) : null}
         </article>
       </div>
 

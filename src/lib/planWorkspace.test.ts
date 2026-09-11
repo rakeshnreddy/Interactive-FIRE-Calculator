@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { PlanInput } from './fire';
-import { previewPlanSeed, undoPlanSeed } from './planWorkspace';
+import { PLAN_SEED_ERROR_REASONS, previewPlanSeed, undoPlanSeed } from './planWorkspace';
 
 const plan: PlanInput = {
   annualExpense: 45_000,
@@ -91,6 +91,87 @@ describe('previewPlanSeed', () => {
       errors: ['Invalid source does not have a dated balance.'],
       ok: false
     });
+  });
+
+  it('rejects account sources with mismatched currency using CURRENCY_MISMATCH error enum', () => {
+    const preview = previewPlanSeed({
+      accounts: [
+        {
+          accountType: 'investment',
+          category: 'asset',
+          currency: 'EUR',
+          id: 'eur_account',
+          isActive: true,
+          latestBalanceCents: 10_000_000,
+          latestBalanceDate: '2026-06-20',
+          name: 'European ETF'
+        }
+      ],
+      goal: null,
+      plan,
+      portfolioSource: 'accounts',
+      profile,
+      selectedAccountIds: ['eur_account'],
+      timeline,
+      todayYear: 2026
+    });
+
+    expect(preview.ok).toBe(false);
+    if (preview.ok) return;
+
+    expect(preview.errors).toContain('European ETF uses EUR, not USD.');
+    expect(preview.errorDetails).toEqual([
+      expect.objectContaining({
+        accountName: 'European ETF',
+        currency: 'EUR',
+        expectedCurrency: 'USD',
+        reason: PLAN_SEED_ERROR_REASONS.CURRENCY_MISMATCH
+      })
+    ]);
+  });
+
+  it('rejects multiple accounts with mixed currencies in plan import', () => {
+    const preview = previewPlanSeed({
+      accounts: [
+        {
+          accountType: 'investment',
+          category: 'asset',
+          currency: 'USD',
+          id: 'usd_account',
+          isActive: true,
+          latestBalanceCents: 10_000_000,
+          latestBalanceDate: '2026-06-20',
+          name: 'US Index'
+        },
+        {
+          accountType: 'investment',
+          category: 'asset',
+          currency: 'INR',
+          id: 'inr_account',
+          isActive: true,
+          latestBalanceCents: 50_000_000,
+          latestBalanceDate: '2026-06-20',
+          name: 'India Fund'
+        }
+      ],
+      goal: null,
+      plan,
+      portfolioSource: 'accounts',
+      profile,
+      selectedAccountIds: ['usd_account', 'inr_account'],
+      timeline,
+      todayYear: 2026
+    });
+
+    expect(preview.ok).toBe(false);
+    if (preview.ok) return;
+
+    expect(preview.errors.some((e) => e.includes('INR'))).toBe(true);
+    expect(
+      preview.errorDetails?.some(
+        (detail) => detail.reason === PLAN_SEED_ERROR_REASONS.CURRENCY_MISMATCH
+      )
+    ).toBe(true);
   });
 
   it('maps a retirement goal current amount and target date but keeps its target as a benchmark', () => {
