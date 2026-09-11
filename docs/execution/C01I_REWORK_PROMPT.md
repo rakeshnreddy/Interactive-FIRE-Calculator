@@ -12,3 +12,5 @@ Work in /Users/Rakesh/Projects/Interactive-FIRE-Calculator on codex/finpath-qual
 8. Run all evaluator/collector tests, read-only live audit on the exact isolated deployment, ./scripts/test_all.sh, diff checks and CI. Capture final HEAD and logs, update submission/status ready_for_review only if all criteria pass. Stop at C01I; no task closure, C02 release, main merge or production deploy. Report remaining genuine blockers rather than inventing another permission requirement.
 
 Success: supplied valid live evidence passes; every omitted/mismatched requirement fails or blocks without a false PASS; current verified free preview isolation is preserved. Primary reviewer alone accepts B33.
+
+Required concrete contract: read contracts/B33.md and IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md. Complete V01–V09 with implementation plus validation evidence; use the matrix instead of a general claim that all checks pass.

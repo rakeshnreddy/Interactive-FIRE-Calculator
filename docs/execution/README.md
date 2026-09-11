@@ -113,3 +113,5 @@ Latest release status (2026-09-10): C00R/B34 and C01/B15–B17 are accepted; C01
 | B34 | [Development-tool advisory repair](prompts/B34.md) | C00R | pending |
 
 Latest owner constraint: read [FREE_TIER_EXECUTION.md](FREE_TIER_EXECUTION.md). All services must remain free; the target is a verified functional preview. This also records completed preview-binding setup and the remaining B33 gates.
+
+Worker reliability update: [implementation and validation protocol](IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md) and [contract template](CONTRACT_TEMPLATE.md) apply to subsequent tasks. B33 has a [concrete remaining-repair contract](contracts/B33.md). This method adds no task approvals and removes no existing acceptance criteria.
