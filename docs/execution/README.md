@@ -111,3 +111,5 @@ Latest release status (2026-09-10): C00R/B34 and C01/B15–B17 are accepted; C01
 | Task | Prompt | Checkpoint | Initial status |
 |---|---|---|---|
 | B34 | [Development-tool advisory repair](prompts/B34.md) | C00R | pending |
+
+Latest owner constraint: read [FREE_TIER_EXECUTION.md](FREE_TIER_EXECUTION.md). All services must remain free; the target is a verified functional preview. This also records completed preview-binding setup and the remaining B33 gates.

@@ -554,7 +554,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "452fbdca849c28233ba6474a38f36b732949c4a0",
       "review": "reviews/C01I.md",
-      "blocked_reason": "Owner authorization for preview-only binding/bootstrap remains absent; independent review also requires fail-closed audit repairs and reproducible evidence. See reviews/C01I.md."
+      "blocked_reason": "Preview-only setup authorized under free-tier constraint and project binding updated. Audit repairs, local deployment configuration safety, migration evidence and effective bootstrap binding verification remain outstanding; see FREE_TIER_EXECUTION.md and reviews/C01I.md."
     },
     {
       "id": "B34",
