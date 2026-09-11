@@ -1,6 +1,6 @@
 # Checkpoints and release ledger
 
-Only C02 is released for implementation now. C01I is accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+Only C03 is released for implementation now. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
@@ -9,8 +9,8 @@ Only C02 is released for implementation now. C01I is accepted. C01T is accepted 
 | C01 | Visible defects and design foundation | B15 → B16 → B17 | accepted | ccebac7d5bcaf645721e2e67ea490a7f447e1db9 | [record](reviews/C01.md) |
 | C01T | Light/dark glass and gradient palette | B32 | accepted | 32584da7e47307a35730911e3567f02f9095550b | [accepted with reader deferral](reviews/C01T.md) |
 | C01I | Isolated preview publication prerequisite | B33 | accepted | 78df4f850112ee3c1fbc76853b6e071a7c75bf2e | [approved](reviews/C01I.md) |
-| C02 | Currency and save integrity | B02 → B03 → B04 | released | — | [changes requested](reviews/C02.md) |
-| C03 | Public homepage and discovery | B18 → B19 → B09 | locked | — | — |
+| C02 | Currency and save integrity | B02 → B03 → B04 | accepted | ef2cded6441191a26537adf8ddf1a3e1909cf73b | [approved](reviews/C02.md) |
+| C03 | Public homepage and discovery | B18 → B19 → B09 | released | — | [execution prompt](C03_START_PROMPT.md) |
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | locked | — | — |
 | C05 | Dedicated calculator families | B22 → B23 → B24 | locked | — | — |
 | C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | locked | — | — |
@@ -50,3 +50,5 @@ C01 acceptance 2026-09-10: all three tasks accepted at `ccebac7d5bcaf645721e2e67
 C01T final acceptance supersedes earlier release notes: B32 accepted under owner-amended scope; actual-reader verification is deferred to B31, not passed. C01I/B33 alone is released. All B33 external authorization and publication gates remain effective.
 
 Final C01I acceptance supersedes earlier rework notes: B33 passes at `78df4f850112ee3c1fbc76853b6e071a7c75bf2e`; C02 alone is released, starting B02. Free-tier, publication isolation and task-specific write authorization remain required.
+
+C02 acceptance 2026-09-11 supersedes earlier release notes: B02/B03/B04 pass together at `ef2cded6441191a26537adf8ddf1a3e1909cf73b` on immutable preview 51c5e746. C03 alone is released, order B18→B19→B09.0005 has been applied only to the authorized isolated preview. Free-only, no main merge/production and primary-only closure rules remain.

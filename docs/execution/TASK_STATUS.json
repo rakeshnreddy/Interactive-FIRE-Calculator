@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-10",
+  "updated": "2026-09-11",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -20,7 +20,7 @@
       "id": "B02",
       "title": "reject incompatible currency conversion into goals",
       "checkpoint": "C02",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B01",
         "B33"
@@ -28,30 +28,30 @@
       "prompt": "prompts/B02.md",
       "submission": "submissions/B02.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "df14ff034f198ccfd62a54acb8bf3fb0c50b270d",
+      "code_sha": "ef2cded6441191a26537adf8ddf1a3e1909cf73b",
       "review": "reviews/C02.md",
-      "blocked_reason": "Local R1\u2013R3 repairs pass targeted review. Await scoped preview0005 migration authorization and final candidate deployment/CI; B03 actual-browser evidence remains unperformed."
+      "blocked_reason": null
     },
     {
       "id": "B03",
       "title": "prevent mixed-currency account totals",
       "checkpoint": "C02",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B02"
       ],
       "prompt": "prompts/B03.md",
       "submission": "submissions/B03.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "d66e6939841a49da73b07676b343d9dc09175281",
+      "code_sha": "ef2cded6441191a26537adf8ddf1a3e1909cf73b",
       "review": "reviews/C02.md",
-      "blocked_reason": "Local R1\u2013R3 repairs pass targeted review. Await scoped preview0005 migration authorization and final candidate deployment/CI; B03 actual-browser evidence remains unperformed."
+      "blocked_reason": null
     },
     {
       "id": "B04",
       "title": "atomic, retry-safe calculator save",
       "checkpoint": "C02",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B02",
         "B03"
@@ -59,9 +59,9 @@
       "prompt": "prompts/B04.md",
       "submission": "submissions/B04.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "e363d307e781765d3491d4595ea465f8964a5f0b",
+      "code_sha": "ef2cded6441191a26537adf8ddf1a3e1909cf73b",
       "review": "reviews/C02.md",
-      "blocked_reason": "Local R1\u2013R3 repairs pass targeted review. Await scoped preview0005 migration authorization and final candidate deployment/CI; B03 actual-browser evidence remains unperformed."
+      "blocked_reason": null
     },
     {
       "id": "B05",
