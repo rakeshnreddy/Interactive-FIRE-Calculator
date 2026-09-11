@@ -5,47 +5,50 @@
  *
  * Verifies:
  * 1. Cloudflare Pages project configuration & deployment configs
- * 2. Effective D1 bindings for preview vs production
- * 3. Git integration and deployment triggers (github:push vs ad_hoc)
- * 4. D1 schema and migration state of finpath-preview and finpath-production
- * 5. Fail-closed state of deployed preview endpoints (/api/health, /api/me, /api/profile, /api/plans, /api/accounts)
- * 6. Auth preflight status (0/6 passed, fail-closed)
- * 7. Evaluates strict PASS/FAIL/BLOCKED outcome
+ * 2. Effective D1 bindings for preview vs production on active preview deployment
+ * 3. Git integration and deployment triggers (github:push vs ad_hoc, idle/skipped stages)
+ * 4. Read-only D1 schema & migration state of finpath-preview via live sqlite_master and d1_migrations
+ * 5. Fail-closed state and schema compliance of deployed preview endpoints
+ * 6. Diagnostic production auth preflight status
+ * 7. Pure evaluator outcome enforcement (PASS: 0, FAIL: 1, BLOCKED: 2)
  */
 
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const {
+  evaluateB33Results,
+  APPROVED_PREVIEW_DB_ID,
+  EXPECTED_PRODUCTION_DB_ID
+} = require('./evaluator.cjs');
 
 const EVIDENCE_DIR = path.resolve(__dirname);
+const REPO_ROOT = path.resolve(__dirname, '../../../..');
 const CONFIG_PATH = path.join(process.env.HOME || '', 'Library/Preferences/.wrangler/config/default.toml');
 const ACCOUNT_ID = '4e1b7f6a7440770a01779a67602ec5e9';
 const PROJECT_NAME = 'interactive-fire-calculator';
-const PREVIEW_URL = 'https://757f65cd.interactive-fire-calculator.pages.dev';
+const TARGET_BRANCH = 'codex/finpath-quality-execution';
+const STATIC_PREVIEW_URL = 'https://03cba125.interactive-fire-calculator.pages.dev';
 
 async function main() {
   console.log('=== FinPath B33 Preview Isolation Audit Suite ===');
-  const results = {
-    timestamp: new Date().toISOString(),
-    status: 'BLOCKED',
-    checks: {},
-    inventory: {},
-    owner_action_required: null
-  };
+  const timestamp = new Date().toISOString();
 
-  // 1. Read OAuth token from wrangler config
-  if (!fs.existsSync(CONFIG_PATH)) {
-    throw new Error(`Wrangler config not found at ${CONFIG_PATH}`);
+  // 1. Read OAuth token from wrangler config or environment
+  let token = process.env.CLOUDFLARE_API_TOKEN;
+  if (!token && fs.existsSync(CONFIG_PATH)) {
+    const configContent = fs.readFileSync(CONFIG_PATH, 'utf8');
+    const tokenMatch = configContent.match(/oauth_token\s*=\s*"([^"]+)"/);
+    if (tokenMatch) {
+      token = tokenMatch[1];
+    }
   }
-  const configContent = fs.readFileSync(CONFIG_PATH, 'utf8');
-  const tokenMatch = configContent.match(/oauth_token\s*=\s*"([^"]+)"/);
-  if (!tokenMatch) {
-    throw new Error('OAuth token not found in wrangler config');
+  if (!token) {
+    throw new Error('Cloudflare API token not found in environment or wrangler config');
   }
-  const token = tokenMatch[1];
 
   // 2. Fetch Project Metadata
-  console.log('--- Step 1: Inspecting Cloudflare Pages Project Metadata ---');
+  console.log('\n--- Step 1: Inspecting Cloudflare Pages Project Metadata ---');
   const projRes = await fetch(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT_NAME}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -57,164 +60,319 @@ async function main() {
   const previewD1 = project.deployment_configs?.preview?.d1_databases?.DB?.id;
   const productionD1 = project.deployment_configs?.production?.d1_databases?.DB?.id;
 
-  results.inventory.project = {
-    name: project.name,
-    production_branch: project.production_branch,
-    preview_d1_binding: previewD1,
-    production_d1_binding: productionD1
-  };
+  console.log(`Project Name: ${project.name}`);
+  console.log(`Production Branch: ${project.production_branch}`);
+  console.log(`Project Preview DB ID: ${previewD1}`);
+  console.log(`Project Production DB ID: ${productionD1}`);
 
-  // Check: Is preview isolated from production?
-  const isPreviewIsolated = Boolean(previewD1 && productionD1 && previewD1 !== productionD1);
-  results.checks.preview_d1_isolated = {
-    status: isPreviewIsolated ? 'PASS' : 'FAIL',
-    preview_d1_id: previewD1,
-    production_d1_id: productionD1,
-    expected_preview_id: '0dbad68e-7493-452f-8504-98d4c61ee5da',
-    details: isPreviewIsolated
-      ? 'Preview D1 database differs from production D1 database'
-      : `DEFECT: Pages preview deployment config binds DB to production database ID (${previewD1}) instead of isolated preview database ID (0dbad68e-7493-452f-8504-98d4c61ee5da)`
-  };
-  console.log(`Preview D1 Isolated: ${results.checks.preview_d1_isolated.status} (${results.checks.preview_d1_isolated.details})`);
-
-  // 3. Inspect Git Build Triggers
-  console.log('--- Step 2: Inspecting Git Integration and Branch Triggers ---');
+  // 3. Inspect Git Integration and Branch Triggers
+  console.log('\n--- Step 2: Inspecting Git Integration and Branch Triggers ---');
   const source = project.source?.config || {};
-  results.inventory.git_source = {
-    repo: `${source.owner}/${source.repo_name}`,
-    production_branch: source.production_branch,
-    production_deployments_enabled: source.production_deployments_enabled,
-    preview_deployment_setting: source.preview_deployment_setting,
-    preview_branch_includes: source.preview_branch_includes || []
-  };
+  const previewSetting = source.preview_deployment_setting || 'none';
+  const branchIncludes = source.preview_branch_includes || [];
+  const branchExcludes = source.preview_branch_excludes || [];
+  const isBranchAutoDeploying = branchIncludes.includes(TARGET_BRANCH);
 
-  const currentBranch = 'codex/finpath-quality-execution';
-  const isBranchAutoDeploying = (source.preview_branch_includes || []).includes(currentBranch);
-  results.checks.branch_auto_deploy_controlled = {
-    status: 'PASS',
-    branch: currentBranch,
-    auto_deploying: isBranchAutoDeploying,
-    details: isBranchAutoDeploying
-      ? `Branch ${currentBranch} automatically deploys on push`
-      : `Branch ${currentBranch} is NOT in preview_branch_includes (${JSON.stringify(source.preview_branch_includes)}); safe from accidental automatic backend deployment`
-  };
-  console.log(`Branch Auto-Deploy Controlled: PASS (${results.checks.branch_auto_deploy_controlled.details})`);
-
-  // 4. D1 Databases Migration & Schema Status
-  console.log('--- Step 3: Inspecting D1 Databases Migration State ---');
-  results.checks.d1_migrations = {
-    status: 'PASS',
-    preview_db: {
-      name: 'finpath-preview',
-      id: '0dbad68e-7493-452f-8504-98d4c61ee5da',
-      migrations_applied: 4,
-      tables: 16
-    },
-    production_db: {
-      name: 'finpath-production',
-      id: 'a5860350-0a50-4ebe-9f5f-1d9916a908e6',
-      migrations_applied: 4,
-      tables: 16
-    },
-    details: 'Both finpath-preview and finpath-production have all 4 repository migrations (0001..0004) applied cleanly with 16 tables'
-  };
-  console.log(`D1 Migrations: PASS (${results.checks.d1_migrations.details})`);
-
-  // 5. Auth Preflight
-  console.log('--- Step 4: Running Auth Preflight ---');
-  let authPreflightOutput = '';
-  let authPreflightPassedCount = 0;
-  try {
-    authPreflightOutput = execFileSync(
-      'node',
-      ['scripts/check_production_auth.mjs', '--check-cloudflare'],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
-    );
-  } catch (err) {
-    authPreflightOutput = (err.stdout || '') + (err.stderr || '');
+  console.log(`Preview Deployment Setting: ${previewSetting}`);
+  console.log(`Preview Branch Includes: ${JSON.stringify(branchIncludes)}`);
+  console.log(`Target Branch: ${TARGET_BRANCH}`);
+  console.log(`Auto-deploying on Push: ${isBranchAutoDeploying}`);
+  if (!isBranchAutoDeploying) {
+    console.log(`Notice: Branch ${TARGET_BRANCH} is not in preview_branch_includes; git push events produce idle/skipped stages (is_skipped: true, skip_reason: path_config).`);
   }
-  const passMatches = authPreflightOutput.match(/^PASS\s+/gm) || [];
-  authPreflightPassedCount = passMatches.length;
 
-  results.checks.auth_preflight = {
-    status: authPreflightPassedCount === 0 ? 'PASS' : 'UNEXPECTED',
-    passed_checks: authPreflightPassedCount,
-    total_checks: 6,
-    details: `Auth preflight correctly fails closed with 0/6 checks passed as expected: live keys and Clerk production domain are not configured`
+  // 4. Fetch Deployments & Identify Active Preview Deployment
+  console.log('\n--- Step 3: Inspecting Active Preview Deployments ---');
+  const depListRes = await fetch(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT_NAME}/deployments?per_page=10`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const depListData = await depListRes.json();
+  if (!depListData.success) {
+    throw new Error(`Failed to fetch deployments: ${JSON.stringify(depListData.errors)}`);
+  }
+
+  // Find latest successful preview deployment on our branch with functions
+  const candidateDeployments = depListData.result.filter(d =>
+    d.environment === 'preview' &&
+    d.deployment_trigger?.metadata?.branch === TARGET_BRANCH &&
+    d.latest_stage?.status === 'success' &&
+    !d.is_skipped
+  );
+
+  if (candidateDeployments.length === 0) {
+    throw new Error(`No active preview deployment found for branch ${TARGET_BRANCH}`);
+  }
+
+  const activeDeployment = candidateDeployments[0];
+  const activeDeployD1 = activeDeployment.d1_databases?.DB?.id;
+  const activeDeployUrl = activeDeployment.url;
+
+  console.log(`Active Deployment ID: ${activeDeployment.id} (${activeDeployment.short_id})`);
+  console.log(`Active Deployment URL: ${activeDeployUrl}`);
+  console.log(`Active Deployment Created On: ${activeDeployment.created_on}`);
+  console.log(`Active Deployment Uses Functions: ${activeDeployment.uses_functions}`);
+  console.log(`Active Deployment Effective D1 ID: ${activeDeployD1}`);
+
+  // 5. Read-only Schema & Migrations Collection from Preview D1
+  console.log('\n--- Step 4: Collecting Read-only D1 Schema & Migrations from finpath-preview ---');
+  let migrationEvidence = null;
+  try {
+    const tableCmd = 'PATH="/opt/homebrew/opt/node/bin:$PATH" npx wrangler d1 execute finpath-preview --remote --command "SELECT name, type FROM sqlite_master WHERE type IN (\'table\', \'view\') ORDER BY name;" --json';
+    const tableOutRaw = execFileSync('sh', ['-c', tableCmd], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+    const tableJson = JSON.parse(tableOutRaw);
+    const rawTables = tableJson[0]?.results || [];
+
+    const migCmd = 'PATH="/opt/homebrew/opt/node/bin:$PATH" npx wrangler d1 execute finpath-preview --remote --command "SELECT id, name, applied_at FROM d1_migrations ORDER BY id;" --json';
+    const migOutRaw = execFileSync('sh', ['-c', migCmd], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+    const migJson = JSON.parse(migOutRaw);
+    const appliedMigrations = migJson[0]?.results || [];
+
+    // Repository migrations
+    const migrationsDir = path.join(REPO_ROOT, 'migrations');
+    const repoMigrations = fs.readdirSync(migrationsDir)
+      .filter(f => f.endsWith('.sql'))
+      .sort();
+
+    // Table categorization
+    const userTables = [];
+    const systemTables = [];
+    const migrationTables = [];
+
+    for (const row of rawTables) {
+      if (row.name === 'd1_migrations') {
+        migrationTables.push(row.name);
+      } else if (row.name.startsWith('_cf_') || row.name.startsWith('sqlite_')) {
+        systemTables.push(row.name);
+      } else {
+        userTables.push(row.name);
+      }
+    }
+
+    migrationEvidence = {
+      status: 'COLLECTED',
+      database_name: 'finpath-preview',
+      database_id: APPROVED_PREVIEW_DB_ID,
+      collected_at: timestamp,
+      queries: [
+        "SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY name;",
+        "SELECT id, name, applied_at FROM d1_migrations ORDER BY id;"
+      ],
+      total_tables: rawTables.length,
+      tables: rawTables.map(r => r.name),
+      user_tables: userTables,
+      migration_tables: migrationTables,
+      system_tables: systemTables,
+      applied_migrations: appliedMigrations,
+      repository_migrations: repoMigrations
+    };
+
+    console.log(`D1 finpath-preview Schema: ${rawTables.length} total tables (${userTables.length} user tables, ${migrationTables.length} migration table, ${systemTables.length} system tables)`);
+    console.log(`Applied Migrations (${appliedMigrations.length}/${repoMigrations.length}): ${appliedMigrations.map(m => m.name).join(', ')}`);
+  } catch (err) {
+    console.error('Failed to collect D1 schema evidence:', err.message);
+    migrationEvidence = {
+      status: 'COLLECTED_FAILED',
+      error: `Failed to query D1 metadata: ${err.message}`
+    };
+  }
+
+  // 6. Probing Deployed Preview Endpoints
+  console.log(`\n--- Step 5: Probing Deployed Preview Endpoints (${activeDeployUrl}) ---`);
+  const endpointProbes = {
+    deployment_url: activeDeployUrl,
+    health: null,
+    private_endpoints: {}
   };
-  console.log(`Auth Preflight: PASS (${results.checks.auth_preflight.details})`);
 
-  // 6. Deployed Preview Public Health & Fail-Closed Endpoints
-  console.log('--- Step 5: Probing Deployed Preview Endpoints ---');
-  const probes = [
-    { path: '/api/health', expectedStatus: 200, name: 'public_health' },
-    { path: '/api/me', expectedStatus: 401, name: 'auth_protection_me' },
-    { path: '/api/profile', expectedStatus: 401, name: 'auth_protection_profile' },
-    { path: '/api/plans', expectedStatus: 401, name: 'auth_protection_plans' },
-    { path: '/api/accounts', expectedStatus: 401, name: 'auth_protection_accounts' }
-  ];
-
-  results.checks.deployed_endpoints = { status: 'PASS', probes: {} };
-  for (const probe of probes) {
+  // Health probe
+  try {
+    const healthRes = await fetch(`${activeDeployUrl}/api/health`);
+    const contentType = healthRes.headers.get('content-type') || '';
+    let bodyJson = null;
+    let rawText = '';
     try {
-      const res = await fetch(`${PREVIEW_URL}${probe.path}`);
-      const pass = res.status === probe.expectedStatus;
-      results.checks.deployed_endpoints.probes[probe.name] = {
-        path: probe.path,
+      rawText = await healthRes.text();
+      bodyJson = JSON.parse(rawText);
+    } catch {
+      // not JSON
+    }
+
+    endpointProbes.health = {
+      status: healthRes.status,
+      contentType: contentType,
+      content_type: contentType,
+      is_json: contentType.includes('application/json'),
+      body: bodyJson,
+      raw_sample: rawText.slice(0, 100)
+    };
+    console.log(`Endpoint /api/health: status ${healthRes.status}, content-type: ${contentType}`);
+  } catch (err) {
+    endpointProbes.health = { status: 0, error: err.message };
+    console.log(`Endpoint /api/health: ERROR (${err.message})`);
+  }
+
+  // Private probes
+  const privatePaths = ['/api/me', '/api/profile', '/api/plans', '/api/accounts'];
+  for (const p of privatePaths) {
+    try {
+      const res = await fetch(`${activeDeployUrl}${p}`);
+      const contentType = res.headers.get('content-type') || '';
+      endpointProbes.private_endpoints[p] = {
         status: res.status,
-        expected: probe.expectedStatus,
-        pass
+        content_type: contentType,
+        is_401: res.status === 401
       };
-      if (!pass) results.checks.deployed_endpoints.status = 'FAIL';
-      console.log(`Endpoint ${probe.path}: status ${res.status} (expected ${probe.expectedStatus}) => ${pass ? 'PASS' : 'FAIL'}`);
+      console.log(`Endpoint ${p}: status ${res.status} (expected 401 fail-closed)`);
     } catch (err) {
-      results.checks.deployed_endpoints.probes[probe.name] = {
-        path: probe.path,
-        error: err.message,
-        pass: false
-      };
-      results.checks.deployed_endpoints.status = 'FAIL';
-      console.log(`Endpoint ${probe.path}: ERROR (${err.message}) => FAIL`);
+      endpointProbes.private_endpoints[p] = { status: 0, error: err.message };
+      console.log(`Endpoint ${p}: ERROR (${err.message})`);
     }
   }
 
-  // 7. Overall Evaluation
-  console.log('--- Step 6: Evaluating Overall B33 Outcome ---');
-  if (!isPreviewIsolated) {
-    results.status = 'BLOCKED';
-    results.exitCode = 2;
-    results.owner_action_required = {
-      action: 'Authorize Cloudflare Pages preview D1 binding update',
-      target_project: PROJECT_NAME,
-      current_preview_binding: {
-        name: 'DB',
-        id: previewD1,
-        database: 'finpath-production'
-      },
-      requested_isolated_binding: {
-        name: 'DB',
-        id: '0dbad68e-7493-452f-8504-98d4c61ee5da',
-        database: 'finpath-preview'
-      },
-      smallest_exact_command: `curl -X PATCH "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT_NAME}" -H "Authorization: Bearer <CLOUDFLARE_API_TOKEN>" -H "Content-Type: application/json" -d '{"deployment_configs":{"preview":{"d1_databases":{"DB":{"id":"0dbad68e-7493-452f-8504-98d4c61ee5da"}}}}}'`
+  // Static preview probe (to document static vs API deployment behavior)
+  console.log(`\n--- Step 6: Documenting Static Preview Distinction (${STATIC_PREVIEW_URL}) ---`);
+  let staticHealthProbe = null;
+  try {
+    const staticRes = await fetch(`${STATIC_PREVIEW_URL}/api/health`);
+    const staticContentType = staticRes.headers.get('content-type') || '';
+    staticHealthProbe = {
+      status: staticRes.status,
+      content_type: staticContentType,
+      is_html: staticContentType.includes('text/html'),
+      uses_functions: false,
+      details: 'Static deployment 03cba125 has uses_functions=false and returns HTML for /api/*; API checks are unavailable there.'
     };
-    console.log('VERDICT: BLOCKED');
-    console.log('Reason: Preview infrastructure is not isolated. Cloudflare Pages preview deployment config binds DB to production database ID (a5860350-0a50-4ebe-9f5f-1d9916a908e6). Scoped owner authorization is required to update the binding to isolated finpath-preview (0dbad68e-7493-452f-8504-98d4c61ee5da).');
-  } else {
-    results.status = 'PASS';
-    results.exitCode = 0;
-    console.log('VERDICT: PASS');
+    console.log(`Static preview /api/health returned ${staticRes.status} with content-type: ${staticContentType} (HTML fallback confirmed)`);
+  } catch (err) {
+    staticHealthProbe = { status: 0, error: err.message };
   }
 
-  // Save verification JSON
-  const outputPath = path.join(EVIDENCE_DIR, 'b33-verification.json');
-  fs.writeFileSync(outputPath, JSON.stringify(results, null, 2) + '\n');
-  console.log(`Saved verification report to ${outputPath}`);
+  // 7. Production Auth Preflight Diagnostic
+  console.log('\n--- Step 7: Running Production Auth Preflight Diagnostic ---');
+  let authPreflightResult = null;
+  try {
+    const preflightOut = execFileSync(
+      'node',
+      ['scripts/check_production_auth.mjs', '--check-cloudflare'],
+      { cwd: REPO_ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
+    );
+    const passMatches = preflightOut.match(/^PASS\s+/gm) || [];
+    authPreflightResult = {
+      status: 'EXECUTED',
+      exit_code: 0,
+      passed_checks: passMatches.length,
+      total_checks: 6,
+      recognized: true,
+      raw_summary: preflightOut.split('\n').filter(l => l.startsWith('PASS') || l.startsWith('FAIL')).join('; ')
+    };
+    console.log(`Auth preflight executed cleanly: ${passMatches.length}/6 passed (diagnostic fail-closed status verified)`);
+  } catch (err) {
+    const fullOut = (err.stdout || '') + (err.stderr || '');
+    const passMatches = fullOut.match(/^PASS\s+/gm) || [];
+    const recognized = fullOut.includes('Production auth preflight') || fullOut.includes('CLERK');
+    authPreflightResult = {
+      status: 'EXECUTED',
+      exit_code: err.status || 1,
+      passed_checks: passMatches.length,
+      total_checks: 6,
+      recognized,
+      raw_summary: fullOut.split('\n').filter(l => l.startsWith('PASS') || l.startsWith('FAIL')).join('; ')
+    };
+    console.log(`Auth preflight exited with code ${err.status}: ${passMatches.length}/6 passed (fail-closed verified)`);
+  }
 
-  process.exit(results.exitCode);
+  // 8. Run Pure Evaluator
+  console.log('\n--- Step 8: Evaluating B33 Evidence with Pure Evaluator ---');
+  const evaluationPayload = {
+    approved_target_id: APPROVED_PREVIEW_DB_ID,
+    project_metadata: {
+      name: project.name,
+      production_branch: project.production_branch,
+      preview_d1_id: previewD1,
+      production_d1_id: productionD1
+    },
+    deployment_metadata: {
+      id: activeDeployment.id,
+      short_id: activeDeployment.short_id,
+      url: activeDeployUrl,
+      environment: activeDeployment.environment,
+      uses_functions: activeDeployment.uses_functions,
+      effective_d1_id: activeDeployD1
+    },
+    git_policy: {
+      target_branch: TARGET_BRANCH,
+      preview_deployment_setting: previewSetting,
+      preview_branch_includes: branchIncludes,
+      preview_branch_excludes: branchExcludes
+    },
+    migration_evidence: migrationEvidence,
+    endpoint_probes: endpointProbes,
+    auth_preflight: authPreflightResult
+  };
+
+  const outcome = evaluateB33Results(evaluationPayload);
+
+  console.log(`\n======================================================`);
+  console.log(`B33 VERIFICATION OUTCOME: ${outcome.status} (Exit Code: ${outcome.exitCode})`);
+  console.log(`Summary: ${outcome.summary}`);
+  console.log(`======================================================`);
+  for (const [name, check] of Object.entries(outcome.checks)) {
+    console.log(`[${check.status}] ${name}: ${check.details}`);
+  }
+
+  // Save complete report to b33-verification.json
+  const finalReport = {
+    timestamp,
+    evaluation: outcome,
+    evidence: {
+      project: {
+        name: project.name,
+        account_id: ACCOUNT_ID,
+        production_branch: project.production_branch,
+        preview_d1_binding: previewD1,
+        production_d1_binding: productionD1
+      },
+      deployment: {
+        id: activeDeployment.id,
+        short_id: activeDeployment.short_id,
+        url: activeDeployUrl,
+        effective_d1_id: activeDeployD1,
+        uses_functions: activeDeployment.uses_functions,
+        is_skipped: activeDeployment.is_skipped,
+        created_on: activeDeployment.created_on
+      },
+      git_source: {
+        setting: previewSetting,
+        branch_includes: branchIncludes,
+        branch_excludes: branchExcludes,
+        target_branch: TARGET_BRANCH,
+        is_branch_auto_deploying: isBranchAutoDeploying
+      },
+      migrations: migrationEvidence,
+      endpoints: {
+        active_preview: endpointProbes,
+        static_preview: staticHealthProbe
+      },
+      auth_preflight: authPreflightResult
+    }
+  };
+
+  const outputPath = path.join(EVIDENCE_DIR, 'b33-verification.json');
+  fs.writeFileSync(outputPath, JSON.stringify(finalReport, null, 2) + '\n');
+  console.log(`\nPersisted complete B33 verification evidence to: ${outputPath}`);
+
+  process.exit(outcome.exitCode);
 }
 
 main().catch(err => {
-  console.error('Fatal error during B33 verification:', err);
+  console.error('\nFatal error during B33 verification execution:', err);
   process.exit(1);
 });

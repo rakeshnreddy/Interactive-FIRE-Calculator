@@ -545,7 +545,7 @@
       "id": "B33",
       "title": "Isolate preview infrastructure before backend publication",
       "checkpoint": "C01I",
-      "status": "changes_requested",
+      "status": "ready_for_review",
       "dependencies": [
         "B01"
       ],
@@ -554,7 +554,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "452fbdca849c28233ba6474a38f36b732949c4a0",
       "review": "reviews/C01I.md",
-      "blocked_reason": "Preview-only setup authorized under free-tier constraint and project binding updated. Audit repairs, local deployment configuration safety, migration evidence and effective bootstrap binding verification remain outstanding; see FREE_TIER_EXECUTION.md and reviews/C01I.md."
+      "blocked_reason": null
     },
     {
       "id": "B34",

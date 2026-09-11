@@ -1,16 +1,16 @@
-✔ fails before running any stage when python3 is missing (15.987708ms)
-✔ fails before running any stage when node is missing (13.538458ms)
-✔ fails before running any stage when npm is missing (13.78525ms)
-✔ runs every verification stage in order (867.776458ms)
-✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (161.28225ms)
-✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (302.285875ms)
-✔ stops and preserves failure status from python3 -m pytest -q (317.32225ms)
-✔ stops and preserves failure status from npm run typecheck (465.553375ms)
-✔ stops and preserves failure status from npm test (536.76775ms)
-✔ stops and preserves failure status from npm run build (557.688667ms)
-✔ installs missing dependencies from the lockfile (508.997583ms)
-✔ does not run frontend verification after a failed install (499.48825ms)
-✔ uses the repository virtualenv even without system Python (632.743666ms)
+✔ fails before running any stage when python3 is missing (20.31325ms)
+✔ fails before running any stage when node is missing (21.972709ms)
+✔ fails before running any stage when npm is missing (20.534333ms)
+✔ runs every verification stage in order (595.544042ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (180.222125ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (322.968958ms)
+✔ stops and preserves failure status from python3 -m pytest -q (392.612708ms)
+✔ stops and preserves failure status from npm run typecheck (520.117084ms)
+✔ stops and preserves failure status from npm test (542.947625ms)
+✔ stops and preserves failure status from npm run build (542.059208ms)
+✔ installs missing dependencies from the lockfile (528.290459ms)
+✔ does not run frontend verification after a failed install (515.726959ms)
+✔ uses the repository virtualenv even without system Python (549.9375ms)
 ℹ tests 13
 ℹ suites 0
 ℹ pass 13
@@ -18,10 +18,10 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 4958.762166
+ℹ duration_ms 4825.190417
 ................................................... [ 64%]
 ............................                                             [100%]
-79 passed, 21 subtests passed in 2.84s
+79 passed, 21 subtests passed in 1.10s
 
 > interactive-fire-calculator@2.0.0 typecheck
 > tsc --noEmit
@@ -31,40 +31,13 @@
 > vitest run
 
 
-[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/Users/Rakesh/Projects/Interactive-FIRE-Calculator[39m
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
 
- [32m✓[39m src/lib/savingsGoalCalculator.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 210[2mms[22m[39m
- [32m✓[39m src/lib/calculatorContent.test.ts [2m([22m[2m84 tests[22m[2m)[22m[32m 111[2mms[22m[39m
- [32m✓[39m src/lib/calculatorEngagement.test.ts [2m([22m[2m167 tests[22m[2m)[22m[32m 56[2mms[22m[39m
- [32m✓[39m src/CompoundInterestCalculator.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 122[2mms[22m[39m
- [32m✓[39m src/CashflowPlanningCalculator.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[32m 228[2mms[22m[39m
- [32m✓[39m src/lib/calculatorStudios.test.ts [2m([22m[2m354 tests[22m[2m)[22m[33m 499[2mms[22m[39m
- [32m✓[39m src/SavingsGoalCalculator.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 412[2mms[22m[39m
- [32m✓[39m src/lib/seoCalculators.test.ts [2m([22m[2m287 tests[22m[2m)[22m[32m 29[2mms[22m[39m
- [32m✓[39m src/lib/compoundInterestCalculator.test.ts [2m([22m[2m50 tests[22m[2m)[22m[32m 44[2mms[22m[39m
- [32m✓[39m src/lib/routeMetadata.test.ts [2m([22m[2m86 tests[22m[2m)[22m[32m 47[2mms[22m[39m
- [32m✓[39m src/lib/planHealth.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
- [32m✓[39m src/lib/insights.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 32[2mms[22m[39m
- [32m✓[39m src/lib/transactionAnalytics.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 15[2mms[22m[39m
- [32m✓[39m src/lib/fire.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 10[2mms[22m[39m
- [32m✓[39m src/lib/calculatorToolkits.test.ts [2m([22m[2m92 tests[22m[2m)[22m[32m 23[2mms[22m[39m
- [32m✓[39m src/lib/cashflowPlanningCalculators.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 8[2mms[22m[39m
- [32m✓[39m src/transactionImports.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
- [32m✓[39m src/balanceImports.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 5[2mms[22m[39m
- [32m✓[39m src/lib/balanceCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
- [32m✓[39m src/lib/transactionCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
- [32m✓[39m src/calculatorResults.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
- [32m✓[39m src/goals.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
- [32m✓[39m src/lib/planWorkspace.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
- [32m✓[39m src/accountData.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
- [32m✓[39m src/transactions.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
- [32m✓[39m src/lib/navigation.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
- [32m✓[39m src/firePlans.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
 
-[2m Test Files [22m [1m[32m27 passed[39m[22m[90m (27)[39m
-[2m      Tests [22m [1m[32m1276 passed[39m[22m[90m (1276)[39m
-[2m   Start at [22m 19:45:44
-[2m   Duration [22m 5.48s[2m (transform 1.59s, setup 0ms, import 3.37s, tests 1.90s, environment 27.39s)[22m
+ Test Files  27 passed (27)
+      Tests  1276 passed (1276)
+   Start at  20:07:31
+   Duration  5.46s (transform 2.02s, setup 0ms, import 4.01s, tests 2.09s, environment 25.56s)
 
 
 > interactive-fire-calculator@2.0.0 build
@@ -94,7 +67,7 @@ dist/assets/CalculatorLibrary-x9S3dB_5.js                  313.23 kB │ gzip:  
 dist/assets/ProjectionChart-CKyHPfJr.js                    347.89 kB │ gzip: 102.40 kB │ map: 1,758.79 kB
 dist/assets/index-r5hqYYMq.js                              513.78 kB │ gzip: 140.98 kB │ map: 1,577.43 kB
 
-✓ built in 785ms
+✓ built in 492ms
 [plugin builtin:vite-reporter]
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
