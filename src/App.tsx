@@ -37,6 +37,7 @@ import type {
   CalculatorSaveOutcome,
   CalculatorSaveRequest
 } from './CalculatorLibrary';
+import { HeroFireExample } from './HeroFireExample';
 import { CalculatorSaveCoordinator } from './lib/calculatorSaveManager';
 import type {
   PlanVersionDetail,
@@ -2566,21 +2567,48 @@ function YearByYearTable({ rows, label }: { rows: YearResult[]; label: string })
   );
 }
 
-const landingFeatures = [
+export const landingSteps = [
   {
-    title: 'Explore the decision',
-    body: 'Use a focused calculator with scenarios, charts, and the full breakdown behind the answer.',
+    step: '1',
+    title: 'Add your numbers',
+    body: 'Start with your savings and spending.',
     icon: Calculator
   },
   {
-    title: 'Make the result actionable',
-    body: 'Turn the useful number into a goal, account, payoff plan, or cash-flow habit.',
+    step: '2',
+    title: 'Try different assumptions',
+    body: 'Explore how changes affect the estimate.',
+    icon: TrendingUp
+  },
+  {
+    step: '3',
+    title: 'Review the results',
+    body: 'See the timeline and the assumptions behind it.',
+    icon: Target
+  }
+];
+
+export const usefulCalculatorPaths = [
+  {
+    title: 'Buying a home?',
+    action: 'Explore borrowing costs',
+    body: 'Estimate monthly payments and total interest over time.',
+    route: '/calculators/mortgage' as AppRoute,
     icon: CircleDollarSign
   },
   {
-    title: 'See progress over time',
-    body: 'Return to current balances and compare the plan as income, priorities, or markets change.',
-    icon: BarChart3
+    title: 'Growing your savings?',
+    action: 'Explore compound growth',
+    body: 'See how regular contributions compound over time.',
+    route: '/calculators/compound-interest' as AppRoute,
+    icon: TrendingUp
+  },
+  {
+    title: 'Long-term independence?',
+    action: 'Explore financial independence',
+    body: 'Model portfolio needs and sustainable retirement withdrawals.',
+    route: '/calculators/fire' as AppRoute,
+    icon: Target
   }
 ];
 
@@ -4514,53 +4542,34 @@ function DesktopNavigation({
   );
 }
 
-function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
+export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
   return (
     <>
       <section className="landing-hero" aria-labelledby="landing-title">
-        <img
-          className="landing-hero-media"
-          src="/assets/finpath-product-hero.jpg"
-          alt="A mobile financial planning dashboard beside a cobalt card"
-          width="1672"
-          height="941"
-          decoding="async"
-        />
-        <div className="landing-hero-scrim" aria-hidden="true" />
         <div className="landing-hero-inner">
           <div className="landing-hero-copy">
-            <p className="eyebrow">Calculate first. Keep the plan moving.</p>
-            <h1 id="landing-title">Make the number mean something.</h1>
-            <p>Model a financial decision, understand what changes the outcome, and keep the next step connected to your real plan.</p>
+            <p className="eyebrow">Plan your financial future</p>
+            <h1 id="landing-title">See when you could retire.</h1>
+            <p>
+              See how saving more or spending less could change your retirement timeline. Try it free, without an account.
+            </p>
             <div className="landing-actions">
               <a
-                href="/calculators"
+                href="/calculators/fire"
                 className="primary-button icon-text-button"
+                onClick={(event) => handleNavigationAnchorClick(event, '/calculators/fire', onNavigate)}
+              >
+                <Target size={16} />
+                Explore my retirement timeline
+              </a>
+              <a
+                href="/calculators"
+                className="secondary-button icon-text-button"
                 onClick={(event) => handleNavigationAnchorClick(event, '/calculators', onNavigate)}
               >
                 <Calculator size={16} />
-                Browse calculators
+                Explore all calculators
               </a>
-              {auth.isSignedIn ? (
-                <a
-                  href="/dashboard"
-                  className="secondary-button icon-text-button"
-                  onClick={(event) => handleNavigationAnchorClick(event, '/dashboard', onNavigate)}
-                >
-                  Open dashboard
-                  <ArrowRight size={17} />
-                </a>
-              ) : (
-                <AuthActionButton
-                  auth={auth}
-                  kind="sign-up"
-                  className="secondary-button icon-text-button"
-                  onUnavailable={() => onNavigate('/dashboard')}
-                >
-                  Create account
-                  <ArrowRight size={17} />
-                </AuthActionButton>
-              )}
             </div>
             <nav className="landing-popular-paths" aria-label="Popular calculators">
               <span>Popular starts</span>
@@ -4576,54 +4585,49 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
               ))}
             </nav>
           </div>
+
+          <HeroFireExample />
         </div>
       </section>
 
       <section className="landing-path-strip" aria-label="Choose a planning path">
-        <a
-          href="/calculators/mortgage"
-          onClick={(event) => handleNavigationAnchorClick(event, '/calculators/mortgage', onNavigate)}
-        >
-          <CircleDollarSign size={22} />
-          <span><small>Borrowing</small><strong>Pay less over time</strong></span>
-          <ArrowRight size={18} />
-        </a>
-        <a
-          href="/calculators/compound-interest"
-          onClick={(event) => handleNavigationAnchorClick(event, '/calculators/compound-interest', onNavigate)}
-        >
-          <TrendingUp size={22} />
-          <span><small>Growing wealth</small><strong>Test a contribution plan</strong></span>
-          <ArrowRight size={18} />
-        </a>
-        <a
-          href="/calculators/fire"
-          onClick={(event) => handleNavigationAnchorClick(event, '/calculators/fire', onNavigate)}
-        >
-          <Target size={22} />
-          <span><small>Long-term planning</small><strong>Find the path to freedom</strong></span>
-          <ArrowRight size={18} />
-        </a>
+        {usefulCalculatorPaths.map((pathItem) => {
+          const Icon = pathItem.icon;
+          return (
+            <a
+              key={pathItem.route}
+              href={pathItem.route}
+              onClick={(event) => handleNavigationAnchorClick(event, pathItem.route, onNavigate)}
+            >
+              <Icon size={22} />
+              <span>
+                <small>{pathItem.title}</small>
+                <strong>{pathItem.action}</strong>
+              </span>
+              <ArrowRight size={18} />
+            </a>
+          );
+        })}
       </section>
 
       <section className="landing-capabilities" aria-labelledby="capabilities-title">
         <header>
-          <p className="eyebrow">From answer to action</p>
-          <h2 id="capabilities-title">One clear thread through your financial life.</h2>
-          <p>Start with the question that matters today, then keep the useful result connected to what changes tomorrow.</p>
+          <p className="eyebrow">How it works</p>
+          <h2 id="capabilities-title">Start with a question. Leave with a clearer plan.</h2>
+          <p>Each tool helps you test assumptions, inspect the math, and understand what changes the outcome.</p>
         </header>
 
         <div className="landing-feature-list">
-          {landingFeatures.map((feature) => {
-            const Icon = feature.icon;
+          {landingSteps.map((stepItem) => {
+            const Icon = stepItem.icon;
             return (
-              <article className="landing-feature" key={feature.title}>
+              <article className="landing-feature" key={stepItem.title}>
                 <span className="feature-icon">
                   <Icon size={20} />
                 </span>
                 <div>
-                  <strong>{feature.title}</strong>
-                  <small>{feature.body}</small>
+                  <strong>{stepItem.title}</strong>
+                  <small>{stepItem.body}</small>
                 </div>
               </article>
             );
@@ -4631,36 +4635,36 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
         </div>
       </section>
 
-      <section className="landing-continuity-band" aria-labelledby="continuity-title">
-        <div>
-          <p className="eyebrow">Your private workspace</p>
-          <h2 id="continuity-title">Keep the decision alive after the calculator closes.</h2>
-          <p>Connect saved results to balances, goals, transactions, and plans so progress has context.</p>
-        </div>
-        {auth.isSignedIn ? (
-          <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
-            Open dashboard
-            <ArrowRight size={17} />
-          </button>
-        ) : (
-          <AuthActionButton
-            auth={auth}
-            kind="sign-up"
-            className="primary-button icon-text-button"
-            onUnavailable={() => onNavigate('/dashboard')}
-          >
-            Create free account
-            <ArrowRight size={17} />
-          </AuthActionButton>
-        )}
-      </section>
-
       <section className="privacy-band" aria-labelledby="privacy-title">
         <ShieldCheck size={24} />
         <div>
-          <h2 id="privacy-title">Private by account boundary.</h2>
-          <p>Signed-in financial records are scoped to your identity. The FIRE calculator remains available without an account.</p>
+          <h2 id="privacy-title">Start without an account.</h2>
+          <p>
+            Use the public calculators before deciding whether to create an account. Explore calculators without an account.
+          </p>
         </div>
+        {auth.isConfigured && (
+          auth.isSignedIn ? (
+            <a
+              href="/dashboard"
+              className="secondary-button icon-text-button"
+              onClick={(event) => handleNavigationAnchorClick(event, '/dashboard', onNavigate)}
+            >
+              Open dashboard
+              <ArrowRight size={17} />
+            </a>
+          ) : (
+            <AuthActionButton
+              auth={auth}
+              kind="sign-up"
+              className="secondary-button icon-text-button"
+              onUnavailable={() => onNavigate('/dashboard')}
+            >
+              Create account
+              <ArrowRight size={17} />
+            </AuthActionButton>
+          )
+        )}
       </section>
 
       <footer className="landing-footer">

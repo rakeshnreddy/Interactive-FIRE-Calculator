@@ -3321,22 +3321,14 @@ body {
 .app {
   min-height: 100vh;
   color: var(--text);
-  background-color: #edf0f4;
-  background-image:
-    linear-gradient(rgba(237, 240, 244, 0.82), rgba(237, 240, 244, 0.94)),
-    url("/assets/finpath-product-hero.jpg");
-  background-position: center top, center top;
+  background-color: var(--color-canvas, #f4f8fb);
+  background-position: center top;
   background-repeat: no-repeat;
-  background-size: cover, cover;
-  background-attachment: fixed;
 }
 
 .app[data-mode="dark"] {
   color-scheme: dark;
-  background-color: #0a0a0a;
-  background-image:
-    linear-gradient(rgba(10, 10, 10, 0.84), rgba(10, 10, 10, 0.95)),
-    url("/assets/finpath-product-hero.jpg");
+  background-color: var(--color-canvas, #08151c);
 }
 
 .app ::selection {
