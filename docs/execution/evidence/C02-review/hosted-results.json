@@ -1,0 +1,49 @@
+{
+  "pages": [
+    {
+      "route": "/",
+      "title": "Make the number mean something.",
+      "overflow": false
+    },
+    {
+      "route": "/calculators",
+      "title": "Start with the question, not the formula.",
+      "overflow": false
+    },
+    {
+      "route": "/calculators/fire",
+      "title": "FIRE Calculator",
+      "overflow": false
+    },
+    {
+      "route": "/accounts",
+      "title": "Connect Clerk before opening account routes.",
+      "overflow": false
+    },
+    {
+      "route": "/dashboard",
+      "title": "Connect Clerk before opening account routes.",
+      "overflow": false
+    }
+  ],
+  "api": [
+    {
+      "route": "/api/health",
+      "status": 200
+    },
+    {
+      "route": "/api/accounts",
+      "status": 401
+    },
+    {
+      "route": "/api/dashboard",
+      "status": 401
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401
+    }
+  ],
+  "errors": [],
+  "assetsMatch": true
+}
