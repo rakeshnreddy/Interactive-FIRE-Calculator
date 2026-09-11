@@ -164,11 +164,68 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
   return <CalculatorHub onNavigate={onNavigate} />;
 }
 
+const libraryStartingPaths = [
+  {
+    question: 'Planning for retirement?',
+    title: 'Interactive FIRE Calculator',
+    description: 'Model required nest egg, target retirement age, and sustainable withdrawals.',
+    path: '/calculators/fire',
+    badge: 'Retirement'
+  },
+  {
+    question: 'Buying a home?',
+    title: 'Mortgage Payment Calculator',
+    description: 'Estimate monthly principal and interest, amortized interest, and total cost.',
+    path: '/calculators/mortgage',
+    badge: 'Home & Loans'
+  },
+  {
+    question: 'Growing your savings?',
+    title: 'Compound Interest Calculator',
+    description: 'Project regular contributions, compound growth schedules, and return scenarios.',
+    path: '/calculators/compound-interest',
+    badge: 'Savings & Growth'
+  },
+  {
+    question: 'Paying off debt?',
+    title: 'Debt Payoff Calculator',
+    description: 'Compare avalanche and snowball strategies to eliminate high-interest debt faster.',
+    path: '/calculators/debt-payoff',
+    badge: 'Debt Payoff'
+  }
+];
+
+const fireSearchKeywords = [
+  'fire',
+  'financial independence',
+  'retire early',
+  'retirement',
+  'retirement timeline',
+  'nest egg',
+  'sustainable withdrawal',
+  'swr',
+  'safe withdrawal rate',
+  '4% rule',
+  'pension',
+  'portfolio target'
+];
+
 function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) {
   const [query, setQuery] = useState(() => (
     typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('q') ?? ''
   ));
   const normalizedQuery = query.trim().toLowerCase();
+
+  const fireMatches = useMemo(() => {
+    if (!normalizedQuery) return false;
+    return [
+      'Interactive FIRE Calculator',
+      'Model retirement timelines, required nest egg, and sustainable withdrawal rates.',
+      'Retirement Planning',
+      ...fireSearchKeywords
+    ].join(' ').toLowerCase().includes(normalizedQuery);
+  }, [normalizedQuery]);
+
   const visibleCalculators = useMemo(
     () =>
       seoCalculators.filter((calculator) =>
@@ -182,6 +239,8 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
       ),
     [normalizedQuery]
   );
+
+  const totalMatches = visibleCalculators.length + (fireMatches ? 1 : 0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -200,7 +259,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
         <p>Choose a planning toolkit or search for an exact calculator. Every estimate includes explanations, scenarios, visual context, and detailed schedules where they add value.</p>
         <div className="calculator-library-stats" aria-label="Calculator library summary">
           <span><strong>{calculatorToolkits.length}</strong> planning toolkits</span>
-          <span><strong>{seoCalculators.length}</strong> focused calculators</span>
+          <span><strong>{seoCalculators.length + 1}</strong> public calculators</span>
           <span><strong>0</strong> account required</span>
         </div>
       </div>
@@ -212,7 +271,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           autoComplete="off"
           name="calculator-search"
           type="search"
-          placeholder="Search mortgage, SIP, tax, debt payoff, retirement"
+          placeholder="Search mortgage, SIP, tax, debt payoff, retirement, FIRE"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -228,10 +287,10 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Search results</p>
-              <h2>{visibleCalculators.length} {visibleCalculators.length === 1 ? 'match' : 'matches'}</h2>
+              <h2>{totalMatches} {totalMatches === 1 ? 'match' : 'matches'}</h2>
             </div>
           </div>
-          {visibleCalculators.length === 0 ? (
+          {totalMatches === 0 ? (
             <div className="calculator-empty-state">
               <CircleHelp size={22} />
               <strong>No calculator matches that phrase.</strong>
@@ -239,6 +298,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
             </div>
           ) : (
             <div className="calculator-card-grid">
+              {fireMatches && <FireSearchCard onNavigate={onNavigate} />}
               {visibleCalculators.map((calculator) => (
                 <CalculatorSearchCard calculator={calculator} key={calculator.slug} onNavigate={onNavigate} />
               ))}
@@ -246,13 +306,59 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           )}
         </section>
       ) : (
-        <div className="calculator-toolkit-grid">
-          {calculatorToolkits.map((toolkit) => (
-            <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} toolkit={toolkit} />
-          ))}
-        </div>
+        <>
+          <section className="calculator-starting-paths" aria-labelledby="starting-paths-title">
+            <div className="starting-paths-header">
+              <p className="eyebrow">Starting paths</p>
+              <h2 id="starting-paths-title">Popular decisions to start with</h2>
+              <p>Explore high-impact planning questions before diving into specialized toolkits.</p>
+            </div>
+            <div className="starting-paths-grid">
+              {libraryStartingPaths.map((item) => (
+                <a
+                  key={item.path}
+                  href={item.path}
+                  className="starting-path-card"
+                  onClick={(event) => navigateInternalLink(event, item.path, onNavigate)}
+                >
+                  <div className="starting-path-head">
+                    <span className="starting-path-badge">{item.badge}</span>
+                    <ArrowRight size={16} />
+                  </div>
+                  <span className="starting-path-question">{item.question}</span>
+                  <strong className="starting-path-title">{item.title}</strong>
+                  <p className="starting-path-description">{item.description}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <div className="calculator-toolkit-grid">
+            {calculatorToolkits.map((toolkit) => (
+              <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} toolkit={toolkit} />
+            ))}
+          </div>
+        </>
       )}
     </section>
+  );
+}
+
+function FireSearchCard({ onNavigate }: { onNavigate: (route: string) => void }) {
+  return (
+    <a
+      className="calculator-card calculator-card-fire"
+      href="/calculators/fire"
+      onClick={(event) => navigateInternalLink(event, '/calculators/fire', onNavigate)}
+    >
+      <span className="calculator-card-meta">Retirement Planning</span>
+      <strong>Interactive FIRE Calculator</strong>
+      <small>Model required nest egg, target retirement age, sustainable withdrawal rates, and inflation-adjusted cash flows.</small>
+      <em>
+        Open calculator
+        <ArrowRight size={14} />
+      </em>
+    </a>
   );
 }
 
@@ -275,7 +381,7 @@ function CalculatorToolkitPanel({
           <span>{toolkit.prompt}</span>
           <h2>{toolkit.title}</h2>
         </div>
-        <strong>{toolkit.calculators.length}</strong>
+        <span className="calculator-toolkit-count">{toolkit.calculators.length}</span>
       </header>
       <p>{toolkit.description}</p>
       <nav className="calculator-toolkit-featured" aria-label={`${toolkit.title} starting points`}>
@@ -285,7 +391,7 @@ function CalculatorToolkitPanel({
             key={calculator.slug}
             onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
           >
-            <span>{index === 0 ? 'Start here' : 'Also useful'}</span>
+            {index === 0 ? <span className="calculator-featured-tag">Start here</span> : null}
             <strong>{calculator.title}</strong>
             <ArrowRight size={15} />
           </a>
