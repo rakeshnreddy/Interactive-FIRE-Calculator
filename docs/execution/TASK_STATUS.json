@@ -545,14 +545,14 @@
       "id": "B33",
       "title": "Isolate preview infrastructure before backend publication",
       "checkpoint": "C01I",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B33.md",
       "submission": "submissions/B33.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "452fbdca849c28233ba6474a38f36b732949c4a0",
+      "code_sha": "78df4f850112ee3c1fbc76853b6e071a7c75bf2e",
       "review": "reviews/C01I.md",
       "blocked_reason": null
     },

@@ -347,7 +347,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema; revert material/theme commit while preserving B15/B16 repairs. Human 1–2 days; agent 4–8 hours plus review.
   - Detailed implementer prompt: [B32](execution/prompts/B32.md).
 
-- [ ] **B33 — Owner-blocked: isolate preview infrastructure before backend publication.**
+- [x] **B33 — Accepted: isolate preview infrastructure before backend publication.**
   - User problem/evidence: effective preview DB binding matched the production-named DB; publishing changed APIs can expose production-bound functions even without intentional test writes.
   - Expected outcome/scope: verify every automatic/manual preview deployment path, obtain scoped owner approval for the isolated preview DB, configure preview-only binding and confirm deployed effective metadata before any backend-code push/deploy.
   - Non-goals: no production DB/DNS changes, no copying production data, no auth bypass, no disabling unrelated deployments without authorization.
@@ -388,3 +388,5 @@ C01T third review of dd47fa3: whole-page print verified fixed; bounded native200
 C01T final acceptance: B32 accepted at `32584da7e47307a35730911e3567f02f9095550b` under the owner’s explicit actual-reader deferral, tracked in B31. This supersedes earlier C01T changes-requested notes. Accepted total 6/34 (17.6% by task count). C01I/B33 is released for its scoped isolation work; remote setup still needs its specified owner authorization. See [final review](execution/reviews/C01T.md).
 
 C01I primary review: B33 requires audit reliability repairs and scoped preview-binding authorization. No acceptance; C02 stays locked. See [review](execution/reviews/C01I.md) and [rework prompt](execution/C01I_REWORK_PROMPT.md).
+
+C01I accepted after primary reviewer completed the remaining audit repair. 7/34 tasks accepted (20.6% task count). C02 released, starting B02. See [final review](execution/reviews/C01I.md).

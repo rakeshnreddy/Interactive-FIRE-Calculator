@@ -29,3 +29,7 @@ Full test suite [`./scripts/test_all.sh`](../../../../scripts/test_all.sh) passe
 | **3. Wrong migration DB ID** | Unchecked `database_id` returned PASS | Database mismatch (`database_id !== approvedTargetId`) returns FAIL (exit 1) | `test_evaluator.cjs`: Repro 3 |
 | **4. Wrong health runtime** | Unchecked `runtime` field returned PASS | Mismatched `runtime` returns FAIL (exit 1) | `test_evaluator.cjs`: Repro 4 |
 | **5. Wildcard branch pattern** | `codex/finpath-*` returned `auto_deploying: false` | Wildcard glob pattern matches branch, returning `auto_deploying: true` | `test_evaluator.cjs`: Repro 5 & V06-5 |
+
+## Final primary reviewer amendment
+
+The worker's 49-test matrix above is historical. Primary final repair adds required policy flags, probe provenance, structured schema validation and report round-trip checks; all55 tests pass. See primary-final-tests.log, primary-final-live.json and primary-final-full-suite.log. The final accepted tooling revision is recorded in ../../reviews/C01I.md; provider and earlier worker CI attribution remain separate.

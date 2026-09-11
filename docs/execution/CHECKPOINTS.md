@@ -1,6 +1,6 @@
 # Checkpoints and release ledger
 
-Only C01I is released for its scoped isolation work now. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+Only C02 is released for implementation now. C01I is accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
@@ -8,8 +8,8 @@ Only C01I is released for its scoped isolation work now. C01T is accepted with t
 | C00R | Development-tool security repair | B34 | accepted | b48ac00328f356746bd501921562e727feb7a8e5 | [record](reviews/C00R.md) |
 | C01 | Visible defects and design foundation | B15 → B16 → B17 | accepted | ccebac7d5bcaf645721e2e67ea490a7f447e1db9 | [record](reviews/C01.md) |
 | C01T | Light/dark glass and gradient palette | B32 | accepted | 32584da7e47307a35730911e3567f02f9095550b | [accepted with reader deferral](reviews/C01T.md) |
-| C01I | Isolated preview publication prerequisite | B33 | released | — | [changes requested; audit repair](reviews/C01I.md) |
-| C02 | Currency and save integrity | B02 → B03 → B04 | locked | — | — |
+| C01I | Isolated preview publication prerequisite | B33 | accepted | 78df4f850112ee3c1fbc76853b6e071a7c75bf2e | [approved](reviews/C01I.md) |
+| C02 | Currency and save integrity | B02 → B03 → B04 | released | — | — |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | locked | — | — |
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | locked | — | — |
 | C05 | Dedicated calculator families | B22 → B23 → B24 | locked | — | — |
@@ -48,3 +48,5 @@ C01 review 2026-09-09: CHANGES_REQUESTED at code `ad580088938fc9f2a0e499eb70f060
 C01 acceptance 2026-09-10: all three tasks accepted at `ccebac7d5bcaf645721e2e67ea490a7f447e1db9` on immutable static preview f05b7516. [Review](reviews/C01.md) supersedes the earlier rework-only release. C01T/B32 alone is now released; C01I/B33 and later work remain locked. This does not establish database isolation or production readiness.
 
 C01T final acceptance supersedes earlier release notes: B32 accepted under owner-amended scope; actual-reader verification is deferred to B31, not passed. C01I/B33 alone is released. All B33 external authorization and publication gates remain effective.
+
+Final C01I acceptance supersedes earlier rework notes: B33 passes at `78df4f850112ee3c1fbc76853b6e071a7c75bf2e`; C02 alone is released, starting B02. Free-tier, publication isolation and task-specific write authorization remain required.
