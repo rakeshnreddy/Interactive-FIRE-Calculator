@@ -48,6 +48,8 @@ function getPassingFixture() {
       effective_d1_id: APPROVED_PREVIEW_DB_ID
     },
     git_policy: {
+      deployments_enabled: true,
+      production_deployments_enabled: false,
       target_branch: 'codex/finpath-quality-execution',
       preview_deployment_setting: 'custom',
       preview_branch_includes: ['codex/cloudflare-pages-theme-plan'],
@@ -734,6 +736,39 @@ console.log('\n--- Section 9: V08 Real CLI Execution & Persistence ---');
 
   passedTests++;
   console.log('✓ V08-2: Real CLI exercises fixtures and persists outcomes with exit codes 0, 1, and 2');
+}
+
+// Primary reviewer regressions: required provenance and policy cannot be inferred.
+for (const [name, mutate, expected] of [
+  ['missing enabled flag', f => { delete f.git_policy.deployments_enabled; }, 'BLOCKED'],
+  ['disabled source', f => { f.git_policy.deployments_enabled = false; }, 'PASS'],
+  ['malformed pattern element', f => { f.git_policy.preview_branch_includes = [null]; }, 'BLOCKED'],
+  ['missing probe provenance', f => { delete f.endpoint_probes.deployment_url; }, 'BLOCKED'],
+  ['malformed schema row', f => { f.migration_evidence.tables = [null]; }, 'BLOCKED'],
+]) {
+  const f = getPassingFixture();
+  f.git_policy.deployments_enabled = true;
+  f.git_policy.production_deployments_enabled = false;
+  mutate(f);
+  const result = evaluateB33Results(f);
+  assert.strictEqual(result.status, expected, name);
+  if (name === 'disabled source') assert.strictEqual(result.checks.git_deployment_policy.auto_deploying, false);
+  passedTests++;
+}
+{
+  const tmp = fs.mkdtempSync('/tmp/b33-provenance-');
+  try {
+    const f = getPassingFixture();
+    const report = {evidence:{project:{preview_d1_binding:f.project_metadata.preview_d1_id,production_d1_binding:f.project_metadata.production_d1_id},deployment:{...f.deployment_metadata},git_source:{setting:'custom',branch_includes:[],branch_excludes:[],deployments_enabled:true,production_deployments_enabled:false},migrations:f.migration_evidence,endpoints:{active_preview:f.endpoint_probes},auth_preflight:f.auth_preflight}};
+    delete report.evidence.deployment.environment;
+    delete report.evidence.deployment.latest_stage_status;
+    fs.writeFileSync(tmp+'/input.json',JSON.stringify(report));
+    let exit = 0;
+    try { execFileSync('node',[path.join(__dirname,'verify_b33.cjs'),'--fixture',tmp+'/input.json','--output',tmp+'/out.json'],{stdio:'pipe'}); } catch(e) { exit=e.status; }
+    assert.strictEqual(exit,2,'real report CLI must not invent preview/success metadata');
+    assert.strictEqual(JSON.parse(fs.readFileSync(tmp+'/out.json')).evaluation.status,'BLOCKED');
+    passedTests++;
+  } finally { fs.rmSync(tmp,{recursive:true,force:true}); }
 }
 
 console.log(`\n======================================================`);

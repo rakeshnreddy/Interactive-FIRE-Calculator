@@ -292,7 +292,12 @@ function evaluateB33Results(input) {
 
   // 3. Git Deployment Policy (V06)
   const gitPolicy = input.git_policy;
-  if (!gitPolicy || !gitPolicy.preview_deployment_setting) {
+  if (!gitPolicy || !gitPolicy.preview_deployment_setting ||
+      typeof gitPolicy.deployments_enabled !== 'boolean' ||
+      typeof gitPolicy.production_deployments_enabled !== 'boolean' ||
+      !Array.isArray(gitPolicy.preview_branch_includes) ||
+      !Array.isArray(gitPolicy.preview_branch_excludes) ||
+      [...gitPolicy.preview_branch_includes, ...gitPolicy.preview_branch_excludes].some(p => typeof p !== 'string' || !p.trim())) {
     checks.git_deployment_policy = {
       status: 'BLOCKED',
       details: 'Missing Cloudflare Pages Git preview deployment policy'
@@ -303,7 +308,7 @@ function evaluateB33Results(input) {
     const includes = gitPolicy.preview_branch_includes;
     const excludes = gitPolicy.preview_branch_excludes;
 
-    if (setting === 'none') {
+    if (!gitPolicy.deployments_enabled || setting === 'none') {
       checks.git_deployment_policy = {
         status: 'PASS',
         auto_deploying: false,
@@ -373,6 +378,8 @@ function evaluateB33Results(input) {
       status: 'BLOCKED',
       details: 'Migration lists are malformed or missing'
     };
+  } else if (!Array.isArray(mig.tables) || mig.tables.some(t => typeof t !== 'string' || !t.trim()) || mig.repository_migrations.some(m => typeof m !== 'string' || !m.trim())) {
+    checks.migration_readiness = {status: 'BLOCKED', details: 'Malformed schema or repository migration rows'};
   } else if (mig.applied_migrations.some(m => !m || typeof m !== 'object' || typeof m.name !== 'string')) {
     checks.migration_readiness = {
       status: 'BLOCKED',
@@ -415,7 +422,7 @@ function evaluateB33Results(input) {
 
   // 5. Endpoint Probes (V03 & V04)
   const probes = input.endpoint_probes;
-  if (!probes) {
+  if (!probes || typeof probes.deployment_url !== 'string' || !probes.deployment_url.trim()) {
     checks.endpoint_probes = {
       status: 'BLOCKED',
       details: 'Missing endpoint probes evidence'

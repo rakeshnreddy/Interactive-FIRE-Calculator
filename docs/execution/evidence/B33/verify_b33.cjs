@@ -72,13 +72,15 @@ async function main(argv = process.argv) {
         id: fixtureData.evidence.deployment?.id,
         short_id: fixtureData.evidence.deployment?.short_id,
         url: fixtureData.evidence.deployment?.url,
-        environment: fixtureData.evidence.deployment?.environment || 'preview',
+        environment: fixtureData.evidence.deployment?.environment,
         uses_functions: fixtureData.evidence.deployment?.uses_functions,
-        latest_stage_status: fixtureData.evidence.deployment?.latest_stage_status || 'success',
+        latest_stage_status: fixtureData.evidence.deployment?.latest_stage_status,
         effective_d1_id: fixtureData.evidence.deployment?.effective_d1_id
       },
       git_policy: {
         target_branch: fixtureData.evidence.git_source?.target_branch || TARGET_BRANCH,
+        deployments_enabled: fixtureData.evidence.git_source?.deployments_enabled,
+        production_deployments_enabled: fixtureData.evidence.git_source?.production_deployments_enabled,
         preview_deployment_setting: fixtureData.evidence.git_source?.setting,
         preview_branch_includes: fixtureData.evidence.git_source?.branch_includes,
         preview_branch_excludes: fixtureData.evidence.git_source?.branch_excludes
@@ -136,9 +138,9 @@ async function main(argv = process.argv) {
   // 3. Inspect Git Integration and Branch Triggers
   console.log('\n--- Step 2: Inspecting Git Integration and Branch Triggers ---');
   const source = project.source?.config || {};
-  const previewSetting = source.preview_deployment_setting || 'none';
-  const branchIncludes = source.preview_branch_includes || [];
-  const branchExcludes = source.preview_branch_excludes || [];
+  const previewSetting = source.preview_deployment_setting;
+  const branchIncludes = source.preview_branch_includes;
+  const branchExcludes = source.preview_branch_excludes;
 
   console.log(`Preview Deployment Setting: ${previewSetting}`);
   console.log(`Preview Branch Includes: ${JSON.stringify(branchIncludes)}`);
@@ -157,7 +159,10 @@ async function main(argv = process.argv) {
 
   let activeDeployment = null;
   if (options.deploymentId) {
-    activeDeployment = depListData.result.find(d => d.id === options.deploymentId || d.short_id === options.deploymentId);
+    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT_NAME}/deployments/${encodeURIComponent(options.deploymentId)}`, {headers: {Authorization: `Bearer ${token}`}});
+    const data = await response.json();
+    if (!response.ok || !data.success) throw new Error('Exact deployment metadata unavailable');
+    activeDeployment = data.result;
     if (!activeDeployment) {
       throw new Error(`Specified deployment ID ${options.deploymentId} not found in deployments list`);
     }
@@ -196,7 +201,8 @@ async function main(argv = process.argv) {
       stdio: ['ignore', 'pipe', 'pipe']
     });
     const tableJson = JSON.parse(tableOutRaw);
-    const rawTables = tableJson[0]?.results || [];
+    if (tableJson[0]?.success !== true || !Array.isArray(tableJson[0]?.results)) throw new Error('Schema query did not return successful structured results');
+    const rawTables = tableJson[0].results;
 
     const migCmd = `PATH="/opt/homebrew/opt/node/bin:$PATH" npx wrangler d1 execute ${APPROVED_PREVIEW_DB_ID} --remote --command "SELECT id, name, applied_at FROM d1_migrations ORDER BY id;" --json`;
     const migOutRaw = execFileSync('sh', ['-c', migCmd], {
@@ -205,7 +211,8 @@ async function main(argv = process.argv) {
       stdio: ['ignore', 'pipe', 'pipe']
     });
     const migJson = JSON.parse(migOutRaw);
-    const appliedMigrations = migJson[0]?.results || [];
+    if (migJson[0]?.success !== true || !Array.isArray(migJson[0]?.results)) throw new Error('Migration query did not return successful structured results');
+    const appliedMigrations = migJson[0].results;
 
     // Repository migrations
     const migrationsDir = path.join(REPO_ROOT, 'migrations');
@@ -367,7 +374,11 @@ async function main(argv = process.argv) {
     },
     git_policy: {
       target_branch: TARGET_BRANCH,
+      deployments_enabled: source.deployments_enabled,
+      production_deployments_enabled: source.production_deployments_enabled,
       preview_deployment_setting: previewSetting,
+        deployments_enabled: source.deployments_enabled,
+        production_deployments_enabled: source.production_deployments_enabled,
       preview_branch_includes: branchIncludes,
       preview_branch_excludes: branchExcludes
     },
@@ -377,7 +388,7 @@ async function main(argv = process.argv) {
   };
 
   const outcome = evaluateB33Results(evaluationPayload);
-  const isBranchAutoDeploying = outcome.checks.git_deployment_policy?.auto_deploying || false;
+  const isBranchAutoDeploying = outcome.checks.git_deployment_policy?.auto_deploying ?? null;
 
   console.log(`\n======================================================`);
   console.log(`B33 VERIFICATION OUTCOME: ${outcome.status} (Exit Code: ${outcome.exitCode})`);
@@ -407,10 +418,14 @@ async function main(argv = process.argv) {
         effective_d1_id: activeDeployD1,
         uses_functions: activeDeployment.uses_functions,
         is_skipped: activeDeployment.is_skipped,
+        environment: activeDeployment.environment,
+        latest_stage_status: activeDeployment.latest_stage?.status,
         created_on: activeDeployment.created_on
       },
       git_source: {
         setting: previewSetting,
+        deployments_enabled: source.deployments_enabled,
+        production_deployments_enabled: source.production_deployments_enabled,
         branch_includes: branchIncludes,
         branch_excludes: branchExcludes,
         target_branch: TARGET_BRANCH,
