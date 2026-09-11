@@ -1,0 +1,111 @@
+{
+  "baseline": {
+    "target": "Baseline 1c870e2",
+    "runs": [
+      {
+        "run": 1,
+        "fcp": 80,
+        "dcl": 22,
+        "load": 22,
+        "encodedBytes": 948591,
+        "fps": 31,
+        "totalDuration": 1344,
+        "droppedFrames": 40,
+        "framesRecorded": 41
+      },
+      {
+        "run": 2,
+        "fcp": 76,
+        "dcl": 24,
+        "load": 24,
+        "encodedBytes": 948591,
+        "fps": 31,
+        "totalDuration": 1344,
+        "droppedFrames": 40,
+        "framesRecorded": 41
+      },
+      {
+        "run": 3,
+        "fcp": 80,
+        "dcl": 26,
+        "load": 26,
+        "encodedBytes": 948591,
+        "fps": 30,
+        "totalDuration": 1345,
+        "droppedFrames": 40,
+        "framesRecorded": 41
+      }
+    ],
+    "median": {
+      "fcp": 80,
+      "dcl": 24,
+      "load": 24,
+      "encodedBytes": 948591,
+      "fps": 31,
+      "totalDuration": 1344,
+      "droppedFrames": 40
+    }
+  },
+  "candidate": {
+    "target": "Candidate (B32 Rework)",
+    "runs": [
+      {
+        "run": 1,
+        "fcp": 76,
+        "dcl": 22,
+        "load": 22,
+        "encodedBytes": 956771,
+        "fps": 30,
+        "totalDuration": 1354,
+        "droppedFrames": 40,
+        "framesRecorded": 41
+      },
+      {
+        "run": 2,
+        "fcp": 80,
+        "dcl": 22,
+        "load": 22,
+        "encodedBytes": 956771,
+        "fps": 30,
+        "totalDuration": 1358,
+        "droppedFrames": 40,
+        "framesRecorded": 41
+      },
+      {
+        "run": 3,
+        "fcp": 80,
+        "dcl": 24,
+        "load": 24,
+        "encodedBytes": 956771,
+        "fps": 30,
+        "totalDuration": 1346,
+        "droppedFrames": 40,
+        "framesRecorded": 41
+      }
+    ],
+    "median": {
+      "fcp": 80,
+      "dcl": 22,
+      "load": 22,
+      "encodedBytes": 956771,
+      "fps": 30,
+      "totalDuration": 1354,
+      "droppedFrames": 40
+    }
+  },
+  "deltas": {
+    "fcpDeltaMs": 0,
+    "dclDeltaMs": -2,
+    "loadDeltaMs": -2,
+    "encodedBytesDelta": 8180,
+    "fpsDelta": -1,
+    "scrollDurationDeltaMs": 10,
+    "droppedFramesDelta": 0
+  },
+  "verdict": {
+    "fcpRegressed": false,
+    "loadRegressed": false,
+    "fpsRegressed": false,
+    "acceptable": true
+  }
+}

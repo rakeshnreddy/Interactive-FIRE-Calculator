@@ -1,5 +1,23 @@
 {
-  "timestamp": "2026-09-10T16:40:22.595Z",
+  "timestamp": "2026-09-11T01:05:47.328Z",
+  "engineCoverage": {
+    "primary": "Chromium (Playwright channel chrome)",
+    "secondaryEngines": {
+      "webkit": {
+        "status": "blocked",
+        "reason": "WebKit browser binary not installed in local environment. Reviewer manual verification requested."
+      },
+      "firefox": {
+        "status": "blocked",
+        "reason": "Firefox browser binary not installed in local environment. Reviewer manual verification requested."
+      }
+    },
+    "screenReader": {
+      "status": "blocked",
+      "tool": "Apple VoiceOver",
+      "reason": "Headless CI agent lacks macOS TCC accessibility permissions to drive VoiceOver programmatically. Reviewer assistance requested."
+    }
+  },
   "heroMeasurements": {
     "light": {
       "heroBg": "linear-gradient(125deg, rgb(233, 250, 243) 0%, rgb(234, 242, 255) 55%, rgb(241, 238, 254) 100%)",
@@ -34,90 +52,774 @@
       "pathsLinkColor": "rgb(234, 246, 247)"
     }
   },
+  "composedPixelSampling": {
+    "light": {
+      "h1": {
+        "worstRatio": 12.77,
+        "worstPixel": "rgb(235, 240, 245)",
+        "bestRatio": 13.68,
+        "bestPixel": "rgb(243, 248, 250)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(243, 247, 250)",
+            "ratio": 13.6
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(242, 247, 250)",
+            "ratio": 13.57
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(241, 246, 249)",
+            "ratio": 13.45
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(240, 245, 248)",
+            "ratio": 13.34
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(236, 241, 247)",
+            "ratio": 12.9
+          }
+        ]
+      },
+      "p": {
+        "worstRatio": 5.2,
+        "worstPixel": "rgb(238, 242, 246)",
+        "bestRatio": 5.43,
+        "bestPixel": "rgb(242, 247, 250)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(242, 247, 249)",
+            "ratio": 5.42
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(241, 246, 249)",
+            "ratio": 5.38
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(241, 245, 248)",
+            "ratio": 5.34
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(240, 245, 248)",
+            "ratio": 5.33
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(238, 243, 247)",
+            "ratio": 5.24
+          }
+        ]
+      },
+      "eyebrow": {
+        "worstRatio": 5.5,
+        "worstPixel": "rgb(233, 238, 244)",
+        "bestRatio": 6,
+        "bestPixel": "rgb(243, 248, 250)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(242, 247, 249)",
+            "ratio": 5.94
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(241, 246, 249)",
+            "ratio": 5.9
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(240, 245, 248)",
+            "ratio": 5.84
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(239, 244, 247)",
+            "ratio": 5.79
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(233, 238, 245)",
+            "ratio": 5.51
+          }
+        ]
+      },
+      "primaryButton": {
+        "worstRatio": 6.49,
+        "worstPixel": "rgb(5, 105, 106)",
+        "bestRatio": 7.26,
+        "bestPixel": "rgb(32, 86, 159)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(4, 104, 104)",
+            "ratio": 6.59
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(11, 100, 118)",
+            "ratio": 6.78
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(18, 95, 132)",
+            "ratio": 7.01
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(26, 91, 146)",
+            "ratio": 7.11
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(33, 87, 160)",
+            "ratio": 7.15
+          }
+        ]
+      },
+      "secondaryButton": {
+        "worstRatio": 14.37,
+        "worstPixel": "rgb(251, 253, 255)",
+        "bestRatio": 14.37,
+        "bestPixel": "rgb(251, 253, 255)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(251, 253, 255)",
+            "ratio": 14.37
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(251, 253, 255)",
+            "ratio": 14.37
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(251, 253, 255)",
+            "ratio": 14.37
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(251, 253, 255)",
+            "ratio": 14.37
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(251, 253, 255)",
+            "ratio": 14.37
+          }
+        ]
+      }
+    },
+    "dark": {
+      "h1": {
+        "worstRatio": 11.57,
+        "worstPixel": "rgb(40, 52, 59)",
+        "bestRatio": 17.03,
+        "bestPixel": "rgb(7, 19, 26)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(9, 22, 28)",
+            "ratio": 16.64
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(10, 22, 29)",
+            "ratio": 16.61
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(10, 22, 29)",
+            "ratio": 16.61
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(10, 22, 29)",
+            "ratio": 16.61
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(11, 23, 32)",
+            "ratio": 16.43
+          }
+        ]
+      },
+      "p": {
+        "worstRatio": 7.23,
+        "worstPixel": "rgb(31, 43, 50)",
+        "bestRatio": 9.39,
+        "bestPixel": "rgb(7, 19, 25)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(9, 21, 28)",
+            "ratio": 9.23
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(9, 21, 28)",
+            "ratio": 9.23
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(9, 21, 28)",
+            "ratio": 9.23
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(9, 21, 28)",
+            "ratio": 9.23
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(10, 22, 29)",
+            "ratio": 9.15
+          }
+        ]
+      },
+      "eyebrow": {
+        "worstRatio": 7.13,
+        "worstPixel": "rgb(49, 61, 69)",
+        "bestRatio": 12.02,
+        "bestPixel": "rgb(7, 19, 27)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(9, 21, 28)",
+            "ratio": 11.84
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(9, 21, 28)",
+            "ratio": 11.84
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(9, 21, 28)",
+            "ratio": 11.84
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(10, 22, 28)",
+            "ratio": 11.74
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(13, 24, 34)",
+            "ratio": 11.48
+          }
+        ]
+      },
+      "primaryButton": {
+        "worstRatio": 9.36,
+        "worstPixel": "rgb(135, 188, 251)",
+        "bestRatio": 11.57,
+        "bestPixel": "rgb(109, 223, 209)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(109, 222, 208)",
+            "ratio": 11.47
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(115, 213, 219)",
+            "ratio": 10.82
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(122, 205, 229)",
+            "ratio": 10.31
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(128, 197, 240)",
+            "ratio": 9.84
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(135, 189, 251)",
+            "ratio": 9.43
+          }
+        ]
+      },
+      "secondaryButton": {
+        "worstRatio": 14.65,
+        "worstPixel": "rgb(16, 35, 44)",
+        "bestRatio": 14.65,
+        "bestPixel": "rgb(16, 35, 44)",
+        "stops": [
+          {
+            "percent": "0%",
+            "pixel": "rgb(16, 35, 44)",
+            "ratio": 14.65
+          },
+          {
+            "percent": "25%",
+            "pixel": "rgb(16, 35, 44)",
+            "ratio": 14.65
+          },
+          {
+            "percent": "50%",
+            "pixel": "rgb(16, 35, 44)",
+            "ratio": 14.65
+          },
+          {
+            "percent": "75%",
+            "pixel": "rgb(16, 35, 44)",
+            "ratio": 14.65
+          },
+          {
+            "percent": "100%",
+            "pixel": "rgb(16, 35, 44)",
+            "ratio": 14.65
+          }
+        ]
+      }
+    }
+  },
   "contrastAudit": [
     {
-      "element": "Light Hero H1",
+      "mode": "light",
+      "element": "Hero H1",
       "fg": "rgb(16, 44, 53)",
-      "bg": "rgb(244, 248, 251)",
-      "ratio": 13.71724161758137,
-      "required": 4.5
+      "worstComposedBg": "rgb(235, 240, 245)",
+      "worstRatio": 12.77,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(243, 247, 250)",
+          "ratio": 13.6
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(242, 247, 250)",
+          "ratio": 13.57
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(241, 246, 249)",
+          "ratio": 13.45
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(240, 245, 248)",
+          "ratio": 13.34
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(236, 241, 247)",
+          "ratio": 12.9
+        }
+      ]
     },
     {
-      "element": "Light Hero Body Paragraph",
+      "mode": "light",
+      "element": "Hero Body Paragraph",
       "fg": "rgb(82, 104, 115)",
-      "bg": "rgb(244, 248, 251)",
-      "ratio": 5.483573635475539,
-      "required": 4.5
+      "worstComposedBg": "rgb(238, 242, 246)",
+      "worstRatio": 5.2,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(242, 247, 249)",
+          "ratio": 5.42
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(241, 246, 249)",
+          "ratio": 5.38
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(241, 245, 248)",
+          "ratio": 5.34
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(240, 245, 248)",
+          "ratio": 5.33
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(238, 243, 247)",
+          "ratio": 5.24
+        }
+      ]
     },
     {
-      "element": "Light Hero Eyebrow",
+      "mode": "light",
+      "element": "Hero Eyebrow",
       "fg": "rgb(0, 107, 96)",
-      "bg": "rgb(244, 248, 251)",
-      "ratio": 6.010600581647859,
-      "required": 4.5
+      "worstComposedBg": "rgb(233, 238, 244)",
+      "worstRatio": 5.5,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(242, 247, 249)",
+          "ratio": 5.94
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(241, 246, 249)",
+          "ratio": 5.9
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(240, 245, 248)",
+          "ratio": 5.84
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(239, 244, 247)",
+          "ratio": 5.79
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(233, 238, 245)",
+          "ratio": 5.51
+        }
+      ]
     },
     {
-      "element": "Light Hero Primary Button (Teal stop)",
+      "mode": "light",
+      "element": "Hero Primary Button (Action Gradient)",
       "fg": "rgb(255, 255, 255)",
-      "bg": "rgb(0, 107, 96)",
-      "ratio": 6.418124952642381,
-      "required": 4.5
+      "worstComposedBg": "rgb(5, 105, 106)",
+      "worstRatio": 6.49,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(4, 104, 104)",
+          "ratio": 6.59
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(11, 100, 118)",
+          "ratio": 6.78
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(18, 95, 132)",
+          "ratio": 7.01
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(26, 91, 146)",
+          "ratio": 7.11
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(33, 87, 160)",
+          "ratio": 7.15
+        }
+      ]
     },
     {
-      "element": "Light Hero Primary Button (Blue stop)",
-      "fg": "rgb(255, 255, 255)",
-      "bg": "rgb(36, 85, 166)",
-      "ratio": 7.179368903346905,
-      "required": 4.5
-    },
-    {
-      "element": "Light Hero Secondary Button",
+      "mode": "light",
+      "element": "Hero Secondary Button",
       "fg": "rgb(16, 44, 53)",
-      "bg": "rgb(251, 253, 255)",
-      "ratio": 14.365468226750874,
-      "required": 4.5
+      "worstComposedBg": "rgb(251, 253, 255)",
+      "worstRatio": 14.37,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(251, 253, 255)",
+          "ratio": 14.37
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(251, 253, 255)",
+          "ratio": 14.37
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(251, 253, 255)",
+          "ratio": 14.37
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(251, 253, 255)",
+          "ratio": 14.37
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(251, 253, 255)",
+          "ratio": 14.37
+        }
+      ]
     },
     {
-      "element": "Dark Hero H1",
+      "mode": "light",
+      "element": "Topbar Glass over Scrolled Content (500px)",
+      "fg": "rgb(255, 255, 255)",
+      "worstComposedBg": "rgb(40, 63, 61)",
+      "worstRatio": 11.24,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(40, 62, 59)",
+          "ratio": 11.4
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(40, 62, 60)",
+          "ratio": 11.39
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(39, 62, 60)",
+          "ratio": 11.41
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(40, 62, 60)",
+          "ratio": 11.39
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(39, 62, 60)",
+          "ratio": 11.41
+        }
+      ]
+    },
+    {
+      "mode": "dark",
+      "element": "Hero H1",
       "fg": "rgb(234, 246, 247)",
-      "bg": "rgb(8, 21, 28)",
-      "ratio": 16.770591856141248,
-      "required": 4.5
+      "worstComposedBg": "rgb(40, 52, 59)",
+      "worstRatio": 11.57,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(9, 22, 28)",
+          "ratio": 16.64
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(10, 22, 29)",
+          "ratio": 16.61
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(10, 22, 29)",
+          "ratio": 16.61
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(10, 22, 29)",
+          "ratio": 16.61
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(11, 23, 32)",
+          "ratio": 16.43
+        }
+      ]
     },
     {
-      "element": "Dark Hero Body Paragraph",
+      "mode": "dark",
+      "element": "Hero Body Paragraph",
       "fg": "rgb(164, 187, 196)",
-      "bg": "rgb(8, 21, 28)",
-      "ratio": 9.241991774829128,
-      "required": 4.5
+      "worstComposedBg": "rgb(31, 43, 50)",
+      "worstRatio": 7.23,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(9, 21, 28)",
+          "ratio": 9.23
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(9, 21, 28)",
+          "ratio": 9.23
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(9, 21, 28)",
+          "ratio": 9.23
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(9, 21, 28)",
+          "ratio": 9.23
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(10, 22, 29)",
+          "ratio": 9.15
+        }
+      ]
     },
     {
-      "element": "Dark Hero Eyebrow",
+      "mode": "dark",
+      "element": "Hero Eyebrow",
       "fg": "rgb(105, 227, 202)",
-      "bg": "rgb(8, 21, 28)",
-      "ratio": 11.849105097145753,
-      "required": 4.5
+      "worstComposedBg": "rgb(49, 61, 69)",
+      "worstRatio": 7.13,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(9, 21, 28)",
+          "ratio": 11.84
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(9, 21, 28)",
+          "ratio": 11.84
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(9, 21, 28)",
+          "ratio": 11.84
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(10, 22, 28)",
+          "ratio": 11.74
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(13, 24, 34)",
+          "ratio": 11.48
+        }
+      ]
     },
     {
-      "element": "Dark Hero Primary Button (Mint stop)",
+      "mode": "dark",
+      "element": "Hero Primary Button (Action Gradient)",
       "fg": "rgb(8, 21, 28)",
-      "bg": "rgb(105, 227, 202)",
-      "ratio": 11.849105097145753,
-      "required": 4.5
+      "worstComposedBg": "rgb(135, 188, 251)",
+      "worstRatio": 9.36,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(109, 222, 208)",
+          "ratio": 11.47
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(115, 213, 219)",
+          "ratio": 10.82
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(122, 205, 229)",
+          "ratio": 10.31
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(128, 197, 240)",
+          "ratio": 9.84
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(135, 189, 251)",
+          "ratio": 9.43
+        }
+      ]
     },
     {
-      "element": "Dark Hero Primary Button (Blue stop)",
-      "fg": "rgb(8, 21, 28)",
-      "bg": "rgb(138, 186, 255)",
-      "ratio": 9.298834712756985,
-      "required": 4.5
-    },
-    {
-      "element": "Dark Hero Secondary Button",
+      "mode": "dark",
+      "element": "Hero Secondary Button",
       "fg": "rgb(234, 246, 247)",
-      "bg": "rgb(16, 35, 44)",
-      "ratio": 14.647106546426908,
-      "required": 4.5
+      "worstComposedBg": "rgb(16, 35, 44)",
+      "worstRatio": 14.65,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(16, 35, 44)",
+          "ratio": 14.65
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(16, 35, 44)",
+          "ratio": 14.65
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(16, 35, 44)",
+          "ratio": 14.65
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(16, 35, 44)",
+          "ratio": 14.65
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(16, 35, 44)",
+          "ratio": 14.65
+        }
+      ]
+    },
+    {
+      "mode": "dark",
+      "element": "Topbar Glass over Scrolled Content (500px)",
+      "fg": "rgb(255, 255, 255)",
+      "worstComposedBg": "rgb(8, 21, 29)",
+      "worstRatio": 18.5,
+      "required": 4.5,
+      "pass": true,
+      "stops": [
+        {
+          "percent": "0%",
+          "pixel": "rgb(8, 21, 28)",
+          "ratio": 18.51
+        },
+        {
+          "percent": "25%",
+          "pixel": "rgb(8, 21, 28)",
+          "ratio": 18.51
+        },
+        {
+          "percent": "50%",
+          "pixel": "rgb(8, 21, 28)",
+          "ratio": 18.51
+        },
+        {
+          "percent": "75%",
+          "pixel": "rgb(8, 21, 28)",
+          "ratio": 18.51
+        },
+        {
+          "percent": "100%",
+          "pixel": "rgb(8, 21, 28)",
+          "ratio": 18.51
+        }
+      ]
     }
   ],
   "viewportMatrix": [
@@ -328,59 +1030,341 @@
   "fallbacks": {
     "reducedTransparency": {
       "light": {
-        "topbarBg": "rgb(11, 36, 33)",
         "topbarBackdrop": "none",
-        "triggerColor": "rgba(255, 255, 255, 0.8)",
-        "triggerBg": "rgba(0, 0, 0, 0)",
-        "dropdownBg": "rgb(251, 253, 255)",
+        "topbarBg": "rgb(11, 36, 33)",
         "dropdownBackdrop": "none",
-        "dropdownBorder": "rgb(113, 133, 142)",
-        "linkColor": "rgb(32, 58, 67)"
+        "dropdownBg": "rgb(251, 253, 255)",
+        "pass": true
       },
       "dark": {
-        "topbarBg": "rgb(8, 21, 28)",
         "topbarBackdrop": "none",
-        "triggerColor": "rgba(255, 255, 255, 0.8)",
-        "triggerBg": "rgba(0, 0, 0, 0)",
-        "dropdownBg": "rgb(20, 42, 52)",
+        "topbarBg": "rgb(8, 21, 28)",
         "dropdownBackdrop": "none",
-        "dropdownBorder": "rgb(102, 131, 143)",
-        "linkColor": "rgb(216, 231, 234)"
+        "dropdownBg": "rgb(20, 42, 52)",
+        "pass": true
       }
     },
-    "zoom200": {
-      "overflow": false,
-      "h1Size": "48px"
-    },
-    "forcedColors": {},
-    "print": {}
-  },
-  "performance": {
-    "runs": [
-      {
-        "fcp": 88,
-        "dcl": 27,
-        "load": 28,
-        "encodedBytes": 954964
+    "forcedColors": {
+      "light": {
+        "topbarBackdrop": "none",
+        "topbarBg": "rgb(255, 255, 255)",
+        "btnBackdrop": "none",
+        "pass": true
       },
-      {
-        "fcp": 76,
-        "dcl": 25,
-        "load": 25,
-        "encodedBytes": 954964
-      },
-      {
-        "fcp": 80,
-        "dcl": 25,
-        "load": 25,
-        "encodedBytes": 954964
+      "dark": {
+        "topbarBackdrop": "none",
+        "topbarBg": "rgb(255, 255, 255)",
+        "btnBackdrop": "none",
+        "pass": true
       }
-    ],
-    "median": {
-      "fcp": 80,
-      "dcl": 25,
-      "load": 25,
-      "encodedBytes": 954964
+    },
+    "unsupportedBackdropFilter": {
+      "light": {
+        "topbarBackdrop": "none",
+        "dropdownBackdrop": "none",
+        "topbarBg": "rgb(255, 255, 255)",
+        "pass": true
+      },
+      "dark": {
+        "topbarBackdrop": "none",
+        "dropdownBackdrop": "none",
+        "topbarBg": "rgb(255, 255, 255)",
+        "pass": true
+      }
+    },
+    "print": {
+      "light": {
+        "appBg": "rgb(255, 255, 255)",
+        "appColor": "rgb(0, 0, 0)",
+        "heroBg": "rgb(255, 255, 255)",
+        "heroBackdropFilter": "none",
+        "mediaDisplay": "none",
+        "scrimDisplay": "none",
+        "h1Color": "rgb(0, 0, 0)",
+        "pColor": "rgb(0, 0, 0)",
+        "topbarBg": "rgb(255, 255, 255)",
+        "topbarColor": "rgb(0, 0, 0)",
+        "primaryBtnBg": "rgba(0, 0, 0, 0)",
+        "primaryBtnColor": "rgb(0, 0, 0)",
+        "mobileNavDisplay": "none",
+        "desktopDropdownDisplay": "none",
+        "pass": true
+      },
+      "dark": {
+        "appBg": "rgb(255, 255, 255)",
+        "appColor": "rgb(0, 0, 0)",
+        "heroBg": "rgb(255, 255, 255)",
+        "heroBackdropFilter": "none",
+        "mediaDisplay": "none",
+        "scrimDisplay": "none",
+        "h1Color": "rgb(0, 0, 0)",
+        "pColor": "rgb(0, 0, 0)",
+        "topbarBg": "rgb(255, 255, 255)",
+        "topbarColor": "rgb(0, 0, 0)",
+        "primaryBtnBg": "rgba(0, 0, 0, 0)",
+        "primaryBtnColor": "rgb(0, 0, 0)",
+        "mobileNavDisplay": "none",
+        "desktopDropdownDisplay": "none",
+        "pass": true
+      }
     }
-  }
+  },
+  "zoom200Matrix": [
+    {
+      "route": "/",
+      "label": "home",
+      "mode": "light",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Make the number mean something.",
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "label": "library",
+      "mode": "light",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Start with the question, not the formula.",
+      "pass": true
+    },
+    {
+      "route": "/calculators/fire",
+      "label": "fire",
+      "mode": "light",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "FIRE Calculator",
+      "pass": true
+    },
+    {
+      "route": "/calculators/mortgage",
+      "label": "mortgage",
+      "mode": "light",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Mortgage Payment Calculator",
+      "pass": true
+    },
+    {
+      "route": "/calculators/savings-goal",
+      "label": "savings",
+      "mode": "light",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Savings Goal Calculator",
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "label": "auth-gate",
+      "mode": "light",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Connect Clerk before opening account routes.",
+      "pass": true
+    },
+    {
+      "route": "/",
+      "label": "home",
+      "mode": "dark",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Make the number mean something.",
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "label": "library",
+      "mode": "dark",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Start with the question, not the formula.",
+      "pass": true
+    },
+    {
+      "route": "/calculators/fire",
+      "label": "fire",
+      "mode": "dark",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "FIRE Calculator",
+      "pass": true
+    },
+    {
+      "route": "/calculators/mortgage",
+      "label": "mortgage",
+      "mode": "dark",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Mortgage Payment Calculator",
+      "pass": true
+    },
+    {
+      "route": "/calculators/savings-goal",
+      "label": "savings",
+      "mode": "dark",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Savings Goal Calculator",
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "label": "auth-gate",
+      "mode": "dark",
+      "scrollW": 720,
+      "innerW": 720,
+      "overflow": false,
+      "h1Text": "Connect Clerk before opening account routes.",
+      "pass": true
+    }
+  ],
+  "accessibilityTree": {
+    "home": {
+      "totalNodes": 178,
+      "rootRole": "RootWebArea",
+      "rootName": "FinPath | FIRE Calculator and Financial Planning"
+    },
+    "library": {
+      "totalNodes": 506,
+      "rootRole": "RootWebArea",
+      "rootName": "Financial Calculators | FinPath"
+    },
+    "fire": {
+      "totalNodes": 190,
+      "rootRole": "RootWebArea",
+      "rootName": "FIRE Calculator | FinPath"
+    },
+    "auth-gate": {
+      "totalNodes": 71,
+      "rootRole": "RootWebArea",
+      "rootName": "Dashboard | FinPath"
+    }
+  },
+  "performanceComparison": {
+    "baseline": {
+      "target": "Baseline 1c870e2",
+      "runs": [
+        {
+          "run": 1,
+          "fcp": 80,
+          "dcl": 22,
+          "load": 22,
+          "encodedBytes": 948591,
+          "fps": 31,
+          "totalDuration": 1344,
+          "droppedFrames": 40,
+          "framesRecorded": 41
+        },
+        {
+          "run": 2,
+          "fcp": 76,
+          "dcl": 24,
+          "load": 24,
+          "encodedBytes": 948591,
+          "fps": 31,
+          "totalDuration": 1344,
+          "droppedFrames": 40,
+          "framesRecorded": 41
+        },
+        {
+          "run": 3,
+          "fcp": 80,
+          "dcl": 26,
+          "load": 26,
+          "encodedBytes": 948591,
+          "fps": 30,
+          "totalDuration": 1345,
+          "droppedFrames": 40,
+          "framesRecorded": 41
+        }
+      ],
+      "median": {
+        "fcp": 80,
+        "dcl": 24,
+        "load": 24,
+        "encodedBytes": 948591,
+        "fps": 31,
+        "totalDuration": 1344,
+        "droppedFrames": 40
+      }
+    },
+    "candidate": {
+      "target": "Candidate (B32 Rework)",
+      "runs": [
+        {
+          "run": 1,
+          "fcp": 76,
+          "dcl": 22,
+          "load": 22,
+          "encodedBytes": 956771,
+          "fps": 30,
+          "totalDuration": 1354,
+          "droppedFrames": 40,
+          "framesRecorded": 41
+        },
+        {
+          "run": 2,
+          "fcp": 80,
+          "dcl": 22,
+          "load": 22,
+          "encodedBytes": 956771,
+          "fps": 30,
+          "totalDuration": 1358,
+          "droppedFrames": 40,
+          "framesRecorded": 41
+        },
+        {
+          "run": 3,
+          "fcp": 80,
+          "dcl": 24,
+          "load": 24,
+          "encodedBytes": 956771,
+          "fps": 30,
+          "totalDuration": 1346,
+          "droppedFrames": 40,
+          "framesRecorded": 41
+        }
+      ],
+      "median": {
+        "fcp": 80,
+        "dcl": 22,
+        "load": 22,
+        "encodedBytes": 956771,
+        "fps": 30,
+        "totalDuration": 1354,
+        "droppedFrames": 40
+      }
+    },
+    "deltas": {
+      "fcpDeltaMs": 0,
+      "dclDeltaMs": -2,
+      "loadDeltaMs": -2,
+      "encodedBytesDelta": 8180,
+      "fpsDelta": -1,
+      "scrollDurationDeltaMs": 10,
+      "droppedFramesDelta": 0
+    },
+    "verdict": {
+      "fcpRegressed": false,
+      "loadRegressed": false,
+      "fpsRegressed": false,
+      "acceptable": true
+    }
+  },
+  "recordedConsoleErrors": [],
+  "recordedPageExceptions": [],
+  "validationFailures": []
 }
