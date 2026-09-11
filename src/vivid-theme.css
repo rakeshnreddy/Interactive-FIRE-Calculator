@@ -723,6 +723,13 @@ body,
 }
 
 @media print {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
   .app,
   .app[data-mode="dark"] {
     --color-canvas: #ffffff !important;
@@ -737,6 +744,9 @@ body,
     --color-nav-surface: #ffffff !important;
     --color-nav-text: #000000 !important;
     --color-nav-accent: #000000 !important;
+    --color-inverse-surface: #ffffff !important;
+    --color-inverse-heading: #000000 !important;
+    --color-inverse-body: #000000 !important;
     --hero-heading: #000000 !important;
     --hero-body: #000000 !important;
     --hero-eyebrow: #000000 !important;
@@ -794,7 +804,7 @@ body,
   }
 
   .topbar .topbar-primary {
-    background: transparent !important;
+    background: #ffffff !important;
     color: #000000 !important;
     border: 1px solid #000000 !important;
   }
@@ -837,9 +847,78 @@ body,
     color: #000000 !important;
   }
 
-  /* Interactive buttons */
+  /* Landing capabilities & features */
+  .landing-capabilities {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .landing-capabilities :where(h2, p, .eyebrow, strong, small, span) {
+    color: #000000 !important;
+  }
+
+  .landing-feature {
+    background: #ffffff !important;
+    border-color: #d0d7de !important;
+  }
+
+  .landing-feature .feature-icon {
+    background: #ffffff !important;
+    border-color: #d0d7de !important;
+    color: #000000 !important;
+  }
+
+  /* Landing continuity band */
+  .landing-continuity-band {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-top: 1px solid #d0d7de !important;
+    border-bottom: 1px solid #d0d7de !important;
+  }
+
+  .landing-continuity-band :where(h2, p, .eyebrow, strong, span, div) {
+    color: #000000 !important;
+  }
+
+  .landing-continuity-band .primary-button {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+    box-shadow: none !important;
+  }
+
+  /* Privacy band */
+  .privacy-band {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-bottom: 1px solid #d0d7de !important;
+  }
+
+  .privacy-band :where(h2, p, svg) {
+    color: #000000 !important;
+    fill: none !important;
+  }
+
+  /* Landing and general site footer */
+  .landing-footer,
+  .site-footer {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-top: 1px solid #d0d7de !important;
+  }
+
+  .landing-footer :where(p, span, strong, a, svg),
+  .site-footer :where(p, span, strong, a, svg) {
+    color: #000000 !important;
+  }
+
+  /* Interactive buttons across entire app in print */
   .app :where(.primary-button, .secondary-button, button) {
-    background: transparent !important;
+    background: #ffffff !important;
     color: #000000 !important;
     border: 1px solid #000000 !important;
     box-shadow: none !important;
