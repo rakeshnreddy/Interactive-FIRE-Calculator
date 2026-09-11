@@ -7,7 +7,7 @@ Only C01T is released for implementation now. C01 was accepted on 2026-09-10. C0
 | C00 | Existing verification foundation | B01 | accepted | 1664043 | [record](reviews/C00.md) |
 | C00R | Development-tool security repair | B34 | accepted | b48ac00328f356746bd501921562e727feb7a8e5 | [record](reviews/C00R.md) |
 | C01 | Visible defects and design foundation | B15 → B16 → B17 | accepted | ccebac7d5bcaf645721e2e67ea490a7f447e1db9 | [record](reviews/C01.md) |
-| C01T | Light/dark glass and gradient palette | B32 | released | — | — |
+| C01T | Light/dark glass and gradient palette | B32 | released | — | [changes requested](reviews/C01T.md) |
 | C01I | Isolated preview publication prerequisite | B33 | locked | — | — |
 | C02 | Currency and save integrity | B02 → B03 → B04 | locked | — | — |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | locked | — | — |

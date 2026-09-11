@@ -335,7 +335,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 2–3 days; agent 6–12 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B31.md](execution/prompts/B31.md).
 
-- [ ] **B32 — Planned: implement the light/dark glass and gradient color system.**
+- [ ] **B32 — Changes requested: implement the light/dark glass and gradient color system.**
   - User problem/evidence: owner explicitly requested glassmorphism and gradients on 2026-09-08; current theme has contrast collisions and uncoordinated late overrides (V01–V03).
   - Expected outcome/scope: implement COLOR_AND_GLASS_SYSTEM.md in actual React surfaces using B16's canonical roles; coherent light/dark palette, bounded glass and gradients, solid/unsupported/print/forced-colors fallbacks.
   - Non-goals: no new homepage layout (B18), formula/auth changes, dependency, new font, animated background or glass behind editable values.
@@ -378,3 +378,5 @@ For each item record commit, changed files, red/green tests, local full-suite re
 C01 acceptance 2026-09-10: B15/B16/B17 accepted together at `ccebac7d5bcaf645721e2e67ea490a7f447e1db9`; [independent review](execution/reviews/C01.md). Next released task: B32 in C01T.
 
 Landing review amendment 2026-09-10: [image, copy and theme findings](LANDING_PAGE_REVIEW.md) expand B32 with a visibly theme-responsive existing hero and B18 with an engine-backed product example, exact copy baseline, honest account availability and detailed review gates. Follow their amended prompts; C03 remains locked. No task was closed or renumbered.
+
+C01T review 2026-09-10: B32 requires print-layer repair and completed verification evidence; [review](execution/reviews/C01T.md). No new task accepted; C01I remains locked.

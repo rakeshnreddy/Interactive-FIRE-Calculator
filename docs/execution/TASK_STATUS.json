@@ -529,7 +529,7 @@
       "id": "B32",
       "title": "Implement light/dark glass and gradient material system",
       "checkpoint": "C01T",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B16",
         "B17"
@@ -538,8 +538,8 @@
       "submission": "submissions/B32.md",
       "owner": "Codex implementing session 2026-09-10",
       "code_sha": "02650c44509340cf698bfeb0a26708164d4dddf6",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C01T.md",
+      "blocked_reason": "R1 print legibility defect; R2\u2013R5 verification gaps and evidence attribution corrections. See reviews/C01T.md."
     },
     {
       "id": "B33",
