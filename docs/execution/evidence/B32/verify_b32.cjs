@@ -977,6 +977,7 @@ async function run() {
     // =========================================================================
     // 8. R5: EVALUATOR FINALIZATION & CLEAN PERSISTENCE
     // =========================================================================
+    results.telemetryComplete = true;
     results.recordedConsoleErrors = recordedConsoleErrors;
     results.recordedPageExceptions = recordedPageExceptions;
     results.validationFailures = validationFailures;

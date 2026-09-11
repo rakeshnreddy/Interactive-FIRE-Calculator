@@ -15,6 +15,7 @@ function createPassingFixture() {
   }
   return {
     checks,
+    telemetryComplete: true,
     recordedConsoleErrors: [],
     recordedPageExceptions: [],
     validationFailures: [],
@@ -147,7 +148,7 @@ runTest('Blocked reader or native zoom: nonzero and BLOCKED summary', () => {
   const res = evaluateResults(fixture);
   assert.strictEqual(res.overallStatus, 'BLOCKED');
   assert.strictEqual(res.exitCode, 2);
-  assert.ok(res.blocked.some(b => b.includes('screen_reader')));
+  assert.ok(res.deferred.some(b => b.id === 'screen_reader'));
   assert.ok(res.blocked.some(b => b.includes('native_zoom')));
 });
 
@@ -210,6 +211,38 @@ runTest('CLI execution with blocked fixture exits 2', () => {
   }
   fs.unlinkSync(testFile);
   assert.strictEqual(exitedCode, 2, 'Blocked check must exit 2');
+});
+
+
+for (const field of ['recordedConsoleErrors', 'recordedPageExceptions']) {
+  for (const value of [undefined, null, {}, '']) {
+    runTest(`Missing or malformed ${field} is blocked`, () => {
+      const fixture = createPassingFixture();
+      fixture[field] = value;
+      const res = evaluateResults(fixture);
+      assert.strictEqual(res.overallStatus, 'BLOCKED');
+      assert.strictEqual(res.exitCode, 2);
+    });
+  }
+}
+runTest('Uncompleted telemetry collection cannot pass', () => {
+  const fixture = createPassingFixture();
+  delete fixture.telemetryComplete;
+  assert.strictEqual(evaluateResults(fixture).overallStatus, 'BLOCKED');
+});
+for (const verdict of [undefined, {}, { fcpRegressed: false }, { fcpRegressed: null, loadRegressed: false, fpsRegressed: false }]) {
+  runTest('Incomplete performance evidence blocks acceptance', () => {
+    const fixture = createPassingFixture();
+    fixture.performanceComparison.verdict = verdict;
+    assert.strictEqual(evaluateResults(fixture).overallStatus, 'BLOCKED');
+  });
+}
+runTest('Owner-deferred reader remains visible without blocking C01T', () => {
+  const fixture = createPassingFixture();
+  fixture.checks.screen_reader = { status: 'BLOCKED' };
+  const res = evaluateResults(fixture);
+  assert.strictEqual(res.overallStatus, 'PASS');
+  assert.ok(res.deferred.some(x => x.id === 'screen_reader' && x.status === 'DEFERRED'));
 });
 
 console.log(`\n=== ALL ${passedTests}/${totalTests} EVALUATOR TESTS PASSED ===`);

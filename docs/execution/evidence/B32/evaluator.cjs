@@ -9,7 +9,6 @@ const REQUIRED_CHECKS = [
   'responsive_layout',
   'clipping_inspection',
   'native_zoom',
-  'screen_reader',
   'journey_execution',
   'console_cleanliness',
   'page_cleanliness',
@@ -32,49 +31,39 @@ function evaluateResults(rawResults = {}) {
   const blocked = [];
   const rawChecks = Object.assign({}, rawResults.checks || {});
 
-  // 1. Evaluate performance acceptance derivation
-  if (rawResults.performanceComparison && rawResults.performanceComparison.verdict) {
-    const verdict = rawResults.performanceComparison.verdict;
-    const isAcceptable = Boolean(
-      !verdict.fcpRegressed &&
-      !verdict.loadRegressed &&
-      !verdict.fpsRegressed
-    );
-    verdict.acceptable = isAcceptable;
+  // Only complete observations may establish a clean run.
+  const verdict = rawResults.performanceComparison?.verdict;
+  const flags = ['fcpRegressed', 'loadRegressed', 'fpsRegressed'];
+  const completePerformance = !!verdict && flags.every(key => typeof verdict[key] === 'boolean');
+  if (verdict && typeof verdict === 'object') {
+    verdict.acceptable = completePerformance ? !flags.some(key => verdict[key]) : null;
+  }
+  if (!completePerformance) {
+    rawChecks.comparative_performance = {
+      status: 'BLOCKED', details: 'Missing or malformed performance observations'
+    };
+  } else if (flags.some(key => verdict[key])) {
+    rawChecks.comparative_performance = {
+      status: 'FAIL', details: 'Performance regression: ' + flags.filter(key => verdict[key]).join(', ')
+    };
+  }
 
-    if (!isAcceptable) {
-      const reasons = [
-        verdict.fcpRegressed ? 'FCP regressed' : null,
-        verdict.loadRegressed ? 'Load regressed' : null,
-        verdict.fpsRegressed ? 'FPS regressed' : null
-      ].filter(Boolean).join(', ');
-      rawChecks.comparative_performance = {
-        status: 'FAIL',
-        details: `Performance regression: ${reasons}`
+  for (const [field, checkId] of [
+    ['recordedConsoleErrors', 'console_cleanliness'],
+    ['recordedPageExceptions', 'page_cleanliness']
+  ]) {
+    const observations = rawResults[field];
+    if (Array.isArray(observations) && observations.length > 0) {
+      rawChecks[checkId] = {
+        status: 'FAIL', details: `${observations.length} error(s): ${observations.map(e => e?.text || String(e)).join('; ')}`
       };
+    } else if (!Array.isArray(observations) || rawResults.telemetryComplete !== true) {
+      rawChecks[checkId] = {
+        status: 'BLOCKED', details: `Missing, malformed or incomplete collection: ${field}`
+      };
+    } else if (!rawChecks[checkId]) {
+      rawChecks[checkId] = { status: 'PASS', details: 'Completed collection; zero errors' };
     }
-  }
-
-  // 2. Evaluate console cleanliness
-  const consoleErrors = rawResults.recordedConsoleErrors || [];
-  if (consoleErrors.length > 0) {
-    rawChecks.console_cleanliness = {
-      status: 'FAIL',
-      details: `${consoleErrors.length} console error(s) recorded: ${consoleErrors.map(e => e.text || e).join('; ')}`
-    };
-  } else if (!rawChecks.console_cleanliness) {
-    rawChecks.console_cleanliness = { status: 'PASS', details: 'Zero console errors' };
-  }
-
-  // 3. Evaluate page cleanliness (exceptions)
-  const pageExceptions = rawResults.recordedPageExceptions || [];
-  if (pageExceptions.length > 0) {
-    rawChecks.page_cleanliness = {
-      status: 'FAIL',
-      details: `${pageExceptions.length} unhandled page exception(s): ${pageExceptions.join('; ')}`
-    };
-  } else if (!rawChecks.page_cleanliness) {
-    rawChecks.page_cleanliness = { status: 'PASS', details: 'Zero page exceptions' };
   }
 
   // 4. Evaluate each required check
@@ -140,6 +129,9 @@ function evaluateResults(rawResults = {}) {
     checks,
     failures,
     blocked,
+    // Owner explicitly deferred reader/VoiceOver for C01T; never label it PASS.
+    deferred: [{ id: 'screen_reader', status: 'DEFERRED', followUp: 'B31',
+      reason: 'Owner requested deferral; see docs/execution/DEFERRED_CHECKS.md' }],
     diagnostics: rawResults.diagnostics || {}
   };
 }
@@ -157,7 +149,8 @@ function finalizeAndPersistReport(rawResults, outputPath) {
     evaluatedAt: new Date().toISOString(),
     failures: evaluation.failures,
     blocked: evaluation.blocked,
-    checks: evaluation.checks
+    checks: evaluation.checks,
+    deferred: evaluation.deferred
   };
 
   if (outputPath) {
