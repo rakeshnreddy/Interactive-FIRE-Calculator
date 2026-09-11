@@ -1,11 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
+  createSavedCalculatorResult,
   destinationTypeForRoute,
   goalPayloadFromCalculator,
+  INCOMPATIBLE_GOAL_CURRENCY_CODE,
+  IncompatibleGoalCurrencyError,
   parseCalculatorSavePayload,
-  targetDateForYears
+  targetDateForYears,
+  type CalculatorSavePayload
 } from '../functions/_lib/calculatorResults';
+import * as sessionModule from '../functions/_lib/session';
+import { onRequestPost } from '../functions/api/calculator-results/index';
 
 const validPayload = {
   calculatorCategory: 'Planning',
@@ -112,7 +118,8 @@ describe('calculator result save payload validation', () => {
       calculatorCategory: 'Investing',
       calculatorSlug: 'compound-interest',
       calculatorTitle: 'Compound Interest Calculator',
-      conversionLabel: 'Save as wealth goal',
+      conversionLabel: 'Save as investment account',
+      conversionRoute: '/accounts' as const,
       currency: 'EUR',
       inputValues: {
         annualContributionIncreasePercent: 3,
@@ -161,11 +168,193 @@ describe('calculator result save payload validation', () => {
     expect(parsed.ok).toBe(true);
     if (parsed.ok) {
       expect(parsed.value.calculatorSlug).toBe('compound-interest');
+      expect(parsed.value.conversionRoute).toBe('/accounts');
       expect(parsed.value.currency).toBe('EUR');
       expect(parsed.value.inputValues.target).toBe(150000);
       expect(parsed.value.inputValues.contributionFrequency).toBe(12);
       expect(parsed.value.inputValues.futureDepositYear).toBe(2.25);
       expect(parsed.value.inputValues.futureWithdrawalAmount).toBe(1500);
     }
+  });
+
+  it('rejects incompatible currency conversion into goals with typed 400 error', () => {
+    for (const currency of ['EUR', 'INR', 'GBP', 'CAD', 'JPY', 'AUD']) {
+      const parsed = parseCalculatorSavePayload({
+        ...validPayload,
+        conversionRoute: '/goals',
+        currency
+      });
+
+      expect(parsed).toEqual({
+        code: INCOMPATIBLE_GOAL_CURRENCY_CODE,
+        error: 'Goals currently support USD only. Currency conversion into goals is not supported.',
+        ok: false
+      });
+    }
+  });
+
+  it('returns null from goalPayloadFromCalculator for non-USD payloads', () => {
+    const nonUsdPayload = {
+      ...validPayload,
+      currency: 'EUR'
+    } as unknown as CalculatorSavePayload;
+    expect(goalPayloadFromCalculator(nonUsdPayload)).toBeNull();
+
+    const inrPayload = {
+      ...validPayload,
+      currency: 'INR'
+    } as unknown as CalculatorSavePayload;
+    expect(goalPayloadFromCalculator(inrPayload)).toBeNull();
+  });
+
+  it('throws IncompatibleGoalCurrencyError and makes zero database writes on non-USD goal save', async () => {
+    const spyDb = {
+      batch: vi.fn(),
+      dump: vi.fn(),
+      exec: vi.fn(),
+      prepare: vi.fn()
+    } as unknown as D1Database;
+
+    const nonUsdPayload = {
+      ...validPayload,
+      conversionRoute: '/goals',
+      currency: 'EUR'
+    } as unknown as CalculatorSavePayload;
+
+    await expect(
+      createSavedCalculatorResult(spyDb, 'user_123', nonUsdPayload)
+    ).rejects.toThrow(IncompatibleGoalCurrencyError);
+
+    expect(spyDb.prepare).not.toHaveBeenCalled();
+    expect(spyDb.batch).not.toHaveBeenCalled();
+    expect(spyDb.exec).not.toHaveBeenCalled();
+  });
+
+  it('accepts non-USD currency on supported account destination', () => {
+    const accountPayload = {
+      ...validPayload,
+      conversionRoute: '/accounts' as const,
+      currency: 'EUR'
+    };
+
+    const parsed = parseCalculatorSavePayload(accountPayload);
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      expect(parsed.value.currency).toBe('EUR');
+      expect(parsed.value.conversionRoute).toBe('/accounts');
+    }
+  });
+});
+
+describe('calculator results API endpoint (onRequestPost)', () => {
+  it('enforces auth preflight before body parse', async () => {
+    vi.spyOn(sessionModule, 'requireClerkAuth').mockResolvedValue({
+      ok: false,
+      response: new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+    });
+
+    const request = new Request('https://finpath.app/api/calculator-results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: 'invalid-json'
+    });
+
+    const response = await onRequestPost({
+      data: {},
+      env: { DB: {} as D1Database },
+      functionPath: '/api/calculator-results',
+      next: () => Promise.resolve(new Response()),
+      params: {},
+      request,
+      waitUntil: () => {}
+    } as any);
+
+    expect(response.status).toBe(401);
+  });
+
+  it('rejects forged non-USD goal save request with typed 400 and zero database writes', async () => {
+    vi.spyOn(sessionModule, 'requireClerkAuth').mockResolvedValue({
+      auth: { userId: 'user_test_123' } as any,
+      ok: true
+    });
+
+    const spyDb = {
+      batch: vi.fn(),
+      dump: vi.fn(),
+      exec: vi.fn(),
+      prepare: vi.fn()
+    } as unknown as D1Database;
+
+    const request = new Request('https://finpath.app/api/calculator-results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...validPayload,
+        conversionRoute: '/goals',
+        currency: 'EUR'
+      })
+    });
+
+    const response = await onRequestPost({
+      data: {},
+      env: { DB: spyDb },
+      functionPath: '/api/calculator-results',
+      next: () => Promise.resolve(new Response()),
+      params: {},
+      request,
+      waitUntil: () => {}
+    } as any);
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body).toEqual({
+      code: 'INCOMPATIBLE_GOAL_CURRENCY',
+      error: 'Goals currently support USD only. Currency conversion into goals is not supported.'
+    });
+
+    expect(spyDb.prepare).not.toHaveBeenCalled();
+    expect(spyDb.batch).not.toHaveBeenCalled();
+    expect(spyDb.exec).not.toHaveBeenCalled();
+  });
+
+  it('rejects malformed or missing currency with status 400', async () => {
+    vi.spyOn(sessionModule, 'requireClerkAuth').mockResolvedValue({
+      auth: { userId: 'user_test_123' } as any,
+      ok: true
+    });
+
+    const spyDb = {
+      batch: vi.fn(),
+      dump: vi.fn(),
+      exec: vi.fn(),
+      prepare: vi.fn()
+    } as unknown as D1Database;
+
+    const request = new Request('https://finpath.app/api/calculator-results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...validPayload,
+        currency: 'invalid'
+      })
+    });
+
+    const response = await onRequestPost({
+      data: {},
+      env: { DB: spyDb },
+      functionPath: '/api/calculator-results',
+      next: () => Promise.resolve(new Response()),
+      params: {},
+      request,
+      waitUntil: () => {}
+    } as any);
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body).toEqual({
+      error: 'currency must be a three-letter code.'
+    });
+
+    expect(spyDb.prepare).not.toHaveBeenCalled();
   });
 });

@@ -135,14 +135,32 @@ export async function listSavedCalculatorResults(
   return result.results.map(toSavedCalculatorResult);
 }
 
+export const INCOMPATIBLE_GOAL_CURRENCY_CODE = 'INCOMPATIBLE_GOAL_CURRENCY';
+export const INCOMPATIBLE_GOAL_CURRENCY_MESSAGE =
+  'Goals currently support USD only. Currency conversion into goals is not supported.';
+
+export class IncompatibleGoalCurrencyError extends Error {
+  readonly code = INCOMPATIBLE_GOAL_CURRENCY_CODE;
+
+  constructor(message = INCOMPATIBLE_GOAL_CURRENCY_MESSAGE) {
+    super(message);
+    this.name = 'IncompatibleGoalCurrencyError';
+  }
+}
+
 export async function createSavedCalculatorResult(
   database: D1Database,
   userId: string,
   payload: CalculatorSavePayload
 ): Promise<CalculatorSaveResult> {
+  const destinationType = destinationTypeForRoute(payload.conversionRoute);
+
+  if (destinationType === 'goal' && payload.currency !== 'USD') {
+    throw new IncompatibleGoalCurrencyError();
+  }
+
   await ensureUserProfile(database, userId);
 
-  const destinationType = destinationTypeForRoute(payload.conversionRoute);
   const createdEntity = await createDestinationDraft(database, userId, destinationType, payload);
   const savedResultId = crypto.randomUUID();
   const now = new Date().toISOString();
@@ -245,9 +263,15 @@ export async function readJsonBody(request: Request): Promise<unknown> {
   }
 }
 
+export type CalculatorSaveParseError = {
+  code?: string;
+  error: string;
+  ok: false;
+};
+
 export function parseCalculatorSavePayload(value: unknown):
   | { ok: true; value: CalculatorSavePayload }
-  | { error: string; ok: false } {
+  | CalculatorSaveParseError {
   if (!isRecord(value)) {
     return { error: 'Request body must be a JSON object.', ok: false };
   }
@@ -272,6 +296,14 @@ export function parseCalculatorSavePayload(value: unknown):
 
   const currency = parseCurrency(value.currency);
   if (!currency.ok) return currency;
+
+  if (conversionRoute.value === '/goals' && currency.value !== 'USD') {
+    return {
+      code: INCOMPATIBLE_GOAL_CURRENCY_CODE,
+      error: INCOMPATIBLE_GOAL_CURRENCY_MESSAGE,
+      ok: false
+    };
+  }
 
   const inputValues = parseInputValues(value.inputValues);
   if (!inputValues.ok) return inputValues;
@@ -339,6 +371,10 @@ async function createDestinationDraft(
 }
 
 export function goalPayloadFromCalculator(payload: CalculatorSavePayload): GoalCreatePayload | null {
+  if (payload.currency !== 'USD') {
+    return null;
+  }
+
   const targetAmountCents = targetAmountCentsForGoal(payload);
 
   if (targetAmountCents === null || targetAmountCents <= 0) {

@@ -2,6 +2,7 @@
 
 import {
   createSavedCalculatorResult,
+  IncompatibleGoalCurrencyError,
   listSavedCalculatorResults,
   parseCalculatorSavePayload,
   readJsonBody
@@ -39,13 +40,19 @@ export const onRequestPost: PagesFunction<CalculatorResultsEnv> = async ({ reque
   const parsed = parseCalculatorSavePayload(body);
 
   if (!parsed.ok) {
-    return json({ error: parsed.error }, 400);
+    return json(
+      parsed.code ? { code: parsed.code, error: parsed.error } : { error: parsed.error },
+      400
+    );
   }
 
   try {
     const saved = await createSavedCalculatorResult(context.database, context.userId, parsed.value);
     return json(saved, 201);
-  } catch {
+  } catch (error) {
+    if (error instanceof IncompatibleGoalCurrencyError) {
+      return json({ code: error.code, error: error.message }, 400);
+    }
     return json({ error: 'Unable to save calculator result.' }, 500);
   }
 };
