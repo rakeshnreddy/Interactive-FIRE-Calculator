@@ -23,3 +23,7 @@ Read MASTER_WORKER_PROMPT.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md, FREE_TI
 The existing b8f9d6ec deployment predates C02 and is not C02 evidence. Before deploying backend changes requiring migration0005, verify isolated binding and request scoped authorization to apply only reviewed0005 to finpath-preview if absent. No production migration, data copy, paid service, main merge or production deploy. Do all local repairs and tests before stopping for that precise external action. Do not report no blockers while migration/deployment remains unperformed.
 
 After safe preview setup, verify new immutable candidate API health, signed-out gates,84 public-route smoke and changed rendered journeys. Actual signed-in lifecycle remains under the appropriate authorized task scope; never fabricate it. Preserve evidence of tests that were local rather than hosted. Submit C02 only after requirements pass, otherwise record exact blocker. Primary reviewer owns task closure and C03 release.
+
+## Latest primary review amendment
+
+Read reviews/C02.md before the earlier list. R1–R3 local repairs now pass targeted review; preserve them. Remaining work is real-browser R5 evidence and R4 migration/deployment/CI. HTML strings do not certify viewport/zoom/no-overlap. Correct the stale full-suite log claim and React version attribution. Complete independent local browser work before waiting for migration permission. The reviewer recommends only isolated-preview0005 migration pending explicit owner consent; no production or paid action.
