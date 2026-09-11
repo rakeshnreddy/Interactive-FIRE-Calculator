@@ -283,16 +283,16 @@
       "id": "B18",
       "title": "Replace generic homepage hero with authentic product composition",
       "checkpoint": "C03",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B16",
         "B17",
         "B32"
       ],
       "prompt": "prompts/B18.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B18.md",
+      "owner": "Codex implementing session 2026-09-11",
+      "code_sha": "f8e6824213fe9af4d0e234902ae0ccfa4eada2c9",
       "review": null,
       "blocked_reason": null
     },
