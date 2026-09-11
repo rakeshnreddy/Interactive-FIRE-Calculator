@@ -20,15 +20,15 @@
       "id": "B02",
       "title": "reject incompatible currency conversion into goals",
       "checkpoint": "C02",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B01",
         "B33"
       ],
       "prompt": "prompts/B02.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B02.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "df14ff034f198ccfd62a54acb8bf3fb0c50b270d",
       "review": null,
       "blocked_reason": null
     },
