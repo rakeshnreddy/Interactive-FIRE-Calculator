@@ -132,7 +132,7 @@
       "id": "B09",
       "title": "remove internal instructions from calculator copy",
       "checkpoint": "C03",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B01",
         "B17"
@@ -141,7 +141,7 @@
       "submission": "submissions/B09.md",
       "owner": "Codex implementing session 2026-09-11",
       "code_sha": "fcc011e3914fdc63fee8dc577491533d0211754b",
-      "review": null,
+      "review": "reviews/C03.md",
       "blocked_reason": null
     },
     {
@@ -283,7 +283,7 @@
       "id": "B18",
       "title": "Replace generic homepage hero with authentic product composition",
       "checkpoint": "C03",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B16",
         "B17",
@@ -293,14 +293,14 @@
       "submission": "submissions/B18.md",
       "owner": "Codex implementing session 2026-09-11",
       "code_sha": "f8e6824213fe9af4d0e234902ae0ccfa4eada2c9",
-      "review": null,
+      "review": "reviews/C03.md",
       "blocked_reason": null
     },
     {
       "id": "B19",
       "title": "Make calculator discovery concise and distinctive",
       "checkpoint": "C03",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B16",
         "B17",
@@ -310,7 +310,7 @@
       "submission": "submissions/B19.md",
       "owner": "Codex implementing session 2026-09-11",
       "code_sha": "cb5b0b931437f538c3441388bb9ff0f171510314",
-      "review": null,
+      "review": "reviews/C03.md",
       "blocked_reason": null
     },
     {
