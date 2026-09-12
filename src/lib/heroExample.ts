@@ -32,6 +32,7 @@ export type HeroFireExampleData = {
     requiredPortfolio: string;
     portfolioGap: string;
     maxAnnualExpense: string;
+    modeledEndBalance: string;
     returnRate: string;
     inflationRate: string;
     horizonYears: number;
@@ -43,6 +44,7 @@ export function getHeroFireExampleData(input: PlanInput = HERO_FIRE_FIXTURE): He
   const result = calculateFirePlan(input);
   const period = input.ratePeriods[0] ?? { duration: 30, r: 0.07, i: 0.025 };
   const gap = Math.max(0, result.requiredPortfolio - input.initialPortfolio);
+  const roundedEndBalance = Math.max(0, Math.round(result.expenseMode.finalBalance));
 
   return {
     fixture: input,
@@ -53,10 +55,11 @@ export function getHeroFireExampleData(input: PlanInput = HERO_FIRE_FIXTURE): He
       requiredPortfolio: formatMoney(result.requiredPortfolio),
       portfolioGap: formatMoney(gap),
       maxAnnualExpense: formatMoney(result.maxAnnualExpense),
+      modeledEndBalance: formatMoney(roundedEndBalance),
       returnRate: formatPercent(period.r),
       inflationRate: formatPercent(period.i),
       horizonYears: period.duration,
-      timelineYearsLabel: `${period.duration} years`
+      timelineYearsLabel: `${period.duration}-year`
     }
   };
 }

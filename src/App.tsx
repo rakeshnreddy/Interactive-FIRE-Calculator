@@ -4642,7 +4642,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
         <div>
           <h2 id="privacy-title">Start without an account.</h2>
           <p>
-            Use the public calculators before deciding whether to create an account. Explore calculators without an account.
+            Use the public calculators before deciding whether to create an account.
           </p>
         </div>
         {auth.isConfigured && (

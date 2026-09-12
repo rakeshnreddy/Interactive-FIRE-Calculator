@@ -103,4 +103,48 @@ describe('AuthGate copy, privacy, and public navigation (B09)', () => {
       expect(html).not.toContain('Record balance');
     }
   });
+
+  it('exercises onNavigate callbacks for public calculator escape in all auth states', () => {
+    function findButton(node: any, textMatch: string): any {
+      if (!node) return null;
+      if (node.type === 'button') {
+        const text = JSON.stringify(node.props?.children);
+        if (text && text.includes(textMatch)) return node;
+      }
+      const children = node.props?.children;
+      if (Array.isArray(children)) {
+        for (const child of children) {
+          const found = findButton(child, textMatch);
+          if (found) return found;
+        }
+      } else if (children && typeof children === 'object') {
+        return findButton(children, textMatch);
+      }
+      return null;
+    }
+
+    // 1. Unconfigured state: clicking Explore public calculators calls onNavigate('/calculators')
+    const onNavigateUnconfigured = vi.fn();
+    const treeUnconfigured = AuthGate({ auth: unconfiguredAuth, route: '/dashboard', onNavigate: onNavigateUnconfigured });
+    const exploreBtn = findButton(treeUnconfigured, 'Explore public calculators');
+    expect(exploreBtn).not.toBeNull();
+    exploreBtn.props.onClick();
+    expect(onNavigateUnconfigured).toHaveBeenCalledWith('/calculators');
+
+    // 2. Loading state: clicking Browse calculators calls onNavigate('/calculators')
+    const onNavigateLoading = vi.fn();
+    const treeLoading = AuthGate({ auth: loadingAuth, route: '/dashboard', onNavigate: onNavigateLoading });
+    const browseLoadingBtn = findButton(treeLoading, 'Browse calculators');
+    expect(browseLoadingBtn).not.toBeNull();
+    browseLoadingBtn.props.onClick();
+    expect(onNavigateLoading).toHaveBeenCalledWith('/calculators');
+
+    // 3. Signed-out state: clicking Browse calculators calls onNavigate('/calculators')
+    const onNavigateSignedOut = vi.fn();
+    const treeSignedOut = AuthGate({ auth: signedOutAuth, route: '/dashboard', onNavigate: onNavigateSignedOut });
+    const browseSignedOutBtn = findButton(treeSignedOut, 'Browse calculators');
+    expect(browseSignedOutBtn).not.toBeNull();
+    browseSignedOutBtn.props.onClick();
+    expect(onNavigateSignedOut).toHaveBeenCalledWith('/calculators');
+  });
 });

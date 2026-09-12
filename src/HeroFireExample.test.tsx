@@ -33,7 +33,7 @@ describe('HeroFireExample', () => {
     expect(html).toContain('$500,000');
     expect(html).toContain('7%');
     expect(html).toContain('2.5%');
-    expect(html).toContain('30 years');
+    expect(html).toContain('30-year');
 
     // Engine-derived required portfolio must be rendered
     const data = getHeroFireExampleData(HERO_FIRE_FIXTURE);
@@ -44,15 +44,53 @@ describe('HeroFireExample', () => {
     expect(html).toContain('aria-label="Illustrative FIRE calculation example"');
   });
 
-  it('renders accessible SVG trajectory with labeled axes and points', () => {
+  it('plots expenseMode curve starting at modeled target and ending at modeled end balance (R1)', () => {
+    const data = getHeroFireExampleData(HERO_FIRE_FIXTURE);
     const html = renderToStaticMarkup(<HeroFireExample />);
 
-    expect(html).toContain('<svg');
-    expect(html).toContain('aria-label=');
+    // R1: Must use expenseMode starting with modeled target ($965,931) and ending near $0
+    expect(data.result.expenseMode.balances[0]).toBe(data.result.requiredPortfolio);
+    expect(data.formatted.modeledEndBalance).toBe('$0');
+
+    // Chart title and narrative
+    expect(html).toContain('Retirement withdrawals from the modeled target');
+    expect(html).toContain('Modeled end balance: $0');
+
+    // String-based Sustained / Depleted status branch must be completely deleted
+    expect(html).not.toContain('Sustained');
+    expect(html).not.toContain('Depleted');
+
+    // Clarification of starting balance and savings gap
+    expect(html).toContain(data.formatted.requiredPortfolio);
+    expect(html).toContain(data.formatted.portfolioGap);
+    expect(html).toContain('Initial annual spending:');
+  });
+
+  it('exposes chart semantics and text alternative accessibly without aria-hidden on chart ancestor (R2)', () => {
+    const html = renderToStaticMarkup(<HeroFireExample />);
+
+    // Must NOT have aria-hidden="true" on chart ancestor
+    expect(html).not.toMatch(/class="hero-example-chart[^"]*"\s+aria-hidden="true"/);
+    expect(html).not.toMatch(/aria-hidden="true"[^>]*class="hero-example-chart/);
+
+    // Exposed figure and figcaption semantics
+    expect(html).toContain('<figure');
+    expect(html).toContain('<figcaption');
+    expect(html).toContain('aria-labelledby=');
+    expect(html).toContain('aria-describedby=');
+
+    // Concise text alternative must describe scenario, start/end years, USD start/end, and spending/inflation
     expect(html).toContain('Year 0');
     expect(html).toContain('Year 30');
-    // Ensure no broken NaN in SVG attributes
-    expect(html).not.toContain('NaN');
-    expect(html).not.toContain('undefined');
+    expect(html).toContain('$965,931');
+    expect(html).toContain('$0');
+    expect(html).toContain('60,000');
+    expect(html).toContain('2.5%');
+    expect(html).toContain('7%');
+
+    // SVG must be role="img" with title and desc
+    expect(html).toContain('role="img"');
+    expect(html).toContain('<title');
+    expect(html).toContain('<desc');
   });
 });
