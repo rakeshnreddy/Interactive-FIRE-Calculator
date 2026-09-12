@@ -19,5 +19,12 @@
     "hasPhase": false,
     "hasEnvLeak": false,
     "hasInternalDirectives": false
+  },
+  {
+    "route": "/calculators/amortization",
+    "clean": true,
+    "hasPhase": false,
+    "hasEnvLeak": false,
+    "hasInternalDirectives": false
   }
 ]

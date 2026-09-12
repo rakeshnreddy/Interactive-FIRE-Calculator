@@ -1,108 +1,442 @@
 [
   {
+    "id": "contrast_light_heading",
+    "element": "heading",
+    "name": "Hero Heading",
     "mode": "light",
-    "metrics": {
-      "heading": {
-        "color": "rgb(16, 44, 53)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "72.8px",
-        "fontWeight": "650"
-      },
-      "subtext": {
-        "color": "rgb(0, 107, 96)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.8px",
-        "fontWeight": "620"
-      },
-      "metricLabel": {
-        "color": "rgb(82, 104, 115)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12px",
-        "fontWeight": "500"
-      },
-      "metricValue": {
-        "color": "rgb(16, 44, 53)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "22.4px",
-        "fontWeight": "700"
-      },
-      "chartLegend": {
-        "color": "rgb(16, 44, 53)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.48px",
-        "fontWeight": "600"
-      },
-      "chartEnd": {
-        "color": "rgb(82, 104, 115)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.48px",
-        "fontWeight": "500"
-      },
-      "chartContext": {
-        "color": "rgb(54, 77, 86)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12px",
-        "fontWeight": "400"
-      },
-      "assumptionText": {
-        "color": "rgb(32, 58, 67)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.48px",
-        "fontWeight": "400"
-      }
-    }
+    "foreground": "rgb(16, 44, 53)",
+    "effectiveBackground": "rgb(234, 246, 250)",
+    "fontSize": "72.8px",
+    "fontWeight": "650",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 270,
+      "width": 620,
+      "height": 143
+    },
+    "ratio": 13.3,
+    "threshold": 3,
+    "pass": true
   },
   {
+    "id": "contrast_light_subtext",
+    "element": "subtext",
+    "name": "Hero Body Copy",
+    "mode": "light",
+    "foreground": "rgb(82, 104, 115)",
+    "effectiveBackground": "rgb(233, 245, 250)",
+    "fontSize": "17.28px",
+    "fontWeight": "400",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 433,
+      "width": 560,
+      "height": 56
+    },
+    "ratio": 5.27,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_eyebrow",
+    "element": "eyebrow",
+    "name": "Hero Eyebrow",
+    "mode": "light",
+    "foreground": "rgb(0, 107, 96)",
+    "effectiveBackground": "rgb(234, 246, 249)",
+    "fontSize": "12.8px",
+    "fontWeight": "620",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 234,
+      "width": 620,
+      "height": 16
+    },
+    "ratio": 5.82,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_cta_primary",
+    "element": "cta_primary",
+    "name": "Primary CTA Button",
+    "mode": "light",
+    "foreground": "rgb(255, 255, 255)",
+    "effectiveBackground": "rgb(18, 96, 131)",
+    "fontSize": "14.08px",
+    "fontWeight": "620",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 514,
+      "width": 269,
+      "height": 48
+    },
+    "ratio": 6.94,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_cta_secondary",
+    "element": "cta_secondary",
+    "name": "Popular Starts Link",
+    "mode": "light",
+    "foreground": "rgb(16, 44, 53)",
+    "effectiveBackground": "rgb(234, 246, 251)",
+    "fontSize": "12.8px",
+    "fontWeight": "600",
+    "opacity": 1,
+    "location": {
+      "x": 221,
+      "y": 609,
+      "width": 77,
+      "height": 36
+    },
+    "ratio": 13.3,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_metric_label",
+    "element": "metric_label",
+    "name": "Metric Label",
+    "mode": "light",
+    "foreground": "rgb(82, 104, 115)",
+    "effectiveBackground": "rgb(238, 244, 247)",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 231,
+      "width": 170,
+      "height": 18
+    },
+    "ratio": 5.28,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_metric_value",
+    "element": "metric_value",
+    "name": "Metric Value",
+    "mode": "light",
+    "foreground": "rgb(16, 44, 53)",
+    "effectiveBackground": "rgb(238, 244, 247)",
+    "fontSize": "22.4px",
+    "fontWeight": "700",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 253,
+      "width": 170,
+      "height": 27
+    },
+    "ratio": 13.2,
+    "threshold": 3,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_chart_legend_label",
+    "element": "chart_legend_label",
+    "name": "Chart Legend Label",
+    "mode": "light",
+    "foreground": "rgb(16, 44, 53)",
+    "effectiveBackground": "rgb(238, 244, 247)",
+    "fontSize": "12.48px",
+    "fontWeight": "600",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 365,
+      "width": 260,
+      "height": 37
+    },
+    "ratio": 13.2,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_chart_legend_end",
+    "element": "chart_legend_end",
+    "name": "Chart Legend End",
+    "mode": "light",
+    "foreground": "rgb(82, 104, 115)",
+    "effectiveBackground": "rgb(238, 244, 247)",
+    "fontSize": "12.48px",
+    "fontWeight": "500",
+    "opacity": 1,
+    "location": {
+      "x": 1146,
+      "y": 365,
+      "width": 128,
+      "height": 37
+    },
+    "ratio": 5.28,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_chart_context",
+    "element": "chart_context",
+    "name": "Chart Context",
+    "mode": "light",
+    "foreground": "rgb(54, 77, 86)",
+    "effectiveBackground": "rgb(238, 244, 247)",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 411,
+      "width": 388,
+      "height": 32
+    },
+    "ratio": 8.04,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_light_assumption_text",
+    "element": "assumption_text",
+    "name": "Assumption Text",
+    "mode": "light",
+    "foreground": "rgb(32, 58, 67)",
+    "effectiveBackground": "rgb(251, 253, 255)",
+    "fontSize": "12.48px",
+    "fontWeight": "400",
+    "opacity": 1,
+    "location": {
+      "x": 869,
+      "y": 621,
+      "width": 209,
+      "height": 19
+    },
+    "ratio": 11.78,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_heading",
+    "element": "heading",
+    "name": "Hero Heading",
     "mode": "dark",
-    "metrics": {
-      "heading": {
-        "color": "rgb(234, 246, 247)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "72.8px",
-        "fontWeight": "650"
-      },
-      "subtext": {
-        "color": "rgb(105, 227, 202)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.8px",
-        "fontWeight": "620"
-      },
-      "metricLabel": {
-        "color": "rgb(164, 187, 196)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12px",
-        "fontWeight": "500"
-      },
-      "metricValue": {
-        "color": "rgb(234, 246, 247)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "22.4px",
-        "fontWeight": "700"
-      },
-      "chartLegend": {
-        "color": "rgb(234, 246, 247)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.48px",
-        "fontWeight": "600"
-      },
-      "chartEnd": {
-        "color": "rgb(164, 187, 196)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.48px",
-        "fontWeight": "500"
-      },
-      "chartContext": {
-        "color": "rgb(197, 212, 220)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12px",
-        "fontWeight": "400"
-      },
-      "assumptionText": {
-        "color": "rgb(216, 231, 234)",
-        "backgroundColor": "rgba(0, 0, 0, 0)",
-        "fontSize": "12.48px",
-        "fontWeight": "400"
-      }
-    }
+    "foreground": "rgb(234, 246, 247)",
+    "effectiveBackground": "rgb(17, 46, 59)",
+    "fontSize": "72.8px",
+    "fontWeight": "650",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 270,
+      "width": 620,
+      "height": 143
+    },
+    "ratio": 12.87,
+    "threshold": 3,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_subtext",
+    "element": "subtext",
+    "name": "Hero Body Copy",
+    "mode": "dark",
+    "foreground": "rgb(164, 187, 196)",
+    "effectiveBackground": "rgb(17, 45, 59)",
+    "fontSize": "17.28px",
+    "fontWeight": "400",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 433,
+      "width": 560,
+      "height": 56
+    },
+    "ratio": 7.17,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_eyebrow",
+    "element": "eyebrow",
+    "name": "Hero Eyebrow",
+    "mode": "dark",
+    "foreground": "rgb(105, 227, 202)",
+    "effectiveBackground": "rgb(17, 47, 57)",
+    "fontSize": "12.8px",
+    "fontWeight": "620",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 234,
+      "width": 620,
+      "height": 16
+    },
+    "ratio": 9.02,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_cta_primary",
+    "element": "cta_primary",
+    "name": "Primary CTA Button",
+    "mode": "dark",
+    "foreground": "rgb(8, 21, 28)",
+    "effectiveBackground": "rgb(121, 206, 228)",
+    "fontSize": "14.08px",
+    "fontWeight": "620",
+    "opacity": 1,
+    "location": {
+      "x": 120,
+      "y": 514,
+      "width": 269,
+      "height": 48
+    },
+    "ratio": 10.37,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_cta_secondary",
+    "element": "cta_secondary",
+    "name": "Popular Starts Link",
+    "mode": "dark",
+    "foreground": "rgb(234, 246, 247)",
+    "effectiveBackground": "rgb(18, 46, 60)",
+    "fontSize": "12.8px",
+    "fontWeight": "600",
+    "opacity": 1,
+    "location": {
+      "x": 221,
+      "y": 609,
+      "width": 77,
+      "height": 36
+    },
+    "ratio": 12.84,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_metric_label",
+    "element": "metric_label",
+    "name": "Metric Label",
+    "mode": "dark",
+    "foreground": "rgb(164, 187, 196)",
+    "effectiveBackground": "rgb(11, 27, 35)",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 231,
+      "width": 170,
+      "height": 18
+    },
+    "ratio": 8.77,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_metric_value",
+    "element": "metric_value",
+    "name": "Metric Value",
+    "mode": "dark",
+    "foreground": "rgb(234, 246, 247)",
+    "effectiveBackground": "rgb(11, 27, 35)",
+    "fontSize": "22.4px",
+    "fontWeight": "700",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 253,
+      "width": 170,
+      "height": 27
+    },
+    "ratio": 15.92,
+    "threshold": 3,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_chart_legend_label",
+    "element": "chart_legend_label",
+    "name": "Chart Legend Label",
+    "mode": "dark",
+    "foreground": "rgb(234, 246, 247)",
+    "effectiveBackground": "rgb(11, 27, 35)",
+    "fontSize": "12.48px",
+    "fontWeight": "600",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 365,
+      "width": 260,
+      "height": 37
+    },
+    "ratio": 15.92,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_chart_legend_end",
+    "element": "chart_legend_end",
+    "name": "Chart Legend End",
+    "mode": "dark",
+    "foreground": "rgb(164, 187, 196)",
+    "effectiveBackground": "rgb(11, 27, 35)",
+    "fontSize": "12.48px",
+    "fontWeight": "500",
+    "opacity": 1,
+    "location": {
+      "x": 1146,
+      "y": 365,
+      "width": 128,
+      "height": 37
+    },
+    "ratio": 8.77,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_chart_context",
+    "element": "chart_context",
+    "name": "Chart Context",
+    "mode": "dark",
+    "foreground": "rgb(197, 212, 220)",
+    "effectiveBackground": "rgb(11, 27, 35)",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "opacity": 1,
+    "location": {
+      "x": 886,
+      "y": 411,
+      "width": 388,
+      "height": 32
+    },
+    "ratio": 11.57,
+    "threshold": 4.5,
+    "pass": true
+  },
+  {
+    "id": "contrast_dark_assumption_text",
+    "element": "assumption_text",
+    "name": "Assumption Text",
+    "mode": "dark",
+    "foreground": "rgb(216, 231, 234)",
+    "effectiveBackground": "rgb(16, 35, 44)",
+    "fontSize": "12.48px",
+    "fontWeight": "400",
+    "opacity": 1,
+    "location": {
+      "x": 869,
+      "y": 621,
+      "width": 209,
+      "height": 19
+    },
+    "ratio": 12.73,
+    "threshold": 4.5,
+    "pass": true
   }
 ]

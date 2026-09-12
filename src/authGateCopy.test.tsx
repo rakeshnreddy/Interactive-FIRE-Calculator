@@ -104,7 +104,7 @@ describe('AuthGate copy, privacy, and public navigation (B09)', () => {
     }
   });
 
-  it('exercises onNavigate callbacks for public calculator escape in all auth states', () => {
+  it('unit test coverage: exercises onNavigate callbacks for public calculator escape in all auth states', () => {
     function findButton(node: any, textMatch: string): any {
       if (!node) return null;
       if (node.type === 'button') {

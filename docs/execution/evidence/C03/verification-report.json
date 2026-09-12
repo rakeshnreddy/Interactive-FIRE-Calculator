@@ -1,0 +1,1591 @@
+{
+  "telemetryComplete": true,
+  "recordedConsoleErrors": [],
+  "recordedPageExceptions": [],
+  "matrix": [
+    {
+      "route": "/",
+      "width": 320,
+      "mode": "light",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 34,
+        "y": 139.984375,
+        "width": 269,
+        "height": 62.71875,
+        "right": 303,
+        "bottom": 202.703125
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 34,
+          "y": 360.234375,
+          "width": 269,
+          "height": 48,
+          "right": 303,
+          "bottom": 408.234375
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 34,
+          "y": 649.5,
+          "width": 252,
+          "height": 812.78125,
+          "right": 286,
+          "bottom": 1462.28125
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 320,
+      "mode": "dark",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 34,
+        "y": 139.984375,
+        "width": 269,
+        "height": 62.71875,
+        "right": 303,
+        "bottom": 202.703125
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 34,
+          "y": 360.234375,
+          "width": 269,
+          "height": 48,
+          "right": 303,
+          "bottom": 408.234375
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 34,
+          "y": 649.5,
+          "width": 252,
+          "height": 812.78125,
+          "right": 286,
+          "bottom": 1462.28125
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "mode": "light",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 34,
+        "y": 139.984375,
+        "width": 322,
+        "height": 62.71875,
+        "right": 356,
+        "bottom": 202.703125
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 34,
+          "y": 332.25,
+          "width": 322,
+          "height": 48,
+          "right": 356,
+          "bottom": 380.25
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 34,
+          "y": 621.515625,
+          "width": 322,
+          "height": 719.796875,
+          "right": 356,
+          "bottom": 1341.3125
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "mode": "dark",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 34,
+        "y": 139.984375,
+        "width": 322,
+        "height": 62.71875,
+        "right": 356,
+        "bottom": 202.703125
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 34,
+          "y": 332.25,
+          "width": 322,
+          "height": 48,
+          "right": 356,
+          "bottom": 380.25
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 34,
+          "y": 621.515625,
+          "width": 322,
+          "height": 719.796875,
+          "right": 356,
+          "bottom": 1341.3125
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 612,
+      "mode": "light",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 34,
+        "y": 139.984375,
+        "width": 544,
+        "height": 89.34375,
+        "right": 578,
+        "bottom": 229.328125
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 34,
+          "y": 330.890625,
+          "width": 544,
+          "height": 48,
+          "right": 578,
+          "bottom": 378.890625
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 34,
+          "y": 581.765625,
+          "width": 544,
+          "height": 581.734375,
+          "right": 578,
+          "bottom": 1163.5
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 612,
+      "mode": "dark",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 34,
+        "y": 139.984375,
+        "width": 544,
+        "height": 89.34375,
+        "right": 578,
+        "bottom": 229.328125
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 34,
+          "y": 330.890625,
+          "width": 544,
+          "height": 48,
+          "right": 578,
+          "bottom": 378.890625
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 34,
+          "y": 581.765625,
+          "width": 544,
+          "height": 581.734375,
+          "right": 578,
+          "bottom": 1163.5
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "mode": "light",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 24,
+        "y": 147.984375,
+        "width": 720,
+        "height": 48.921875,
+        "right": 744,
+        "bottom": 196.90625
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 24,
+          "y": 298.46875,
+          "width": 269,
+          "height": 48,
+          "right": 293,
+          "bottom": 346.46875
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 24,
+          "y": 469.046875,
+          "width": 720,
+          "height": 608.046875,
+          "right": 744,
+          "bottom": 1077.09375
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "mode": "dark",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 24,
+        "y": 147.984375,
+        "width": 720,
+        "height": 48.921875,
+        "right": 744,
+        "bottom": 196.90625
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 24,
+          "y": 298.46875,
+          "width": 269,
+          "height": 48,
+          "right": 293,
+          "bottom": 346.46875
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 24,
+          "y": 469.046875,
+          "width": 720,
+          "height": 608.046875,
+          "right": 744,
+          "bottom": 1077.09375
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "mode": "light",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 120,
+        "y": 270.09375,
+        "width": 620,
+        "height": 142.65625,
+        "right": 740,
+        "bottom": 412.75
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 120,
+          "y": 514.3125,
+          "width": 269,
+          "height": 48,
+          "right": 389,
+          "bottom": 562.3125
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 840,
+          "y": 136,
+          "width": 480,
+          "height": 607,
+          "right": 1320,
+          "bottom": 743
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "mode": "dark",
+      "heading": "See when you could retire.",
+      "h1Count": 1,
+      "h1": {
+        "x": 120,
+        "y": 270.09375,
+        "width": 620,
+        "height": 142.65625,
+        "right": 740,
+        "bottom": 412.75
+      },
+      "overflow": false,
+      "ctaCount": 1,
+      "cta": [
+        {
+          "x": 120,
+          "y": 514.3125,
+          "width": 269,
+          "height": 48,
+          "right": 389,
+          "bottom": 562.3125
+        }
+      ],
+      "exampleCount": 1,
+      "example": [
+        {
+          "x": 840,
+          "y": 136,
+          "width": 480,
+          "height": 607,
+          "right": 1320,
+          "bottom": 743
+        }
+      ],
+      "metricTexts": [
+        "$965,931",
+        "$500,000",
+        "Modeled end balance: $0"
+      ],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 320,
+      "mode": "light",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 10,
+        "y": 125.59375,
+        "width": 300,
+        "height": 103.640625,
+        "right": 310,
+        "bottom": 229.234375
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 320,
+      "mode": "dark",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 10,
+        "y": 125.59375,
+        "width": 300,
+        "height": 103.640625,
+        "right": 310,
+        "bottom": 229.234375
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 390,
+      "mode": "light",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 10,
+        "y": 125.59375,
+        "width": 370,
+        "height": 69.09375,
+        "right": 380,
+        "bottom": 194.6875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 390,
+      "mode": "dark",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 10,
+        "y": 125.59375,
+        "width": 370,
+        "height": 69.09375,
+        "right": 380,
+        "bottom": 194.6875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 612,
+      "mode": "light",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 10,
+        "y": 125.59375,
+        "width": 592,
+        "height": 69.09375,
+        "right": 602,
+        "bottom": 194.6875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 612,
+      "mode": "dark",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 10,
+        "y": 125.59375,
+        "width": 592,
+        "height": 69.09375,
+        "right": 602,
+        "bottom": 194.6875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 768,
+      "mode": "light",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 16,
+        "y": 144.015625,
+        "width": 736,
+        "height": 88.09375,
+        "right": 752,
+        "bottom": 232.109375
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 768,
+      "mode": "dark",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 16,
+        "y": 144.015625,
+        "width": 736,
+        "height": 88.09375,
+        "right": 752,
+        "bottom": 232.109375
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 1440,
+      "mode": "light",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 120,
+        "y": 151.984375,
+        "width": 780,
+        "height": 88.09375,
+        "right": 900,
+        "bottom": 240.078125
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/calculators",
+      "width": 1440,
+      "mode": "dark",
+      "heading": "Start with the question, not the formula.",
+      "h1Count": 1,
+      "h1": {
+        "x": 120,
+        "y": 151.984375,
+        "width": 780,
+        "height": 88.09375,
+        "right": 900,
+        "bottom": 240.078125
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 320,
+      "mode": "light",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 27,
+        "y": 185.78125,
+        "width": 266,
+        "height": 138.1875,
+        "right": 293,
+        "bottom": 323.96875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 320,
+      "mode": "dark",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 27,
+        "y": 185.78125,
+        "width": 266,
+        "height": 138.1875,
+        "right": 293,
+        "bottom": 323.96875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 390,
+      "mode": "light",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 27,
+        "y": 185.78125,
+        "width": 336,
+        "height": 103.640625,
+        "right": 363,
+        "bottom": 289.421875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 390,
+      "mode": "dark",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 27,
+        "y": 185.78125,
+        "width": 336,
+        "height": 103.640625,
+        "right": 363,
+        "bottom": 289.421875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 612,
+      "mode": "light",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 27,
+        "y": 185.78125,
+        "width": 558,
+        "height": 69.09375,
+        "right": 585,
+        "bottom": 254.875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 612,
+      "mode": "dark",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 27,
+        "y": 185.78125,
+        "width": 558,
+        "height": 69.09375,
+        "right": 585,
+        "bottom": 254.875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 768,
+      "mode": "light",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 33.890625,
+        "y": 193.09375,
+        "width": 700.21875,
+        "height": 88.09375,
+        "right": 734.109375,
+        "bottom": 281.1875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 768,
+      "mode": "dark",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 33.890625,
+        "y": 193.09375,
+        "width": 700.21875,
+        "height": 88.09375,
+        "right": 734.109375,
+        "bottom": 281.1875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "mode": "light",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 197.78125,
+        "y": 150.578125,
+        "width": 780,
+        "height": 88.09375,
+        "right": 977.78125,
+        "bottom": 238.671875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "mode": "dark",
+      "heading": "Account features are currently unavailable.",
+      "h1Count": 1,
+      "h1": {
+        "x": 197.78125,
+        "y": 150.578125,
+        "width": 780,
+        "height": 88.09375,
+        "right": 977.78125,
+        "bottom": 238.671875
+      },
+      "overflow": false,
+      "ctaCount": 0,
+      "cta": [],
+      "exampleCount": 0,
+      "example": [],
+      "metricTexts": [],
+      "clipped": [],
+      "errors": [],
+      "pass": true
+    }
+  ],
+  "interactions": [
+    {
+      "case": "mixed-case trim FIRE",
+      "count": "1 match",
+      "hasFireLink": true,
+      "pass": true
+    },
+    {
+      "case": "no match",
+      "pass": true
+    },
+    {
+      "case": "clear restoration",
+      "value": "",
+      "pathsCount": 4,
+      "pass": true
+    },
+    {
+      "case": "keyboard FIRE navigation",
+      "url": "http://127.0.0.1:4173/calculators/fire",
+      "pass": true
+    },
+    {
+      "case": "auth public escape",
+      "url": "http://127.0.0.1:4173/calculators",
+      "pass": true
+    },
+    {
+      "case": "auth loading public escape",
+      "h1": "Checking your session.",
+      "disabled": true,
+      "clickNav": "/calculators",
+      "keyNav": "/calculators",
+      "pass": true
+    },
+    {
+      "case": "auth signed-out public escape",
+      "h1": "Sign in to open Dashboard.",
+      "clickNav": "/calculators",
+      "keyNav": "/calculators",
+      "pass": true
+    }
+  ],
+  "contrastPairs": [
+    {
+      "id": "contrast_light_heading",
+      "element": "heading",
+      "name": "Hero Heading",
+      "mode": "light",
+      "foreground": "rgb(16, 44, 53)",
+      "effectiveBackground": "rgb(234, 246, 250)",
+      "fontSize": "72.8px",
+      "fontWeight": "650",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 270,
+        "width": 620,
+        "height": 143
+      },
+      "ratio": 13.3,
+      "threshold": 3,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_subtext",
+      "element": "subtext",
+      "name": "Hero Body Copy",
+      "mode": "light",
+      "foreground": "rgb(82, 104, 115)",
+      "effectiveBackground": "rgb(233, 245, 250)",
+      "fontSize": "17.28px",
+      "fontWeight": "400",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 433,
+        "width": 560,
+        "height": 56
+      },
+      "ratio": 5.27,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_eyebrow",
+      "element": "eyebrow",
+      "name": "Hero Eyebrow",
+      "mode": "light",
+      "foreground": "rgb(0, 107, 96)",
+      "effectiveBackground": "rgb(234, 246, 249)",
+      "fontSize": "12.8px",
+      "fontWeight": "620",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 234,
+        "width": 620,
+        "height": 16
+      },
+      "ratio": 5.82,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_cta_primary",
+      "element": "cta_primary",
+      "name": "Primary CTA Button",
+      "mode": "light",
+      "foreground": "rgb(255, 255, 255)",
+      "effectiveBackground": "rgb(18, 96, 131)",
+      "fontSize": "14.08px",
+      "fontWeight": "620",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 514,
+        "width": 269,
+        "height": 48
+      },
+      "ratio": 6.94,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_cta_secondary",
+      "element": "cta_secondary",
+      "name": "Popular Starts Link",
+      "mode": "light",
+      "foreground": "rgb(16, 44, 53)",
+      "effectiveBackground": "rgb(234, 246, 251)",
+      "fontSize": "12.8px",
+      "fontWeight": "600",
+      "opacity": 1,
+      "location": {
+        "x": 221,
+        "y": 609,
+        "width": 77,
+        "height": 36
+      },
+      "ratio": 13.3,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_metric_label",
+      "element": "metric_label",
+      "name": "Metric Label",
+      "mode": "light",
+      "foreground": "rgb(82, 104, 115)",
+      "effectiveBackground": "rgb(238, 244, 247)",
+      "fontSize": "12px",
+      "fontWeight": "500",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 231,
+        "width": 170,
+        "height": 18
+      },
+      "ratio": 5.28,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_metric_value",
+      "element": "metric_value",
+      "name": "Metric Value",
+      "mode": "light",
+      "foreground": "rgb(16, 44, 53)",
+      "effectiveBackground": "rgb(238, 244, 247)",
+      "fontSize": "22.4px",
+      "fontWeight": "700",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 253,
+        "width": 170,
+        "height": 27
+      },
+      "ratio": 13.2,
+      "threshold": 3,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_chart_legend_label",
+      "element": "chart_legend_label",
+      "name": "Chart Legend Label",
+      "mode": "light",
+      "foreground": "rgb(16, 44, 53)",
+      "effectiveBackground": "rgb(238, 244, 247)",
+      "fontSize": "12.48px",
+      "fontWeight": "600",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 365,
+        "width": 260,
+        "height": 37
+      },
+      "ratio": 13.2,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_chart_legend_end",
+      "element": "chart_legend_end",
+      "name": "Chart Legend End",
+      "mode": "light",
+      "foreground": "rgb(82, 104, 115)",
+      "effectiveBackground": "rgb(238, 244, 247)",
+      "fontSize": "12.48px",
+      "fontWeight": "500",
+      "opacity": 1,
+      "location": {
+        "x": 1146,
+        "y": 365,
+        "width": 128,
+        "height": 37
+      },
+      "ratio": 5.28,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_chart_context",
+      "element": "chart_context",
+      "name": "Chart Context",
+      "mode": "light",
+      "foreground": "rgb(54, 77, 86)",
+      "effectiveBackground": "rgb(238, 244, 247)",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 411,
+        "width": 388,
+        "height": 32
+      },
+      "ratio": 8.04,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_light_assumption_text",
+      "element": "assumption_text",
+      "name": "Assumption Text",
+      "mode": "light",
+      "foreground": "rgb(32, 58, 67)",
+      "effectiveBackground": "rgb(251, 253, 255)",
+      "fontSize": "12.48px",
+      "fontWeight": "400",
+      "opacity": 1,
+      "location": {
+        "x": 869,
+        "y": 621,
+        "width": 209,
+        "height": 19
+      },
+      "ratio": 11.78,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_heading",
+      "element": "heading",
+      "name": "Hero Heading",
+      "mode": "dark",
+      "foreground": "rgb(234, 246, 247)",
+      "effectiveBackground": "rgb(17, 46, 59)",
+      "fontSize": "72.8px",
+      "fontWeight": "650",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 270,
+        "width": 620,
+        "height": 143
+      },
+      "ratio": 12.87,
+      "threshold": 3,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_subtext",
+      "element": "subtext",
+      "name": "Hero Body Copy",
+      "mode": "dark",
+      "foreground": "rgb(164, 187, 196)",
+      "effectiveBackground": "rgb(17, 45, 59)",
+      "fontSize": "17.28px",
+      "fontWeight": "400",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 433,
+        "width": 560,
+        "height": 56
+      },
+      "ratio": 7.17,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_eyebrow",
+      "element": "eyebrow",
+      "name": "Hero Eyebrow",
+      "mode": "dark",
+      "foreground": "rgb(105, 227, 202)",
+      "effectiveBackground": "rgb(17, 47, 57)",
+      "fontSize": "12.8px",
+      "fontWeight": "620",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 234,
+        "width": 620,
+        "height": 16
+      },
+      "ratio": 9.02,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_cta_primary",
+      "element": "cta_primary",
+      "name": "Primary CTA Button",
+      "mode": "dark",
+      "foreground": "rgb(8, 21, 28)",
+      "effectiveBackground": "rgb(121, 206, 228)",
+      "fontSize": "14.08px",
+      "fontWeight": "620",
+      "opacity": 1,
+      "location": {
+        "x": 120,
+        "y": 514,
+        "width": 269,
+        "height": 48
+      },
+      "ratio": 10.37,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_cta_secondary",
+      "element": "cta_secondary",
+      "name": "Popular Starts Link",
+      "mode": "dark",
+      "foreground": "rgb(234, 246, 247)",
+      "effectiveBackground": "rgb(18, 46, 60)",
+      "fontSize": "12.8px",
+      "fontWeight": "600",
+      "opacity": 1,
+      "location": {
+        "x": 221,
+        "y": 609,
+        "width": 77,
+        "height": 36
+      },
+      "ratio": 12.84,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_metric_label",
+      "element": "metric_label",
+      "name": "Metric Label",
+      "mode": "dark",
+      "foreground": "rgb(164, 187, 196)",
+      "effectiveBackground": "rgb(11, 27, 35)",
+      "fontSize": "12px",
+      "fontWeight": "500",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 231,
+        "width": 170,
+        "height": 18
+      },
+      "ratio": 8.77,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_metric_value",
+      "element": "metric_value",
+      "name": "Metric Value",
+      "mode": "dark",
+      "foreground": "rgb(234, 246, 247)",
+      "effectiveBackground": "rgb(11, 27, 35)",
+      "fontSize": "22.4px",
+      "fontWeight": "700",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 253,
+        "width": 170,
+        "height": 27
+      },
+      "ratio": 15.92,
+      "threshold": 3,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_chart_legend_label",
+      "element": "chart_legend_label",
+      "name": "Chart Legend Label",
+      "mode": "dark",
+      "foreground": "rgb(234, 246, 247)",
+      "effectiveBackground": "rgb(11, 27, 35)",
+      "fontSize": "12.48px",
+      "fontWeight": "600",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 365,
+        "width": 260,
+        "height": 37
+      },
+      "ratio": 15.92,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_chart_legend_end",
+      "element": "chart_legend_end",
+      "name": "Chart Legend End",
+      "mode": "dark",
+      "foreground": "rgb(164, 187, 196)",
+      "effectiveBackground": "rgb(11, 27, 35)",
+      "fontSize": "12.48px",
+      "fontWeight": "500",
+      "opacity": 1,
+      "location": {
+        "x": 1146,
+        "y": 365,
+        "width": 128,
+        "height": 37
+      },
+      "ratio": 8.77,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_chart_context",
+      "element": "chart_context",
+      "name": "Chart Context",
+      "mode": "dark",
+      "foreground": "rgb(197, 212, 220)",
+      "effectiveBackground": "rgb(11, 27, 35)",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "opacity": 1,
+      "location": {
+        "x": 886,
+        "y": 411,
+        "width": 388,
+        "height": 32
+      },
+      "ratio": 11.57,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "id": "contrast_dark_assumption_text",
+      "element": "assumption_text",
+      "name": "Assumption Text",
+      "mode": "dark",
+      "foreground": "rgb(216, 231, 234)",
+      "effectiveBackground": "rgb(16, 35, 44)",
+      "fontSize": "12.48px",
+      "fontWeight": "400",
+      "opacity": 1,
+      "location": {
+        "x": 869,
+        "y": 621,
+        "width": 209,
+        "height": 19
+      },
+      "ratio": 12.73,
+      "threshold": 4.5,
+      "pass": true
+    }
+  ],
+  "mediaFallbacks": {
+    "reducedTransparency": {
+      "matches": true,
+      "styles": {
+        "light": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(11, 36, 33)"
+        },
+        "dark": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(8, 21, 28)"
+        }
+      },
+      "pass": true
+    },
+    "reducedMotion": {
+      "matches": true,
+      "pass": true
+    },
+    "forcedColors": {
+      "matches": true,
+      "styles": {
+        "backdropFilter": "none"
+      },
+      "pass": true
+    }
+  },
+  "print": {
+    "pdfs": [
+      "print-light-bg.pdf",
+      "print-light-nobg.pdf",
+      "print-dark-bg.pdf",
+      "print-dark-nobg.pdf"
+    ],
+    "mediaOmitted": true,
+    "navOmitted": true,
+    "readableText": true,
+    "noClipping": true,
+    "pass": true
+  },
+  "copy": [
+    {
+      "route": "/calculators/mortgage",
+      "clean": true,
+      "hasPhase": false,
+      "hasEnvLeak": false,
+      "hasInternalDirectives": false
+    },
+    {
+      "route": "/calculators/compound-interest",
+      "clean": true,
+      "hasPhase": false,
+      "hasEnvLeak": false,
+      "hasInternalDirectives": false
+    },
+    {
+      "route": "/calculators/debt-payoff",
+      "clean": true,
+      "hasPhase": false,
+      "hasEnvLeak": false,
+      "hasInternalDirectives": false
+    },
+    {
+      "route": "/calculators/amortization",
+      "clean": true,
+      "hasPhase": false,
+      "hasEnvLeak": false,
+      "hasInternalDirectives": false
+    }
+  ],
+  "axTree": {
+    "hasChartFigure": true,
+    "hasEndBalance": true,
+    "hasModeledTarget": true,
+    "hasHorizon": true,
+    "pass": true
+  },
+  "nativeZoom": {
+    "status": "BLOCKED",
+    "details": "Native 200% browser window zoom control cannot be operated in automated headless browser environment without manual UI action",
+    "attemptedMethod": "Chromium keyboard shortcut (Cmd+= / Ctrl+=) via page.keyboard and CDP Page/Emulation zoom probe",
+    "limitation": "Playwright page.keyboard dispatches key events to DOM content, not Chrome window/chrome UI; Chrome DevTools Protocol lacks Page.setZoomLevel; deviceScaleFactor and CSS transforms are explicitly prohibited by contract",
+    "assistedAction": "Perform interactive manual browser verification with native 200% zoom (Cmd++) in desktop Chrome"
+  },
+  "screenReader": {
+    "status": "BLOCKED",
+    "details": "Interactive screen reader (VoiceOver/NVDA) audio smoke requires reviewer assistance",
+    "limitation": "Headless/automated CLI environment lacks system audio output device and interactive assistive technology audio driver",
+    "assistedAction": "Perform manual interactive VoiceOver or screen-reader verification on macOS Safari/Chrome"
+  },
+  "evaluated": {
+    "overallStatus": "BLOCKED",
+    "exitCode": 2,
+    "summary": "Verification blocked: 2 check(s) blocked/unperformed.",
+    "checks": {
+      "console_cleanliness": {
+        "status": "PASS",
+        "details": "Zero errors recorded in recordedConsoleErrors"
+      },
+      "page_cleanliness": {
+        "status": "PASS",
+        "details": "Zero errors recorded in recordedPageExceptions"
+      },
+      "responsive_layout_matrix": {
+        "status": "PASS",
+        "details": "All 30 responsive layout cases passed with zero overflow, clipping, or geometry violations"
+      },
+      "browser_interactions": {
+        "status": "PASS",
+        "details": "All 7 browser interactions verified (search, clear, keyboard nav, auth escape)"
+      },
+      "composed_contrast": {
+        "status": "PASS",
+        "details": "All 22 text and control pairs meet WCAG thresholds"
+      },
+      "media_reduced_transparency": {
+        "status": "PASS",
+        "details": "prefers-reduced-transparency matched and opaque material fallback verified"
+      },
+      "media_reduced_motion": {
+        "status": "PASS",
+        "details": "prefers-reduced-motion matched and animations suppressed"
+      },
+      "media_forced_colors": {
+        "status": "PASS",
+        "details": "forced-colors matched and system color borders applied"
+      },
+      "print_output": {
+        "status": "PASS",
+        "details": "4 PDFs generated across themes and printBackground options; decorative overlays hidden, readable text"
+      },
+      "copy_inspection": {
+        "status": "PASS",
+        "details": "Clean user copy verified across 4 routes including amortization"
+      },
+      "accessibility_tree": {
+        "status": "PASS",
+        "details": "CDP accessibility tree exposes accessible chart figure, end balance $0, target, and horizon"
+      },
+      "native_zoom_200": {
+        "status": "BLOCKED",
+        "details": "Native 200% browser window zoom control cannot be operated in automated headless browser environment without manual UI action",
+        "attemptedMethod": "Chromium keyboard shortcut (Cmd+= / Ctrl+=) via page.keyboard and CDP Page/Emulation zoom probe",
+        "limitation": "Playwright page.keyboard dispatches key events to DOM content, not Chrome window/chrome UI; Chrome DevTools Protocol lacks Page.setZoomLevel; deviceScaleFactor and CSS transforms are explicitly prohibited by contract"
+      },
+      "screen_reader_smoke": {
+        "status": "BLOCKED",
+        "details": "Interactive screen reader (VoiceOver/NVDA) audio smoke requires reviewer assistance",
+        "limitation": "Headless/automated CLI environment lacks system audio output device and interactive assistive technology audio driver",
+        "assistedAction": "Perform manual interactive VoiceOver or screen-reader verification on macOS Safari/Chrome"
+      }
+    },
+    "failures": [],
+    "blocked": [
+      "native_zoom_200: Native 200% browser window zoom control cannot be operated in automated headless browser environment without manual UI action",
+      "screen_reader_smoke: Interactive screen reader (VoiceOver/NVDA) audio smoke requires reviewer assistance"
+    ],
+    "evaluatedAt": "2026-09-12T10:27:30.408Z"
+  }
+}
