@@ -100,17 +100,17 @@ Full suite	Run every test suite and build	2026-09-12T02:38:21.9268196Z # duratio
 Full suite	Run every test suite and build	2026-09-12T02:38:24.0447376Z ................................................... [ 64%]
 Full suite	Run every test suite and build	2026-09-12T02:38:24.4081455Z ............................                                             [100%]
 Full suite	Run every test suite and build	2026-09-12T02:38:24.4082244Z 79 passed, 21 subtests passed in 1.82s
-Full suite	Run every test suite and build	2026-09-12T02:38:24.6978949Z 
+Full suite	Run every test suite and build	2026-09-12T02:38:24.6978949Z
 Full suite	Run every test suite and build	2026-09-12T02:38:24.6979848Z > interactive-fire-calculator@2.0.0 typecheck
 Full suite	Run every test suite and build	2026-09-12T02:38:24.6980668Z > tsc --noEmit
-Full suite	Run every test suite and build	2026-09-12T02:38:24.6980859Z 
-Full suite	Run every test suite and build	2026-09-12T02:38:37.4778411Z 
+Full suite	Run every test suite and build	2026-09-12T02:38:24.6980859Z
+Full suite	Run every test suite and build	2026-09-12T02:38:37.4778411Z
 Full suite	Run every test suite and build	2026-09-12T02:38:37.4779234Z > interactive-fire-calculator@2.0.0 test
 Full suite	Run every test suite and build	2026-09-12T02:38:37.4779706Z > vitest run
-Full suite	Run every test suite and build	2026-09-12T02:38:37.4779871Z 
-Full suite	Run every test suite and build	2026-09-12T02:38:37.8911544Z 
+Full suite	Run every test suite and build	2026-09-12T02:38:37.4779871Z
+Full suite	Run every test suite and build	2026-09-12T02:38:37.8911544Z
 Full suite	Run every test suite and build	2026-09-12T02:38:37.8917843Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator[39m
-Full suite	Run every test suite and build	2026-09-12T02:38:37.8918808Z 
+Full suite	Run every test suite and build	2026-09-12T02:38:37.8918808Z
 Full suite	Run every test suite and build	2026-09-12T02:38:38.3128374Z (node:2641) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 Full suite	Run every test suite and build	2026-09-12T02:38:38.3136504Z (Use `node --trace-warnings ...` to show where the warning was created)
 Full suite	Run every test suite and build	2026-09-12T02:38:38.8072914Z  [32m✓[39m src/calculatorResults.test.ts [2m([22m[2m25 tests[22m[2m)[22m[32m 137[2mms[22m[39m
@@ -154,16 +154,16 @@ Full suite	Run every test suite and build	2026-09-12T02:39:02.5924136Z  [32m✓
 Full suite	Run every test suite and build	2026-09-12T02:39:02.8546663Z  [32m✓[39m src/lib/transactionCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
 Full suite	Run every test suite and build	2026-09-12T02:39:03.7498613Z  [32m✓[39m src/lib/balanceCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
 Full suite	Run every test suite and build	2026-09-12T02:39:03.9686854Z  [32m✓[39m src/lib/calculatorToolkits.test.ts [2m([22m[2m92 tests[22m[2m)[22m[32m 33[2mms[22m[39m
-Full suite	Run every test suite and build	2026-09-12T02:39:03.9743161Z 
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9743161Z
 Full suite	Run every test suite and build	2026-09-12T02:39:03.9756346Z [2m Test Files [22m [1m[32m35 passed[39m[22m[90m (35)[39m
 Full suite	Run every test suite and build	2026-09-12T02:39:03.9765423Z [2m      Tests [22m [1m[32m1510 passed[39m[22m[90m (1510)[39m
 Full suite	Run every test suite and build	2026-09-12T02:39:03.9766766Z [2m   Start at [22m 02:38:37
 Full suite	Run every test suite and build	2026-09-12T02:39:03.9767960Z [2m   Duration [22m 26.06s[2m (transform 3.39s, setup 0ms, import 7.90s, tests 8.69s, environment 49.88s)[22m
-Full suite	Run every test suite and build	2026-09-12T02:39:03.9770600Z 
-Full suite	Run every test suite and build	2026-09-12T02:39:04.1403161Z 
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9770600Z
+Full suite	Run every test suite and build	2026-09-12T02:39:04.1403161Z
 Full suite	Run every test suite and build	2026-09-12T02:39:04.1404112Z > interactive-fire-calculator@2.0.0 build
 Full suite	Run every test suite and build	2026-09-12T02:39:04.1404649Z > tsc -b && vite build
-Full suite	Run every test suite and build	2026-09-12T02:39:04.1404837Z 
+Full suite	Run every test suite and build	2026-09-12T02:39:04.1404837Z
 Full suite	Run every test suite and build	2026-09-12T02:39:15.9934494Z [36mvite v8.0.16 [32mbuilding client environment for production...[36m[39m
 Full suite	Run every test suite and build	2026-09-12T02:39:16.0124487Z [2K
 Full suite	Run every test suite and build	2026-09-12T02:39:16.3557829Z transforming...✓ 2406 modules transformed.
@@ -188,9 +188,9 @@ Full suite	Run every test suite and build	2026-09-12T02:39:17.0017151Z dist/asse
 Full suite	Run every test suite and build	2026-09-12T02:39:17.0018633Z dist/assets/CalculatorLibrary-BIAPD1Et.js                  316.32 kB │ gzip:  84.28 kB │ map:   775.21 kB
 Full suite	Run every test suite and build	2026-09-12T02:39:17.0020205Z dist/assets/ProjectionChart-BxjDYC36.js                    347.89 kB │ gzip: 102.39 kB │ map: 1,758.79 kB
 Full suite	Run every test suite and build	2026-09-12T02:39:17.0021521Z dist/assets/index-aTqE4G0r.js                              525.01 kB │ gzip: 144.03 kB │ map: 1,611.45 kB
-Full suite	Run every test suite and build	2026-09-12T02:39:17.0022235Z 
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0022235Z
 Full suite	Run every test suite and build	2026-09-12T02:39:17.0022702Z [32m✓ built in 1.01s[39m
-Full suite	Run every test suite and build	2026-09-12T02:39:17.0023931Z [33m[plugin builtin:vite-reporter] 
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0023931Z [33m[plugin builtin:vite-reporter]
 Full suite	Run every test suite and build	2026-09-12T02:39:17.0025704Z (!) Some chunks are larger than 500 kB after minification. Consider:
 Full suite	Run every test suite and build	2026-09-12T02:39:17.0027241Z - Using dynamic import() to code-split the application
 Full suite	Run every test suite and build	2026-09-12T02:39:17.0029524Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
