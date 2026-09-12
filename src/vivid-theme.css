@@ -1092,6 +1092,27 @@ body,
 }
 
 @media print {
+  /* Fragment the long hero normally across paper pages. A grid can push the
+     entire first row onto the next sheet, leaving a navigation-only page. */
+  .landing-hero-inner {
+    display: block !important;
+    min-height: auto !important;
+    padding-block: 1rem !important;
+  }
+
+  .landing-hero {
+    overflow: visible !important;
+  }
+
+  .landing-hero-example {
+    margin-top: 1.5rem;
+  }
+
+  .topbar,
+  .skip-link {
+    display: none !important;
+  }
+
   *,
   *::before,
   *::after {

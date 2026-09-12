@@ -4,7 +4,7 @@ const path = require('path');
 const sharp = require('sharp');
 const esbuild = require('esbuild');
 const { chromium } = require('/Users/Rakesh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const { finalizeAndPersistReport, evaluateResults, calculateContrastRatio } = require('./c03_evaluator.cjs');
+const { finalizeAndPersistReport, evaluateResults, calculateContrastRatio, parseRgb } = require('./c03_evaluator.cjs');
 
 const DIST_DIR = path.resolve(__dirname, '../../../../dist');
 const EVIDENCE_C03 = path.resolve(__dirname);
@@ -66,7 +66,6 @@ async function buildAuthGateFixtureBundle() {
           const params = new URLSearchParams(window.location.search);
           const state = params.get('state') || 'loading';
           const [nav, setNav] = useState(null);
-
           window.__navigatedTo = nav;
 
           let auth;
@@ -506,7 +505,7 @@ function startStaticServer(port = 4173, fixtureJs = '') {
     for (const target of contrastTargets) {
       const loc = contrastPage.locator(target.sel).first();
       const count = await loc.count();
-      if (count === 0) continue;
+      if (count === 0) throw new Error(`Missing required contrast target: ${target.id}`);
 
       const rect = await loc.boundingBox();
       const style = await loc.evaluate(el => {
@@ -515,42 +514,59 @@ function startStaticServer(port = 4173, fixtureJs = '') {
           color: cs.color,
           fontSize: cs.fontSize,
           fontWeight: cs.fontWeight,
-          opacity: parseFloat(cs.opacity) || 1
+          opacity: parseFloat(cs.opacity),
+          ancestorOpacity: (() => { let v=1; for(let n=el.parentElement;n;n=n.parentElement) v*=Number(getComputedStyle(n).opacity); return v; })()
         };
       });
 
-      // Sample composited background by temporarily making text color transparent
-      await loc.evaluate(node => {
-        node.dataset.origColor = node.style.color;
-        node.style.setProperty('color', 'transparent', 'important');
-      });
-
-      const clipBuf = await contrastPage.screenshot({
-        clip: {
-          x: Math.max(0, rect.x),
-          y: Math.max(0, rect.y),
-          width: Math.max(1, rect.width),
-          height: Math.max(1, rect.height)
+      const runs = await loc.evaluate(el => {
+        const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); const runs=[];
+        while(walker.nextNode()) {
+          const n=walker.currentNode;if(!n.textContent.trim())continue;
+          const range=document.createRange();range.selectNodeContents(n);
+          const cs=getComputedStyle(n.parentElement);
+          for(const r of range.getClientRects()) runs.push({x:r.x,y:r.y,width:r.width,height:r.height,color:cs.color,fontSize:cs.fontSize,fontWeight:cs.fontWeight});
         }
+        return runs;
       });
-
-      await loc.evaluate(node => {
-        node.style.color = node.dataset.origColor || '';
-        delete node.dataset.origColor;
+      if(!runs.length) throw new Error(`Missing text runs: ${target.id}`);
+      // Hide glyphs and icons while preserving the same backgrounds and geometry.
+      const savedStyles = await loc.evaluate(el => {
+        const nodes=[el,...el.querySelectorAll('*')];
+        return nodes.map(node=>{const saved=node.getAttribute('style');node.style.setProperty('color','transparent','important');node.style.setProperty('-webkit-text-fill-color','transparent','important');if(node instanceof SVGElement)node.style.setProperty('visibility','hidden','important');return saved;});
       });
+      const clipBuf = await contrastPage.screenshot({clip:{x:Math.max(0,rect.x),y:Math.max(0,rect.y),width:Math.max(1,rect.width),height:Math.max(1,rect.height)}});
+      await loc.evaluate((el,styles)=>[el,...el.querySelectorAll('*')].forEach((node,i)=>styles[i]===null?node.removeAttribute('style'):node.setAttribute('style',styles[i])),savedStyles);
 
       const { data, info } = await sharp(clipBuf).raw().toBuffer({ resolveWithObject: true });
-      const midX = Math.floor(info.width / 2);
-      const midY = Math.floor(info.height / 2);
-      const idx = (midY * info.width + midX) * info.channels;
-      const bg = `rgb(${data[idx]}, ${data[idx + 1]}, ${data[idx + 2]})`;
-
-      const fontSizePx = parseFloat(style.fontSize);
-      const fontWeightNum = parseInt(style.fontWeight, 10) || 400;
-      const isLarge = fontSizePx >= 24 || (fontSizePx >= 18.66 && fontWeightNum >= 700);
-      const threshold = isLarge ? 3.0 : 4.5;
-      const ratio = calculateContrastRatio(style.color, bg);
-      const pass = ratio >= threshold;
+      // Scan every background pixel in the text rectangle, not a convenient center.
+      // Text is transparent only during capture, preserving the underlying material.
+      const sampleFile = `contrast-background-${mode}-${target.id}.png`;
+      fs.writeFileSync(path.join(EVIDENCE_C03, sampleFile), clipBuf);
+      const foreground = parseRgb(style.color);
+      if (!foreground || style.ancestorOpacity !== 1) throw new Error(`Unsupported foreground composition: ${target.id}`);
+      let ratio=Infinity, bg='', effectiveForeground='', threshold=4.5;
+      const colors = new Set();
+      for(const run of runs) {
+        const fgColor=parseRgb(run.color);
+        if(!fgColor)throw new Error('Unsupported text color');
+        const alpha=fgColor.a*style.opacity;
+        const size=parseFloat(run.fontSize),weight=parseInt(run.fontWeight,10)||400;
+        const required=size>=24 || (size>=18.6666667&&weight>=700)?3:4.5;
+        const seen=new Set();
+        for(let y=Math.max(0,Math.ceil(run.y-rect.y));y<Math.min(info.height,Math.floor(run.y-rect.y+run.height));y++) {
+          for(let x=Math.max(0,Math.ceil(run.x-rect.x));x<Math.min(info.width,Math.floor(run.x-rect.x+run.width));x++) {
+            const i=(y*info.width+x)*info.channels;
+            const rgb=[data[i],data[i+1],data[i+2]], key=rgb.join(', ');
+            if(seen.has(key))continue;seen.add(key);colors.add(key);
+            const fg=`rgb(${[fgColor.r,fgColor.g,fgColor.b].map((v,i)=>Math.round(v*alpha+rgb[i]*(1-alpha))).join(', ')})`;
+            const candidate=calculateContrastRatio(fg,`rgb(${key})`);
+            if(candidate/required < ratio/threshold){ratio=candidate;threshold=required;bg=`rgb(${key})`;effectiveForeground=fg;}
+          }
+        }
+      }
+      if(!Number.isFinite(ratio))throw new Error('No sampled text background');
+      const pass=ratio>=threshold;
 
       contrastPairs.push({
         id: `contrast_${mode}_${target.id}`,
@@ -558,6 +574,10 @@ function startStaticServer(port = 4173, fixtureJs = '') {
         name: target.name,
         mode,
         foreground: style.color,
+        effectiveForeground,
+        sampleFile,
+        sampledUniqueColors: colors.size,
+        method: "worst threshold-relative ratio across every text-run background pixel; descendants and icons hidden during sample; foreground alpha composited",
         effectiveBackground: bg,
         fontSize: style.fontSize,
         fontWeight: style.fontWeight,
@@ -603,7 +623,8 @@ function startStaticServer(port = 4173, fixtureJs = '') {
   }
   const rtPass = rtMatches === true &&
     rtStyles.light.backdropFilter === 'none' &&
-    rtStyles.dark.backdropFilter === 'none';
+    rtStyles.dark.backdropFilter === 'none' &&
+    ['light','dark'].every(mode => parseRgb(rtStyles[mode].backgroundColor)?.a === 1);
 
   await cdpClient.send('Emulation.setEmulatedMedia', { features: [] });
 
@@ -612,6 +633,7 @@ function startStaticServer(port = 4173, fixtureJs = '') {
     features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
   });
   const rmMatches = await mediaPage.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const rmViolations = await mediaPage.evaluate(() => [...document.querySelectorAll('.app *')].filter(el => {const cs=getComputedStyle(el); return cs.animationName !== 'none' && cs.animationDuration.split(',').some(v=>parseFloat(v)>0.01) || cs.transitionDuration.split(',').some(v=>parseFloat(v)>0.01);}).map(el=>el.className));
   await cdpClient.send('Emulation.setEmulatedMedia', { features: [] });
 
   // 6.3 Forced Colors
@@ -633,7 +655,8 @@ function startStaticServer(port = 4173, fixtureJs = '') {
     },
     reducedMotion: {
       matches: rmMatches,
-      pass: rmMatches === true
+      violations: rmViolations,
+      pass: rmMatches === true && rmViolations.length === 0
     },
     forcedColors: {
       matches: fcMatches,

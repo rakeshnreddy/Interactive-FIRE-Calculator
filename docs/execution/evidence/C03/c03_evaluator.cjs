@@ -69,7 +69,7 @@ function calculateContrastRatio(fgStr, bgStr) {
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
   const ratio = (lighter + 0.05) / (darker + 0.05);
-  return Math.round(ratio * 100) / 100;
+  return ratio; // Never round a failing value up to the acceptance threshold.
 }
 
 /**

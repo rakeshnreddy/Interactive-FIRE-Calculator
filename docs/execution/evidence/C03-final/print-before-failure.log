@@ -1,0 +1,8 @@
+AssertionError [ERR_ASSERTION]: First printed page must contain the retirement question
+    at /Users/Rakesh/Projects/Interactive-FIRE-Calculator/scripts/verify_home_print.cjs:26:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'FinPath Sign in\nSkip to content',
+  expected: /See when you could retire\./,
+  operator: 'match'
+}

@@ -15,6 +15,7 @@
   },
   "reducedMotion": {
     "matches": true,
+    "violations": [],
     "pass": true
   },
   "forcedColors": {
