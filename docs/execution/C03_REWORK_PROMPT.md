@@ -1,5 +1,7 @@
 # C03 clarified rework: accurate hero and verifiable evidence
 
+Superseded for the next worker pass by [C03_VALIDATION_REWORK_PROMPT.md](C03_VALIDATION_REWORK_PROMPT.md). R1/R2 implementation repairs passed primary inspection; preserve them and finish the remaining R3 evidence repair. This file retains the original clarified contract.
+
 Implement only the following repairs on `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`, `codex/finpath-quality-execution`, PR140. First inspect clean state and HEAD, read `reviews/C03.md`, `C03_START_PROMPT.md` and the implementation/validation protocol. This is the first C03 clarified rework, not a new checkpoint. B18/B19/B09 remain open; C04 locked. One writer. Preserve unrelated work. Free services and preview only; no main merge, production, schema/financial writes, new dependencies or src/lib/fire.ts edits.
 
 ## Preserve passing work

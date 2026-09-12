@@ -54,3 +54,5 @@ Final C01I acceptance supersedes earlier rework notes: B33 passes at `78df4f8501
 C02 acceptance 2026-09-11 supersedes earlier release notes: B02/B03/B04 pass together at `ef2cded6441191a26537adf8ddf1a3e1909cf73b` on immutable preview 51c5e746. C03 alone is released, order B18→B19→B09.0005 has been applied only to the authorized isolated preview. Free-only, no main merge/production and primary-only closure rules remain.
 
 C03 first review 2026-09-11: changes requested for B18 chart scenario/accessibility and shared evidence integrity. No C03 tasks closed; C04 stays locked. C03 is released only for the bounded rework in C03_REWORK_PROMPT.md.
+
+C03 rework review 2026-09-12 UTC: R1/R2 implementation repaired at 3100b70; R3 verification remains changes_requested (CSS zoom mislabeled native, no contrast ratios, ignored failing media check). No C03 closure or C04 release. Follow C03_VALIDATION_REWORK_PROMPT.md; preserve repaired product code.
