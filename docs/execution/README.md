@@ -71,9 +71,9 @@ The exact order is in CHECKPOINTS.md; ID order is retained here for lookup.
 | Task | Prompt | Checkpoint | Initial status |
 |---|---|---|---|
 | B01 | [full verification must not silently skip runtimes](prompts/B01.md) | C00 | done |
-| B02 | [reject incompatible currency conversion into goals](prompts/B02.md) | C02 | pending |
-| B03 | [prevent mixed-currency account totals](prompts/B03.md) | C02 | pending |
-| B04 | [atomic, retry-safe calculator save](prompts/B04.md) | C02 | pending |
+| B02 | [reject incompatible currency conversion into goals](prompts/B02.md) | C02 | done |
+| B03 | [prevent mixed-currency account totals](prompts/B03.md) | C02 | done |
+| B04 | [atomic, retry-safe calculator save](prompts/B04.md) | C02 | done |
 | B05 | [executable tenancy/auth boundary harness](prompts/B05.md) | C06 | pending |
 | B06 | [working hosted auth and lifecycle](prompts/B06.md) | C07 | pending |
 | B07 | [deletion and recovery contract](prompts/B07.md) | C06 | pending |
@@ -106,8 +106,14 @@ The exact order is in CHECKPOINTS.md; ID order is retained here for lookup.
 
 B33 bootstrap exception: with explicit owner authorization, publish configuration only using unchanged, identified backend code. Verify intended isolated preview binding before publication and effective deployed binding afterward. This is the narrow setup operation needed to prove isolation, not permission to publish changed APIs or perform financial writes. Those remain blocked until B33 is accepted. If the provider cannot establish the intended binding safely before publication, stop and request a separate isolated target.
 
-Latest release status: C00R/B34 is the first task following newly reported dependency advisories. C01 is now locked until B34 passes; always read CHECKPOINTS.md rather than older narrative examples.
+Latest release status (2026-09-10): C00R/B34 and C01/B15–B17 are accepted; C01T/B32 is released. Always read CHECKPOINTS.md rather than older narrative examples.
 
 | Task | Prompt | Checkpoint | Initial status |
 |---|---|---|---|
 | B34 | [Development-tool advisory repair](prompts/B34.md) | C00R | pending |
+
+Latest owner constraint: read [FREE_TIER_EXECUTION.md](FREE_TIER_EXECUTION.md). All services must remain free; the target is a verified functional preview. This also records completed preview-binding setup and the remaining B33 gates.
+
+Worker reliability update: [implementation and validation protocol](IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md) and [contract template](CONTRACT_TEMPLATE.md) apply to subsequent tasks. B33 has a [concrete remaining-repair contract](contracts/B33.md). This method adds no task approvals and removes no existing acceptance criteria.
+
+Current primary release 2026-09-11: C02 accepted; start C03 with [C03_START_PROMPT.md](C03_START_PROMPT.md). The JSON ledger and CHECKPOINTS.md are authoritative.

@@ -129,14 +129,14 @@ const studioDefaults: Record<CalculatorStudio, QualityDefaults> = {
     calculationRequirements: [
       'Separate cash inflows, outflows, assets, liabilities, and coverage needs before producing the headline number.',
       'Show progress, gap, or surplus against a sensible target instead of only returning a single arithmetic result.',
-      'Connect the estimate to account, transaction, goal, or protection context when the user signs in.'
+      'Allow users to record the estimate into their ongoing planning context when signed in.'
     ],
     decisionUsefulness: 'Use this calculator to turn a household money snapshot into an action: track cashflow, add accounts, size a reserve, or close a protection gap.',
     doneWhen: [],
     interpretationChecks: [
       'Call out whether the result is a surplus, shortfall, runway, or coverage gap.',
       'Show which input moved the answer most: spending, debt, income, assets, dependents, or existing coverage.',
-      'Explain the next tracking workflow that would keep the number current.'
+      'Identify recurring income and expense changes to keep your monthly cashflow projection accurate.'
     ],
     scenarioRequirements: [
       'Compare current, lean, and safer scenarios.',
@@ -194,7 +194,7 @@ const studioDefaults: Record<CalculatorStudio, QualityDefaults> = {
     interpretationChecks: [
       'Explain the split between money contributed and money earned.',
       'Call out the effect of time, contribution amount, and return assumptions.',
-      'Translate the result into a goal, account, or next contribution decision.'
+      'Evaluate required regular contributions against your monthly budget and target timeline.'
     ],
     scenarioRequirements: [
       'Compare conservative, base, and optimistic return cases.',
@@ -252,7 +252,7 @@ const studioDefaults: Record<CalculatorStudio, QualityDefaults> = {
     interpretationChecks: [
       'Explain how much of the cost is interest or fees, not only monthly payment.',
       'Call out affordability or break-even when the route is about choosing between options.',
-      'Connect loan results to a liability account or payoff plan.'
+      'Compare loan payoff options against current monthly cash flow and repayment goals.'
     ],
     scenarioRequirements: [
       'Compare base loan terms with at least one alternative rate, term, or prepayment path.',
@@ -281,7 +281,7 @@ const studioDefaults: Record<CalculatorStudio, QualityDefaults> = {
     interpretationChecks: [
       'Explain whether the plan has a corpus gap, income gap, distribution requirement, or break-even age.',
       'Show the sensitivity to retirement age, contribution, withdrawal rate, or claiming date.',
-      'Connect the result to a saved retirement plan or retirement account.'
+      'Compare the required retirement corpus against existing savings, pension, and Social Security timelines.'
     ],
     scenarioRequirements: [
       'Compare base, delayed, accelerated, or stressed retirement assumptions.',
@@ -310,7 +310,7 @@ const studioDefaults: Record<CalculatorStudio, QualityDefaults> = {
     interpretationChecks: [
       'Explain the difference between total return, annualized return, and cashflow-aware return.',
       'Call out whether the result is sensitive to timing, costs, or the ending value.',
-      'Route users toward a saved investment goal or performance note.'
+      'Evaluate after-tax, net returns against benchmark targets and alternative investment opportunities.'
     ],
     scenarioRequirements: [
       'Compare at least two return, benchmark, or time-period scenarios.',
@@ -335,7 +335,7 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
     calculationRequirements: [
       'Generate a full month-by-month payment schedule with principal, interest, ending balance, and cumulative interest.',
       'Roll the monthly schedule into yearly totals and allow a user-selected period view.',
-      'Support export/share of the schedule once Phase 25 export is active.'
+      'Support export or print views of the repayment schedule for record keeping.'
     ],
     interpretationChecks: [
       'Explain why early payments are interest-heavy and later payments reduce principal faster.',
@@ -447,7 +447,7 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
   'tax-rate': {
     calculationRequirements: [
       'Separate deductions, taxable base, estimated tax, and net amount.',
-      'Replace effective-rate shortcuts with route-specific slab or bracket logic when comprehensive tax phases are implemented.'
+      'Apply route-specific slab or bracket calculations to produce accurate tax estimates based on user deductions and income tiers.'
     ]
   },
   'us-tax': {

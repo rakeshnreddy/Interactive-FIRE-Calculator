@@ -1,0 +1,5 @@
+
+> interactive-fire-calculator@2.0.0 smoke:calculators
+> node scripts/smoke_public_calculators.mjs http://127.0.0.1:8795
+
+Verified 84 public calculator routes without authentication at http://127.0.0.1:8795.

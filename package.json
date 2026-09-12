@@ -37,8 +37,11 @@
     "jsdom": "^29.1.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.16",
-    "vitest": "^4.1.8",
-    "wrangler": "^4.129.0"
+    "vitest": "^4.1.11",
+    "wrangler": "^4.130.0"
+  },
+  "overrides": {
+    "sharp": "0.35.4"
   },
   "engines": {
     "node": ">=22.0.0",

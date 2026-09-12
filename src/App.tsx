@@ -32,11 +32,13 @@ import {
   X
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import type { ChangeEvent, ReactNode } from 'react';
+import type { ChangeEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import type {
   CalculatorSaveOutcome,
   CalculatorSaveRequest
 } from './CalculatorLibrary';
+import { HeroFireExample } from './HeroFireExample';
+import { CalculatorSaveCoordinator } from './lib/calculatorSaveManager';
 import type {
   PlanVersionDetail,
   PlanningSaveDraft,
@@ -82,6 +84,13 @@ import {
   type TransactionType
 } from './lib/transactionAnalytics';
 import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
+import {
+  activeNavigationPath,
+  primaryNavigationFor,
+  shouldHandleNavigationClick,
+  workspaceNavigation,
+  type AppRoute
+} from './lib/navigation';
 import type { AuthState } from './auth';
 
 const BalanceImportPanel = lazy(() =>
@@ -101,25 +110,13 @@ const ProjectionChart = lazy(() =>
 );
 
 type Mode = 'light' | 'dark';
-type AppRoute =
-  | '/'
-  | '/dashboard'
-  | '/accounts'
-  | '/transactions'
-  | '/goals'
-  | '/plans'
-  | '/calculators'
-  | '/calculators/fire'
-  | `/calculators/${string}`
-  | '/reports'
-  | '/settings';
 type PlatformRoute = Exclude<AppRoute, '/' | '/calculators' | `/calculators/${string}`>;
 type CalculatorPanel = 'planner' | 'results' | 'compare';
 type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
 type ProjectionBasis = 'fire-number' | 'current-portfolio';
 type ScenarioField = 'spendingDelta' | 'portfolioDelta' | 'returnDelta' | 'inflationDelta';
-type TimelineInput = {
+export type TimelineInput = {
   currentAge: number;
   retirementAge: number;
   planEndAge: number;
@@ -191,8 +188,9 @@ type AccountBalance = {
   id: string;
 };
 
-type FinancialAccount = {
+export type FinancialAccount = {
   accountType: FinancialAccountType;
+  archivedAt?: string | null;
   balanceHistory: AccountBalance[];
   category: AccountCategory;
   createdAt: string;
@@ -206,12 +204,25 @@ type FinancialAccount = {
   updatedAt: string;
 };
 
-type AccountSummary = {
+export type CurrencyAccountSummary = {
   accountCount: number;
   assetsCents: number;
+  currency: string;
   liabilityAccountCount: number;
   liabilitiesCents: number;
   netWorthCents: number;
+};
+
+export type AccountSummary = {
+  accountCount: number;
+  assetsCents: number | null;
+  byCurrency: Record<string, CurrencyAccountSummary>;
+  currencies: string[];
+  hasMixedCurrencies: boolean;
+  liabilityAccountCount: number;
+  liabilitiesCents: number | null;
+  netWorthCents: number | null;
+  primaryCurrency: string | null;
 };
 
 type AccountDraft = {
@@ -295,7 +306,7 @@ type Goal = {
   updatedAt: string;
 };
 
-type GoalSummary = {
+export type GoalSummary = {
   activeGoalCount: number;
   completedGoalCount: number;
   fundedPercent: number;
@@ -352,7 +363,9 @@ type SavedCalculatorResult = {
   currency: string;
   destinationType: SavedCalculatorDestinationType;
   id: string;
+  idempotencyKey?: string | null;
   inputValues: Record<string, number>;
+  payloadHash?: string | null;
   result: SavedCalculatorResultSnapshot;
   updatedAt: string;
 };
@@ -365,6 +378,7 @@ type CalculatorSaveApiResponse = {
     type: 'account' | 'goal' | 'plan';
   } | null;
   savedResult: SavedCalculatorResult;
+  saveStatus?: 'committed-save' | 'retry';
 };
 
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
@@ -407,19 +421,17 @@ const transactionTypeOptions: Array<{ label: string; value: TransactionType }> =
   { label: 'Adjustment', value: 'adjustment' }
 ];
 
-const primaryRouteItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/transactions', label: 'Transactions', icon: ClipboardList },
-  { path: '/goals', label: 'Goals', icon: Target },
-  { path: '/calculators', label: 'Calculators', icon: Calculator }
-];
-
-const workspaceRouteItems: Array<{ path: AppRoute; label: string; icon: typeof Calculator }> = [
-  { path: '/accounts', label: 'Accounts', icon: CircleDollarSign },
-  { path: '/plans', label: 'Plans', icon: FolderKanban },
-  { path: '/reports', label: 'Reports', icon: BarChart3 },
-  { path: '/settings', label: 'Settings', icon: Settings }
-];
+const navigationIconByPath: Record<string, typeof Calculator> = {
+  '/accounts': CircleDollarSign,
+  '/calculators': Calculator,
+  '/calculators/fire': Target,
+  '/dashboard': LayoutDashboard,
+  '/goals': Target,
+  '/plans': FolderKanban,
+  '/reports': BarChart3,
+  '/settings': Settings,
+  '/transactions': ClipboardList
+};
 
 const popularCalculatorLinks: Array<{ label: string; path: AppRoute }> = [
   { label: 'Mortgage', path: '/calculators/mortgage' },
@@ -466,7 +478,7 @@ const calculatorModeCopy: Record<
   }
 };
 
-const initialPlan: PlanInput = {
+export const initialPlan: PlanInput = {
   annualExpense: 80_000,
   initialPortfolio: 750_000,
   withdrawalTiming: 'end',
@@ -499,7 +511,7 @@ const initialPlan: PlanInput = {
   ]
 };
 
-const initialTimeline: TimelineInput = {
+export const initialTimeline: TimelineInput = {
   currentAge: 40,
   retirementAge: 50,
   planEndAge: 80
@@ -573,8 +585,24 @@ function readPreferredMode(): Mode {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-function isRouteActive(currentRoute: AppRoute, itemRoute: AppRoute): boolean {
-  return currentRoute === itemRoute || currentRoute.startsWith(`${itemRoute}/`);
+function handleNavigationAnchorClick(
+  event: ReactMouseEvent<HTMLAnchorElement>,
+  route: AppRoute,
+  onNavigate: (route: AppRoute) => void,
+  beforeNavigate?: () => void
+) {
+  if (
+    !shouldHandleNavigationClick(event, {
+      download: event.currentTarget.hasAttribute('download'),
+      target: event.currentTarget.target
+    })
+  ) {
+    return;
+  }
+
+  event.preventDefault();
+  beforeNavigate?.();
+  onNavigate(route);
 }
 
 function modeledDurationFromTimeline(timeline: TimelineInput): number {
@@ -679,10 +707,12 @@ async function loadSavedCalculatorResults(
     : [];
 }
 
-async function createCalculatorResultRecord(
+export async function createCalculatorResultRecord(
   auth: Extract<AuthState, { status: 'signed-in' }>,
-  request: CalculatorSaveRequest
+  request: CalculatorSaveRequest,
+  idempotencyKey?: string
 ): Promise<CalculatorSaveApiResponse> {
+  const resolvedKey = idempotencyKey || crypto.randomUUID();
   const response = await authenticatedJsonRequest(auth, '/api/calculator-results', {
     body: JSON.stringify({
       calculatorCategory: request.calculator.category,
@@ -692,9 +722,13 @@ async function createCalculatorResultRecord(
       conversionLabel: request.calculator.conversionLabel,
       conversionRoute: request.calculator.conversionRoute,
       currency: request.currency,
+      idempotencyKey: resolvedKey,
       inputValues: request.values,
       result: request.result
     }),
+    headers: {
+      'Idempotency-Key': resolvedKey
+    },
     method: 'POST'
   });
   const body: unknown = await response.json().catch(() => null);
@@ -711,7 +745,8 @@ async function createCalculatorResultRecord(
 
   return {
     createdEntity: toCalculatorCreatedEntity(isRecord(body) ? body.createdEntity : null),
-    savedResult
+    savedResult,
+    saveStatus: isRecord(body) && (body.saveStatus === 'retry' || body.saveStatus === 'committed-save') ? body.saveStatus : undefined
   };
 }
 
@@ -770,7 +805,9 @@ function toSavedCalculatorResult(value: unknown): SavedCalculatorResult | null {
     currency: value.currency,
     destinationType: value.destinationType,
     id: value.id,
+    idempotencyKey: typeof value.idempotencyKey === 'string' ? value.idempotencyKey : null,
     inputValues: value.inputValues,
+    payloadHash: typeof value.payloadHash === 'string' ? value.payloadHash : null,
     result,
     updatedAt: value.updatedAt
   };
@@ -1283,20 +1320,47 @@ function toAccountSummary(value: unknown): AccountSummary | null {
 
   if (
     typeof value.accountCount !== 'number' ||
-    typeof value.assetsCents !== 'number' ||
-    typeof value.liabilityAccountCount !== 'number' ||
-    typeof value.liabilitiesCents !== 'number' ||
-    typeof value.netWorthCents !== 'number'
+    typeof value.liabilityAccountCount !== 'number'
   ) {
     return null;
   }
 
+  const hasMixedCurrencies = Boolean(value.hasMixedCurrencies);
+  const primaryCurrency = typeof value.primaryCurrency === 'string' ? value.primaryCurrency : null;
+  const currencies = Array.isArray(value.currencies)
+    ? value.currencies.filter((c): c is string => typeof c === 'string')
+    : [];
+
+  const assetsCents = typeof value.assetsCents === 'number' ? value.assetsCents : null;
+  const liabilitiesCents = typeof value.liabilitiesCents === 'number' ? value.liabilitiesCents : null;
+  const netWorthCents = typeof value.netWorthCents === 'number' ? value.netWorthCents : null;
+
+  const byCurrency: Record<string, CurrencyAccountSummary> = {};
+  if (isRecord(value.byCurrency)) {
+    for (const [curr, summary] of Object.entries(value.byCurrency)) {
+      if (isRecord(summary) && typeof summary.currency === 'string') {
+        byCurrency[curr] = {
+          accountCount: typeof summary.accountCount === 'number' ? summary.accountCount : 0,
+          assetsCents: typeof summary.assetsCents === 'number' ? summary.assetsCents : 0,
+          currency: summary.currency,
+          liabilityAccountCount: typeof summary.liabilityAccountCount === 'number' ? summary.liabilityAccountCount : 0,
+          liabilitiesCents: typeof summary.liabilitiesCents === 'number' ? summary.liabilitiesCents : 0,
+          netWorthCents: typeof summary.netWorthCents === 'number' ? summary.netWorthCents : 0
+        };
+      }
+    }
+  }
+
   return {
     accountCount: value.accountCount,
-    assetsCents: value.assetsCents,
+    assetsCents,
+    byCurrency,
+    currencies,
+    hasMixedCurrencies,
     liabilityAccountCount: value.liabilityAccountCount,
-    liabilitiesCents: value.liabilitiesCents,
-    netWorthCents: value.netWorthCents
+    liabilitiesCents,
+    netWorthCents,
+    primaryCurrency
   };
 }
 
@@ -1497,34 +1561,86 @@ function toTransactionSummary(value: unknown): TransactionSummary | null {
   };
 }
 
-function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
-  const summary = accounts.reduce<AccountSummary>(
-    (current, account) => {
-      if (account.category === 'liability') {
-        return {
-          ...current,
-          liabilitiesCents: current.liabilitiesCents + account.latestBalanceCents,
-          liabilityAccountCount: current.liabilityAccountCount + 1
-        };
-      }
-
-      return {
-        ...current,
-        assetsCents: current.assetsCents + account.latestBalanceCents
-      };
-    },
-    {
-      accountCount: accounts.length,
-      assetsCents: 0,
-      liabilityAccountCount: 0,
-      liabilitiesCents: 0,
-      netWorthCents: 0
-    }
+export function summarizeAccountList(accounts: FinancialAccount[]): AccountSummary {
+  const activeAccounts = accounts.filter(
+    (account) => account.isActive !== false && !account.archivedAt
   );
 
+  if (activeAccounts.length === 0) {
+    return {
+      accountCount: 0,
+      assetsCents: 0,
+      byCurrency: {},
+      currencies: [],
+      hasMixedCurrencies: false,
+      liabilityAccountCount: 0,
+      liabilitiesCents: 0,
+      netWorthCents: 0,
+      primaryCurrency: null
+    };
+  }
+
+  const byCurrency: Record<string, CurrencyAccountSummary> = {};
+
+  for (const account of activeAccounts) {
+    const currency = (account.currency || 'USD').trim().toUpperCase();
+    if (!byCurrency[currency]) {
+      byCurrency[currency] = {
+        accountCount: 0,
+        assetsCents: 0,
+        currency,
+        liabilityAccountCount: 0,
+        liabilitiesCents: 0,
+        netWorthCents: 0
+      };
+    }
+
+    const cur = byCurrency[currency];
+    cur.accountCount += 1;
+
+    if (account.category === 'liability') {
+      cur.liabilityAccountCount += 1;
+      cur.liabilitiesCents += account.latestBalanceCents;
+    } else {
+      cur.assetsCents += account.latestBalanceCents;
+    }
+
+    cur.netWorthCents = cur.assetsCents - cur.liabilitiesCents;
+  }
+
+  const currencies = Object.keys(byCurrency).sort();
+  const totalLiabilityAccounts = Object.values(byCurrency).reduce(
+    (sum, cur) => sum + cur.liabilityAccountCount,
+    0
+  );
+
+  if (currencies.length === 1) {
+    const primaryCurrency = currencies[0];
+    const single = byCurrency[primaryCurrency];
+
+    return {
+      accountCount: activeAccounts.length,
+      assetsCents: single.assetsCents,
+      byCurrency,
+      currencies,
+      hasMixedCurrencies: false,
+      liabilityAccountCount: totalLiabilityAccounts,
+      liabilitiesCents: single.liabilitiesCents,
+      netWorthCents: single.netWorthCents,
+      primaryCurrency
+    };
+  }
+
   return {
-    ...summary,
-    netWorthCents: summary.assetsCents - summary.liabilitiesCents
+    accountCount: activeAccounts.length,
+    assetsCents: null,
+    byCurrency,
+    currencies,
+    hasMixedCurrencies: true,
+    liabilityAccountCount: totalLiabilityAccounts,
+    liabilitiesCents: null,
+    netWorthCents: null,
+    primaryCurrency: null
   };
 }
 
@@ -1782,7 +1898,7 @@ function toGoalSummary(value: unknown): GoalSummary | null {
   };
 }
 
-function summarizeGoalList(goals: Goal[]): GoalSummary {
+export function summarizeGoalList(goals: Goal[]): GoalSummary {
   const counts = goals.reduce(
     (summary, goal) => ({
       activeGoalCount: summary.activeGoalCount + (goal.status === 'active' ? 1 : 0),
@@ -1990,8 +2106,34 @@ function moneyInputToCents(value: string): number | null {
   return Math.round(parsed * 100);
 }
 
-function formatCents(value: number): string {
-  return formatMoney(value / 100);
+function formatCents(value: number, currency = 'USD'): string {
+  return formatMoney(value / 100, { currency });
+}
+
+export function formatAccountMetric(
+  amountCents: number | null,
+  summary: AccountSummary
+): string {
+  if (summary.hasMixedCurrencies || amountCents === null) {
+    return 'Unavailable';
+  }
+  return formatMoney(amountCents / 100, { currency: summary.primaryCurrency ?? 'USD' });
+}
+
+export function formatCurrencyBreakdown(
+  summary: AccountSummary,
+  field: 'assetsCents' | 'liabilitiesCents' | 'netWorthCents'
+): string | null {
+  if (!summary.hasMixedCurrencies || summary.currencies.length === 0) {
+    return null;
+  }
+  return summary.currencies
+    .map((currency) => {
+      const curSummary = summary.byCurrency[currency];
+      const amount = curSummary ? curSummary[field] / 100 : 0;
+      return `${currency}: ${formatMoney(amount, { currency })}`;
+    })
+    .join(' · ');
 }
 
 function formatSignedCents(value: number): string {
@@ -2425,21 +2567,48 @@ function YearByYearTable({ rows, label }: { rows: YearResult[]; label: string })
   );
 }
 
-const landingFeatures = [
+export const landingSteps = [
   {
-    title: 'Explore the decision',
-    body: 'Use a focused calculator with scenarios, charts, and the full breakdown behind the answer.',
+    step: '1',
+    title: 'Add your numbers',
+    body: 'Start with your savings and spending.',
     icon: Calculator
   },
   {
-    title: 'Make the result actionable',
-    body: 'Turn the useful number into a goal, account, payoff plan, or cash-flow habit.',
+    step: '2',
+    title: 'Try different assumptions',
+    body: 'Explore how changes affect the estimate.',
+    icon: TrendingUp
+  },
+  {
+    step: '3',
+    title: 'Review the results',
+    body: 'See the timeline and the assumptions behind it.',
+    icon: Target
+  }
+];
+
+export const usefulCalculatorPaths = [
+  {
+    title: 'Buying a home?',
+    action: 'Explore borrowing costs',
+    body: 'Estimate monthly payments and total interest over time.',
+    route: '/calculators/mortgage' as AppRoute,
     icon: CircleDollarSign
   },
   {
-    title: 'See progress over time',
-    body: 'Return to current balances and compare the plan as income, priorities, or markets change.',
-    icon: BarChart3
+    title: 'Growing your savings?',
+    action: 'Explore compound growth',
+    body: 'See how regular contributions compound over time.',
+    route: '/calculators/compound-interest' as AppRoute,
+    icon: TrendingUp
+  },
+  {
+    title: 'Long-term independence?',
+    action: 'Explore financial independence',
+    body: 'Model portfolio needs and sustainable retirement withdrawals.',
+    route: '/calculators/fire' as AppRoute,
+    icon: Target
   }
 ];
 
@@ -2827,7 +2996,7 @@ function PrivacyControlsPanel({
   );
 }
 
-function DashboardPanel({
+export function DashboardPanel({
   accounts,
   cashflow,
   calculatorResultMessage,
@@ -2858,7 +3027,9 @@ function DashboardPanel({
   savedCalculatorResults: SavedCalculatorResult[];
   summary: AccountSummary;
 }) {
-  const recentAccounts = accounts.slice(0, 5);
+  const recentAccounts = accounts
+    .filter((account) => account.isActive !== false && !account.archivedAt)
+    .slice(0, 5);
   const recentGoals = goals.slice(0, 3);
   const recentCalculatorResults = savedCalculatorResults.slice(0, 4);
 
@@ -2867,18 +3038,30 @@ function DashboardPanel({
       <div className="dashboard-summary-grid">
         <article className="tracker-metric tracker-metric-primary">
           <span>Net worth</span>
-          <strong>{formatCents(summary.netWorthCents)}</strong>
-          <small>{summary.accountCount} active accounts</small>
+          <strong>{formatAccountMetric(summary.netWorthCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'netWorthCents')}</small>
+          ) : (
+            <small>{summary.accountCount} active accounts</small>
+          )}
         </article>
         <article className="tracker-metric">
           <span>Assets</span>
-          <strong>{formatCents(summary.assetsCents)}</strong>
-          <small>Cash, investments, property, and other assets</small>
+          <strong>{formatAccountMetric(summary.assetsCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'assetsCents')}</small>
+          ) : (
+            <small>Cash, investments, property, and other assets</small>
+          )}
         </article>
         <article className="tracker-metric">
           <span>Liabilities</span>
-          <strong>{formatCents(summary.liabilitiesCents)}</strong>
-          <small>{summary.liabilityAccountCount} debt accounts</small>
+          <strong>{formatAccountMetric(summary.liabilitiesCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'liabilitiesCents')}</small>
+          ) : (
+            <small>{summary.liabilityAccountCount} debt accounts</small>
+          )}
         </article>
         <article className="tracker-metric">
           <span>Goals funded</span>
@@ -3128,7 +3311,7 @@ function DashboardPanel({
                 </div>
                 <span className={account.category === 'liability' ? 'amount-negative' : 'amount-positive'}>
                   {account.category === 'liability' ? '-' : ''}
-                  {formatCents(account.latestBalanceCents)}
+                  {formatCents(account.latestBalanceCents, account.currency)}
                 </span>
               </article>
             ))}
@@ -3930,7 +4113,7 @@ function GoalsPanel({
   );
 }
 
-function AccountsPanel({
+export function AccountsPanel({
   accounts,
   auth,
   balanceDrafts,
@@ -3966,15 +4149,24 @@ function AccountsPanel({
       <div className="account-overview-strip">
         <article>
           <span>Net worth</span>
-          <strong>{formatCents(summary.netWorthCents)}</strong>
+          <strong>{formatAccountMetric(summary.netWorthCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'netWorthCents')}</small>
+          ) : null}
         </article>
         <article>
           <span>Assets</span>
-          <strong>{formatCents(summary.assetsCents)}</strong>
+          <strong>{formatAccountMetric(summary.assetsCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'assetsCents')}</small>
+          ) : null}
         </article>
         <article>
           <span>Liabilities</span>
-          <strong>{formatCents(summary.liabilitiesCents)}</strong>
+          <strong>{formatAccountMetric(summary.liabilitiesCents, summary)}</strong>
+          {summary.hasMixedCurrencies ? (
+            <small className="currency-breakdown">{formatCurrencyBreakdown(summary, 'liabilitiesCents')}</small>
+          ) : null}
         </article>
       </div>
 
@@ -4069,14 +4261,16 @@ function AccountsPanel({
             <span>Loading accounts</span>
             <small>Checking saved account balances.</small>
           </article>
-        ) : accounts.length === 0 ? (
+        ) : accounts.filter((a) => a.isActive !== false && !a.archivedAt).length === 0 ? (
           <article className="scenario-card empty-card">
             <span>No accounts yet</span>
             <small>Assets and debt balances will appear here.</small>
           </article>
         ) : (
           <div className="account-card-list">
-            {accounts.map((account) => {
+            {accounts
+              .filter((a) => a.isActive !== false && !a.archivedAt)
+              .map((account) => {
               const balanceDraft = balanceDrafts[account.id] ?? emptyBalanceDraft();
 
               return (
@@ -4094,7 +4288,7 @@ function AccountsPanel({
                     </div>
                     <div className="account-balance">
                       <span>{account.latestBalanceDate ?? 'No balance date'}</span>
-                      <strong>{formatCents(account.latestBalanceCents)}</strong>
+                      <strong>{formatCents(account.latestBalanceCents, account.currency)}</strong>
                     </div>
                   </div>
 
@@ -4142,7 +4336,7 @@ function AccountsPanel({
                       {account.balanceHistory.slice(0, 4).map((balance) => (
                         <span key={balance.id}>
                           {balance.balanceDate}
-                          <strong>{formatCents(balance.balanceCents)}</strong>
+                          <strong>{formatCents(balance.balanceCents, account.currency)}</strong>
                         </span>
                       ))}
                     </div>
@@ -4157,7 +4351,7 @@ function AccountsPanel({
   );
 }
 
-function AuthGate({
+export function AuthGate({
   auth,
   route,
   onNavigate
@@ -4170,15 +4364,15 @@ function AuthGate({
   const Icon = page.icon;
   const title =
     auth.status === 'not-configured'
-      ? 'Connect Clerk before opening account routes.'
+      ? 'Account features are currently unavailable.'
       : auth.status === 'loading'
         ? 'Checking your session.'
         : `Sign in to open ${page.eyebrow}.`;
   const description =
     auth.status === 'not-configured'
-      ? 'The app is wired for Clerk, but this environment is missing the public browser key. The public calculator library remains available without an account.'
+      ? 'Saved plans, accounts, and cross-device sync require account services that are not active in this preview. You can use all interactive financial calculators without an account.'
       : auth.status === 'loading'
-        ? 'FinPath is confirming whether there is an active Clerk session for this browser.'
+        ? 'FinPath is confirming whether there is an active session for this browser.'
         : `${page.eyebrow} is part of the account-backed planning shell. You can still use the public calculator library without signing in.`;
 
   return (
@@ -4193,22 +4387,18 @@ function AuthGate({
           <p>{description}</p>
         </div>
 
-        {auth.status === 'not-configured' && (
-          <div className="auth-env-list" aria-label="Required Clerk environment variables">
-            <span>Required before production auth can run</span>
-            <code>VITE_CLERK_PUBLISHABLE_KEY</code>
-            <code>CLERK_PUBLISHABLE_KEY</code>
-            <code>CLERK_SECRET_KEY</code>
-            <code>CLERK_AUTHORIZED_PARTIES</code>
-          </div>
-        )}
-
         <div className="auth-gate-actions">
           {auth.status === 'loading' ? (
-            <button className="primary-button icon-text-button" disabled>
-              <LogIn size={17} />
-              Checking session
-            </button>
+            <>
+              <button className="primary-button icon-text-button" disabled>
+                <LogIn size={17} />
+                Checking session
+              </button>
+              <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
+                <Calculator size={16} />
+                Browse calculators
+              </button>
+            </>
           ) : auth.status === 'signed-out' ? (
             <>
               <AuthActionButton
@@ -4229,34 +4419,59 @@ function AuthGate({
                 Create account
                 <ArrowRight size={17} />
               </AuthActionButton>
+              <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
+                <Calculator size={16} />
+                Browse calculators
+              </button>
             </>
           ) : (
-            <button className="primary-button icon-text-button" disabled>
-              <LockKeyhole size={17} />
-              Auth not configured
-            </button>
+            <>
+              <button className="primary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
+                <Calculator size={16} />
+                Explore public calculators
+              </button>
+              <button className="secondary-button icon-text-button" disabled aria-disabled="true">
+                <LockKeyhole size={17} />
+                Account features unavailable
+              </button>
+            </>
           )}
-          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
-            <Calculator size={16} />
-            Browse calculators
-          </button>
         </div>
       </div>
     </section>
   );
 }
 
-function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate: (route: AppRoute) => void }) {
+function DesktopNavigation({
+  authStatus,
+  route,
+  onNavigate
+}: {
+  authStatus: AuthState['status'];
+  route: AppRoute;
+  onNavigate: (route: AppRoute) => void;
+}) {
   const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const workspaceIsActive = workspaceRouteItems.some((item) => isRouteActive(route, item.path));
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const primaryItems = primaryNavigationFor(authStatus);
+  const activePrimaryPath = activeNavigationPath(route, primaryItems);
+  const activeWorkspacePath = activeNavigationPath(route, workspaceNavigation);
+  const workspaceIsActive = activeWorkspacePath !== null;
+
+  useEffect(() => {
+    setIsWorkspaceOpen(false);
+  }, [route]);
 
   useEffect(() => {
     const closeOnOutsideInteraction = (event: PointerEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setIsWorkspaceOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsWorkspaceOpen(false);
+      if (event.key !== 'Escape' || !isWorkspaceOpen) return;
+      event.preventDefault();
+      setIsWorkspaceOpen(false);
+      triggerRef.current?.focus();
     };
 
     document.addEventListener('pointerdown', closeOnOutsideInteraction);
@@ -4265,22 +4480,20 @@ function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate:
       document.removeEventListener('pointerdown', closeOnOutsideInteraction);
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, []);
+  }, [isWorkspaceOpen]);
 
   return (
     <nav className="desktop-nav" aria-label="Primary">
-      {primaryRouteItems.map((item) => {
-        const Icon = item.icon;
+      {primaryItems.map((item) => {
+        const Icon = navigationIconByPath[item.path];
+        const isActive = activePrimaryPath === item.path;
         return (
           <a
             key={item.path}
             href={item.path}
-            className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-            aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-            onClick={(event) => {
-              event.preventDefault();
-              onNavigate(item.path);
-            }}
+            className={isActive ? 'nav-button active' : 'nav-button'}
+            aria-current={isActive ? 'page' : undefined}
+            onClick={(event) => handleNavigationAnchorClick(event, item.path, onNavigate)}
           >
             <Icon size={17} />
             {item.label}
@@ -4289,10 +4502,12 @@ function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate:
       })}
       <div className="desktop-nav-menu" ref={menuRef}>
         <button
+          ref={triggerRef}
           className={workspaceIsActive ? 'nav-button active' : 'nav-button'}
           type="button"
+          aria-controls="desktop-workspace-navigation"
+          aria-current={workspaceIsActive ? 'page' : undefined}
           aria-expanded={isWorkspaceOpen}
-          aria-haspopup="menu"
           onClick={() => setIsWorkspaceOpen((open) => !open)}
         >
           <FolderKanban size={17} />
@@ -4300,20 +4515,19 @@ function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate:
           <ChevronDown className={isWorkspaceOpen ? 'nav-chevron open' : 'nav-chevron'} size={15} />
         </button>
         {isWorkspaceOpen && (
-          <div className="desktop-nav-dropdown" role="menu">
-            {workspaceRouteItems.map((item) => {
-              const Icon = item.icon;
+          <div className="desktop-nav-dropdown" id="desktop-workspace-navigation">
+            {workspaceNavigation.map((item) => {
+              const Icon = navigationIconByPath[item.path];
+              const isActive = activeWorkspacePath === item.path;
               return (
                 <a
                   key={item.path}
                   href={item.path}
-                  role="menuitem"
-                  className={isRouteActive(route, item.path) ? 'active' : undefined}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setIsWorkspaceOpen(false);
-                    onNavigate(item.path);
-                  }}
+                  className={isActive ? 'active' : undefined}
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={(event) =>
+                    handleNavigationAnchorClick(event, item.path, onNavigate, () => setIsWorkspaceOpen(false))
+                  }
                 >
                   <Icon size={17} />
                   <span>
@@ -4330,48 +4544,34 @@ function DesktopNavigation({ route, onNavigate }: { route: AppRoute; onNavigate:
   );
 }
 
-function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
+export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
   return (
     <>
       <section className="landing-hero" aria-labelledby="landing-title">
-        <img
-          className="landing-hero-media"
-          src="/assets/finpath-product-hero.jpg"
-          alt="A mobile financial planning dashboard beside a cobalt card"
-          width="1672"
-          height="941"
-          decoding="async"
-        />
-        <div className="landing-hero-scrim" aria-hidden="true" />
         <div className="landing-hero-inner">
           <div className="landing-hero-copy">
-            <p className="eyebrow">Calculate first. Keep the plan moving.</p>
-            <h1 id="landing-title">Make the number mean something.</h1>
-            <p>Model a financial decision, understand what changes the outcome, and keep the next step connected to your real plan.</p>
+            <p className="eyebrow">Plan your financial future</p>
+            <h1 id="landing-title">See when you could retire.</h1>
+            <p>
+              See how saving more or spending less could change your retirement timeline. Try it free, without an account.
+            </p>
             <div className="landing-actions">
-              <button
+              <a
+                href="/calculators/fire"
                 className="primary-button icon-text-button"
-                onClick={() => onNavigate('/calculators')}
+                onClick={(event) => handleNavigationAnchorClick(event, '/calculators/fire', onNavigate)}
+              >
+                <Target size={16} />
+                Explore my retirement timeline
+              </a>
+              <a
+                href="/calculators"
+                className="secondary-button icon-text-button"
+                onClick={(event) => handleNavigationAnchorClick(event, '/calculators', onNavigate)}
               >
                 <Calculator size={16} />
-                Browse calculators
-              </button>
-              {auth.isSignedIn ? (
-                <button className="secondary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
-                  Open dashboard
-                  <ArrowRight size={17} />
-                </button>
-              ) : (
-                <AuthActionButton
-                  auth={auth}
-                  kind="sign-up"
-                  className="secondary-button icon-text-button"
-                  onUnavailable={() => onNavigate('/dashboard')}
-                >
-                  Create account
-                  <ArrowRight size={17} />
-                </AuthActionButton>
-              )}
+                Explore all calculators
+              </a>
             </div>
             <nav className="landing-popular-paths" aria-label="Popular calculators">
               <span>Popular starts</span>
@@ -4379,10 +4579,7 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
                 <a
                   key={path}
                   href={path}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    onNavigate(path);
-                  }}
+                  onClick={(event) => handleNavigationAnchorClick(event, path, onNavigate)}
                 >
                   {label}
                   <ChevronRight size={14} />
@@ -4390,45 +4587,49 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
               ))}
             </nav>
           </div>
+
+          <HeroFireExample />
         </div>
       </section>
 
       <section className="landing-path-strip" aria-label="Choose a planning path">
-        <button onClick={() => onNavigate('/calculators/mortgage')}>
-          <CircleDollarSign size={22} />
-          <span><small>Borrowing</small><strong>Pay less over time</strong></span>
-          <ArrowRight size={18} />
-        </button>
-        <button onClick={() => onNavigate('/calculators/compound-interest')}>
-          <TrendingUp size={22} />
-          <span><small>Growing wealth</small><strong>Test a contribution plan</strong></span>
-          <ArrowRight size={18} />
-        </button>
-        <button onClick={() => onNavigate('/calculators/fire')}>
-          <Target size={22} />
-          <span><small>Long-term planning</small><strong>Find the path to freedom</strong></span>
-          <ArrowRight size={18} />
-        </button>
+        {usefulCalculatorPaths.map((pathItem) => {
+          const Icon = pathItem.icon;
+          return (
+            <a
+              key={pathItem.route}
+              href={pathItem.route}
+              onClick={(event) => handleNavigationAnchorClick(event, pathItem.route, onNavigate)}
+            >
+              <Icon size={22} />
+              <span>
+                <small>{pathItem.title}</small>
+                <strong>{pathItem.action}</strong>
+              </span>
+              <ArrowRight size={18} />
+            </a>
+          );
+        })}
       </section>
 
       <section className="landing-capabilities" aria-labelledby="capabilities-title">
         <header>
-          <p className="eyebrow">From answer to action</p>
-          <h2 id="capabilities-title">One clear thread through your financial life.</h2>
-          <p>Start with the question that matters today, then keep the useful result connected to what changes tomorrow.</p>
+          <p className="eyebrow">How it works</p>
+          <h2 id="capabilities-title">Start with a question. Leave with a clearer plan.</h2>
+          <p>Each tool helps you test assumptions, inspect the math, and understand what changes the outcome.</p>
         </header>
 
         <div className="landing-feature-list">
-          {landingFeatures.map((feature) => {
-            const Icon = feature.icon;
+          {landingSteps.map((stepItem) => {
+            const Icon = stepItem.icon;
             return (
-              <article className="landing-feature" key={feature.title}>
+              <article className="landing-feature" key={stepItem.title}>
                 <span className="feature-icon">
                   <Icon size={20} />
                 </span>
                 <div>
-                  <strong>{feature.title}</strong>
-                  <small>{feature.body}</small>
+                  <strong>{stepItem.title}</strong>
+                  <small>{stepItem.body}</small>
                 </div>
               </article>
             );
@@ -4436,55 +4637,56 @@ function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route
         </div>
       </section>
 
-      <section className="landing-continuity-band" aria-labelledby="continuity-title">
-        <div>
-          <p className="eyebrow">Your private workspace</p>
-          <h2 id="continuity-title">Keep the decision alive after the calculator closes.</h2>
-          <p>Connect saved results to balances, goals, transactions, and plans so progress has context.</p>
-        </div>
-        {auth.isSignedIn ? (
-          <button className="primary-button icon-text-button" onClick={() => onNavigate('/dashboard')}>
-            Open dashboard
-            <ArrowRight size={17} />
-          </button>
-        ) : (
-          <AuthActionButton
-            auth={auth}
-            kind="sign-up"
-            className="primary-button icon-text-button"
-            onUnavailable={() => onNavigate('/dashboard')}
-          >
-            Create free account
-            <ArrowRight size={17} />
-          </AuthActionButton>
-        )}
-      </section>
-
       <section className="privacy-band" aria-labelledby="privacy-title">
         <ShieldCheck size={24} />
         <div>
-          <h2 id="privacy-title">Private by account boundary.</h2>
-          <p>Signed-in financial records are scoped to your identity. The FIRE calculator remains available without an account.</p>
+          <h2 id="privacy-title">Start without an account.</h2>
+          <p>
+            Use the public calculators before deciding whether to create an account.
+          </p>
         </div>
+        {auth.isConfigured && (
+          auth.isSignedIn ? (
+            <a
+              href="/dashboard"
+              className="secondary-button icon-text-button"
+              onClick={(event) => handleNavigationAnchorClick(event, '/dashboard', onNavigate)}
+            >
+              Open dashboard
+              <ArrowRight size={17} />
+            </a>
+          ) : (
+            <AuthActionButton
+              auth={auth}
+              kind="sign-up"
+              className="secondary-button icon-text-button"
+              onUnavailable={() => onNavigate('/dashboard')}
+            >
+              Create account
+              <ArrowRight size={17} />
+            </AuthActionButton>
+          )
+        )}
       </section>
 
       <footer className="landing-footer">
         <a
           href="/"
-          onClick={(event) => {
-            event.preventDefault();
-            onNavigate('/');
-          }}
+          onClick={(event) => handleNavigationAnchorClick(event, '/', onNavigate)}
           aria-label="FinPath home"
         >
           <PiggyBank size={22} />
           <strong>FinPath</strong>
         </a>
         <p>Track today. Test tomorrow. Keep the assumptions yours.</p>
-        <button onClick={() => onNavigate('/calculators')}>
+        <a
+          className="landing-footer-action"
+          href="/calculators"
+          onClick={(event) => handleNavigationAnchorClick(event, '/calculators', onNavigate)}
+        >
           Browse calculators
           <ArrowRight size={16} />
-        </button>
+        </a>
       </footer>
     </>
   );
@@ -4495,10 +4697,10 @@ function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void
     <section className="route-shell" aria-labelledby="calculators-title">
       <div className="route-heading">
         <p className="eyebrow">Calculators</p>
-        <h1 id="calculators-title">Planning modules will live here.</h1>
+        <h1 id="calculators-title">Financial calculators</h1>
         <p>
-          FIRE is available now as the first task-focused calculator. Additional modules are parked
-          as clear placeholders so the product no longer depends on one front-page tool.
+          Explore task-focused financial calculators designed to help you plan savings, debt payoff,
+          home purchases, and retirement.
         </p>
       </div>
 
@@ -4910,10 +5112,23 @@ function App({ auth }: { auth: AuthState }) {
     }
 
     previousRouteRef.current = route;
-    const heading = mainRef.current?.querySelector<HTMLElement>('h1');
+    const focusRouteHeading = () => {
+      const heading = mainRef.current?.querySelector<HTMLElement>('h1');
+      if (!heading) return false;
 
-    heading?.setAttribute('tabindex', '-1');
-    heading?.focus();
+      heading.setAttribute('tabindex', '-1');
+      heading.focus();
+      return true;
+    };
+
+    if (focusRouteHeading()) return;
+
+    const observer = new MutationObserver(() => {
+      if (focusRouteHeading()) observer.disconnect();
+    });
+
+    if (mainRef.current) observer.observe(mainRef.current, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [route]);
 
   useEffect(() => {
@@ -4975,6 +5190,16 @@ function App({ auth }: { auth: AuthState }) {
   const [saveName, setSaveName] = useState('Retirement base');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const saveCoordinatorRef = useRef(
+    new CalculatorSaveCoordinator<Extract<AuthState, { status: 'signed-in' }>, CalculatorSaveApiResponse>(
+      (currentAuth) => currentAuth.user.id
+    )
+  );
+
+  useEffect(() => {
+    saveCoordinatorRef.current.handleAccountTransition(auth.status === 'signed-in' ? auth.user.id : null);
+  }, [auth]);
 
   useEffect(() => {
     window.localStorage.setItem('finpath.colorMode', mode);
@@ -4994,6 +5219,29 @@ function App({ auth }: { auth: AuthState }) {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const desktopBreakpoint = window.matchMedia('(min-width: 1041px)');
+    const closeAtDesktopBreakpoint = (event: MediaQueryListEvent | MediaQueryList) => {
+      if (event.matches) setIsMenuOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setIsMenuOpen(false);
+      window.requestAnimationFrame(() => mobileMenuButtonRef.current?.focus());
+    };
+
+    closeAtDesktopBreakpoint(desktopBreakpoint);
+    document.addEventListener('keydown', closeOnEscape);
+    desktopBreakpoint.addEventListener('change', closeAtDesktopBreakpoint);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      desktopBreakpoint.removeEventListener('change', closeAtDesktopBreakpoint);
+    };
+  }, [isMenuOpen]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -6220,55 +6468,66 @@ function App({ auth }: { auth: AuthState }) {
 
     setCalculatorResultMessage('Saving calculator result...');
 
-    const saved = await createCalculatorResultRecord(auth, request);
-    const nextSavedResults = [
-      saved.savedResult,
-      ...savedCalculatorResults.filter((item) => item.id !== saved.savedResult.id)
-    ].slice(0, 12);
+    try {
+      const saved = await saveCoordinatorRef.current.executeSave(
+        auth,
+        request,
+        (currentAuth, requestSnapshot, idempotencyKey) =>
+          createCalculatorResultRecord(currentAuth, requestSnapshot, idempotencyKey)
+      );
+      const nextSavedResults = [
+        saved.savedResult,
+        ...savedCalculatorResults.filter((item) => item.id !== saved.savedResult.id)
+      ].slice(0, 12);
 
-    setSavedCalculatorResults(nextSavedResults);
+      setSavedCalculatorResults(nextSavedResults);
 
-    if (saved.createdEntity?.type === 'goal') {
-      const goal = toGoal(saved.createdEntity.entity);
+      if (saved.createdEntity?.type === 'goal') {
+        const goal = toGoal(saved.createdEntity.entity);
 
-      if (goal) {
-        const nextGoals = [goal, ...goals.filter((item) => item.id !== goal.id)];
-        setGoals(nextGoals);
-        setGoalSummary(summarizeGoalList(nextGoals));
-        setGoalUpdateDrafts((current) => ({
-          ...current,
-          [goal.id]: goalToUpdateDraft(goal)
-        }));
-        setGoalMessage('Goal draft created from calculator result.');
+        if (goal) {
+          const nextGoals = [goal, ...goals.filter((item) => item.id !== goal.id)];
+          setGoals(nextGoals);
+          setGoalSummary(summarizeGoalList(nextGoals));
+          setGoalUpdateDrafts((current) => ({
+            ...current,
+            [goal.id]: goalToUpdateDraft(goal)
+          }));
+          setGoalMessage('Goal draft created from calculator result.');
+        }
       }
-    }
 
-    if (saved.createdEntity?.type === 'account') {
-      const account = toFinancialAccount(saved.createdEntity.entity);
+      if (saved.createdEntity?.type === 'account') {
+        const account = toFinancialAccount(saved.createdEntity.entity);
 
-      if (account) {
-        const nextAccounts = [account, ...financialAccounts.filter((item) => item.id !== account.id)];
-        setFinancialAccounts(nextAccounts);
-        setBalanceDrafts((current) => ({
-          ...current,
-          [account.id]: emptyBalanceDraft()
-        }));
-        setAccountMessage('Account draft created from calculator result.');
+        if (account) {
+          const nextAccounts = [account, ...financialAccounts.filter((item) => item.id !== account.id)];
+          setFinancialAccounts(nextAccounts);
+          setBalanceDrafts((current) => ({
+            ...current,
+            [account.id]: emptyBalanceDraft()
+          }));
+          setAccountMessage('Account draft created from calculator result.');
+        }
       }
+
+      if (saved.createdEntity?.type === 'plan') {
+        setPlanStorageMessage('Plan draft created from calculator result.');
+      }
+
+      const message = calculatorSaveMessage(saved);
+      setCalculatorResultMessage(message);
+
+      return {
+        destinationRoute: saved.savedResult.conversionRoute,
+        message,
+        savedResultId: saved.savedResult.id
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to save calculator result.';
+      setCalculatorResultMessage(message);
+      throw error;
     }
-
-    if (saved.createdEntity?.type === 'plan') {
-      setPlanStorageMessage('Plan draft created from calculator result.');
-    }
-
-    const message = calculatorSaveMessage(saved);
-    setCalculatorResultMessage(message);
-
-    return {
-      destinationRoute: saved.savedResult.conversionRoute,
-      message,
-      savedResultId: saved.savedResult.id
-    };
   };
 
   const saveCurrentPlan = async () => {
@@ -6520,28 +6779,29 @@ function App({ auth }: { auth: AuthState }) {
         <a
           href="/"
           className="brand"
-          onClick={(event) => {
-            event.preventDefault();
-            navigateTo('/');
-          }}
+          onClick={(event) => handleNavigationAnchorClick(event, '/', navigateTo)}
         >
           <PiggyBank size={26} />
           <span>FinPath</span>
         </a>
 
-        <DesktopNavigation route={route} onNavigate={navigateTo} />
+        <DesktopNavigation authStatus={auth.status} route={route} onNavigate={navigateTo} />
 
         <div className="topbar-actions">
           <TopbarAuthActions auth={auth} onNavigate={navigateTo} />
           <button
             className="icon-button"
-            aria-label="Toggle light and dark mode"
+            type="button"
+            aria-label={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            aria-pressed={mode === 'dark'}
             onClick={() => setMode((current) => (current === 'light' ? 'dark' : 'light'))}
           >
             {mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
           <button
+            ref={mobileMenuButtonRef}
             className="icon-button mobile-menu-button"
+            type="button"
             aria-controls="mobile-primary-navigation"
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'Close navigation' : 'Open navigation'}
@@ -6554,19 +6814,21 @@ function App({ auth }: { auth: AuthState }) {
 
       {isMenuOpen && (
         <nav className="mobile-nav" id="mobile-primary-navigation" aria-label="Mobile primary">
-          <span className="mobile-nav-heading">Plan</span>
-          {primaryRouteItems.map((item) => {
-              const Icon = item.icon;
+          <span className="mobile-nav-heading">{auth.isSignedIn ? 'Plan' : 'Explore'}</span>
+          {primaryNavigationFor(auth.status).map((item) => {
+              const Icon = navigationIconByPath[item.path];
+              const isActive = activeNavigationPath(route, primaryNavigationFor(auth.status)) === item.path;
               return (
-                <button
+                <a
                   key={item.path}
-                  className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-                  aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-                  onClick={() => navigateTo(item.path)}
+                  href={item.path}
+                  className={isActive ? 'nav-button active' : 'nav-button'}
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={(event) => handleNavigationAnchorClick(event, item.path, navigateTo)}
                 >
                   <Icon size={17} />
                   {item.label}
-                </button>
+                </a>
               );
             })}
           <details className="mobile-nav-group">
@@ -6576,18 +6838,20 @@ function App({ auth }: { auth: AuthState }) {
               <ChevronDown size={16} />
             </summary>
             <div>
-              {workspaceRouteItems.map((item) => {
-                const Icon = item.icon;
+              {workspaceNavigation.map((item) => {
+                const Icon = navigationIconByPath[item.path];
+                const isActive = activeNavigationPath(route, workspaceNavigation) === item.path;
                 return (
-                  <button
+                  <a
                     key={item.path}
-                    className={isRouteActive(route, item.path) ? 'nav-button active' : 'nav-button'}
-                    aria-current={isRouteActive(route, item.path) ? 'page' : undefined}
-                    onClick={() => navigateTo(item.path)}
+                    href={item.path}
+                    className={isActive ? 'nav-button active' : 'nav-button'}
+                    aria-current={isActive ? 'page' : undefined}
+                    onClick={(event) => handleNavigationAnchorClick(event, item.path, navigateTo)}
                   >
                     <Icon size={17} />
                     {item.label}
-                  </button>
+                  </a>
                 );
               })}
             </div>
@@ -6631,7 +6895,12 @@ function App({ auth }: { auth: AuthState }) {
         </nav>
       )}
 
-      <main id="main-content" ref={mainRef} className={route === '/' ? 'workspace landing-workspace' : 'workspace'}>
+      <main
+        id="main-content"
+        ref={mainRef}
+        className={route === '/' ? 'workspace landing-workspace' : 'workspace'}
+        tabIndex={-1}
+      >
         {route === '/' ? (
           <LandingPage auth={auth} onNavigate={navigateTo} />
         ) : route === '/calculators' || (route.startsWith('/calculators/') && route !== '/calculators/fire') ? (

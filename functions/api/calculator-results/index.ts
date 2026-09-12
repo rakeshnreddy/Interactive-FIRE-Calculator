@@ -1,7 +1,10 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import {
+  CALCULATOR_SAVE_STATUS,
   createSavedCalculatorResult,
+  IdempotencyConflictError,
+  IncompatibleGoalCurrencyError,
   listSavedCalculatorResults,
   parseCalculatorSavePayload,
   readJsonBody
@@ -36,16 +39,27 @@ export const onRequestPost: PagesFunction<CalculatorResultsEnv> = async ({ reque
   }
 
   const body = await readJsonBody(request);
-  const parsed = parseCalculatorSavePayload(body);
+  const idempotencyHeader = request.headers.get('Idempotency-Key');
+  const parsed = parseCalculatorSavePayload(body, { idempotencyHeader });
 
   if (!parsed.ok) {
-    return json({ error: parsed.error }, 400);
+    return json(
+      parsed.code ? { code: parsed.code, error: parsed.error } : { error: parsed.error },
+      400
+    );
   }
 
   try {
     const saved = await createSavedCalculatorResult(context.database, context.userId, parsed.value);
-    return json(saved, 201);
-  } catch {
+    const status = saved.saveStatus === CALCULATOR_SAVE_STATUS.RETRY ? 200 : 201;
+    return json(saved, status);
+  } catch (error) {
+    if (error instanceof IncompatibleGoalCurrencyError) {
+      return json({ code: error.code, error: error.message }, 400);
+    }
+    if (error instanceof IdempotencyConflictError) {
+      return json({ code: error.code, error: error.message }, 409);
+    }
     return json({ error: 'Unable to save calculator result.' }, 500);
   }
 };

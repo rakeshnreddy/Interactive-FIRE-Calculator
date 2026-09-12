@@ -42,7 +42,10 @@ export const onRequestPost: PagesFunction<GoalsEnv> = async ({ request, env }) =
   const parsed = parseGoalCreatePayload(body);
 
   if (!parsed.ok) {
-    return json({ error: parsed.error }, 400);
+    return json(
+      parsed.code ? { code: parsed.code, error: parsed.error } : { error: parsed.error },
+      400
+    );
   }
 
   try {

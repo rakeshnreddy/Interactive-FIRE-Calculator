@@ -609,7 +609,7 @@ function amortizationChart(
       primary: 'Remaining balance',
       secondary: 'Cumulative interest'
     },
-    summary: `This preview uses the same payment math as the calculator and gives Phase 22 a schedule-ready primitive to expand.`,
+    summary: `This preview uses the same payment math as the calculator to show how your balance declines and interest accumulates over time.`,
     title: metadata.chartTitle,
     type: 'amortization'
   };
@@ -718,7 +718,7 @@ function aprBreakdownSchedule(_calculator: SeoCalculator, values: Record<string,
       { amount: payment, id: 'payment', lineItem: 'Monthly payment', note: 'Payment implied by the note rate.', rate: null },
       { amount: null, id: 'apr', lineItem: 'Estimated APR', note: 'Solved rate using net proceeds and the stated payment.', rate: apr }
     ],
-    summary: 'This keeps APR from feeling like a black box: the user can see the charges and payment used to solve the estimated rate.',
+    summary: 'This keeps APR transparent by showing the upfront charges and loan payments used to solve the estimated effective rate.',
     title: 'APR calculation breakdown'
   });
 }
@@ -859,7 +859,7 @@ function closingCostSchedule(_calculator: SeoCalculator, values: Record<string, 
       { amount: closingCosts, id: 'closing-costs', lineItem: 'Estimated closing costs', note: 'Percentage-based estimate for fees and prepaids.', rate: closingRate },
       { amount: downPayment + closingCosts, id: 'cash-to-close', lineItem: 'Estimated cash to close', note: 'Down payment plus estimated closing costs.', rate: null }
     ],
-    summary: 'The table separates equity cash from transaction costs so the user can see what is saved versus spent.',
+    summary: 'The table separates equity proceeds from transaction costs so you can clearly see net cash saved versus spent.',
     title: 'Cash-to-close breakdown'
   });
 }
@@ -1708,7 +1708,7 @@ function simpleTaxBreakdownSchedule(calculator: SeoCalculator, values: Record<st
         { amount: tax, id: 'tax', lineItem: 'Estimated GST', note: 'Pre-tax amount multiplied by GST rate.', rate: Math.max(0, values.rate ?? 0) / 100 },
         { amount: amount + tax, id: 'total', lineItem: 'Total including GST', note: 'Estimated amount after GST.', rate: null }
       ],
-      summary: 'This separates the tax from the total so the user can audit the percentage quickly.',
+      summary: 'This separates the tax from the total amount so you can verify the percentage quickly.',
       title: 'GST breakdown'
     });
   }

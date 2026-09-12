@@ -1,0 +1,138 @@
+[
+  {
+    "route": "/",
+    "width": 390,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 332.25,
+        "width": 322,
+        "height": 48,
+        "right": 356,
+        "bottom": 380.25
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 621.515625,
+        "width": 322,
+        "height": 719.796875,
+        "right": 356,
+        "bottom": 1341.3125
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 332.25,
+        "width": 322,
+        "height": 48,
+        "right": 356,
+        "bottom": 380.25
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 621.515625,
+        "width": 322,
+        "height": 719.796875,
+        "right": 356,
+        "bottom": 1341.3125
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 120,
+        "y": 514.3125,
+        "width": 269,
+        "height": 48,
+        "right": 389,
+        "bottom": 562.3125
+      }
+    ],
+    "example": [
+      {
+        "x": 840,
+        "y": 136,
+        "width": 480,
+        "height": 607,
+        "right": 1320,
+        "bottom": 743
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 120,
+        "y": 514.3125,
+        "width": 269,
+        "height": 48,
+        "right": 389,
+        "bottom": 562.3125
+      }
+    ],
+    "example": [
+      {
+        "x": 840,
+        "y": 136,
+        "width": 480,
+        "height": 607,
+        "right": 1320,
+        "bottom": 743
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": []
+  }
+]

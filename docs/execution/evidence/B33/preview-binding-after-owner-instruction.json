@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-09-11T02:56:44.228Z",
+  "name": "interactive-fire-calculator",
+  "source": {
+    "type": "github",
+    "config": {
+      "owner": "rakeshnreddy",
+      "owner_id": "19764864",
+      "repo_name": "Interactive-FIRE-Calculator",
+      "repo_id": "952152234",
+      "production_branch": "main",
+      "pr_comments_enabled": true,
+      "deployments_enabled": true,
+      "production_deployments_enabled": false,
+      "preview_deployment_setting": "custom",
+      "preview_branch_includes": [
+        "codex/cloudflare-pages-theme-plan"
+      ],
+      "preview_branch_excludes": [],
+      "path_includes": [],
+      "path_excludes": []
+    }
+  },
+  "production_branch": "main",
+  "deployment_configs": {
+    "preview": {
+      "env_vars_configured": [
+        "CLERK_PUBLISHABLE_KEY",
+        "CLERK_SECRET_KEY",
+        "VITE_CLERK_PUBLISHABLE_KEY"
+      ],
+      "d1_databases": {
+        "DB": {
+          "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+        }
+      },
+      "compatibility_date": "2026-06-06",
+      "fail_open": true,
+      "build_image_major_version": 3,
+      "usage_model": "standard"
+    },
+    "production": {
+      "env_vars_configured": [],
+      "d1_databases": {
+        "DB": {
+          "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+        }
+      },
+      "compatibility_date": "2026-06-06",
+      "fail_open": true,
+      "build_image_major_version": 3,
+      "usage_model": "standard"
+    }
+  }
+}

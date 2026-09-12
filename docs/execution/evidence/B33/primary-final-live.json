@@ -1,0 +1,237 @@
+{
+  "timestamp": "2026-09-11T07:36:48.146Z",
+  "evaluation": {
+    "status": "PASS",
+    "exitCode": 0,
+    "summary": "All required B33 isolation and infrastructure checks passed cleanly.",
+    "failingChecks": [],
+    "blockedChecks": [],
+    "checks": {
+      "project_preview_binding": {
+        "status": "PASS",
+        "details": "Project preview D1 binding matches approved target (0dbad68e-7493-452f-8504-98d4c61ee5da) and differs from production"
+      },
+      "effective_deployment_binding": {
+        "status": "PASS",
+        "details": "Effective deployment D1 binding matches approved target (0dbad68e-7493-452f-8504-98d4c61ee5da)"
+      },
+      "git_deployment_policy": {
+        "status": "PASS",
+        "auto_deploying": false,
+        "details": "Branch codex/finpath-quality-execution does not match preview_branch_includes ([\"codex/cloudflare-pages-theme-plan\"]); automatic deployment safely excluded"
+      },
+      "migration_readiness": {
+        "status": "PASS",
+        "applied_count": 4,
+        "total_tables": 18,
+        "user_tables_count": 15,
+        "system_tables_count": 2,
+        "details": "All 4 repository migrations applied cleanly (15 user tables, 2 system tables)"
+      },
+      "endpoint_probes": {
+        "status": "PASS",
+        "details": "Public health returns JSON 200 with matching schema; all canonical private endpoints return 401 fail-closed"
+      },
+      "production_auth_guard": {
+        "status": "PASS",
+        "passed_checks": 0,
+        "total_checks": 6,
+        "details": "Auth preflight executed cleanly (0/6 checks passed; fail-closed guard active)"
+      }
+    }
+  },
+  "evidence": {
+    "project": {
+      "name": "interactive-fire-calculator",
+      "account_id": "4e1b7f6a7440770a01779a67602ec5e9",
+      "production_branch": "main",
+      "preview_d1_binding": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+      "production_d1_binding": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+    },
+    "deployment": {
+      "id": "b8f9d6ec-99d3-4cdc-acb4-a6b2f71be5b3",
+      "short_id": "b8f9d6ec",
+      "url": "https://b8f9d6ec.interactive-fire-calculator.pages.dev",
+      "effective_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+      "uses_functions": true,
+      "is_skipped": false,
+      "environment": "preview",
+      "latest_stage_status": "success",
+      "created_on": "2026-09-11T03:05:02.734526Z"
+    },
+    "git_source": {
+      "setting": "custom",
+      "deployments_enabled": true,
+      "production_deployments_enabled": false,
+      "branch_includes": [
+        "codex/cloudflare-pages-theme-plan"
+      ],
+      "branch_excludes": [],
+      "target_branch": "codex/finpath-quality-execution",
+      "is_branch_auto_deploying": false
+    },
+    "migrations": {
+      "status": "COLLECTED",
+      "database_name": "finpath-preview",
+      "database_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+      "collected_at": "2026-09-11T07:36:48.146Z",
+      "queries": [
+        "SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY name;",
+        "SELECT id, name, applied_at FROM d1_migrations ORDER BY id;"
+      ],
+      "total_tables": 18,
+      "tables": [
+        "_cf_KV",
+        "account_balances",
+        "assumptions",
+        "audit_log",
+        "balance_imports",
+        "d1_migrations",
+        "financial_accounts",
+        "fire_plan_inputs",
+        "fire_plan_results",
+        "goals",
+        "plan_versions",
+        "plans",
+        "saved_calculator_results",
+        "sqlite_sequence",
+        "transaction_imports",
+        "transactions",
+        "user_profiles",
+        "users"
+      ],
+      "user_tables": [
+        "account_balances",
+        "assumptions",
+        "audit_log",
+        "balance_imports",
+        "financial_accounts",
+        "fire_plan_inputs",
+        "fire_plan_results",
+        "goals",
+        "plan_versions",
+        "plans",
+        "saved_calculator_results",
+        "transaction_imports",
+        "transactions",
+        "user_profiles",
+        "users"
+      ],
+      "migration_tables": [
+        "d1_migrations"
+      ],
+      "system_tables": [
+        "_cf_KV",
+        "sqlite_sequence"
+      ],
+      "applied_migrations": [
+        {
+          "id": 1,
+          "name": "0001_initial_financial_platform_schema.sql",
+          "applied_at": "2026-06-11 15:37:16"
+        },
+        {
+          "id": 2,
+          "name": "0002_balance_import_history.sql",
+          "applied_at": "2026-06-22 18:37:06"
+        },
+        {
+          "id": 3,
+          "name": "0003_transaction_import_history.sql",
+          "applied_at": "2026-07-05 20:06:03"
+        },
+        {
+          "id": 4,
+          "name": "0004_saved_calculator_results.sql",
+          "applied_at": "2026-07-10 17:04:22"
+        }
+      ],
+      "repository_migrations": [
+        "0001_initial_financial_platform_schema.sql",
+        "0002_balance_import_history.sql",
+        "0003_transaction_import_history.sql",
+        "0004_saved_calculator_results.sql"
+      ]
+    },
+    "endpoints": {
+      "active_preview": {
+        "deployment_url": "https://b8f9d6ec.interactive-fire-calculator.pages.dev",
+        "health": {
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "content_type": "application/json; charset=utf-8",
+          "is_json": true,
+          "body": {
+            "ok": true,
+            "app": "interactive-fire-calculator",
+            "runtime": "cloudflare-pages"
+          },
+          "raw_sample": "{\"ok\":true,\"app\":\"interactive-fire-calculator\",\"runtime\":\"cloudflare-pages\"}"
+        },
+        "private_endpoints": {
+          "/api/me": {
+            "status": 401,
+            "content_type": "application/json; charset=utf-8",
+            "is_401": true
+          },
+          "/api/profile": {
+            "status": 401,
+            "content_type": "application/json; charset=utf-8",
+            "is_401": true
+          },
+          "/api/plans": {
+            "status": 401,
+            "content_type": "application/json; charset=utf-8",
+            "is_401": true
+          },
+          "/api/accounts": {
+            "status": 401,
+            "content_type": "application/json; charset=utf-8",
+            "is_401": true
+          }
+        }
+      },
+      "static_preview": {
+        "status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "is_html": true,
+        "uses_functions": false,
+        "details": "Static deployment 03cba125 has uses_functions=false and returns HTML for /api/*; API checks are unavailable there."
+      }
+    },
+    "auth_preflight": {
+      "status": "EXECUTED",
+      "recognized": true,
+      "exit_code": 1,
+      "passed_checks": 0,
+      "total_checks": 6,
+      "checks": [
+        {
+          "name": "Frontend key",
+          "passed": false
+        },
+        {
+          "name": "Production origin",
+          "passed": false
+        },
+        {
+          "name": "Clerk production instance",
+          "passed": false
+        },
+        {
+          "name": "Cloudflare publishable key",
+          "passed": false
+        },
+        {
+          "name": "Cloudflare server credential",
+          "passed": false
+        },
+        {
+          "name": "Cloudflare authorized parties",
+          "passed": false
+        }
+      ],
+      "raw_summary": "FAIL  Frontend key; FAIL  Production origin; FAIL  Clerk production instance; FAIL  Cloudflare publishable key; FAIL  Cloudflare server credential; FAIL  Cloudflare authorized parties"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "route": "/",
+    "mode": "light",
+    "type": "supplementary_css_zoom",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/",
+    "mode": "dark",
+    "type": "supplementary_css_zoom",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "mode": "light",
+    "type": "supplementary_css_zoom",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "mode": "dark",
+    "type": "supplementary_css_zoom",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "mode": "light",
+    "type": "supplementary_css_zoom",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "mode": "dark",
+    "type": "supplementary_css_zoom",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  }
+]

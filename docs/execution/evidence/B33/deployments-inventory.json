@@ -1,0 +1,442 @@
+[
+  {
+    "id": "03cba125-3c1c-4a68-954b-bfb947636525",
+    "short_id": "03cba125",
+    "environment": "preview",
+    "url": "https://03cba125.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T02:42:37.128924Z",
+    "deployment_trigger": {
+      "type": "ad_hoc",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "452fbdca849c28233ba6474a38f36b732949c4a0",
+        "commit_message": "Accepted C01T static development preview",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "active"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "success"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "82ab8e35-d0e3-4386-9195-e15a8843aa53",
+    "short_id": "82ab8e35",
+    "environment": "preview",
+    "url": "https://82ab8e35.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T02:37:27.684123Z",
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "452fbdca849c28233ba6474a38f36b732949c4a0",
+        "commit_message": "docs: accept C01T with owner reader deferral and release isolation checkpoint",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "idle"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "7fc7a9f8-890c-402f-96d4-ad06a0f91a5c",
+    "short_id": "7fc7a9f8",
+    "environment": "preview",
+    "url": "https://7fc7a9f8.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T01:59:35.208252Z",
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "47f9ec6eae3178883e180102d5e56206d16fa335",
+        "commit_message": "docs(B32): record successful CI run 34552756182 in submission",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "idle"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "04b26f46-c457-4c8d-8fa4-8a67fde88652",
+    "short_id": "04b26f46",
+    "environment": "preview",
+    "url": "https://04b26f46.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T01:57:52.632936Z",
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "275f43d1ba53a98d429a744bb004a996d1a0e6ad",
+        "commit_message": "docs(B32): record blocked status and manual reviewer assistance requirements",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "idle"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "757f65cd-bd90-4601-8cfa-0df00850759b",
+    "short_id": "757f65cd",
+    "environment": "preview",
+    "url": "https://757f65cd.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T01:55:27.604118Z",
+    "deployment_trigger": {
+      "type": "ad_hoc",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "b2f439927e9de50b9575da49708315e3c9ebbb8d",
+        "commit_message": "docs: review C01T rework and specify remaining verification fixes",
+        "commit_dirty": true
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "active"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "success"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "f47a285c-eb07-4086-aa25-0ec9509ddc45",
+    "short_id": "f47a285c",
+    "environment": "preview",
+    "url": "https://f47a285c.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T01:20:09.694672Z",
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "b2f439927e9de50b9575da49708315e3c9ebbb8d",
+        "commit_message": "docs: review C01T rework and specify remaining verification fixes",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "idle"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "57f45d37-e822-4f78-bc29-6ee4e039ab30",
+    "short_id": "57f45d37",
+    "environment": "preview",
+    "url": "https://57f45d37.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T01:11:33.690799Z",
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "a1b71673f4edabfd41ba9ba5d4d8adb11fc34771",
+        "commit_message": "docs(B32): record successful CI run 34549515888 in submission",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "idle"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "457484d4-ebc1-4649-8f1c-b2476ac4339a",
+    "short_id": "457484d4",
+    "environment": "preview",
+    "url": "https://457484d4.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T01:09:26.963804Z",
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "df2aed7a76157402a3ce13f38134cd1faeb9bcdf",
+        "commit_message": "docs(B32): update ledger code SHA, immutable preview URL, and submission for C01T rework",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "idle"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "034f5c4f-aecb-4658-adf1-b52da1eec591",
+    "short_id": "034f5c4f",
+    "environment": "preview",
+    "url": "https://034f5c4f.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T01:08:07.007151Z",
+    "deployment_trigger": {
+      "type": "ad_hoc",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "12b35463c1b6e387d268d8cc9fb7a6d9fb26a88b",
+        "commit_message": "fix(B32): overhaul print legibility and preserve sticky topbar scroll behavior",
+        "commit_dirty": true
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "active"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "success"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  },
+  {
+    "id": "ee2009f1-5f10-463c-bbd3-a191fb5ecf90",
+    "short_id": "ee2009f1",
+    "environment": "preview",
+    "url": "https://ee2009f1.interactive-fire-calculator.pages.dev",
+    "created_on": "2026-09-11T00:50:01.208808Z",
+    "deployment_trigger": {
+      "type": "github:push",
+      "metadata": {
+        "branch": "codex/finpath-quality-execution",
+        "commit_hash": "54602dbaa61cb411b613e1984a479697fcecf4a3",
+        "commit_message": "docs: request C01T print and verification rework",
+        "commit_dirty": false
+      }
+    },
+    "source": "github",
+    "stages": [
+      {
+        "name": "queued",
+        "status": "idle"
+      },
+      {
+        "name": "initialize",
+        "status": "idle"
+      },
+      {
+        "name": "clone_repo",
+        "status": "idle"
+      },
+      {
+        "name": "build",
+        "status": "idle"
+      },
+      {
+        "name": "deploy",
+        "status": "idle"
+      }
+    ],
+    "d1_database_bindings": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    }
+  }
+]

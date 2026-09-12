@@ -14,7 +14,7 @@
   - Completion evidence: implementation `1664043`; 13 runner regression tests, 79 Python tests plus 21 subtests, 1,269 Vitest tests, typecheck and build passed. [Hosted full suite](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34194698348) passed; [preview](https://75358a37.interactive-fire-calculator.pages.dev) passed all 84 public HTTP route checks. Next: B02.
   - Migration/rollback/effort: no migration; revert delivery commit. Human 0.5–1 day; agent 1–2 hours plus CI.
 
-- [ ] **B02 — Ready: reject incompatible currency conversion into goals.**
+- [x] **B02 — Accepted: reject incompatible currency conversion into goals.**
   - Problem/evidence: generic save API can drop INR/EUR into currency-less goal amounts (`goalPayloadFromCalculator`); dedicated UI guards are insufficient.
   - Outcome/scope: server rejects unsupported goal conversion before any write with a user-safe message; public calculations/share/export continue in original currency. Keep current USD contract until separate schema migration.
   - Non-goals/files: no FX conversion, no silent currency relabel, no record rewrite. `functions/_lib/calculatorResults.ts`, endpoint contract, `src/calculatorResults.test.ts`, affected save error rendering only if needed.
@@ -23,7 +23,7 @@
   - Privacy/dependencies: auth before parse; no production records. B01 verification supports rollout, no owner secret needed for local proof.
   - Migration/rollback/effort: no schema; rollback only to a safe disabled-conversion mode, not unsafe reinterpretation. Human 1 day; agent 2–4 hours.
 
-- [ ] **B03 — Ready: prevent mixed-currency account totals.**
+- [x] **B03 — Accepted: prevent mixed-currency account totals.**
   - Problem/evidence: `summarizeAccounts` adds balances regardless of `account.currency`.
   - Outcome/scope: group summary totals by currency and require explicit matching currency for plan imports. Display a clear unavailable combined total for mixed sets; never invent an exchange rate.
   - Non-goals/files: no FX feed or conversion; accounts helpers, dashboard response/types, App summary, `planWorkspace`, tests.
@@ -32,7 +32,7 @@
   - Privacy/dependencies: old rows keep original currency; inspect historical data only with scoped owner authorization. B02; no automatic production migration.
   - Rollback/effort: feature-gate combined summary off; no data rewrite. Human 2–3 days; agent 4–8 hours.
 
-- [ ] **B04 — Ready: atomic, retry-safe calculator save.**
+- [x] **B04 — Accepted: atomic, retry-safe calculator save.**
   - Problem/evidence: destination creation precedes separate result insert; retries can create duplicate goals/accounts.
   - Outcome/scope: user-scoped idempotency key and transaction/batch for destination + result, identical retry returns original entity; payload mismatch with same key conflicts.
   - Non-goals/files: no automatic linkage of old results; `calculatorResults`, API, client save call, new additive migration, real D1 integration tests.
@@ -131,7 +131,7 @@
 
 Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL_DESIGN_SPEC.md). Every item below remains unimplemented until independently accepted.
 
-- [ ] **B15 — Planned: Repair light/dark contrast defects.**
+- [x] **B15 — Accepted: Repair light/dark contrast defects.**
   - User problem/evidence: Invisible Sign in and low-contrast continuity heading prevent basic reading. Visual audit V01–V02.
   - Expected outcome/scope: Sign in is visibly labeled in light/dark mode; homepage inverse heading meets large-text contrast; normal button text meets 4.5:1; focus remains visible; no other header or calculator color regresses.
   - Non-goals: No redesign, token-wide migration, auth setup, formula change or hidden controls.
@@ -143,7 +143,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 0.5–1 day; agent 2–4 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B15.md](execution/prompts/B15.md).
 
-- [ ] **B16 — Planned: Establish authoritative design tokens and primitives.**
+- [x] **B16 — Accepted: Establish authoritative design tokens and primitives.**
   - User problem/evidence: Conflicting generations of CSS make consistent polish unreliable. Visual audit V03/V11.
   - Expected outcome/scope: One canonical token table matches rendered colors; changed inputs 16px at default settings; buttons have documented hit areas; inverse headings retain contrast; shared style changes pass representative light/dark screenshots.
   - Non-goals: No wholesale 10k-line rewrite, font replacement, framework install, giant App extraction or automatic deletion of unproven unused CSS.
@@ -155,7 +155,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B16.md](execution/prompts/B16.md).
 
-- [ ] **B17 — Planned: Polish public/account navigation and keyboard behavior.**
+- [x] **B17 — Accepted: Polish public/account navigation and keyboard behavior.**
   - User problem/evidence: Signed-out visitors see private destinations first and mobile disclosure ignores Escape. Visual audit V05–V06.
   - Expected outcome/scope: Mobile Escape closes and returns focus; no hidden focusable navigation; selected route exposed; public primary path works without auth; native link behavior and back/forward pass.
   - Non-goals: No auth bypass, new routing framework, production setup or unrelated route renaming.
@@ -335,7 +335,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 2–3 days; agent 6–12 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B31.md](execution/prompts/B31.md).
 
-- [ ] **B32 — Planned: implement the light/dark glass and gradient color system.**
+- [x] **B32 — Accepted: implement the light/dark glass and gradient color system.**
   - User problem/evidence: owner explicitly requested glassmorphism and gradients on 2026-09-08; current theme has contrast collisions and uncoordinated late overrides (V01–V03).
   - Expected outcome/scope: implement COLOR_AND_GLASS_SYSTEM.md in actual React surfaces using B16's canonical roles; coherent light/dark palette, bounded glass and gradients, solid/unsupported/print/forced-colors fallbacks.
   - Non-goals: no new homepage layout (B18), formula/auth changes, dependency, new font, animated background or glass behind editable values.
@@ -347,7 +347,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema; revert material/theme commit while preserving B15/B16 repairs. Human 1–2 days; agent 4–8 hours plus review.
   - Detailed implementer prompt: [B32](execution/prompts/B32.md).
 
-- [ ] **B33 — Owner-blocked: isolate preview infrastructure before backend publication.**
+- [x] **B33 — Accepted: isolate preview infrastructure before backend publication.**
   - User problem/evidence: effective preview DB binding matched the production-named DB; publishing changed APIs can expose production-bound functions even without intentional test writes.
   - Expected outcome/scope: verify every automatic/manual preview deployment path, obtain scoped owner approval for the isolated preview DB, configure preview-only binding and confirm deployed effective metadata before any backend-code push/deploy.
   - Non-goals: no production DB/DNS changes, no copying production data, no auth bypass, no disabling unrelated deployments without authorization.
@@ -359,7 +359,8 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: apply only reviewed migrations to the approved isolated target with authorization; rollback means disable/defer unsafe preview publication, never bind preview back to production. Human 0.5–1 day plus owner setup; agent 2–4 hours.
   - Detailed implementer prompt: [B33](execution/prompts/B33.md).
 
-- [ ] **B34 — Ready: repair newly reported development-tool dependency advisories.**
+- [x] **B34 — Accepted: repair newly reported development-tool dependency advisories.**
+  - Closure: [C00R independent review](execution/reviews/C00R.md), code `b48ac00328f356746bd501921562e727feb7a8e5`, 2026-09-09.
   - User problem/evidence: hosted CI 34300491728 passes tests/build but fails npm audit, reporting two moderate and three high findings across Vitest/mocker and sharp/miniflare/Wrangler. Earlier zero-audit evidence is historical.
   - Expected outcome/scope: choose supported patched development-tool versions with a reproducible lockfile; verify full suite, audit and Wrangler compilation. Distinguish package findings from demonstrated production exploitability.
   - Non-goals: no npm audit fix --force, arbitrary Wrangler downgrade, suppressed audit, production deployment or unrelated runtime upgrade.
@@ -373,3 +374,21 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
 ## Milestone reporting
 
 For each item record commit, changed files, red/green tests, local full-suite result, PR/CI URL, immutable preview URL and hosted verification scope. Report remaining risks and the exact next Ready item. Production readiness is never inferred from document completion or preview deployment.
+
+C01 acceptance 2026-09-10: B15/B16/B17 accepted together at `ccebac7d5bcaf645721e2e67ea490a7f447e1db9`; [independent review](execution/reviews/C01.md). Next released task: B32 in C01T.
+
+Landing review amendment 2026-09-10: [image, copy and theme findings](LANDING_PAGE_REVIEW.md) expand B32 with a visibly theme-responsive existing hero and B18 with an engine-backed product example, exact copy baseline, honest account availability and detailed review gates. Follow their amended prompts; C03 remains locked. No task was closed or renumbered.
+
+C01T review 2026-09-10: B32 requires print-layer repair and completed verification evidence; [review](execution/reviews/C01T.md). No new task accepted; C01I remains locked.
+
+C01T re-review of 12b3546: B32 remains changes_requested. Hero print improved; lower continuity print and verification gate still need repair. Matching WebKit installed and sampled by reviewer. Follow latest [review](execution/reviews/C01T.md) and [worker prompt](execution/C01T_REWORK_PROMPT.md). Accepted total unchanged.
+
+C01T third review of dd47fa3: whole-page print verified fixed; bounded native200% layout checks completed. Remaining evaluator missing-telemetry false PASS and manual reader/interaction proof keep B32 open. Follow latest review and bounded rework prompt; no new task accepted.
+
+C01T final acceptance: B32 accepted at `32584da7e47307a35730911e3567f02f9095550b` under the owner’s explicit actual-reader deferral, tracked in B31. This supersedes earlier C01T changes-requested notes. Accepted total 6/34 (17.6% by task count). C01I/B33 is released for its scoped isolation work; remote setup still needs its specified owner authorization. See [final review](execution/reviews/C01T.md).
+
+C01I primary review: B33 requires audit reliability repairs and scoped preview-binding authorization. No acceptance; C02 stays locked. See [review](execution/reviews/C01I.md) and [rework prompt](execution/C01I_REWORK_PROMPT.md).
+
+C01I accepted after primary reviewer completed the remaining audit repair. 7/34 tasks accepted (20.6% task count). C02 released, starting B02. See [final review](execution/reviews/C01I.md).
+
+C02 accepted 2026-09-11: B02/B03/B04, common candidate `ef2cded6441191a26537adf8ddf1a3e1909cf73b`, [review](execution/reviews/C02.md).10/34 accepted(29.4% by task count). C03 released: B18→B19→B09; use [explicit worker prompt](execution/C03_START_PROMPT.md).

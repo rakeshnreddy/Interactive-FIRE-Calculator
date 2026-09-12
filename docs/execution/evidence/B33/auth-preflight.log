@@ -1,0 +1,18 @@
+
+> interactive-fire-calculator@2.0.0 auth:preflight
+> node scripts/check_production_auth.mjs --check-cloudflare
+
+FAIL  Frontend key
+      VITE_CLERK_PUBLISHABLE_KEY must be a Clerk production publishable key.
+FAIL  Production origin
+      FINPATH_PRODUCTION_ORIGIN must be an owned HTTPS domain, not localhost or pages.dev.
+FAIL  Clerk production instance
+      Run `clerk deploy` and complete domain, DNS, and OAuth requirements.
+FAIL  Cloudflare publishable key
+      Set CLERK_PUBLISHABLE_KEY as a Pages production secret.
+FAIL  Cloudflare server credential
+      Set CLERK_SECRET_KEY or CLERK_JWT_KEY as a Pages production secret.
+FAIL  Cloudflare authorized parties
+      Set CLERK_AUTHORIZED_PARTIES to the exact production origin.
+
+0/6 production-auth checks passed.
