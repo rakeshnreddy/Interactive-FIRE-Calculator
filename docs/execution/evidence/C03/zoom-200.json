@@ -1,0 +1,44 @@
+[
+  {
+    "route": "/",
+    "mode": "light",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/",
+    "mode": "dark",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "mode": "light",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "mode": "dark",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "mode": "light",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "mode": "dark",
+    "zoom": "200%",
+    "overflow": false,
+    "pass": true
+  }
+]

@@ -1,0 +1,35 @@
+✔ fails before running any stage when python3 is missing (22.875333ms)
+✔ fails before running any stage when node is missing (16.228375ms)
+✔ fails before running any stage when npm is missing (19.541666ms)
+✔ runs every verification stage in order (1095.40525ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (261.596542ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (333.966416ms)
+✔ stops and preserves failure status from python3 -m pytest -q (328.831458ms)
+✔ stops and preserves failure status from npm run typecheck (521.553625ms)
+✔ stops and preserves failure status from npm test (549.817208ms)
+✔ stops and preserves failure status from npm run build (566.512375ms)
+✔ installs missing dependencies from the lockfile (504.443791ms)
+✔ does not run frontend verification after a failed install (495.066041ms)
+✔ uses the repository virtualenv even without system Python (592.812958ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5367.506375
+................................................... [ 64%]
+............................                                             [100%]
+79 passed, 21 subtests passed in 2.45s
+
+> interactive-fire-calculator@2.0.0 typecheck
+> tsc --noEmit
+
+
+> interactive-fire-calculator@2.0.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+

@@ -1,0 +1,612 @@
+[
+  {
+    "route": "/",
+    "width": 320,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 360.234375,
+        "width": 269,
+        "height": 48,
+        "right": 303,
+        "bottom": 408.234375
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 649.5,
+        "width": 252,
+        "height": 812.78125,
+        "right": 286,
+        "bottom": 1462.28125
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 320,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 360.234375,
+        "width": 269,
+        "height": 48,
+        "right": 303,
+        "bottom": 408.234375
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 649.5,
+        "width": 252,
+        "height": 812.78125,
+        "right": 286,
+        "bottom": 1462.28125
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 332.25,
+        "width": 322,
+        "height": 48,
+        "right": 356,
+        "bottom": 380.25
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 621.515625,
+        "width": 322,
+        "height": 719.796875,
+        "right": 356,
+        "bottom": 1341.3125
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 332.25,
+        "width": 322,
+        "height": 48,
+        "right": 356,
+        "bottom": 380.25
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 621.515625,
+        "width": 322,
+        "height": 719.796875,
+        "right": 356,
+        "bottom": 1341.3125
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 612,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 330.890625,
+        "width": 544,
+        "height": 48,
+        "right": 578,
+        "bottom": 378.890625
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 581.765625,
+        "width": 544,
+        "height": 581.734375,
+        "right": 578,
+        "bottom": 1163.5
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 612,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 330.890625,
+        "width": 544,
+        "height": 48,
+        "right": 578,
+        "bottom": 378.890625
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 581.765625,
+        "width": 544,
+        "height": 581.734375,
+        "right": 578,
+        "bottom": 1163.5
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 768,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 24,
+        "y": 298.46875,
+        "width": 269,
+        "height": 48,
+        "right": 293,
+        "bottom": 346.46875
+      }
+    ],
+    "example": [
+      {
+        "x": 24,
+        "y": 469.046875,
+        "width": 720,
+        "height": 608.046875,
+        "right": 744,
+        "bottom": 1077.09375
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 768,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 24,
+        "y": 298.46875,
+        "width": 269,
+        "height": 48,
+        "right": 293,
+        "bottom": 346.46875
+      }
+    ],
+    "example": [
+      {
+        "x": 24,
+        "y": 469.046875,
+        "width": 720,
+        "height": 608.046875,
+        "right": 744,
+        "bottom": 1077.09375
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 120,
+        "y": 514.3125,
+        "width": 269,
+        "height": 48,
+        "right": 389,
+        "bottom": 562.3125
+      }
+    ],
+    "example": [
+      {
+        "x": 840,
+        "y": 136,
+        "width": 480,
+        "height": 607,
+        "right": 1320,
+        "bottom": 743
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 120,
+        "y": 514.3125,
+        "width": 269,
+        "height": 48,
+        "right": 389,
+        "bottom": 562.3125
+      }
+    ],
+    "example": [
+      {
+        "x": 840,
+        "y": 136,
+        "width": 480,
+        "height": 607,
+        "right": 1320,
+        "bottom": 743
+      }
+    ],
+    "metricTexts": [
+      "$965,931",
+      "$500,000",
+      "Modeled end balance: $0"
+    ],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 320,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 320,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 390,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 390,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 612,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 612,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 768,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 768,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 1440,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/calculators",
+    "width": 1440,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 320,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 320,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 390,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 390,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 612,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 612,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 768,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 768,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 1440,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "route": "/dashboard",
+    "width": 1440,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "metricTexts": [],
+    "clipped": [],
+    "errors": [],
+    "pass": true
+  }
+]

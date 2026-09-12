@@ -1,0 +1,9751 @@
+[
+  {
+    "nodeId": "2",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "RootWebArea"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 144
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FinPath | FIRE Calculator and Financial Planning",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label",
+          "superseded": true
+        },
+        {
+          "type": "relatedElement",
+          "value": {
+            "type": "computedString",
+            "value": "FinPath | FIRE Calculator and Financial Planning"
+          },
+          "nativeSource": "title"
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "focused",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/"
+        }
+      }
+    ],
+    "childIds": [
+      "41"
+    ],
+    "backendDOMNodeId": 2,
+    "frameId": "D5A5ECF6A035B8FABAED5EACC42E9648"
+  },
+  {
+    "nodeId": "41",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "2",
+    "childIds": [
+      "62"
+    ],
+    "backendDOMNodeId": 41
+  },
+  {
+    "nodeId": "62",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "41",
+    "childIds": [
+      "63"
+    ],
+    "backendDOMNodeId": 62
+  },
+  {
+    "nodeId": "63",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "62",
+    "childIds": [
+      "64"
+    ],
+    "backendDOMNodeId": 63
+  },
+  {
+    "nodeId": "64",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "63",
+    "childIds": [
+      "65",
+      "66",
+      "115"
+    ],
+    "backendDOMNodeId": 64
+  },
+  {
+    "nodeId": "65",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Skip to content",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Skip to content"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/#main-content"
+        }
+      }
+    ],
+    "parentId": "64",
+    "childIds": [
+      "285"
+    ],
+    "backendDOMNodeId": 65
+  },
+  {
+    "nodeId": "66",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "banner"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 94
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "64",
+    "childIds": [
+      "67",
+      "73",
+      "100"
+    ],
+    "backendDOMNodeId": 66
+  },
+  {
+    "nodeId": "115",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "main"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 118
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      }
+    ],
+    "parentId": "64",
+    "childIds": [
+      "116",
+      "31",
+      "227",
+      "266",
+      "273"
+    ],
+    "backendDOMNodeId": 115
+  },
+  {
+    "nodeId": "285",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Skip to content",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Skip to content"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "65",
+    "childIds": [
+      "-1000000002"
+    ],
+    "backendDOMNodeId": 285
+  },
+  {
+    "nodeId": "67",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FinPath",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FinPath"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/"
+        }
+      }
+    ],
+    "parentId": "66",
+    "childIds": [
+      "72"
+    ],
+    "backendDOMNodeId": 67
+  },
+  {
+    "nodeId": "73",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "navigation"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 130
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Primary",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "value": {
+            "type": "computedString",
+            "value": "Primary"
+          },
+          "attribute": "aria-label",
+          "attributeValue": {
+            "type": "string",
+            "value": "Primary"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "66",
+    "childIds": [
+      "74",
+      "86",
+      "91"
+    ],
+    "backendDOMNodeId": 73
+  },
+  {
+    "nodeId": "100",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "66",
+    "childIds": [
+      "101",
+      "106",
+      "107"
+    ],
+    "backendDOMNodeId": 100
+  },
+  {
+    "nodeId": "101",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "button"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 9
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Sign in",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "relatedElement",
+          "nativeSource": "label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Sign in"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "invalid",
+        "value": {
+          "type": "token",
+          "value": "false"
+        }
+      },
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      }
+    ],
+    "parentId": "100",
+    "childIds": [
+      "290"
+    ],
+    "backendDOMNodeId": 101
+  },
+  {
+    "nodeId": "106",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "button"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 9
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Create account",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "relatedElement",
+          "nativeSource": "label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Create account"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "invalid",
+        "value": {
+          "type": "token",
+          "value": "false"
+        }
+      },
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      }
+    ],
+    "parentId": "100",
+    "childIds": [
+      "291"
+    ],
+    "backendDOMNodeId": 106
+  },
+  {
+    "nodeId": "107",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "button"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 175
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Switch to dark mode",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "value": {
+            "type": "computedString",
+            "value": "Switch to dark mode"
+          },
+          "attribute": "aria-label",
+          "attributeValue": {
+            "type": "string",
+            "value": "Switch to dark mode"
+          }
+        },
+        {
+          "type": "relatedElement",
+          "superseded": true,
+          "nativeSource": "label"
+        },
+        {
+          "type": "contents",
+          "superseded": true
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "invalid",
+        "value": {
+          "type": "token",
+          "value": "false"
+        }
+      },
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "pressed",
+        "value": {
+          "type": "tristate",
+          "value": "false"
+        }
+      }
+    ],
+    "parentId": "100",
+    "childIds": [],
+    "backendDOMNodeId": 107
+  },
+  {
+    "nodeId": "116",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "region"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 143
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See when you could retire.",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "value": {
+            "type": "computedString",
+            "value": "See when you could retire."
+          },
+          "attribute": "aria-labelledby",
+          "attributeValue": {
+            "type": "idrefList",
+            "value": "landing-title",
+            "relatedNodes": [
+              {
+                "backendDOMNodeId": 119,
+                "idref": "landing-title",
+                "text": "See when you could retire."
+              }
+            ]
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label",
+          "superseded": true
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "labelledby",
+        "value": {
+          "type": "nodeList",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 119,
+              "idref": "landing-title",
+              "text": "See when you could retire."
+            }
+          ]
+        }
+      }
+    ],
+    "parentId": "115",
+    "childIds": [
+      "117"
+    ],
+    "backendDOMNodeId": 116
+  },
+  {
+    "nodeId": "31",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "region"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 143
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Choose a planning path",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "value": {
+            "type": "computedString",
+            "value": "Choose a planning path"
+          },
+          "attribute": "aria-label",
+          "attributeValue": {
+            "type": "string",
+            "value": "Choose a planning path"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "115",
+    "childIds": [
+      "201",
+      "210",
+      "218"
+    ],
+    "backendDOMNodeId": 31
+  },
+  {
+    "nodeId": "227",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "region"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 143
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start with a question. Leave with a clearer plan.",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "value": {
+            "type": "computedString",
+            "value": "Start with a question. Leave with a clearer plan."
+          },
+          "attribute": "aria-labelledby",
+          "attributeValue": {
+            "type": "idrefList",
+            "value": "capabilities-title",
+            "relatedNodes": [
+              {
+                "backendDOMNodeId": 230,
+                "idref": "capabilities-title",
+                "text": "Start with a question. Leave with a clearer plan."
+              }
+            ]
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label",
+          "superseded": true
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "labelledby",
+        "value": {
+          "type": "nodeList",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 230,
+              "idref": "capabilities-title",
+              "text": "Start with a question. Leave with a clearer plan."
+            }
+          ]
+        }
+      }
+    ],
+    "parentId": "115",
+    "childIds": [
+      "228",
+      "232"
+    ],
+    "backendDOMNodeId": 227
+  },
+  {
+    "nodeId": "266",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "region"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 143
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start without an account.",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "value": {
+            "type": "computedString",
+            "value": "Start without an account."
+          },
+          "attribute": "aria-labelledby",
+          "attributeValue": {
+            "type": "idrefList",
+            "value": "privacy-title",
+            "relatedNodes": [
+              {
+                "backendDOMNodeId": 271,
+                "idref": "privacy-title",
+                "text": "Start without an account."
+              }
+            ]
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label",
+          "superseded": true
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "labelledby",
+        "value": {
+          "type": "nodeList",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 271,
+              "idref": "privacy-title",
+              "text": "Start without an account."
+            }
+          ]
+        }
+      }
+    ],
+    "parentId": "115",
+    "childIds": [
+      "270"
+    ],
+    "backendDOMNodeId": 266
+  },
+  {
+    "nodeId": "273",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "sectionfooter"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 86
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "115",
+    "childIds": [
+      "274",
+      "280",
+      "281"
+    ],
+    "backendDOMNodeId": 273
+  },
+  {
+    "nodeId": "-1000000002",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Skip to content"
+    },
+    "properties": [],
+    "parentId": "285",
+    "childIds": []
+  },
+  {
+    "nodeId": "72",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "67",
+    "childIds": [
+      "286"
+    ],
+    "backendDOMNodeId": 72
+  },
+  {
+    "nodeId": "286",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FinPath",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FinPath"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "72",
+    "childIds": [
+      "-1000000003"
+    ],
+    "backendDOMNodeId": 286
+  },
+  {
+    "nodeId": "74",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Calculators",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Calculators"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators"
+        }
+      }
+    ],
+    "parentId": "73",
+    "childIds": [
+      "287"
+    ],
+    "backendDOMNodeId": 74
+  },
+  {
+    "nodeId": "86",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FIRE",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FIRE"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/fire"
+        }
+      }
+    ],
+    "parentId": "73",
+    "childIds": [
+      "288"
+    ],
+    "backendDOMNodeId": 86
+  },
+  {
+    "nodeId": "91",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "73",
+    "childIds": [
+      "92"
+    ],
+    "backendDOMNodeId": 91
+  },
+  {
+    "nodeId": "290",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Sign in",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Sign in"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "101",
+    "childIds": [
+      "-1000000007"
+    ],
+    "backendDOMNodeId": 290
+  },
+  {
+    "nodeId": "291",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Create account",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Create account"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "106",
+    "childIds": [
+      "-1000000008"
+    ],
+    "backendDOMNodeId": 291
+  },
+  {
+    "nodeId": "117",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "116",
+    "childIds": [
+      "3",
+      "142"
+    ],
+    "backendDOMNodeId": 117
+  },
+  {
+    "nodeId": "201",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Buying a home? Explore borrowing costs",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Buying a home? Explore borrowing costs"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/mortgage"
+        }
+      }
+    ],
+    "parentId": "31",
+    "childIds": [
+      "205"
+    ],
+    "backendDOMNodeId": 201
+  },
+  {
+    "nodeId": "210",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Growing your savings? Explore compound growth",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Growing your savings? Explore compound growth"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/compound-interest"
+        }
+      }
+    ],
+    "parentId": "31",
+    "childIds": [
+      "213"
+    ],
+    "backendDOMNodeId": 210
+  },
+  {
+    "nodeId": "218",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Long-term independence? Explore financial independence",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Long-term independence? Explore financial independence"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/fire"
+        }
+      }
+    ],
+    "parentId": "31",
+    "childIds": [
+      "222"
+    ],
+    "backendDOMNodeId": 218
+  },
+  {
+    "nodeId": "228",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "sectionheader"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 95
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "227",
+    "childIds": [
+      "229",
+      "230",
+      "231"
+    ],
+    "backendDOMNodeId": 228
+  },
+  {
+    "nodeId": "232",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "227",
+    "childIds": [
+      "233",
+      "249",
+      "257"
+    ],
+    "backendDOMNodeId": 232
+  },
+  {
+    "nodeId": "233",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "article"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 5
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "232",
+    "childIds": [
+      "234",
+      "246"
+    ],
+    "backendDOMNodeId": 233
+  },
+  {
+    "nodeId": "249",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "article"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 5
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "232",
+    "childIds": [
+      "250",
+      "254"
+    ],
+    "backendDOMNodeId": 249
+  },
+  {
+    "nodeId": "257",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "article"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 5
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "232",
+    "childIds": [
+      "258",
+      "263"
+    ],
+    "backendDOMNodeId": 257
+  },
+  {
+    "nodeId": "270",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "266",
+    "childIds": [
+      "271",
+      "272"
+    ],
+    "backendDOMNodeId": 270
+  },
+  {
+    "nodeId": "271",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "heading"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 96
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start without an account.",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Start without an account."
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "level",
+        "value": {
+          "type": "integer",
+          "value": 2
+        }
+      }
+    ],
+    "parentId": "270",
+    "childIds": [
+      "370"
+    ],
+    "backendDOMNodeId": 271
+  },
+  {
+    "nodeId": "272",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "270",
+    "childIds": [
+      "371"
+    ],
+    "backendDOMNodeId": 272
+  },
+  {
+    "nodeId": "274",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FinPath home",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "value": {
+            "type": "computedString",
+            "value": "FinPath home"
+          },
+          "attribute": "aria-label",
+          "attributeValue": {
+            "type": "string",
+            "value": "FinPath home"
+          }
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FinPath"
+          },
+          "superseded": true
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/"
+        }
+      }
+    ],
+    "parentId": "273",
+    "childIds": [
+      "279"
+    ],
+    "backendDOMNodeId": 274
+  },
+  {
+    "nodeId": "280",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "273",
+    "childIds": [
+      "373"
+    ],
+    "backendDOMNodeId": 280
+  },
+  {
+    "nodeId": "281",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Browse calculators",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Browse calculators"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators"
+        }
+      }
+    ],
+    "parentId": "273",
+    "childIds": [
+      "374"
+    ],
+    "backendDOMNodeId": 281
+  },
+  {
+    "nodeId": "-1000000003",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FinPath"
+    },
+    "properties": [],
+    "parentId": "286",
+    "childIds": []
+  },
+  {
+    "nodeId": "287",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Calculators",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Calculators"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "74",
+    "childIds": [
+      "-1000000004"
+    ],
+    "backendDOMNodeId": 287
+  },
+  {
+    "nodeId": "288",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FIRE",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FIRE"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "86",
+    "childIds": [
+      "-1000000005"
+    ],
+    "backendDOMNodeId": 288
+  },
+  {
+    "nodeId": "92",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "button"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 9
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Workspace",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "relatedElement",
+          "nativeSource": "label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Workspace"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "invalid",
+        "value": {
+          "type": "token",
+          "value": "false"
+        }
+      },
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "expanded",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": false
+        }
+      }
+    ],
+    "parentId": "91",
+    "childIds": [
+      "289"
+    ],
+    "backendDOMNodeId": 92
+  },
+  {
+    "nodeId": "-1000000007",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Sign in"
+    },
+    "properties": [],
+    "parentId": "290",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000008",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Create account"
+    },
+    "properties": [],
+    "parentId": "291",
+    "childIds": []
+  },
+  {
+    "nodeId": "3",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "117",
+    "childIds": [
+      "118",
+      "119",
+      "120",
+      "121",
+      "136"
+    ],
+    "backendDOMNodeId": 3
+  },
+  {
+    "nodeId": "118",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "3",
+    "childIds": [
+      "292"
+    ],
+    "backendDOMNodeId": 118
+  },
+  {
+    "nodeId": "119",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "heading"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 96
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See when you could retire.",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "See when you could retire."
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "level",
+        "value": {
+          "type": "integer",
+          "value": 1
+        }
+      }
+    ],
+    "parentId": "3",
+    "childIds": [
+      "4"
+    ],
+    "backendDOMNodeId": 119
+  },
+  {
+    "nodeId": "120",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "3",
+    "childIds": [
+      "293"
+    ],
+    "backendDOMNodeId": 120
+  },
+  {
+    "nodeId": "121",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "3",
+    "childIds": [
+      "122",
+      "6"
+    ],
+    "backendDOMNodeId": 121
+  },
+  {
+    "nodeId": "122",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore my retirement timeline",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore my retirement timeline"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/fire"
+        }
+      }
+    ],
+    "parentId": "121",
+    "childIds": [
+      "294"
+    ],
+    "backendDOMNodeId": 122
+  },
+  {
+    "nodeId": "6",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore all calculators",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore all calculators"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators"
+        }
+      }
+    ],
+    "parentId": "121",
+    "childIds": [
+      "295"
+    ],
+    "backendDOMNodeId": 6
+  },
+  {
+    "nodeId": "136",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "navigation"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 130
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Popular calculators",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "value": {
+            "type": "computedString",
+            "value": "Popular calculators"
+          },
+          "attribute": "aria-label",
+          "attributeValue": {
+            "type": "string",
+            "value": "Popular calculators"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "3",
+    "childIds": [
+      "137",
+      "8",
+      "10",
+      "12",
+      "14"
+    ],
+    "backendDOMNodeId": 136
+  },
+  {
+    "nodeId": "142",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "region"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 143
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Illustrative FIRE calculation example",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "value": {
+            "type": "computedString",
+            "value": "Illustrative FIRE calculation example"
+          },
+          "attribute": "aria-label",
+          "attributeValue": {
+            "type": "string",
+            "value": "Illustrative FIRE calculation example"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "117",
+    "childIds": [
+      "143",
+      "155",
+      "164",
+      "21"
+    ],
+    "backendDOMNodeId": 142
+  },
+  {
+    "nodeId": "205",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "201",
+    "childIds": [
+      "206",
+      "207"
+    ],
+    "backendDOMNodeId": 205
+  },
+  {
+    "nodeId": "206",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "205",
+    "childIds": [
+      "33"
+    ],
+    "backendDOMNodeId": 206
+  },
+  {
+    "nodeId": "207",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "205",
+    "childIds": [
+      "358"
+    ],
+    "backendDOMNodeId": 207
+  },
+  {
+    "nodeId": "213",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "210",
+    "childIds": [
+      "214",
+      "215"
+    ],
+    "backendDOMNodeId": 213
+  },
+  {
+    "nodeId": "214",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "213",
+    "childIds": [
+      "36"
+    ],
+    "backendDOMNodeId": 214
+  },
+  {
+    "nodeId": "215",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "213",
+    "childIds": [
+      "359"
+    ],
+    "backendDOMNodeId": 215
+  },
+  {
+    "nodeId": "222",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "218",
+    "childIds": [
+      "223",
+      "224"
+    ],
+    "backendDOMNodeId": 222
+  },
+  {
+    "nodeId": "223",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "222",
+    "childIds": [
+      "39"
+    ],
+    "backendDOMNodeId": 223
+  },
+  {
+    "nodeId": "224",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "222",
+    "childIds": [
+      "360"
+    ],
+    "backendDOMNodeId": 224
+  },
+  {
+    "nodeId": "229",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "228",
+    "childIds": [
+      "361"
+    ],
+    "backendDOMNodeId": 229
+  },
+  {
+    "nodeId": "230",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "heading"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 96
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start with a question. Leave with a clearer plan.",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Start with a question. Leave with a clearer plan."
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "level",
+        "value": {
+          "type": "integer",
+          "value": 2
+        }
+      }
+    ],
+    "parentId": "228",
+    "childIds": [
+      "362"
+    ],
+    "backendDOMNodeId": 230
+  },
+  {
+    "nodeId": "231",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "228",
+    "childIds": [
+      "363"
+    ],
+    "backendDOMNodeId": 231
+  },
+  {
+    "nodeId": "234",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "233",
+    "childIds": [],
+    "backendDOMNodeId": 234
+  },
+  {
+    "nodeId": "246",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "233",
+    "childIds": [
+      "247",
+      "248"
+    ],
+    "backendDOMNodeId": 246
+  },
+  {
+    "nodeId": "247",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "246",
+    "childIds": [
+      "364"
+    ],
+    "backendDOMNodeId": 247
+  },
+  {
+    "nodeId": "248",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "246",
+    "childIds": [
+      "365"
+    ],
+    "backendDOMNodeId": 248
+  },
+  {
+    "nodeId": "250",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "249",
+    "childIds": [],
+    "backendDOMNodeId": 250
+  },
+  {
+    "nodeId": "254",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "249",
+    "childIds": [
+      "255",
+      "256"
+    ],
+    "backendDOMNodeId": 254
+  },
+  {
+    "nodeId": "255",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "254",
+    "childIds": [
+      "366"
+    ],
+    "backendDOMNodeId": 255
+  },
+  {
+    "nodeId": "256",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "254",
+    "childIds": [
+      "367"
+    ],
+    "backendDOMNodeId": 256
+  },
+  {
+    "nodeId": "258",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "257",
+    "childIds": [],
+    "backendDOMNodeId": 258
+  },
+  {
+    "nodeId": "263",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "257",
+    "childIds": [
+      "264",
+      "265"
+    ],
+    "backendDOMNodeId": 263
+  },
+  {
+    "nodeId": "264",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "263",
+    "childIds": [
+      "368"
+    ],
+    "backendDOMNodeId": 264
+  },
+  {
+    "nodeId": "265",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "263",
+    "childIds": [
+      "369"
+    ],
+    "backendDOMNodeId": 265
+  },
+  {
+    "nodeId": "370",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start without an account.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Start without an account."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "271",
+    "childIds": [
+      "-1000000123"
+    ],
+    "backendDOMNodeId": 370
+  },
+  {
+    "nodeId": "371",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Use the public calculators before deciding whether to create an account.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Use the public calculators before deciding whether to create an account."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "272",
+    "childIds": [
+      "-1000000124"
+    ],
+    "backendDOMNodeId": 371
+  },
+  {
+    "nodeId": "279",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "274",
+    "childIds": [
+      "372"
+    ],
+    "backendDOMNodeId": 279
+  },
+  {
+    "nodeId": "373",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Track today. Test tomorrow. Keep the assumptions yours.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Track today. Test tomorrow. Keep the assumptions yours."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "280",
+    "childIds": [
+      "-1000000126"
+    ],
+    "backendDOMNodeId": 373
+  },
+  {
+    "nodeId": "374",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Browse calculators",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Browse calculators"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "281",
+    "childIds": [
+      "-1000000127"
+    ],
+    "backendDOMNodeId": 374
+  },
+  {
+    "nodeId": "-1000000004",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Calculators"
+    },
+    "properties": [],
+    "parentId": "287",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000005",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FIRE"
+    },
+    "properties": [],
+    "parentId": "288",
+    "childIds": []
+  },
+  {
+    "nodeId": "289",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Workspace",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Workspace"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "92",
+    "childIds": [
+      "-1000000006"
+    ],
+    "backendDOMNodeId": 289
+  },
+  {
+    "nodeId": "292",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Plan your financial future",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Plan your financial future"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "118",
+    "childIds": [
+      "-1000000009"
+    ],
+    "backendDOMNodeId": 292
+  },
+  {
+    "nodeId": "4",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See when you could retire.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "See when you could retire."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "119",
+    "childIds": [
+      "-1000000010",
+      "-1000000011"
+    ],
+    "backendDOMNodeId": 4
+  },
+  {
+    "nodeId": "293",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See how saving more or spending less could change your retirement timeline. Try it free, without an account.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "See how saving more or spending less could change your retirement timeline. Try it free, without an account."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "120",
+    "childIds": [
+      "-1000000012",
+      "-1000000013"
+    ],
+    "backendDOMNodeId": 293
+  },
+  {
+    "nodeId": "294",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore my retirement timeline",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore my retirement timeline"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "122",
+    "childIds": [
+      "-1000000014"
+    ],
+    "backendDOMNodeId": 294
+  },
+  {
+    "nodeId": "295",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore all calculators",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore all calculators"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "6",
+    "childIds": [
+      "-1000000015"
+    ],
+    "backendDOMNodeId": 295
+  },
+  {
+    "nodeId": "137",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "136",
+    "childIds": [
+      "296"
+    ],
+    "backendDOMNodeId": 137
+  },
+  {
+    "nodeId": "296",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Popular starts",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Popular starts"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "137",
+    "childIds": [
+      "-1000000016"
+    ],
+    "backendDOMNodeId": 296
+  },
+  {
+    "nodeId": "8",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Mortgage",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Mortgage"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/mortgage"
+        }
+      }
+    ],
+    "parentId": "136",
+    "childIds": [
+      "297"
+    ],
+    "backendDOMNodeId": 8
+  },
+  {
+    "nodeId": "10",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Debt payoff",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Debt payoff"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/debt-payoff"
+        }
+      }
+    ],
+    "parentId": "136",
+    "childIds": [
+      "298"
+    ],
+    "backendDOMNodeId": 10
+  },
+  {
+    "nodeId": "12",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Compound interest",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Compound interest"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/compound-interest"
+        }
+      }
+    ],
+    "parentId": "136",
+    "childIds": [
+      "299"
+    ],
+    "backendDOMNodeId": 12
+  },
+  {
+    "nodeId": "14",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "link"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 110
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FIRE",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FIRE"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "focusable",
+        "value": {
+          "type": "booleanOrUndefined",
+          "value": true
+        }
+      },
+      {
+        "name": "url",
+        "value": {
+          "type": "string",
+          "value": "http://127.0.0.1:4173/calculators/fire"
+        }
+      }
+    ],
+    "parentId": "136",
+    "childIds": [
+      "300"
+    ],
+    "backendDOMNodeId": 14
+  },
+  {
+    "nodeId": "143",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "142",
+    "childIds": [
+      "144",
+      "149"
+    ],
+    "backendDOMNodeId": 143
+  },
+  {
+    "nodeId": "144",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "143",
+    "childIds": [
+      "301"
+    ],
+    "backendDOMNodeId": 144
+  },
+  {
+    "nodeId": "301",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Illustrative example · USD",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Illustrative example · USD"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "144",
+    "childIds": [
+      "-1000000021"
+    ],
+    "backendDOMNodeId": 301
+  },
+  {
+    "nodeId": "149",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "143",
+    "childIds": [
+      "302",
+      "303"
+    ],
+    "backendDOMNodeId": 149
+  },
+  {
+    "nodeId": "302",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "30-year",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "30-year"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "149",
+    "childIds": [
+      "-1000000022"
+    ],
+    "backendDOMNodeId": 302
+  },
+  {
+    "nodeId": "303",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " horizon",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " horizon"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "149",
+    "childIds": [
+      "-1000000023"
+    ],
+    "backendDOMNodeId": 303
+  },
+  {
+    "nodeId": "155",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "142",
+    "childIds": [
+      "156",
+      "160"
+    ],
+    "backendDOMNodeId": 155
+  },
+  {
+    "nodeId": "156",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "155",
+    "childIds": [
+      "157",
+      "158",
+      "159"
+    ],
+    "backendDOMNodeId": 156
+  },
+  {
+    "nodeId": "157",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "156",
+    "childIds": [
+      "304"
+    ],
+    "backendDOMNodeId": 157
+  },
+  {
+    "nodeId": "304",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Modeled retirement target",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Modeled retirement target"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "157",
+    "childIds": [
+      "-1000000024"
+    ],
+    "backendDOMNodeId": 304
+  },
+  {
+    "nodeId": "158",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "156",
+    "childIds": [
+      "305"
+    ],
+    "backendDOMNodeId": 158
+  },
+  {
+    "nodeId": "159",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "156",
+    "childIds": [
+      "306",
+      "307",
+      "308"
+    ],
+    "backendDOMNodeId": 159
+  },
+  {
+    "nodeId": "306",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Target nest egg to fund ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Target nest egg to fund "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "159",
+    "childIds": [
+      "-1000000026"
+    ],
+    "backendDOMNodeId": 306
+  },
+  {
+    "nodeId": "307",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$60,000",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$60,000"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "159",
+    "childIds": [
+      "-1000000027"
+    ],
+    "backendDOMNodeId": 307
+  },
+  {
+    "nodeId": "308",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "/yr initial spending",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "/yr initial spending"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "159",
+    "childIds": [
+      "-1000000028"
+    ],
+    "backendDOMNodeId": 308
+  },
+  {
+    "nodeId": "160",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "155",
+    "childIds": [
+      "161",
+      "162",
+      "163"
+    ],
+    "backendDOMNodeId": 160
+  },
+  {
+    "nodeId": "161",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "160",
+    "childIds": [
+      "309"
+    ],
+    "backendDOMNodeId": 161
+  },
+  {
+    "nodeId": "309",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Current starting point",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Current starting point"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "161",
+    "childIds": [
+      "-1000000029"
+    ],
+    "backendDOMNodeId": 309
+  },
+  {
+    "nodeId": "162",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "160",
+    "childIds": [
+      "310"
+    ],
+    "backendDOMNodeId": 162
+  },
+  {
+    "nodeId": "163",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "160",
+    "childIds": [
+      "311",
+      "312"
+    ],
+    "backendDOMNodeId": 163
+  },
+  {
+    "nodeId": "311",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Gap to modeled target: ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Gap to modeled target: "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "163",
+    "childIds": [
+      "-1000000031"
+    ],
+    "backendDOMNodeId": 311
+  },
+  {
+    "nodeId": "312",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$465,931",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$465,931"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "163",
+    "childIds": [
+      "-1000000032"
+    ],
+    "backendDOMNodeId": 312
+  },
+  {
+    "nodeId": "164",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "figure"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 84
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Retirement withdrawals from the modeled target",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "value": {
+            "type": "computedString",
+            "value": "Retirement withdrawals from the modeled target"
+          },
+          "attribute": "aria-labelledby",
+          "attributeValue": {
+            "type": "idrefList",
+            "value": ":r0:",
+            "relatedNodes": [
+              {
+                "backendDOMNodeId": 166,
+                "idref": ":r0:",
+                "text": "Retirement withdrawals from the modeled target"
+              }
+            ]
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label",
+          "superseded": true
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "description": {
+      "type": "computedString",
+      "value": "Illustrative retirement drawdown over a 30-year horizon from Year 0 to Year 30. Starting balance is the modeled target of $965,931 and concludes at a modeled end balance of $0, funding initial annual spending of $60,000 with 2.5% inflation and 7% nominal return."
+    },
+    "properties": [
+      {
+        "name": "describedby",
+        "value": {
+          "type": "idrefList",
+          "value": ":r1:",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 172,
+              "idref": ":r1:"
+            }
+          ]
+        }
+      },
+      {
+        "name": "labelledby",
+        "value": {
+          "type": "nodeList",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 166,
+              "idref": ":r0:",
+              "text": "Retirement withdrawals from the modeled target"
+            }
+          ]
+        }
+      }
+    ],
+    "parentId": "142",
+    "childIds": [
+      "165",
+      "171",
+      "172",
+      "20"
+    ],
+    "backendDOMNodeId": 164
+  },
+  {
+    "nodeId": "21",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "142",
+    "childIds": [
+      "191",
+      "197"
+    ],
+    "backendDOMNodeId": 21
+  },
+  {
+    "nodeId": "191",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "21",
+    "childIds": [
+      "192",
+      "25",
+      "195"
+    ],
+    "backendDOMNodeId": 191
+  },
+  {
+    "nodeId": "192",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "191",
+    "childIds": [
+      "193",
+      "22",
+      "23",
+      "24"
+    ],
+    "backendDOMNodeId": 192
+  },
+  {
+    "nodeId": "193",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "192",
+    "childIds": [
+      "354"
+    ],
+    "backendDOMNodeId": 193
+  },
+  {
+    "nodeId": "22",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "192",
+    "childIds": [
+      "-1000000093"
+    ],
+    "backendDOMNodeId": 22
+  },
+  {
+    "nodeId": "23",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$60,000",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$60,000"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "192",
+    "childIds": [
+      "-1000000094"
+    ],
+    "backendDOMNodeId": 23
+  },
+  {
+    "nodeId": "24",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "/yr",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "/yr"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "192",
+    "childIds": [
+      "-1000000095"
+    ],
+    "backendDOMNodeId": 24
+  },
+  {
+    "nodeId": "25",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "191",
+    "childIds": [
+      "194",
+      "26",
+      "27"
+    ],
+    "backendDOMNodeId": 25
+  },
+  {
+    "nodeId": "194",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "25",
+    "childIds": [
+      "355"
+    ],
+    "backendDOMNodeId": 194
+  },
+  {
+    "nodeId": "26",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "25",
+    "childIds": [
+      "-1000000097"
+    ],
+    "backendDOMNodeId": 26
+  },
+  {
+    "nodeId": "27",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "7%",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "7%"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "25",
+    "childIds": [
+      "-1000000098"
+    ],
+    "backendDOMNodeId": 27
+  },
+  {
+    "nodeId": "195",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "191",
+    "childIds": [
+      "196",
+      "28",
+      "29"
+    ],
+    "backendDOMNodeId": 195
+  },
+  {
+    "nodeId": "196",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "strong"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 160
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "195",
+    "childIds": [
+      "356"
+    ],
+    "backendDOMNodeId": 196
+  },
+  {
+    "nodeId": "28",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "195",
+    "childIds": [
+      "-1000000100"
+    ],
+    "backendDOMNodeId": 28
+  },
+  {
+    "nodeId": "29",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "2.5%",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "2.5%"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "195",
+    "childIds": [
+      "-1000000101"
+    ],
+    "backendDOMNodeId": 29
+  },
+  {
+    "nodeId": "197",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "21",
+    "childIds": [
+      "357"
+    ],
+    "backendDOMNodeId": 197
+  },
+  {
+    "nodeId": "357",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "An estimate based on the assumptions shown, not a guaranteed outcome.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "An estimate based on the assumptions shown, not a guaranteed outcome."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "197",
+    "childIds": [
+      "-1000000102",
+      "-1000000103"
+    ],
+    "backendDOMNodeId": 357
+  },
+  {
+    "nodeId": "33",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Buying a home?",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Buying a home?"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "206",
+    "childIds": [
+      "-1000000104"
+    ],
+    "backendDOMNodeId": 33
+  },
+  {
+    "nodeId": "358",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore borrowing costs",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore borrowing costs"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "207",
+    "childIds": [
+      "-1000000105"
+    ],
+    "backendDOMNodeId": 358
+  },
+  {
+    "nodeId": "36",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Growing your savings?",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Growing your savings?"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "214",
+    "childIds": [
+      "-1000000106"
+    ],
+    "backendDOMNodeId": 36
+  },
+  {
+    "nodeId": "359",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore compound growth",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore compound growth"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "215",
+    "childIds": [
+      "-1000000107"
+    ],
+    "backendDOMNodeId": 359
+  },
+  {
+    "nodeId": "39",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Long-term independence?",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Long-term independence?"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "223",
+    "childIds": [
+      "-1000000108"
+    ],
+    "backendDOMNodeId": 39
+  },
+  {
+    "nodeId": "360",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore financial independence",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore financial independence"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "224",
+    "childIds": [
+      "-1000000109"
+    ],
+    "backendDOMNodeId": 360
+  },
+  {
+    "nodeId": "361",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "How it works",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "How it works"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "229",
+    "childIds": [
+      "-1000000110"
+    ],
+    "backendDOMNodeId": 361
+  },
+  {
+    "nodeId": "362",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start with a question. Leave with a clearer plan.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Start with a question. Leave with a clearer plan."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "230",
+    "childIds": [
+      "-1000000111",
+      "-1000000112"
+    ],
+    "backendDOMNodeId": 362
+  },
+  {
+    "nodeId": "363",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Each tool helps you test assumptions, inspect the math, and understand what changes the outcome.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Each tool helps you test assumptions, inspect the math, and understand what changes the outcome."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "231",
+    "childIds": [
+      "-1000000113",
+      "-1000000114"
+    ],
+    "backendDOMNodeId": 363
+  },
+  {
+    "nodeId": "364",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Add your numbers",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Add your numbers"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "247",
+    "childIds": [
+      "-1000000115"
+    ],
+    "backendDOMNodeId": 364
+  },
+  {
+    "nodeId": "365",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start with your savings and spending.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Start with your savings and spending."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "248",
+    "childIds": [
+      "-1000000116"
+    ],
+    "backendDOMNodeId": 365
+  },
+  {
+    "nodeId": "366",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Try different assumptions",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Try different assumptions"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "255",
+    "childIds": [
+      "-1000000117"
+    ],
+    "backendDOMNodeId": 366
+  },
+  {
+    "nodeId": "367",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore how changes affect the estimate.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Explore how changes affect the estimate."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "256",
+    "childIds": [
+      "-1000000118",
+      "-1000000119"
+    ],
+    "backendDOMNodeId": 367
+  },
+  {
+    "nodeId": "368",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Review the results",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Review the results"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "264",
+    "childIds": [
+      "-1000000120"
+    ],
+    "backendDOMNodeId": 368
+  },
+  {
+    "nodeId": "369",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See the timeline and the assumptions behind it.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "See the timeline and the assumptions behind it."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "265",
+    "childIds": [
+      "-1000000121",
+      "-1000000122"
+    ],
+    "backendDOMNodeId": 369
+  },
+  {
+    "nodeId": "-1000000123",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start without an account."
+    },
+    "properties": [],
+    "parentId": "370",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000124",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Use the public calculators before deciding whether to create an account."
+    },
+    "properties": [],
+    "parentId": "371",
+    "childIds": []
+  },
+  {
+    "nodeId": "372",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FinPath",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FinPath"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "279",
+    "childIds": [
+      "-1000000125"
+    ],
+    "backendDOMNodeId": 372
+  },
+  {
+    "nodeId": "-1000000126",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Track today. Test tomorrow. Keep the assumptions yours."
+    },
+    "properties": [],
+    "parentId": "373",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000127",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Browse calculators"
+    },
+    "properties": [],
+    "parentId": "374",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000006",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Workspace"
+    },
+    "properties": [],
+    "parentId": "289",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000009",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Plan your financial future"
+    },
+    "properties": [],
+    "parentId": "292",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000010",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See when you "
+    },
+    "properties": [],
+    "parentId": "4",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000011",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "could retire."
+    },
+    "properties": [],
+    "parentId": "4",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000012",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See how saving more or spending less could change your "
+    },
+    "properties": [],
+    "parentId": "293",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000013",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "retirement timeline. Try it free, without an account."
+    },
+    "properties": [],
+    "parentId": "293",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000014",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore my retirement timeline"
+    },
+    "properties": [],
+    "parentId": "294",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000015",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore all calculators"
+    },
+    "properties": [],
+    "parentId": "295",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000016",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Popular starts"
+    },
+    "properties": [],
+    "parentId": "296",
+    "childIds": []
+  },
+  {
+    "nodeId": "297",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Mortgage",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Mortgage"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "8",
+    "childIds": [
+      "-1000000017"
+    ],
+    "backendDOMNodeId": 297
+  },
+  {
+    "nodeId": "298",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Debt payoff",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Debt payoff"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "10",
+    "childIds": [
+      "-1000000018"
+    ],
+    "backendDOMNodeId": 298
+  },
+  {
+    "nodeId": "299",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Compound interest",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Compound interest"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "12",
+    "childIds": [
+      "-1000000019"
+    ],
+    "backendDOMNodeId": 299
+  },
+  {
+    "nodeId": "300",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FIRE",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "FIRE"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "14",
+    "childIds": [
+      "-1000000020"
+    ],
+    "backendDOMNodeId": 300
+  },
+  {
+    "nodeId": "-1000000021",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Illustrative example · USD"
+    },
+    "properties": [],
+    "parentId": "301",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000022",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "30-year"
+    },
+    "properties": [],
+    "parentId": "302",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000023",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": " horizon"
+    },
+    "properties": [],
+    "parentId": "303",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000024",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Modeled retirement target"
+    },
+    "properties": [],
+    "parentId": "304",
+    "childIds": []
+  },
+  {
+    "nodeId": "305",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$965,931",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$965,931"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "158",
+    "childIds": [
+      "-1000000025"
+    ],
+    "backendDOMNodeId": 305
+  },
+  {
+    "nodeId": "-1000000026",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Target nest egg to fund "
+    },
+    "properties": [],
+    "parentId": "306",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000027",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$60,000"
+    },
+    "properties": [],
+    "parentId": "307",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000028",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "/yr initial spending"
+    },
+    "properties": [],
+    "parentId": "308",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000029",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Current starting point"
+    },
+    "properties": [],
+    "parentId": "309",
+    "childIds": []
+  },
+  {
+    "nodeId": "310",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$500,000",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$500,000"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "162",
+    "childIds": [
+      "-1000000030"
+    ],
+    "backendDOMNodeId": 310
+  },
+  {
+    "nodeId": "-1000000031",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Gap to modeled target: "
+    },
+    "properties": [],
+    "parentId": "311",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000032",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$465,931"
+    },
+    "properties": [],
+    "parentId": "312",
+    "childIds": []
+  },
+  {
+    "nodeId": "165",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "Figcaption"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 83
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        },
+        {
+          "type": "attribute",
+          "attribute": "title"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "164",
+    "childIds": [
+      "166",
+      "170"
+    ],
+    "backendDOMNodeId": 165
+  },
+  {
+    "nodeId": "171",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "164",
+    "childIds": [
+      "316",
+      "317",
+      "318",
+      "16",
+      "17",
+      "18",
+      "19"
+    ],
+    "backendDOMNodeId": 171
+  },
+  {
+    "nodeId": "172",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "paragraph"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 133
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "164",
+    "childIds": [
+      "319",
+      "320",
+      "321",
+      "322",
+      "323",
+      "324",
+      "325",
+      "326",
+      "327",
+      "328",
+      "329",
+      "330",
+      "331",
+      "332",
+      "333",
+      "334",
+      "335"
+    ],
+    "backendDOMNodeId": 172
+  },
+  {
+    "nodeId": "20",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "image"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 99
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Retirement withdrawals trajectory Modeled trajectory starting at $965,931 in Year 0 and drawing down to $0 at Year 30 .",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "value": {
+            "type": "computedString",
+            "value": "Retirement withdrawals trajectory Modeled trajectory starting at $965,931 in Year 0 and drawing down to $0 at Year 30 ."
+          },
+          "attribute": "aria-labelledby",
+          "attributeValue": {
+            "type": "idrefList",
+            "value": ":r2: :r3:",
+            "relatedNodes": [
+              {
+                "backendDOMNodeId": 173,
+                "idref": ":r2:",
+                "text": "Retirement withdrawals trajectory"
+              },
+              {
+                "backendDOMNodeId": 174,
+                "idref": ":r3:",
+                "text": "Modeled trajectory starting at $965,931 in Year 0 and drawing down to $0 at Year 30 ."
+              }
+            ]
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label",
+          "superseded": true
+        },
+        {
+          "type": "relatedElement",
+          "value": {
+            "type": "computedString",
+            "value": "Retirement withdrawals trajectory"
+          },
+          "superseded": true,
+          "nativeSource": "title",
+          "nativeSourceValue": {
+            "type": "nodeList",
+            "relatedNodes": [
+              {
+                "backendDOMNodeId": 173,
+                "idref": ":r2:",
+                "text": "Retirement withdrawals trajectory"
+              },
+              {
+                "backendDOMNodeId": 174,
+                "idref": ":r3:",
+                "text": "Modeled trajectory starting at $965,931 in Year 0 and drawing down to $0 at Year 30 ."
+              }
+            ]
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "description": {
+      "type": "computedString",
+      "value": "Modeled trajectory starting at $965,931 in Year 0 and drawing down to $0 at Year 30."
+    },
+    "properties": [
+      {
+        "name": "labelledby",
+        "value": {
+          "type": "nodeList",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 173,
+              "idref": ":r2:",
+              "text": "Retirement withdrawals trajectory"
+            },
+            {
+              "backendDOMNodeId": 174,
+              "idref": ":r3:",
+              "text": "Modeled trajectory starting at $965,931 in Year 0 and drawing down to $0 at Year 30 ."
+            }
+          ]
+        }
+      }
+    ],
+    "parentId": "164",
+    "childIds": [
+      "173",
+      "174"
+    ],
+    "backendDOMNodeId": 20
+  },
+  {
+    "nodeId": "354",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Initial annual spending:",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Initial annual spending:"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "193",
+    "childIds": [
+      "-1000000092"
+    ],
+    "backendDOMNodeId": 354
+  },
+  {
+    "nodeId": "-1000000093",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": " "
+    },
+    "properties": [],
+    "parentId": "22",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000094",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$60,000"
+    },
+    "properties": [],
+    "parentId": "23",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000095",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "/yr"
+    },
+    "properties": [],
+    "parentId": "24",
+    "childIds": []
+  },
+  {
+    "nodeId": "355",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Nominal return:",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Nominal return:"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "194",
+    "childIds": [
+      "-1000000096"
+    ],
+    "backendDOMNodeId": 355
+  },
+  {
+    "nodeId": "-1000000097",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": " "
+    },
+    "properties": [],
+    "parentId": "26",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000098",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "7%"
+    },
+    "properties": [],
+    "parentId": "27",
+    "childIds": []
+  },
+  {
+    "nodeId": "356",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Inflation:",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Inflation:"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "196",
+    "childIds": [
+      "-1000000099"
+    ],
+    "backendDOMNodeId": 356
+  },
+  {
+    "nodeId": "-1000000100",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": " "
+    },
+    "properties": [],
+    "parentId": "28",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000101",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "2.5%"
+    },
+    "properties": [],
+    "parentId": "29",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000102",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "An estimate based on the assumptions shown, not a "
+    },
+    "properties": [],
+    "parentId": "357",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000103",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "guaranteed outcome."
+    },
+    "properties": [],
+    "parentId": "357",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000104",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Buying a home?"
+    },
+    "properties": [],
+    "parentId": "33",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000105",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore borrowing costs"
+    },
+    "properties": [],
+    "parentId": "358",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000106",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Growing your savings?"
+    },
+    "properties": [],
+    "parentId": "36",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000107",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore compound growth"
+    },
+    "properties": [],
+    "parentId": "359",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000108",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Long-term independence?"
+    },
+    "properties": [],
+    "parentId": "39",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000109",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore financial independence"
+    },
+    "properties": [],
+    "parentId": "360",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000110",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "How it works"
+    },
+    "properties": [],
+    "parentId": "361",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000111",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start with a question. Leave with a "
+    },
+    "properties": [],
+    "parentId": "362",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000112",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "clearer plan."
+    },
+    "properties": [],
+    "parentId": "362",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000113",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Each tool helps you test assumptions, inspect the math, and understand what "
+    },
+    "properties": [],
+    "parentId": "363",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000114",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "changes the outcome."
+    },
+    "properties": [],
+    "parentId": "363",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000115",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Add your numbers"
+    },
+    "properties": [],
+    "parentId": "364",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000116",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Start with your savings and spending."
+    },
+    "properties": [],
+    "parentId": "365",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000117",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Try different assumptions"
+    },
+    "properties": [],
+    "parentId": "366",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000118",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Explore how changes affect the "
+    },
+    "properties": [],
+    "parentId": "367",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000119",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "estimate."
+    },
+    "properties": [],
+    "parentId": "367",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000120",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Review the results"
+    },
+    "properties": [],
+    "parentId": "368",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000121",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "See the timeline and the assumptions behind "
+    },
+    "properties": [],
+    "parentId": "369",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000122",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "it."
+    },
+    "properties": [],
+    "parentId": "369",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000125",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FinPath"
+    },
+    "properties": [],
+    "parentId": "372",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000017",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Mortgage"
+    },
+    "properties": [],
+    "parentId": "297",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000018",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Debt payoff"
+    },
+    "properties": [],
+    "parentId": "298",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000019",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Compound interest"
+    },
+    "properties": [],
+    "parentId": "299",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000020",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "FIRE"
+    },
+    "properties": [],
+    "parentId": "300",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000025",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$965,931"
+    },
+    "properties": [],
+    "parentId": "305",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000030",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$500,000"
+    },
+    "properties": [],
+    "parentId": "310",
+    "childIds": []
+  },
+  {
+    "nodeId": "166",
+    "ignored": false,
+    "role": {
+      "type": "role",
+      "value": "generic"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 88
+    },
+    "name": {
+      "type": "computedString",
+      "value": "",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "attribute": "aria-label"
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "165",
+    "childIds": [
+      "167",
+      "313"
+    ],
+    "backendDOMNodeId": 166
+  },
+  {
+    "nodeId": "170",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "uninteresting",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "165",
+    "childIds": [
+      "314",
+      "315"
+    ],
+    "backendDOMNodeId": 170
+  },
+  {
+    "nodeId": "314",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Modeled end balance: ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Modeled end balance: "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "170",
+    "childIds": [
+      "-1000000035",
+      "-1000000036"
+    ],
+    "backendDOMNodeId": 314
+  },
+  {
+    "nodeId": "315",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$0",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$0"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "170",
+    "childIds": [
+      "-1000000037"
+    ],
+    "backendDOMNodeId": 315
+  },
+  {
+    "nodeId": "316",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Starting balance is the modeled target (",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Starting balance is the modeled target ("
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "171",
+    "childIds": [
+      "-1000000038"
+    ],
+    "backendDOMNodeId": 316
+  },
+  {
+    "nodeId": "317",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$965,931",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$965,931"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "171",
+    "childIds": [
+      "-1000000039"
+    ],
+    "backendDOMNodeId": 317
+  },
+  {
+    "nodeId": "318",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "). The separate gap of ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "). The separate gap of "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "171",
+    "childIds": [
+      "-1000000040",
+      "-1000000041"
+    ],
+    "backendDOMNodeId": 318
+  },
+  {
+    "nodeId": "16",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$465,931",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$465,931"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "171",
+    "childIds": [
+      "-1000000042"
+    ],
+    "backendDOMNodeId": 16
+  },
+  {
+    "nodeId": "17",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " is between current savings (",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " is between current savings ("
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "171",
+    "childIds": [
+      "-1000000043"
+    ],
+    "backendDOMNodeId": 17
+  },
+  {
+    "nodeId": "18",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$500,000",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$500,000"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "171",
+    "childIds": [
+      "-1000000044"
+    ],
+    "backendDOMNodeId": 18
+  },
+  {
+    "nodeId": "19",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": ") and this target.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": ") and this target."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "171",
+    "childIds": [
+      "-1000000045"
+    ],
+    "backendDOMNodeId": 19
+  },
+  {
+    "nodeId": "319",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Illustrative retirement drawdown over a ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Illustrative retirement drawdown over a "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000046",
+      "-1000000047",
+      "-1000000048",
+      "-1000000049",
+      "-1000000050"
+    ],
+    "backendDOMNodeId": 319
+  },
+  {
+    "nodeId": "320",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "30-year",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "30-year"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000051",
+      "-1000000052"
+    ],
+    "backendDOMNodeId": 320
+  },
+  {
+    "nodeId": "321",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " horizon from Year ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " horizon from Year "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000053",
+      "-1000000054",
+      "-1000000055"
+    ],
+    "backendDOMNodeId": 321
+  },
+  {
+    "nodeId": "322",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "0",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "0"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000056"
+    ],
+    "backendDOMNodeId": 322
+  },
+  {
+    "nodeId": "323",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " to Year ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " to Year "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000057",
+      "-1000000058"
+    ],
+    "backendDOMNodeId": 323
+  },
+  {
+    "nodeId": "324",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "30",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "30"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000059"
+    ],
+    "backendDOMNodeId": 324
+  },
+  {
+    "nodeId": "325",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": ". Starting balance is the modeled target of ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": ". Starting balance is the modeled target of "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000060",
+      "-1000000061",
+      "-1000000062",
+      "-1000000063",
+      "-1000000064",
+      "-1000000065",
+      "-1000000066",
+      "-1000000067"
+    ],
+    "backendDOMNodeId": 325
+  },
+  {
+    "nodeId": "326",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$965,931",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$965,931"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000068"
+    ],
+    "backendDOMNodeId": 326
+  },
+  {
+    "nodeId": "327",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " and concludes at a modeled end balance of ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " and concludes at a modeled end balance of "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000069",
+      "-1000000070",
+      "-1000000071",
+      "-1000000072",
+      "-1000000073",
+      "-1000000074",
+      "-1000000075",
+      "-1000000076"
+    ],
+    "backendDOMNodeId": 327
+  },
+  {
+    "nodeId": "328",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$0",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$0"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000077"
+    ],
+    "backendDOMNodeId": 328
+  },
+  {
+    "nodeId": "329",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": ", funding initial annual spending of ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": ", funding initial annual spending of "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000078",
+      "-1000000079",
+      "-1000000080",
+      "-1000000081",
+      "-1000000082",
+      "-1000000083"
+    ],
+    "backendDOMNodeId": 329
+  },
+  {
+    "nodeId": "330",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$60,000",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "$60,000"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000084"
+    ],
+    "backendDOMNodeId": 330
+  },
+  {
+    "nodeId": "331",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " with ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " with "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000085"
+    ],
+    "backendDOMNodeId": 331
+  },
+  {
+    "nodeId": "332",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "2.5%",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "2.5%"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000086"
+    ],
+    "backendDOMNodeId": 332
+  },
+  {
+    "nodeId": "333",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " inflation and ",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " inflation and "
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000087",
+      "-1000000088"
+    ],
+    "backendDOMNodeId": 333
+  },
+  {
+    "nodeId": "334",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "7%",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "7%"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000089"
+    ],
+    "backendDOMNodeId": 334
+  },
+  {
+    "nodeId": "335",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": " nominal return.",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": " nominal return."
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "172",
+    "childIds": [
+      "-1000000090",
+      "-1000000091"
+    ],
+    "backendDOMNodeId": 335
+  },
+  {
+    "nodeId": "173",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "20",
+    "childIds": [
+      "336"
+    ],
+    "backendDOMNodeId": 173
+  },
+  {
+    "nodeId": "336",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "173",
+    "childIds": [],
+    "backendDOMNodeId": 336
+  },
+  {
+    "nodeId": "174",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "20",
+    "childIds": [
+      "337",
+      "338",
+      "339",
+      "340",
+      "341",
+      "342",
+      "343",
+      "344",
+      "345"
+    ],
+    "backendDOMNodeId": 174
+  },
+  {
+    "nodeId": "337",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 337
+  },
+  {
+    "nodeId": "338",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 338
+  },
+  {
+    "nodeId": "339",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 339
+  },
+  {
+    "nodeId": "340",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 340
+  },
+  {
+    "nodeId": "341",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 341
+  },
+  {
+    "nodeId": "342",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 342
+  },
+  {
+    "nodeId": "343",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 343
+  },
+  {
+    "nodeId": "344",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 344
+  },
+  {
+    "nodeId": "345",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "notRendered",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "174",
+    "childIds": [],
+    "backendDOMNodeId": 345
+  },
+  {
+    "nodeId": "-1000000092",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Initial annual spending:"
+    },
+    "properties": [],
+    "parentId": "354",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000096",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Nominal return:"
+    },
+    "properties": [],
+    "parentId": "355",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000099",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Inflation:"
+    },
+    "properties": [],
+    "parentId": "356",
+    "childIds": []
+  },
+  {
+    "nodeId": "167",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "ariaHiddenElement",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "166",
+    "childIds": [
+      "168",
+      "169"
+    ],
+    "backendDOMNodeId": 167
+  },
+  {
+    "nodeId": "168",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "ariaHiddenSubtree",
+        "value": {
+          "type": "idref",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 167
+            }
+          ]
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "167",
+    "childIds": [],
+    "backendDOMNodeId": 168
+  },
+  {
+    "nodeId": "169",
+    "ignored": true,
+    "ignoredReasons": [
+      {
+        "name": "ariaHiddenSubtree",
+        "value": {
+          "type": "idref",
+          "relatedNodes": [
+            {
+              "backendDOMNodeId": 167
+            }
+          ]
+        }
+      }
+    ],
+    "role": {
+      "type": "role",
+      "value": "none"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 0
+    },
+    "parentId": "167",
+    "childIds": [],
+    "backendDOMNodeId": 169
+  },
+  {
+    "nodeId": "313",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "StaticText"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 158
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Retirement withdrawals from the modeled target",
+      "sources": [
+        {
+          "type": "contents",
+          "value": {
+            "type": "computedString",
+            "value": "Retirement withdrawals from the modeled target"
+          }
+        }
+      ]
+    },
+    "properties": [],
+    "parentId": "166",
+    "childIds": [
+      "-1000000033",
+      "-1000000034"
+    ],
+    "backendDOMNodeId": 313
+  },
+  {
+    "nodeId": "-1000000035",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Modeled end "
+    },
+    "properties": [],
+    "parentId": "314",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000036",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "balance: "
+    },
+    "properties": [],
+    "parentId": "314",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000037",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$0"
+    },
+    "properties": [],
+    "parentId": "315",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000038",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Starting balance is the modeled target ("
+    },
+    "properties": [],
+    "parentId": "316",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000039",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$965,931"
+    },
+    "properties": [],
+    "parentId": "317",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000040",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "). The separate gap "
+    },
+    "properties": [],
+    "parentId": "318",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000041",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "of "
+    },
+    "properties": [],
+    "parentId": "318",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000042",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$465,931"
+    },
+    "properties": [],
+    "parentId": "16",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000043",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": " is between current savings ("
+    },
+    "properties": [],
+    "parentId": "17",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000044",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$500,000"
+    },
+    "properties": [],
+    "parentId": "18",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000045",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": ") and this target."
+    },
+    "properties": [],
+    "parentId": "19",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000046",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Illustrative "
+    },
+    "properties": [],
+    "parentId": "319",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000047",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "retirement "
+    },
+    "properties": [],
+    "parentId": "319",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000048",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "drawdown "
+    },
+    "properties": [],
+    "parentId": "319",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000049",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "over "
+    },
+    "properties": [],
+    "parentId": "319",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000050",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "a "
+    },
+    "properties": [],
+    "parentId": "319",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000051",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "30-"
+    },
+    "properties": [],
+    "parentId": "320",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000052",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "year"
+    },
+    "properties": [],
+    "parentId": "320",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000053",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "horizon "
+    },
+    "properties": [],
+    "parentId": "321",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000054",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "from "
+    },
+    "properties": [],
+    "parentId": "321",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000055",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Year "
+    },
+    "properties": [],
+    "parentId": "321",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000056",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "0"
+    },
+    "properties": [],
+    "parentId": "322",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000057",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "to "
+    },
+    "properties": [],
+    "parentId": "323",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000058",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Year "
+    },
+    "properties": [],
+    "parentId": "323",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000059",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "30"
+    },
+    "properties": [],
+    "parentId": "324",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000060",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": ". "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000061",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Starting "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000062",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "balance "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000063",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "is "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000064",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "the "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000065",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "modeled "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000066",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "target "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000067",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "of "
+    },
+    "properties": [],
+    "parentId": "325",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000068",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$965,931"
+    },
+    "properties": [],
+    "parentId": "326",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000069",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "and "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000070",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "concludes "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000071",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "at "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000072",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "a "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000073",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "modeled "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000074",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "end "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000075",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "balance "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000076",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "of "
+    },
+    "properties": [],
+    "parentId": "327",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000077",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$0"
+    },
+    "properties": [],
+    "parentId": "328",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000078",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": ", "
+    },
+    "properties": [],
+    "parentId": "329",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000079",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "funding "
+    },
+    "properties": [],
+    "parentId": "329",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000080",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "initial "
+    },
+    "properties": [],
+    "parentId": "329",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000081",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "annual "
+    },
+    "properties": [],
+    "parentId": "329",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000082",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "spending "
+    },
+    "properties": [],
+    "parentId": "329",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000083",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "of "
+    },
+    "properties": [],
+    "parentId": "329",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000084",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "$60,000"
+    },
+    "properties": [],
+    "parentId": "330",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000085",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "with "
+    },
+    "properties": [],
+    "parentId": "331",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000086",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "2.5%"
+    },
+    "properties": [],
+    "parentId": "332",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000087",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "inflation "
+    },
+    "properties": [],
+    "parentId": "333",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000088",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "and "
+    },
+    "properties": [],
+    "parentId": "333",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000089",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "7%"
+    },
+    "properties": [],
+    "parentId": "334",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000090",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "nominal "
+    },
+    "properties": [],
+    "parentId": "335",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000091",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "return."
+    },
+    "properties": [],
+    "parentId": "335",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000033",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Retirement withdrawals from the "
+    },
+    "properties": [],
+    "parentId": "313",
+    "childIds": []
+  },
+  {
+    "nodeId": "-1000000034",
+    "ignored": false,
+    "role": {
+      "type": "internalRole",
+      "value": "InlineTextBox"
+    },
+    "chromeRole": {
+      "type": "internalRole",
+      "value": 101
+    },
+    "name": {
+      "type": "computedString",
+      "value": "modeled target"
+    },
+    "properties": [],
+    "parentId": "313",
+    "childIds": []
+  }
+]

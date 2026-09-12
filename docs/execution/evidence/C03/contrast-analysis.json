@@ -1,0 +1,108 @@
+[
+  {
+    "mode": "light",
+    "metrics": {
+      "heading": {
+        "color": "rgb(16, 44, 53)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "72.8px",
+        "fontWeight": "650"
+      },
+      "subtext": {
+        "color": "rgb(0, 107, 96)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.8px",
+        "fontWeight": "620"
+      },
+      "metricLabel": {
+        "color": "rgb(82, 104, 115)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12px",
+        "fontWeight": "500"
+      },
+      "metricValue": {
+        "color": "rgb(16, 44, 53)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "22.4px",
+        "fontWeight": "700"
+      },
+      "chartLegend": {
+        "color": "rgb(16, 44, 53)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.48px",
+        "fontWeight": "600"
+      },
+      "chartEnd": {
+        "color": "rgb(82, 104, 115)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.48px",
+        "fontWeight": "500"
+      },
+      "chartContext": {
+        "color": "rgb(54, 77, 86)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12px",
+        "fontWeight": "400"
+      },
+      "assumptionText": {
+        "color": "rgb(32, 58, 67)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.48px",
+        "fontWeight": "400"
+      }
+    }
+  },
+  {
+    "mode": "dark",
+    "metrics": {
+      "heading": {
+        "color": "rgb(234, 246, 247)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "72.8px",
+        "fontWeight": "650"
+      },
+      "subtext": {
+        "color": "rgb(105, 227, 202)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.8px",
+        "fontWeight": "620"
+      },
+      "metricLabel": {
+        "color": "rgb(164, 187, 196)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12px",
+        "fontWeight": "500"
+      },
+      "metricValue": {
+        "color": "rgb(234, 246, 247)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "22.4px",
+        "fontWeight": "700"
+      },
+      "chartLegend": {
+        "color": "rgb(234, 246, 247)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.48px",
+        "fontWeight": "600"
+      },
+      "chartEnd": {
+        "color": "rgb(164, 187, 196)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.48px",
+        "fontWeight": "500"
+      },
+      "chartContext": {
+        "color": "rgb(197, 212, 220)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12px",
+        "fontWeight": "400"
+      },
+      "assumptionText": {
+        "color": "rgb(216, 231, 234)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontSize": "12.48px",
+        "fontWeight": "400"
+      }
+    }
+  }
+]

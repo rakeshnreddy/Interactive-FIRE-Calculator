@@ -1,0 +1,14 @@
+{
+  "reducedMotion": {
+    "matches": true,
+    "pass": true
+  },
+  "reducedTransparency": {
+    "matches": false,
+    "pass": false
+  },
+  "forcedColors": {
+    "matches": true,
+    "pass": true
+  }
+}
