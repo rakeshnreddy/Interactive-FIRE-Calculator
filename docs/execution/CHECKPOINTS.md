@@ -56,3 +56,5 @@ C02 acceptance 2026-09-11 supersedes earlier release notes: B02/B03/B04 pass tog
 C03 first review 2026-09-11: changes requested for B18 chart scenario/accessibility and shared evidence integrity. No C03 tasks closed; C04 stays locked. C03 is released only for the bounded rework in C03_REWORK_PROMPT.md.
 
 C03 rework review 2026-09-12 UTC: R1/R2 implementation repaired at 3100b70; R3 verification remains changes_requested (CSS zoom mislabeled native, no contrast ratios, ignored failing media check). No C03 closure or C04 release. Follow C03_VALIDATION_REWORK_PROMPT.md; preserve repaired product code.
+
+C03 second rework review 2026-09-12: primary repaired eight evaluator false-pass paths; actual submitted PDF pagination fails and visual/assisted evidence remains incomplete. Primary owns remaining bounded repair under protocol section 6. No C03 closure or C04 release. See reviews/C03.md.

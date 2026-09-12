@@ -431,6 +431,57 @@ function evaluateResults(rawResults = {}) {
     }
   }
 
+  // Independent completeness checks: cardinality cannot prove case identity.
+  // These checks supplement observed failures; they never promote a blocked row.
+  const reject = (id, details) => {
+    checks[id] = { status: 'FAIL', details };
+    failures.push(`${id}: ${details}`);
+  };
+  const exactSet = (id, rows, key, expected) => {
+    if (!Array.isArray(rows)) return;
+    const actual = rows.map(row => row && key(row));
+    if (actual.length !== expected.length || new Set(actual).size !== actual.length ||
+        expected.some(value => !actual.includes(value))) {
+      reject(id, 'Missing, duplicate, or unexpected required case identity');
+    }
+  };
+  exactSet('responsive_layout_matrix', matrix, c => `${c.route}|${c.width}|${c.mode}`,
+    ['/', '/calculators', '/dashboard'].flatMap(route =>
+      [320, 390, 612, 768, 1440].flatMap(width =>
+        ['light', 'dark'].map(mode => `${route}|${width}|${mode}`))));
+  exactSet('browser_interactions', interactions, c => c.case, [
+    'mixed-case trim FIRE', 'no match', 'clear restoration', 'keyboard FIRE navigation',
+    'auth public escape', 'auth loading public escape', 'auth signed-out public escape'
+  ]);
+  exactSet('copy_inspection', copy, c => c.route, [
+    '/calculators/mortgage', '/calculators/compound-interest',
+    '/calculators/debt-payoff', '/calculators/amortization'
+  ]);
+  exactSet('composed_contrast', contrastPairs, c => c.id,
+    ['light', 'dark'].flatMap(mode => [
+      'heading', 'subtext', 'eyebrow', 'cta_primary', 'cta_secondary', 'metric_label',
+      'metric_value', 'chart_legend_label', 'chart_legend_end', 'chart_context', 'assumption_text'
+    ].map(id => `contrast_${mode}_${id}`)));
+  if (Array.isArray(contrastPairs) && contrastPairs.some(p =>
+      !p || !Number.isFinite(p.ratio) || !Number.isFinite(p.threshold) ||
+      p.ratio < 1 || p.ratio > 21 || ![3, 4.5].includes(p.threshold))) {
+    reject('composed_contrast', 'Nonfinite, invalid ratio or invalid text threshold');
+  }
+  const validRect = r => r && ['x', 'y', 'width', 'height', 'right', 'bottom']
+    .every(k => Number.isFinite(r[k])) && r.width > 0 && r.height > 0 &&
+    Math.abs(r.x + r.width - r.right) < 0.1 &&
+    Math.abs(r.y + r.height - r.bottom) < 0.1;
+  if (Array.isArray(matrix) && matrix.some(c => !c || !validRect(c.h1) ||
+      (c.route === '/' && (!Array.isArray(c.cta) || !c.cta.length || !c.cta.every(validRect) ||
+       !Array.isArray(c.example) || !c.example.length || !c.example.every(validRect))))) {
+    reject('responsive_layout_matrix', 'Missing, nonfinite, invisible or inconsistent rectangle');
+  }
+  if (print && (print.readableText !== true || print.noClipping !== true)) {
+    reject('print_output', 'Readable text and no clipping must both be observed true');
+  }
+  exactSet('print_output', print?.pdfs, name => name,
+    ['print-light-bg.pdf', 'print-light-nobg.pdf', 'print-dark-bg.pdf', 'print-dark-nobg.pdf']);
+
   // Derive overall status and exit code
   let overallStatus = 'PASS';
   let exitCode = 0;
