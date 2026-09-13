@@ -177,4 +177,134 @@ describe('cashflow planning share and draft boundaries', () => {
     expect(restored?.inputs.cashAndBank).toBe(40_000);
     expect(restored?.inputs.mortgage).toBe(defaultNetWorthInputs.mortgage);
   });
+
+  it('adopts unified scope note, native FAQ disclosure, and removes duplicate trust-banner emphasis (B23)', () => {
+    for (const slug of ['net-worth', 'budget', 'emergency-fund']) {
+      const calculator = findSeoCalculator(`/calculators/${slug}`)!;
+      const html = renderToStaticMarkup(
+        <CashflowPlanningCalculator
+          auth={auth}
+          calculator={calculator}
+          onNavigate={() => undefined}
+          onSaveResult={async () => ({ destinationRoute: calculator.conversionRoute, message: 'Saved', savedResultId: 'saved-1' })}
+          savedResults={[]}
+        />
+      );
+      document.body.innerHTML = html;
+
+      // Scope note present
+      const scopeNote = document.querySelector('.calculator-scope-note');
+      expect(scopeNote).not.toBeNull();
+      expect(scopeNote?.textContent?.length).toBeGreaterThan(10);
+
+      // Duplicate trust-banner strip removed to reduce excessive framing (V10)
+      expect(document.querySelector('.compound-trust-strip')).toBeNull();
+
+      // FAQ uses native disclosure
+      expect(document.querySelector('.compound-faq-card')).not.toBeNull();
+    }
+  });
+
+  it('provides distinct accounting labels for deficit/surplus, net liabilities, and reserve coverage without color alone (B23)', () => {
+    // 1. Net worth deficit: $50k assets vs $150k liabilities -> net worth -$100k
+    const netWorthCalc = findSeoCalculator('/calculators/net-worth')!;
+    window.localStorage.setItem('finpath.calculatorDraft.net-worth.v2', JSON.stringify({
+      currency: 'USD',
+      formulaVersion: netWorthFormulaVersion,
+      inputs: {
+        ...defaultNetWorthInputs,
+        cashAndBank: 50_000,
+        taxableInvestments: 0,
+        retirementAccounts: 0,
+        realEstate: 0,
+        vehiclesAndValuables: 0,
+        otherAssets: 0,
+        mortgage: 100_000,
+        studentAndPersonalLoans: 50_000,
+        vehicleLoans: 0,
+        creditCards: 0,
+        otherLiabilities: 0
+      },
+      locale: 'auto',
+      updatedAt: '2026-09-13T00:00:00.000Z'
+    }));
+    window.history.replaceState({}, '', '/calculators/net-worth');
+    document.body.innerHTML = renderToStaticMarkup(
+      <CashflowPlanningCalculator
+        auth={auth}
+        calculator={netWorthCalc}
+        onNavigate={() => undefined}
+        onSaveResult={async () => ({ destinationRoute: '/accounts', message: 'Saved', savedResultId: 'saved-1' })}
+        savedResults={[]}
+      />
+    );
+    expect(document.body.textContent).toContain('Estimated net deficit');
+    expect(document.body.textContent).toContain('Net deficit (liabilities exceed assets)');
+
+    // 2. Budget deficit: $3,000 income vs $5,000 spending -> deficit -$2,000
+    const budgetCalc = findSeoCalculator('/calculators/budget')!;
+    window.localStorage.setItem('finpath.calculatorDraft.budget.v2', JSON.stringify({
+      currency: 'USD',
+      formulaVersion: budgetFormulaVersion,
+      inputs: {
+        ...defaultBudgetInputs,
+        takeHomePay: 3_000,
+        otherIncome: 0,
+        housing: 2_500,
+        groceriesAndEssentials: 1_500,
+        utilitiesAndTransport: 1_000,
+        debtMinimums: 0,
+        lifestyleAndFlexible: 0,
+        subscriptionsAndFees: 0,
+        otherExpenses: 0,
+        plannedSavings: 0
+      },
+      locale: 'auto',
+      updatedAt: '2026-09-13T00:00:00.000Z'
+    }));
+    window.history.replaceState({}, '', '/calculators/budget');
+    document.body.innerHTML = renderToStaticMarkup(
+      <CashflowPlanningCalculator
+        auth={auth}
+        calculator={budgetCalc}
+        onNavigate={() => undefined}
+        onSaveResult={async () => ({ destinationRoute: '/transactions', message: 'Saved', savedResultId: 'saved-1' })}
+        savedResults={[]}
+      />
+    );
+    expect(document.body.textContent).toContain('Monthly deficit');
+    expect(document.body.textContent).toContain('Monthly deficit (spending exceeds income)');
+
+    // 3. Emergency fund fully funded: target $15,000 vs current reserve $20,000
+    const emergencyCalc = findSeoCalculator('/calculators/emergency-fund')!;
+    window.localStorage.setItem('finpath.calculatorDraft.emergency-fund.v2', JSON.stringify({
+      currency: 'USD',
+      formulaVersion: emergencyFundFormulaVersion,
+      inputs: {
+        ...defaultEmergencyFundInputs,
+        monthlyEssentials: 3_000,
+        targetMonths: 5,
+        oneTimeBuffer: 0,
+        cashOnHand: 5_000,
+        bankSavings: 15_000,
+        shortTermDeposits: 0,
+        accessibleInvestments: 0
+      },
+      locale: 'auto',
+      updatedAt: '2026-09-13T00:00:00.000Z'
+    }));
+    window.history.replaceState({}, '', '/calculators/emergency-fund');
+    document.body.innerHTML = renderToStaticMarkup(
+      <CashflowPlanningCalculator
+        auth={auth}
+        calculator={emergencyCalc}
+        onNavigate={() => undefined}
+        onSaveResult={async () => ({ destinationRoute: '/goals', message: 'Saved', savedResultId: 'saved-1' })}
+        savedResults={[]}
+      />
+    );
+    expect(document.body.textContent).toContain('Emergency fund target');
+    expect(document.body.textContent).toContain('Fully funded');
+    expect(document.body.textContent).toContain('Reserve target fully covered');
+  });
 });
