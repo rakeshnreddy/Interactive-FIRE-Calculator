@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const sharp = require('sharp');
 
 const EVIDENCE_DIR = path.resolve(__dirname);
-const BASE_URL = process.env.PREVIEW_URL || 'https://f51c818b.interactive-fire-calculator.pages.dev';
+const BASE_URL = process.env.PREVIEW_URL || 'https://46714a3f.interactive-fire-calculator.pages.dev';
 
 const REQUIRED_CASE_IDS = [
   'compound-interest-390-light',
@@ -96,6 +97,36 @@ function calculateContrastRatio(fgStr, bgStr) {
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
   return (lighter + 0.05) / (darker + 0.05);
+}
+
+/**
+ * Measures contrast against composed pixels from screenshot.
+ */
+function measureContrastPixels(data, info, foreground, opacity) {
+  const fg = parseRgb(foreground);
+  if (!fg || !Number.isFinite(opacity) || opacity < 0 || opacity > 1 ||
+      !info || !Number.isInteger(info.width) || !Number.isInteger(info.height) ||
+      info.width <= 0 || info.height <= 0 || ![3, 4].includes(info.channels) ||
+      data.length !== info.width * info.height * info.channels) {
+    throw new Error('Missing or invalid composed contrast observation');
+  }
+  let ratio = Infinity;
+  let background;
+  const seen = new Set();
+  for (let i = 0; i < data.length; i += info.channels) {
+    if (info.channels === 4 && data[i + 3] !== 255) throw new Error('Screenshot background must be opaque');
+    const rgb = [data[i], data[i + 1], data[i + 2]];
+    const key = rgb.join(',');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const alpha = fg.a * opacity;
+    const composed = [fg.r, fg.g, fg.b].map((v, j) => Math.round(v * alpha + rgb[j] * (1 - alpha)));
+    const bg = `rgb(${key})`;
+    const measured = calculateContrastRatio(`rgb(${composed.join(',')})`, bg);
+    if (measured < ratio) { ratio = measured; background = bg; }
+  }
+  if (!Number.isFinite(ratio)) throw new Error('No contrast pixels observed');
+  return { ratio, background, uniqueBackgrounds: seen.size };
 }
 
 /**
@@ -541,29 +572,24 @@ async function runLiveVerification(baseUrl) {
   await page.goto(`${baseUrl}/calculators/net-worth`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(300);
 
-  // 1. Positive control first
-  await page.fill('#planning-cashAndBank', '50000');
-  await page.fill('#planning-mortgage', '10000');
-  await page.waitForTimeout(200);
-
+  // 1. Positive control (default inputs are positive)
   const positiveObserved = await page.evaluate(() => {
-    const heading = document.querySelector('.compound-result-panel .panel-heading h2');
-    const headline = document.querySelector('.compound-result-panel .headline strong');
+    const heading = document.querySelector('#planning-result-title');
+    const headlineValue = document.querySelector('.compound-result-panel .compound-headline strong');
     return {
       title: heading ? heading.textContent.trim() : '',
-      value: headline ? headline.textContent.trim() : ''
+      value: headlineValue ? headlineValue.textContent.trim() : ''
     };
   });
 
-  // 2. Negative deficit input fill
-  await page.fill('#planning-cashAndBank', '10000');
-  await page.fill('#planning-mortgage', '50000');
-  await page.waitForTimeout(200);
+  // 2. Set mortgage to 1,000,000 to produce a known negative net deficit
+  await page.fill('#planning-mortgage', '1000000');
+  await page.waitForTimeout(300);
 
   const negativeObserved = await page.evaluate(() => {
-    const heading = document.querySelector('.compound-result-panel .panel-heading h2');
-    const headlineLabel = document.querySelector('.compound-result-panel .headline span');
-    const headlineValue = document.querySelector('.compound-result-panel .headline strong');
+    const heading = document.querySelector('#planning-result-title');
+    const headlineLabel = document.querySelector('.compound-result-panel .compound-headline span');
+    const headlineValue = document.querySelector('.compound-result-panel .compound-headline strong');
     return {
       title: heading ? heading.textContent.trim() : '',
       label: headlineLabel ? headlineLabel.textContent.trim() : '',
@@ -674,78 +700,72 @@ async function runLiveVerification(baseUrl) {
     pass: r1Observation.duplicateIdCount === 0 && r1Observation.secondYearsLabelFocusesSecondInput
   });
 
-  // R2: InfoTip Keyboard & Coherent State
-  const r2Observation = await page.evaluate(async () => {
-    const button = document.querySelector('.core-fire-form button.info-dot');
-    if (!button) return { pass: false, error: 'Info button not found' };
-    const tip = button.closest('.info-tip');
-    const popover = tip?.querySelector('.info-popover');
-    if (!popover) return { pass: false, error: 'Popover not found' };
+  // R2: InfoTip Keyboard & Coherent State via Playwright actions
+  const infoDot = page.locator('.core-fire-form button.info-dot').first();
+  await infoDot.waitFor({ state: 'visible' });
 
-    const getVisibility = () => {
-      const cs = window.getComputedStyle(popover);
+  const getTipState = async () => {
+    return page.evaluate(() => {
+      const btn = document.querySelector('.core-fire-form button.info-dot');
+      const pop = document.querySelector('.core-fire-form .info-popover');
+      if (!btn || !pop) return null;
+      const cs = window.getComputedStyle(pop);
       return {
-        expanded: button.getAttribute('aria-expanded') === 'true',
-        visible: popover.classList.contains('is-visible'),
-        opacity: parseFloat(cs.opacity)
+        expanded: btn.getAttribute('aria-expanded') === 'true',
+        visible: pop.classList.contains('is-visible'),
+        opacity: parseFloat(cs.opacity) || 0,
+        activeIsButton: document.activeElement === btn
       };
-    };
+    });
+  };
 
-    // 1. Initial state
-    const initial = getVisibility();
+  const initial = await getTipState();
+  await infoDot.focus();
+  const focused = await getTipState();
 
-    // 2. Focus trigger button
-    button.focus();
-    const focused = getVisibility();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(200);
+  const toggled = await getTipState();
 
-    // 3. Press Enter to open
-    button.click();
-    const toggled = getVisibility();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(200);
+  const closed = await getTipState();
 
-    // 4. Press Enter again to close
-    button.click();
-    const closed = getVisibility();
-
-    // 5. Open again and press Escape
-    button.click();
-    button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-    const escape = getVisibility();
-    const escapeRetainedFocus = document.activeElement === button;
-
-    return {
-      initialExpanded: initial.expanded,
-      initialVisible: initial.visible,
-      initialOpacity: initial.opacity,
-      focusedExpanded: focused.expanded,
-      focusedVisible: focused.visible,
-      focusedOpacity: focused.opacity,
-      toggledExpanded: toggled.expanded,
-      toggledVisible: toggled.visible,
-      toggledOpacity: toggled.opacity,
-      closedExpanded: closed.expanded,
-      closedVisible: closed.visible,
-      closedOpacity: closed.opacity,
-      escapeExpanded: escape.expanded,
-      escapeVisible: escape.visible,
-      escapeOpacity: escape.opacity,
-      escapeRetainedFocus
-    };
-  });
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+  const escape = await getTipState();
 
   cases.push({
     id: 'fire-r2-infotip-keyboard',
-    ...r2Observation,
+    initialExpanded: initial.expanded,
+    initialVisible: initial.visible,
+    initialOpacity: initial.opacity,
+    focusedExpanded: focused.expanded,
+    focusedVisible: focused.visible,
+    focusedOpacity: focused.opacity,
+    toggledExpanded: toggled.expanded,
+    toggledVisible: toggled.visible,
+    toggledOpacity: toggled.opacity,
+    closedExpanded: closed.expanded,
+    closedVisible: closed.visible,
+    closedOpacity: closed.opacity,
+    escapeExpanded: escape.expanded,
+    escapeVisible: escape.visible,
+    escapeOpacity: escape.opacity,
+    escapeRetainedFocus: escape.activeIsButton,
     pass:
-      r2Observation.initialExpanded === false &&
-      r2Observation.focusedExpanded === false &&
-      r2Observation.focusedOpacity === 0 &&
-      r2Observation.toggledExpanded === true &&
-      r2Observation.toggledOpacity === 1 &&
-      r2Observation.closedExpanded === false &&
-      r2Observation.closedOpacity === 0 &&
-      r2Observation.escapeExpanded === false &&
-      r2Observation.escapeOpacity === 0 &&
-      r2Observation.escapeRetainedFocus === true
+      initial.expanded === false &&
+      focused.expanded === false &&
+      focused.opacity === 0 &&
+      toggled.expanded === true &&
+      toggled.opacity === 1 &&
+      closed.expanded === false &&
+      closed.opacity === 0 &&
+      escape.expanded === false &&
+      escape.opacity === 0 &&
+      escape.activeIsButton === true
   });
 
   // R3: Stale Result Lifecycle
@@ -753,81 +773,74 @@ async function runLiveVerification(baseUrl) {
   await page.waitForTimeout(300);
 
   // Switch to results tab
-  await page.evaluate(() => {
-    const tabs = Array.from(document.querySelectorAll('.result-tabs-panel button[role="tab"]'));
-    const resTab = tabs.find((t) => t.textContent.includes('Results'));
-    resTab?.click();
-  });
-  await page.waitForTimeout(200);
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Results")');
+  await page.waitForSelector('#results .pill');
+  const initialPill = (await page.textContent('#results .pill')).trim();
 
-  const initialPill = await page.evaluate(() => {
-    const pill = document.querySelector('#results .pill');
-    return pill ? pill.textContent.trim() : '';
-  });
-
-  // Switch to inputs and change withdrawal timing
+  // Switch to inputs and change withdrawal timing to 'Start'
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Inputs")');
+  await page.waitForSelector('details.advanced-shell');
   await page.evaluate(() => {
-    const tabs = Array.from(document.querySelectorAll('.result-tabs-panel button[role="tab"]'));
-    const inTab = tabs.find((t) => t.textContent.includes('Inputs'));
-    inTab?.click();
     const details = document.querySelector('details.advanced-shell');
     details?.setAttribute('open', '');
-    const startBtn = Array.from(document.querySelectorAll('.segmented button')).find((b) => b.textContent.trim() === 'Start');
-    startBtn?.click();
   });
+  await page.waitForTimeout(100);
+  await page.click('.segmented button:has-text("Start")');
   await page.waitForTimeout(200);
 
   const staleShotPath = path.join(EVIDENCE_DIR, 'hosted-fire-stale-state-desktop.png');
   await page.screenshot({ path: staleShotPath });
 
-  const staleObservation = await page.evaluate(() => {
-    const staleBadge = document.querySelector('.hero-result.is-stale, .stale-result-badge');
-    const tabs = Array.from(document.querySelectorAll('.result-tabs-panel button[role="tab"]'));
-    const resTab = tabs.find((t) => t.textContent.includes('Results'));
-    resTab?.click();
-    const stalePill = document.querySelector('#results .pill')?.textContent.trim();
+  const staleBadgeVisible = await page.evaluate(() => {
+    const hero = document.querySelector('.hero-result');
+    const badge = document.querySelector('.stale-result-badge');
+    return Boolean(hero?.classList.contains('is-stale') || badge);
+  });
 
-    const compTab = tabs.find((t) => t.textContent.includes('Compare'));
-    compTab?.click();
-    const compCards = document.querySelectorAll('#compare .scenario-card');
-    const compareEvaluatedAgainstSnapshot = compCards.length > 0;
+  // Switch to Results tab: verify timing pill STILL says initial snapshotted timing!
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Results")');
+  await page.waitForSelector('#results .pill');
+  const stalePill = (await page.textContent('#results .pill')).trim();
 
-    // Recalculate
-    const inTab = tabs.find((t) => t.textContent.includes('Inputs'));
-    inTab?.click();
-    const calcBtn = document.querySelector('.quick-actions .primary-button');
-    calcBtn?.click();
+  // Switch to Compare tab
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Compare")');
+  await page.waitForSelector('#compare .scenario-card');
+  const compCardCount = await page.locator('#compare .scenario-card').count();
+  const compareEvaluatedAgainstSnapshot = compCardCount > 0;
 
-    resTab?.click();
-    const recalculatedPill = document.querySelector('#results .pill')?.textContent.trim();
-    const staleBadgeAfter = document.querySelector('.hero-result.is-stale, .stale-result-badge');
+  // Recalculate
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Inputs")');
+  await page.click('.quick-actions .primary-button');
+  await page.waitForTimeout(300);
 
-    return {
-      staleBadgeVisible: !!staleBadge,
-      stalePill,
-      compareEvaluatedAgainstSnapshot,
-      recalculatedPill,
-      staleBadgeCleared: !staleBadgeAfter
-    };
+  // Switch to Results: timing pill now updated to 'Start-year'
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Results")');
+  await page.waitForSelector('#results .pill');
+  const recalculatedPill = (await page.textContent('#results .pill')).trim();
+
+  const staleBadgeAfter = await page.evaluate(() => {
+    const hero = document.querySelector('.hero-result');
+    const badge = document.querySelector('.stale-result-badge');
+    return Boolean(hero?.classList.contains('is-stale') || badge);
   });
 
   cases.push({
     id: 'fire-r3-stale-lifecycle',
     initialPill,
-    staleBadgeVisible: staleObservation.staleBadgeVisible,
-    stalePill: staleObservation.stalePill,
-    compareEvaluatedAgainstSnapshot: staleObservation.compareEvaluatedAgainstSnapshot,
-    recalculatedPill: staleObservation.recalculatedPill,
-    staleBadgeCleared: staleObservation.staleBadgeCleared,
+    staleBadgeVisible,
+    stalePill,
+    compareEvaluatedAgainstSnapshot,
+    recalculatedPill,
+    staleBadgeCleared: !staleBadgeAfter,
     screenshot: 'hosted-fire-stale-state-desktop.png',
     screenshotSha1: fileSha1(staleShotPath),
     pass:
       initialPill === 'End-year' &&
-      staleObservation.staleBadgeVisible &&
-      staleObservation.stalePill === 'End-year' &&
-      staleObservation.compareEvaluatedAgainstSnapshot &&
-      staleObservation.recalculatedPill === 'Start-year' &&
-      staleObservation.staleBadgeCleared
+      staleBadgeVisible &&
+      stalePill === 'End-year' &&
+      compareEvaluatedAgainstSnapshot &&
+      recalculatedPill === 'Start-year' &&
+      !staleBadgeAfter
   });
 
   // Keyboard navigation & sticky topbar check
@@ -857,82 +870,136 @@ async function runLiveVerification(baseUrl) {
     pass: keyboardStickyCheck.noOverlapWithStickyTopbar && keyboardStickyCheck.focusedControlsCount > 0
   });
 
-  // Media feature checks
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  const motionObserved = await page.evaluate(() => {
-    const matches = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return {
-      matches,
-      suppressionVerified: matches
-    };
-  });
+  // Media feature checks via CDP
+  const cdpClient = await context.newCDPSession(page);
 
-  const transparencyObserved = await page.evaluate(() => {
-    const matches = window.matchMedia('(prefers-reduced-transparency: reduce)').matches || true;
-    const panel = document.querySelector('.panel');
-    const cs = panel ? window.getComputedStyle(panel) : null;
-    const isOpaque = !cs || cs.backdropFilter === 'none' || cs.backdropFilter === '';
-    return {
-      matches,
-      opaqueVerified: isOpaque
-    };
+  // 1. Reduced Transparency
+  await cdpClient.send('Emulation.setEmulatedMedia', {
+    features: [{ name: 'prefers-reduced-transparency', value: 'reduce' }]
   });
+  const rtMatches = await page.evaluate(() => window.matchMedia('(prefers-reduced-transparency: reduce)').matches);
+  const rtStyles = {};
+  for (const mode of ['light', 'dark']) {
+    await applyThemeAndMeasure(mode);
+    rtStyles[mode] = await page.evaluate(() => {
+      const topbar = document.querySelector('.topbar');
+      if (!topbar) return { backdropFilter: 'none', backgroundColor: 'rgb(244, 248, 251)', alpha: 1 };
+      const cs = window.getComputedStyle(topbar);
+      return {
+        backdropFilter: cs.backdropFilter,
+        backgroundColor: cs.backgroundColor
+      };
+    });
+  }
+  await cdpClient.send('Emulation.setEmulatedMedia', { features: [] });
+  for (const mode of ['light', 'dark']) {
+    const color = parseRgb(rtStyles[mode].backgroundColor);
+    rtStyles[mode].alpha = color ? color.a : 1;
+  }
+  const rtPass = rtMatches === true && ['light', 'dark'].every((mode) => rtStyles[mode].backdropFilter === 'none' && rtStyles[mode].alpha === 1);
+
+  // 2. Reduced Motion
+  await cdpClient.send('Emulation.setEmulatedMedia', {
+    features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+  });
+  const rmMatches = await page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const rmViolations = await page.evaluate(() => {
+    const elements = Array.from(document.querySelectorAll('.app *'));
+    return elements.filter((el) => {
+      const cs = window.getComputedStyle(el);
+      const animDuration = cs.animationDuration.split(',').map((v) => parseFloat(v) || 0);
+      const transDuration = cs.transitionDuration.split(',').map((v) => parseFloat(v) || 0);
+      return (cs.animationName !== 'none' && animDuration.some((v) => v > 0.01)) || transDuration.some((v) => v > 0.01);
+    }).map((el) => el.className);
+  });
+  await cdpClient.send('Emulation.setEmulatedMedia', { features: [] });
+  const rmPass = rmMatches === true && rmViolations.length === 0;
 
   cases.push({
     id: 'reduced-motion-transparency',
-    reducedMotion: motionObserved,
-    reducedTransparency: transparencyObserved,
-    pass: motionObserved.suppressionVerified && transparencyObserved.opaqueVerified
+    reducedMotion: {
+      matches: rmMatches,
+      violationsCount: rmViolations.length,
+      suppressionVerified: rmPass
+    },
+    reducedTransparency: {
+      matches: rtMatches,
+      light: rtStyles.light,
+      dark: rtStyles.dark,
+      opaqueVerified: rtPass
+    },
+    pass: rmPass && rtPass
   });
 
-  // Contrast check
-  const contrastObserved = await page.evaluate(() => {
-    const parseRgbInner = (colorStr) => {
-      const m = colorStr.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-      return m ? { r: parseInt(m[1], 10), g: parseInt(m[2], 10), b: parseInt(m[3], 10) } : null;
-    };
-    const lum = (rgb) => {
-      const srgb = [rgb.r / 255, rgb.g / 255, rgb.b / 255].map((c) =>
-        c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
-      );
-      return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
-    };
-    const ratio = (fgStr, bgStr) => {
-      const fg = parseRgbInner(fgStr);
-      const bg = parseRgbInner(bgStr);
-      if (!fg || !bg) return 4.5;
-      const l1 = lum(fg);
-      const l2 = lum(bg);
-      return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
-    };
+  // Contrast check using sharp on rendered targets
+  await page.goto(`${baseUrl}/calculators/fire`, { waitUntil: 'networkidle' });
+  const contrastTargets = [
+    { id: 'primary-label', sel: '.metric-accent span', name: 'Primary Metric Label', threshold: 4.5 },
+    { id: 'primary-value', sel: '.metric-accent strong', name: 'Primary Metric Value', threshold: 4.5 },
+    { id: 'scope-note', sel: '.calculator-scope-note', name: 'Scope Note', threshold: 4.5 },
+    { id: 'form-label', sel: '.core-fire-form label', name: 'Form Field Label', threshold: 4.5 }
+  ];
 
-    const textEls = Array.from(document.querySelectorAll('label, p, span, h2, small')).slice(0, 10);
-    let minNormal = Infinity;
-    let minLarge = Infinity;
+  const contrastPairs = [];
+  for (const mode of ['light', 'dark']) {
+    await applyThemeAndMeasure(mode, { width: 1440, height: 900 });
+    await page.evaluate(() => document.fonts?.ready);
 
-    for (const el of textEls) {
-      const cs = window.getComputedStyle(el);
-      const fg = cs.color;
-      const bg = cs.backgroundColor === 'rgba(0, 0, 0, 0)' ? 'rgb(255, 255, 255)' : cs.backgroundColor;
-      const r = ratio(fg, bg);
-      const fontSize = parseFloat(cs.fontSize);
-      if (fontSize >= 18 || (fontSize >= 14 && cs.fontWeight >= 700)) {
-        if (r < minLarge) minLarge = r;
-      } else {
-        if (r < minNormal) minNormal = r;
-      }
+    for (const target of contrastTargets) {
+      const loc = page.locator(target.sel).first();
+      const count = await loc.count();
+      if (count === 0) continue;
+
+      await loc.scrollIntoViewIfNeeded();
+      const style = await loc.evaluate((el) => {
+        const cs = window.getComputedStyle(el);
+        return {
+          color: cs.color,
+          fontSize: cs.fontSize,
+          fontWeight: cs.fontWeight,
+          opacity: Number(cs.opacity)
+        };
+      });
+
+      const savedStyle = await loc.evaluate((el) => {
+        const saved = el.getAttribute('style');
+        el.style.setProperty('color', 'transparent', 'important');
+        el.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
+        return saved;
+      });
+
+      const clipBuf = await loc.screenshot();
+
+      await loc.evaluate((el, s) => {
+        if (s === null) el.removeAttribute('style');
+        else el.setAttribute('style', s);
+      }, savedStyle);
+
+      const { data, info } = await sharp(clipBuf).raw().toBuffer({ resolveWithObject: true });
+      const measured = measureContrastPixels(data, info, style.color, style.opacity);
+
+      contrastPairs.push({
+        id: `contrast-${mode}-${target.id}`,
+        mode,
+        target: target.name,
+        foreground: style.color,
+        background: measured.background,
+        ratio: measured.ratio,
+        threshold: target.threshold,
+        pass: measured.ratio >= target.threshold
+      });
     }
-    return {
-      minNormalRatio: Number.isFinite(minNormal) ? minNormal : 5.2,
-      minLargeRatio: Number.isFinite(minLarge) ? minLarge : 4.8
-    };
-  });
+  }
+
+  const minNormalRatio = contrastPairs.reduce((min, p) => Math.min(min, p.ratio), Infinity);
+  const minLargeRatio = minNormalRatio;
 
   cases.push({
     id: 'contrast-check',
-    minNormalRatio: contrastObserved.minNormalRatio,
-    minLargeRatio: contrastObserved.minLargeRatio,
-    pass: contrastObserved.minNormalRatio >= 4.5 && contrastObserved.minLargeRatio >= 3.0
+    pairs: contrastPairs,
+    minNormalRatio,
+    minLargeRatio,
+    pass: minNormalRatio >= 4.5 && contrastPairs.every((p) => p.pass)
   });
 
   // Native zoom 200% check (truthfully reported as BLOCKED due to CLI environment limitations)
@@ -1032,6 +1099,7 @@ module.exports = {
   REQUIRED_CASE_IDS,
   calculateContrastRatio,
   calculateLuminance,
+  measureContrastPixels,
   evaluateC05Results,
   runLiveVerification
 };

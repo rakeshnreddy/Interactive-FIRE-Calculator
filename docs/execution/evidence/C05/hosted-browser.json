@@ -1,241 +1,324 @@
 {
-  "testedAt": "2026-09-13T21:35:03.373Z",
-  "previewUrl": "https://f51c818b.interactive-fire-calculator.pages.dev",
+  "testedAt": "2026-09-13T22:08:30.214Z",
+  "baseUrl": "https://46714a3f.interactive-fire-calculator.pages.dev",
   "consoleErrors": [],
   "pageExceptions": [],
-  "tasks": {
-    "B22": {
-      "status": "PASS",
-      "cases": [
-        {
-          "tool": "compound-interest",
-          "theme": "light",
-          "viewport": "390x844",
-          "screenshot": "hosted-compound-interest-390-light.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "scopeNoteText": "Project recurring growth with timing, fees, inflation, future cash flows, and a fully reconciling schedule.",
-            "trustStripPresent": false,
-            "inputsCount": 13,
-            "selectsCount": 8,
-            "all16px": true
-          },
-          "pass": true
-        },
-        {
-          "tool": "compound-interest",
-          "theme": "dark",
-          "viewport": "390x844",
-          "screenshot": "hosted-compound-interest-390-dark.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "scopeNoteText": "Project recurring growth with timing, fees, inflation, future cash flows, and a fully reconciling schedule.",
-            "trustStripPresent": false,
-            "inputsCount": 13,
-            "selectsCount": 8,
-            "all16px": true
-          },
-          "pass": true
-        },
-        {
-          "tool": "savings-goal",
-          "theme": "light",
-          "viewport": "390x844",
-          "screenshot": "hosted-savings-goal-390-light.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "scopeNoteText": "Turn a target and deadline into a practical saving pace, then test whether your current plan is on track.",
-            "trustStripPresent": false,
-            "inputsCount": 9,
-            "selectsCount": 8,
-            "all16px": true
-          },
-          "pass": true
-        },
-        {
-          "tool": "savings-goal",
-          "theme": "dark",
-          "viewport": "390x844",
-          "screenshot": "hosted-savings-goal-390-dark.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "scopeNoteText": "Turn a target and deadline into a practical saving pace, then test whether your current plan is on track.",
-            "trustStripPresent": false,
-            "inputsCount": 9,
-            "selectsCount": 8,
-            "all16px": true
-          },
-          "pass": true
-        }
-      ]
+  "cases": [
+    {
+      "id": "compound-interest-390-light",
+      "tool": "compound-interest",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "all16px": true,
+      "scheduleReachable": true,
+      "screenshot": "hosted-compound-interest-390-light.png",
+      "screenshotSha1": "1cad7e6cb43f59b41912a5d0c2b8d826fdc7ab75",
+      "pass": true
     },
-    "B23": {
-      "status": "PASS",
-      "cases": [
+    {
+      "id": "compound-interest-390-dark",
+      "tool": "compound-interest",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "all16px": true,
+      "scheduleReachable": true,
+      "screenshot": "hosted-compound-interest-390-dark.png",
+      "screenshotSha1": "746b2ac778377d37b3675c88f006251f316be291",
+      "pass": true
+    },
+    {
+      "id": "savings-goal-390-light",
+      "tool": "savings-goal",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "all16px": true,
+      "scheduleReachable": true,
+      "screenshot": "hosted-savings-goal-390-light.png",
+      "screenshotSha1": "d33d4acf307759bdaf516f00890f847ea27de480",
+      "pass": true
+    },
+    {
+      "id": "savings-goal-390-dark",
+      "tool": "savings-goal",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "all16px": true,
+      "scheduleReachable": true,
+      "screenshot": "hosted-savings-goal-390-dark.png",
+      "screenshotSha1": "10b0ec1c155b0d31220ee1718414bfc453b23250",
+      "pass": true
+    },
+    {
+      "id": "net-worth-390-light",
+      "tool": "net-worth",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "faqDetailsPresent": true,
+      "all16px": true,
+      "screenshot": "hosted-net-worth-390-light.png",
+      "screenshotSha1": "5956c340566de0cc04eae4a19b4ae592ee8a74fe",
+      "pass": true
+    },
+    {
+      "id": "net-worth-390-dark",
+      "tool": "net-worth",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "faqDetailsPresent": true,
+      "all16px": true,
+      "screenshot": "hosted-net-worth-390-dark.png",
+      "screenshotSha1": "fbe033e886b8448f37f16eee1bc9051c3bdbd0e4",
+      "pass": true
+    },
+    {
+      "id": "budget-390-light",
+      "tool": "budget",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "faqDetailsPresent": true,
+      "all16px": true,
+      "screenshot": "hosted-budget-390-light.png",
+      "screenshotSha1": "c75acc85ecb61dd9067bd7f9b54e31092c8d7fcf",
+      "pass": true
+    },
+    {
+      "id": "budget-390-dark",
+      "tool": "budget",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "faqDetailsPresent": true,
+      "all16px": true,
+      "screenshot": "hosted-budget-390-dark.png",
+      "screenshotSha1": "b3066fe659225a4149394132ef38f9b612d59733",
+      "pass": true
+    },
+    {
+      "id": "emergency-fund-390-light",
+      "tool": "emergency-fund",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "faqDetailsPresent": true,
+      "all16px": true,
+      "screenshot": "hosted-emergency-fund-390-light.png",
+      "screenshotSha1": "607a8fd381bc19be6d125d3fb60e52b6db64ac3c",
+      "pass": true
+    },
+    {
+      "id": "emergency-fund-390-dark",
+      "tool": "emergency-fund",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "hasScopeNote": true,
+      "trustStripPresent": false,
+      "faqDetailsPresent": true,
+      "all16px": true,
+      "screenshot": "hosted-emergency-fund-390-dark.png",
+      "screenshotSha1": "a164d64dbcfad23f98f5a83b2f0a0cd74503656a",
+      "pass": true
+    },
+    {
+      "id": "net-worth-deficit-check",
+      "acceptedDefault": false,
+      "deficitObserved": true,
+      "headlineTitle": "Estimated net deficit",
+      "headlineLabel": "Net deficit (liabilities exceed assets)",
+      "negativeValueObserved": "-$775,000",
+      "positiveControlObserved": "$175,000",
+      "pass": true
+    },
+    {
+      "id": "fire-desktop-light",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "hasScopeNote": true,
+      "allDescribed": true,
+      "allLabelsConcise": true,
+      "all16px": true,
+      "screenshot": "hosted-fire-desktop-light.png",
+      "screenshotSha1": "2e87f94d5a7b1db10044fbcac0d525cd692975c0",
+      "pass": true
+    },
+    {
+      "id": "fire-desktop-dark",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "hasScopeNote": true,
+      "allDescribed": true,
+      "allLabelsConcise": true,
+      "all16px": true,
+      "screenshot": "hosted-fire-desktop-dark.png",
+      "screenshotSha1": "68655f89a1f6ead6a4d448123e7776aa109e8c3f",
+      "pass": true
+    },
+    {
+      "id": "fire-r1-unique-ids",
+      "duplicateIdCount": 0,
+      "duplicates": [],
+      "secondYearsLabelFocusesSecondInput": true,
+      "pass": true
+    },
+    {
+      "id": "fire-r2-infotip-keyboard",
+      "initialExpanded": false,
+      "initialVisible": false,
+      "initialOpacity": 0,
+      "focusedExpanded": false,
+      "focusedVisible": false,
+      "focusedOpacity": 0,
+      "toggledExpanded": true,
+      "toggledVisible": true,
+      "toggledOpacity": 1,
+      "closedExpanded": false,
+      "closedVisible": false,
+      "closedOpacity": 0,
+      "escapeExpanded": false,
+      "escapeVisible": false,
+      "escapeOpacity": 0,
+      "escapeRetainedFocus": true,
+      "pass": true
+    },
+    {
+      "id": "fire-r3-stale-lifecycle",
+      "initialPill": "End-year",
+      "staleBadgeVisible": true,
+      "stalePill": "End-year",
+      "compareEvaluatedAgainstSnapshot": true,
+      "recalculatedPill": "Start-year",
+      "staleBadgeCleared": true,
+      "screenshot": "hosted-fire-stale-state-desktop.png",
+      "screenshotSha1": "bb984c62107013e67a13b5d3ec3be5061c6a0d29",
+      "pass": true
+    },
+    {
+      "id": "disclosure-keyboard-focus",
+      "noOverlapWithStickyTopbar": true,
+      "focusedControlsCount": 13,
+      "pass": true
+    },
+    {
+      "id": "reduced-motion-transparency",
+      "reducedMotion": {
+        "matches": true,
+        "violationsCount": 0,
+        "suppressionVerified": true
+      },
+      "reducedTransparency": {
+        "matches": true,
+        "light": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(11, 36, 33)",
+          "alpha": 1
+        },
+        "dark": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(8, 21, 28)",
+          "alpha": 1
+        },
+        "opaqueVerified": true
+      },
+      "pass": true
+    },
+    {
+      "id": "contrast-check",
+      "pairs": [
         {
-          "tool": "net-worth",
-          "theme": "light",
-          "viewport": "390x844",
-          "screenshot": "hosted-net-worth-390-light.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "trustStripPresent": false,
-            "faqDetailsPresent": true,
-            "inputsCount": 11,
-            "all16px": true
-          },
+          "id": "contrast-light-scope-note",
+          "mode": "light",
+          "target": "Scope Note",
+          "foreground": "rgb(82, 104, 115)",
+          "background": "rgb(244,248,251)",
+          "ratio": 5.483573635475539,
+          "threshold": 4.5,
           "pass": true
         },
         {
-          "tool": "net-worth",
-          "theme": "dark",
-          "viewport": "390x844",
-          "screenshot": "hosted-net-worth-390-dark.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "trustStripPresent": false,
-            "faqDetailsPresent": true,
-            "inputsCount": 11,
-            "all16px": true
-          },
+          "id": "contrast-light-form-label",
+          "mode": "light",
+          "target": "Form Field Label",
+          "foreground": "rgb(82, 104, 115)",
+          "background": "rgb(251,253,255)",
+          "ratio": 5.742707245785331,
+          "threshold": 4.5,
           "pass": true
         },
         {
-          "tool": "budget",
-          "theme": "light",
-          "viewport": "390x844",
-          "screenshot": "hosted-budget-390-light.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "trustStripPresent": false,
-            "faqDetailsPresent": true,
-            "inputsCount": 16,
-            "all16px": true
-          },
+          "id": "contrast-dark-scope-note",
+          "mode": "dark",
+          "target": "Scope Note",
+          "foreground": "rgb(164, 187, 196)",
+          "background": "rgb(8,21,28)",
+          "ratio": 9.241991774829128,
+          "threshold": 4.5,
           "pass": true
         },
         {
-          "tool": "budget",
-          "theme": "dark",
-          "viewport": "390x844",
-          "screenshot": "hosted-budget-390-dark.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "trustStripPresent": false,
-            "faqDetailsPresent": true,
-            "inputsCount": 16,
-            "all16px": true
-          },
-          "pass": true
-        },
-        {
-          "tool": "emergency-fund",
-          "theme": "light",
-          "viewport": "390x844",
-          "screenshot": "hosted-emergency-fund-390-light.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "trustStripPresent": false,
-            "faqDetailsPresent": true,
-            "inputsCount": 9,
-            "all16px": true
-          },
-          "pass": true
-        },
-        {
-          "tool": "emergency-fund",
-          "theme": "dark",
-          "viewport": "390x844",
-          "screenshot": "hosted-emergency-fund-390-dark.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "trustStripPresent": false,
-            "faqDetailsPresent": true,
-            "inputsCount": 9,
-            "all16px": true
-          },
+          "id": "contrast-dark-form-label",
+          "mode": "dark",
+          "target": "Form Field Label",
+          "foreground": "rgb(164, 187, 196)",
+          "background": "rgb(16,35,44)",
+          "ratio": 8.071774651027154,
+          "threshold": 4.5,
           "pass": true
         }
       ],
-      "netWorthDeficitLabeled": true
+      "minNormalRatio": 5.483573635475539,
+      "minLargeRatio": 5.483573635475539,
+      "pass": true
     },
-    "B24": {
-      "status": "PASS",
-      "cases": [
-        {
-          "case": "Desktop light",
-          "viewport": "1440x900",
-          "theme": "light",
-          "screenshot": "hosted-fire-desktop-light.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "allDescribed": true,
-            "allLabelsConcise": true,
-            "infoButtonsCount": 6,
-            "inputsCount": 22,
-            "all16px": true
-          },
-          "pass": true
-        },
-        {
-          "case": "Desktop dark",
-          "viewport": "1440x900",
-          "theme": "dark",
-          "screenshot": "hosted-fire-desktop-dark.png",
-          "evaluation": {
-            "hasScopeNote": true,
-            "allDescribed": true,
-            "allLabelsConcise": true,
-            "infoButtonsCount": 6,
-            "inputsCount": 22,
-            "all16px": true
-          },
-          "pass": true
-        }
-      ],
-      "staleLifecycle": {
-        "initial": {
-          "hasHeroResult": true,
-          "isStale": false,
-          "hasStaleBadge": false,
-          "btnText": "Calculate"
-        },
-        "stale": {
-          "hasHeroResult": true,
-          "isStale": true,
-          "hasStaleBadge": true,
-          "badgeText": "Inputs changed since last calculation. Click Calculate to update results.",
-          "btnText": "Recalculate"
-        },
-        "refreshed": {
-          "hasHeroResult": true,
-          "isStale": false,
-          "hasStaleBadge": false,
-          "btnText": "Calculate"
-        },
-        "pass": true
-      }
-    }
-  },
-  "generalChecks": {
-    "reducedMotion": {
-      "requested": "reduce",
-      "matches": true,
-      "status": "PASS"
-    },
-    "reducedTransparency": {
-      "requested": "reduce",
-      "matches": true,
-      "status": "PASS"
-    },
-    "nativeZoom200": {
+    {
+      "id": "native-zoom-200",
       "status": "BLOCKED",
-      "reason": "Interactive desktop Chrome CUA application zoom is unavailable in headless CLI; verified via manual spot-check"
-    },
-    "contrastCheck": {
-      "color": "rgb(82, 104, 115)",
-      "fontSize": "16px",
-      "fontWeight": "400"
+      "reason": "Interactive desktop Chrome CUA application zoom is unavailable in headless CLI",
+      "pass": false
     }
-  }
+  ],
+  "verdict": "BLOCKED",
+  "success": false,
+  "evaluationErrors": [],
+  "blockedCases": [
+    "native-zoom-200: Interactive desktop Chrome CUA application zoom is unavailable in headless CLI"
+  ]
 }
