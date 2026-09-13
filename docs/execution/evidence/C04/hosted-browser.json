@@ -1,0 +1,102 @@
+{
+  "testedAt": "2026-09-13T08:07:59.626Z",
+  "baseUrl": "https://f8d01243.interactive-fire-calculator.pages.dev",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "cases": [
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "firstInputY": 490.578125,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowEndingBalance": "$0",
+      "lastRowNote": "Final payment",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b08_pass": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "screenshot": "hosted-mortgage-390-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "dark",
+      "firstInputY": 490.578125,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowEndingBalance": "$0",
+      "lastRowNote": "Final payment",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b08_pass": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "screenshot": "hosted-mortgage-390-dark.png"
+    },
+    {
+      "calc": "SIP",
+      "theme": "light",
+      "firstInputY": 456.03125,
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "screenshot": "hosted-sip-390-light.png"
+    },
+    {
+      "calc": "SIP",
+      "theme": "dark",
+      "firstInputY": 456.03125,
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "screenshot": "hosted-sip-390-dark.png"
+    },
+    {
+      "calc": "India Tax",
+      "theme": "light",
+      "firstInputY": 516.171875,
+      "hasVisualBars": false,
+      "swatchCount": 1,
+      "hasTable": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "screenshot": "hosted-income-tax-india-390-light.png"
+    },
+    {
+      "calc": "India Tax",
+      "theme": "dark",
+      "firstInputY": 516.171875,
+      "hasVisualBars": false,
+      "swatchCount": 1,
+      "hasTable": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "screenshot": "hosted-income-tax-india-390-dark.png"
+    },
+    {
+      "calc": "CAGR (Negative Fixture)",
+      "theme": "light",
+      "hasNegativeRow": true,
+      "hasBaseline": true,
+      "rowText": "ConservativeAnnualized return: -0.2Uses lower growth or contribution assumptions to pressure-test the result.",
+      "b21_pass": true,
+      "screenshot": "hosted-cagr-negative-390-light.png"
+    },
+    {
+      "calc": "CAGR (Negative Fixture)",
+      "theme": "dark",
+      "hasNegativeRow": true,
+      "hasBaseline": true,
+      "rowText": "ConservativeAnnualized return: -0.2Uses lower growth or contribution assumptions to pressure-test the result.",
+      "b21_pass": true,
+      "screenshot": "hosted-cagr-negative-390-dark.png"
+    }
+  ]
+}

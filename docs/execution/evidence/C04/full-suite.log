@@ -1,0 +1,77 @@
+✔ fails before running any stage when python3 is missing (19.609542ms)
+✔ fails before running any stage when node is missing (15.646625ms)
+✔ fails before running any stage when npm is missing (15.046625ms)
+✔ runs every verification stage in order (869.457041ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (165.447125ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (343.348083ms)
+✔ stops and preserves failure status from python3 -m pytest -q (315.738542ms)
+✔ stops and preserves failure status from npm run typecheck (490.593292ms)
+✔ stops and preserves failure status from npm test (548.316917ms)
+✔ stops and preserves failure status from npm run build (511.631125ms)
+✔ installs missing dependencies from the lockfile (532.642917ms)
+✔ does not run frontend verification after a failed install (518.625792ms)
+✔ uses the repository virtualenv even without system Python (597.148667ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5010.46575
+................................................... [ 64%]
+............................                                             [100%]
+79 passed, 21 subtests passed in 4.54s
+
+> interactive-fire-calculator@2.0.0 typecheck
+> tsc --noEmit
+
+
+> interactive-fire-calculator@2.0.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+(node:67713) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  38 passed (38)
+      Tests  1527 passed (1527)
+   Start at  01:03:29
+   Duration  7.27s (transform 2.91s, setup 0ms, import 5.91s, tests 4.37s, environment 32.36s)
+
+
+> interactive-fire-calculator@2.0.0 build
+> tsc -b && vite build
+
+vite v8.0.16 building client environment for production...
+[2Ktransforming...✓ 2406 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.85 kB │ gzip:   0.47 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2      11.23 kB
+dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2       18.74 kB
+dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2          18.99 kB
+dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2   25.96 kB
+dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2          48.25 kB
+dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2      85.06 kB
+dist/assets/index-ChFGwZyJ.css                             178.54 kB │ gzip:  29.32 kB
+dist/assets/rotate-ccw-XKHyPOQr.js                           0.23 kB │ gzip:   0.21 kB │ map:     0.88 kB
+dist/assets/history-CdzfNktL.js                              0.27 kB │ gzip:   0.22 kB │ map:     0.97 kB
+dist/assets/jsx-runtime-CdvZGgm7.js                          7.80 kB │ gzip:   3.02 kB │ map:    16.70 kB
+dist/assets/BalanceImportPanel-CgUBtnvz.js                   9.51 kB │ gzip:   3.34 kB │ map:    25.18 kB
+dist/assets/TransactionImportPanel-BgU20Ku4.js              10.04 kB │ gzip:   3.42 kB │ map:    26.41 kB
+dist/assets/PlanningWorkspace-C_byQiPf.js                   14.19 kB │ gzip:   4.18 kB │ map:    42.25 kB
+dist/assets/papaparse.min-l4pEJAI6.js                       20.09 kB │ gzip:   7.45 kB │ map:    46.10 kB
+dist/assets/CalculatorLibrary-DsjDu61v.js                  318.95 kB │ gzip:  85.17 kB │ map:   783.56 kB
+dist/assets/ProjectionChart-D8kzDoVL.js                    347.89 kB │ gzip: 102.40 kB │ map: 1,758.79 kB
+dist/assets/index-CKcsZvL3.js                              525.05 kB │ gzip: 144.06 kB │ map: 1,611.95 kB
+
+✓ built in 568ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

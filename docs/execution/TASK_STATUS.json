@@ -117,14 +117,14 @@
       "id": "B08",
       "title": "mortgage payoff reconciliation regression",
       "checkpoint": "C04",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B08.md",
       "submission": "submissions/B08.md",
       "owner": "FinPath implementation agent",
-      "code_sha": null,
+      "code_sha": "11f56cb",
       "review": null,
       "blocked_reason": null
     },
@@ -317,7 +317,7 @@
       "id": "B20",
       "title": "Reorder generic calculators around inputs and the answer",
       "checkpoint": "C04",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B16",
         "B19"
@@ -325,7 +325,7 @@
       "prompt": "prompts/B20.md",
       "submission": "submissions/B20.md",
       "owner": "FinPath implementation agent",
-      "code_sha": null,
+      "code_sha": "11f56cb",
       "review": null,
       "blocked_reason": null
     },
@@ -333,14 +333,14 @@
       "id": "B21",
       "title": "Make shared charts numerically honest and accessible",
       "checkpoint": "C04",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B20"
       ],
       "prompt": "prompts/B21.md",
       "submission": "submissions/B21.md",
       "owner": "FinPath implementation agent",
-      "code_sha": null,
+      "code_sha": "11f56cb",
       "review": null,
       "blocked_reason": null
     },
