@@ -185,5 +185,73 @@ describe('B08: Mortgage payoff reconciliation and schedule termination', () => {
     const totalPrincipal = schedule!.rows.reduce((sum, r) => sum + Number(r.values.principalPaid), 0);
     expect(totalPrincipal).toBe(1_000);
   });
+
+  it('does not erase a positive opening balance 0.005 at rate 0 and payment 0.001', () => {
+    const debtCalc = seoCalculators.find((c) => c.slug === 'debt-payoff')!;
+    const values = {
+      balance: 0.005,
+      rate: 0,
+      payment: 0.001,
+      extraMonthlyPayment: 0,
+      extraAnnualPayment: 0
+    };
+
+    const result = calculateSeoCalculator(debtCalc, values);
+    const schedule = buildCalculatorDetailSchedule(debtCalc, values);
+
+    const headlineMonths = result.metrics.find((m) => m.label === 'Months to payoff')?.value;
+    const totalPaid = result.metrics.find((m) => m.label === 'Total paid')?.value;
+
+    expect(headlineMonths).toBeGreaterThan(0);
+    expect(totalPaid).toBeCloseTo(0.005, 5);
+    expect(schedule).not.toBeNull();
+    expect(schedule!.rows.length).toBe(headlineMonths);
+    expect(schedule!.rows[schedule!.rows.length - 1].values.endingBalance).toBe(0);
+    expect(schedule!.rows[schedule!.rows.length - 1].note).toBe('Final payment');
+
+    const totalPrincipal = schedule!.rows.reduce((sum, r) => sum + Number(r.values.principalPaid), 0);
+    expect(totalPrincipal).toBeCloseTo(0.005, 5);
+  });
+
+  it('enforces inclusive half-cent boundary: 1000.004 and 1000.005 settle in 1 payment, 1000.006 in 2 payments', () => {
+    const debtCalc = seoCalculators.find((c) => c.slug === 'debt-payoff')!;
+
+    // 1000.004 settles in 1 payment under <= 0.005 tolerance
+    const values04 = { balance: 1000.004, rate: 0, payment: 1000, extraMonthlyPayment: 0, extraAnnualPayment: 0 };
+    const res04 = calculateSeoCalculator(debtCalc, values04);
+    const sched04 = buildCalculatorDetailSchedule(debtCalc, values04);
+    expect(res04.metrics.find((m) => m.label === 'Months to payoff')?.value).toBe(1);
+    expect(res04.metrics.find((m) => m.label === 'Total paid')?.value).toBeCloseTo(1000.004, 5);
+    expect(sched04!.rows.length).toBe(1);
+    expect(sched04!.rows[0].values.endingBalance).toBe(0);
+    expect(sched04!.rows[0].values.payment).toBeCloseTo(1000.004, 5);
+    expect(sched04!.rows[0].values.principalPaid).toBeCloseTo(1000.004, 5);
+
+    // 1000.005 settles in 1 payment under <= 0.005 tolerance
+    const values05 = { balance: 1000.005, rate: 0, payment: 1000, extraMonthlyPayment: 0, extraAnnualPayment: 0 };
+    const res05 = calculateSeoCalculator(debtCalc, values05);
+    const sched05 = buildCalculatorDetailSchedule(debtCalc, values05);
+    expect(res05.metrics.find((m) => m.label === 'Months to payoff')?.value).toBe(1);
+    expect(res05.metrics.find((m) => m.label === 'Total paid')?.value).toBeCloseTo(1000.005, 5);
+    expect(sched05!.rows.length).toBe(1);
+    expect(sched05!.rows[0].values.endingBalance).toBe(0);
+    expect(sched05!.rows[0].values.payment).toBeCloseTo(1000.005, 5);
+    expect(sched05!.rows[0].values.principalPaid).toBeCloseTo(1000.005, 5);
+
+    // 1000.006 requires 2 payments because 0.006 > 0.005 tolerance
+    const values06 = { balance: 1000.006, rate: 0, payment: 1000, extraMonthlyPayment: 0, extraAnnualPayment: 0 };
+    const res06 = calculateSeoCalculator(debtCalc, values06);
+    const sched06 = buildCalculatorDetailSchedule(debtCalc, values06);
+    expect(res06.metrics.find((m) => m.label === 'Months to payoff')?.value).toBe(2);
+    expect(res06.metrics.find((m) => m.label === 'Total paid')?.value).toBeCloseTo(1000.006, 5);
+    expect(sched06!.rows.length).toBe(2);
+    expect(sched06!.rows[0].values.payment).toBe(1000);
+    expect(sched06!.rows[0].values.endingBalance).toBeCloseTo(0.006, 5);
+    expect(sched06!.rows[1].values.payment).toBeCloseTo(0.006, 5);
+    expect(sched06!.rows[1].values.endingBalance).toBe(0);
+    expect(sched06!.rows[1].note).toBe('Final payment');
+    const totalPrincipal06 = sched06!.rows.reduce((sum, r) => sum + Number(r.values.principalPaid), 0);
+    expect(totalPrincipal06).toBeCloseTo(1000.006, 5);
+  });
 });
 

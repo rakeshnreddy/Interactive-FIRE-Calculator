@@ -1380,7 +1380,7 @@ function payoffDebt(
   extraMonthlyPayment = 0,
   extraAnnualPayment = 0
 ): { interest: number; months: number; totalPaid: number } {
-  if (balance <= LOAN_RESIDUAL_TOLERANCE || (payment <= 0 && extraMonthlyPayment <= 0 && extraAnnualPayment <= 0)) {
+  if (balance <= 0 || (payment <= 0 && extraMonthlyPayment <= 0 && extraAnnualPayment <= 0)) {
     return { interest: 0, months: 0, totalPaid: 0 };
   }
   let currentBalance = balance;
@@ -1389,7 +1389,7 @@ function payoffDebt(
   let totalPaid = 0;
   const monthlyRate = annualRate / 12;
 
-  while (currentBalance > LOAN_RESIDUAL_TOLERANCE && months < 1200) {
+  while (currentBalance > 0 && months < 1200) {
     const monthlyInterest = currentBalance * monthlyRate;
     const nextMonth = months + 1;
     const scheduledPayment = Math.max(0, payment) + Math.max(0, extraMonthlyPayment)

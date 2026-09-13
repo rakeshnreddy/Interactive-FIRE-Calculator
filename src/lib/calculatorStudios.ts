@@ -418,8 +418,7 @@ function adjustInput(
 function clampInput(input: CalculatorInput, value: number): number {
   const min = input.min ?? 0;
   const max = input.max ?? Number.MAX_SAFE_INTEGER;
-  const clamped = Math.max(min, Math.min(max, value));
-  return Number(clamped.toFixed(input.type === 'percent' ? 2 : 2));
+  return Math.max(min, Math.min(max, value));
 }
 
 function scenarioLabel(id: CalculatorScenarioId): string {
@@ -877,7 +876,7 @@ function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, n
 
   if (balance <= 0 || payment <= 0) return null;
 
-  for (let month = 1; month <= maxMonthlyScheduleMonths && currentBalance > LOAN_RESIDUAL_TOLERANCE; month += 1) {
+  for (let month = 1; month <= maxMonthlyScheduleMonths && currentBalance > 0; month += 1) {
     const interest = currentBalance * monthlyRate;
     const plannedPayment = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
     const totalDue = currentBalance + interest;
@@ -2590,7 +2589,7 @@ function amortizationRows(
   let cumulativeInterest = 0;
   const rows: CalculatorDetailScheduleRow[] = [];
 
-  for (let month = 1; month <= months && balance > LOAN_RESIDUAL_TOLERANCE; month += 1) {
+  for (let month = 1; month <= months && balance > 0; month += 1) {
     const paymentThisMonth = payment + Math.max(0, extraMonthlyPayment)
       + (month % 12 === 0 ? Math.max(0, extraAnnualPayment) : 0);
     const step = stepAmortizingBalance(balance, annualRate, paymentThisMonth);
@@ -2626,7 +2625,7 @@ function stepAmortizingBalance(
   annualRate: number,
   payment: number
 ): { balance: number; interest: number; payment: number; principalPaid: number } {
-  if (balance <= LOAN_RESIDUAL_TOLERANCE) {
+  if (balance <= 0) {
     return { balance: 0, interest: 0, payment: 0, principalPaid: 0 };
   }
 

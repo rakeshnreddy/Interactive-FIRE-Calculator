@@ -37,8 +37,8 @@ In the mobile loan and mortgage calculation flows (specifically observed at \$20
 
 ## 3. Annual-to-Periodic Units & Amortization Mechanics
 
-- **Input Annual Rate**: $r_{\text{annual}}$ expressed as a percentage (e.g. 6.5% = 0.065).
-- **Periodic Monthly Rate**: $r = \frac{r_{\text{annual}}}{100 \times 12}$. For $r = 0$, $P = \frac{L}{n}$.
+- **Input Annual Rate**: $r_{\text{input}}$ expressed as a percentage on the frontend (e.g. 6.5%, represented numerically as `6.5`). This converts to the annual decimal rate $r_{\text{annual}} = \frac{r_{\text{input}}}{100} = 0.065$.
+- **Periodic Monthly Rate**: $r = \frac{r_{\text{annual}}}{12} = \frac{0.065}{12} \approx 0.0054166667$. Note that the decimal rate $0.065$ is divided directly by 12 and must not be divided by 100 a second time. For zero interest ($r = 0$), $P = \frac{L}{n}$.
 - **Periodic Compounding**: Monthly interest accrues on the unpaid principal balance at the beginning of each period:
   $$I_t = B_{t-1} \cdot r$$
 - **Payment Application**:
@@ -50,22 +50,25 @@ In the mobile loan and mortgage calculation flows (specifically observed at \$20
 
 ## 4. Numerical Residual & Tolerance Decision
 
-### Tolerance Definition
+### Tolerance Definition & Policy Attribution
 $$\epsilon = 0.005 \text{ currency units (half a cent)}$$
+
+This tolerance is defined as **FinPath's numerical modeling policy** for distinguishing binary floating-point arithmetic jitter from real debt obligations. While CFPB Regulation Z (12 CFR Part 1026 Appendix J) governs statutory APR determinations and installment schedules, the specific $\epsilon = 0.005$ half-cent threshold is an engineering and numerical policy rather than a statutory mandate.
 
 ### Decision Rationale: Why Half a Cent (\$0.005)?
 1. **Transactable Currency Limit**:
-   In fiat currency systems (USD, EUR, GBP, INR), the smallest divisible currency unit is 1 cent (\$0.01). A fractional cent less than \$0.005 rounds to \$0.00 in standard half-up financial rounding.
+   In fiat currency systems (USD, EUR, GBP, INR), the smallest divisible transactional currency unit is 1 cent (\$0.01). A fractional residual less than or equal to \$0.005 rounds to \$0.00 in standard half-up financial rounding.
 2. **Distinguishing Numerical Jitter from Material Debt**:
    - Floating-point compounding error over 360–480 months is on the order of $10^{-12}$ to $10^{-7}$ dollars. These residues are strictly numerical artifacts of binary floating-point representation.
    - Any unpaid balance greater than \$0.005 represents material debt. Material debt is **never forgiven**; if the balance plus interest exceeds the scheduled payment by more than \$0.005, an additional payment period is required.
+   - Positive opening principal balances (even small amounts such as \$0.005) represent active initial obligations and are never erased without a recorded payment.
 3. **Final Payment Adjustment**:
-   In standard mortgage servicing (CFPB Regulation Z Appendix J), the final payment of an amortizing loan is adjusted to settle the exact remaining balance and interest:
+   In loan amortization, the final payment is adjusted to settle the remaining balance and accrued interest:
    $$\text{If } B_{t-1} + I_t \le P_t + \epsilon \implies P_{t, \text{actual}} = B_{t-1} + I_t, \quad C_{t} = B_{t-1}, \quad B_t = 0$$
    This ensures:
-   - The final payment is equal to or smaller than regular payment.
+   - The final actual payment may exceed the scheduled regular payment by at most the documented tolerance $\epsilon = 0.005$ (for example, paying \$1,000.004 on a \$1,000 scheduled payment), and is otherwise smaller than or equal to the regular payment.
    - The ending balance reaches exactly \$0.
-   - Total principal paid across all schedule rows equals the initial principal $L$ exactly.
+   - Total principal paid across all schedule rows equals the initial principal $L$ exactly (principal conservation).
    - The headline payoff month count exactly equals the count of schedule rows.
 
 ---
