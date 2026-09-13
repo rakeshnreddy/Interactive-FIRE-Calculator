@@ -77,7 +77,7 @@
   - Analytics/tests/privacy: correction count, no amounts logged; regression first plus shared goldens and hosted mobile schedule. B01 only.
   - Rollback/effort: revert formula commit while clearly labeling discrepancy; no saved-data rewrite. Human 1 day; agent 2–4 hours.
 
-- [ ] **B09 — Ready: remove internal instructions from calculator copy.**
+- [x] **B09 — Ready: remove internal instructions from calculator copy.**
   - Problem/evidence: “Phase 22” and “Connect loan results…” visible in mortgage; auth gate exposes setup internals.
   - Outcome/scope: user-facing explanation of assumptions, save availability and limits; guard against internal phase/instruction text.
   - Non-goals/files: no new claims or ranking copy; calculatorStudios/Quality, auth gate copy, content tests.
@@ -167,7 +167,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B17.md](execution/prompts/B17.md).
 
-- [ ] **B18 — Planned: Replace generic homepage hero with authentic product composition.**
+- [x] **B18 — Planned: Replace generic homepage hero with authentic product composition.**
   - User problem/evidence: Phone/card imagery obscures the actual calculator and suggests unsupported products. Visual audit V04.
   - Expected outcome/scope: At 1440x900 public CTA and real example answer visible; at 390px primary action within 600px at normal text; example visibly synthetic; no unsupported product claims; all existing useful routes retained.
   - Non-goals: No banking/mobile launch claims, invented testimonials, new legal policy, pricing or tracking SDK.
@@ -179,7 +179,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B18.md](execution/prompts/B18.md).
 
-- [ ] **B19 — Planned: Make calculator discovery concise and distinctive.**
+- [x] **B19 — Planned: Make calculator discovery concise and distinctive.**
   - User problem/evidence: Repetitive panels and counts distract from choosing the right calculator. Visual audit V13.
   - Expected outcome/scope: All public tools reachable; FIRE discoverable; search state robust; no-match helpful; route link semantics native; consistent light/dark mobile/desktop hierarchy.
   - Non-goals: No new calculators, ranking copy, new search service or changed calculator metadata math.
@@ -392,3 +392,5 @@ C01I primary review: B33 requires audit reliability repairs and scoped preview-b
 C01I accepted after primary reviewer completed the remaining audit repair. 7/34 tasks accepted (20.6% task count). C02 released, starting B02. See [final review](execution/reviews/C01I.md).
 
 C02 accepted 2026-09-11: B02/B03/B04, common candidate `ef2cded6441191a26537adf8ddf1a3e1909cf73b`, [review](execution/reviews/C02.md).10/34 accepted(29.4% by task count). C03 released: B18→B19→B09; use [explicit worker prompt](execution/C03_START_PROMPT.md).
+
+C03 accepted 2026-09-13 at `285e9eadf2d854951cec75d02afc6cce97d4d6c5`; B18/B19/B09 accepted with owner-authorized actual-reader deferral tracked in B31 and execution/ACCESSIBILITY_DEFERRALS.md. C04 is released. 13/34 accepted (38.2%, task count). See execution/reviews/C03.md.
