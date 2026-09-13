@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-13T20:44:50.179Z",
+  "testedAt": "2026-09-13T20:58:56.102Z",
   "baseUrl": "https://21a762ad.interactive-fire-calculator.pages.dev",
   "consoleErrors": [],
   "pageExceptions": [],
@@ -246,7 +246,7 @@
           "mode": "light",
           "target": "Primary Metric Value",
           "foreground": "rgb(16, 44, 53)",
-          "background": "rgb(251, 253, 255)",
+          "background": "rgb(251,253,255)",
           "ratio": 14.365468226750874,
           "threshold": 4.5,
           "pass": true
@@ -256,7 +256,7 @@
           "mode": "light",
           "target": "Field Helper Text",
           "foreground": "rgb(82, 104, 115)",
-          "background": "rgb(251, 253, 255)",
+          "background": "rgb(251,253,255)",
           "ratio": 5.742707245785331,
           "threshold": 4.5,
           "pass": true
@@ -266,7 +266,7 @@
           "mode": "light",
           "target": "Visual Panel Heading",
           "foreground": "rgb(16, 44, 53)",
-          "background": "rgb(238, 244, 247)",
+          "background": "rgb(238,244,247)",
           "ratio": 13.19565545994323,
           "threshold": 4.5,
           "pass": true
@@ -276,7 +276,7 @@
           "mode": "light",
           "target": "Scope Note",
           "foreground": "rgb(82, 104, 115)",
-          "background": "rgb(244, 248, 251)",
+          "background": "rgb(244,248,251)",
           "ratio": 5.483573635475539,
           "threshold": 4.5,
           "pass": true
@@ -286,7 +286,7 @@
           "mode": "dark",
           "target": "Primary Metric Value",
           "foreground": "rgb(234, 246, 247)",
-          "background": "rgb(16, 35, 44)",
+          "background": "rgb(16,35,44)",
           "ratio": 14.647106546426908,
           "threshold": 4.5,
           "pass": true
@@ -296,7 +296,7 @@
           "mode": "dark",
           "target": "Field Helper Text",
           "foreground": "rgb(164, 187, 196)",
-          "background": "rgb(16, 35, 44)",
+          "background": "rgb(16,35,44)",
           "ratio": 8.071774651027154,
           "threshold": 4.5,
           "pass": true
@@ -306,7 +306,7 @@
           "mode": "dark",
           "target": "Visual Panel Heading",
           "foreground": "rgb(234, 246, 247)",
-          "background": "rgb(11, 27, 35)",
+          "background": "rgb(11,27,35)",
           "ratio": 15.915928706332583,
           "threshold": 4.5,
           "pass": true
@@ -316,7 +316,7 @@
           "mode": "dark",
           "target": "Scope Note",
           "foreground": "rgb(164, 187, 196)",
-          "background": "rgb(8, 21, 28)",
+          "background": "rgb(8,21,28)",
           "ratio": 9.241991774829128,
           "threshold": 4.5,
           "pass": true

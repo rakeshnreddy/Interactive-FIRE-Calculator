@@ -1,11 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-let sharp;
-try {
-  sharp = require('sharp');
-} catch (e) {
-  // sharp might be loaded in runtime
-}
 
 const EVIDENCE_DIR = path.resolve(__dirname);
 const BASE_URL = 'https://21a762ad.interactive-fire-calculator.pages.dev';
@@ -89,6 +83,34 @@ function calculateContrastRatio(fgStr, bgStr) {
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
   return (lighter + 0.05) / (darker + 0.05);
+}
+
+// Fail closed: inspect every unique screenshot background, with foreground alpha.
+function measureContrastPixels(data, info, foreground, opacity) {
+  const fg = parseRgb(foreground);
+  if (!fg || !Number.isFinite(opacity) || opacity < 0 || opacity > 1 ||
+      !info || !Number.isInteger(info.width) || !Number.isInteger(info.height) ||
+      info.width <= 0 || info.height <= 0 || ![3, 4].includes(info.channels) ||
+      data.length !== info.width * info.height * info.channels) {
+    throw new Error('Missing or invalid composed contrast observation');
+  }
+  let ratio = Infinity;
+  let background;
+  const seen = new Set();
+  for (let i = 0; i < data.length; i += info.channels) {
+    if (info.channels === 4 && data[i + 3] !== 255) throw new Error('Screenshot background must be opaque');
+    const rgb = [data[i], data[i + 1], data[i + 2]];
+    const key = rgb.join(',');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const alpha = fg.a * opacity;
+    const composed = [fg.r, fg.g, fg.b].map((v, j) => Math.round(v * alpha + rgb[j] * (1 - alpha)));
+    const bg = `rgb(${key})`;
+    const measured = calculateContrastRatio(`rgb(${composed.join(',')})`, bg);
+    if (measured < ratio) { ratio = measured; background = bg; }
+  }
+  if (!Number.isFinite(ratio)) throw new Error('No contrast pixels observed');
+  return { ratio, background, uniqueBackgrounds: seen.size };
 }
 
 /**
@@ -757,16 +779,21 @@ async function runLiveVerification(baseUrl) {
       await applyAndAssertTheme(mode);
       rtStyles[mode] = await page.evaluate(() => {
         const topbar = document.querySelector('.topbar');
-        const cs = topbar ? window.getComputedStyle(topbar) : null;
+        if (!topbar) throw new Error('Required reduced-transparency target missing');
+        const cs = window.getComputedStyle(topbar);
         return {
-          backdropFilter: cs ? cs.backdropFilter : 'none',
-          backgroundColor: cs ? cs.backgroundColor : 'rgb(244, 248, 251)',
-          alpha: 1
+          backdropFilter: cs.backdropFilter,
+          backgroundColor: cs.backgroundColor
         };
       });
     }
     await cdpClient.send('Emulation.setEmulatedMedia', { features: [] });
-    const rtPass = rtMatches === true && rtStyles.light.backdropFilter === 'none' && rtStyles.dark.backdropFilter === 'none';
+    for (const mode of ['light', 'dark']) {
+      const color = parseRgb(rtStyles[mode].backgroundColor);
+      if (!color) throw new Error('Unsupported observed transparency color');
+      rtStyles[mode].alpha = color.a;
+    }
+    const rtPass = rtMatches === true && ['light', 'dark'].every(mode => rtStyles[mode].backdropFilter === 'none' && rtStyles[mode].alpha === 1);
 
     // 8.2 Reduced Motion
     await cdpClient.send('Emulation.setEmulatedMedia', {
@@ -832,7 +859,7 @@ async function runLiveVerification(baseUrl) {
             color: cs.color,
             fontSize: cs.fontSize,
             fontWeight: cs.fontWeight,
-            opacity: parseFloat(cs.opacity) || 1
+            opacity: Number(cs.opacity)
           };
         });
 
@@ -852,33 +879,11 @@ async function runLiveVerification(baseUrl) {
           else el.setAttribute('style', s);
         }, savedStyle);
 
-        let ratio = 15.0; // fallback default
-        let effectiveBg = mode === 'light' ? 'rgb(244, 248, 251)' : 'rgb(8, 21, 28)';
-
-        if (sharp) {
-          const { data, info } = await sharp(clipBuf).raw().toBuffer({ resolveWithObject: true });
-          const fgColor = parseRgb(style.color);
-          let worstRatio = Infinity;
-          let worstBg = effectiveBg;
-          const step = Math.max(1, Math.floor(info.width * info.height / 50));
-          for (let i = 0; i < info.width * info.height; i += step) {
-            const idx = i * info.channels;
-            const bgRgb = `rgb(${data[idx]}, ${data[idx + 1]}, ${data[idx + 2]})`;
-            const r = calculateContrastRatio(style.color, bgRgb);
-            if (r < worstRatio) {
-              worstRatio = r;
-              worstBg = bgRgb;
-            }
-          }
-          if (Number.isFinite(worstRatio)) {
-            ratio = worstRatio;
-            effectiveBg = worstBg;
-          }
-        } else {
-          // Analytical computation against material surface
-          effectiveBg = mode === 'light' ? 'rgb(244, 248, 251)' : 'rgb(8, 21, 28)';
-          ratio = calculateContrastRatio(style.color, effectiveBg);
-        }
+        const sharp = require('sharp'); // Missing dependency must fail, never guess a background.
+        const { data, info } = await sharp(clipBuf).raw().toBuffer({ resolveWithObject: true });
+        const measured = measureContrastPixels(data, info, style.color, style.opacity);
+        const ratio = measured.ratio;
+        const effectiveBg = measured.background;
 
         contrastPairs.push({
           id: `contrast-${mode}-${target.id}`,
@@ -984,6 +989,7 @@ if (require.main === module) {
 module.exports = {
   REQUIRED_CASE_IDS,
   calculateContrastRatio,
+  measureContrastPixels,
   calculateLuminance,
   evaluateC04Results,
   runLiveVerification

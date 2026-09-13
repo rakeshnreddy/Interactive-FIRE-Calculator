@@ -1,0 +1,13 @@
+const assert = require('node:assert/strict');
+const { measureContrastPixels } = require('./verify_hosted_c04.cjs');
+assert.equal(typeof measureContrastPixels, 'function');
+const info = {width:101,height:1,channels:3};
+const data=Buffer.alloc(303,255);
+assert.equal(measureContrastPixels(data,info,'rgb(0, 0, 0)',1).ratio,21);
+data.fill(0,3,6);
+assert.equal(measureContrastPixels(data,info,'rgb(0, 0, 0)',1).ratio,1);
+assert.equal(measureContrastPixels(Buffer.from([255,255,255]),{width:1,height:1,channels:3},'rgb(0, 0, 0)',0).ratio,1);
+assert.throws(()=>measureContrastPixels(Buffer.alloc(0),info,'rgb(0, 0, 0)',1));
+assert.throws(()=>measureContrastPixels(data,info,'rgb(0, 0, 0)',NaN));
+assert.throws(()=>measureContrastPixels(Buffer.from([255,255,255,0]),{width:1,height:1,channels:4},'rgb(0, 0, 0)',1));
+console.log('6 pixel sampling checks passed');

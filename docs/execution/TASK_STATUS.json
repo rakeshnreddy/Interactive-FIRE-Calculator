@@ -126,7 +126,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "733e76c",
       "review": "reviews/C04.md",
-      "blocked_reason": "Automated verification passed (13/14 cases, 25/25 evaluator regression tests, full suite, exact CI). Checkpoint C04 is blocked on native 200% browser UI zoom verification, which requires interactive desktop Chrome CUA control."
+      "blocked_reason": "Native 200% zoom independently verified; checkpoint awaits C04 screen-reader smoke or explicit owner deferral. See reviews/C04.md."
     },
     {
       "id": "B09",
@@ -327,7 +327,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "733e76c",
       "review": "reviews/C04.md",
-      "blocked_reason": "Automated verification passed (13/14 cases, 25/25 evaluator regression tests, full suite, exact CI). Checkpoint C04 is blocked on native 200% browser UI zoom verification, which requires interactive desktop Chrome CUA control."
+      "blocked_reason": "Native 200% zoom independently verified; checkpoint awaits C04 screen-reader smoke or explicit owner deferral. See reviews/C04.md."
     },
     {
       "id": "B21",
@@ -342,7 +342,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "733e76c",
       "review": "reviews/C04.md",
-      "blocked_reason": "Automated verification passed (13/14 cases, 25/25 evaluator regression tests, full suite, exact CI). Checkpoint C04 is blocked on native 200% browser UI zoom verification, which requires interactive desktop Chrome CUA control."
+      "blocked_reason": "Native 200% zoom independently verified; checkpoint awaits C04 screen-reader smoke or explicit owner deferral. See reviews/C04.md."
     },
     {
       "id": "B22",

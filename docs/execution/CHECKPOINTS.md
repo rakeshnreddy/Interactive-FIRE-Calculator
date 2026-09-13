@@ -64,3 +64,5 @@ C03 final acceptance 2026-09-13 supersedes prior rework notes: all three tasks a
 C04 first review: changes requested for chart units, opening-balance/tolerance boundary and verification truthfulness. C04 remains released only for its bounded repair; C05 locked. See C04_REWORK_PROMPT.md.
 
 C04 first rework review: product unit/settlement repairs preserved; R4 real-observation and missing-field failures remain. Follow C04_VERIFICATION_REPAIR_PROMPT.md. No C05 release or task closure.
+
+C04 assisted review 2026-09-13: native Chrome 200% verified by primary; bounded collector repair and full suite pass. C04 remains pending required reader smoke or scoped owner deferral; C05 locked. See reviews/C04.md and protocol section 7 for worker-first verification.

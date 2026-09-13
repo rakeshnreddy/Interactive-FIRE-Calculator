@@ -68,3 +68,20 @@ After one failed rework, improve the contract and supply concrete failing cases.
 ## Submission boundary
 
 Workers do not set done, approve themselves, edit primary review records or release checkpoints. The primary reviewer alone independently verifies and closes passing tasks. Owner approval is never inferred from a worker-authored contract. No paid services, production launch or main merge follows from this process.
+
+
+## 7. Worker-first verification and bounded primary review (owner direction, 2026-09-13)
+
+The lower-cost implementing agent owns routine browser interaction, screenshots, responsive/theme checks, test execution and evidence collection. Primary owns acceptance, risk assessment and targeted independent corroboration. A higher-cost model is not intrinsically required to operate a browser.
+
+Before coding a UI task, probe available browser capabilities. Distinguish native desktop app/CUA control from headless Playwright. If native zoom or a required reader is unavailable, record the exact missing capability early; continue independent authorized work. Do not wait until submission to discover the gap. Where available, use the lower-cost model with the needed browser tools in its own session. Do not silently change session models or grant new permissions.
+
+Use these explicit gates on affected surfaces:
+- Native zoom: operate browser UI to 200%, retain browser-chrome/AX proof of the actual level, then inspect inputs, results and expanded details. No lost controls, clipped essential text or page-level horizontal scrolling. CDP page scale/device scale and a smaller viewport do not establish native zoom.
+- Responsive/themes: capture identified routes at 320/390, tablet and desktop widths in light and dark; record viewport, state and computed observed theme. Verify task-specific input placement, wrapping and long/zero/negative values. File names are not proof of theme.
+- Keyboard: use actual Tab/Enter/Space/Escape actions as applicable. Observe focus, accessible names, disclosure state and visible help. Do not set DOM attributes to manufacture interaction results.
+- Media/contrast: verify that the requested media query matches and inspect resulting computed behavior. Measure real composited backgrounds; missing targets/dependencies and unsupported measurements fail or block. Never insert guessed colors, literal opacity or unconditional pass flags.
+- Diagnostics: capture console errors/page exceptions; state exact code SHA, immutable preview, test commands, exit codes and evidence paths. Distinguish automated checks, manual observations and owner-deferred checks. Do not call an AX tree a screen-reader test.
+- Reliability: add targeted negative tests for missing/false observations and collector failures. Preserve raw failures and blocked cases; primary-assisted evidence belongs in a separate supplement.
+
+Primary reads a compact criterion-to-evidence matrix, the relevant diff and exact-revision CI, then independently reproduces the highest-risk changed behavior or suspicious claim. Reuse trustworthy full-suite and screenshot evidence for unchanged code. Do not repeat every browser case or the full suite simply because the reviewer is a different model. Expand review only for actual failures, unverified critical boundaries or affected changes. Closure remains solely the primary reviewer's decision; no quality gate is waived to save model usage.
