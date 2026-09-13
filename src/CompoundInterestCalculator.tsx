@@ -8,10 +8,7 @@ import {
   History,
   Landmark,
   RotateCcw,
-  ShieldCheck,
-  Table2,
-  Target,
-  TrendingUp
+  Target
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type { AuthState } from './auth';
@@ -249,7 +246,7 @@ export function CompoundInterestCalculator({
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">Growth &amp; goal planning</p>
         <h1 id="calculator-detail-title">Compound Interest Calculator</h1>
-        <p>Project recurring growth with timing, fees, inflation, future cash flows, and a fully reconciling schedule.</p>
+        <p className="calculator-scope-note">Project recurring growth with timing, fees, inflation, future cash flows, and a fully reconciling schedule.</p>
         <a href="/calculators" onClick={(event) => {
           event.preventDefault();
           onNavigate('/calculators');
@@ -258,12 +255,6 @@ export function CompoundInterestCalculator({
           Explore all calculators
         </a>
       </div>
-
-      <section className="compound-trust-strip" aria-label="Calculator scope">
-        <span><ShieldCheck size={17} /><strong>Public by default</strong><small>No account required</small></span>
-        <span><TrendingUp size={17} /><strong>Constant-assumption projection</strong><small>Not a prediction or guarantee</small></span>
-        <span><Table2 size={17} /><strong>Auditable math</strong><small>Headline and schedule reconcile</small></span>
-      </section>
 
       <div className="calculator-detail-grid compound-workspace">
         <section className="calculator-input-panel" aria-labelledby="compound-input-title">
