@@ -1,6 +1,6 @@
 # Checkpoints and release ledger
 
-Only C04 is released for implementation now. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+Only C05 is released for implementation now. C04 is accepted with the owner-authorized reader deferral tracked in B31. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
@@ -11,8 +11,8 @@ Only C04 is released for implementation now. C03 is accepted with the owner-defe
 | C01I | Isolated preview publication prerequisite | B33 | accepted | 78df4f850112ee3c1fbc76853b6e071a7c75bf2e | [approved](reviews/C01I.md) |
 | C02 | Currency and save integrity | B02 → B03 → B04 | accepted | ef2cded6441191a26537adf8ddf1a3e1909cf73b | [approved](reviews/C02.md) |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | accepted | 285e9eadf2d854951cec75d02afc6cce97d4d6c5 | [approved with reader deferral](reviews/C03.md) |
-| C04 | Generic calculator and chart truth | B08 → B20 → B21 | released | — | [changes requested](reviews/C04.md) |
-| C05 | Dedicated calculator families | B22 → B23 → B24 | locked | — | — |
+| C04 | Generic calculator and chart truth | B08 → B20 → B21 | accepted | 733e76c217058cafc3e5d418f09cb55ced531f4c | [approved with reader deferral](reviews/C04.md) |
+| C05 | Dedicated calculator families | B22 → B23 → B24 | released | — | — |
 | C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | locked | — | — |
 | C07 | Owner setup and hosted proof | B06 | locked | — | — |
 | C08 | Dashboard and transactions | B26 → B27 | locked | — | — |
@@ -66,3 +66,5 @@ C04 first review: changes requested for chart units, opening-balance/tolerance b
 C04 first rework review: product unit/settlement repairs preserved; R4 real-observation and missing-field failures remain. Follow C04_VERIFICATION_REPAIR_PROMPT.md. No C05 release or task closure.
 
 C04 assisted review 2026-09-13: native Chrome 200% verified by primary; bounded collector repair and full suite pass. C04 remains pending required reader smoke or scoped owner deferral; C05 locked. See reviews/C04.md and protocol section 7 for worker-first verification.
+
+C04 acceptance 2026-09-13 supersedes the pending-reader amendment above: owner deferred actual-reader verification through C10 to B31/C11. B08/B20/B21 accepted at 733e76c217058cafc3e5d418f09cb55ced531f4c; 16/34 accepted (47.1%). C05 alone released, starting B22. Follow ACCESSIBILITY_DEFERRALS.md and C05_START_PROMPT.md. Other quality and production gates remain unchanged.

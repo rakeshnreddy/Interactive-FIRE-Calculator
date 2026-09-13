@@ -4,10 +4,8 @@ the primary reviewer owns acceptance and task closure. Use the free tier only.
 ## Release gate (must be true before any code edit)
 - C04 must be accepted in `docs/execution/CHECKPOINTS.md`, with B20 and B21 accepted
   and their review record current.
-- C05 must then be explicitly released by the primary reviewer. The current ledger
-  says C05 is locked; native zoom and the bounded C04 collector repair are verified,
-  but the reader requirement/deferral decision remains pending. Treat this prompt
-  as preparation only until the authoritative ledger releases C05.
+- C05 is released following C04 acceptance. Confirm the current authoritative ledger
+  still authorizes this checkpoint before starting.
 - Cross-checkpoint prerequisites B16, B20, and B21 must be `done` with reviewer
   records. Do not infer acceptance from a checkbox, old SHA, or a green local test.
 - Before editing, inspect branch, HEAD, worktree, remotes, applicable AGENTS.md,
@@ -69,8 +67,9 @@ actual before/after renders and computed-style evidence, not CSS-string tests.
 Exercise valid, zero, negative/warning, empty, malformed, boundary, long-value, and
 failed-save states where applicable. Verify desktop/tablet/mobile including 320px,
 light/dark, keyboard navigation and keyboard-to-result, real 200% zoom, reduced
-motion, no overlap, readable digits, error/loading/empty states, and screen-reader
-smoke. The implementing worker should perform routine interactive/visual checks;
+motion, no overlap, readable digits, error/loading/empty states, and the remaining applicable accessibility checks. Actual screen-reader smoke is
+owner-deferred to B31/C11 under ACCESSIBILITY_DEFERRALS.md; inventory changed routes
+and controls for that later worker, without blocking this checkpoint solely on reader access. The implementing worker should perform routine interactive/visual checks;
 the primary reviewer should use a targeted independent spot-check. Build an evidence
 matrix with actual observations for every affected route at desktop/tablet/mobile,
 both themes, keyboard, native 200% zoom, and reduced motion. Use synthetic data only.
@@ -91,7 +90,7 @@ directly from git, exact CI head/SHA/conclusion, preview deployment ID and immut
 URL, literal trigger SHA and dirty flag, screenshots/DOM dumps, test logs, limits,
 files, rollback, and next task. For the final C05 packet, tie B22+B23+B24 evidence
 to one exact candidate SHA and one isolated preview. Earlier task SHAs are historical
-only. If preview tooling, native zoom, reader, or another assisted check is
+only. If preview tooling, native zoom, or another non-deferred assisted check is
 unavailable, submit the honest blocker and reproduction; never fabricate a preview,
 observation, SHA, or pass. Keep previews isolated and free tier; never use main,
 production/default deployment shortcuts, production data, secrets, or real records.

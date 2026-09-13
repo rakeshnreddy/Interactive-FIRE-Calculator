@@ -117,16 +117,16 @@
       "id": "B08",
       "title": "mortgage payoff reconciliation regression",
       "checkpoint": "C04",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B08.md",
       "submission": "submissions/B08.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "733e76c",
+      "code_sha": "733e76c217058cafc3e5d418f09cb55ced531f4c",
       "review": "reviews/C04.md",
-      "blocked_reason": "Native 200% zoom independently verified; checkpoint awaits C04 screen-reader smoke or explicit owner deferral. See reviews/C04.md."
+      "blocked_reason": null
     },
     {
       "id": "B09",
@@ -317,7 +317,7 @@
       "id": "B20",
       "title": "Reorder generic calculators around inputs and the answer",
       "checkpoint": "C04",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B16",
         "B19"
@@ -325,24 +325,24 @@
       "prompt": "prompts/B20.md",
       "submission": "submissions/B20.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "733e76c",
+      "code_sha": "733e76c217058cafc3e5d418f09cb55ced531f4c",
       "review": "reviews/C04.md",
-      "blocked_reason": "Native 200% zoom independently verified; checkpoint awaits C04 screen-reader smoke or explicit owner deferral. See reviews/C04.md."
+      "blocked_reason": null
     },
     {
       "id": "B21",
       "title": "Make shared charts numerically honest and accessible",
       "checkpoint": "C04",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B20"
       ],
       "prompt": "prompts/B21.md",
       "submission": "submissions/B21.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "733e76c",
+      "code_sha": "733e76c217058cafc3e5d418f09cb55ced531f4c",
       "review": "reviews/C04.md",
-      "blocked_reason": "Native 200% zoom independently verified; checkpoint awaits C04 screen-reader smoke or explicit owner deferral. See reviews/C04.md."
+      "blocked_reason": null
     },
     {
       "id": "B22",

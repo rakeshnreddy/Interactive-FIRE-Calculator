@@ -117,3 +117,5 @@ Latest owner constraint: read [FREE_TIER_EXECUTION.md](FREE_TIER_EXECUTION.md). 
 Worker reliability update: [implementation and validation protocol](IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md) and [contract template](CONTRACT_TEMPLATE.md) apply to subsequent tasks. B33 has a [concrete remaining-repair contract](contracts/B33.md). This method adds no task approvals and removes no existing acceptance criteria.
 
 Current primary release 2026-09-11: C02 accepted; start C03 with [C03_START_PROMPT.md](C03_START_PROMPT.md). The JSON ledger and CHECKPOINTS.md are authoritative.
+
+Owner amendment 2026-09-13: actual screen-reader/VoiceOver smoke is deferred for implementation checkpoints through C10 to B31/C11; it alone must not block otherwise passing task closure or checkpoint release. This supersedes generic reader-smoke requirements in older task prompts. Follow ACCESSIBILITY_DEFERRALS.md, retain all other checks and make no full WCAG-conformance claim. Lower-cost agents perform the deferred checks; primary owns acceptance.

@@ -69,7 +69,7 @@
 
 ## P1: prove one repeated job
 
-- [ ] **B08 — Ready: mortgage payoff reconciliation regression.**
+- [x] **B08 — Accepted: mortgage payoff reconciliation regression.**
   - Problem/evidence: mobile $200,000 / 6.5% / 30y mortgage shows 361 payoff months vs 360 schedule rows.
   - Outcome/scope: reproduce engine/visual rounding divergence, reference fixed-payment formula, choose explicit final residual tolerance and document migration decision before changing shared math.
   - Non-goals/files: no `fire.ts` edits or broad formula rewrite; loan helper in `seoCalculators`, studio data, golden tests, `docs/calculators/` contract.
@@ -191,7 +191,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B19.md](execution/prompts/B19.md).
 
-- [ ] **B20 — Planned: Reorder generic calculators around inputs and the answer.**
+- [x] **B20 — Accepted: Reorder generic calculators around inputs and the answer.**
   - User problem/evidence: India tax first input begins at y=1206 on a 390px phone. Visual audit V07–V08/V12.
   - Expected outcome/scope: Representative first control at or before y=650 at 390px normal text; no essential assumption removed; main answer visually dominant; keyboard order logical; no forced global overflow hiding.
   - Non-goals: No formula rewrite, chart truth implementation (B21), saving API changes or broad replacement of dedicated calculators.
@@ -203,7 +203,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B20.md](execution/prompts/B20.md).
 
-- [ ] **B21 — Planned: Make shared charts numerically honest and accessible.**
+- [x] **B21 — Accepted: Make shared charts numerically honest and accessible.**
   - User problem/evidence: Mixed-unit bars and minimum 8% zero bars imply false comparisons. Visual audit V09.
   - Expected outcome/scope: Zero never appears as a positive bar; sign visible; unrelated units never share scale; both series values accessible; no financial engine diff.
   - Non-goals: No engine math, invented forecast, chart animation dependency or hiding unfavorable outcomes.
@@ -324,6 +324,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Detailed implementer prompt: [prompts/B30.md](execution/prompts/B30.md).
 
 - [ ] **B31 — Planned: Close visual accessibility and performance acceptance matrix.**
+  - Deferred actual-reader work: consolidate B32/C03/C04 and subsequent UI routes under A11Y-DEFERRED in execution/ACCESSIBILITY_DEFERRALS.md. A lower-cost capable agent performs real VoiceOver/NVDA checks after C10; primary verifies closure. This work does not block earlier implementation checkpoints, but remains mandatory for B31 and any WCAG-conformance claim.
   - User problem/evidence: Individual polished screens do not prove a coherent accessible product. Visual audit V16.
   - Expected outcome/scope: All objective visual gates have evidence; no unresolved major issue; subjective rubric justified; full suite/CI/preview verified at submitted code SHA.
   - Non-goals: No production launch, waived missing tests, blanket WCAG certification or new broad refactor.
@@ -394,3 +395,5 @@ C01I accepted after primary reviewer completed the remaining audit repair. 7/34 
 C02 accepted 2026-09-11: B02/B03/B04, common candidate `ef2cded6441191a26537adf8ddf1a3e1909cf73b`, [review](execution/reviews/C02.md).10/34 accepted(29.4% by task count). C03 released: B18→B19→B09; use [explicit worker prompt](execution/C03_START_PROMPT.md).
 
 C03 accepted 2026-09-13 at `285e9eadf2d854951cec75d02afc6cce97d4d6c5`; B18/B19/B09 accepted with owner-authorized actual-reader deferral tracked in B31 and execution/ACCESSIBILITY_DEFERRALS.md. C04 is released. 13/34 accepted (38.2%, task count). See execution/reviews/C03.md.
+
+C04 accepted 2026-09-13: B08/B20/B21 done at 733e76c217058cafc3e5d418f09cb55ced531f4c with owner-deferred actual-reader checks assigned to B31. C05 released. 16/34 accepted (47.1%, task count).
