@@ -538,6 +538,8 @@ function CalculatorDetail({
     });
   }, [auth.status, calculator.slug, result, selectedScenarioId, values]);
 
+  const [openMetricHelp, setOpenMetricHelp] = useState<Record<string, boolean>>({});
+
   const setValue = (key: string, value: string) => {
     const parsed = Number(value);
     setLastSavedRoute(null);
@@ -550,35 +552,38 @@ function CalculatorDetail({
 
   const standardInputs = calculator.inputs.filter((input) => !optionalCalculatorInputKeys.has(input.key));
   const optionalInputs = calculator.inputs.filter((input) => optionalCalculatorInputKeys.has(input.key));
-  const renderInput = (input: SeoCalculator['inputs'][number]) => (
-    <label className="field" key={input.key}>
-      <span className="calculator-field-label">
-        <span>{input.label}</span>
-        <span
-          className="calculator-help-dot"
-          title={input.helper}
-          aria-label={`${input.label}: ${input.helper}`}
-          tabIndex={0}
-        >
-          <CircleHelp size={14} />
+  const renderInput = (input: SeoCalculator['inputs'][number]) => {
+    const inputId = `input-${calculator.slug}-${input.key}`;
+    const helperId = input.helper ? `helper-${calculator.slug}-${input.key}` : undefined;
+    return (
+      <label className="field" key={input.key} htmlFor={inputId}>
+        <span className="calculator-field-label">
+          <span>{input.label}</span>
         </span>
-      </span>
-      <div className="calculator-input-control">
-        {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
-        <input
-          type="number"
-          min={input.min}
-          max={input.max}
-          step={input.type === 'percent' ? '0.01' : '1'}
-          value={values[input.key] ?? 0}
-          onChange={(event) => setValue(input.key, event.target.value)}
-        />
-        {input.type === 'percent' ? <small>%</small> : null}
-        {input.suffix ? <small>{input.suffix}</small> : null}
-      </div>
-      {input.helper ? <small>{input.helper}</small> : null}
-    </label>
-  );
+        <div className="calculator-input-control">
+          {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
+          <input
+            id={inputId}
+            name={input.key}
+            type="number"
+            min={input.min}
+            max={input.max}
+            step={input.type === 'percent' ? '0.01' : '1'}
+            value={values[input.key] ?? 0}
+            onChange={(event) => setValue(input.key, event.target.value)}
+            aria-describedby={helperId}
+          />
+          {input.type === 'percent' ? <small>%</small> : null}
+          {input.suffix ? <small>{input.suffix}</small> : null}
+        </div>
+        {input.helper ? (
+          <small className="calculator-field-helper" id={helperId}>
+            {input.helper}
+          </small>
+        ) : null}
+      </label>
+    );
+  };
 
   const persistSignedOutDraft = () => {
     writeCalculatorDraft({
@@ -649,7 +654,7 @@ function CalculatorDetail({
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">{toolkit.title}</p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
-        <p>{calculator.description}</p>
+        <p className="calculator-scope-note">{calculator.description}</p>
         <a
           className="calculator-toolkit-backlink"
           href="/calculators"
@@ -659,25 +664,6 @@ function CalculatorDetail({
           Explore the {toolkit.title} toolkit
         </a>
       </div>
-
-      <section className="calculator-context-panel" aria-label={`${calculator.title} overview`}>
-        <article>
-          <p className="eyebrow">What it answers</p>
-          <p>{calculator.explanation}</p>
-        </article>
-        <article>
-          <p className="eyebrow">Why it matters</p>
-          <p>{qualitySpec.decisionUsefulness}</p>
-        </article>
-        <article>
-          <p className="eyebrow">How it fits</p>
-          <p>{toolkit.description}</p>
-        </article>
-        <article>
-          <p className="eyebrow">How to read it</p>
-          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
-        </article>
-      </section>
 
       <div className="calculator-detail-grid">
         <section className="calculator-input-panel" aria-label={`${calculator.title} inputs`}>
@@ -721,22 +707,42 @@ function CalculatorDetail({
             </div>
           </div>
           <div className="calculator-result-metrics">
-            {result.metrics.map((metric) => (
-              <article className={`calculator-result-metric metric-${metric.tone ?? 'neutral'}`} key={metric.label}>
-                <span className="calculator-metric-label">
-                  <span>{metric.label}</span>
-                  <span
-                    className="calculator-help-dot"
-                    title={metricDescription(metric)}
-                    aria-label={`${metric.label}: ${metricDescription(metric)}`}
-                    tabIndex={0}
-                  >
-                    <CircleHelp size={14} />
+            {result.metrics.map((metric, index) => {
+              const isPrimary = index === 0;
+              const helpId = `metric-help-${calculator.slug}-${index}`;
+              const isHelpOpen = Boolean(openMetricHelp[metric.label]);
+              return (
+                <article
+                  className={`calculator-result-metric metric-${metric.tone ?? 'neutral'}${isPrimary ? ' calculator-result-metric-primary' : ''}`}
+                  key={metric.label}
+                >
+                  <span className="calculator-metric-label">
+                    <span>{metric.label}</span>
+                    <button
+                      type="button"
+                      className="calculator-help-btn"
+                      aria-expanded={isHelpOpen}
+                      aria-controls={helpId}
+                      aria-label={`About ${metric.label}`}
+                      onClick={() =>
+                        setOpenMetricHelp((prev) => ({
+                          ...prev,
+                          [metric.label]: !prev[metric.label]
+                        }))
+                      }
+                    >
+                      <CircleHelp size={14} />
+                    </button>
                   </span>
-                </span>
-                <strong>{formatMetric(metric, calculator)}</strong>
-              </article>
-            ))}
+                  <strong>{formatMetric(metric, calculator)}</strong>
+                  {isHelpOpen ? (
+                    <p id={helpId} className="calculator-metric-help-text" role="region">
+                      {metricDescription(metric)}
+                    </p>
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
           <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} />
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} />
@@ -781,6 +787,25 @@ function CalculatorDetail({
           ) : null}
         </section>
       </div>
+
+      <section className="calculator-methodology-panel" aria-label={`${calculator.title} methodology and context`}>
+        <article>
+          <p className="eyebrow">What it answers</p>
+          <p>{calculator.explanation}</p>
+        </article>
+        <article>
+          <p className="eyebrow">Why it matters</p>
+          <p>{qualitySpec.decisionUsefulness}</p>
+        </article>
+        <article>
+          <p className="eyebrow">How it fits</p>
+          <p>{toolkit.description}</p>
+        </article>
+        <article>
+          <p className="eyebrow">How to read it</p>
+          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
+        </article>
+      </section>
 
       <CalculatorEngagementPanel
         auth={auth}
@@ -1008,7 +1033,7 @@ function CalculatorScenarioPanel({
         {scenarios.map((scenario) => (
           <button
             aria-selected={scenario.id === selectedScenarioId}
-            className={scenario.id === selectedScenarioId ? 'is-active' : ''}
+            className={`calculator-scenario-tab${scenario.id === selectedScenarioId ? ' is-active' : ''}`}
             key={scenario.id}
             role="tab"
             type="button"

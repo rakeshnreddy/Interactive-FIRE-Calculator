@@ -317,14 +317,14 @@
       "id": "B20",
       "title": "Reorder generic calculators around inputs and the answer",
       "checkpoint": "C04",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B16",
         "B19"
       ],
       "prompt": "prompts/B20.md",
-      "submission": null,
-      "owner": null,
+      "submission": "submissions/B20.md",
+      "owner": "FinPath implementation agent",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
