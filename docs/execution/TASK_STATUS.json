@@ -348,16 +348,16 @@
       "id": "B22",
       "title": "Unify compound-interest and savings-goal presentation",
       "checkpoint": "C05",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B16",
         "B20",
         "B21"
       ],
       "prompt": "prompts/B22.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B22.md",
+      "owner": "Codex implementing session 2026-09-13",
+      "code_sha": "db6b9e36a499dafda6e43cd0f7258cd483d4c97a",
       "review": null,
       "blocked_reason": null
     },
@@ -365,16 +365,16 @@
       "id": "B23",
       "title": "Unify budget, net-worth and emergency-fund presentation",
       "checkpoint": "C05",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B16",
         "B20",
         "B21"
       ],
       "prompt": "prompts/B23.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B23.md",
+      "owner": "Codex implementing session 2026-09-13",
+      "code_sha": "db6b9e36a499dafda6e43cd0f7258cd483d4c97a",
       "review": null,
       "blocked_reason": null
     },
@@ -382,16 +382,16 @@
       "id": "B24",
       "title": "Refine FIRE calculator into the flagship decision experience",
       "checkpoint": "C05",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B16",
         "B20",
         "B21"
       ],
       "prompt": "prompts/B24.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B24.md",
+      "owner": "Codex implementing session 2026-09-13",
+      "code_sha": "db6b9e36a499dafda6e43cd0f7258cd483d4c97a",
       "review": null,
       "blocked_reason": null
     },

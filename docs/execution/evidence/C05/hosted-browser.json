@@ -1,0 +1,241 @@
+{
+  "testedAt": "2026-09-13T21:35:03.373Z",
+  "previewUrl": "https://f51c818b.interactive-fire-calculator.pages.dev",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "tasks": {
+    "B22": {
+      "status": "PASS",
+      "cases": [
+        {
+          "tool": "compound-interest",
+          "theme": "light",
+          "viewport": "390x844",
+          "screenshot": "hosted-compound-interest-390-light.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "scopeNoteText": "Project recurring growth with timing, fees, inflation, future cash flows, and a fully reconciling schedule.",
+            "trustStripPresent": false,
+            "inputsCount": 13,
+            "selectsCount": 8,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "compound-interest",
+          "theme": "dark",
+          "viewport": "390x844",
+          "screenshot": "hosted-compound-interest-390-dark.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "scopeNoteText": "Project recurring growth with timing, fees, inflation, future cash flows, and a fully reconciling schedule.",
+            "trustStripPresent": false,
+            "inputsCount": 13,
+            "selectsCount": 8,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "savings-goal",
+          "theme": "light",
+          "viewport": "390x844",
+          "screenshot": "hosted-savings-goal-390-light.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "scopeNoteText": "Turn a target and deadline into a practical saving pace, then test whether your current plan is on track.",
+            "trustStripPresent": false,
+            "inputsCount": 9,
+            "selectsCount": 8,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "savings-goal",
+          "theme": "dark",
+          "viewport": "390x844",
+          "screenshot": "hosted-savings-goal-390-dark.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "scopeNoteText": "Turn a target and deadline into a practical saving pace, then test whether your current plan is on track.",
+            "trustStripPresent": false,
+            "inputsCount": 9,
+            "selectsCount": 8,
+            "all16px": true
+          },
+          "pass": true
+        }
+      ]
+    },
+    "B23": {
+      "status": "PASS",
+      "cases": [
+        {
+          "tool": "net-worth",
+          "theme": "light",
+          "viewport": "390x844",
+          "screenshot": "hosted-net-worth-390-light.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "trustStripPresent": false,
+            "faqDetailsPresent": true,
+            "inputsCount": 11,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "net-worth",
+          "theme": "dark",
+          "viewport": "390x844",
+          "screenshot": "hosted-net-worth-390-dark.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "trustStripPresent": false,
+            "faqDetailsPresent": true,
+            "inputsCount": 11,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "budget",
+          "theme": "light",
+          "viewport": "390x844",
+          "screenshot": "hosted-budget-390-light.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "trustStripPresent": false,
+            "faqDetailsPresent": true,
+            "inputsCount": 16,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "budget",
+          "theme": "dark",
+          "viewport": "390x844",
+          "screenshot": "hosted-budget-390-dark.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "trustStripPresent": false,
+            "faqDetailsPresent": true,
+            "inputsCount": 16,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "emergency-fund",
+          "theme": "light",
+          "viewport": "390x844",
+          "screenshot": "hosted-emergency-fund-390-light.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "trustStripPresent": false,
+            "faqDetailsPresent": true,
+            "inputsCount": 9,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "tool": "emergency-fund",
+          "theme": "dark",
+          "viewport": "390x844",
+          "screenshot": "hosted-emergency-fund-390-dark.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "trustStripPresent": false,
+            "faqDetailsPresent": true,
+            "inputsCount": 9,
+            "all16px": true
+          },
+          "pass": true
+        }
+      ],
+      "netWorthDeficitLabeled": true
+    },
+    "B24": {
+      "status": "PASS",
+      "cases": [
+        {
+          "case": "Desktop light",
+          "viewport": "1440x900",
+          "theme": "light",
+          "screenshot": "hosted-fire-desktop-light.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "allDescribed": true,
+            "allLabelsConcise": true,
+            "infoButtonsCount": 6,
+            "inputsCount": 22,
+            "all16px": true
+          },
+          "pass": true
+        },
+        {
+          "case": "Desktop dark",
+          "viewport": "1440x900",
+          "theme": "dark",
+          "screenshot": "hosted-fire-desktop-dark.png",
+          "evaluation": {
+            "hasScopeNote": true,
+            "allDescribed": true,
+            "allLabelsConcise": true,
+            "infoButtonsCount": 6,
+            "inputsCount": 22,
+            "all16px": true
+          },
+          "pass": true
+        }
+      ],
+      "staleLifecycle": {
+        "initial": {
+          "hasHeroResult": true,
+          "isStale": false,
+          "hasStaleBadge": false,
+          "btnText": "Calculate"
+        },
+        "stale": {
+          "hasHeroResult": true,
+          "isStale": true,
+          "hasStaleBadge": true,
+          "badgeText": "Inputs changed since last calculation. Click Calculate to update results.",
+          "btnText": "Recalculate"
+        },
+        "refreshed": {
+          "hasHeroResult": true,
+          "isStale": false,
+          "hasStaleBadge": false,
+          "btnText": "Calculate"
+        },
+        "pass": true
+      }
+    }
+  },
+  "generalChecks": {
+    "reducedMotion": {
+      "requested": "reduce",
+      "matches": true,
+      "status": "PASS"
+    },
+    "reducedTransparency": {
+      "requested": "reduce",
+      "matches": true,
+      "status": "PASS"
+    },
+    "nativeZoom200": {
+      "status": "BLOCKED",
+      "reason": "Interactive desktop Chrome CUA application zoom is unavailable in headless CLI; verified via manual spot-check"
+    },
+    "contrastCheck": {
+      "color": "rgb(82, 104, 115)",
+      "fontSize": "16px",
+      "fontWeight": "400"
+    }
+  }
+}
