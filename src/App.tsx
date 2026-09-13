@@ -19,6 +19,7 @@ import {
   Menu,
   Moon,
   PiggyBank,
+  RotateCcw,
   Save,
   Settings,
   ShieldCheck,
@@ -31,7 +32,7 @@ import {
   UserCircle,
   X
 } from 'lucide-react';
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { cloneElement, isValidElement, lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import type {
   CalculatorSaveOutcome,
@@ -2492,39 +2493,99 @@ function Metric({
   );
 }
 
-function InfoTip({ text }: { text: string }) {
+function InfoTip({
+  id,
+  text,
+  label
+}: {
+  id?: string;
+  text: string;
+  label?: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <span className="info-tip">
-      <span className="info-dot" tabIndex={0} aria-label={text}>
+      <button
+        type="button"
+        className="info-dot"
+        aria-label={label ? `Help for ${label}` : text}
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
         ?
-      </span>
-      <span className="info-popover" role="tooltip">
+      </button>
+      <span
+        className={`info-popover ${isOpen ? 'is-visible' : ''}`}
+        id={id}
+        role="tooltip"
+      >
         {text}
       </span>
     </span>
   );
 }
 
+function fieldSlugify(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 function Field({
+  id,
   label,
   help,
   issue,
+  prefix,
+  suffix,
   children
 }: {
+  id?: string;
   label: string;
   help?: string;
   issue?: string;
+  prefix?: string;
+  suffix?: string;
   children: ReactNode;
 }) {
+  const childId = (isValidElement(children) && (children.props as any).id) || id;
+  const resolvedId = childId || `field-${fieldSlugify(label)}`;
+  const helpId = help ? `${resolvedId}-help` : undefined;
+  const issueId = issue ? `${resolvedId}-issue` : undefined;
+
+  const existingDescribedBy = isValidElement(children)
+    ? (children.props as any)['aria-describedby']
+    : undefined;
+  const describedByParts = [existingDescribedBy, helpId, issueId].filter(Boolean);
+  const describedBy = describedByParts.length > 0 ? describedByParts.join(' ') : undefined;
+
+  const child = isValidElement(children)
+    ? cloneElement(children as React.ReactElement<any>, {
+        id: resolvedId,
+        'aria-describedby': describedBy,
+        'aria-invalid': (children.props as any)['aria-invalid'] ?? Boolean(issue)
+      })
+    : children;
+
   return (
-    <label className={issue ? 'field field-has-issue' : 'field'}>
+    <div className={issue ? 'field field-has-issue' : 'field'}>
       <span className="field-label">
-        {label}
-        {help && <InfoTip text={help} />}
+        <label htmlFor={resolvedId}>{label}</label>
+        {help && <InfoTip id={helpId} text={help} label={label} />}
       </span>
-      {children}
-      {issue && <small className="field-issue">{issue}</small>}
-    </label>
+      {prefix || suffix ? (
+        <div className="calculator-input-control">
+          {prefix && <small aria-hidden="true">{prefix}</small>}
+          {child}
+          {suffix && <small aria-hidden="true">{suffix}</small>}
+        </div>
+      ) : (
+        child
+      )}
+      {issue && (
+        <small className="field-issue" id={issueId} role="alert">
+          {issue}
+        </small>
+      )}
+    </div>
   );
 }
 
@@ -5141,6 +5202,14 @@ function App({ auth }: { auth: AuthState }) {
   const [calculatorPanel, setCalculatorPanel] = useState<CalculatorPanel>('planner');
   const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
   const [hasCalculated, setHasCalculated] = useState(false);
+  const [isStale, setIsStale] = useState(false);
+  const [displayedResult, setDisplayedResult] = useState<{
+    result: FirePlanResult;
+    plan: PlanInput;
+    mode: CalculatorMode;
+    simulation: SimulationResult;
+    timeline: TimelineInput;
+  } | null>(null);
   const [resultsMode, setResultsMode] = useState<ResultsMode>('chart');
   const [projectionBasis, setProjectionBasis] = useState<ProjectionBasis>('fire-number');
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>(initialScenarios);
@@ -5613,29 +5682,35 @@ function App({ auth }: { auth: AuthState }) {
     calculatorMode === 'fire-number'
       ? activeCalculator.secondaryLabel
       : activeCalculator.primaryLabel;
-  const withdrawalCoverage = result.maxAnnualExpense - plan.annualExpense;
+  const activePlanForDisplay = (hasCalculated && displayedResult) ? displayedResult.plan : plan;
+  const activeResultForDisplay = (hasCalculated && displayedResult) ? displayedResult.result : result;
+  const activeModeForDisplay = (hasCalculated && displayedResult) ? displayedResult.mode : calculatorMode;
+  const activeSimulationForDisplay = (hasCalculated && displayedResult) ? displayedResult.simulation : currentSimulation;
+  const activeTimelineForDisplay = (hasCalculated && displayedResult) ? displayedResult.timeline : timeline;
+
+  const withdrawalCoverage = activeResultForDisplay.maxAnnualExpense - activePlanForDisplay.annualExpense;
   const requiredWithdrawalRate =
-    result.requiredPortfolio > 0 && Number.isFinite(result.requiredPortfolio)
-      ? plan.annualExpense / result.requiredPortfolio
+    activeResultForDisplay.requiredPortfolio > 0 && Number.isFinite(activeResultForDisplay.requiredPortfolio)
+      ? activePlanForDisplay.annualExpense / activeResultForDisplay.requiredPortfolio
       : 0;
   const portfolioWithdrawalRate =
-    plan.initialPortfolio > 0 ? result.maxAnnualExpense / plan.initialPortfolio : 0;
+    activePlanForDisplay.initialPortfolio > 0 ? activeResultForDisplay.maxAnnualExpense / activePlanForDisplay.initialPortfolio : 0;
   const primaryResult =
-    calculatorMode === 'fire-number'
+    activeModeForDisplay === 'fire-number'
       ? {
           label: 'Required FIRE number',
-          value: formatMoney(result.requiredPortfolio),
+          value: formatMoney(activeResultForDisplay.requiredPortfolio),
           tone: 'accent' as const,
-          detail: `${formatMoney(plan.annualExpense)} first-year withdrawal need.`
+          detail: `${formatMoney(activePlanForDisplay.annualExpense)} first-year withdrawal need.`
         }
       : {
           label: 'Annual withdrawal',
-          value: formatMoney(result.maxAnnualExpense),
+          value: formatMoney(activeResultForDisplay.maxAnnualExpense),
           tone: 'success' as const,
           detail: `${formatPercent(portfolioWithdrawalRate)} initial withdrawal rate.`
         };
   const secondaryResult =
-    calculatorMode === 'fire-number'
+    activeModeForDisplay === 'fire-number'
       ? {
           label: 'Withdrawal rate',
           value: formatPercent(requiredWithdrawalRate),
@@ -5649,9 +5724,9 @@ function App({ auth }: { auth: AuthState }) {
               : formatMoney(withdrawalCoverage),
           tone: withdrawalCoverage >= 0 ? ('success' as const) : ('warning' as const)
         };
-  const fireNumberGap = result.requiredPortfolio - plan.initialPortfolio;
+  const fireNumberGap = activeResultForDisplay.requiredPortfolio - activePlanForDisplay.initialPortfolio;
   const supportResult =
-    calculatorMode === 'fire-number'
+    activeModeForDisplay === 'fire-number'
       ? fireNumberGap > 0
         ? {
             label: 'Gap to FIRE number',
@@ -5663,17 +5738,19 @@ function App({ auth }: { auth: AuthState }) {
           }
       : {
           label: 'Portfolio tested',
-          value: formatMoney(plan.initialPortfolio)
+          value: formatMoney(activePlanForDisplay.initialPortfolio)
         };
   const projectionRows =
-    projectionBasis === 'fire-number' ? result.expenseMode.rows : currentSimulation.rows;
+    projectionBasis === 'fire-number' ? activeResultForDisplay.expenseMode.rows : activeSimulationForDisplay.rows;
   const projectionLabel =
     projectionBasis === 'fire-number'
       ? 'FIRE number projection'
       : 'Current portfolio stress test';
+  const displayDuration = totalDuration(activePlanForDisplay.ratePeriods);
+  const displayTimelineDuration = modeledDurationFromTimeline(activeTimelineForDisplay);
   const timelineWarnings: WarningNotice[] = [];
 
-  if (timeline.retirementAge <= timeline.currentAge) {
+  if (activeTimelineForDisplay.retirementAge <= activeTimelineForDisplay.currentAge) {
     timelineWarnings.push({
       title: 'Timeline age range',
       message: 'Retirement age should be higher than current age.',
@@ -5681,7 +5758,7 @@ function App({ auth }: { auth: AuthState }) {
     });
   }
 
-  if (timeline.planEndAge <= timeline.retirementAge) {
+  if (activeTimelineForDisplay.planEndAge <= activeTimelineForDisplay.retirementAge) {
     timelineWarnings.push({
       title: 'Timeline duration',
       message: 'Plan end age should be higher than retirement age.',
@@ -5689,16 +5766,16 @@ function App({ auth }: { auth: AuthState }) {
     });
   }
 
-  if (timelineDuration !== duration) {
+  if (displayTimelineDuration !== displayDuration) {
     timelineWarnings.push({
       title: 'Timeline mismatch',
-      message: `The age timeline implies ${timelineDuration} years while market periods model ${duration} years.`,
+      message: `The age timeline implies ${displayTimelineDuration} years while market periods model ${displayDuration} years.`,
       severity: 'info'
     });
   }
 
   const warningNotices = [
-    ...planWarnings(plan, result, currentSimulation.rows, duration),
+    ...planWarnings(activePlanForDisplay, activeResultForDisplay, activeSimulationForDisplay.rows, displayDuration),
     ...timelineWarnings
   ];
   const fieldIssue = (path: string): string | undefined =>
@@ -5735,15 +5812,27 @@ function App({ auth }: { auth: AuthState }) {
   }, [plan, result.requiredPortfolio, scenarios]);
 
   const markInputsChanged = () => {
-    setHasCalculated(false);
+    if (hasCalculated) {
+      setIsStale(true);
+    }
   };
 
   const chooseCalculatorMode = (nextMode: CalculatorMode) => {
     setCalculatorMode(nextMode);
     setHasCalculated(false);
+    setIsStale(false);
+    setDisplayedResult(null);
   };
 
   const calculateNow = () => {
+    setDisplayedResult({
+      result,
+      plan: { ...plan },
+      mode: calculatorMode,
+      simulation: currentSimulation,
+      timeline: { ...timeline }
+    });
+    setIsStale(false);
     setHasCalculated(true);
     setCalculatorPanel('planner');
   };
@@ -5807,17 +5896,30 @@ function App({ auth }: { auth: AuthState }) {
   });
 
   const applySnapshot = (snapshot: AppSnapshot) => {
-    markInputsChanged();
-    setPlan({
+    const nextPlan = {
       ...initialPlan,
       ...snapshot.plan,
       recurringCashFlows: snapshot.plan.recurringCashFlows ?? []
-    });
-    setTimeline({ ...initialTimeline, ...snapshot.timeline });
-    setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
+    };
+    const nextTimeline = { ...initialTimeline, ...snapshot.timeline };
+    const nextMode = snapshot.calculatorMode ?? 'fire-number';
+    const nextResult = calculateFirePlan(nextPlan);
+    const nextSimulation = stressTestCurrentPortfolio(nextPlan);
+
+    setPlan(nextPlan);
+    setTimeline(nextTimeline);
+    setCalculatorMode(nextMode);
     setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
     setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
     setLastSeedImport(null);
+    setDisplayedResult({
+      result: nextResult,
+      plan: nextPlan,
+      mode: nextMode,
+      simulation: nextSimulation,
+      timeline: nextTimeline
+    });
+    setIsStale(false);
     setHasCalculated(true);
     setCalculatorPanel('planner');
   };
@@ -7045,9 +7147,8 @@ function App({ auth }: { auth: AuthState }) {
           <div>
             <p className="eyebrow">Calculator module</p>
             <h1 id="fire-title">FIRE Calculator</h1>
-            <p>
-              Answer one retirement planning question at a time. Core inputs stay up front; market
-              periods, cash-flow events, and local draft management are tucked below.
+            <p className="calculator-scope-note">
+              Answer one retirement planning question at a time. Plan retirement portfolio targets or test sustainable annual withdrawals across customizable inflation and market regimes.
             </p>
           </div>
           <span className="pill">{activeCalculator.shortTitle}</span>
@@ -7066,7 +7167,11 @@ function App({ auth }: { auth: AuthState }) {
             <div className="field full-field">
               <span className="field-label">
                 Planning question
-                <InfoTip text="Choose FIRE number to solve for a portfolio target, or withdrawal to solve for annual spending from a portfolio." />
+                <InfoTip
+                  id="fire-planning-question-help"
+                  text="Choose FIRE number to solve for a portfolio target, or withdrawal to solve for annual spending from a portfolio."
+                  label="Planning question"
+                />
               </span>
               <div className="segmented">
                 <button
@@ -7085,7 +7190,9 @@ function App({ auth }: { auth: AuthState }) {
             </div>
 
             <Field
+              id="fire-current-age"
               label="Current age"
+              suffix="years"
               help="Your age today. It is used to check that the retirement timeline makes sense."
               issue={
                 timeline.retirementAge <= timeline.currentAge
@@ -7101,7 +7208,9 @@ function App({ auth }: { auth: AuthState }) {
               />
             </Field>
             <Field
+              id="fire-retirement-age"
               label="Retirement age"
+              suffix="years"
               help="The age when withdrawals start in this plan."
               issue={
                 timeline.retirementAge <= timeline.currentAge
@@ -7117,7 +7226,9 @@ function App({ auth }: { auth: AuthState }) {
               />
             </Field>
             <Field
+              id="fire-plan-end-age"
               label="Plan end age"
+              suffix="years"
               help="The age through which the model should keep funding withdrawals."
               issue={
                 timeline.planEndAge <= timeline.retirementAge ? 'End age should be higher.' : undefined
@@ -7133,7 +7244,9 @@ function App({ auth }: { auth: AuthState }) {
 
             {calculatorMode === 'withdrawal-income' && (
               <Field
+                id="fire-initial-portfolio"
                 label={portfolioLabel}
+                prefix="$"
                 help="The portfolio balance you want to test for retirement income."
                 issue={fieldIssue('initialPortfolio')}
               >
@@ -7147,7 +7260,9 @@ function App({ auth }: { auth: AuthState }) {
             )}
 
             <Field
+              id="fire-annual-expense"
               label={annualExpenseLabel}
+              prefix="$"
               help={
                 calculatorMode === 'fire-number'
                   ? 'Your estimated first-year retirement spending before inflation.'
@@ -7165,7 +7280,9 @@ function App({ auth }: { auth: AuthState }) {
 
             {calculatorMode === 'fire-number' && (
               <Field
+                id="fire-initial-portfolio"
                 label={portfolioLabel}
+                prefix="$"
                 help="Your current invested assets. This is used for the funding gap and stress test."
                 issue={fieldIssue('initialPortfolio')}
               >
@@ -7181,13 +7298,19 @@ function App({ auth }: { auth: AuthState }) {
 
           <div className="quick-actions">
             <button className="primary-button icon-text-button" onClick={calculateNow}>
-              <Calculator size={17} />
-              Calculate
+              {isStale ? <RotateCcw size={17} /> : <Calculator size={17} />}
+              {isStale ? 'Recalculate' : 'Calculate'}
             </button>
           </div>
 
           {hasCalculated && (
-            <div className="calculator-result-card hero-result">
+            <div className={`calculator-result-card hero-result ${isStale ? 'is-stale' : ''}`}>
+              {isStale && (
+                <div className="stale-result-badge" role="status" aria-live="polite">
+                  <RotateCcw size={14} aria-hidden="true" />
+                  <span>Inputs changed since last calculation. Click Calculate to update results.</span>
+                </div>
+              )}
               <span>{primaryResult.label}</span>
               <strong>{primaryResult.value}</strong>
               <small>{primaryResult.detail}</small>

@@ -2066,6 +2066,7 @@ h2 {
   justify-content: center;
   width: 18px;
   height: 18px;
+  padding: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
   border-radius: 999px;
   color: var(--accent);
@@ -2073,6 +2074,8 @@ h2 {
   font-size: 0.72rem;
   font-weight: 900;
   line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .info-popover {
@@ -2102,10 +2105,34 @@ h2 {
 }
 
 .info-tip:hover .info-popover,
-.info-tip:focus-within .info-popover {
+.info-tip:focus-within .info-popover,
+.info-popover.is-visible {
   opacity: 1;
+  pointer-events: auto;
   transform: translateY(0);
 }
+
+.hero-result.is-stale {
+  border-style: dashed;
+  opacity: 0.92;
+  position: relative;
+}
+
+.stale-result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.75rem;
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--warning, #eab308) 14%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--warning, #eab308) 40%, var(--border));
+  color: var(--heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 
 .field input,
 .field select {
@@ -7400,6 +7427,33 @@ h2 {
   outline: 0;
   color: var(--heading);
   background: transparent;
+  font-size: 1rem;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.calculator-input-control input,
+.compound-workspace input[type="number"],
+.savings-goal-calculator input[type="number"],
+.compound-calculator input[type="number"],
+.cashflow-planning-calculator input[type="number"],
+.cashflow-workspace input[type="number"],
+.calculator-workspace input[type="number"],
+.core-fire-form input[type="number"],
+.quick-calculator input[type="number"] {
+  font-size: 1rem;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.compound-select,
+.savings-goal-calculator select,
+.compound-calculator select,
+.cashflow-planning-calculator select,
+.cashflow-workspace select,
+.calculator-workspace select {
+  font-size: 1rem;
+  font-size: 16px;
 }
 
 .calculator-input-control small {
