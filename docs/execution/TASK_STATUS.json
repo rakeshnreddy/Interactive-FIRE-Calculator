@@ -117,13 +117,13 @@
       "id": "B08",
       "title": "mortgage payoff reconciliation regression",
       "checkpoint": "C04",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B08.md",
-      "submission": null,
-      "owner": null,
+      "submission": "submissions/B08.md",
+      "owner": "FinPath implementation agent",
       "code_sha": null,
       "review": null,
       "blocked_reason": null

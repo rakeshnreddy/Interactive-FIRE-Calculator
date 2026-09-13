@@ -1,0 +1,64 @@
+{
+  "testedAt": "2026-09-13T07:47:08.010Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "cases": [
+    {
+      "theme": "light",
+      "principal": 200000,
+      "rate": 6.5,
+      "years": 30,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowPeriod": "360",
+      "lastRowBalance": "$255,089",
+      "lastRowNote": "Final payment",
+      "reconciled": true,
+      "screenshot": "mortgage-390-light-200k.png"
+    },
+    {
+      "theme": "light",
+      "principal": 300000,
+      "rate": 6.5,
+      "years": 30,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowPeriod": "360",
+      "lastRowBalance": "$382,633",
+      "lastRowNote": "Final payment",
+      "reconciled": true,
+      "screenshot": "mortgage-390-light-300k.png"
+    },
+    {
+      "theme": "dark",
+      "principal": 200000,
+      "rate": 6.5,
+      "years": 30,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowPeriod": "360",
+      "lastRowBalance": "$255,089",
+      "lastRowNote": "Final payment",
+      "reconciled": true,
+      "screenshot": "mortgage-390-dark-200k.png"
+    },
+    {
+      "theme": "dark",
+      "principal": 300000,
+      "rate": 6.5,
+      "years": 30,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowPeriod": "360",
+      "lastRowBalance": "$382,633",
+      "lastRowNote": "Final payment",
+      "reconciled": true,
+      "screenshot": "mortgage-390-dark-300k.png"
+    }
+  ],
+  "allPassed": true
+}

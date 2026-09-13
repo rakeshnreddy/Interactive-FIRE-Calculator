@@ -1,6 +1,7 @@
 import {
   calculateSeoCalculator,
   calculatorPath,
+  LOAN_RESIDUAL_TOLERANCE,
   seoCalculators,
   type CalculatorInput,
   type CalculatorMetric,
@@ -876,13 +877,28 @@ function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, n
 
   if (balance <= 0 || payment <= 0) return null;
 
-  for (let month = 1; month <= maxMonthlyScheduleMonths && currentBalance > 0; month += 1) {
+  for (let month = 1; month <= maxMonthlyScheduleMonths && currentBalance > LOAN_RESIDUAL_TOLERANCE; month += 1) {
     const interest = currentBalance * monthlyRate;
     const plannedPayment = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
-    const actualPayment = Math.min(plannedPayment, currentBalance + interest);
-    const principalPaid = Math.max(0, actualPayment - interest);
+    const totalDue = currentBalance + interest;
+    let actualPayment: number;
+    let principalPaid: number;
+
+    if (totalDue <= plannedPayment + LOAN_RESIDUAL_TOLERANCE) {
+      actualPayment = totalDue;
+      principalPaid = currentBalance;
+      currentBalance = 0;
+    } else {
+      actualPayment = plannedPayment;
+      principalPaid = Math.max(0, actualPayment - interest);
+      currentBalance = Math.max(0, totalDue - actualPayment);
+      if (currentBalance <= LOAN_RESIDUAL_TOLERANCE) {
+        actualPayment += currentBalance;
+        principalPaid += currentBalance;
+        currentBalance = 0;
+      }
+    }
     cumulativeInterest += interest;
-    currentBalance = Math.max(0, currentBalance + interest - actualPayment);
 
     rows.push({
       id: `debt-month-${month}`,
@@ -2574,7 +2590,7 @@ function amortizationRows(
   let cumulativeInterest = 0;
   const rows: CalculatorDetailScheduleRow[] = [];
 
-  for (let month = 1; month <= months && balance > 0; month += 1) {
+  for (let month = 1; month <= months && balance > LOAN_RESIDUAL_TOLERANCE; month += 1) {
     const paymentThisMonth = payment + Math.max(0, extraMonthlyPayment)
       + (month % 12 === 0 ? Math.max(0, extraAnnualPayment) : 0);
     const step = stepAmortizingBalance(balance, annualRate, paymentThisMonth);
@@ -2610,16 +2626,33 @@ function stepAmortizingBalance(
   annualRate: number,
   payment: number
 ): { balance: number; interest: number; payment: number; principalPaid: number } {
-  if (balance <= 0) {
+  if (balance <= LOAN_RESIDUAL_TOLERANCE) {
     return { balance: 0, interest: 0, payment: 0, principalPaid: 0 };
   }
 
   const interest = balance * annualRate / 12;
-  const actualPayment = Math.min(Math.max(0, payment), balance + interest);
-  const principalPaid = Math.max(0, actualPayment - interest);
+  const totalDue = balance + interest;
+  let actualPayment: number;
+  let principalPaid: number;
+  let newBalance: number;
+
+  if (totalDue <= Math.max(0, payment) + LOAN_RESIDUAL_TOLERANCE) {
+    actualPayment = totalDue;
+    principalPaid = balance;
+    newBalance = 0;
+  } else {
+    actualPayment = Math.max(0, payment);
+    principalPaid = Math.max(0, actualPayment - interest);
+    newBalance = totalDue - actualPayment;
+    if (newBalance <= LOAN_RESIDUAL_TOLERANCE) {
+      actualPayment += newBalance;
+      principalPaid = balance;
+      newBalance = 0;
+    }
+  }
 
   return {
-    balance: Math.max(0, balance + interest - actualPayment),
+    balance: newBalance,
     interest,
     payment: actualPayment,
     principalPaid

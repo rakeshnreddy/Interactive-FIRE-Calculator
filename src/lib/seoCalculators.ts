@@ -1371,6 +1371,8 @@ function projectRecurringBalance(
   return { balance, contributions };
 }
 
+export const LOAN_RESIDUAL_TOLERANCE = 0.005;
+
 function payoffDebt(
   balance: number,
   annualRate: number,
@@ -1378,7 +1380,7 @@ function payoffDebt(
   extraMonthlyPayment = 0,
   extraAnnualPayment = 0
 ): { interest: number; months: number; totalPaid: number } {
-  if (balance <= 0 || (payment <= 0 && extraMonthlyPayment <= 0 && extraAnnualPayment <= 0)) {
+  if (balance <= LOAN_RESIDUAL_TOLERANCE || (payment <= 0 && extraMonthlyPayment <= 0 && extraAnnualPayment <= 0)) {
     return { interest: 0, months: 0, totalPaid: 0 };
   }
   let currentBalance = balance;
@@ -1387,18 +1389,34 @@ function payoffDebt(
   let totalPaid = 0;
   const monthlyRate = annualRate / 12;
 
-  while (currentBalance > 0 && months < 1200) {
+  while (currentBalance > LOAN_RESIDUAL_TOLERANCE && months < 1200) {
     const monthlyInterest = currentBalance * monthlyRate;
     const nextMonth = months + 1;
     const scheduledPayment = Math.max(0, payment) + Math.max(0, extraMonthlyPayment)
       + (nextMonth % 12 === 0 ? Math.max(0, extraAnnualPayment) : 0);
-    const actualPayment = Math.min(scheduledPayment, currentBalance + monthlyInterest);
+    const totalDue = currentBalance + monthlyInterest;
+
+    let actualPayment: number;
+    let newBalance: number;
+
+    if (totalDue <= scheduledPayment + LOAN_RESIDUAL_TOLERANCE) {
+      actualPayment = totalDue;
+      newBalance = 0;
+    } else {
+      actualPayment = scheduledPayment;
+      newBalance = totalDue - scheduledPayment;
+      if (newBalance <= LOAN_RESIDUAL_TOLERANCE) {
+        actualPayment += newBalance;
+        newBalance = 0;
+      }
+    }
+
     interest += monthlyInterest;
     totalPaid += actualPayment;
-    currentBalance = Math.max(0, currentBalance + monthlyInterest - actualPayment);
+    currentBalance = newBalance;
     months = nextMonth;
 
-    if (monthlyRate >= 0 && currentBalance > 0 && actualPayment <= monthlyInterest && extraAnnualPayment <= 0) {
+    if (monthlyRate >= 0 && currentBalance > LOAN_RESIDUAL_TOLERANCE && actualPayment <= monthlyInterest && extraAnnualPayment <= 0) {
       return { interest, months: 1200, totalPaid };
     }
   }
