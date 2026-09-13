@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-13T08:39:06.404Z",
+  "testedAt": "2026-09-13T20:44:50.179Z",
   "baseUrl": "https://21a762ad.interactive-fire-calculator.pages.dev",
   "consoleErrors": [],
   "pageExceptions": [],
@@ -172,35 +172,164 @@
     },
     {
       "id": "disclosure-keyboard-focus",
-      "calc": "Mortgage Disclosure Focus",
+      "calc": "Metric Help Keyboard Disclosure",
       "keyboardOpened": true,
       "keyboardClosed": true,
       "focusRetained": true,
+      "testedCalculators": [
+        "Mortgage",
+        "SIP"
+      ],
+      "interactions": [
+        {
+          "calc": "Mortgage",
+          "metricButtonAriaLabel": "About Monthly payment",
+          "openedWithKey": "Enter",
+          "closedWithKey": "Space",
+          "helpTextObserved": true,
+          "focusRetained": true,
+          "pass": true
+        },
+        {
+          "calc": "SIP",
+          "metricButtonAriaLabel": "About Projected corpus",
+          "openedWithKey": "Enter",
+          "closedWithKey": "Space",
+          "helpTextObserved": true,
+          "focusRetained": true,
+          "pass": true
+        }
+      ],
       "pass": true
     },
     {
       "id": "native-zoom-200",
       "calc": "Mortgage Native Zoom 200%",
-      "scaleApplied": true,
-      "noOverflow": true,
-      "pass": true
+      "status": "BLOCKED",
+      "pass": false,
+      "attemptedMethod": "Chrome application CUA zoom control via Command+0 then Command++ to 200% and System Events accessibility probe",
+      "limitation": "Native desktop browser window zoom requires interactive GUI accessibility permissions not available in headless automated CLI environment; Emulation.setPageScaleFactor is prohibited as a substitute by contract",
+      "assistedAction": "Perform interactive desktop verification in Chrome with native 200% zoom (Cmd++)"
     },
     {
       "id": "reduced-motion-transparency",
       "calc": "Media Reduced Motion / Transparency",
-      "reducedMotionActive": true,
+      "reducedMotion": {
+        "matches": true,
+        "violations": [],
+        "violationsCount": 0,
+        "suppressionVerified": true,
+        "pass": true
+      },
+      "reducedTransparency": {
+        "matches": true,
+        "light": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(11, 36, 33)",
+          "alpha": 1
+        },
+        "dark": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(8, 21, 28)",
+          "alpha": 1
+        },
+        "pass": true
+      },
       "pass": true
     },
     {
       "id": "contrast-check",
-      "calc": "Visual Panel Heading Contrast",
-      "foreground": "rgb(234, 246, 247)",
-      "background": "rgb(8, 21, 28)",
-      "minRatio": 16.770591856141248,
+      "calc": "Changed Surface Composed Contrast",
+      "pairs": [
+        {
+          "id": "contrast-light-primary-metric",
+          "mode": "light",
+          "target": "Primary Metric Value",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(251, 253, 255)",
+          "ratio": 14.365468226750874,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-field-helper",
+          "mode": "light",
+          "target": "Field Helper Text",
+          "foreground": "rgb(82, 104, 115)",
+          "background": "rgb(251, 253, 255)",
+          "ratio": 5.742707245785331,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-visual-heading",
+          "mode": "light",
+          "target": "Visual Panel Heading",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(238, 244, 247)",
+          "ratio": 13.19565545994323,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-scope-note",
+          "mode": "light",
+          "target": "Scope Note",
+          "foreground": "rgb(82, 104, 115)",
+          "background": "rgb(244, 248, 251)",
+          "ratio": 5.483573635475539,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-primary-metric",
+          "mode": "dark",
+          "target": "Primary Metric Value",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(16, 35, 44)",
+          "ratio": 14.647106546426908,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-field-helper",
+          "mode": "dark",
+          "target": "Field Helper Text",
+          "foreground": "rgb(164, 187, 196)",
+          "background": "rgb(16, 35, 44)",
+          "ratio": 8.071774651027154,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-visual-heading",
+          "mode": "dark",
+          "target": "Visual Panel Heading",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(11, 27, 35)",
+          "ratio": 15.915928706332583,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-scope-note",
+          "mode": "dark",
+          "target": "Scope Note",
+          "foreground": "rgb(164, 187, 196)",
+          "background": "rgb(8, 21, 28)",
+          "ratio": 9.241991774829128,
+          "threshold": 4.5,
+          "pass": true
+        }
+      ],
+      "minRatio": 5.483573635475539,
       "pass": true
     }
   ],
-  "verdict": "PASS",
-  "success": true,
-  "evaluationErrors": []
+  "verdict": "BLOCKED",
+  "success": false,
+  "evaluationErrors": [],
+  "blockedCases": [
+    "native-zoom-200"
+  ]
 }

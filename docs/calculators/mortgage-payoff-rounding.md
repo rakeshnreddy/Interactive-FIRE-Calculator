@@ -55,19 +55,20 @@ $$\epsilon = 0.005 \text{ currency units (half a cent)}$$
 
 This tolerance is defined as **FinPath's numerical modeling policy** for distinguishing binary floating-point arithmetic jitter from real debt obligations. While CFPB Regulation Z (12 CFR Part 1026 Appendix J) governs statutory APR determinations and installment schedules, the specific $\epsilon = 0.005$ half-cent threshold is an engineering and numerical policy rather than a statutory mandate.
 
-### Decision Rationale: Why Half a Cent (\$0.005)?
-1. **Transactable Currency Limit**:
-   In fiat currency systems (USD, EUR, GBP, INR), the smallest divisible transactional currency unit is 1 cent (\$0.01). A fractional residual less than or equal to \$0.005 rounds to \$0.00 in standard half-up financial rounding.
+### Decision Rationale: Why Half a Cent ($0.005)?
+1. **Transactable Currency Limit vs. Settlement Policy**:
+   In fiat currency systems (USD, EUR, GBP, INR), the smallest divisible transactional currency unit is 1 cent ($0.01$). Under standard half-up financial rounding, a fractional residual strictly less than half a cent (< $0.005) rounds to $0.00, while an amount of exactly $0.005 rounds up to $0.01.
+   FinPath's policy of absorbing residual balances up to and including $0.005 into the final installment is an **inclusive final-payment settlement rule**, not a claim that $0.005 rounds down to $0.00 under half-up display rounding. This policy accommodates compound IEEE 754 floating-point residue up to half a cent inclusively in the loan closure payment.
 2. **Distinguishing Numerical Jitter from Material Debt**:
    - Floating-point compounding error over 360–480 months is on the order of $10^{-12}$ to $10^{-7}$ dollars. These residues are strictly numerical artifacts of binary floating-point representation.
-   - Any unpaid balance greater than \$0.005 represents material debt. Material debt is **never forgiven**; if the balance plus interest exceeds the scheduled payment by more than \$0.005, an additional payment period is required.
-   - Positive opening principal balances (even small amounts such as \$0.005) represent active initial obligations and are never erased without a recorded payment.
+   - Any unpaid balance greater than $0.005 represents material debt. Material debt is **never forgiven**; if the balance plus interest exceeds the scheduled payment by more than $0.005, an additional payment period is required.
+   - Positive opening principal balances (even small amounts such as $0.005) represent active initial obligations and are never erased without a recorded payment.
 3. **Final Payment Adjustment**:
    In loan amortization, the final payment is adjusted to settle the remaining balance and accrued interest:
    $$\text{If } B_{t-1} + I_t \le P_t + \epsilon \implies P_{t, \text{actual}} = B_{t-1} + I_t, \quad C_{t} = B_{t-1}, \quad B_t = 0$$
    This ensures:
-   - The final actual payment may exceed the scheduled regular payment by at most the documented tolerance $\epsilon = 0.005$ (for example, paying \$1,000.004 on a \$1,000 scheduled payment), and is otherwise smaller than or equal to the regular payment.
-   - The ending balance reaches exactly \$0.
+   - The final actual payment may exceed the scheduled regular payment by at most the documented tolerance $\epsilon = 0.005$ (for example, paying $1,000.004 on a $1,000 scheduled payment), and is otherwise smaller than or equal to the regular payment.
+   - The ending balance reaches exactly $0.
    - Total principal paid across all schedule rows equals the initial principal $L$ exactly (principal conservation).
    - The headline payoff month count exactly equals the count of schedule rows.
 

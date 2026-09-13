@@ -117,16 +117,16 @@
       "id": "B08",
       "title": "mortgage payoff reconciliation regression",
       "checkpoint": "C04",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B08.md",
       "submission": "submissions/B08.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "11f56cb",
+      "code_sha": "733e76c",
       "review": "reviews/C04.md",
-      "blocked_reason": null
+      "blocked_reason": "Automated verification passed (13/14 cases, 25/25 evaluator regression tests, full suite, exact CI). Checkpoint C04 is blocked on native 200% browser UI zoom verification, which requires interactive desktop Chrome CUA control."
     },
     {
       "id": "B09",
@@ -317,7 +317,7 @@
       "id": "B20",
       "title": "Reorder generic calculators around inputs and the answer",
       "checkpoint": "C04",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B16",
         "B19"
@@ -325,24 +325,24 @@
       "prompt": "prompts/B20.md",
       "submission": "submissions/B20.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "11f56cb",
+      "code_sha": "733e76c",
       "review": "reviews/C04.md",
-      "blocked_reason": null
+      "blocked_reason": "Automated verification passed (13/14 cases, 25/25 evaluator regression tests, full suite, exact CI). Checkpoint C04 is blocked on native 200% browser UI zoom verification, which requires interactive desktop Chrome CUA control."
     },
     {
       "id": "B21",
       "title": "Make shared charts numerically honest and accessible",
       "checkpoint": "C04",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B20"
       ],
       "prompt": "prompts/B21.md",
       "submission": "submissions/B21.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "11f56cb",
+      "code_sha": "733e76c",
       "review": "reviews/C04.md",
-      "blocked_reason": null
+      "blocked_reason": "Automated verification passed (13/14 cases, 25/25 evaluator regression tests, full suite, exact CI). Checkpoint C04 is blocked on native 200% browser UI zoom verification, which requires interactive desktop Chrome CUA control."
     },
     {
       "id": "B22",
