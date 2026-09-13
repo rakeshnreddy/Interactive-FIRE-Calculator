@@ -113,7 +113,8 @@ ok 13 - uses the repository virtualenv even without system Python
 > tsc -b && vite build
 
 vite v8.0.16 building client environment for production...
-[2Ktransforming...✓ 2406 modules transformed.
+[2K
+transforming...✓ 2406 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                                              0.85 kB │ gzip:   0.47 kB
@@ -137,7 +138,7 @@ dist/assets/ProjectionChart-BthZmYgY.js                    347.89 kB │ gzip: 1
 dist/assets/index-BLzZDCb_.js                              525.04 kB │ gzip: 144.06 kB │ map: 1,611.92 kB
 
 ✓ built in 807ms
-[plugin builtin:vite-reporter] 
+[plugin builtin:vite-reporter]
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
