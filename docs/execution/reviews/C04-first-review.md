@@ -1,0 +1,25 @@
+# C04 primary review — CHANGES_REQUESTED
+
+Reviewed 2026-09-13 UTC. B08/B20/B21 remain open. C05 locked. Accepted total unchanged: 13/34 (38.2%, task count).
+
+Candidate `11f56cbc1732a2267528e266d986c99091f53d2c`; evidence HEAD `3bfc8c4`. PR140 execution branch; immutable preview https://f8d01243.interactive-fire-calculator.pages.dev. Exact [CI34746759690](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34746759690) independently confirmed successful for candidate. Following diff is evidence/status/submission only. Worker supplies deployment and hash evidence; this pass did not freshly query Cloudflare, because independently reproduced product defects already require a new candidate. No closure is inferred from those submitted metadata files.
+
+## Preserve successful work
+
+B08 reconciles the ordinary $200k/$300k mortgage fixtures and adds useful conservation tests. B20 moves repetitive context after inputs and adds actual associated help/disclosure controls. B21 removes the extra mixed-metric panel, shows true-zero and signed geometry, and adds a semantic table. Preserve these changes; no redesign or general formula rewrite.
+
+Primary ran only changed behavior tests: 17/17 across mortgageReconciliation, CalculatorLibraryDetail and calculatorChartTruth. Exact-candidate CI supplies full-suite verification (worker records 1527 tests); no redundant full-suite run. [Targeted output](../evidence/C04-review/targeted-tests.log).
+
+## Blocking findings (consolidated original-scope repairs)
+
+**R1 / B21 — chart value type is still lost.** `formatChartValue` in src/CalculatorLibrary.tsx guesses currency from magnitude >=1000; comparisonChart/waterfallChart drop metric valueType. Live default CAGR headline is 12.47%, but its chart/table format annualized return as 0.1. Removing `.calculator-visual-bars` did not repair this remaining chart path. Waterfall also still feeds arbitrary metric/input units to one scale. Preserve explicit currency/percent/number/years semantics through chart construction and formatting; never infer units from value size. Partition incompatible units or show incompatible measures as labeled text outside a common quantitative scale. [Live reproduction](../evidence/C04-review/live-reproductions.json).
+
+**R2 / B08 — opening principal can disappear without settlement; tolerance contract/tests need precision.** `payoffDebt(0.005,0,0.001)` now returns months0,totalPaid0 because opening guard and loop treat a positive initial balance as settled. Related schedule guards do the same. Primary executed the actual TypeScript implementation bundled with esbuild (temporary export of private helper; no product edits). For 1000.004/1000.005/1000.006 balances with payment1000 and rate0, observed months1/1/2 and totalPaid1000.004/1000.005/1000.006. The rounding doc nevertheless says final payment never exceeds regular payment. It also mixes decimal 0.065 with a further /100 conversion. Settle positive opening principal through a real payment (or explicitly validate/reject unsupported precision); do not silently erase it. Add boundary and conservation tests, and align written units/policy with actual final-payment adjustment. The existing $100 material-residual test does not guard the selected half-cent boundary. [Reproduction](../evidence/C04-review/tolerance-reproduction.json).
+
+**R3 / shared evidence — requested dark theme is not applied.** B20/B21 and C04 hosted scripts set html[data-theme] and localStorage.theme. The app uses `.app[data-mode]`. Primary reproduced before=light and afterWorkerDark=light on both CAGR and India-tax. Thus screenshots named dark do not prove dark mode. Set the actual theme via the product control or real state; assert observed mode and computed theme colors before every case.
+
+**R4 / shared evidence — result flags do not control success; required visual checks remain missing.** C04 hosted verifier records b08_pass/b20_pass/b21_pass but never aggregates them into a failure; it logs completion on false flags. Zero errors arrays likewise must affect result. B21 checks DOM presence and a minus sign, not correct formatted units/ratios. Replace with required-case assertions and a persisted verdict/exit status; test a false flag, missing/duplicate case, wrong observed theme and wrong unit. Complete task-required native zoom, computed fallback/contrast and changed print/keyboard/disclosure evidence with actual observations or explicit blockers. C03's reader deferral is scoped to C03; do not claim later reader checks passed by inheritance. Complete independent repairs before any assisted-check request.
+
+## Next action and boundary
+
+Use C04_REWORK_PROMPT.md. Worker owns implementation and evidence gathering; primary performs targeted independent review. One combined final candidate, relevant tests, full suite before combined push, CI and one preview verification. No C05 release, main merge or production deployment. This is the first consolidated C04 rework; preserve passing behavior and avoid repeated broad rewrites. No owner business decision/secret is needed for R1–R4 code repairs.

@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "cagr",
+    "before": "light",
+    "afterWorkerDark": "light",
+    "metrics": "Annualized return\n12.47%\nStarting value\n$10,000\nEnding value\n$18,000",
+    "chart": "Visual read\n\nReturn comparison preview\nCompares the headline return with invested capital, gain, time, or sensitivity context.\nConservative\nAnnualized return: 13.44%\nUses lower growth or contribution assumptions to pressure-test the result.\nBase\nAnnualized return: 12.47%\nBase reference: 12.47%\nUses the inputs exactly as shown in the calculator.\nOptimistic\nAnnualized return: 11.72%\nUses stronger growth or contribution assumptions to show upside.\nAnnualized return\nBase reference\nView chart data as table"
+  },
+  {
+    "slug": "income-tax-india",
+    "before": "light",
+    "afterWorkerDark": "light",
+    "metrics": "Estimated lower-regime net income\n₹1,390,800\nOld regime tax estimate\n₹226,200\nNew regime tax estimate\n₹109,200\nEstimated tax saved\n₹117,000",
+    "chart": "Visual read\n\nGross-to-net preview\nShows how gross money moves through deductions, estimated tax, and net take-home.\nEstimated lower-regime net income\n₹1,390,800\nCompares simplified old and new regime income-tax estimates and uses the lower tax outcome.\nOld regime tax estimate\n₹226,200\nNew regime tax estimate\n₹109,200\nEstimated tax saved\n₹117,000\nAmount\nView chart data as table"
+  }
+]

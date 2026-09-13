@@ -62,3 +62,5 @@ C03 second rework review 2026-09-12: primary repaired eight evaluator false-pass
 C03 final acceptance 2026-09-13 supersedes prior rework notes: all three tasks accepted on immutable preview e37c574d at 285e9eadf2d854951cec75d02afc6cce97d4d6c5. C04 only is released. Follow C04_START_PROMPT.md. Reader deferral explicitly authorized by owner and tracked in B31; all other gates preserved.
 
 C04 first review: changes requested for chart units, opening-balance/tolerance boundary and verification truthfulness. C04 remains released only for its bounded repair; C05 locked. See C04_REWORK_PROMPT.md.
+
+C04 first rework review: product unit/settlement repairs preserved; R4 real-observation and missing-field failures remain. Follow C04_VERIFICATION_REPAIR_PROMPT.md. No C05 release or task closure.
