@@ -1,5 +1,1 @@
-
-> interactive-fire-calculator@2.0.0 smoke:calculators
-> node scripts/smoke_public_calculators.mjs https://f8d01243.interactive-fire-calculator.pages.dev
-
-Verified 84 public calculator routes without authentication at https://f8d01243.interactive-fire-calculator.pages.dev.
+Verified 84 public calculator routes without authentication at https://21a762ad.interactive-fire-calculator.pages.dev.

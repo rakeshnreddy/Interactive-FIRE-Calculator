@@ -511,11 +511,13 @@ async function runLiveVerification(baseUrl) {
       const negCheck = await page.evaluate(() => {
         const rows = Array.from(document.querySelectorAll('.calculator-studio-chart-row'));
         const negRow = rows.find((r) => r.classList.contains('is-negative'));
+        const baseRow = rows.find((r) => r.textContent?.includes('Base'));
+        const targetRow = baseRow || negRow;
         const baseline = document.querySelector('.calculator-chart-baseline');
         return {
           hasNegativeRow: Boolean(negRow),
           hasBaseline: Boolean(baseline),
-          rowText: negRow ? negRow.textContent : ''
+          rowText: targetRow ? targetRow.textContent : ''
         };
       });
 
