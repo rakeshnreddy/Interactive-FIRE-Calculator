@@ -626,7 +626,7 @@ function waterfallChart(
   const entries = metrics.map((metric) => ({
     label: metric.label,
     note: metric.description,
-    primary: Math.abs(metric.value),
+    primary: metric.value,
     tone: metric.tone
   }));
 
@@ -634,7 +634,7 @@ function waterfallChart(
     const inputEntries = calculator.inputs.slice(0, 3).map((input) => ({
       label: input.label,
       note: input.helper,
-      primary: Math.abs(values[input.key] ?? input.defaultValue),
+      primary: values[input.key] ?? input.defaultValue,
       tone: 'neutral' as const
     }));
 
@@ -666,8 +666,8 @@ function comparisonChart(
     entries: scenarios.map((scenario) => ({
       label: scenario.label,
       note: scenario.description,
-      primary: Math.abs(scenario.result.metrics[0]?.value ?? 0),
-      secondary: scenario.id === 'base' ? Math.abs(result.metrics[0]?.value ?? 0) : undefined,
+      primary: scenario.result.metrics[0]?.value ?? 0,
+      secondary: scenario.id === 'base' ? (result.metrics[0]?.value ?? 0) : undefined,
       tone: scenario.id === 'base' ? 'accent' : scenario.id === 'optimistic' ? 'positive' : 'warning'
     })),
     legend: {

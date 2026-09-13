@@ -333,13 +333,13 @@
       "id": "B21",
       "title": "Make shared charts numerically honest and accessible",
       "checkpoint": "C04",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B20"
       ],
       "prompt": "prompts/B21.md",
-      "submission": null,
-      "owner": null,
+      "submission": "submissions/B21.md",
+      "owner": "FinPath implementation agent",
       "code_sha": null,
       "review": null,
       "blocked_reason": null

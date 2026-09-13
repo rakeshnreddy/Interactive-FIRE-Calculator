@@ -7658,19 +7658,20 @@ h2 {
 
 .calculator-studio-chart-row {
   display: grid;
-  grid-template-columns: minmax(96px, 0.45fr) minmax(0, 1fr);
+  grid-template-columns: minmax(110px, 0.45fr) minmax(0, 1fr);
   gap: 0.35rem 0.65rem;
   align-items: center;
   min-width: 0;
 }
 
-.calculator-studio-chart-row > div {
-  display: grid;
+.calculator-chart-row-header {
+  display: flex;
+  flex-direction: column;
   gap: 0.15rem;
   min-width: 0;
 }
 
-.calculator-studio-chart-row span {
+.calculator-chart-row-label {
   min-width: 0;
   overflow: hidden;
   color: var(--muted);
@@ -7680,10 +7681,33 @@ h2 {
   white-space: nowrap;
 }
 
-.calculator-studio-chart-row strong {
+.calculator-chart-values-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+}
+
+.calculator-chart-val strong {
   color: var(--heading);
   font-size: 0.82rem;
   overflow-wrap: anywhere;
+}
+
+.calculator-chart-val.secondary-val strong {
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.calculator-studio-chart-row.is-negative .primary-val strong {
+  color: var(--danger, #e05252);
+}
+
+.calculator-chart-tracks {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
 }
 
 .calculator-studio-chart-row small {
@@ -7693,28 +7717,94 @@ h2 {
 }
 
 .calculator-studio-chart-row .secondary-track {
-  grid-column: 2;
   height: 6px;
-  opacity: 0.58;
+  opacity: 0.65;
 }
 
 .calculator-chart-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
-.calculator-chart-legend span {
+.calculator-legend-item {
   display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
   min-height: 24px;
-  padding: 0 0.5rem;
+  padding: 0.15rem 0.55rem;
   border: 1px solid var(--border);
   border-radius: 999px;
-  color: var(--muted);
-  background: var(--surface-soft);
+  color: var(--muted-strong);
+  background: var(--surface);
   font-size: 0.72rem;
-  font-weight: 750;
+  font-weight: 700;
+}
+
+.calculator-legend-swatch {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.calculator-legend-swatch.swatch-primary {
+  background: color-mix(in srgb, var(--accent) 78%, white);
+}
+
+.calculator-legend-swatch.swatch-secondary {
+  background: color-mix(in srgb, var(--heading) 45%, var(--muted));
+}
+
+.calculator-chart-table-details {
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.calculator-chart-table-details summary {
+  cursor: pointer;
+  font-size: 0.76rem;
+  color: var(--muted-strong);
+  font-weight: 650;
+  user-select: none;
+}
+
+.calculator-chart-table-details summary:hover {
+  color: var(--heading);
+}
+
+.calculator-chart-table-wrap {
+  margin-top: 0.5rem;
+  overflow-x: auto;
+}
+
+.calculator-chart-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.calculator-chart-table th,
+.calculator-chart-table td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.calculator-chart-table th[scope="row"] {
+  font-weight: 600;
+  color: var(--muted-strong);
+}
+
+.calculator-chart-table td {
+  color: var(--heading);
+  font-variant-numeric: tabular-nums;
 }
 
 .calculator-breakdown-shell {
@@ -8193,6 +8283,7 @@ h2 {
 }
 
 .calculator-visual-track {
+  position: relative;
   display: block;
   height: 9px;
   overflow: hidden;
@@ -8201,11 +8292,18 @@ h2 {
 }
 
 .calculator-visual-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   display: block;
   height: 100%;
-  min-width: 8px;
+  min-width: 0;
   border-radius: inherit;
   background: color-mix(in srgb, var(--accent) 74%, white);
+}
+
+.calculator-visual-fill.metric-neutral {
+  background: color-mix(in srgb, var(--heading) 45%, var(--muted));
 }
 
 .calculator-visual-fill.metric-positive {
@@ -8214,6 +8312,32 @@ h2 {
 
 .calculator-visual-fill.metric-warning {
   background: color-mix(in srgb, var(--warning) 82%, white);
+}
+
+.calculator-visual-fill.is-negative,
+.calculator-visual-fill.metric-danger {
+  background: color-mix(in srgb, var(--danger, #e05252) 80%, white);
+}
+
+.calculator-chart-baseline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--heading);
+  z-index: 2;
+  transform: translateX(-50%);
+}
+
+.calculator-zero-marker {
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--muted-strong);
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 .calculator-conversion-panel {

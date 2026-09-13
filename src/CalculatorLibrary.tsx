@@ -1206,21 +1206,53 @@ function CalculatorEngagementPanel({
   );
 }
 
-function CalculatorStudioVisual({
+export function CalculatorStudioVisual({
   calculator,
-  chart,
-  metrics
+  chart
 }: {
   calculator: SeoCalculator;
   chart: CalculatorStudioChart;
-  metrics: CalculatorMetric[];
+  metrics?: CalculatorMetric[];
 }) {
-  const visibleMetrics = metrics.slice(0, 4);
-  const maxVisualValue = Math.max(1, ...visibleMetrics.map((metric) => visualMetricValue(metric)));
-  const maxChartValue = Math.max(
-    1,
-    ...chart.entries.flatMap((entry) => [Math.abs(entry.primary), Math.abs(entry.secondary ?? 0)])
-  );
+  const allValues = chart.entries.flatMap((entry) => [
+    entry.primary,
+    ...(entry.secondary !== undefined ? [entry.secondary] : [])
+  ]);
+
+  const minVal = Math.min(0, ...allValues);
+  const maxVal = Math.max(0, ...allValues);
+  const span = maxVal - minVal === 0 ? 1 : maxVal - minVal;
+  const hasNegative = minVal < 0;
+  const zeroBaselinePct = hasNegative ? (-minVal / span) * 100 : 0;
+
+  const computeBarStyle = (value: number) => {
+    if (value === 0) {
+      return { width: '0%', left: `${zeroBaselinePct}%` };
+    }
+
+    if (value > 0) {
+      if (hasNegative) {
+        const widthPct = Math.min(100 - zeroBaselinePct, (value / span) * 100);
+        return {
+          width: `${widthPct}%`,
+          left: `${zeroBaselinePct}%`
+        };
+      }
+      const widthPct = Math.min(100, (value / (maxVal || 1)) * 100);
+      return {
+        width: `${widthPct}%`,
+        left: '0%'
+      };
+    }
+
+    // value < 0
+    const widthPct = Math.min(zeroBaselinePct, (Math.abs(value) / span) * 100);
+    const leftPct = zeroBaselinePct - widthPct;
+    return {
+      width: `${widthPct}%`,
+      left: `${leftPct}%`
+    };
+  };
 
   return (
     <div className={`calculator-visual-panel visual-${chart.type}`} aria-label={`${calculator.title} visual summary`}>
@@ -1229,59 +1261,111 @@ function CalculatorStudioVisual({
         <strong>{chart.title}</strong>
         <small>{chart.description}</small>
       </div>
+
       <div className="calculator-studio-chart" aria-label={chart.summary}>
         {chart.entries.map((entry, entryIndex) => {
-          const primaryWidth = Math.max(8, Math.min(100, Math.abs(entry.primary) / maxChartValue * 100));
-          const secondaryWidth = entry.secondary === undefined
-            ? 0
-            : Math.max(8, Math.min(100, Math.abs(entry.secondary) / maxChartValue * 100));
+          const primaryStyle = computeBarStyle(entry.primary);
+          const secondaryStyle = entry.secondary !== undefined ? computeBarStyle(entry.secondary) : null;
+          const isNegative = entry.primary < 0 || (entry.secondary !== undefined && entry.secondary < 0);
 
           return (
-            <div className="calculator-studio-chart-row" key={`${entry.label}-${entryIndex}`}>
-              <div>
-                <span>{entry.label}</span>
-                <strong>{formatChartValue(entry.primary, calculator)}</strong>
+            <div
+              className={`calculator-studio-chart-row${isNegative ? ' is-negative' : ''}`}
+              key={`${entry.label}-${entryIndex}`}
+            >
+              <div className="calculator-chart-row-header">
+                <span className="calculator-chart-row-label">{entry.label}</span>
+                <div className="calculator-chart-values-group">
+                  <span className="calculator-chart-val primary-val">
+                    {chart.legend.secondary ? <span className="sr-only">{chart.legend.primary}: </span> : null}
+                    <strong>{formatChartValue(entry.primary, calculator)}</strong>
+                  </span>
+                  {entry.secondary !== undefined ? (
+                    <span className="calculator-chart-val secondary-val">
+                      <span className="sr-only">{chart.legend.secondary}: </span>
+                      <strong>{formatChartValue(entry.secondary, calculator)}</strong>
+                    </span>
+                  ) : null}
+                </div>
               </div>
-              <span className="calculator-visual-track" aria-hidden="true">
-                <span
-                  className={`calculator-visual-fill metric-${entry.tone ?? 'neutral'}`}
-                  style={{ width: `${primaryWidth}%` }}
-                />
-              </span>
-              {entry.secondary !== undefined ? (
-                <span className="calculator-visual-track secondary-track" aria-hidden="true">
-                  <span className="calculator-visual-fill metric-neutral" style={{ width: `${secondaryWidth}%` }} />
-                </span>
-              ) : null}
+
+              <div className="calculator-chart-tracks">
+                <div className="calculator-visual-track" aria-hidden="true">
+                  {hasNegative ? (
+                    <span className="calculator-chart-baseline" style={{ left: `${zeroBaselinePct}%` }} />
+                  ) : null}
+                  {entry.primary === 0 ? (
+                    <span className="calculator-zero-marker" style={{ left: `${zeroBaselinePct}%` }} />
+                  ) : null}
+                  <span
+                    className={`calculator-visual-fill metric-${entry.tone ?? 'neutral'}${entry.primary < 0 ? ' is-negative' : ''}`}
+                    style={primaryStyle}
+                  />
+                </div>
+                {entry.secondary !== undefined && secondaryStyle ? (
+                  <div className="calculator-visual-track secondary-track" aria-hidden="true">
+                    {hasNegative ? (
+                      <span className="calculator-chart-baseline" style={{ left: `${zeroBaselinePct}%` }} />
+                    ) : null}
+                    {entry.secondary === 0 ? (
+                      <span className="calculator-zero-marker" style={{ left: `${zeroBaselinePct}%` }} />
+                    ) : null}
+                    <span
+                      className={`calculator-visual-fill metric-neutral${entry.secondary < 0 ? ' is-negative' : ''}`}
+                      style={secondaryStyle}
+                    />
+                  </div>
+                ) : null}
+              </div>
               {entry.note ? <small>{entry.note}</small> : null}
             </div>
           );
         })}
       </div>
-      <div className="calculator-chart-legend">
-        <span>{chart.legend.primary}</span>
-        {chart.legend.secondary ? <span>{chart.legend.secondary}</span> : null}
-      </div>
-      <div className="calculator-visual-bars">
-        {visibleMetrics.map((metric) => {
-          const width = Math.max(8, Math.min(100, (visualMetricValue(metric) / maxVisualValue) * 100));
 
-          return (
-            <div className="calculator-visual-row" key={metric.label}>
-              <div>
-                <span>{metric.label}</span>
-                <strong>{formatMetric(metric, calculator)}</strong>
-              </div>
-              <span className="calculator-visual-track" aria-hidden="true">
-                <span
-                  className={`calculator-visual-fill metric-${metric.tone ?? 'neutral'}`}
-                  style={{ width: `${width}%` }}
-                />
-              </span>
-            </div>
-          );
-        })}
+      <div className="calculator-chart-legend" role="list" aria-label="Chart series legend">
+        <span className="calculator-legend-item" role="listitem">
+          <span className="calculator-legend-swatch swatch-primary" aria-hidden="true" />
+          <span>{chart.legend.primary}</span>
+        </span>
+        {chart.legend.secondary ? (
+          <span className="calculator-legend-item" role="listitem">
+            <span className="calculator-legend-swatch swatch-secondary" aria-hidden="true" />
+            <span>{chart.legend.secondary}</span>
+          </span>
+        ) : null}
       </div>
+
+      <details className="calculator-chart-table-details">
+        <summary>
+          <span>View chart data as table</span>
+        </summary>
+        <div className="calculator-chart-table-wrap">
+          <table className="calculator-chart-table">
+            <caption className="sr-only">{chart.title} data table</caption>
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                <th scope="col">{chart.legend.primary}</th>
+                {chart.legend.secondary ? <th scope="col">{chart.legend.secondary}</th> : null}
+                {chart.entries.some((e) => e.note) ? <th scope="col">Note</th> : null}
+              </tr>
+            </thead>
+            <tbody>
+              {chart.entries.map((entry, idx) => (
+                <tr key={`tbl-${entry.label}-${idx}`}>
+                  <th scope="row">{entry.label}</th>
+                  <td>{formatChartValue(entry.primary, calculator)}</td>
+                  {chart.legend.secondary ? (
+                    <td>{entry.secondary !== undefined ? formatChartValue(entry.secondary, calculator) : '—'}</td>
+                  ) : null}
+                  {chart.entries.some((e) => e.note) ? <td>{entry.note ?? ''}</td> : null}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   );
 }
