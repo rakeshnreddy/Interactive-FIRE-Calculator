@@ -348,7 +348,7 @@
       "id": "B22",
       "title": "Unify compound-interest and savings-goal presentation",
       "checkpoint": "C05",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B16",
         "B20",
@@ -358,14 +358,14 @@
       "submission": "submissions/B22.md",
       "owner": "Codex implementing session 2026-09-13",
       "code_sha": "db6b9e36a499dafda6e43cd0f7258cd483d4c97a",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C05.md",
+      "blocked_reason": "C05 review R1\u2013R5: repair task-applicable defects and supply truthful final-candidate browser/provenance evidence."
     },
     {
       "id": "B23",
       "title": "Unify budget, net-worth and emergency-fund presentation",
       "checkpoint": "C05",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B16",
         "B20",
@@ -375,14 +375,14 @@
       "submission": "submissions/B23.md",
       "owner": "Codex implementing session 2026-09-13",
       "code_sha": "db6b9e36a499dafda6e43cd0f7258cd483d4c97a",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C05.md",
+      "blocked_reason": "C05 review R1\u2013R5: repair task-applicable defects and supply truthful final-candidate browser/provenance evidence."
     },
     {
       "id": "B24",
       "title": "Refine FIRE calculator into the flagship decision experience",
       "checkpoint": "C05",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B16",
         "B20",
@@ -392,8 +392,8 @@
       "submission": "submissions/B24.md",
       "owner": "Codex implementing session 2026-09-13",
       "code_sha": "db6b9e36a499dafda6e43cd0f7258cd483d4c97a",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C05.md",
+      "blocked_reason": "C05 review R1\u2013R5: repair task-applicable defects and supply truthful final-candidate browser/provenance evidence."
     },
     {
       "id": "B25",

@@ -12,7 +12,7 @@ Only C05 is released for implementation now. C04 is accepted with the owner-auth
 | C02 | Currency and save integrity | B02 → B03 → B04 | accepted | ef2cded6441191a26537adf8ddf1a3e1909cf73b | [approved](reviews/C02.md) |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | accepted | 285e9eadf2d854951cec75d02afc6cce97d4d6c5 | [approved with reader deferral](reviews/C03.md) |
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | accepted | 733e76c217058cafc3e5d418f09cb55ced531f4c | [approved with reader deferral](reviews/C04.md) |
-| C05 | Dedicated calculator families | B22 → B23 → B24 | released | — | — |
+| C05 | Dedicated calculator families | B22 → B23 → B24 | released | — | [changes requested](reviews/C05.md) |
 | C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | locked | — | — |
 | C07 | Owner setup and hosted proof | B06 | locked | — | — |
 | C08 | Dashboard and transactions | B26 → B27 | locked | — | — |
@@ -68,3 +68,5 @@ C04 first rework review: product unit/settlement repairs preserved; R4 real-obse
 C04 assisted review 2026-09-13: native Chrome 200% verified by primary; bounded collector repair and full suite pass. C04 remains pending required reader smoke or scoped owner deferral; C05 locked. See reviews/C04.md and protocol section 7 for worker-first verification.
 
 C04 acceptance 2026-09-13 supersedes the pending-reader amendment above: owner deferred actual-reader verification through C10 to B31/C11. B08/B20/B21 accepted at 733e76c217058cafc3e5d418f09cb55ced531f4c; 16/34 accepted (47.1%). C05 alone released, starting B22. Follow ACCESSIBILITY_DEFERRALS.md and C05_START_PROMPT.md. Other quality and production gates remain unchanged.
+
+C05 review 2026-09-13: B22/B23/B24 require consolidated R1–R5 rework in C05_REWORK_PROMPT.md. No closure; C06 remains locked. Actual-reader deferral remains in force.
