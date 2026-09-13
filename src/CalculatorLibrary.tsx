@@ -1264,6 +1264,8 @@ export function CalculatorStudioVisual({
 
       <div className="calculator-studio-chart" aria-label={chart.summary}>
         {chart.entries.map((entry, entryIndex) => {
+          const entryValueType = entry.valueType ?? chart.valueType;
+          const entryCurrency = entry.currency ?? chart.currency;
           const primaryStyle = computeBarStyle(entry.primary);
           const secondaryStyle = entry.secondary !== undefined ? computeBarStyle(entry.secondary) : null;
           const isNegative = entry.primary < 0 || (entry.secondary !== undefined && entry.secondary < 0);
@@ -1278,12 +1280,12 @@ export function CalculatorStudioVisual({
                 <div className="calculator-chart-values-group">
                   <span className="calculator-chart-val primary-val">
                     {chart.legend.secondary ? <span className="sr-only">{chart.legend.primary}: </span> : null}
-                    <strong>{formatChartValue(entry.primary, calculator)}</strong>
+                    <strong>{formatChartValue(entry.primary, calculator, entryValueType, entryCurrency)}</strong>
                   </span>
                   {entry.secondary !== undefined ? (
                     <span className="calculator-chart-val secondary-val">
                       <span className="sr-only">{chart.legend.secondary}: </span>
-                      <strong>{formatChartValue(entry.secondary, calculator)}</strong>
+                      <strong>{formatChartValue(entry.secondary, calculator, entryValueType, entryCurrency)}</strong>
                     </span>
                   ) : null}
                 </div>
@@ -1352,16 +1354,20 @@ export function CalculatorStudioVisual({
               </tr>
             </thead>
             <tbody>
-              {chart.entries.map((entry, idx) => (
-                <tr key={`tbl-${entry.label}-${idx}`}>
-                  <th scope="row">{entry.label}</th>
-                  <td>{formatChartValue(entry.primary, calculator)}</td>
-                  {chart.legend.secondary ? (
-                    <td>{entry.secondary !== undefined ? formatChartValue(entry.secondary, calculator) : '—'}</td>
-                  ) : null}
-                  {chart.entries.some((e) => e.note) ? <td>{entry.note ?? ''}</td> : null}
-                </tr>
-              ))}
+              {chart.entries.map((entry, idx) => {
+                const entryValueType = entry.valueType ?? chart.valueType;
+                const entryCurrency = entry.currency ?? chart.currency;
+                return (
+                  <tr key={`tbl-${entry.label}-${idx}`}>
+                    <th scope="row">{entry.label}</th>
+                    <td>{formatChartValue(entry.primary, calculator, entryValueType, entryCurrency)}</td>
+                    {chart.legend.secondary ? (
+                      <td>{entry.secondary !== undefined ? formatChartValue(entry.secondary, calculator, entryValueType, entryCurrency) : '—'}</td>
+                    ) : null}
+                    {chart.entries.some((e) => e.note) ? <td>{entry.note ?? ''}</td> : null}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -1595,13 +1601,29 @@ function visualMetricValue(metric: CalculatorMetric): number {
   return Math.abs(metric.value);
 }
 
-function formatChartValue(value: number, calculator: SeoCalculator): string {
-  if (Math.abs(value) >= 1000) {
+export function formatChartValue(
+  value: number,
+  calculator: SeoCalculator,
+  valueType?: CalculatorMetric['valueType'],
+  currency?: string
+): string {
+  const effectiveType = valueType ?? (calculator.slug === 'cagr' ? 'percent' : 'currency');
+  const effectiveCurrency = currency ?? calculatorCurrency(calculator);
+
+  if (effectiveType === 'currency') {
     return new Intl.NumberFormat(undefined, {
-      currency: calculatorCurrency(calculator),
+      currency: effectiveCurrency,
       maximumFractionDigits: 0,
       style: 'currency'
     }).format(value);
+  }
+
+  if (effectiveType === 'percent') {
+    return `${(value * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+  }
+
+  if (effectiveType === 'years') {
+    return `${value.toLocaleString(undefined, { maximumFractionDigits: 1 })} years`;
   }
 
   return value.toLocaleString(undefined, { maximumFractionDigits: 1 });

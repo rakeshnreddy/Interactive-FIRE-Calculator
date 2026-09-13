@@ -2,8 +2,8 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CalculatorStudioVisual } from '../CalculatorLibrary';
-import { seoCalculators } from './seoCalculators';
-import type { CalculatorStudioChart } from './calculatorStudios';
+import { seoCalculators, calculateSeoCalculator } from './seoCalculators';
+import { buildCalculatorStudioChart, type CalculatorStudioChart } from './calculatorStudios';
 
 // @ts-expect-error React act environment flag
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -198,4 +198,201 @@ describe('B21: Calculator chart truth, proportionality, and accessibility', () =
     expect(rowHeaders?.[0].textContent).toBe('Year 1');
     expect(rowHeaders?.[1].textContent).toBe('Year 2');
   });
+
+  it('renders actual CAGR default inputs with ~12.47% in both chart row and semantic table', () => {
+    const cagrCalc = seoCalculators.find((c) => c.slug === 'cagr')!;
+    const defaultValues = Object.fromEntries(cagrCalc.inputs.map((i) => [i.key, i.defaultValue]));
+    const result = calculateSeoCalculator(cagrCalc, defaultValues);
+    const chart = buildCalculatorStudioChart(cagrCalc, defaultValues, result);
+
+    const { container } = renderComponent(
+      <CalculatorStudioVisual
+        calculator={cagrCalc}
+        chart={chart}
+        metrics={result.metrics}
+      />
+    );
+
+    // Headline metric
+    expect(result.metrics[0].valueType).toBe('percent');
+    expect(result.metrics[0].value).toBeCloseTo(0.124746, 4);
+
+    // Check Base row in visual chart
+    const rows = container.querySelectorAll('.calculator-studio-chart-row');
+    const baseRow = Array.from(rows).find((r) => r.textContent?.includes('Base'));
+    expect(baseRow).toBeDefined();
+    expect(baseRow?.textContent).toContain('12.47%');
+    expect(baseRow?.textContent).not.toContain('0.1');
+
+    // Check table row
+    const table = container.querySelector('table');
+    const tableRows = table?.querySelectorAll('tbody tr');
+    const baseTableRow = Array.from(tableRows ?? []).find((r) => r.textContent?.includes('Base'));
+    expect(baseTableRow?.textContent).toContain('12.47%');
+    expect(baseTableRow?.textContent).not.toContain('0.1');
+  });
+
+  it('renders negative CAGR with ~-12.94% in both chart row and semantic table', () => {
+    const cagrCalc = seoCalculators.find((c) => c.slug === 'cagr')!;
+    const values = { initial: 10000, final: 5000, years: 5 };
+    const result = calculateSeoCalculator(cagrCalc, values);
+    const chart = buildCalculatorStudioChart(cagrCalc, values, result);
+
+    const { container } = renderComponent(
+      <CalculatorStudioVisual
+        calculator={cagrCalc}
+        chart={chart}
+        metrics={result.metrics}
+      />
+    );
+
+    expect(result.metrics[0].value).toBeCloseTo(-0.129449, 4);
+
+    const rows = container.querySelectorAll('.calculator-studio-chart-row');
+    const baseRow = Array.from(rows).find((r) => r.textContent?.includes('Base'));
+    expect(baseRow).toBeDefined();
+    expect(baseRow?.textContent).toContain('-12.94%');
+
+    const table = container.querySelector('table');
+    const tableRows = table?.querySelectorAll('tbody tr');
+    const baseTableRow = Array.from(tableRows ?? []).find((r) => r.textContent?.includes('Base'));
+    expect(baseTableRow?.textContent).toContain('-12.94%');
+  });
+
+  it('formats currency values below 1000 with currency symbol ($500 and $0)', () => {
+    const testChart: CalculatorStudioChart = {
+      currency: 'USD',
+      description: 'Small currency test',
+      entries: [
+        { label: 'Sub-thousand', primary: 500, valueType: 'currency' },
+        { label: 'Zero balance', primary: 0, valueType: 'currency' }
+      ],
+      legend: { primary: 'Amount' },
+      summary: 'Small currency summary',
+      title: 'Small Currency',
+      type: 'comparison',
+      valueType: 'currency'
+    };
+
+    const { container } = renderComponent(
+      <CalculatorStudioVisual
+        calculator={mortgageCalc}
+        chart={testChart}
+        metrics={[]}
+      />
+    );
+
+    const rows = container.querySelectorAll('.calculator-studio-chart-row');
+    expect(rows[0].textContent).toContain('$500');
+    expect(rows[1].textContent).toContain('$0');
+
+    const table = container.querySelector('table');
+    expect(table?.textContent).toContain('$500');
+    expect(table?.textContent).toContain('$0');
+  });
+
+  it('does not add currency symbol to numeric or years values above 1000', () => {
+    const testChart: CalculatorStudioChart = {
+      description: 'Numeric and years test',
+      entries: [
+        { label: 'Total units', primary: 1250, valueType: 'number' },
+        { label: 'Extended period', primary: 1500, valueType: 'years' }
+      ],
+      legend: { primary: 'Count' },
+      summary: 'Non-currency summary',
+      title: 'Non-Currency Above 1000',
+      type: 'comparison'
+    };
+
+    const { container } = renderComponent(
+      <CalculatorStudioVisual
+        calculator={mortgageCalc}
+        chart={testChart}
+        metrics={[]}
+      />
+    );
+
+    const rows = container.querySelectorAll('.calculator-studio-chart-row');
+    expect(rows[0].textContent).toContain('1,250');
+    expect(rows[0].textContent).not.toContain('$');
+
+    expect(rows[1].textContent).toContain('1,500 years');
+    expect(rows[1].textContent).not.toContain('$');
+
+    const table = container.querySelector('table');
+    expect(table?.textContent).not.toContain('$');
+  });
+
+  it('formats dual-series chart entries according to their unit types', () => {
+    const dualChart: CalculatorStudioChart = {
+      currency: 'USD',
+      description: 'Dual series unit test',
+      entries: [
+        { label: 'Small Pair', primary: 400, secondary: 250, valueType: 'currency' }
+      ],
+      legend: { primary: 'Primary Amount', secondary: 'Secondary Amount' },
+      summary: 'Dual series summary',
+      title: 'Dual Series Units',
+      type: 'comparison',
+      valueType: 'currency'
+    };
+
+    const { container } = renderComponent(
+      <CalculatorStudioVisual
+        calculator={mortgageCalc}
+        chart={dualChart}
+        metrics={[]}
+      />
+    );
+
+    const row = container.querySelector('.calculator-studio-chart-row');
+    expect(row?.textContent).toContain('$400');
+    expect(row?.textContent).toContain('$250');
+
+    const table = container.querySelector('table');
+    expect(table?.textContent).toContain('$400');
+    expect(table?.textContent).toContain('$250');
+  });
+
+  it('waterfall chart groups only compatible measures and never mixes currency with percent or years on shared track', () => {
+    const incomeCalc = seoCalculators.find((c) => c.slug === 'capital-gains-tax')!;
+    const values = Object.fromEntries(incomeCalc.inputs.map((i) => [i.key, i.defaultValue]));
+    const result = calculateSeoCalculator(incomeCalc, values);
+    const chart = buildCalculatorStudioChart(incomeCalc, values, result);
+
+    const entryValueTypes = chart.entries.map((e) => e.valueType ?? chart.valueType);
+    const uniqueTypes = new Set(entryValueTypes);
+    expect(uniqueTypes.size).toBe(1);
+    expect(uniqueTypes.has('currency')).toBe(true);
+  });
+
+  it('renders proportional bar widths for unequal positive values (e.g. 25 vs 100)', () => {
+    const unequalChart: CalculatorStudioChart = {
+      description: 'Proportional width test',
+      entries: [
+        { label: 'Quarter', primary: 25, valueType: 'number' },
+        { label: 'Full', primary: 100, valueType: 'number' }
+      ],
+      legend: { primary: 'Score' },
+      summary: '25 vs 100 test',
+      title: 'Unequal Values',
+      type: 'comparison'
+    };
+
+    const { container } = renderComponent(
+      <CalculatorStudioVisual
+        calculator={mortgageCalc}
+        chart={unequalChart}
+        metrics={[]}
+      />
+    );
+
+    const rows = container.querySelectorAll('.calculator-studio-chart-row');
+    const fill25 = rows[0].querySelector('.calculator-visual-fill') as HTMLElement;
+    const fill100 = rows[1].querySelector('.calculator-visual-fill') as HTMLElement;
+
+    expect(fill25.style.width).toBe('25%');
+    expect(fill100.style.width).toBe('100%');
+  });
 });
+

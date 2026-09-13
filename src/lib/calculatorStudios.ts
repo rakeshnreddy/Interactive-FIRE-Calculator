@@ -1,5 +1,6 @@
 import {
   calculateSeoCalculator,
+  calculatorCurrency,
   calculatorPath,
   LOAN_RESIDUAL_TOLERANCE,
   seoCalculators,
@@ -49,14 +50,17 @@ export type CalculatorStudioMetadata = {
 };
 
 export type CalculatorChartDatum = {
+  currency?: string;
   label: string;
   note?: string;
   primary: number;
   secondary?: number;
   tone?: CalculatorMetric['tone'];
+  valueType?: CalculatorMetric['valueType'];
 };
 
 export type CalculatorStudioChart = {
+  currency?: string;
   description: string;
   entries: CalculatorChartDatum[];
   legend: {
@@ -66,6 +70,7 @@ export type CalculatorStudioChart = {
   summary: string;
   title: string;
   type: CalculatorStudioChartType;
+  valueType?: CalculatorMetric['valueType'];
 };
 
 export type CalculatorDetailScheduleValueType = CalculatorMetric['valueType'] | 'text';
@@ -533,6 +538,7 @@ function timelineChart(
   result: CalculatorResult,
   metadata: CalculatorStudioMetadata
 ): CalculatorStudioChart {
+  const currency = calculatorCurrency(calculator);
   const finalValue = Math.max(0, firstCurrencyMetric(result.metrics) ?? Math.abs(result.metrics[0]?.value ?? 0));
   const startingValue = Math.max(0, firstFinite(values, ['principal', 'current', 'currentSavings', 'balance', 'corpus', 'assets', 'income']) ?? 0);
   const years = Math.max(1, Math.round(firstFinite(values, ['years', 'retirementAge', 'delayYears']) ?? 5));
@@ -540,6 +546,7 @@ function timelineChart(
   const steps = [0, 0.25, 0.5, 0.75, 1];
 
   return {
+    currency,
     description: metadata.chartDescription,
     entries: steps.map((step) => {
       const label = step === 0 ? 'Start' : `Year ${Math.max(1, Math.round(years * step))}`;
@@ -547,11 +554,13 @@ function timelineChart(
       const secondary = totalContributions > 0 ? totalContributions * step : undefined;
 
       return {
+        currency,
         label,
         note: step === 1 ? 'Projected endpoint' : undefined,
         primary,
         secondary,
-        tone: step === 1 ? result.metrics[0]?.tone : 'neutral'
+        tone: step === 1 ? result.metrics[0]?.tone : 'neutral',
+        valueType: 'currency'
       };
     }),
     legend: {
@@ -560,7 +569,8 @@ function timelineChart(
     },
     summary: `This ${metadata.chartType} view turns the ${calculator.title.toLowerCase()} into a rough path, not just a single result.`,
     title: metadata.chartTitle,
-    type: metadata.chartType
+    type: metadata.chartType,
+    valueType: 'currency'
   };
 }
 
@@ -569,6 +579,7 @@ function amortizationChart(
   values: Record<string, number>,
   metadata: CalculatorStudioMetadata
 ): CalculatorStudioChart {
+  const currency = calculatorCurrency(calculator);
   const principal = Math.max(0, firstFinite(values, ['principal', 'balance', 'homePrice']) ?? 0);
   const years = Math.max(1, firstFinite(values, ['years']) ?? 5);
   const rate = Math.max(0, firstFinite(values, ['rate', 'currentRate', 'newRate']) ?? 0) / 100;
@@ -593,16 +604,19 @@ function amortizationChart(
   }
 
   return {
+    currency,
     description: metadata.chartDescription,
     entries: selectedMonths.map((month) => {
       const row = monthRows.get(month) ?? { balance: 0, interest: cumulativeInterest };
 
       return {
+        currency,
         label: month === 0 ? 'Start' : `Month ${month}`,
         note: month === months ? 'Final period' : undefined,
         primary: row.balance,
         secondary: row.interest,
-        tone: month === months ? 'positive' : 'neutral'
+        tone: month === months ? 'positive' : 'neutral',
+        valueType: 'currency'
       };
     }),
     legend: {
@@ -611,7 +625,8 @@ function amortizationChart(
     },
     summary: `This preview uses the same payment math as the calculator to show how your balance declines and interest accumulates over time.`,
     title: metadata.chartTitle,
-    type: 'amortization'
+    type: 'amortization',
+    valueType: 'currency'
   };
 }
 
@@ -621,34 +636,45 @@ function waterfallChart(
   result: CalculatorResult,
   metadata: CalculatorStudioMetadata
 ): CalculatorStudioChart {
-  const metrics = result.metrics.slice(0, 5);
-  const entries = metrics.map((metric) => ({
+  const currency = calculatorCurrency(calculator);
+  const baseMetric = result.metrics.find((m) => m.valueType === 'currency') ?? result.metrics[0];
+  const baseValueType = baseMetric?.valueType ?? 'currency';
+
+  const compatibleMetrics = result.metrics.filter((m) => m.valueType === baseValueType);
+  const entries: CalculatorChartDatum[] = compatibleMetrics.slice(0, 5).map((metric) => ({
+    currency,
     label: metric.label,
     note: metric.description,
     primary: metric.value,
-    tone: metric.tone
+    tone: metric.tone,
+    valueType: baseValueType
   }));
 
   if (entries.length < 3) {
-    const inputEntries = calculator.inputs.slice(0, 3).map((input) => ({
+    const compatibleInputs = calculator.inputs.filter((input) => input.type === baseValueType);
+    const inputEntries = compatibleInputs.slice(0, 3 - entries.length).map((input) => ({
+      currency,
       label: input.label,
       note: input.helper,
       primary: values[input.key] ?? input.defaultValue,
-      tone: 'neutral' as const
+      tone: 'neutral' as const,
+      valueType: baseValueType
     }));
 
     entries.push(...inputEntries);
   }
 
   return {
+    currency,
     description: metadata.chartDescription,
     entries: entries.slice(0, 5),
     legend: {
-      primary: 'Amount'
+      primary: baseValueType === 'currency' ? 'Amount' : (baseMetric?.label ?? 'Amount')
     },
     summary: `This breakdown keeps the ${calculator.title.toLowerCase()} readable by showing the pieces behind the net result.`,
     title: metadata.chartTitle,
-    type: 'waterfall'
+    type: 'waterfall',
+    valueType: baseValueType
   };
 }
 
@@ -659,15 +685,21 @@ function comparisonChart(
   metadata: CalculatorStudioMetadata
 ): CalculatorStudioChart {
   const scenarios = buildCalculatorScenarios(calculator, values);
+  const targetMetric = result.metrics[0];
+  const valueType = targetMetric?.valueType ?? 'currency';
+  const currency = calculatorCurrency(calculator);
 
   return {
+    currency,
     description: metadata.chartDescription,
     entries: scenarios.map((scenario) => ({
+      currency,
       label: scenario.label,
       note: scenario.description,
       primary: scenario.result.metrics[0]?.value ?? 0,
       secondary: scenario.id === 'base' ? (result.metrics[0]?.value ?? 0) : undefined,
-      tone: scenario.id === 'base' ? 'accent' : scenario.id === 'optimistic' ? 'positive' : 'warning'
+      tone: scenario.id === 'base' ? 'accent' : scenario.id === 'optimistic' ? 'positive' : 'warning',
+      valueType
     })),
     legend: {
       primary: result.metrics[0]?.label ?? 'Headline result',
@@ -675,7 +707,8 @@ function comparisonChart(
     },
     summary: `This comparison shows how the ${calculator.title.toLowerCase()} changes when the main assumptions move.`,
     title: metadata.chartTitle,
-    type: 'comparison'
+    type: 'comparison',
+    valueType
   };
 }
 
