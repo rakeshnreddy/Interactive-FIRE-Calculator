@@ -2104,8 +2104,6 @@ h2 {
     transform 140ms ease;
 }
 
-.info-tip:hover .info-popover,
-.info-tip:focus-within .info-popover,
 .info-popover.is-visible {
   opacity: 1;
   pointer-events: auto;

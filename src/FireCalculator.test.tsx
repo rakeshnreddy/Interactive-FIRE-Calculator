@@ -199,4 +199,181 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     expect(resultCard?.textContent).toContain('Annual withdrawal');
     expect(resultCard?.textContent).toContain('Need coverage');
   });
+
+  it('R1 regression: ensures all field IDs in advanced and repeated sections are unique and labels focus their own inputs', async () => {
+    await act(async () => {
+      root!.render(<App auth={mockAuth} />);
+    });
+
+    // Expand all advanced assumption panels so repeated fields are in DOM
+    const advancedDetails = document.querySelectorAll('details.advanced-shell');
+    for (const details of Array.from(advancedDetails)) {
+      details.setAttribute('open', '');
+    }
+
+    // Collect all elements with IDs in the document
+    const elementsWithId = document.querySelectorAll('[id]');
+    const idCounts = new Map<string, number>();
+    for (const el of Array.from(elementsWithId)) {
+      const id = el.id;
+      idCounts.set(id, (idCounts.get(id) || 0) + 1);
+    }
+
+    const duplicates = Array.from(idCounts.entries()).filter(([_, count]) => count > 1);
+    expect(duplicates, `Found duplicate IDs in DOM: ${JSON.stringify(duplicates)}`).toEqual([]);
+
+    // Find all "Years" labels in rate periods
+    const yearsLabels = Array.from(document.querySelectorAll('label')).filter(
+      (l) => l.textContent?.trim() === 'Years'
+    );
+    expect(yearsLabels.length).toBeGreaterThanOrEqual(2);
+
+    // Clicking the second "Years" label must focus the second period's input, NOT the first
+    const secondYearsLabel = yearsLabels[1];
+    const secondForId = secondYearsLabel.getAttribute('for');
+    expect(secondForId).toBeTruthy();
+
+    const targetInput = document.getElementById(secondForId!) as HTMLInputElement;
+    expect(targetInput).not.toBeNull();
+
+    // Verify it is not the same ID as the first
+    const firstForId = yearsLabels[0].getAttribute('for');
+    expect(secondForId).not.toBe(firstForId);
+  });
+
+  it('R2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus', async () => {
+    await act(async () => {
+      root!.render(<App auth={mockAuth} />);
+    });
+
+    const infoButton = document.querySelector<HTMLButtonElement>('.core-fire-form button.info-dot');
+    expect(infoButton).not.toBeNull();
+
+    const tipContainer = infoButton!.closest('.info-tip') as HTMLElement;
+    expect(tipContainer).not.toBeNull();
+
+    const popover = tipContainer.querySelector('.info-popover') as HTMLElement;
+    expect(popover).not.toBeNull();
+
+    // Initial state: not expanded, not visible
+    expect(infoButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(popover.classList.contains('is-visible')).toBe(false);
+
+    // Focus info button: must remain closed
+    infoButton?.focus();
+    expect(document.activeElement).toBe(infoButton);
+    expect(infoButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(popover.classList.contains('is-visible')).toBe(false);
+
+    // Press Enter to open
+    await act(async () => {
+      infoButton?.click();
+    });
+    expect(infoButton?.getAttribute('aria-expanded')).toBe('true');
+    expect(popover.classList.contains('is-visible')).toBe(true);
+
+    // Press Enter again to close
+    await act(async () => {
+      infoButton?.click();
+    });
+    expect(infoButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(popover.classList.contains('is-visible')).toBe(false);
+    expect(document.activeElement).toBe(infoButton);
+
+    // Reopen and test Escape
+    await act(async () => {
+      infoButton?.click();
+    });
+    expect(infoButton?.getAttribute('aria-expanded')).toBe('true');
+    expect(popover.classList.contains('is-visible')).toBe(true);
+
+    // Dispatch Escape keydown on infoButton
+    await act(async () => {
+      infoButton?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+    expect(infoButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(popover.classList.contains('is-visible')).toBe(false);
+    expect(document.activeElement).toBe(infoButton);
+  });
+
+  it('R3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values', async () => {
+    await act(async () => {
+      root!.render(<App auth={mockAuth} />);
+    });
+
+    // 1. Initial calculate with default withdrawalTiming ('end')
+    const calcButton = document.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
+    await act(async () => {
+      calcButton.click();
+    });
+
+    // Switch to results panel via results tab
+    const getTab = (name: string) =>
+      Array.from(document.querySelectorAll<HTMLButtonElement>('.result-tabs-panel button[role="tab"]')).find(
+        (b) => b.textContent?.includes(name)
+      );
+
+    await act(async () => {
+      getTab('Results')?.click();
+    });
+
+    // Check timing pill in results panel
+    const timingPill = document.querySelector('#results .pill');
+    expect(timingPill?.textContent).toBe('End-year');
+
+    // 2. Switch to planner and change withdrawal timing to 'start'
+    await act(async () => {
+      getTab('Inputs')?.click();
+    });
+
+    // Open advanced settings to change withdrawal timing
+    const optionsDetails = document.querySelector('details.advanced-shell');
+    optionsDetails?.setAttribute('open', '');
+
+    const startTimingBtn = Array.from(document.querySelectorAll('.segmented button')).find(
+      (b) => b.textContent?.trim() === 'Start'
+    ) as HTMLButtonElement;
+    expect(startTimingBtn).toBeTruthy();
+
+    await act(async () => {
+      startTimingBtn.click();
+    });
+
+    // Result card is now stale!
+    const heroCard = document.querySelector('.hero-result');
+    expect(heroCard?.classList.contains('is-stale')).toBe(true);
+
+    // Switch back to results panel to inspect timing pill
+    await act(async () => {
+      getTab('Results')?.click();
+    });
+
+    // The timing pill must STILL say 'End-year' because the displayed projection belongs to the last calculated snapshot!
+    const staleTimingPill = document.querySelector('#results .pill');
+    expect(staleTimingPill?.textContent).toBe('End-year');
+
+    // Switch to compare panel
+    await act(async () => {
+      getTab('Compare')?.click();
+    });
+
+    const firstScenarioDelta = document.querySelector('#compare .scenario-card small');
+    expect(firstScenarioDelta).not.toBeNull();
+
+    // Now recalculate: timing pill updates to 'Start-year' and stale state clears
+    await act(async () => {
+      getTab('Inputs')?.click();
+    });
+    const recalcButton = document.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
+    await act(async () => {
+      recalcButton.click();
+    });
+
+    await act(async () => {
+      getTab('Results')?.click();
+    });
+    const refreshedTimingPill = document.querySelector('#results .pill');
+    expect(refreshedTimingPill?.textContent).toBe('Start-year');
+    expect(document.querySelector('.hero-result')?.classList.contains('is-stale')).toBe(false);
+  });
 });

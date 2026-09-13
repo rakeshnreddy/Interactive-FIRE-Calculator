@@ -32,7 +32,7 @@ import {
   UserCircle,
   X
 } from 'lucide-react';
-import { cloneElement, isValidElement, lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { cloneElement, isValidElement, lazy, Suspense, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import type {
   CalculatorSaveOutcome,
@@ -2503,14 +2503,62 @@ function InfoTip({
   label?: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        setIsOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+
+    const handlePointerDown = (e: PointerEvent | MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [isOpen]);
+
+  const handleBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
+    if (!containerRef.current?.contains(e.relatedTarget as Node)) {
+      setIsOpen(false);
+    }
+  };
+
   return (
-    <span className="info-tip">
+    <span
+      className="info-tip"
+      ref={containerRef}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+      onBlur={handleBlur}
+    >
       <button
+        ref={buttonRef}
         type="button"
         className="info-dot"
         aria-label={label ? `Help for ${label}` : text}
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && isOpen) {
+            e.stopPropagation();
+            setIsOpen(false);
+            buttonRef.current?.focus();
+          }
+        }}
       >
         ?
       </button>
@@ -2518,6 +2566,7 @@ function InfoTip({
         className={`info-popover ${isOpen ? 'is-visible' : ''}`}
         id={id}
         role="tooltip"
+        aria-hidden={!isOpen}
       >
         {text}
       </span>
@@ -2546,8 +2595,10 @@ function Field({
   suffix?: string;
   children: ReactNode;
 }) {
+  const autoId = useId().replace(/[^a-zA-Z0-9_-]/g, '_');
   const childId = (isValidElement(children) && (children.props as any).id) || id;
-  const resolvedId = childId || `field-${fieldSlugify(label)}`;
+  const slug = fieldSlugify(label) || 'input';
+  const resolvedId = childId || `field-${slug}-${autoId}`;
   const helpId = help ? `${resolvedId}-help` : undefined;
   const issueId = issue ? `${resolvedId}-issue` : undefined;
 
@@ -5793,8 +5844,10 @@ function App({ auth }: { auth: AuthState }) {
   }));
 
   const comparisonRows = useMemo(() => {
+    const basePlan = activePlanForDisplay;
+    const baseResult = activeResultForDisplay;
     return scenarios.map((scenario, index) => {
-      const adjustedPlan = applyScenario(plan, scenario);
+      const adjustedPlan = applyScenario(basePlan, scenario);
       const adjustedResult = calculateFirePlan(adjustedPlan);
       const adjustedSimulation = stressTestCurrentPortfolio(adjustedPlan);
 
@@ -5803,13 +5856,13 @@ function App({ auth }: { auth: AuthState }) {
         label: scenario.label.trim() || `Scenario ${index + 1}`,
         scenario,
         requiredPortfolio: adjustedResult.requiredPortfolio,
-        requiredDelta: adjustedResult.requiredPortfolio - result.requiredPortfolio,
+        requiredDelta: adjustedResult.requiredPortfolio - baseResult.requiredPortfolio,
         maxAnnualExpense: adjustedResult.maxAnnualExpense,
         actualFinalBalance: adjustedSimulation.finalBalance,
         depletionYear: firstNegativeYear(adjustedSimulation.rows)
       };
     });
-  }, [plan, result.requiredPortfolio, scenarios]);
+  }, [activePlanForDisplay, activeResultForDisplay, scenarios]);
 
   const markInputsChanged = () => {
     if (hasCalculated) {
@@ -7889,7 +7942,7 @@ function App({ auth }: { auth: AuthState }) {
                 <button className="secondary-button" onClick={exportSelectedProjection}>
                   Export CSV
                 </button>
-                <span className="pill">{plan.withdrawalTiming === 'start' ? 'Start-year' : 'End-year'}</span>
+                <span className="pill">{activePlanForDisplay.withdrawalTiming === 'start' ? 'Start-year' : 'End-year'}</span>
               </div>
             </div>
 
