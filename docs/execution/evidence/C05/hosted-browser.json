@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-14T07:02:14.685Z",
+  "testedAt": "2026-09-14T18:31:42.493Z",
   "baseUrl": "https://46714a3f.interactive-fire-calculator.pages.dev",
   "consoleErrors": [],
   "pageExceptions": [],
@@ -31,7 +31,7 @@
       "all16px": true,
       "scheduleReachable": true,
       "screenshot": "hosted-compound-interest-390-dark.png",
-      "screenshotSha1": "682aa361cf9f9c12b80ce00e3cc1a6389f0d8a74",
+      "screenshotSha1": "080bf8b342a33a5e356d2767b1c83faabf591e4f",
       "pass": true
     },
     {
@@ -46,7 +46,7 @@
       "all16px": true,
       "scheduleReachable": true,
       "screenshot": "hosted-savings-goal-390-light.png",
-      "screenshotSha1": "84bf00cb135981217ad59b86b9b94b0f38b51e6d",
+      "screenshotSha1": "6cbd417a66cde47d061485931a01e17cfd002079",
       "pass": true
     },
     {
@@ -61,7 +61,7 @@
       "all16px": true,
       "scheduleReachable": true,
       "screenshot": "hosted-savings-goal-390-dark.png",
-      "screenshotSha1": "7cfb26e9744999e58bc8625bd296a67362bd1bc7",
+      "screenshotSha1": "d8315c94e420447f8d74e5f6b990129a4a4ccb67",
       "pass": true
     },
     {
@@ -76,7 +76,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-net-worth-390-light.png",
-      "screenshotSha1": "6ffc6c56d05f94ccfa8367fe1be09b342835e530",
+      "screenshotSha1": "77b0675428f930ff1ac984efe05266165f114a74",
       "pass": true
     },
     {
@@ -91,7 +91,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-net-worth-390-dark.png",
-      "screenshotSha1": "bc786751325453279e10f83a8e00a1db94bcb538",
+      "screenshotSha1": "795e34a39a4419f777ed389b6f928de71116adce",
       "pass": true
     },
     {
@@ -106,7 +106,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-budget-390-light.png",
-      "screenshotSha1": "8c79b8cec5a4c59cdd1317d8c6af8440b1d0f5cb",
+      "screenshotSha1": "06f970e188c80dd053f5178b855c48508ca6a0e2",
       "pass": true
     },
     {
@@ -121,7 +121,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-budget-390-dark.png",
-      "screenshotSha1": "7af58e6add87d86445c697756b51e2a69735d44c",
+      "screenshotSha1": "81ca94663f8c1164b50eeeac6bb3e18461e93ab3",
       "pass": true
     },
     {
@@ -136,7 +136,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-emergency-fund-390-light.png",
-      "screenshotSha1": "01e485aeb527cef413abbba87e0541852f32068d",
+      "screenshotSha1": "443a83b94eab18e87f1fc6a2644c123563c254dd",
       "pass": true
     },
     {
@@ -151,7 +151,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-emergency-fund-390-dark.png",
-      "screenshotSha1": "c0a0044590b947d563aae6f3b2a42f3f2c50355c",
+      "screenshotSha1": "3f78425a199b2e7e8f003c112abc9a687b67d78f",
       "pass": true
     },
     {
@@ -175,7 +175,7 @@
       "allLabelsConcise": true,
       "all16px": true,
       "screenshot": "hosted-fire-desktop-light.png",
-      "screenshotSha1": "2e87f94d5a7b1db10044fbcac0d525cd692975c0",
+      "screenshotSha1": "b78fe4655b5d0dc3af015a1ce2ac149404cc9a0d",
       "pass": true
     },
     {
@@ -189,7 +189,7 @@
       "allLabelsConcise": true,
       "all16px": true,
       "screenshot": "hosted-fire-desktop-dark.png",
-      "screenshotSha1": "a97aa5ced53b8f6ac6f88ec9555808827869b538",
+      "screenshotSha1": "94481a0f57e4134bba02cf6287053a011137d419",
       "pass": true
     },
     {
@@ -304,7 +304,8 @@
           "fontSize": "16px",
           "fontWeight": "400",
           "threshold": 4.5,
-          "ratio": 5.48,
+          "ratio": 5.483573635475539,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -316,7 +317,8 @@
           "fontSize": "12.16px",
           "fontWeight": "800",
           "threshold": 4.5,
-          "ratio": 5.74,
+          "ratio": 5.742707245785331,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -328,7 +330,8 @@
           "fontSize": "12.48px",
           "fontWeight": "750",
           "threshold": 4.5,
-          "ratio": 11.78,
+          "ratio": 11.784693526544755,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -340,7 +343,8 @@
           "fontSize": "32px",
           "fontWeight": "900",
           "threshold": 3,
-          "ratio": 14.37,
+          "ratio": 14.365468226750874,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -352,7 +356,8 @@
           "fontSize": "21.44px",
           "fontWeight": "850",
           "threshold": 4.5,
-          "ratio": 14.37,
+          "ratio": 14.365468226750874,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -364,7 +369,8 @@
           "fontSize": "21.44px",
           "fontWeight": "850",
           "threshold": 3,
-          "ratio": 14.37,
+          "ratio": 14.365468226750874,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -376,7 +382,8 @@
           "fontSize": "32px",
           "fontWeight": "900",
           "threshold": 3,
-          "ratio": 11.29,
+          "ratio": 11.286095865454152,
+          "effectiveOpacity": 0.92,
           "pass": true
         },
         {
@@ -388,7 +395,8 @@
           "fontSize": "13.12px",
           "fontWeight": "600",
           "threshold": 4.5,
-          "ratio": 11.89,
+          "ratio": 9.608490990976428,
+          "effectiveOpacity": 0.92,
           "pass": true
         },
         {
@@ -400,7 +408,8 @@
           "fontSize": "16px",
           "fontWeight": "400",
           "threshold": 4.5,
-          "ratio": 9.24,
+          "ratio": 9.241991774829128,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -412,7 +421,8 @@
           "fontSize": "12.16px",
           "fontWeight": "800",
           "threshold": 4.5,
-          "ratio": 8.07,
+          "ratio": 8.071774651027154,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -424,7 +434,8 @@
           "fontSize": "12.48px",
           "fontWeight": "750",
           "threshold": 4.5,
-          "ratio": 11.72,
+          "ratio": 11.724959812235952,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -436,7 +447,8 @@
           "fontSize": "32px",
           "fontWeight": "900",
           "threshold": 3,
-          "ratio": 14.65,
+          "ratio": 14.647106546426908,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -448,7 +460,8 @@
           "fontSize": "21.44px",
           "fontWeight": "850",
           "threshold": 4.5,
-          "ratio": 14.65,
+          "ratio": 14.647106546426908,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -460,7 +473,8 @@
           "fontSize": "21.44px",
           "fontWeight": "850",
           "threshold": 3,
-          "ratio": 14.65,
+          "ratio": 14.647106546426908,
+          "effectiveOpacity": 1,
           "pass": true
         },
         {
@@ -472,7 +486,8 @@
           "fontSize": "32px",
           "fontWeight": "900",
           "threshold": 3,
-          "ratio": 12.56,
+          "ratio": 12.55912503187305,
+          "effectiveOpacity": 0.92,
           "pass": true
         },
         {
@@ -484,12 +499,13 @@
           "fontSize": "13.12px",
           "fontWeight": "600",
           "threshold": 4.5,
-          "ratio": 11.13,
+          "ratio": 9.708487510763824,
+          "effectiveOpacity": 0.92,
           "pass": true
         }
       ],
-      "minNormalRatio": 5.48,
-      "minLargeRatio": 11.29,
+      "minNormalRatio": 5.483573635475539,
+      "minLargeRatio": 11.286095865454152,
       "pass": true
     },
     {

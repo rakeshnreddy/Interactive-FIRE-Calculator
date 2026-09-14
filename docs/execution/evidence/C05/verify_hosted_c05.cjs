@@ -195,6 +195,13 @@ function evaluateC05Results(packet) {
     const lightCase = caseMap.get(lightId);
     const darkCase = caseMap.get(darkId);
     if (!lightCase || !darkCase) continue;
+    for (const observation of [lightCase, darkCase]) {
+      if (!parseRgb(observation.canvasBg) || !parseRgb(observation.textColor) ||
+          typeof observation.screenshotSha1 !== 'string' || !observation.screenshotSha1.trim()) {
+        errors.push(`${observation.id}: missing or invalid theme/screenshot observations`);
+      }
+    }
+
 
     if (lightCase.requestedMode !== 'light' || lightCase.observedMode !== 'light') {
       errors.push(`${lightId} theme mismatch: requested=${lightCase.requestedMode}, observed=${lightCase.observedMode}`);
@@ -385,6 +392,7 @@ function evaluateC05Results(packet) {
           errors.push('contrast-check: invalid pair entry');
           continue;
         }
+        if (pair.pass !== true) errors.push(`contrast-check: pair ${pair.id} did not pass`);
         if (!pair.id || typeof pair.id !== 'string') {
           errors.push(`contrast-check: pair missing id: ${JSON.stringify(pair)}`);
         }
@@ -469,6 +477,7 @@ function evaluateC05Results(packet) {
             errors.push('native-zoom-200: invalid observation object');
             continue;
           }
+          if (obs.observedZoomPercent !== 200) errors.push('native-zoom-200: actual observedZoomPercent must be 200');
           if (!obs.route || typeof obs.route !== 'string') {
             errors.push('native-zoom-200: observation missing valid route');
           }
@@ -1056,7 +1065,6 @@ async function runLiveVerification(baseUrl) {
       const activeInfo = await page.evaluate(() => {
         const el = document.activeElement;
         if (!el || el === document.body || el === document.documentElement) return null;
-        if (typeof el.scrollIntoViewIfNeeded === 'function') el.scrollIntoViewIfNeeded();
         const topbar = document.querySelector('.topbar');
         const inTopbar = topbar ? topbar.contains(el) : false;
         const topbarBottom = topbar ? topbar.getBoundingClientRect().bottom : 0;
@@ -1098,7 +1106,6 @@ async function runLiveVerification(baseUrl) {
       const activeInfo = await page.evaluate(() => {
         const el = document.activeElement;
         if (!el || el === document.body || el === document.documentElement) return null;
-        if (typeof el.scrollIntoViewIfNeeded === 'function') el.scrollIntoViewIfNeeded();
         const topbar = document.querySelector('.topbar');
         const inTopbar = topbar ? topbar.contains(el) : false;
         const topbarBottom = topbar ? topbar.getBoundingClientRect().bottom : 0;
@@ -1189,19 +1196,21 @@ async function runLiveVerification(baseUrl) {
     pass: rmPass && rtPass
   });
 
-  async function measureElementContrast(loc, threshold, forcedOpacity, insetPx = 0) {
+  async function measureElementContrast(loc, threshold, insetPx = 0) {
     await loc.scrollIntoViewIfNeeded();
     const style = await loc.evaluate((el) => {
       const cs = window.getComputedStyle(el);
+      let opacity = 1;
+      for (let node = el; node; node = node.parentElement) opacity *= Number(getComputedStyle(node).opacity);
       return {
         color: cs.color,
         fontSize: cs.fontSize,
         fontWeight: cs.fontWeight,
-        opacity: Number(cs.opacity)
+        opacity
       };
     });
 
-    const effOpacity = forcedOpacity !== undefined ? forcedOpacity : style.opacity;
+    const effOpacity = style.opacity;
 
     const savedStyle = await loc.evaluate((el) => {
       const saved = el.getAttribute('style');
@@ -1239,7 +1248,8 @@ async function runLiveVerification(baseUrl) {
       fontSize: style.fontSize,
       fontWeight: style.fontWeight,
       threshold,
-      ratio: Number(measured.ratio.toFixed(2)),
+      ratio: measured.ratio,
+      effectiveOpacity: effOpacity,
       pass: measured.ratio >= threshold
     };
   }
@@ -1274,16 +1284,14 @@ async function runLiveVerification(baseUrl) {
 
     // 3. help-popover: make visible and measure interior text
     const hpLoc = page.locator('.core-fire-form .info-popover').first();
-    await page.evaluate(() => {
+    const helpTrigger = page.locator('.core-fire-form .info-dot').first();
+    await helpTrigger.focus();
+    if (await helpTrigger.getAttribute('aria-expanded') !== 'true') await page.keyboard.press('Enter');
+    await page.waitForFunction(() => {
       const pop = document.querySelector('.core-fire-form .info-popover');
-      if (pop) {
-        pop.classList.add('is-visible');
-        pop.style.setProperty('visibility', 'visible', 'important');
-        pop.style.setProperty('opacity', '1', 'important');
-        pop.style.setProperty('transition', 'none', 'important');
-      }
+      return pop && pop.classList.contains('is-visible') && getComputedStyle(pop).opacity === '1';
     });
-    const hpMeas = await measureElementContrast(hpLoc, 4.5, 1.0, 4);
+    const hpMeas = await measureElementContrast(hpLoc, 4.5, 4);
     contrastPairs.push({
       id: `contrast-${mode}-help-popover`,
       mode,
@@ -1332,7 +1340,7 @@ async function runLiveVerification(baseUrl) {
     await page.waitForTimeout(200);
 
     const hrsLoc = page.locator('.hero-result.is-stale strong').first();
-    const hrsMeas = await measureElementContrast(hrsLoc, 3.0, 0.92);
+    const hrsMeas = await measureElementContrast(hrsLoc, 3.0);
     contrastPairs.push({
       id: `contrast-${mode}-hero-result-stale`,
       mode,
@@ -1342,7 +1350,7 @@ async function runLiveVerification(baseUrl) {
 
     // 8. stale-result-badge
     const srbLoc = page.locator('.stale-result-badge').first();
-    const srbMeas = await measureElementContrast(srbLoc, 4.5, undefined, 4);
+    const srbMeas = await measureElementContrast(srbLoc, 4.5, 4);
     contrastPairs.push({
       id: `contrast-${mode}-stale-result-badge`,
       mode,
@@ -1354,8 +1362,8 @@ async function runLiveVerification(baseUrl) {
   const normalPairs = contrastPairs.filter((p) => p.threshold === 4.5);
   const largePairs = contrastPairs.filter((p) => p.threshold === 3.0);
 
-  const minNormalRatio = Number(normalPairs.reduce((min, p) => Math.min(min, p.ratio), Infinity).toFixed(2));
-  const minLargeRatio = Number(largePairs.reduce((min, p) => Math.min(min, p.ratio), Infinity).toFixed(2));
+  const minNormalRatio = normalPairs.reduce((min, p) => Math.min(min, p.ratio), Infinity);
+  const minLargeRatio = largePairs.reduce((min, p) => Math.min(min, p.ratio), Infinity);
 
   cases.push({
     id: 'contrast-check',

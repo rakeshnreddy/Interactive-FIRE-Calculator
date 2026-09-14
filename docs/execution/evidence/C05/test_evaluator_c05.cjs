@@ -77,6 +77,8 @@ const defaultValidZoomObservations = [
   }
 ];
 
+for (const observation of defaultValidZoomObservations) observation.observedZoomPercent = 200;
+
 function buildBasePassingPacket(options = {}) {
   const zoomStatus = options.zoomStatus || 'PASS';
 
@@ -328,7 +330,7 @@ function buildBasePassingPacket(options = {}) {
     },
     {
       id: 'contrast-check',
-      pairs: defaultValidContrastPairs,
+      pairs: structuredClone(defaultValidContrastPairs),
       minNormalRatio: 5.48,
       minLargeRatio: 5.6,
       pass: true
@@ -338,7 +340,7 @@ function buildBasePassingPacket(options = {}) {
       status: zoomStatus,
       zoomLevel: zoomStatus === 'PASS' ? '200%' : undefined,
       reason: zoomStatus === 'BLOCKED' ? 'Interactive desktop Chrome CUA application zoom is unavailable in headless CLI' : undefined,
-      observations: zoomStatus === 'PASS' ? defaultValidZoomObservations : undefined,
+      observations: zoomStatus === 'PASS' ? structuredClone(defaultValidZoomObservations) : undefined,
       pass: zoomStatus === 'PASS'
     }
   ];
@@ -794,10 +796,28 @@ function runTests() {
     assert(res.outputData.evaluationErrors.some((e) => e.includes('proofReference')));
   });
 
+
+  test('PRIMARY: absent observed native zoom percent must fail', () => {
+    const packet = buildBasePassingPacket();
+    const zoom = packet.cases.find(c => c.id === 'native-zoom-200');
+    for (const obs of zoom.observations) delete obs.observedZoomPercent;
+    assert.strictEqual(runCliFixture('missing_observed_zoom', packet).exitCode, 1);
+  });
+  test('PRIMARY: explicitly failed contrast pair cannot pass', () => {
+    const packet = buildBasePassingPacket({ zoomStatus: 'BLOCKED' });
+    packet.cases.find(c => c.id === 'contrast-check').pairs[0].pass = false;
+    assert.strictEqual(runCliFixture('failed_contrast_pair', packet).exitCode, 1);
+  });
+
+  test('PRIMARY: missing per-route theme observations must fail', () => {
+    const packet = buildBasePassingPacket({ zoomStatus: 'BLOCKED' });
+    delete packet.cases[0].canvasBg;
+    delete packet.cases[0].screenshotSha1;
+    assert.strictEqual(runCliFixture('missing_route_observation', packet).exitCode, 1);
+  });
   if (fs.existsSync(TMP_DIR)) {
     fs.rmSync(TMP_DIR, { recursive: true, force: true });
   }
-
   console.log(`\nAll ${passed}/${total} test_evaluator_c05 regression tests passed cleanly.`);
 }
 
