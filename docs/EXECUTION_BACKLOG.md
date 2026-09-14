@@ -372,6 +372,22 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no data migration; record safe previous/patched versions and disable affected development server usage if no safe fix exists. Do not revert to a known vulnerable version merely for green tests. Human 0.5–1 day; agent 2–4 hours.
   - Detailed implementer prompt: [B34](execution/prompts/B34.md).
 
+## Queued after task 34: comprehensive calculator functionality and visual excellence
+
+Owner-added 2026-09-13. This is a new program after the existing 34-task list, not extra scope for the active C05 agent. It remains queued for primary release; detailed child IDs/checkpoints will be registered after the comprehensive inventory is reviewed. Existing task counts and acceptance records are unchanged until that registration.
+
+- User problem/evidence: the current B22–B24 tasks largely refine presentation and preserve existing engines; they do not guarantee every calculator has complete decision-support functionality. The older calculator roadmaps contain broader goals without a fully verified, executable per-route plan.
+- Expected outcome: inspect every current calculator, identify and implement justified missing features, improve explanation of entered results, provide optional advanced control, and upgrade each calculator's output presentation without overwhelming the user.
+- Scope: current-route inventory, functionality/gap analysis, calculator-specific result and visual specifications, prioritized per-calculator/family implementation prompts, reviewed pilot, implementation batches and final cross-calculator acceptance. Analysis alone does not close this program.
+- Visual requirements: derive graphs, breakdowns, timelines, comparisons, tables and other visuals from each calculator's actual mathematical model and user decision. No identical generic chart requirement across unrelated calculators; no invented data or misleading scales. Both themes and mobile presentation must remain clear.
+- Non-goals: no new calculator-count target, gratuitous controls/charts, unapproved formula changes, paid integrations or production launch.
+- Files likely affected: new docs/calculator-excellence/*; future execution prompts/ledger; affected calculator components, engines and tests in src/; shared visual primitives and styles where justified by the audited gap.
+- Acceptance/tests: every inventoried calculator has an evidence-backed gap disposition and completed approved implementation; primary answer, explanation, optional detail, advanced controls and visual/table data reconcile. Relevant numerical, interaction, accessibility, responsive/theme, CI and isolated-preview checks pass. Actual satisfaction is measured with user evidence, not inferred from automated tests.
+- Analytics/privacy: use only the approved consent/event contract; synthetic verification data; preserve signed-out utility, safe saves, currency semantics and data lifecycle. No new collection by default.
+- Dependencies: finish the existing implementation priorities and obtain primary release; no changes to current worker scope. External-gated monetization/mobile tasks may remain pending only under an explicit reviewer scheduling amendment.
+- Migration/rollback/effort: require formula sources, model version and saved-result migration decision for behavioral math changes; reversible family commits and explicit rollback. Estimate effort per audited child slice rather than inventing a single estimate for every calculator.
+- Detailed future-agent instructions: [calculator excellence program](execution/CALCULATOR_EXCELLENCE_PROGRAM.md).
+
 ## Milestone reporting
 
 For each item record commit, changed files, red/green tests, local full-suite result, PR/CI URL, immutable preview URL and hosted verification scope. Report remaining risks and the exact next Ready item. Production readiness is never inferred from document completion or preview deployment.
