@@ -11,6 +11,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "smoke:calculators": "node scripts/smoke_public_calculators.mjs",
     "test": "vitest run",
+    "test:tenancy": "node scripts/run_tenancy_harness.mjs",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "check:local": "./scripts/check_local.sh",
