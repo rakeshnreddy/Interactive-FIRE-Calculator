@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-13T22:08:30.214Z",
+  "testedAt": "2026-09-14T07:02:14.685Z",
   "baseUrl": "https://46714a3f.interactive-fire-calculator.pages.dev",
   "consoleErrors": [],
   "pageExceptions": [],
@@ -31,7 +31,7 @@
       "all16px": true,
       "scheduleReachable": true,
       "screenshot": "hosted-compound-interest-390-dark.png",
-      "screenshotSha1": "746b2ac778377d37b3675c88f006251f316be291",
+      "screenshotSha1": "682aa361cf9f9c12b80ce00e3cc1a6389f0d8a74",
       "pass": true
     },
     {
@@ -46,7 +46,7 @@
       "all16px": true,
       "scheduleReachable": true,
       "screenshot": "hosted-savings-goal-390-light.png",
-      "screenshotSha1": "d33d4acf307759bdaf516f00890f847ea27de480",
+      "screenshotSha1": "84bf00cb135981217ad59b86b9b94b0f38b51e6d",
       "pass": true
     },
     {
@@ -61,7 +61,7 @@
       "all16px": true,
       "scheduleReachable": true,
       "screenshot": "hosted-savings-goal-390-dark.png",
-      "screenshotSha1": "10b0ec1c155b0d31220ee1718414bfc453b23250",
+      "screenshotSha1": "7cfb26e9744999e58bc8625bd296a67362bd1bc7",
       "pass": true
     },
     {
@@ -76,7 +76,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-net-worth-390-light.png",
-      "screenshotSha1": "5956c340566de0cc04eae4a19b4ae592ee8a74fe",
+      "screenshotSha1": "6ffc6c56d05f94ccfa8367fe1be09b342835e530",
       "pass": true
     },
     {
@@ -91,7 +91,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-net-worth-390-dark.png",
-      "screenshotSha1": "fbe033e886b8448f37f16eee1bc9051c3bdbd0e4",
+      "screenshotSha1": "bc786751325453279e10f83a8e00a1db94bcb538",
       "pass": true
     },
     {
@@ -106,7 +106,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-budget-390-light.png",
-      "screenshotSha1": "c75acc85ecb61dd9067bd7f9b54e31092c8d7fcf",
+      "screenshotSha1": "8c79b8cec5a4c59cdd1317d8c6af8440b1d0f5cb",
       "pass": true
     },
     {
@@ -121,7 +121,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-budget-390-dark.png",
-      "screenshotSha1": "b3066fe659225a4149394132ef38f9b612d59733",
+      "screenshotSha1": "7af58e6add87d86445c697756b51e2a69735d44c",
       "pass": true
     },
     {
@@ -136,7 +136,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-emergency-fund-390-light.png",
-      "screenshotSha1": "607a8fd381bc19be6d125d3fb60e52b6db64ac3c",
+      "screenshotSha1": "01e485aeb527cef413abbba87e0541852f32068d",
       "pass": true
     },
     {
@@ -151,7 +151,7 @@
       "faqDetailsPresent": true,
       "all16px": true,
       "screenshot": "hosted-emergency-fund-390-dark.png",
-      "screenshotSha1": "a164d64dbcfad23f98f5a83b2f0a0cd74503656a",
+      "screenshotSha1": "c0a0044590b947d563aae6f3b2a42f3f2c50355c",
       "pass": true
     },
     {
@@ -189,7 +189,7 @@
       "allLabelsConcise": true,
       "all16px": true,
       "screenshot": "hosted-fire-desktop-dark.png",
-      "screenshotSha1": "68655f89a1f6ead6a4d448123e7776aa109e8c3f",
+      "screenshotSha1": "a97aa5ced53b8f6ac6f88ec9555808827869b538",
       "pass": true
     },
     {
@@ -234,7 +234,39 @@
     {
       "id": "disclosure-keyboard-focus",
       "noOverlapWithStickyTopbar": true,
-      "focusedControlsCount": 13,
+      "focusedControlsCount": 120,
+      "journeys": [
+        {
+          "tool": "compound-interest",
+          "focusedControls": 20,
+          "noOverlap": true
+        },
+        {
+          "tool": "savings-goal",
+          "focusedControls": 20,
+          "noOverlap": true
+        },
+        {
+          "tool": "net-worth",
+          "focusedControls": 20,
+          "noOverlap": true
+        },
+        {
+          "tool": "budget",
+          "focusedControls": 20,
+          "noOverlap": true
+        },
+        {
+          "tool": "emergency-fund",
+          "focusedControls": 20,
+          "noOverlap": true
+        },
+        {
+          "tool": "fire",
+          "focusedControls": 20,
+          "noOverlap": true
+        }
+      ],
       "pass": true
     },
     {
@@ -266,46 +298,198 @@
         {
           "id": "contrast-light-scope-note",
           "mode": "light",
-          "target": "Scope Note",
+          "target": "scope-note",
           "foreground": "rgb(82, 104, 115)",
           "background": "rgb(244,248,251)",
-          "ratio": 5.483573635475539,
+          "fontSize": "16px",
+          "fontWeight": "400",
           "threshold": 4.5,
+          "ratio": 5.48,
           "pass": true
         },
         {
           "id": "contrast-light-form-label",
           "mode": "light",
-          "target": "Form Field Label",
+          "target": "form-label",
           "foreground": "rgb(82, 104, 115)",
           "background": "rgb(251,253,255)",
-          "ratio": 5.742707245785331,
+          "fontSize": "12.16px",
+          "fontWeight": "800",
           "threshold": 4.5,
+          "ratio": 5.74,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-help-popover",
+          "mode": "light",
+          "target": "help-popover",
+          "foreground": "rgb(32, 58, 67)",
+          "background": "rgb(251,253,255)",
+          "fontSize": "12.48px",
+          "fontWeight": "750",
+          "threshold": 4.5,
+          "ratio": 11.78,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-hero-result",
+          "mode": "light",
+          "target": "hero-result",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(251,253,255)",
+          "fontSize": "32px",
+          "fontWeight": "900",
+          "threshold": 3,
+          "ratio": 14.37,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-dedicated-warning",
+          "mode": "light",
+          "target": "dedicated-warning",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(251,253,255)",
+          "fontSize": "21.44px",
+          "fontWeight": "850",
+          "threshold": 4.5,
+          "ratio": 14.37,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-dedicated-result",
+          "mode": "light",
+          "target": "dedicated-result",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(251,253,255)",
+          "fontSize": "21.44px",
+          "fontWeight": "850",
+          "threshold": 3,
+          "ratio": 14.37,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-hero-result-stale",
+          "mode": "light",
+          "target": "hero-result-stale",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(251,253,255)",
+          "fontSize": "32px",
+          "fontWeight": "900",
+          "threshold": 3,
+          "ratio": 11.29,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-stale-result-badge",
+          "mode": "light",
+          "target": "stale-result-badge",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(236,231,222)",
+          "fontSize": "13.12px",
+          "fontWeight": "600",
+          "threshold": 4.5,
+          "ratio": 11.89,
           "pass": true
         },
         {
           "id": "contrast-dark-scope-note",
           "mode": "dark",
-          "target": "Scope Note",
+          "target": "scope-note",
           "foreground": "rgb(164, 187, 196)",
           "background": "rgb(8,21,28)",
-          "ratio": 9.241991774829128,
+          "fontSize": "16px",
+          "fontWeight": "400",
           "threshold": 4.5,
+          "ratio": 9.24,
           "pass": true
         },
         {
           "id": "contrast-dark-form-label",
           "mode": "dark",
-          "target": "Form Field Label",
+          "target": "form-label",
           "foreground": "rgb(164, 187, 196)",
           "background": "rgb(16,35,44)",
-          "ratio": 8.071774651027154,
+          "fontSize": "12.16px",
+          "fontWeight": "800",
           "threshold": 4.5,
+          "ratio": 8.07,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-help-popover",
+          "mode": "dark",
+          "target": "help-popover",
+          "foreground": "rgb(216, 231, 234)",
+          "background": "rgb(20,42,52)",
+          "fontSize": "12.48px",
+          "fontWeight": "750",
+          "threshold": 4.5,
+          "ratio": 11.72,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-hero-result",
+          "mode": "dark",
+          "target": "hero-result",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(16,35,44)",
+          "fontSize": "32px",
+          "fontWeight": "900",
+          "threshold": 3,
+          "ratio": 14.65,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-dedicated-warning",
+          "mode": "dark",
+          "target": "dedicated-warning",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(16,35,44)",
+          "fontSize": "21.44px",
+          "fontWeight": "850",
+          "threshold": 4.5,
+          "ratio": 14.65,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-dedicated-result",
+          "mode": "dark",
+          "target": "dedicated-result",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(16,35,44)",
+          "fontSize": "21.44px",
+          "fontWeight": "850",
+          "threshold": 3,
+          "ratio": 14.65,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-hero-result-stale",
+          "mode": "dark",
+          "target": "hero-result-stale",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(16,35,44)",
+          "fontSize": "32px",
+          "fontWeight": "900",
+          "threshold": 3,
+          "ratio": 12.56,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-stale-result-badge",
+          "mode": "dark",
+          "target": "stale-result-badge",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(45,55,53)",
+          "fontSize": "13.12px",
+          "fontWeight": "600",
+          "threshold": 4.5,
+          "ratio": 11.13,
           "pass": true
         }
       ],
-      "minNormalRatio": 5.483573635475539,
-      "minLargeRatio": 5.483573635475539,
+      "minNormalRatio": 5.48,
+      "minLargeRatio": 11.29,
       "pass": true
     },
     {

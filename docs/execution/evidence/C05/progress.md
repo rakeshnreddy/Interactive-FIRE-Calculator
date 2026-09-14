@@ -1,7 +1,7 @@
 # C05 Progress Digest & Verification Record
 
 - **Checkpoint**: C05 (Dedicated calculator families)
-- **Status**: Rework Complete — Ready for Primary Review (Tasks B22, B23, B24)
+- **Status**: Verification Rework Complete — Tasks B22, B23, B24 Blocked on Native Zoom 200% (Headless CLI limitation); Stop for Primary Review
 - **Task Sequence**: B22 → B23 → B24
 - **Branch**: `codex/finpath-quality-execution` (PR #140)
 - **Base Commit**: `8d9a4c4b6fc52e6900222a76f2df6355694c9d96`
@@ -17,6 +17,7 @@
   - TypeScript typecheck (0 errors)
   - 39 Vitest files (1,551 tests pass)
   - Vite production build (0 errors)
+- **CI Run**: [34786143969](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34786143969) (succeeded)
 
 ---
 
@@ -24,9 +25,9 @@
 
 | Task | Title | Status | Code SHA | Local Tests | Hosted Preview | Blocked Items |
 |---|---|---|---|---|---|---|
-| **B22** | Unify compound-interest and savings-goal presentation | ready_for_review | `1c73bff` | 92/92 pass | Verified on `46714a3f` | Screen-reader deferred to B31 per `ACCESSIBILITY_DEFERRALS.md` |
-| **B23** | Unify budget, net-worth and emergency-fund presentation | ready_for_review | `1c73bff` | 36/36 pass | Verified on `46714a3f` | Screen-reader deferred to B31 per `ACCESSIBILITY_DEFERRALS.md` |
-| **B24** | Refine FIRE calculator into flagship decision experience | ready_for_review | `1c73bff` | 27/27 pass | Verified on `46714a3f` | Screen-reader deferred to B31 per `ACCESSIBILITY_DEFERRALS.md` |
+| **B22** | Unify compound-interest and savings-goal presentation | blocked | `1c73bff` | 92/92 pass | Verified on `46714a3f` | Blocked on native-zoom-200 (headless CLI lacks interactive desktop Chrome CUA application zoom); Screen-reader deferred to B31 per `ACCESSIBILITY_DEFERRALS.md` |
+| **B23** | Unify budget, net-worth and emergency-fund presentation | blocked | `1c73bff` | 36/36 pass | Verified on `46714a3f` | Blocked on native-zoom-200 (headless CLI lacks interactive desktop Chrome CUA application zoom); Screen-reader deferred to B31 per `ACCESSIBILITY_DEFERRALS.md` |
+| **B24** | Refine FIRE calculator into flagship decision experience | blocked | `1c73bff` | 27/27 pass | Verified on `46714a3f` | Blocked on native-zoom-200 (headless CLI lacks interactive desktop Chrome CUA application zoom); Screen-reader deferred to B31 per `ACCESSIBILITY_DEFERRALS.md` |
 
 ---
 
@@ -78,20 +79,38 @@
   - Live hosted verification (`fire-r3-stale-timing-pill` and `fire-stale-result-recalculate` in `verify_hosted_c05.cjs`) verified that draft changes do not alter the snapshot pill and that recalculation cleanly synchronizes state.
 
 ### R4 — Truthful Collector and Fail-Closed Evaluator (P1)
-- **Problem**: Previous collector toggled attributes on `document.documentElement` instead of `.app[data-mode]`, accepted default "Estimated net worth" as a deficit pass, lacked real keyboard actions, and reported exit code 0 even when checks failed.
+- **Problem**: Evaluator previously accepted missing critical observations/pairs, comparison checks lacked numeric verification against fixed engine values, keyboard navigation lacked full calculator route coverage and real key journeys, and contrast targets lacked coverage of changed hero and stale badge results.
 - **Resolution**:
-  - Created `docs/execution/evidence/C05/verify_hosted_c05.cjs`:
-    - Theme switching uses `finpath.colorMode` and verifies `.app[data-mode]`, contrasting canvas background and text colors, and ensures distinct screenshot SHA-1 hashes.
-    - Deficit testing uses real Playwright input fill setting liabilities to $1,000,000, asserting exact title (`Estimated net deficit`), label (`Net deficit (liabilities exceed assets)`), and value (`-$775,000`), explicitly rejecting default non-deficit states.
-    - Real keyboard Tab/Shift+Tab, Enter/Space, Escape actions recorded and tested for focus movement and sticky navigation occlusion.
-    - CDP media emulation tests prefers-reduced-motion (0 running animations/transitions) and prefers-reduced-transparency (opaque backgrounds with alpha 1).
-    - Pixel-level WCAG AA contrast measured via Sharp (`measureContrastPixels`) across rendered text against composed background pixels (light mode 5.48, dark mode 9.24, exceeding the 4.5 threshold).
-    - Native zoom 200% truthfully reported as `BLOCKED` with explicit reason (`Interactive desktop Chrome CUA application zoom is unavailable in headless CLI`).
-    - Evaluator enforces fail-closed execution: exits 0 on PASS, 1 on FAIL, 2 on BLOCKED.
-  - Created comprehensive negative test suite `docs/execution/evidence/C05/test_evaluator_c05.cjs`:
-    - 25 defect regression tests covering missing cases, duplicate IDs, theme mismatch, identical screenshot hashes, false-pass default deficit, R1/R2/R3 defects, contrast threshold, and blocked zoom. All 25 passed cleanly.
+  - **R4a — Evaluator Schema Validation & Fail-Closed Enforcement**:
+    - `evaluateC05Results` strictly verifies schema: `native-zoom-200` requires a non-empty `observations` array with `route`, `theme`, `viewport`, `zoomPercent: 200`, `proofReference`, and no clipping/overflow. Status PASS without observations fails immediately.
+    - `contrast-check` requires non-empty `pairs` array covering all 8 targets across light and dark modes, finite actual ratios and thresholds, correct threshold validation (3.0 for large, 4.5 for normal text), valid RGB colors, and dynamically derives minima rather than trusting caller summaries.
+    - Negative test suite `test_evaluator_c05.cjs` expanded to 37 regression tests covering every failure mode (missing observations, empty arrays, missing targets/themes, NaN/null ratio, low ratio with high claimed min, wrong thresholds, falsely claimed large text, invalid colors, zoom clipping/overflow, missing proof reference). All 37 pass.
+  - **R4b — Numeric Scenario Comparison Verification**:
+    - Live hosted verification captures exact numeric scenario values:
+      - Initial / Stale plan: Base `$1,301,620`, Guardrail `$1,537,155` (`+$235,535`), Upside `$1,124,161` (`-$177,459`).
+      - Modifier edit (`-10%` Guardrail spending reduction): Base remains `$1,301,620`, Guardrail updates to `$1,443,890` (`+$142,270`), delta against same base.
+      - Recalculation (Start-year timing): Base `$1,389,105`, Guardrail `$1,518,061` (`+$128,956`), stale badge cleared.
+      - Withdrawal mode: Verified base `$47,979`, recalculation `$50,882`.
+    - Unit tests in `src/FireCalculator.test.tsx` strengthened with exact numeric scenario comparisons matching fixed engine expectations.
+  - **R4c — Comprehensive Keyboard Journeys Across 6 Routes**:
+    - Real browser Tab and Shift+Tab journeys implemented across all 6 calculators (`compound-interest`, `savings-goal`, `net-worth`, `budget`, `emergency-fund`, `fire`).
+    - Key-triggered disclosure expansion via Enter on `<summary>` / details elements tested.
+    - Active element focus and sticky topbar clearance verified across 120 focused controls with 0 occlusions.
+  - **R4d — Actual Composed Pixel Contrast Across 8 Targets**:
+    - Measured actual rendered targets in both light and dark modes using pixel-composed Sharp screenshot buffers:
+      1. `scope-note`: Light 5.48:1, Dark 9.24:1 (>= 4.5)
+      2. `form-label`: Light 5.74:1, Dark 8.07:1 (>= 4.5)
+      3. `help-popover`: Light 11.78:1, Dark 11.72:1 (>= 4.5)
+      4. `hero-result`: Light 14.37:1, Dark 14.65:1 (>= 3.0)
+      5. `dedicated-warning` (`.warning-card strong`): Light 14.37:1, Dark 14.65:1 (>= 4.5)
+      6. `dedicated-result`: Light 14.37:1, Dark 14.65:1 (>= 3.0)
+      7. `hero-result-stale` (with 0.92 opacity composition): Light 11.29:1, Dark 12.56:1 (>= 3.0)
+      8. `stale-result-badge` (composed text): Light 11.89:1, Dark 11.13:1 (>= 4.5)
+    - Derived normal text minimum: 5.48:1 (threshold 4.5:1).
+    - Derived large text minimum: 11.29:1 (threshold 3.0:1).
 - **Verification**:
-  - Ran `test_evaluator_c05.cjs`: 25/25 negative tests passed.
+  - Ran `test_evaluator_c05.cjs`: 37/37 negative tests passed.
+  - Ran `evidence/C05-second-review/omission-reproductions.cjs`: both failure modes properly fail-closed with clear error messages.
   - Ran `verify_hosted_c05.cjs` against `https://46714a3f.interactive-fire-calculator.pages.dev`:
     - 19 automated cases: PASS
     - 1 mandatory check (`native-zoom-200`): BLOCKED (headless CLI limitation)

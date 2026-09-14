@@ -198,6 +198,29 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     expect(resultCard).not.toBeNull();
     expect(resultCard?.textContent).toContain('Annual withdrawal');
     expect(resultCard?.textContent).toContain('Need coverage');
+    expect(resultCard?.querySelector('strong')?.textContent?.trim()).toBe('$47,979');
+
+    // Verify stale lifecycle in withdrawal mode
+    const portfolioInput = document.querySelector<HTMLInputElement>('input[value="750000"]') ||
+      document.getElementById('fire-initial-portfolio') as HTMLInputElement;
+    if (portfolioInput) {
+      await act(async () => {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!;
+        nativeInputValueSetter.call(portfolioInput, '800000');
+        portfolioInput.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      expect(resultCard?.classList.contains('is-stale')).toBe(true);
+      expect(resultCard?.querySelector('strong')?.textContent?.trim()).toBe('$47,979');
+
+      // Recalculate
+      const recalcBtn = document.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
+      await act(async () => {
+        recalcBtn.click();
+      });
+      const updatedCard = document.querySelector('.hero-result');
+      expect(updatedCard?.classList.contains('is-stale')).toBe(false);
+      expect(updatedCard?.querySelector('strong')?.textContent?.trim()).toBe('$50,882');
+    }
   });
 
   it('R1 regression: ensures all field IDs in advanced and repeated sections are unique and labels focus their own inputs', async () => {
@@ -301,32 +324,47 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
       root!.render(<App auth={mockAuth} />);
     });
 
+    const getTab = (name: string) =>
+      Array.from(document.querySelectorAll<HTMLButtonElement>('.result-tabs-panel button[role="tab"]')).find(
+        (b) => b.textContent?.includes(name)
+      );
+
+    const getScenarioCards = () =>
+      Array.from(document.querySelectorAll<HTMLElement>('#compare .scenario-card')).map((card) => ({
+        name: card.querySelector<HTMLInputElement>('input[type="text"]')?.value,
+        requiredPortfolio: card.querySelector('strong')?.textContent?.trim(),
+        deltaText: Array.from(card.querySelectorAll('small')).find((s) => s.textContent?.includes('Vs planner'))?.textContent?.trim()
+      }));
+
     // 1. Initial calculate with default withdrawalTiming ('end')
     const calcButton = document.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
     await act(async () => {
       calcButton.click();
     });
 
-    // Switch to results panel via results tab
-    const getTab = (name: string) =>
-      Array.from(document.querySelectorAll<HTMLButtonElement>('.result-tabs-panel button[role="tab"]')).find(
-        (b) => b.textContent?.includes(name)
-      );
-
+    // Check timing pill in results panel
     await act(async () => {
       getTab('Results')?.click();
     });
-
-    // Check timing pill in results panel
     const timingPill = document.querySelector('#results .pill');
     expect(timingPill?.textContent).toBe('End-year');
 
-    // 2. Switch to planner and change withdrawal timing to 'start'
+    // Check exact numeric values in compare tab
+    await act(async () => {
+      getTab('Compare')?.click();
+    });
+    const initialScenarios = getScenarioCards();
+    expect(initialScenarios).toEqual([
+      { name: 'Base', requiredPortfolio: '$1,301,620', deltaText: 'Vs planner: $0' },
+      { name: 'Guardrail', requiredPortfolio: '$1,537,155', deltaText: 'Vs planner: +$235,535' },
+      { name: 'Upside', requiredPortfolio: '$1,124,161', deltaText: 'Vs planner: -$177,459' }
+    ]);
+
+    // 2. Switch to inputs and change withdrawal timing to 'start' without recalculating
     await act(async () => {
       getTab('Inputs')?.click();
     });
 
-    // Open advanced settings to change withdrawal timing
     const optionsDetails = document.querySelector('details.advanced-shell');
     optionsDetails?.setAttribute('open', '');
 
@@ -343,24 +381,41 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     const heroCard = document.querySelector('.hero-result');
     expect(heroCard?.classList.contains('is-stale')).toBe(true);
 
-    // Switch back to results panel to inspect timing pill
+    // Timing pill MUST still say 'End-year'
     await act(async () => {
       getTab('Results')?.click();
     });
-
-    // The timing pill must STILL say 'End-year' because the displayed projection belongs to the last calculated snapshot!
     const staleTimingPill = document.querySelector('#results .pill');
     expect(staleTimingPill?.textContent).toBe('End-year');
 
-    // Switch to compare panel
+    // Compare tab MUST still reflect the snapshotted calculation values, NOT recalculated!
     await act(async () => {
       getTab('Compare')?.click();
     });
+    const staleScenarios = getScenarioCards();
+    expect(staleScenarios).toEqual([
+      { name: 'Base', requiredPortfolio: '$1,301,620', deltaText: 'Vs planner: $0' },
+      { name: 'Guardrail', requiredPortfolio: '$1,537,155', deltaText: 'Vs planner: +$235,535' },
+      { name: 'Upside', requiredPortfolio: '$1,124,161', deltaText: 'Vs planner: -$177,459' }
+    ]);
 
-    const firstScenarioDelta = document.querySelector('#compare .scenario-card small');
-    expect(firstScenarioDelta).not.toBeNull();
+    // 3. Edit a scenario modifier (Guardrail spending shift to -10%) while draft is stale
+    const scenarioCards = document.querySelectorAll<HTMLElement>('#compare .scenario-card');
+    const guardrailCard = scenarioCards[1];
+    const guardrailSpendInput = guardrailCard.querySelector<HTMLInputElement>('input[type="number"]')!;
+    expect(guardrailSpendInput).toBeTruthy();
+    await act(async () => {
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!;
+      nativeInputValueSetter.call(guardrailSpendInput, '-10.0');
+      guardrailSpendInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
 
-    // Now recalculate: timing pill updates to 'Start-year' and stale state clears
+    const modifiedStaleScenarios = getScenarioCards();
+    expect(modifiedStaleScenarios[0].requiredPortfolio).toBe('$1,301,620');
+    expect(modifiedStaleScenarios[1].requiredPortfolio).toBe('$1,443,890');
+    expect(modifiedStaleScenarios[1].deltaText).toBe('Vs planner: +$142,270');
+
+    // 4. Now recalculate: timing pill updates to 'Start-year' and stale state clears
     await act(async () => {
       getTab('Inputs')?.click();
     });
@@ -375,5 +430,13 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     const refreshedTimingPill = document.querySelector('#results .pill');
     expect(refreshedTimingPill?.textContent).toBe('Start-year');
     expect(document.querySelector('.hero-result')?.classList.contains('is-stale')).toBe(false);
+
+    await act(async () => {
+      getTab('Compare')?.click();
+    });
+    const recalculatedScenarios = getScenarioCards();
+    expect(recalculatedScenarios[0].requiredPortfolio).toBe('$1,389,105');
+    expect(recalculatedScenarios[1].requiredPortfolio).toBe('$1,518,061');
+    expect(recalculatedScenarios[1].deltaText).toBe('Vs planner: +$128,956');
   });
 });

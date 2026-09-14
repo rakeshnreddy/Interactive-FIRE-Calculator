@@ -17,6 +17,66 @@ try {
   console.error('Failed to load verify_hosted_c05.cjs:', err);
 }
 
+const defaultValidContrastPairs = [
+  // Light mode targets
+  { id: 'contrast-light-hero-result', mode: 'light', target: 'hero-result', foreground: 'rgb(24, 76, 68)', background: 'rgb(255, 255, 255)', fontSize: '28px', fontWeight: '700', threshold: 3.0, ratio: 7.2, pass: true },
+  { id: 'contrast-light-hero-result-stale', mode: 'light', target: 'hero-result-stale', foreground: 'rgba(24, 76, 68, 0.72)', background: 'rgb(255, 255, 255)', fontSize: '28px', fontWeight: '700', threshold: 3.0, ratio: 5.6, pass: true },
+  { id: 'contrast-light-stale-result-badge', mode: 'light', target: 'stale-result-badge', foreground: 'rgb(92, 60, 20)', background: 'rgb(254, 243, 199)', fontSize: '13px', fontWeight: '500', threshold: 4.5, ratio: 5.8, pass: true },
+  { id: 'contrast-light-scope-note', mode: 'light', target: 'scope-note', foreground: 'rgb(82, 104, 115)', background: 'rgb(244, 248, 251)', fontSize: '14px', fontWeight: '400', threshold: 4.5, ratio: 5.48, pass: true },
+  { id: 'contrast-light-form-label', mode: 'light', target: 'form-label', foreground: 'rgb(82, 104, 115)', background: 'rgb(251, 253, 255)', fontSize: '14px', fontWeight: '500', threshold: 4.5, ratio: 5.74, pass: true },
+  { id: 'contrast-light-help-popover', mode: 'light', target: 'help-popover', foreground: 'rgb(32, 58, 67)', background: 'rgb(255, 255, 255)', fontSize: '13px', fontWeight: '400', threshold: 4.5, ratio: 9.8, pass: true },
+  { id: 'contrast-light-dedicated-result', mode: 'light', target: 'dedicated-result', foreground: 'rgb(24, 76, 68)', background: 'rgb(255, 255, 255)', fontSize: '24px', fontWeight: '700', threshold: 3.0, ratio: 7.2, pass: true },
+  { id: 'contrast-light-dedicated-warning', mode: 'light', target: 'dedicated-warning', foreground: 'rgb(153, 27, 27)', background: 'rgb(254, 242, 242)', fontSize: '14px', fontWeight: '600', threshold: 4.5, ratio: 5.5, pass: true },
+  // Dark mode targets
+  { id: 'contrast-dark-hero-result', mode: 'dark', target: 'hero-result', foreground: 'rgb(126, 217, 197)', background: 'rgb(16, 35, 44)', fontSize: '28px', fontWeight: '700', threshold: 3.0, ratio: 8.5, pass: true },
+  { id: 'contrast-dark-hero-result-stale', mode: 'dark', target: 'hero-result-stale', foreground: 'rgba(126, 217, 197, 0.72)', background: 'rgb(16, 35, 44)', fontSize: '28px', fontWeight: '700', threshold: 3.0, ratio: 6.2, pass: true },
+  { id: 'contrast-dark-stale-result-badge', mode: 'dark', target: 'stale-result-badge', foreground: 'rgb(253, 230, 138)', background: 'rgb(69, 26, 3)', fontSize: '13px', fontWeight: '500', threshold: 4.5, ratio: 6.9, pass: true },
+  { id: 'contrast-dark-scope-note', mode: 'dark', target: 'scope-note', foreground: 'rgb(164, 187, 196)', background: 'rgb(8, 21, 28)', fontSize: '14px', fontWeight: '400', threshold: 4.5, ratio: 9.24, pass: true },
+  { id: 'contrast-dark-form-label', mode: 'dark', target: 'form-label', foreground: 'rgb(164, 187, 196)', background: 'rgb(16, 35, 44)', fontSize: '14px', fontWeight: '500', threshold: 4.5, ratio: 8.07, pass: true },
+  { id: 'contrast-dark-help-popover', mode: 'dark', target: 'help-popover', foreground: 'rgb(216, 231, 234)', background: 'rgb(16, 35, 44)', fontSize: '13px', fontWeight: '400', threshold: 4.5, ratio: 10.4, pass: true },
+  { id: 'contrast-dark-dedicated-result', mode: 'dark', target: 'dedicated-result', foreground: 'rgb(126, 217, 197)', background: 'rgb(16, 35, 44)', fontSize: '24px', fontWeight: '700', threshold: 3.0, ratio: 8.5, pass: true },
+  { id: 'contrast-dark-dedicated-warning', mode: 'dark', target: 'dedicated-warning', foreground: 'rgb(252, 165, 165)', background: 'rgb(69, 10, 10)', fontSize: '14px', fontWeight: '600', threshold: 4.5, ratio: 6.8, pass: true }
+];
+
+const defaultValidZoomObservations = [
+  {
+    route: '/calculators/fire',
+    theme: 'light',
+    viewport: { width: 1440, height: 900 },
+    statesTested: ['inputs', 'results', 'expanded'],
+    clippingObserved: false,
+    horizontalOverflowObserved: false,
+    proofReference: 'evidence/C05-assisted/native-zoom-fire-light.png'
+  },
+  {
+    route: '/calculators/fire',
+    theme: 'dark',
+    viewport: { width: 1440, height: 900 },
+    statesTested: ['inputs', 'results', 'expanded'],
+    clippingObserved: false,
+    horizontalOverflowObserved: false,
+    proofReference: 'evidence/C05-assisted/native-zoom-fire-dark.png'
+  },
+  {
+    route: '/calculators/compound-interest',
+    theme: 'light',
+    viewport: { width: 1440, height: 900 },
+    statesTested: ['inputs', 'results'],
+    clippingObserved: false,
+    horizontalOverflowObserved: false,
+    proofReference: 'evidence/C05-assisted/native-zoom-ci-light.png'
+  },
+  {
+    route: '/calculators/net-worth',
+    theme: 'dark',
+    viewport: { width: 1440, height: 900 },
+    statesTested: ['inputs', 'results'],
+    clippingObserved: false,
+    horizontalOverflowObserved: false,
+    proofReference: 'evidence/C05-assisted/native-zoom-nw-dark.png'
+  }
+];
+
 function buildBasePassingPacket(options = {}) {
   const zoomStatus = options.zoomStatus || 'PASS';
 
@@ -268,14 +328,17 @@ function buildBasePassingPacket(options = {}) {
     },
     {
       id: 'contrast-check',
-      minNormalRatio: 5.2,
-      minLargeRatio: 4.8,
+      pairs: defaultValidContrastPairs,
+      minNormalRatio: 5.48,
+      minLargeRatio: 5.6,
       pass: true
     },
     {
       id: 'native-zoom-200',
       status: zoomStatus,
+      zoomLevel: zoomStatus === 'PASS' ? '200%' : undefined,
       reason: zoomStatus === 'BLOCKED' ? 'Interactive desktop Chrome CUA application zoom is unavailable in headless CLI' : undefined,
+      observations: zoomStatus === 'PASS' ? defaultValidZoomObservations : undefined,
       pass: zoomStatus === 'PASS'
     }
   ];
@@ -597,6 +660,143 @@ function runTests() {
     assert.strictEqual(res.outputData.verdict, 'FAIL');
     assert(res.outputData.evaluationErrors.some((e) => e.includes('FAQ details disclosure is missing')));
   });
+
+  // 26. Defect: native-zoom-200 PASS without observations array
+  test('DEFECT: native-zoom-200 PASS without observations array exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket({ zoomStatus: 'PASS' });
+    const zoomCase = packet.cases.find((c) => c.id === 'native-zoom-200');
+    delete zoomCase.observations;
+    const res = runCliFixture('zoom_missing_observations', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('observations')));
+  });
+
+  // 27. Defect: native-zoom-200 PASS with empty observations array
+  test('DEFECT: native-zoom-200 PASS with empty observations array exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket({ zoomStatus: 'PASS' });
+    const zoomCase = packet.cases.find((c) => c.id === 'native-zoom-200');
+    zoomCase.observations = [];
+    const res = runCliFixture('zoom_empty_observations', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('observations')));
+  });
+
+  // 28. Defect: contrast-check missing pairs array
+  test('DEFECT: contrast-check missing pairs array exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    delete contrastCase.pairs;
+    const res = runCliFixture('contrast_missing_pairs', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('pairs')));
+  });
+
+  // 29. Defect: contrast-check empty pairs array
+  test('DEFECT: contrast-check empty pairs array exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    contrastCase.pairs = [];
+    const res = runCliFixture('contrast_empty_pairs', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('pairs')));
+  });
+
+  // 30. Defect: contrast-check missing required target
+  test('DEFECT: contrast-check missing required target exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    contrastCase.pairs = contrastCase.pairs.filter((p) => p.target !== 'hero-result-stale');
+    const res = runCliFixture('contrast_missing_target', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('hero-result-stale') || e.includes('missing required contrast target')));
+  });
+
+  // 31. Defect: contrast-check pair with NaN or null ratio
+  test('DEFECT: contrast-check pair with NaN/null ratio exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    contrastCase.pairs = contrastCase.pairs.map((p, idx) => idx === 0 ? { ...p, ratio: NaN } : p);
+    const res = runCliFixture('contrast_nan_ratio', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('ratio') || e.includes('NaN')));
+  });
+
+  // 32. Defect: contrast-check pair with low ratio below threshold
+  test('DEFECT: contrast-check pair with low ratio below threshold exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    contrastCase.pairs = contrastCase.pairs.map((p) => p.id === 'contrast-light-scope-note' ? { ...p, ratio: 3.2 } : p);
+    contrastCase.minNormalRatio = 5.48;
+    const res = runCliFixture('contrast_pair_low_ratio', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('below threshold') || e.includes('ratio')));
+  });
+
+  // 33. Defect: contrast-check pair with invalid threshold
+  test('DEFECT: contrast-check pair with invalid threshold exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    contrastCase.pairs = contrastCase.pairs.map((p) => p.id === 'contrast-light-form-label' ? { ...p, threshold: 1.0 } : p);
+    const res = runCliFixture('contrast_invalid_threshold', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('threshold')));
+  });
+
+  // 34. Defect: contrast-check pair with falsely labelled large text
+  test('DEFECT: contrast-check pair falsely claiming 3.0 large text threshold exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    contrastCase.pairs = contrastCase.pairs.map((p) => p.id === 'contrast-light-form-label' ? { ...p, fontSize: '14px', fontWeight: '400', threshold: 3.0 } : p);
+    const res = runCliFixture('contrast_false_large_text', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('threshold') || e.includes('large text') || e.includes('fontSize')));
+  });
+
+  // 35. Defect: contrast-check pair with invalid color
+  test('DEFECT: contrast-check pair with invalid color exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket();
+    const contrastCase = packet.cases.find((c) => c.id === 'contrast-check');
+    contrastCase.pairs = contrastCase.pairs.map((p) => p.id === 'contrast-light-form-label' ? { ...p, foreground: 'not-a-color' } : p);
+    const res = runCliFixture('contrast_invalid_color', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('color') || e.includes('foreground') || e.includes('background')));
+  });
+
+  // 36. Defect: native-zoom-200 observation reports clipping or overflow
+  test('DEFECT: native-zoom-200 observation reports clipping or overflow exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket({ zoomStatus: 'PASS' });
+    const zoomCase = packet.cases.find((c) => c.id === 'native-zoom-200');
+    zoomCase.observations[0].clippingObserved = true;
+    const res = runCliFixture('zoom_clipping_observed', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('clipping') || e.includes('overflow')));
+  });
+
+  // 37. Defect: native-zoom-200 observation missing proof reference
+  test('DEFECT: native-zoom-200 observation missing proofReference exits 1 with verdict FAIL', () => {
+    const packet = buildBasePassingPacket({ zoomStatus: 'PASS' });
+    const zoomCase = packet.cases.find((c) => c.id === 'native-zoom-200');
+    delete zoomCase.observations[0].proofReference;
+    const res = runCliFixture('zoom_missing_proof', packet);
+    assert.strictEqual(res.exitCode, 1);
+    assert.strictEqual(res.outputData.verdict, 'FAIL');
+    assert(res.outputData.evaluationErrors.some((e) => e.includes('proofReference')));
+  });
+
+  if (fs.existsSync(TMP_DIR)) {
+    fs.rmSync(TMP_DIR, { recursive: true, force: true });
+  }
 
   console.log(`\nAll ${passed}/${total} test_evaluator_c05 regression tests passed cleanly.`);
 }

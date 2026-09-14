@@ -353,6 +353,93 @@ function evaluateC05Results(packet) {
   // Validate Contrast
   const contrastCase = caseMap.get('contrast-check');
   if (contrastCase) {
+    if (!Array.isArray(contrastCase.pairs) || contrastCase.pairs.length === 0) {
+      errors.push('contrast-check: pairs array is missing or empty');
+    } else {
+      const requiredTargets = [
+        'hero-result',
+        'hero-result-stale',
+        'stale-result-badge',
+        'scope-note',
+        'form-label',
+        'help-popover',
+        'dedicated-result',
+        'dedicated-warning'
+      ];
+      const requiredModes = ['light', 'dark'];
+
+      for (const mode of requiredModes) {
+        for (const target of requiredTargets) {
+          const match = contrastCase.pairs.find((p) => p.mode === mode && p.target === target);
+          if (!match) {
+            errors.push(`contrast-check: missing required contrast target: mode=${mode}, target=${target}`);
+          }
+        }
+      }
+
+      let minObservedNormal = Infinity;
+      let minObservedLarge = Infinity;
+
+      for (const pair of contrastCase.pairs) {
+        if (!pair || typeof pair !== 'object') {
+          errors.push('contrast-check: invalid pair entry');
+          continue;
+        }
+        if (!pair.id || typeof pair.id !== 'string') {
+          errors.push(`contrast-check: pair missing id: ${JSON.stringify(pair)}`);
+        }
+        if (!pair.foreground || !parseRgb(pair.foreground)) {
+          errors.push(`contrast-check: pair ${pair.id} has invalid foreground color: ${pair.foreground}`);
+        }
+        if (!pair.background || !parseRgb(pair.background)) {
+          errors.push(`contrast-check: pair ${pair.id} has invalid background color: ${pair.background}`);
+        }
+        if (!Number.isFinite(pair.threshold) || ![3.0, 4.5].includes(pair.threshold)) {
+          errors.push(`contrast-check: pair ${pair.id} has invalid threshold: ${pair.threshold} (must be 3.0 or 4.5)`);
+        }
+
+        // Validate large text threshold eligibility if threshold === 3.0
+        if (pair.threshold === 3.0) {
+          const fontSizePx = parseFloat(pair.fontSize);
+          const fontWeightNum = parseInt(pair.fontWeight, 10) || (pair.fontWeight === 'bold' ? 700 : 400);
+          const isLarge = (Number.isFinite(fontSizePx) && fontSizePx >= 24) ||
+                          (Number.isFinite(fontSizePx) && fontSizePx >= 18.66 && fontWeightNum >= 700);
+          if (!isLarge) {
+            errors.push(`contrast-check: pair ${pair.id} falsely claiming 3.0 large text threshold with fontSize=${pair.fontSize}, fontWeight=${pair.fontWeight}`);
+          }
+        }
+
+        if (!Number.isFinite(pair.ratio) || pair.ratio <= 0) {
+          errors.push(`contrast-check: pair ${pair.id} has invalid or non-finite ratio: ${pair.ratio}`);
+        } else {
+          if (pair.threshold === 4.5 && pair.ratio < minObservedNormal) {
+            minObservedNormal = pair.ratio;
+          }
+          if (pair.threshold === 3.0 && pair.ratio < minObservedLarge) {
+            minObservedLarge = pair.ratio;
+          }
+
+          if (pair.ratio < pair.threshold) {
+            errors.push(`contrast-check: pair ${pair.id} ratio ${pair.ratio} is below threshold ${pair.threshold}`);
+          }
+        }
+      }
+
+      if (minObservedNormal < 4.5) {
+        errors.push(`contrast-check: observed minimum normal text contrast ratio ${minObservedNormal} is below threshold 4.5`);
+      }
+      if (minObservedLarge < 3.0) {
+        errors.push(`contrast-check: observed minimum large text contrast ratio ${minObservedLarge} is below threshold 3.0`);
+      }
+
+      if (Number.isFinite(contrastCase.minNormalRatio) && contrastCase.minNormalRatio > minObservedNormal) {
+        errors.push(`contrast-check: claimed minNormalRatio ${contrastCase.minNormalRatio} exceeds observed min ${minObservedNormal}`);
+      }
+      if (Number.isFinite(contrastCase.minLargeRatio) && contrastCase.minLargeRatio > minObservedLarge) {
+        errors.push(`contrast-check: claimed minLargeRatio ${contrastCase.minLargeRatio} exceeds observed min ${minObservedLarge}`);
+      }
+    }
+
     if (!Number.isFinite(contrastCase.minNormalRatio) || contrastCase.minNormalRatio < 4.5) {
       errors.push(`contrast-check: normal text contrast ratio ${contrastCase.minNormalRatio} is below threshold 4.5`);
     }
@@ -373,6 +460,37 @@ function evaluateC05Results(packet) {
     } else if (zoomCase.status === 'PASS') {
       if (!zoomCase.pass) {
         errors.push('native-zoom-200: marked PASS but pass field is false');
+      }
+      if (!Array.isArray(zoomCase.observations) || zoomCase.observations.length === 0) {
+        errors.push('native-zoom-200: PASS status requires non-empty observations array');
+      } else {
+        for (const obs of zoomCase.observations) {
+          if (!obs || typeof obs !== 'object') {
+            errors.push('native-zoom-200: invalid observation object');
+            continue;
+          }
+          if (!obs.route || typeof obs.route !== 'string') {
+            errors.push('native-zoom-200: observation missing valid route');
+          }
+          if (!obs.theme || !['light', 'dark'].includes(obs.theme)) {
+            errors.push(`native-zoom-200: observation missing valid theme: ${obs.theme}`);
+          }
+          if (!obs.viewport || typeof obs.viewport.width !== 'number' || typeof obs.viewport.height !== 'number') {
+            errors.push('native-zoom-200: observation missing valid viewport dimensions');
+          }
+          if (!Array.isArray(obs.statesTested) || obs.statesTested.length === 0) {
+            errors.push('native-zoom-200: observation missing statesTested array');
+          }
+          if (obs.clippingObserved !== false) {
+            errors.push(`native-zoom-200: clipping observed in route ${obs.route} (${obs.theme})`);
+          }
+          if (obs.horizontalOverflowObserved !== false) {
+            errors.push(`native-zoom-200: horizontal overflow observed in route ${obs.route} (${obs.theme})`);
+          }
+          if (!obs.proofReference || typeof obs.proofReference !== 'string' || obs.proofReference.trim().length === 0) {
+            errors.push(`native-zoom-200: observation missing proofReference in route ${obs.route}`);
+          }
+        }
       }
     } else {
       errors.push(`native-zoom-200: unrecognized status '${zoomCase.status}'`);
@@ -777,7 +895,34 @@ async function runLiveVerification(baseUrl) {
   await page.waitForSelector('#results .pill');
   const initialPill = (await page.textContent('#results .pill')).trim();
 
-  // Switch to inputs and change withdrawal timing to 'Start'
+  // Switch to Compare tab: verify snapshotted numeric scenario values before draft change
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Compare")');
+  await page.waitForSelector('#compare .scenario-card');
+
+  const getCompCards = async () => {
+    return page.$$eval('#compare .scenario-card', (cards) =>
+      cards.map((card) => {
+        const name = card.querySelector('input[type="text"]')?.value || '';
+        const value = card.querySelector('strong')?.textContent?.trim() || '';
+        const vsPlanner = Array.from(card.querySelectorAll('small')).find((s) => s.textContent.includes('Vs planner'))?.textContent?.trim() || '';
+        return { name, value, vsPlanner };
+      })
+    );
+  };
+
+  const initialCompCards = await getCompCards();
+  const initialBaseCard = initialCompCards.find((c) => c.name === 'Base');
+  const initialGuardrailCard = initialCompCards.find((c) => c.name === 'Guardrail');
+  const initialUpsideCard = initialCompCards.find((c) => c.name === 'Upside');
+
+  const initialCompMatches =
+    initialBaseCard?.value === '$1,301,620' &&
+    initialGuardrailCard?.value === '$1,537,155' &&
+    initialGuardrailCard?.vsPlanner === 'Vs planner: +$235,535' &&
+    initialUpsideCard?.value === '$1,124,161' &&
+    initialUpsideCard?.vsPlanner === 'Vs planner: -$177,459';
+
+  // Switch to inputs and change withdrawal timing to 'Start' (stale draft state)
   await page.click('.result-tabs-panel button[role="tab"]:has-text("Inputs")');
   await page.waitForSelector('details.advanced-shell');
   await page.evaluate(() => {
@@ -802,11 +947,32 @@ async function runLiveVerification(baseUrl) {
   await page.waitForSelector('#results .pill');
   const stalePill = (await page.textContent('#results .pill')).trim();
 
-  // Switch to Compare tab
+  // Switch to Compare tab: verify scenario cards STILL preserve snapshotted values during stale draft!
   await page.click('.result-tabs-panel button[role="tab"]:has-text("Compare")');
   await page.waitForSelector('#compare .scenario-card');
-  const compCardCount = await page.locator('#compare .scenario-card').count();
-  const compareEvaluatedAgainstSnapshot = compCardCount > 0;
+  const staleCompCards = await getCompCards();
+  const staleBaseCard = staleCompCards.find((c) => c.name === 'Base');
+  const staleGuardrailCard = staleCompCards.find((c) => c.name === 'Guardrail');
+  const staleUpsideCard = staleCompCards.find((c) => c.name === 'Upside');
+
+  const staleCompMatches =
+    staleBaseCard?.value === '$1,301,620' &&
+    staleGuardrailCard?.value === '$1,537,155' &&
+    staleGuardrailCard?.vsPlanner === 'Vs planner: +$235,535' &&
+    staleUpsideCard?.value === '$1,124,161' &&
+    staleUpsideCard?.vsPlanner === 'Vs planner: -$177,459';
+
+  // Edit Guardrail scenario modifier (spend shift to -10%) while draft is stale
+  const guardrailSpendInput = page.locator('#compare .scenario-card').nth(1).locator('input[type="number"]').first();
+  await guardrailSpendInput.fill('-10.0');
+  await page.waitForTimeout(200);
+
+  const modifiedStaleCards = await getCompCards();
+  const modifiedGuardrail = modifiedStaleCards.find((c) => c.name === 'Guardrail');
+  const modifierMatches =
+    modifiedStaleCards[0]?.value === '$1,301,620' &&
+    modifiedGuardrail?.value === '$1,443,890' &&
+    modifiedGuardrail?.vsPlanner === 'Vs planner: +$142,270';
 
   // Recalculate
   await page.click('.result-tabs-panel button[role="tab"]:has-text("Inputs")');
@@ -817,6 +983,20 @@ async function runLiveVerification(baseUrl) {
   await page.click('.result-tabs-panel button[role="tab"]:has-text("Results")');
   await page.waitForSelector('#results .pill');
   const recalculatedPill = (await page.textContent('#results .pill')).trim();
+
+  // Switch to Compare: values now recalculated against fresh Start-year base
+  await page.click('.result-tabs-panel button[role="tab"]:has-text("Compare")');
+  const recalculatedCards = await getCompCards();
+  const recalculatedBase = recalculatedCards.find((c) => c.name === 'Base');
+  const recalculatedGuardrail = recalculatedCards.find((c) => c.name === 'Guardrail');
+
+  const recalculatedMatches =
+    recalculatedBase?.value === '$1,389,105' &&
+    recalculatedGuardrail?.value === '$1,518,061' &&
+    recalculatedGuardrail?.vsPlanner === 'Vs planner: +$128,956';
+
+  const compareEvaluatedAgainstSnapshot =
+    Boolean(initialCompMatches && staleCompMatches && modifierMatches && recalculatedMatches);
 
   const staleBadgeAfter = await page.evaluate(() => {
     const hero = document.querySelector('.hero-result');
@@ -843,31 +1023,109 @@ async function runLiveVerification(baseUrl) {
       !staleBadgeAfter
   });
 
-  // Keyboard navigation & sticky topbar check
-  const keyboardStickyCheck = await page.evaluate(() => {
-    const topbar = document.querySelector('.topbar');
-    const topbarBottom = topbar ? topbar.getBoundingClientRect().bottom : 0;
-    const focusable = Array.from(document.querySelectorAll('.core-fire-form input, .core-fire-form button'));
-    let noOverlap = true;
-    for (const el of focusable) {
-      el.focus();
-      const rect = el.getBoundingClientRect();
-      if (rect.top < topbarBottom && rect.bottom > 0) {
-        noOverlap = false;
-        break;
+  // R4c: Real keyboard navigation & sticky topbar occlusion check across all 6 calculators
+  const calculatorRoutes = [
+    'compound-interest',
+    'savings-goal',
+    'net-worth',
+    'budget',
+    'emergency-fund',
+    'fire'
+  ];
+
+  let totalFocusedControls = 0;
+  let allNoOverlapWithTopbar = true;
+  const keyboardJourneyResults = [];
+
+  for (const tool of calculatorRoutes) {
+    await page.goto(`${baseUrl}/calculators/${tool}`, { waitUntil: 'networkidle' });
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(200);
+
+    // Initial page focus
+    await page.mouse.click(50, 50);
+
+    let routeControlsCount = 0;
+    let routeNoOverlap = true;
+
+    // Real Tab navigation journey (tabbing through interactive elements)
+    for (let step = 0; step < 20; step++) {
+      await page.keyboard.press('Tab');
+      await page.waitForTimeout(50);
+
+      const activeInfo = await page.evaluate(() => {
+        const el = document.activeElement;
+        if (!el || el === document.body || el === document.documentElement) return null;
+        if (typeof el.scrollIntoViewIfNeeded === 'function') el.scrollIntoViewIfNeeded();
+        const topbar = document.querySelector('.topbar');
+        const inTopbar = topbar ? topbar.contains(el) : false;
+        const topbarBottom = topbar ? topbar.getBoundingClientRect().bottom : 0;
+        const rect = el.getBoundingClientRect();
+        const isInteractive = ['INPUT', 'BUTTON', 'A', 'SELECT', 'SUMMARY'].includes(el.tagName);
+        const inViewport = rect.bottom > 0 && rect.top < window.innerHeight;
+        const isOccluded = !inTopbar && inViewport && rect.top < (topbarBottom - 2) && rect.bottom > 0;
+        return {
+          tag: el.tagName,
+          id: el.id,
+          isInteractive,
+          isOccluded,
+          top: rect.top,
+          topbarBottom
+        };
+      });
+
+      if (activeInfo && activeInfo.isInteractive) {
+        routeControlsCount++;
+        totalFocusedControls++;
+        if (activeInfo.isOccluded) {
+          routeNoOverlap = false;
+          allNoOverlapWithTopbar = false;
+        }
+
+        // Test disclosure expand via Enter / Space if it is a summary or details
+        if (activeInfo.tag === 'SUMMARY') {
+          await page.keyboard.press('Enter');
+          await page.waitForTimeout(50);
+        }
       }
     }
-    return {
-      noOverlapWithStickyTopbar: noOverlap,
-      focusedControlsCount: focusable.length
-    };
-  });
+
+    // Real Shift+Tab reverse navigation
+    for (let step = 0; step < 3; step++) {
+      await page.keyboard.press('Shift+Tab');
+      await page.waitForTimeout(50);
+
+      const activeInfo = await page.evaluate(() => {
+        const el = document.activeElement;
+        if (!el || el === document.body || el === document.documentElement) return null;
+        if (typeof el.scrollIntoViewIfNeeded === 'function') el.scrollIntoViewIfNeeded();
+        const topbar = document.querySelector('.topbar');
+        const inTopbar = topbar ? topbar.contains(el) : false;
+        const topbarBottom = topbar ? topbar.getBoundingClientRect().bottom : 0;
+        const rect = el.getBoundingClientRect();
+        const inViewport = rect.bottom > 0 && rect.top < window.innerHeight;
+        return !inTopbar && inViewport && rect.top < (topbarBottom - 2) && rect.bottom > 0;
+      });
+
+      if (activeInfo === true) {
+        routeNoOverlap = false;
+        allNoOverlapWithTopbar = false;
+      }
+    }
+
+    keyboardJourneyResults.push({
+      tool,
+      focusedControls: routeControlsCount,
+      noOverlap: routeNoOverlap
+    });
+  }
 
   cases.push({
     id: 'disclosure-keyboard-focus',
-    noOverlapWithStickyTopbar: keyboardStickyCheck.noOverlapWithStickyTopbar,
-    focusedControlsCount: keyboardStickyCheck.focusedControlsCount,
-    pass: keyboardStickyCheck.noOverlapWithStickyTopbar && keyboardStickyCheck.focusedControlsCount > 0
+    noOverlapWithStickyTopbar: allNoOverlapWithTopbar,
+    focusedControlsCount: totalFocusedControls,
+    journeys: keyboardJourneyResults,
+    pass: allNoOverlapWithTopbar && totalFocusedControls >= 30
   });
 
   // Media feature checks via CDP
@@ -931,75 +1189,180 @@ async function runLiveVerification(baseUrl) {
     pass: rmPass && rtPass
   });
 
-  // Contrast check using sharp on rendered targets
-  await page.goto(`${baseUrl}/calculators/fire`, { waitUntil: 'networkidle' });
-  const contrastTargets = [
-    { id: 'primary-label', sel: '.metric-accent span', name: 'Primary Metric Label', threshold: 4.5 },
-    { id: 'primary-value', sel: '.metric-accent strong', name: 'Primary Metric Value', threshold: 4.5 },
-    { id: 'scope-note', sel: '.calculator-scope-note', name: 'Scope Note', threshold: 4.5 },
-    { id: 'form-label', sel: '.core-fire-form label', name: 'Form Field Label', threshold: 4.5 }
-  ];
+  async function measureElementContrast(loc, threshold, forcedOpacity, insetPx = 0) {
+    await loc.scrollIntoViewIfNeeded();
+    const style = await loc.evaluate((el) => {
+      const cs = window.getComputedStyle(el);
+      return {
+        color: cs.color,
+        fontSize: cs.fontSize,
+        fontWeight: cs.fontWeight,
+        opacity: Number(cs.opacity)
+      };
+    });
 
+    const effOpacity = forcedOpacity !== undefined ? forcedOpacity : style.opacity;
+
+    const savedStyle = await loc.evaluate((el) => {
+      const saved = el.getAttribute('style');
+      el.style.setProperty('color', 'transparent', 'important');
+      el.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
+      return saved;
+    });
+
+    const clipBuf = await loc.screenshot();
+
+    await loc.evaluate((el, s) => {
+      if (s === null) el.removeAttribute('style');
+      else el.setAttribute('style', s);
+    }, savedStyle);
+
+    let sharpImg = sharp(clipBuf);
+    if (insetPx > 0) {
+      const meta = await sharpImg.metadata();
+      if (meta.width > insetPx * 2 && meta.height > insetPx * 2) {
+        sharpImg = sharpImg.extract({
+          left: insetPx,
+          top: insetPx,
+          width: meta.width - insetPx * 2,
+          height: meta.height - insetPx * 2
+        });
+      }
+    }
+
+    const { data, info } = await sharpImg.raw().toBuffer({ resolveWithObject: true });
+    const measured = measureContrastPixels(data, info, style.color, effOpacity);
+
+    return {
+      foreground: style.color,
+      background: measured.background,
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight,
+      threshold,
+      ratio: Number(measured.ratio.toFixed(2)),
+      pass: measured.ratio >= threshold
+    };
+  }
+
+  // Contrast check using sharp on rendered targets across light and dark modes
   const contrastPairs = [];
+
   for (const mode of ['light', 'dark']) {
+    await page.goto(`${baseUrl}/calculators/fire`, { waitUntil: 'networkidle' });
     await applyThemeAndMeasure(mode, { width: 1440, height: 900 });
     await page.evaluate(() => document.fonts?.ready);
 
-    for (const target of contrastTargets) {
-      const loc = page.locator(target.sel).first();
-      const count = await loc.count();
-      if (count === 0) continue;
+    // 1. scope-note
+    const snLoc = page.locator('.calculator-scope-note').first();
+    const snMeas = await measureElementContrast(snLoc, 4.5);
+    contrastPairs.push({
+      id: `contrast-${mode}-scope-note`,
+      mode,
+      target: 'scope-note',
+      ...snMeas
+    });
 
-      await loc.scrollIntoViewIfNeeded();
-      const style = await loc.evaluate((el) => {
-        const cs = window.getComputedStyle(el);
-        return {
-          color: cs.color,
-          fontSize: cs.fontSize,
-          fontWeight: cs.fontWeight,
-          opacity: Number(cs.opacity)
-        };
-      });
+    // 2. form-label
+    const flLoc = page.locator('.core-fire-form label').first();
+    const flMeas = await measureElementContrast(flLoc, 4.5);
+    contrastPairs.push({
+      id: `contrast-${mode}-form-label`,
+      mode,
+      target: 'form-label',
+      ...flMeas
+    });
 
-      const savedStyle = await loc.evaluate((el) => {
-        const saved = el.getAttribute('style');
-        el.style.setProperty('color', 'transparent', 'important');
-        el.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
-        return saved;
-      });
+    // 3. help-popover: make visible and measure interior text
+    const hpLoc = page.locator('.core-fire-form .info-popover').first();
+    await page.evaluate(() => {
+      const pop = document.querySelector('.core-fire-form .info-popover');
+      if (pop) {
+        pop.classList.add('is-visible');
+        pop.style.setProperty('visibility', 'visible', 'important');
+        pop.style.setProperty('opacity', '1', 'important');
+        pop.style.setProperty('transition', 'none', 'important');
+      }
+    });
+    const hpMeas = await measureElementContrast(hpLoc, 4.5, 1.0, 4);
+    contrastPairs.push({
+      id: `contrast-${mode}-help-popover`,
+      mode,
+      target: 'help-popover',
+      ...hpMeas
+    });
 
-      const clipBuf = await loc.screenshot();
+    // 4. hero-result
+    await page.click('.quick-actions .primary-button');
+    await page.waitForTimeout(300);
+    const hrLoc = page.locator('.hero-result strong').first();
+    const hrMeas = await measureElementContrast(hrLoc, 3.0);
+    contrastPairs.push({
+      id: `contrast-${mode}-hero-result`,
+      mode,
+      target: 'hero-result',
+      ...hrMeas
+    });
 
-      await loc.evaluate((el, s) => {
-        if (s === null) el.removeAttribute('style');
-        else el.setAttribute('style', s);
-      }, savedStyle);
+    // 5. dedicated-warning (warning card message)
+    const dwLoc = page.locator('.warning-card strong').first();
+    const dwMeas = await measureElementContrast(dwLoc, 4.5);
+    contrastPairs.push({
+      id: `contrast-${mode}-dedicated-warning`,
+      mode,
+      target: 'dedicated-warning',
+      ...dwMeas
+    });
 
-      const { data, info } = await sharp(clipBuf).raw().toBuffer({ resolveWithObject: true });
-      const measured = measureContrastPixels(data, info, style.color, style.opacity);
+    // 6. dedicated-result (scenario card result)
+    const drLoc = page.locator('.scenario-card strong').first();
+    const drMeas = await measureElementContrast(drLoc, 3.0);
+    contrastPairs.push({
+      id: `contrast-${mode}-dedicated-result`,
+      mode,
+      target: 'dedicated-result',
+      ...drMeas
+    });
 
-      contrastPairs.push({
-        id: `contrast-${mode}-${target.id}`,
-        mode,
-        target: target.name,
-        foreground: style.color,
-        background: measured.background,
-        ratio: measured.ratio,
-        threshold: target.threshold,
-        pass: measured.ratio >= target.threshold
-      });
-    }
+    // 7. hero-result-stale & stale-result-badge (stale state)
+    await page.evaluate(() => {
+      document.querySelector('details.advanced-shell')?.setAttribute('open', '');
+    });
+    await page.waitForTimeout(100);
+    await page.click('.segmented button:has-text("Start")');
+    await page.waitForTimeout(200);
+
+    const hrsLoc = page.locator('.hero-result.is-stale strong').first();
+    const hrsMeas = await measureElementContrast(hrsLoc, 3.0, 0.92);
+    contrastPairs.push({
+      id: `contrast-${mode}-hero-result-stale`,
+      mode,
+      target: 'hero-result-stale',
+      ...hrsMeas
+    });
+
+    // 8. stale-result-badge
+    const srbLoc = page.locator('.stale-result-badge').first();
+    const srbMeas = await measureElementContrast(srbLoc, 4.5, undefined, 4);
+    contrastPairs.push({
+      id: `contrast-${mode}-stale-result-badge`,
+      mode,
+      target: 'stale-result-badge',
+      ...srbMeas
+    });
   }
 
-  const minNormalRatio = contrastPairs.reduce((min, p) => Math.min(min, p.ratio), Infinity);
-  const minLargeRatio = minNormalRatio;
+  const normalPairs = contrastPairs.filter((p) => p.threshold === 4.5);
+  const largePairs = contrastPairs.filter((p) => p.threshold === 3.0);
+
+  const minNormalRatio = Number(normalPairs.reduce((min, p) => Math.min(min, p.ratio), Infinity).toFixed(2));
+  const minLargeRatio = Number(largePairs.reduce((min, p) => Math.min(min, p.ratio), Infinity).toFixed(2));
 
   cases.push({
     id: 'contrast-check',
     pairs: contrastPairs,
     minNormalRatio,
     minLargeRatio,
-    pass: minNormalRatio >= 4.5 && contrastPairs.every((p) => p.pass)
+    pass: minNormalRatio >= 4.5 && minLargeRatio >= 3.0 && contrastPairs.every((p) => p.pass)
   });
 
   // Native zoom 200% check (truthfully reported as BLOCKED due to CLI environment limitations)
