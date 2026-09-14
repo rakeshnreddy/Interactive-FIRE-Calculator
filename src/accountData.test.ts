@@ -196,13 +196,13 @@ describe('account data deletion', () => {
 
     expect(database.runs).toEqual([]);
     expect(deleteSql[0]).toBe('DELETE FROM audit_log WHERE user_id = ?');
-    expect(deleteSql.at(-1)).toBe('DELETE FROM users WHERE id = ?');
+    expect(deleteSql.at(-1)).toBe('UPDATE users SET deleted_at = ?, updated_at = ? WHERE id = ?');
     expect(deletion.localAccountDataDeleted).toBe(true);
     expect(deletion.identityProvider).toBe('clerk');
     expect(deletion.deletedRows).toMatchObject({
       auditLog: 1,
       savedCalculatorResults: 3,
-      user: 15
+      userTombstone: 15
     });
   });
 });

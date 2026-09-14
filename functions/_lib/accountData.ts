@@ -222,7 +222,7 @@ const deleteTargets: DeleteTarget[] = [
   { key: 'transactionImports', sql: 'DELETE FROM transaction_imports WHERE user_id = ?' },
   { key: 'balanceImports', sql: 'DELETE FROM balance_imports WHERE user_id = ?' },
   { key: 'profile', sql: 'DELETE FROM user_profiles WHERE user_id = ?' },
-  { key: 'user', sql: 'DELETE FROM users WHERE id = ?' }
+  { key: 'userTombstone', sql: 'UPDATE users SET deleted_at = ?, updated_at = ? WHERE id = ?' }
 ];
 
 export function parseAccountDataDeletionRequest(value: unknown):
@@ -277,12 +277,19 @@ export async function exportAccountData(database: D1Database, userId: string): P
 }
 
 export async function deleteAccountData(database: D1Database, userId: string): Promise<AccountDataDeletionResult> {
+  const now = new Date().toISOString();
+
   const results = await database.batch(
-    deleteTargets.map((target) => database.prepare(target.sql).bind(userId))
+    deleteTargets.map((target) => {
+      if (target.key === 'userTombstone') {
+        return database.prepare(target.sql).bind(now, now, userId);
+      }
+      return database.prepare(target.sql).bind(userId);
+    })
   );
 
   return {
-    deletedAt: new Date().toISOString(),
+    deletedAt: now,
     deletedRows: Object.fromEntries(
       deleteTargets.map((target, index) => [target.key, results[index]?.meta.changes ?? 0])
     ),
@@ -291,13 +298,44 @@ export async function deleteAccountData(database: D1Database, userId: string): P
   };
 }
 
+export async function replayTombstones(
+  database: D1Database,
+  tombstones: Array<{ deletedAt: string; userId: string }>
+): Promise<number> {
+  if (tombstones.length === 0) {
+    return 0;
+  }
+
+  for (const { userId, deletedAt } of tombstones) {
+    const purgeStatements = deleteTargets
+      .filter((t) => t.key !== 'userTombstone')
+      .map((t) => database.prepare(t.sql).bind(userId));
+
+    const tombstoneStatement = database
+      .prepare(
+        `
+          INSERT INTO users (id, provider, provider_user_id, created_at, updated_at, deleted_at)
+          VALUES (?, 'clerk', ?, ?, ?, ?)
+          ON CONFLICT(id) DO UPDATE SET
+            deleted_at = excluded.deleted_at,
+            updated_at = excluded.updated_at
+        `
+      )
+      .bind(userId, userId, deletedAt, deletedAt, deletedAt);
+
+    await database.batch([...purgeStatements, tombstoneStatement]);
+  }
+
+  return tombstones.length;
+}
+
 async function readUser(database: D1Database, userId: string): Promise<UserRow | null> {
   return database
     .prepare(
       `
         SELECT id, provider, provider_user_id, created_at, updated_at, deleted_at
         FROM users
-        WHERE id = ?
+        WHERE id = ? AND deleted_at IS NULL
       `
     )
     .bind(userId)

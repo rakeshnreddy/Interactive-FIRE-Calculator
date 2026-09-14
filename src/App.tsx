@@ -385,6 +385,34 @@ type CalculatorSaveApiResponse = {
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
 const ACCOUNT_DATA_DELETE_CONFIRMATION = 'DELETE MY FINPATH DATA';
 
+export function clearLocalDrafts(): void {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return;
+  }
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (!key) continue;
+      if (key === 'finpath.colorMode') {
+        continue;
+      }
+      if (
+        key.startsWith('finpath.') ||
+        key.startsWith('firecalc.') ||
+        key.startsWith('fire_calc_')
+      ) {
+        keysToRemove.push(key);
+      }
+    }
+    for (const key of keysToRemove) {
+      window.localStorage.removeItem(key);
+    }
+  } catch {
+    // Storage access may be restricted in private browsing.
+  }
+}
+
 const accountTypeOptions: Array<{ category: AccountCategory; label: string; value: FinancialAccountType }> = [
   { category: 'asset', label: 'Cash', value: 'cash' },
   { category: 'asset', label: 'Checking', value: 'checking' },
@@ -6071,6 +6099,7 @@ function App({ auth }: { auth: AuthState }) {
 
     try {
       await deleteAccountDataRecord(auth, accountDataDeleteConfirmation.trim());
+      clearLocalDrafts();
       setAccountProfile(null);
       setProfileDraft(emptyProfileDraft());
       setProfileMessage('Profile data was deleted.');

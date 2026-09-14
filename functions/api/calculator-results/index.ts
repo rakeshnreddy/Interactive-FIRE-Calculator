@@ -10,7 +10,7 @@ import {
   readJsonBody
 } from '../../_lib/calculatorResults';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
@@ -26,8 +26,8 @@ export const onRequestGet: PagesFunction<CalculatorResultsEnv> = async ({ reques
 
   try {
     return json({ calculatorResults: await listSavedCalculatorResults(context.database, context.userId) });
-  } catch {
-    return json({ error: 'Unable to load saved calculator results.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load saved calculator results.');
   }
 };
 
@@ -60,7 +60,7 @@ export const onRequestPost: PagesFunction<CalculatorResultsEnv> = async ({ reque
     if (error instanceof IdempotencyConflictError) {
       return json({ code: error.code, error: error.message }, 409);
     }
-    return json({ error: 'Unable to save calculator result.' }, 500);
+    return handleApiError(error, 'Unable to save calculator result.');
   }
 };
 
