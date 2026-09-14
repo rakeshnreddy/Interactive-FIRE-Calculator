@@ -215,7 +215,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B21.md](execution/prompts/B21.md).
 
-- [ ] **B22 — Planned: Unify compound-interest and savings-goal presentation.**
+- [x] **B22 — Accepted: Unify compound-interest and savings-goal presentation.**
   - User problem/evidence: Dedicated growth tools have excessive framing and inconsistent savings input text. Visual audit V10–V11.
   - Expected outcome/scope: Both tools use consistent visual primitives; savings input font fixed; preserved numeric goldens; essential result visible and useful details discoverable.
   - Non-goals: No merging the two engines, shared formula changes, FX conversion or replacing specialized tools with generic ones.
@@ -227,7 +227,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B22.md](execution/prompts/B22.md).
 
-- [ ] **B23 — Planned: Unify budget, net-worth and emergency-fund presentation.**
+- [x] **B23 — Accepted: Unify budget, net-worth and emergency-fund presentation.**
   - User problem/evidence: Cash-flow tools need consistent hierarchy without losing different accounting meanings. Visual audit V10.
   - Expected outcome/scope: All three tools follow the visual contract; units and accounting meaning remain explicit; outputs unchanged; no input or warning hidden.
   - Non-goals: No account aggregation, formula change, gamification or currency relabeling.
@@ -239,7 +239,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B23.md](execution/prompts/B23.md).
 
-- [ ] **B24 — Planned: Refine FIRE calculator into the flagship decision experience.**
+- [x] **B24 — Accepted: Refine FIRE calculator into the flagship decision experience.**
   - User problem/evidence: FIRE needs the clearest result/assumption hierarchy and concise accessible labels. Visual audit V10/V12.
   - Expected outcome/scope: Both modes and advanced tools preserved; primary result and warnings easy to read; input help not repeated in name; no engine diff; changed interactions regression-tested.
   - Non-goals: No FIRE formula changes, new forecasting model, automatic saved-plan update or financial recommendations.
@@ -413,3 +413,5 @@ C02 accepted 2026-09-11: B02/B03/B04, common candidate `ef2cded6441191a26537adf8
 C03 accepted 2026-09-13 at `285e9eadf2d854951cec75d02afc6cce97d4d6c5`; B18/B19/B09 accepted with owner-authorized actual-reader deferral tracked in B31 and execution/ACCESSIBILITY_DEFERRALS.md. C04 is released. 13/34 accepted (38.2%, task count). See execution/reviews/C03.md.
 
 C04 accepted 2026-09-13: B08/B20/B21 done at 733e76c217058cafc3e5d418f09cb55ced531f4c with owner-deferred actual-reader checks assigned to B31. C05 released. 16/34 accepted (47.1%, task count).
+
+C05 accepted2026-09-14: B22/B23/B24 done at website1c73bffbb4a5d1f179d67f2934c900a8b44711e5; native assisted proof and evaluator/CSV repairs verified.19/34 accepted (55.9%). C06 released, starting B05. The post-task-34 calculator excellence program remains queued.

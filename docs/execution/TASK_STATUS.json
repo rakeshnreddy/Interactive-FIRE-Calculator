@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-13",
+  "updated": "2026-09-14",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -348,7 +348,7 @@
       "id": "B22",
       "title": "Unify compound-interest and savings-goal presentation",
       "checkpoint": "C05",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B16",
         "B20",
@@ -359,13 +359,13 @@
       "owner": "Codex implementing session 2026-09-13",
       "code_sha": "1c73bffbb4a5d1f179d67f2934c900a8b44711e5",
       "review": "reviews/C05.md",
-      "blocked_reason": "Native UI 200% zoom check blocked: Interactive desktop Chrome CUA application zoom is unavailable in headless CLI. All other R1–R5 verification and candidate repairs pass cleanly on preview https://46714a3f.interactive-fire-calculator.pages.dev (candidate 1c73bff). Screen-reader checks remain deferred to B31."
+      "blocked_reason": null
     },
     {
       "id": "B23",
       "title": "Unify budget, net-worth and emergency-fund presentation",
       "checkpoint": "C05",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B16",
         "B20",
@@ -376,13 +376,13 @@
       "owner": "Codex implementing session 2026-09-13",
       "code_sha": "1c73bffbb4a5d1f179d67f2934c900a8b44711e5",
       "review": "reviews/C05.md",
-      "blocked_reason": "Native UI 200% zoom check blocked: Interactive desktop Chrome CUA application zoom is unavailable in headless CLI. All other R1–R5 verification and candidate repairs pass cleanly on preview https://46714a3f.interactive-fire-calculator.pages.dev (candidate 1c73bff). Screen-reader checks remain deferred to B31."
+      "blocked_reason": null
     },
     {
       "id": "B24",
       "title": "Refine FIRE calculator into the flagship decision experience",
       "checkpoint": "C05",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B16",
         "B20",
@@ -393,7 +393,7 @@
       "owner": "Codex implementing session 2026-09-13",
       "code_sha": "1c73bffbb4a5d1f179d67f2934c900a8b44711e5",
       "review": "reviews/C05.md",
-      "blocked_reason": "Native UI 200% zoom check blocked: Interactive desktop Chrome CUA application zoom is unavailable in headless CLI. All other R1–R5 verification and candidate repairs pass cleanly on preview https://46714a3f.interactive-fire-calculator.pages.dev (candidate 1c73bff). Screen-reader checks remain deferred to B31."
+      "blocked_reason": null
     },
     {
       "id": "B25",

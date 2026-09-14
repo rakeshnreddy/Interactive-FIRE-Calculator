@@ -1,6 +1,6 @@
 # Checkpoints and release ledger
 
-Only C05 is released for implementation now. C04 is accepted with the owner-authorized reader deferral tracked in B31. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+Only C06 is released for implementation now. C05 is accepted with actual-reader checks deferred to B31. C04 is accepted with the owner-authorized reader deferral tracked in B31. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
@@ -12,8 +12,8 @@ Only C05 is released for implementation now. C04 is accepted with the owner-auth
 | C02 | Currency and save integrity | B02 → B03 → B04 | accepted | ef2cded6441191a26537adf8ddf1a3e1909cf73b | [approved](reviews/C02.md) |
 | C03 | Public homepage and discovery | B18 → B19 → B09 | accepted | 285e9eadf2d854951cec75d02afc6cce97d4d6c5 | [approved with reader deferral](reviews/C03.md) |
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | accepted | 733e76c217058cafc3e5d418f09cb55ced531f4c | [approved with reader deferral](reviews/C04.md) |
-| C05 | Dedicated calculator families | B22 → B23 → B24 | released | — | [changes requested](reviews/C05.md) |
-| C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | locked | — | — |
+| C05 | Dedicated calculator families | B22 → B23 → B24 | accepted | 1c73bffbb4a5d1f179d67f2934c900a8b44711e5 | [approved](reviews/C05.md) |
+| C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | released | — | — |
 | C07 | Owner setup and hosted proof | B06 | locked | — | — |
 | C08 | Dashboard and transactions | B26 → B27 | locked | — | — |
 | C09 | Saved decision and monthly review | B10 → B11 → B28 | locked | — | — |
@@ -72,3 +72,5 @@ C04 acceptance 2026-09-13 supersedes the pending-reader amendment above: owner d
 C05 review 2026-09-13: B22/B23/B24 require consolidated R1–R5 rework in C05_REWORK_PROMPT.md. No closure; C06 remains locked. Actual-reader deferral remains in force.
 
 C05 first rework review: R1–R3 product repairs preserved; R4 observation/evaluator gaps and native zoom remain. Follow C05_VERIFICATION_REPAIR_PROMPT.md. C06 locked; no additional task closure.
+
+C05 acceptance2026-09-14 supersedes prior rework notes: B22/B23/B24 accepted at website1c73bffbb4a5d1f179d67f2934c900a8b44711e5 with reviewer tooling35607a5 and separate native UI proof.19/34 accepted (55.9%). C06 alone released, B05→B07→B25; see C06_START_PROMPT.md. C07 and production remain gated.
