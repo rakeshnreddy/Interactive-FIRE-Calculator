@@ -70,3 +70,5 @@ C04 assisted review 2026-09-13: native Chrome 200% verified by primary; bounded 
 C04 acceptance 2026-09-13 supersedes the pending-reader amendment above: owner deferred actual-reader verification through C10 to B31/C11. B08/B20/B21 accepted at 733e76c217058cafc3e5d418f09cb55ced531f4c; 16/34 accepted (47.1%). C05 alone released, starting B22. Follow ACCESSIBILITY_DEFERRALS.md and C05_START_PROMPT.md. Other quality and production gates remain unchanged.
 
 C05 review 2026-09-13: B22/B23/B24 require consolidated R1–R5 rework in C05_REWORK_PROMPT.md. No closure; C06 remains locked. Actual-reader deferral remains in force.
+
+C05 first rework review: R1–R3 product repairs preserved; R4 observation/evaluator gaps and native zoom remain. Follow C05_VERIFICATION_REPAIR_PROMPT.md. C06 locked; no additional task closure.
