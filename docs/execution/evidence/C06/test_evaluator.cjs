@@ -44,6 +44,7 @@ function getBaseValidCase() {
       bgColor: 'rgb(244, 248, 251)',
       minRequired: 4.5
     },
+    renderedContent: { matchedStateExpectation: true, detail: 'Synthetic evaluator fixture only' },
     consoleErrors: [],
     pageErrors: []
   };

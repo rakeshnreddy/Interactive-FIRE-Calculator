@@ -1,0 +1,14 @@
+Running Evaluator Negative Verification Tests...
+✔ Case 0: Baseline valid case passes
+✔ Case 1: Absent screenshot rejected (FAIL)
+✔ Case 2: Missing diagnostics rejected (FAIL)
+✔ Case 3: Horizontal overflow rejected (FAIL)
+✔ Case 4: Body-only keyboard focus rejected (FAIL)
+✔ Case 5: Wrong theme rejected (FAIL)
+✔ Case 6: deviceScaleFactor zoom rejected (FAIL)
+✔ Case 7: Unmatched media query rejected (BLOCKED)
+✔ Case 8: Insufficient contrast rejected (FAIL)
+✔ Case 9: Collector error rejected (FAIL)
+✔ Case 10: Contrast math verified
+
+All 10 evaluator negative & calculation tests passed cleanly!

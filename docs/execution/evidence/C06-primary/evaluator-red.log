@@ -1,0 +1,293 @@
+✖ missing contrast (1.403542ms)
+✖ NaN contrast (0.179625ms)
+✖ missing rendered state (0.73425ms)
+✖ missing geometry widths (0.183542ms)
+✖ missing screenshot size (0.346083ms)
+✖ low debug contrast (0.261917ms)
+✖ native flag without level or proof (0.269792ms)
+✖ missing keyboard observation (0.186875ms)
+✖ missing media observation (0.141333ms)
+✖ missing theme colors (0.165834ms)
+✖ empty suite rejected (0.277458ms)
+✖ duplicate cases rejected (0.105709ms)
+✖ transparent color cannot be treated as opaque black (7.910791ms)
+✖ unknown color rejected (0.7565ms)
+✔ complete ordinary observation still passes (0.104584ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 1
+ℹ fail 14
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 79.21175
+
+✖ failing tests:
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ missing contrast (1.403542ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.start (node:internal/test_runner/test:959:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:332:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ NaN contrast (0.179625ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:332:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ missing rendered state (0.73425ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ missing geometry widths (0.183542ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ missing screenshot size (0.346083ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ low debug contrast (0.261917ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ native flag without level or proof (0.269792ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ missing keyboard observation (0.186875ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ missing media observation (0.141333ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:4
+✖ missing theme colors (0.165834ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PASS'
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:13:52)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PASS',
+    expected: 'PASS',
+    operator: 'notStrictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:14:1
+✖ empty suite rejected (0.277458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:14:40)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:15:1
+✖ duplicate cases rejected (0.105709ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:15:44)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:16:1
+✖ transparent color cannot be treated as opaque black (7.910791ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(!Number.isFinite(calculateContrastRatio('rgba(0, 0, 0, 0)','rgb(255, 255, 255)')))
+  
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:16:71)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+
+test at docs/execution/evidence/C06-primary/evaluator-regressions.cjs:17:1
+✖ unknown color rejected (0.7565ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(!Number.isFinite(calculateContrastRatio('missing','rgb(255, 255, 255)')))
+  
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/evaluator-regressions.cjs:17:42)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }

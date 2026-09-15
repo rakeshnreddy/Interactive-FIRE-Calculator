@@ -22,11 +22,11 @@ function getRelativeLuminance(r, g, b) {
  * @returns {[number, number, number]}
  */
 function parseRgb(rgbStr) {
-  const match = rgbStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-  if (!match) {
-    return [0, 0, 0];
-  }
-  return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
+  const match = typeof rgbStr === 'string' && rgbStr.trim().match(/^rgba?\(\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)(?:,\s*(\d+(?:\.\d+)?))?\s*\)$/i);
+  // Alpha requires actual background compositing; never silently discard it.
+  if (!match || (match[4] !== undefined && Number(match[4]) !== 1)) return [NaN, NaN, NaN];
+  const channels = match.slice(1, 4).map(Number);
+  return channels.every(c => Number.isFinite(c) && c >= 0 && c <= 255) ? channels : [NaN, NaN, NaN];
 }
 
 /**
@@ -63,6 +63,15 @@ function evaluateCase(c) {
   if (!c.themeInfo || !c.geometry || !Array.isArray(c.consoleErrors) || !Array.isArray(c.pageErrors)) {
     return { status: 'FAIL', reasons: ['Missing required target or console diagnostics in case payload'] };
   }
+
+  if (!Number.isFinite(c.screenshotSizeBytes) || c.screenshotSizeBytes <= 0) reasons.push('Missing valid screenshot byte count');
+  if (!Number.isFinite(c.geometry.viewportWidth) || c.geometry.viewportWidth <= 0 || !Number.isFinite(c.geometry.documentScrollWidth)) reasons.push('Missing finite geometry widths');
+  if (!['light', 'dark'].includes(c.theme) || !Number.isFinite(calculateContrastRatio(c.themeInfo.textColor, c.themeInfo.bgColor))) reasons.push('Missing or unsupported observed theme colors');
+  if (!c.renderedContent || c.renderedContent.matchedStateExpectation !== true || !c.renderedContent.detail) reasons.push('Missing verified rendered-state observation');
+  if (!c.contrast || c.contrast.tested !== true) reasons.push('Missing required contrast observation');
+  if (String(c.id).startsWith('keyboard-') && c.keyboardFocus?.attempted !== true) reasons.push('Missing required keyboard observation');
+  if (String(c.id).startsWith('reduced-') && c.mediaCheck?.requested !== true) reasons.push('Missing required media observation');
+  if (String(c.id).startsWith('native-zoom-') && c.zoomCheck?.requestedLevel !== 2) reasons.push('Missing required native zoom observation');
 
   // 3. Console & Unhandled Page Errors
   if (c.consoleErrors.length > 0) {
@@ -113,7 +122,7 @@ function evaluateCase(c) {
   if (c.zoomCheck?.requestedLevel && c.zoomCheck.requestedLevel > 1.0) {
     if (c.zoomCheck.deviceScaleFactorUsed) {
       reasons.push('deviceScaleFactor used to simulate native zoom; pixel density change does not equal application UI zoom');
-    } else if (!c.zoomCheck.appliedViaAppChrome) {
+    } else if (!c.zoomCheck.appliedViaAppChrome || c.zoomCheck.observedZoomPercent !== 200 || !c.zoomCheck.nativeProofPath) {
       isBlocked = true;
       reasons.push('Native desktop browser UI application zoom (200%) is unavailable in headless CLI automation');
     }
@@ -132,13 +141,15 @@ function evaluateCase(c) {
   // 10. Contrast verification
   if (c.contrast?.tested) {
     const minRatio = c.contrast.minRequired || 4.5;
-    if (typeof c.contrast.ratio !== 'number' || c.contrast.ratio < minRatio) {
+    if (!Number.isFinite(c.contrast.ratio) || c.contrast.ratio < Math.max(4.5, minRatio)) {
       const observed = typeof c.contrast.ratio === 'number' ? c.contrast.ratio.toFixed(2) : 'unknown';
       reasons.push(
         `Insufficient contrast ratio: observed ${observed}:1, required minimum ${minRatio}:1 for text '${c.contrast.fgColor}' on '${c.contrast.bgColor}'`
       );
     }
   }
+
+  if (c.contrast?.codeRatio !== undefined && (!Number.isFinite(c.contrast.codeRatio) || c.contrast.codeRatio < 4.5)) reasons.push('Insufficient debug URL contrast');
 
   // 11. Rendered content expectation
   if (c.renderedContent && c.renderedContent.matchedStateExpectation === false) {
@@ -190,7 +201,7 @@ function evaluateSuite(cases) {
   });
 
   return {
-    allPassed: failCount === 0 && blockedCount === 0,
+    allPassed: cases.length > 0 && new Set(cases.map(c => c.id)).size === cases.length && failCount === 0 && blockedCount === 0,
     passCount,
     failCount,
     blockedCount,

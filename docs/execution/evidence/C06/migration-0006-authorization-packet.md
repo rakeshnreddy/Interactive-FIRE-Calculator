@@ -1,129 +1,32 @@
-# Migration 0006 Authorization & Deployment Packet
+# Migration 0006 — primary-reviewed preview-only authorization packet
 
-**Target Database**: `finpath-preview`  
-**Database UUID**: `0dbad68e-7493-452f-8504-98d4c61ee5da`  
-**Migration File**: `migrations/0006_user_tombstone_triggers.sql`  
-**Status**: **BLOCKED — PENDING EXPLICIT OWNER AUTHORIZATION**  
-*(Zero remote migrations have been executed. All verification performed strictly against local disposable SQLite D1 harnesses.)*
+Target: `finpath-preview`, UUID `0dbad68e-7493-452f-8504-98d4c61ee5da`, selected explicitly by `--env preview`. No production authorization.
 
----
+## Verified prerequisite state
 
-## 1. Overview & Purpose
+Primary ran `npx wrangler d1 migrations list finpath-preview --env preview --remote` on 2026-09-15 UTC. Only `0006_user_tombstone_triggers.sql` is pending. Raw output: `../C06-primary/remote-pending-migrations.log`. Prior packet's unverified 0005 status is superseded. Recheck immediately before apply; stop if any other migration is pending or target binding differs.
 
-Migration `0006_user_tombstone_triggers.sql` installs physical database-level mutation guards across all 14 child tables in FinPath95. It guarantees that even under extreme concurrency, delayed write replays, or race conditions between profile creation and account deletion, no record can ever be committed for a user whose `deleted_at` timestamp is set in `users`.
+## Change and evidence
 
----
+0006 installs 29 triggers: INSERT/UPDATE protection for all 14 user-owned child tables and users resurrection guard. It adds no tables and deletes no financial rows. Existing and missing-user deletion protections have been tested locally against actual migrations. Candidate 7b5cc31 has passing hosted CI 34930889299. Trigger SQL remains unchanged by primary verification-tool repairs.
 
-## 2. Remote Target & Baseline State
+## Authorized operation requested, not yet performed
 
-- **Target Preview D1 Database**: `finpath-preview` (`0dbad68e-7493-452f-8504-98d4c61ee5da`)
-- **Isolation Boundary**: Cloudflare Pages preview binding verified isolated from production (`a5860350-0a50-4ebe-9f5f-1d9916a908e6`) in Task B33.
-- **Current Remote State**: 18 tables present (15 data tables, `d1_migrations`, 2 SQLite system tables).
-- **Prerequisite Migrations**:
-  - `0001_initial_financial_platform_schema.sql` (Applied)
-  - `0002_balance_import_history.sql` (Applied)
-  - `0003_transaction_import_history.sql` (Applied)
-  - `0004_saved_calculator_results.sql` (Applied)
-  - `0005_saved_calculator_idempotency.sql` (Local verified)
-
----
-
-## 3. Trigger Inventory (29 Triggers Total)
-
-Each child table receives both a `BEFORE INSERT` and a `BEFORE UPDATE` trigger that evaluates:
-```sql
-SELECT RAISE(ABORT, 'USER_DELETED: Cannot insert/update <table_name> for deleted user')
-WHERE (SELECT deleted_at FROM users WHERE id = NEW.user_id) IS NOT NULL;
-```
-
-### Table Matrix:
-1. `user_profiles`: `trg_prevent_user_profiles_tombstone_insert`, `trg_prevent_user_profiles_tombstone_update`
-2. `financial_accounts`: `trg_prevent_financial_accounts_tombstone_insert`, `trg_prevent_financial_accounts_tombstone_update`
-3. `account_balances`: `trg_prevent_account_balances_tombstone_insert`, `trg_prevent_account_balances_tombstone_update`
-4. `transactions`: `trg_prevent_transactions_tombstone_insert`, `trg_prevent_transactions_tombstone_update`
-5. `goals`: `trg_prevent_goals_tombstone_insert`, `trg_prevent_goals_tombstone_update`
-6. `plans`: `trg_prevent_plans_tombstone_insert`, `trg_prevent_plans_tombstone_update`
-7. `plan_versions`: `trg_prevent_plan_versions_tombstone_insert`, `trg_prevent_plan_versions_tombstone_update`
-8. `fire_plan_inputs`: `trg_prevent_fire_plan_inputs_tombstone_insert`, `trg_prevent_fire_plan_inputs_tombstone_update`
-9. `fire_plan_results`: `trg_prevent_fire_plan_results_tombstone_insert`, `trg_prevent_fire_plan_results_tombstone_update`
-10. `assumptions`: `trg_prevent_assumptions_tombstone_insert`, `trg_prevent_assumptions_tombstone_update`
-11. `saved_calculator_results`: `trg_prevent_saved_calculator_results_tombstone_insert`, `trg_prevent_saved_calculator_results_tombstone_update`
-12. `balance_imports`: `trg_prevent_balance_imports_tombstone_insert`, `trg_prevent_balance_imports_tombstone_update`
-13. `transaction_imports`: `trg_prevent_transaction_imports_tombstone_insert`, `trg_prevent_transaction_imports_tombstone_update`
-14. `audit_log`: `trg_prevent_audit_log_tombstone_insert`, `trg_prevent_audit_log_tombstone_update`
-15. `users` (Resurrection Guard): `trg_prevent_users_tombstone_resurrect`
-    ```sql
-    CREATE TRIGGER IF NOT EXISTS trg_prevent_users_tombstone_resurrect
-    BEFORE UPDATE ON users
-    FOR EACH ROW
-    WHEN OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL
-    BEGIN
-      SELECT RAISE(ABORT, 'USER_DELETED: Cannot resurrect deleted user');
-    END;
-    ```
-
----
-
-## 4. Execution Command (Upon Owner Authorization Only)
+After explicit owner approval for this exact preview target, recheck `wrangler.toml` preview DB UUID and pending migration list. Then use tracked migration application, not untracked direct SQL:
 
 ```bash
-# Verify identity first
-npx wrangler d1 info 0dbad68e-7493-452f-8504-98d4c61ee5da
-
-# Apply migration 0006 to isolated preview D1
-npx wrangler d1 execute 0dbad68e-7493-452f-8504-98d4c61ee5da --remote --file=./migrations/0006_user_tombstone_triggers.sql
+npx wrangler d1 migrations list finpath-preview --env preview --remote
+npx wrangler d1 migrations apply finpath-preview --env preview --remote
 ```
 
----
+If anything other than 0006 is pending, stop: this request does not authorize it. Capture command/exit and migration ledger entry. Inspect sqlite_master for all 29 exact trigger names, tables and SQL bodies against the file, not count alone. No financial row export is needed. Confirm effective Pages preview binding before publishing changed backend. Deploy only to an explicit nonproduction preview branch after all relevant tests and migration validation pass.
 
-## 5. Post-Deployment Validation Queries
+## Rollout and rollback
 
-```sql
--- 1. Verify all 29 triggers installed
-SELECT COUNT(*) as trigger_count FROM sqlite_master WHERE type = 'trigger' AND name LIKE 'trg_prevent_%';
--- Expected: 29
+Keep this an isolated preview. Do not serve a backend relying on 0006 until its installation is verified. Recheck automatic Git deployment state/binding rather than assuming manual deployment is the only path.
 
--- 2. Verify resurrection guard trigger exists
-SELECT name, tbl_name FROM sqlite_master WHERE type = 'trigger' AND name = 'trg_prevent_users_tombstone_resurrect';
--- Expected: 1 row
-```
+Preserve all 29 guards and tombstones on rollback. Do NOT drop triggers and rely on application preflight checks: that reintroduces the reproduced check/write race. If preview malfunctions, stop preview writes/serving and investigate a compatible forward repair. Code rollback is allowed only when it preserves tombstone semantics and passes local migration compatibility tests; reverting to code that clears deleted_at is unsafe. No production restore, DNS change or destructive rollback is included.
 
----
+## Remaining gates
 
-## 6. Safe Rollback Plan
-
-If rollback is necessary:
-1. Triggers are purely additive constraint checks and do not alter existing table structures or stored column values.
-2. Dropping triggers retains all data and leaves existing `deleted_at` tombstones intact:
-```sql
-DROP TRIGGER IF EXISTS trg_prevent_user_profiles_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_user_profiles_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_financial_accounts_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_financial_accounts_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_account_balances_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_account_balances_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_transactions_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_transactions_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_goals_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_goals_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_plans_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_plans_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_plan_versions_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_plan_versions_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_fire_plan_inputs_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_fire_plan_inputs_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_fire_plan_results_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_fire_plan_results_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_assumptions_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_assumptions_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_saved_calculator_results_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_saved_calculator_results_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_balance_imports_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_balance_imports_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_transaction_imports_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_transaction_imports_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_audit_log_tombstone_insert;
-DROP TRIGGER IF EXISTS trg_prevent_audit_log_tombstone_update;
-DROP TRIGGER IF EXISTS trg_prevent_users_tombstone_resurrect;
-```
-3. Application-level guards in `functions/_lib/persistence.ts` (`UserDeletedError`) and `ensureUserProfile` continue to block deleted users independently even in the event of trigger rollback.
+Remote mutation has not been authorized or executed. Browser evidence and C06 acceptance remain separate gates; applying this migration alone would not close C06 or release C07. Native reader checks remain deferred under the existing owner amendment.

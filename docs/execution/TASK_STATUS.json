@@ -77,7 +77,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "4f6b919",
       "review": "reviews/C06.md",
-      "blocked_reason": "Publication and task completion blocked pending owner authorization and deployment of migration 0006 on preview DB (0dbad68e-7493-452f-8504-98d4c61ee5da). See docs/execution/evidence/C06/migration-0006-authorization-packet.md."
+      "blocked_reason": "Primary verified backend repairs; pending exact 0006 preview migration authorization, remaining browser observations/native zoom and final isolated publication. Primary owns bounded verification repair."
     },
     {
       "id": "B06",
@@ -111,7 +111,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "4f6b919",
       "review": "reviews/C06.md",
-      "blocked_reason": "Publication and task completion blocked pending owner authorization and deployment of migration 0006 on preview DB (0dbad68e-7493-452f-8504-98d4c61ee5da). See docs/execution/evidence/C06/migration-0006-authorization-packet.md."
+      "blocked_reason": "Primary verified backend repairs; pending exact 0006 preview migration authorization, remaining browser observations/native zoom and final isolated publication. Primary owns bounded verification repair."
     },
     {
       "id": "B08",
@@ -410,7 +410,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "4f6b919",
       "review": "reviews/C06.md",
-      "blocked_reason": "Publication and task completion blocked pending owner authorization for migration 0006 on preview DB (0dbad68e-7493-452f-8504-98d4c61ee5da), and native 200% desktop browser UI application zoom verification."
+      "blocked_reason": "Primary verified backend repairs; pending exact 0006 preview migration authorization, remaining browser observations/native zoom and final isolated publication. Primary owns bounded verification repair."
     },
     {
       "id": "B26",

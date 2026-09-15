@@ -1,0 +1,72 @@
+✖ loading requires actual content (0.867334ms)
+✖ unknown combination cannot pass (0.106208ms)
+✖ populated name alone cannot prove stale (0.088125ms)
+✔ observed loading content accepted (0.0755ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62.690334
+
+✖ failing tests:
+
+test at docs/execution/evidence/C06-primary/rendered-regressions.cjs:3:1
+✖ loading requires actual content (0.867334ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/rendered-regressions.cjs:3:51)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.start (node:internal/test_runner/test:959:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:332:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/rendered-regressions.cjs:4:1
+✖ unknown combination cannot pass (0.106208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/rendered-regressions.cjs:4:51)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:332:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual'
+  }
+
+test at docs/execution/evidence/C06-primary/rendered-regressions.cjs:5:1
+✖ populated name alone cannot prove stale (0.088125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C06-primary/rendered-regressions.cjs:5:59)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1062:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:752:18)
+      at Test.postRun (node:internal/test_runner/test:1191:19)
+      at Test.run (node:internal/test_runner/test:1119:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:752:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual'
+  }
