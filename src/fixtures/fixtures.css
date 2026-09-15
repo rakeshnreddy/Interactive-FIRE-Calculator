@@ -177,8 +177,10 @@
   word-break: break-all;
 }
 
-/* Responsive & Mobile Layout Optimization (320px & 390px) */
-@media (max-width: 640px) {
+/* Let the harness scroll away before native browser zoom leaves too little room
+   for the real product UI. A 1440-1512px desktop viewport is about 720-756 CSS
+   pixels at Chrome's native 200% zoom. */
+@media (max-width: 800px) {
   .fixture-banner {
     position: static;
     padding: 6px 10px;
