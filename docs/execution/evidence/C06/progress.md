@@ -73,6 +73,13 @@ dist/assets/main-DIu0lvcm.js                               528.07 kB │ gzip: 1
 3. **R3**: `src/fixtures/fixtureApp.test.tsx` (6/6 pass).
 4. **R4**: `src/deletionAndRecovery.test.ts` (9/9 pass).
 
+### 2.3 Hosted CI Run on Submitted Candidate
+- **Workflow**: `Verify` on PR #140 (`codex/finpath-quality-execution`)
+- **Run URL**: [run 34922199841](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34922199841)
+- **Status**: **SUCCESS** (Duration: 1m23s)
+- **Jobs**:
+  - `Full suite (ID 104232597056)`: Set up job, Checkout, Setup Node 24, Setup Python, Install locked Node dependencies, Install Python dependencies, Run every test suite and build (`./scripts/test_all.sh`), Audit Node dependencies (`npm audit`) — all passed cleanly.
+
 ---
 
 ## 3. Browser Fixture Evidence (R3)
