@@ -1,0 +1,723 @@
+{
+  "timestamp": "2026-09-15T11:09:06.267Z",
+  "candidate": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
+  "note": "Raw focused supplement for the four non-native special cases that were missing real rendered/contrast observations in C06-primary. Native Chrome evidence is recorded separately. Contrast backgrounds are recursively alpha-composited from the actual product text ancestor stack. Hosted checks are read-only public-boundary smoke renders.",
+  "limitations": [
+    "Headless Chrome media emulation verifies the browser media-query response and actual rendered product CSS; it does not prove an operating-system preference toggle.",
+    "Contrast uses computed CSS colors and sRGB alpha compositing; it does not sample antialiased glyph pixels.",
+    "The hosted smoke checks cover public rendering and console/page errors only; they do not authenticate or mutate data."
+  ],
+  "rawCases": [
+    {
+      "id": "reduced-motion-dashboard-dark-final",
+      "domain": "dashboard",
+      "state": "populated",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "screenshot": "reduced-motion-dashboard-dark-final.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 154591,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2246,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.647106546426908,
+        "fgColor": "rgb(234, 246, 247)",
+        "bgColor": "rgb(16, 35, 44)",
+        "targetText": "What needs attention",
+        "minRequired": 4.5
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "mediaCheck": {
+        "type": "reduced-motion",
+        "requested": true,
+        "matched": true,
+        "active": true,
+        "measured": {
+          "matched": true,
+          "productTargetCount": 12,
+          "samples": [
+            {
+              "selector": "button.secondary-button.icon-text-button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.dashboard-insight-row.insight-priority-high",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.dashboard-insight-row.insight-priority-medium",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.dashboard-insight-row.insight-priority-low",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.secondary-button.icon-text-button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.dashboard-calculator-card",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.secondary-button.icon-text-button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.secondary-button.icon-text-button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            },
+            {
+              "selector": "button.secondary-button.icon-text-button",
+              "transitionDuration": "1e-05s",
+              "animationDuration": "1e-05s"
+            }
+          ],
+          "suppressed": true
+        }
+      },
+      "consoleErrors": [],
+      "rawConsoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "reduced-transparency-dashboard-dark-final",
+      "domain": "dashboard",
+      "state": "populated",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "screenshot": "reduced-transparency-dashboard-dark-final.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 154591,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2246,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.647106546426908,
+        "fgColor": "rgb(234, 246, 247)",
+        "bgColor": "rgb(16, 35, 44)",
+        "targetText": "What needs attention",
+        "minRequired": 4.5
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "mediaCheck": {
+        "type": "reduced-transparency",
+        "requested": true,
+        "matched": true,
+        "active": true,
+        "measured": {
+          "matched": true,
+          "selector": "account-panel dashboard-insight-rollup",
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(16, 35, 44)",
+          "alpha": 1
+        }
+      },
+      "consoleErrors": [],
+      "rawConsoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "keyboard-accounts-light-final",
+      "domain": "accounts",
+      "state": "populated",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "screenshot": "keyboard-accounts-light-final.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 123078,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2923,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.365468226750874,
+        "fgColor": "rgb(16, 44, 53)",
+        "bgColor": "rgb(251, 253, 255)",
+        "targetText": "Accounts and balances",
+        "minRequired": 4.5
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "keyboardFocus": {
+        "attempted": true,
+        "focusedTag": "INPUT",
+        "focusedRole": "input",
+        "focusedText": "New Checking Account",
+        "hasVisibleFocusRing": true,
+        "isBodyFocus": false,
+        "occluded": false,
+        "sequence": [
+          {
+            "tag": "INPUT",
+            "name": "New Checking Account",
+            "visibleFocus": true,
+            "occluded": false,
+            "rect": {
+              "top": 396.5,
+              "bottom": 440.5,
+              "left": 153,
+              "right": 332.671875
+            }
+          },
+          {
+            "tag": "SELECT",
+            "name": "CashCheckingSavingsInvestmentRetirementReal estateOther assetCredit cardLoanMortgageOther liability",
+            "visibleFocus": true,
+            "occluded": false,
+            "rect": {
+              "top": 396.5,
+              "bottom": 440.5,
+              "left": 343.859375,
+              "right": 523.53125
+            }
+          },
+          {
+            "tag": "INPUT",
+            "name": "Synthetic Regional Bank",
+            "visibleFocus": true,
+            "occluded": false,
+            "rect": {
+              "top": 396.5,
+              "bottom": 440.5,
+              "left": 534.71875,
+              "right": 714.390625
+            }
+          }
+        ],
+        "keysExercised": [
+          "Tab",
+          "Enter",
+          "Escape"
+        ]
+      },
+      "consoleErrors": [],
+      "rawConsoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "network-settings-light-final",
+      "domain": "settings",
+      "state": "populated",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "screenshot": "network-settings-light-final.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 139770,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1120,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.365468226750874,
+        "fgColor": "rgb(16, 44, 53)",
+        "bgColor": "rgb(251, 253, 255)",
+        "targetText": "Household profile",
+        "minRequired": 4.5
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found settings panels"
+      },
+      "networkLock": {
+        "tested": true,
+        "outgoingMutationsCount": 0,
+        "trapVerified": true,
+        "actions": {
+          "syntheticStatus": 200,
+          "syntheticRecord": true,
+          "blocked": true,
+          "settingsClicked": true
+        },
+        "outgoing": []
+      },
+      "consoleErrors": [],
+      "rawConsoleErrors": [
+        "[SYNTHETIC FIXTURE SECURITY VIOLATION] Outgoing network mutation blocked in fixture harness: POST /api/accounts"
+      ],
+      "pageErrors": []
+    }
+  ],
+  "evaluation": {
+    "allPassed": true,
+    "passCount": 4,
+    "failCount": 0,
+    "blockedCount": 0,
+    "evaluatedCases": [
+      {
+        "id": "reduced-motion-dashboard-dark-final",
+        "domain": "dashboard",
+        "state": "populated",
+        "theme": "dark",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "screenshot": "reduced-motion-dashboard-dark-final.png",
+        "screenshotExists": true,
+        "screenshotSizeBytes": 154591,
+        "themeInfo": {
+          "rootDataMode": "dark",
+          "shellDataMode": "dark",
+          "bgColor": "rgb(8, 21, 28)",
+          "textColor": "rgb(216, 231, 234)"
+        },
+        "geometry": {
+          "viewportWidth": 1440,
+          "viewportHeight": 900,
+          "documentScrollWidth": 1440,
+          "documentScrollHeight": 2246,
+          "hasHorizontalOverflow": false,
+          "overflowDelta": 0
+        },
+        "contrast": {
+          "tested": true,
+          "ratio": 14.647106546426908,
+          "fgColor": "rgb(234, 246, 247)",
+          "bgColor": "rgb(16, 35, 44)",
+          "targetText": "What needs attention",
+          "minRequired": 4.5
+        },
+        "renderedContent": {
+          "matchedStateExpectation": true,
+          "detail": "Found dashboard metrics"
+        },
+        "mediaCheck": {
+          "type": "reduced-motion",
+          "requested": true,
+          "matched": true,
+          "active": true,
+          "measured": {
+            "matched": true,
+            "productTargetCount": 12,
+            "samples": [
+              {
+                "selector": "button.secondary-button.icon-text-button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.dashboard-insight-row.insight-priority-high",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.dashboard-insight-row.insight-priority-medium",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.dashboard-insight-row.insight-priority-low",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.secondary-button.icon-text-button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.dashboard-calculator-card",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.secondary-button.icon-text-button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.secondary-button.icon-text-button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              },
+              {
+                "selector": "button.secondary-button.icon-text-button",
+                "transitionDuration": "1e-05s",
+                "animationDuration": "1e-05s"
+              }
+            ],
+            "suppressed": true
+          }
+        },
+        "consoleErrors": [],
+        "rawConsoleErrors": [],
+        "pageErrors": [],
+        "status": "PASS",
+        "evaluationReasons": [],
+        "passed": true
+      },
+      {
+        "id": "reduced-transparency-dashboard-dark-final",
+        "domain": "dashboard",
+        "state": "populated",
+        "theme": "dark",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "screenshot": "reduced-transparency-dashboard-dark-final.png",
+        "screenshotExists": true,
+        "screenshotSizeBytes": 154591,
+        "themeInfo": {
+          "rootDataMode": "dark",
+          "shellDataMode": "dark",
+          "bgColor": "rgb(8, 21, 28)",
+          "textColor": "rgb(216, 231, 234)"
+        },
+        "geometry": {
+          "viewportWidth": 1440,
+          "viewportHeight": 900,
+          "documentScrollWidth": 1440,
+          "documentScrollHeight": 2246,
+          "hasHorizontalOverflow": false,
+          "overflowDelta": 0
+        },
+        "contrast": {
+          "tested": true,
+          "ratio": 14.647106546426908,
+          "fgColor": "rgb(234, 246, 247)",
+          "bgColor": "rgb(16, 35, 44)",
+          "targetText": "What needs attention",
+          "minRequired": 4.5
+        },
+        "renderedContent": {
+          "matchedStateExpectation": true,
+          "detail": "Found dashboard metrics"
+        },
+        "mediaCheck": {
+          "type": "reduced-transparency",
+          "requested": true,
+          "matched": true,
+          "active": true,
+          "measured": {
+            "matched": true,
+            "selector": "account-panel dashboard-insight-rollup",
+            "backdropFilter": "none",
+            "backgroundColor": "rgb(16, 35, 44)",
+            "alpha": 1
+          }
+        },
+        "consoleErrors": [],
+        "rawConsoleErrors": [],
+        "pageErrors": [],
+        "status": "PASS",
+        "evaluationReasons": [],
+        "passed": true
+      },
+      {
+        "id": "keyboard-accounts-light-final",
+        "domain": "accounts",
+        "state": "populated",
+        "theme": "light",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "screenshot": "keyboard-accounts-light-final.png",
+        "screenshotExists": true,
+        "screenshotSizeBytes": 123078,
+        "themeInfo": {
+          "rootDataMode": "light",
+          "shellDataMode": "light",
+          "bgColor": "rgb(244, 248, 251)",
+          "textColor": "rgb(32, 58, 67)"
+        },
+        "geometry": {
+          "viewportWidth": 1440,
+          "viewportHeight": 900,
+          "documentScrollWidth": 1440,
+          "documentScrollHeight": 2923,
+          "hasHorizontalOverflow": false,
+          "overflowDelta": 0
+        },
+        "contrast": {
+          "tested": true,
+          "ratio": 14.365468226750874,
+          "fgColor": "rgb(16, 44, 53)",
+          "bgColor": "rgb(251, 253, 255)",
+          "targetText": "Accounts and balances",
+          "minRequired": 4.5
+        },
+        "renderedContent": {
+          "matchedStateExpectation": true,
+          "detail": "Found populated accounts"
+        },
+        "keyboardFocus": {
+          "attempted": true,
+          "focusedTag": "INPUT",
+          "focusedRole": "input",
+          "focusedText": "New Checking Account",
+          "hasVisibleFocusRing": true,
+          "isBodyFocus": false,
+          "occluded": false,
+          "sequence": [
+            {
+              "tag": "INPUT",
+              "name": "New Checking Account",
+              "visibleFocus": true,
+              "occluded": false,
+              "rect": {
+                "top": 396.5,
+                "bottom": 440.5,
+                "left": 153,
+                "right": 332.671875
+              }
+            },
+            {
+              "tag": "SELECT",
+              "name": "CashCheckingSavingsInvestmentRetirementReal estateOther assetCredit cardLoanMortgageOther liability",
+              "visibleFocus": true,
+              "occluded": false,
+              "rect": {
+                "top": 396.5,
+                "bottom": 440.5,
+                "left": 343.859375,
+                "right": 523.53125
+              }
+            },
+            {
+              "tag": "INPUT",
+              "name": "Synthetic Regional Bank",
+              "visibleFocus": true,
+              "occluded": false,
+              "rect": {
+                "top": 396.5,
+                "bottom": 440.5,
+                "left": 534.71875,
+                "right": 714.390625
+              }
+            }
+          ],
+          "keysExercised": [
+            "Tab",
+            "Enter",
+            "Escape"
+          ]
+        },
+        "consoleErrors": [],
+        "rawConsoleErrors": [],
+        "pageErrors": [],
+        "status": "PASS",
+        "evaluationReasons": [],
+        "passed": true
+      },
+      {
+        "id": "network-settings-light-final",
+        "domain": "settings",
+        "state": "populated",
+        "theme": "light",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "screenshot": "network-settings-light-final.png",
+        "screenshotExists": true,
+        "screenshotSizeBytes": 139770,
+        "themeInfo": {
+          "rootDataMode": "light",
+          "shellDataMode": "light",
+          "bgColor": "rgb(244, 248, 251)",
+          "textColor": "rgb(32, 58, 67)"
+        },
+        "geometry": {
+          "viewportWidth": 1440,
+          "viewportHeight": 900,
+          "documentScrollWidth": 1440,
+          "documentScrollHeight": 1120,
+          "hasHorizontalOverflow": false,
+          "overflowDelta": 0
+        },
+        "contrast": {
+          "tested": true,
+          "ratio": 14.365468226750874,
+          "fgColor": "rgb(16, 44, 53)",
+          "bgColor": "rgb(251, 253, 255)",
+          "targetText": "Household profile",
+          "minRequired": 4.5
+        },
+        "renderedContent": {
+          "matchedStateExpectation": true,
+          "detail": "Found settings panels"
+        },
+        "networkLock": {
+          "tested": true,
+          "outgoingMutationsCount": 0,
+          "trapVerified": true,
+          "actions": {
+            "syntheticStatus": 200,
+            "syntheticRecord": true,
+            "blocked": true,
+            "settingsClicked": true
+          },
+          "outgoing": []
+        },
+        "consoleErrors": [],
+        "rawConsoleErrors": [
+          "[SYNTHETIC FIXTURE SECURITY VIOLATION] Outgoing network mutation blocked in fixture harness: POST /api/accounts"
+        ],
+        "pageErrors": [],
+        "status": "PASS",
+        "evaluationReasons": [],
+        "passed": true
+      }
+    ]
+  },
+  "hostedPublicChecks": [
+    {
+      "id": "hosted-home-desktop",
+      "path": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "status": 200,
+      "finalUrl": "https://5e68409d.interactive-fire-calculator.pages.dev/",
+      "screenshot": "hosted-home-desktop.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 334828,
+      "observed": {
+        "title": "FinPath | FIRE Calculator and Financial Planning",
+        "heading": "See when you could retire.",
+        "bodyTextLength": 1877,
+        "scrollWidth": 1440,
+        "viewportWidth": 1440
+      },
+      "expectedTextMatched": true,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "passed": true
+    },
+    {
+      "id": "hosted-sign-in-boundary-mobile",
+      "path": "/dashboard",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "expectedText": "Sign in",
+      "status": 200,
+      "finalUrl": "https://5e68409d.interactive-fire-calculator.pages.dev/dashboard",
+      "screenshot": "hosted-sign-in-boundary-mobile.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 50174,
+      "observed": {
+        "title": "Dashboard | FinPath",
+        "heading": "Account features are currently unavailable.",
+        "bodyTextLength": 314,
+        "scrollWidth": 390,
+        "viewportWidth": 390
+      },
+      "expectedTextMatched": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "passed": false
+    }
+  ]
+}

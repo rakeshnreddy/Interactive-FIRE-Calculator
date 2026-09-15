@@ -1,6 +1,6 @@
 # Checkpoints and release ledger
 
-Only C06 is released for implementation now. C05 is accepted with actual-reader checks deferred to B31. C04 is accepted with the owner-authorized reader deferral tracked in B31. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+C06 is accepted. C07 is locked pending secure preview auth setup and disposable hosted-test authorization; read-only preparation is allowed. C05 is accepted with actual-reader checks deferred to B31. C04 is accepted with the owner-authorized reader deferral tracked in B31. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
@@ -13,7 +13,7 @@ Only C06 is released for implementation now. C05 is accepted with actual-reader 
 | C03 | Public homepage and discovery | B18 → B19 → B09 | accepted | 285e9eadf2d854951cec75d02afc6cce97d4d6c5 | [approved with reader deferral](reviews/C03.md) |
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | accepted | 733e76c217058cafc3e5d418f09cb55ced531f4c | [approved with reader deferral](reviews/C04.md) |
 | C05 | Dedicated calculator families | B22 → B23 → B24 | accepted | 1c73bffbb4a5d1f179d67f2934c900a8b44711e5 | [approved](reviews/C05.md) |
-| C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | released | — | — |
+| C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | accepted | 0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a | [approved](reviews/C06.md) |
 | C07 | Owner setup and hosted proof | B06 | locked | — | — |
 | C08 | Dashboard and transactions | B26 → B27 | locked | — | — |
 | C09 | Saved decision and monthly review | B10 → B11 → B28 | locked | — | — |
@@ -74,3 +74,12 @@ C05 review 2026-09-13: B22/B23/B24 require consolidated R1–R5 rework in C05_RE
 C05 first rework review: R1–R3 product repairs preserved; R4 observation/evaluator gaps and native zoom remain. Follow C05_VERIFICATION_REPAIR_PROMPT.md. C06 locked; no additional task closure.
 
 C05 acceptance2026-09-14 supersedes prior rework notes: B22/B23/B24 accepted at website1c73bffbb4a5d1f179d67f2934c900a8b44711e5 with reviewer tooling35607a5 and separate native UI proof.19/34 accepted (55.9%). C06 alone released, B05→B07→B25; see C06_START_PROMPT.md. C07 and production remain gated.
+
+
+## Owner amendment — 2026-09-15: consolidate zoom verification at B31/C11
+
+The owner directed: “push it to the end of verification of all tasks … if there is any zoom issue it can be fixed later.” Native browser 200% zoom checks and zoom-specific layout repairs are therefore DEFERRED through C10 to the final B31/C11 verification. Their absence or a known zoom-only issue must not block otherwise passing implementation tasks or checkpoint release. This supersedes earlier per-task native zoom gates, including older prompt/contract language. Do not rerun native zoom at every checkpoint. Preserve existing evidence and record newly noticed zoom defects without spending implementation time on them now. Functional correctness, tenancy, deletion, auth boundaries, normal-size usability, mobile layouts, keyboard, contrast and reduced-motion/transparency checks remain required. Deferred means not passed; no full WCAG-conformance claim.
+
+B31/C11 follow-up ZOOM-FINAL: a lower-cost capable agent performs one consolidated actual-browser 200% sweep of final public and authorized synthetic authenticated journeys, in both themes. Verify reachable essential controls, readable inputs/results, no text overlap or clipped actions, and reflow. Record browser version, actual zoom level, exact candidate, route, screenshot, defect and focused retest. Pixel density, CSS zoom and viewport resizing do not substitute for native browser zoom evidence. Primary reviews the evidence and closes the task. Existing C06 account-import/fixture toolbar repairs and screenshots are retained; repeat only if the final sweep finds a regression.
+
+C06 final acceptance2026-09-15 supersedes earlier C06 release-only notes. B05/B07/B25 accepted together,22/34. C07 is not released; read-only preparation may resolve its exact external gates.

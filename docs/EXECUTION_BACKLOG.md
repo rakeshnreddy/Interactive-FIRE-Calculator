@@ -41,7 +41,7 @@
   - Privacy/dependencies: hash only canonical validated payload; same-user scope. B02–B03, review migration before remote application.
   - Rollback/effort: additive schema retained; disable new save entry point on issue, do not drop tables. Human 2 days; agent 4–8 hours.
 
-- [ ] **B05 — Ready: executable tenancy/auth boundary harness.**
+- [x] **B05 — Ready: executable tenancy/auth boundary harness.**
   - Problem/evidence: many fake SQL tests; hosted signed-in journey unverified.
   - Outcome/scope: local D1 schema + synthetic two-user fixtures, injected verified-session seam only in tests; prove CRUD, relationships, imports, versions, export and delete isolation; separate current-SDK auth tests.
   - Non-goals/files: no test auth bypass deployed. API tests, session tests, local integration config, migrations as fixtures.
@@ -50,7 +50,7 @@
   - Dependencies/rollback/effort: B04; local only, remove harness configuration if faulty. Human 3–5 days; agent 8–16 hours. Split auth and D1 harness into sequential PRs if needed.
 
 - [ ] **B06 — Owner-blocked: working hosted auth and lifecycle.**
-  - Problem/evidence: both previews missing browser key; 0/6 production preflight; Cloudflare preview DB currently matches configured production database.
+  - Problem/evidence: hosted disposable-user Clerk lifecycle remains unverified. Historical missing-key/shared-DB findings are superseded: C06 preview 5e68409d has verified isolated finpath-preview binding and migration 0006. Recheck current browser/server configuration securely; key presence alone does not prove working sessions. Production remains gated.
   - Outcome/scope: first configure and verify an approved isolated preview database using effective deployment metadata, then approved preview Clerk config; disposable hosted user sign-up/in/out, refresh, save/reload, profile, import/export/delete; separate owned production setup and eventual release approval.
   - Non-goals/files: no DNS/production changes without owner authorization; runbook and hosted test evidence only, secure provider settings.
   - Acceptance: preview DB differs from production before all write tests; end-to-end identity/save/export/delete and second-user isolation pass; public routes still work; production preflight remains fail-closed until all genuine prerequisites complete.
@@ -58,7 +58,7 @@
   - Privacy/dependencies: owner supplies exact origin and secure settings, disposable identity; B02–B05. Never use an existing personal identity to test deletion.
   - Rollback/effort: revert preview config safely; preserve production guard. Human 1–3 days plus DNS/provider waits; agent 4–8 hours after setup.
 
-- [ ] **B07 — Ready for local design/test: deletion and recovery contract.**
+- [x] **B07 — Ready for local design/test: deletion and recovery contract.**
   - Problem/evidence: D1 delete excludes Clerk/device drafts/backups; profile can be recreated; export lacks consistent snapshot.
   - Outcome/scope: document true erasure boundary, clear local drafts explicitly, add deletion-in-progress guard and recovery replay design; isolated synthetic restore drill.
   - Non-goals/files: no real production restore/delete. accountData, persistence, Settings, storage helpers, recovery runbook and additive deletion-state migration if reviewed.
@@ -251,7 +251,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B24.md](execution/prompts/B24.md).
 
-- [ ] **B25 — Planned: Build isolated operational UI fixtures for visual verification.**
+- [x] **B25 — Planned: Build isolated operational UI fixtures for visual verification.**
   - User problem/evidence: Hosted auth blocks inspection of populated/error operational states. Visual audit V15.
   - Expected outcome/scope: All target real components render reproducible synthetic states locally; no fixture/auth bypass in production output; no network writes; harness instructions executable.
   - Non-goals: No copied static mock workspace, real records, production auth bypass or database seeding.
@@ -415,3 +415,12 @@ C03 accepted 2026-09-13 at `285e9eadf2d854951cec75d02afc6cce97d4d6c5`; B18/B19/B
 C04 accepted 2026-09-13: B08/B20/B21 done at 733e76c217058cafc3e5d418f09cb55ced531f4c with owner-deferred actual-reader checks assigned to B31. C05 released. 16/34 accepted (47.1%, task count).
 
 C05 accepted2026-09-14: B22/B23/B24 done at website1c73bffbb4a5d1f179d67f2934c900a8b44711e5; native assisted proof and evaluator/CSV repairs verified.19/34 accepted (55.9%). C06 released, starting B05. The post-task-34 calculator excellence program remains queued.
+
+
+## Owner amendment — 2026-09-15: consolidate zoom verification at B31/C11
+
+The owner directed: “push it to the end of verification of all tasks … if there is any zoom issue it can be fixed later.” Native browser 200% zoom checks and zoom-specific layout repairs are therefore DEFERRED through C10 to the final B31/C11 verification. Their absence or a known zoom-only issue must not block otherwise passing implementation tasks or checkpoint release. This supersedes earlier per-task native zoom gates, including older prompt/contract language. Do not rerun native zoom at every checkpoint. Preserve existing evidence and record newly noticed zoom defects without spending implementation time on them now. Functional correctness, tenancy, deletion, auth boundaries, normal-size usability, mobile layouts, keyboard, contrast and reduced-motion/transparency checks remain required. Deferred means not passed; no full WCAG-conformance claim.
+
+B31/C11 follow-up ZOOM-FINAL: a lower-cost capable agent performs one consolidated actual-browser 200% sweep of final public and authorized synthetic authenticated journeys, in both themes. Verify reachable essential controls, readable inputs/results, no text overlap or clipped actions, and reflow. Record browser version, actual zoom level, exact candidate, route, screenshot, defect and focused retest. Pixel density, CSS zoom and viewport resizing do not substitute for native browser zoom evidence. Primary reviews the evidence and closes the task. Existing C06 account-import/fixture toolbar repairs and screenshots are retained; repeat only if the final sweep finds a regression.
+
+C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 complete;22/34 accepted64.7%. C07 hosted auth remains gated. Native zoom deferred to final B31/C11.

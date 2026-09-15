@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-14",
+  "updated": "2026-09-15",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -67,7 +67,7 @@
       "id": "B05",
       "title": "executable tenancy/auth boundary harness",
       "checkpoint": "C06",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B04",
         "B33"
@@ -75,9 +75,9 @@
       "prompt": "prompts/B05.md",
       "submission": "submissions/B05.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "4f6b919",
+      "code_sha": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
       "review": "reviews/C06.md",
-      "blocked_reason": "Primary verified backend repairs; pending exact 0006 preview migration authorization, remaining browser observations/native zoom and final isolated publication. Primary owns bounded verification repair."
+      "blocked_reason": null
     },
     {
       "id": "B06",
@@ -102,16 +102,16 @@
       "id": "B07",
       "title": "deletion and recovery contract",
       "checkpoint": "C06",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B05"
       ],
       "prompt": "prompts/B07.md",
       "submission": "submissions/B07.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "4f6b919",
+      "code_sha": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
       "review": "reviews/C06.md",
-      "blocked_reason": "Primary verified backend repairs; pending exact 0006 preview migration authorization, remaining browser observations/native zoom and final isolated publication. Primary owns bounded verification repair."
+      "blocked_reason": null
     },
     {
       "id": "B08",
@@ -399,7 +399,7 @@
       "id": "B25",
       "title": "Build isolated operational UI fixtures for visual verification",
       "checkpoint": "C06",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B05",
         "B07",
@@ -408,9 +408,9 @@
       "prompt": "prompts/B25.md",
       "submission": "submissions/B25.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "4f6b919",
+      "code_sha": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
       "review": "reviews/C06.md",
-      "blocked_reason": "Primary verified backend repairs; pending exact 0006 preview migration authorization, remaining browser observations/native zoom and final isolated publication. Primary owns bounded verification repair."
+      "blocked_reason": null
     },
     {
       "id": "B26",
