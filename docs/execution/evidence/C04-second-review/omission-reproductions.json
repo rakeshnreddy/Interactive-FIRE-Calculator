@@ -1,0 +1,27 @@
+[
+  {
+    "name": "missing CAGR measurements",
+    "success": true,
+    "errors": []
+  },
+  {
+    "name": "missing error telemetry",
+    "success": true,
+    "errors": []
+  },
+  {
+    "name": "invalid contrast number",
+    "success": true,
+    "errors": []
+  },
+  {
+    "name": "missing theme request",
+    "success": true,
+    "errors": []
+  },
+  {
+    "name": "unverified media",
+    "success": true,
+    "errors": []
+  }
+]

@@ -6,13 +6,8 @@ import {
   Copy,
   Download,
   History,
-  Landmark,
   RotateCcw,
-  ShieldCheck,
-  Table2,
-  Target,
-  TrendingUp,
-  WalletCards
+  Target
 } from 'lucide-react';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
@@ -81,10 +76,17 @@ export function CashflowPlanningCalculator(props: Props) {
 }
 
 function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedResults }: Props) {
-  const [inputs, setInputs] = useState<NetWorthInputs>(defaultNetWorthInputs);
-  const [currency, setCurrency] = useState<PlanningCurrencyCode>('USD');
-  const [locale, setLocale] = useState<PlanningLocaleCode>('auto');
-  const [message, setMessage] = useState('');
+  const initial = useMemo(() => restorePlanningState('net-worth', netWorthFormulaVersion, defaultNetWorthInputs), []);
+  const [inputs, setInputs] = useState<NetWorthInputs>(initial?.inputs ?? defaultNetWorthInputs);
+  const [currency, setCurrency] = useState<PlanningCurrencyCode>(initial?.currency ?? 'USD');
+  const [locale, setLocale] = useState<PlanningLocaleCode>(initial?.locale ?? 'auto');
+  const [message, setMessage] = useState(
+    initial
+      ? initial.source === 'share'
+        ? 'Shared balance sheet loaded. Confirm that every balance uses the same snapshot date.'
+        : 'Your last browser balance-sheet draft was restored.'
+      : ''
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const projection = useMemo(() => calculateNetWorth(inputs), [inputs]);
@@ -93,15 +95,6 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
   const history = routeHistory(savedResults, calculator.slug);
 
   useEffect(() => {
-    const restored = restorePlanningState('net-worth', netWorthFormulaVersion, defaultNetWorthInputs);
-    if (restored) {
-      setInputs(restored.inputs);
-      setCurrency(restored.currency);
-      setLocale(restored.locale);
-      setMessage(restored.source === 'share'
-        ? 'Shared balance sheet loaded. Confirm that every balance uses the same snapshot date.'
-        : 'Your last browser balance-sheet draft was restored.');
-    }
     setHydrated(true);
   }, []);
 
@@ -208,10 +201,10 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
       )}
       result={(
         <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
-          <PanelHeading eyebrow="Current position" title="Estimated net worth" badges={['Snapshot', 'Model v2']} />
+          <PanelHeading eyebrow="Current position" title={projection.netWorth < 0 ? 'Estimated net deficit' : 'Estimated net worth'} badges={['Snapshot', 'Model v2']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
-              <Headline label="Assets minus liabilities" value={money(projection.netWorth)} detail={`${money(projection.totalAssets)} assets − ${money(projection.totalLiabilities)} liabilities`} tone={projection.netWorth < 0 ? 'warning' : 'positive'} />
+              <Headline label={projection.netWorth < 0 ? 'Net deficit (liabilities exceed assets)' : 'Net assets (assets minus liabilities)'} value={money(projection.netWorth)} detail={`${money(projection.totalAssets)} assets − ${money(projection.totalLiabilities)} liabilities`} tone={projection.netWorth < 0 ? 'warning' : 'positive'} />
               <div className="calculator-result-metrics">
                 <ResultMetric help="Sum of every asset category entered above." label="Total assets" value={money(projection.totalAssets)} />
                 <ResultMetric help="Sum of every outstanding liability balance entered above." label="Total liabilities" tone="warning" value={money(projection.totalLiabilities)} />
@@ -261,10 +254,17 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
 }
 
 function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedResults }: Props) {
-  const [inputs, setInputs] = useState<BudgetInputs>(defaultBudgetInputs);
-  const [currency, setCurrency] = useState<PlanningCurrencyCode>('USD');
-  const [locale, setLocale] = useState<PlanningLocaleCode>('auto');
-  const [message, setMessage] = useState('');
+  const initial = useMemo(() => restorePlanningState('budget', budgetFormulaVersion, defaultBudgetInputs), []);
+  const [inputs, setInputs] = useState<BudgetInputs>(initial?.inputs ?? defaultBudgetInputs);
+  const [currency, setCurrency] = useState<PlanningCurrencyCode>(initial?.currency ?? 'USD');
+  const [locale, setLocale] = useState<PlanningLocaleCode>(initial?.locale ?? 'auto');
+  const [message, setMessage] = useState(
+    initial
+      ? initial.source === 'share'
+        ? 'Shared monthly plan loaded. Review every category.'
+        : 'Your last browser budget draft was restored.'
+      : ''
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const projection = useMemo(() => calculateBudget(inputs), [inputs]);
@@ -273,13 +273,6 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
   const history = routeHistory(savedResults, calculator.slug);
 
   useEffect(() => {
-    const restored = restorePlanningState('budget', budgetFormulaVersion, defaultBudgetInputs);
-    if (restored) {
-      setInputs(restored.inputs);
-      setCurrency(restored.currency);
-      setLocale(restored.locale);
-      setMessage(restored.source === 'share' ? 'Shared monthly plan loaded. Review every category.' : 'Your last browser budget draft was restored.');
-    }
     setHydrated(true);
   }, []);
 
@@ -387,10 +380,10 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
       )}
       result={(
         <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
-          <PanelHeading eyebrow="Cashflow result" title="Monthly surplus" badges={['Before savings allocation', 'Model v2']} />
+          <PanelHeading eyebrow="Cashflow result" title={projection.monthlySurplus < 0 ? 'Monthly deficit' : 'Monthly surplus'} badges={['Before savings allocation', 'Model v2']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
-              <Headline label="Income minus entered spending" value={money(projection.monthlySurplus)} detail={`${money(projection.totalIncome)} income − ${money(projection.totalSpending)} spending`} tone={projection.monthlySurplus < 0 ? 'warning' : 'positive'} />
+              <Headline label={projection.monthlySurplus < 0 ? 'Monthly deficit (spending exceeds income)' : 'Monthly surplus (income minus entered spending)'} value={money(projection.monthlySurplus)} detail={`${money(projection.totalIncome)} income − ${money(projection.totalSpending)} spending`} tone={projection.monthlySurplus < 0 ? 'warning' : 'positive'} />
               <div className="calculator-result-metrics">
                 <ResultMetric help="Monthly needs and commitments plus flexible spending." label="Monthly spending" value={money(projection.totalSpending)} />
                 <ResultMetric help="The entered amount intentionally assigned to saving, investing, or extra debt payoff." label="Planned saving" value={money(inputs.plannedSavings)} />
@@ -449,10 +442,17 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
 }
 
 function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, savedResults }: Props) {
-  const [inputs, setInputs] = useState<EmergencyFundInputs>(defaultEmergencyFundInputs);
-  const [currency, setCurrency] = useState<PlanningCurrencyCode>('USD');
-  const [locale, setLocale] = useState<PlanningLocaleCode>('auto');
-  const [message, setMessage] = useState('');
+  const initial = useMemo(() => restoreEmergencyState(), []);
+  const [inputs, setInputs] = useState<EmergencyFundInputs>(initial?.inputs ?? defaultEmergencyFundInputs);
+  const [currency, setCurrency] = useState<PlanningCurrencyCode>(initial?.currency ?? 'USD');
+  const [locale, setLocale] = useState<PlanningLocaleCode>(initial?.locale ?? 'auto');
+  const [message, setMessage] = useState(
+    initial
+      ? initial.source === 'share'
+        ? 'Shared reserve plan loaded. Review the liquidity and coverage assumptions.'
+        : 'Your last browser reserve draft was restored.'
+      : ''
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const projection = useMemo(() => calculateEmergencyFund(inputs), [inputs]);
@@ -461,13 +461,6 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
   const history = routeHistory(savedResults, calculator.slug);
 
   useEffect(() => {
-    const restored = restoreEmergencyState();
-    if (restored) {
-      setInputs(restored.inputs);
-      setCurrency(restored.currency);
-      setLocale(restored.locale);
-      setMessage(restored.source === 'share' ? 'Shared reserve plan loaded. Review the liquidity and coverage assumptions.' : 'Your last browser reserve draft was restored.');
-    }
     setHydrated(true);
   }, []);
 
@@ -577,10 +570,10 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
       )}
       result={(
         <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
-          <PanelHeading eyebrow="Reserve target" title="Emergency fund target" badges={[`${inputs.targetMonths} months`, 'Model v2']} />
+          <PanelHeading eyebrow="Reserve target" title="Emergency fund target" badges={[`${inputs.targetMonths} months`, projection.gap <= 0 ? 'Fully funded' : 'Funding needed']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
-              <Headline label="Selected coverage plus one-time buffer" value={money(projection.selectedTarget)} detail={`${money(inputs.monthlyEssentials)} × ${inputs.targetMonths} months${inputs.oneTimeBuffer > 0 ? ` + ${money(inputs.oneTimeBuffer)}` : ''}`} tone={projection.gap > 0 ? 'warning' : 'positive'} />
+              <Headline label={projection.gap <= 0 ? 'Reserve target fully covered' : 'Selected coverage plus one-time buffer'} value={money(projection.selectedTarget)} detail={`${money(inputs.monthlyEssentials)} × ${inputs.targetMonths} months${inputs.oneTimeBuffer > 0 ? ` + ${money(inputs.oneTimeBuffer)}` : ''}`} tone={projection.gap > 0 ? 'warning' : 'positive'} />
               <div className="calculator-result-metrics">
                 <ResultMetric help="Cash, bank savings, short-term deposits, and entered accessible investments." label="Current liquid reserve" value={money(projection.currentReserve)} />
                 <ResultMetric help="Selected target minus current reserve, floored at zero." label="Remaining gap" tone={projection.gap > 0 ? 'warning' : 'positive'} value={money(projection.gap)} />
@@ -663,14 +656,9 @@ function FamilyShell({
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">{eyebrow}</p>
         <h1 id="calculator-detail-title">{title}</h1>
-        <p>{description}</p>
+        <p className="calculator-scope-note">{description}</p>
         <a href="/calculators" onClick={(event) => { event.preventDefault(); onNavigate('/calculators'); }}><ArrowRight size={15} /> Explore all calculators</a>
       </div>
-      <section className="compound-trust-strip" aria-label="Calculator scope">
-        <span><ShieldCheck size={17} /><strong>Public by default</strong><small>No account required</small></span>
-        <span><WalletCards size={17} /><strong>Entered data only</strong><small>No account balances imported</small></span>
-        <span><Table2 size={17} /><strong>Auditable math</strong><small>Totals and tables reconcile</small></span>
-      </section>
       <div className="calculator-detail-grid compound-workspace cashflow-workspace">{input}{result}</div>
       <section className="compound-analysis-section" aria-labelledby="planning-analysis-title">
         <div className="panel-heading"><div><p className="eyebrow">Expert analysis</p><h2 id="planning-analysis-title">Inspect the plan</h2></div><span className="compound-version">Collapsed by default</span></div>
@@ -678,8 +666,23 @@ function FamilyShell({
       </section>
       {history}
       <section className="calculator-faq-section" aria-labelledby="planning-faq-title">
-        <div className="section-heading"><p className="eyebrow">Questions answered</p><h2 id="planning-faq-title">How to use this result</h2></div>
-        <div className="calculator-faq-grid">{faq.map(([question, answer]) => <article key={question}><strong>{question}</strong><p>{answer}</p></article>)}</div>
+        <details className="compound-analysis-card compound-faq-card">
+          <summary>
+            <span>
+              <strong id="planning-faq-title">Frequently asked questions</strong>
+              <small>Practical rules and interpretation for this {calculator.slug.replace('-', ' ')} plan</small>
+            </span>
+            <ChevronDown size={17} />
+          </summary>
+          <div className="calculator-faq-grid compound-analysis-body">
+            {faq.map(([question, answer]) => (
+              <article key={question}>
+                <strong>{question}</strong>
+                <p>{answer}</p>
+              </article>
+            ))}
+          </div>
+        </details>
       </section>
       <section className="compound-related-panel" aria-label="Related next steps">
         {related.map(([route, heading, detail]) => (
@@ -1063,6 +1066,7 @@ function updateNumber<Inputs, Key extends keyof Inputs>(setInputs: Dispatch<SetS
 function moneyFormatter(currency: PlanningCurrencyCode, locale: string | undefined): (value: number, digits?: number) => string {
   const formatters = new Map<number, Intl.NumberFormat>();
   return (value, digits = 0) => {
+    if (!Number.isFinite(value)) return '—';
     const precision = currency === 'JPY' ? 0 : digits;
     let formatter = formatters.get(precision);
     if (!formatter) {

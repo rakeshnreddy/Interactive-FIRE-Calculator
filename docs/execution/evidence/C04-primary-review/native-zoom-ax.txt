@@ -1,0 +1,6 @@
+					11 button Zoom: 200%
+Final route check:
+					11 button Zoom: 200%
+				27 HTML content CAGR Calculator | FinPath, URL: 21a762ad.interactive-fire-calculator.pages.dev/calculators/cagr
+						32 toggle button Description: Switch to light mode, Value: 1
+The focused UI element is 32 toggle button Description: Switch to light mode, Value: 1

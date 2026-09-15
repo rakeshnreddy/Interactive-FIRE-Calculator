@@ -1,0 +1,8 @@
+{
+  "method": "Wait for asynchronous focus restoration after Escape",
+  "results": [
+    true,
+    true,
+    true
+  ]
+}

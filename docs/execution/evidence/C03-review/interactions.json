@@ -1,0 +1,23 @@
+[
+  {
+    "case": "mixed-case trim FIRE",
+    "count": "1 match"
+  },
+  {
+    "case": "no match",
+    "pass": true
+  },
+  {
+    "case": "clear",
+    "value": "",
+    "paths": 4
+  },
+  {
+    "case": "keyboard FIRE navigation",
+    "url": "https://a26c412b.interactive-fire-calculator.pages.dev/calculators/fire"
+  },
+  {
+    "case": "auth public escape",
+    "url": "https://a26c412b.interactive-fire-calculator.pages.dev/calculators"
+  }
+]

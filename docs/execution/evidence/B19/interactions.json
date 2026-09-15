@@ -1,0 +1,43 @@
+[
+  {
+    "case": "mixed-case trim FIRE",
+    "count": "1 match",
+    "hasFireLink": true,
+    "pass": true
+  },
+  {
+    "case": "no match",
+    "pass": true
+  },
+  {
+    "case": "clear restoration",
+    "value": "",
+    "pathsCount": 4,
+    "pass": true
+  },
+  {
+    "case": "keyboard FIRE navigation",
+    "url": "http://127.0.0.1:4173/calculators/fire",
+    "pass": true
+  },
+  {
+    "case": "auth public escape",
+    "url": "http://127.0.0.1:4173/calculators",
+    "pass": true
+  },
+  {
+    "case": "auth loading public escape",
+    "h1": "Checking your session.",
+    "disabled": true,
+    "clickNav": "/calculators",
+    "keyNav": "/calculators",
+    "pass": true
+  },
+  {
+    "case": "auth signed-out public escape",
+    "h1": "Sign in to open Dashboard.",
+    "clickNav": "/calculators",
+    "keyNav": "/calculators",
+    "pass": true
+  }
+]

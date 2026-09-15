@@ -49,7 +49,19 @@ class FakeDatabase {
   }
 
   batch<T = unknown>(statements: FakeStatement[]): Promise<D1Result<T>[]> {
-    return Promise.resolve(statements.map((_, index) => result<T>([], index + 1)));
+    return Promise.resolve(
+      statements.map((stmt, index) => {
+        const rows = this.all<T>(stmt.sql);
+        if (rows.length > 0) {
+          return result<T>(rows, index + 1);
+        }
+        const single = this.first<T>(stmt.sql);
+        if (single) {
+          return result<T>([single], index + 1);
+        }
+        return result<T>([], index + 1);
+      })
+    );
   }
 
   first<T>(sql: string): T | null {
@@ -196,13 +208,15 @@ describe('account data deletion', () => {
 
     expect(database.runs).toEqual([]);
     expect(deleteSql[0]).toBe('DELETE FROM audit_log WHERE user_id = ?');
-    expect(deleteSql.at(-1)).toBe('DELETE FROM users WHERE id = ?');
+    expect(deleteSql.at(-1)).toBe(
+      "INSERT INTO users (id, provider, provider_user_id, created_at, updated_at, deleted_at) VALUES (?, 'clerk', ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET deleted_at = COALESCE(users.deleted_at, excluded.deleted_at), updated_at = excluded.updated_at"
+    );
     expect(deletion.localAccountDataDeleted).toBe(true);
     expect(deletion.identityProvider).toBe('clerk');
     expect(deletion.deletedRows).toMatchObject({
       auditLog: 1,
       savedCalculatorResults: 3,
-      user: 15
+      userTombstone: 15
     });
   });
 });

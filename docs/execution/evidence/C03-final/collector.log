@@ -1,0 +1,39 @@
+--- Starting C03 Comprehensive Evidence Verification ---
+Local SPA server running at http://127.0.0.1:4173
+
+1. Testing Responsive Layout Matrix (30 cases)...
+Responsive Layout Matrix: 30/30 cases passed.
+
+2. Testing Browser Interactions...
+Browser Interactions: 7/7 flows verified.
+
+3. Probing Native 200% Zoom Control (R3a)...
+Recorded native 200% zoom status: BLOCKED (honest environment limitation).
+Capturing supplementary CSS zoom reflow observations...
+Supplementary CSS 200% Zoom recorded across routes and themes.
+
+4. Capturing Accessibility Tree Snapshot (R2)...
+Accessibility Tree: chart figure, $965,931 target, and $0 end balance verified (PASS).
+
+5. Measuring Composed Contrast Pairs with Pixel Sampling (R3b)...
+Contrast Analysis: 22/22 pairs meet WCAG thresholds.
+
+6. Testing Media Query Fallbacks with CDP (R3c)...
+Media Fallbacks: reducedTransparency (matches=true, pass=true), reducedMotion (true), forcedColors (true).
+
+7. Generating Actual Print PDFs & Inspecting DOM (R3d)...
+Print Output: 4 PDFs generated, decorative media hidden, clean readable print theme (PASS).
+
+8. Inspecting Representative Copy on Live Browser...
+Copy Inspection: 4/4 routes clean (zero phase, env, or developer directive leaks).
+
+==========================================
+--- Aggregating Results Through C03 Evaluator ---
+
+OVERALL EVALUATION: BLOCKED (Exit Code: 2)
+Summary: Verification blocked: 2 check(s) blocked/unperformed.
+
+BLOCKED CHECKS (Honest Environmental Limitations):
+  - native_zoom_200: Native 200% browser window zoom control cannot be operated in automated headless browser environment without manual UI action
+  - screen_reader_smoke: Interactive screen reader (VoiceOver/NVDA) audio smoke requires reviewer assistance
+==========================================

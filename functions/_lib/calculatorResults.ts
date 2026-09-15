@@ -1,7 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { createAccount, type AccountCreatePayload, type FinancialAccount } from './accounts';
-import { createGoal, type Goal, type GoalCreatePayload } from './goals';
+import { readAccount, type AccountCreatePayload, type FinancialAccount } from './accounts';
+import { readGoal, type Goal, type GoalCreatePayload } from './goals';
 import { ensureUserProfile } from './persistence';
 
 type JsonRecord = Record<string, unknown>;
@@ -21,8 +21,8 @@ export type CalculatorMetricSnapshot = {
 };
 
 export type CalculatorResultSnapshot = {
-  assumptions: string[];
-  metrics: CalculatorMetricSnapshot[];
+  assumptions: readonly string[];
+  metrics: readonly CalculatorMetricSnapshot[];
   narrative: string;
 };
 
@@ -34,6 +34,7 @@ export type CalculatorSavePayload = {
   conversionLabel: string;
   conversionRoute: '/accounts' | '/goals' | '/plans' | '/transactions';
   currency: string;
+  idempotencyKey?: string | null;
   inputValues: Record<string, number>;
   result: CalculatorResultSnapshot;
 };
@@ -51,7 +52,9 @@ export type SavedCalculatorResult = {
   currency: string;
   destinationType: CalculatorDestinationType;
   id: string;
+  idempotencyKey: string | null;
   inputValues: Record<string, number>;
+  payloadHash?: string | null;
   result: CalculatorResultSnapshot;
   updatedAt: string;
 };
@@ -71,9 +74,40 @@ export type SavedCalculatorPlanDraft = {
   updatedAt: string;
 };
 
+export const CALCULATOR_SAVE_STATUS = {
+  COMMITTED: 'committed-save',
+  RETRY: 'retry',
+  CONFLICT: 'conflict'
+} as const;
+
+export type CalculatorSaveStatus = (typeof CALCULATOR_SAVE_STATUS)[keyof typeof CALCULATOR_SAVE_STATUS];
+
 export type CalculatorSaveResult = {
   createdEntity: CalculatorSaveCreatedEntity;
   savedResult: SavedCalculatorResult;
+  saveStatus: 'committed-save' | 'retry';
+};
+
+export const IDEMPOTENCY_CONFLICT_CODE = 'IDEMPOTENCY_CONFLICT';
+export const IDEMPOTENCY_CONFLICT_MESSAGE =
+  'Idempotency key was previously used with a different calculator payload.';
+
+export class IdempotencyConflictError extends Error {
+  readonly code = IDEMPOTENCY_CONFLICT_CODE;
+  readonly status = 409;
+
+  constructor(message = IDEMPOTENCY_CONFLICT_MESSAGE) {
+    super(message);
+    this.name = 'IdempotencyConflictError';
+  }
+}
+
+export const IDEMPOTENCY_KEY_MISMATCH_CODE = 'IDEMPOTENCY_KEY_MISMATCH';
+export const IDEMPOTENCY_KEY_MISMATCH_MESSAGE =
+  'Idempotency-Key header and request body idempotencyKey do not match.';
+
+export type ParseCalculatorSavePayloadOptions = {
+  idempotencyHeader?: string | null;
 };
 
 type SavedCalculatorResultRow = {
@@ -89,7 +123,9 @@ type SavedCalculatorResultRow = {
   currency: string;
   destination_type: CalculatorDestinationType;
   id: string;
+  idempotency_key?: string | null;
   input_json: string;
+  payload_hash?: string | null;
   result_json: string;
   updated_at: string;
 };
@@ -121,6 +157,8 @@ export async function listSavedCalculatorResults(
           result_json,
           created_entity_type,
           created_entity_id,
+          idempotency_key,
+          payload_hash,
           created_at,
           updated_at
         FROM saved_calculator_results
@@ -135,19 +173,203 @@ export async function listSavedCalculatorResults(
   return result.results.map(toSavedCalculatorResult);
 }
 
+export const INCOMPATIBLE_GOAL_CURRENCY_CODE = 'INCOMPATIBLE_GOAL_CURRENCY';
+export const INCOMPATIBLE_GOAL_CURRENCY_MESSAGE =
+  'Goals currently support USD only. Currency conversion into goals is not supported.';
+
+export class IncompatibleGoalCurrencyError extends Error {
+  readonly code = INCOMPATIBLE_GOAL_CURRENCY_CODE;
+
+  constructor(message = INCOMPATIBLE_GOAL_CURRENCY_MESSAGE) {
+    super(message);
+    this.name = 'IncompatibleGoalCurrencyError';
+  }
+}
+
 export async function createSavedCalculatorResult(
   database: D1Database,
   userId: string,
   payload: CalculatorSavePayload
 ): Promise<CalculatorSaveResult> {
+  const destinationType = destinationTypeForRoute(payload.conversionRoute);
+
+  if (destinationType === 'goal' && payload.currency !== 'USD') {
+    throw new IncompatibleGoalCurrencyError();
+  }
+
   await ensureUserProfile(database, userId);
 
-  const destinationType = destinationTypeForRoute(payload.conversionRoute);
-  const createdEntity = await createDestinationDraft(database, userId, destinationType, payload);
-  const savedResultId = crypto.randomUUID();
-  const now = new Date().toISOString();
+  const payloadHash = await hashCalculatorPayload(payload);
+  const normalizedKey = payload.idempotencyKey?.trim() || null;
 
-  await database
+  if (normalizedKey) {
+    const existing = await database
+      .prepare(
+        `
+          SELECT
+            id,
+            calculator_slug,
+            calculator_title,
+            calculator_category,
+            calculator_region,
+            currency,
+            destination_type,
+            conversion_route,
+            conversion_label,
+            input_json,
+            result_json,
+            created_entity_type,
+            created_entity_id,
+            idempotency_key,
+            payload_hash,
+            created_at,
+            updated_at
+          FROM saved_calculator_results
+          WHERE user_id = ?
+            AND idempotency_key = ?
+        `
+      )
+      .bind(userId, normalizedKey)
+      .first<SavedCalculatorResultRow>();
+
+    if (existing) {
+      if (existing.payload_hash === payloadHash) {
+        const createdEntity = await readDestinationEntity(
+          database,
+          userId,
+          existing.created_entity_type,
+          existing.created_entity_id,
+          existing.conversion_route
+        );
+        return {
+          createdEntity,
+          savedResult: toSavedCalculatorResult(existing),
+          saveStatus: CALCULATOR_SAVE_STATUS.RETRY
+        };
+      }
+      throw new IdempotencyConflictError();
+    }
+  }
+
+  const now = new Date().toISOString();
+  const destinationStatements: D1PreparedStatement[] = [];
+  let createdEntityInfo: {
+    id: string;
+    route: '/accounts' | '/goals' | '/plans';
+    type: CalculatorCreatedEntityType;
+  } | null = null;
+
+  if (destinationType === 'goal') {
+    const goalPayload = goalPayloadFromCalculator(payload);
+    if (goalPayload) {
+      const goalId = crypto.randomUUID();
+      createdEntityInfo = { id: goalId, route: '/goals', type: 'goal' };
+      destinationStatements.push(
+        database
+          .prepare(
+            `
+              INSERT INTO goals (
+                id,
+                user_id,
+                name,
+                goal_type,
+                target_amount_cents,
+                current_amount_cents,
+                target_date,
+                status,
+                created_at,
+                updated_at
+              )
+              VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)
+            `
+          )
+          .bind(
+            goalId,
+            userId,
+            goalPayload.name,
+            goalPayload.goalType,
+            goalPayload.targetAmountCents,
+            goalPayload.currentAmountCents,
+            goalPayload.targetDate,
+            now,
+            now
+          )
+      );
+    }
+  } else if (destinationType === 'account') {
+    const accountPayload = accountPayloadFromCalculator(payload);
+    if (accountPayload) {
+      const accountId = crypto.randomUUID();
+      createdEntityInfo = { id: accountId, route: '/accounts', type: 'account' };
+      destinationStatements.push(
+        database
+          .prepare(
+            `
+              INSERT INTO financial_accounts (
+                id,
+                user_id,
+                name,
+                account_type,
+                institution_name,
+                currency,
+                is_active,
+                created_at,
+                updated_at
+              )
+              VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)
+            `
+          )
+          .bind(
+            accountId,
+            userId,
+            accountPayload.name,
+            accountPayload.accountType,
+            accountPayload.institutionName,
+            accountPayload.currency,
+            now,
+            now
+          )
+      );
+
+      if (accountPayload.balanceCents !== undefined) {
+        destinationStatements.push(
+          database
+            .prepare(
+              `
+                INSERT INTO account_balances (id, account_id, user_id, balance_date, balance_cents, created_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+              `
+            )
+            .bind(
+              crypto.randomUUID(),
+              accountId,
+              userId,
+              accountPayload.balanceDate ?? todayDate(),
+              accountPayload.balanceCents,
+              now
+            )
+        );
+      }
+    }
+  } else if (destinationType === 'plan') {
+    const planId = crypto.randomUUID();
+    const planType = planTypeForCalculator(payload.calculatorSlug, payload.calculatorTitle);
+    const planName = truncateText(`${payload.calculatorTitle} draft`, 120);
+    createdEntityInfo = { id: planId, route: '/plans', type: 'plan' };
+    destinationStatements.push(
+      database
+        .prepare(
+          `
+            INSERT INTO plans (id, user_id, goal_id, name, plan_type, status, created_at, updated_at)
+            VALUES (?, ?, NULL, ?, ?, 'draft', ?, ?)
+          `
+        )
+        .bind(planId, userId, planName, planType, now, now)
+    );
+  }
+
+  const savedResultId = crypto.randomUUID();
+  const savedResultStatement = database
     .prepare(
       `
         INSERT INTO saved_calculator_results (
@@ -165,10 +387,12 @@ export async function createSavedCalculatorResult(
           result_json,
           created_entity_type,
           created_entity_id,
+          idempotency_key,
+          payload_hash,
           created_at,
           updated_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `
     )
     .bind(
@@ -184,12 +408,69 @@ export async function createSavedCalculatorResult(
       payload.conversionLabel,
       JSON.stringify(payload.inputValues),
       JSON.stringify(payload.result),
-      createdEntity?.type ?? null,
-      createdEntity?.id ?? null,
+      createdEntityInfo?.type ?? null,
+      createdEntityInfo?.id ?? null,
+      normalizedKey,
+      payloadHash,
       now,
       now
-    )
-    .run();
+    );
+
+  const batchStatements = [...destinationStatements, savedResultStatement];
+
+  try {
+    await database.batch(batchStatements);
+  } catch (error) {
+    if (normalizedKey && isUniqueConstraintError(error)) {
+      const existing = await database
+        .prepare(
+          `
+            SELECT
+              id,
+              calculator_slug,
+              calculator_title,
+              calculator_category,
+              calculator_region,
+              currency,
+              destination_type,
+              conversion_route,
+              conversion_label,
+              input_json,
+              result_json,
+              created_entity_type,
+              created_entity_id,
+              idempotency_key,
+              payload_hash,
+              created_at,
+              updated_at
+            FROM saved_calculator_results
+            WHERE user_id = ?
+              AND idempotency_key = ?
+          `
+        )
+        .bind(userId, normalizedKey)
+        .first<SavedCalculatorResultRow>();
+
+      if (existing) {
+        if (existing.payload_hash === payloadHash) {
+          const createdEntity = await readDestinationEntity(
+            database,
+            userId,
+            existing.created_entity_type,
+            existing.created_entity_id,
+            existing.conversion_route
+          );
+          return {
+            createdEntity,
+            savedResult: toSavedCalculatorResult(existing),
+            saveStatus: CALCULATOR_SAVE_STATUS.RETRY
+          };
+        }
+        throw new IdempotencyConflictError();
+      }
+    }
+    throw error;
+  }
 
   const savedResult = await readSavedCalculatorResult(database, userId, savedResultId);
 
@@ -197,7 +478,21 @@ export async function createSavedCalculatorResult(
     throw new Error('Failed to save calculator result.');
   }
 
-  return { createdEntity, savedResult };
+  const createdEntity = createdEntityInfo
+    ? await readDestinationEntity(
+        database,
+        userId,
+        createdEntityInfo.type,
+        createdEntityInfo.id,
+        createdEntityInfo.route
+      )
+    : null;
+
+  return {
+    createdEntity,
+    savedResult,
+    saveStatus: CALCULATOR_SAVE_STATUS.COMMITTED
+  };
 }
 
 export async function readSavedCalculatorResult(
@@ -224,6 +519,8 @@ export async function readSavedCalculatorResult(
           result_json,
           created_entity_type,
           created_entity_id,
+          idempotency_key,
+          payload_hash,
           created_at,
           updated_at
         FROM saved_calculator_results
@@ -245,9 +542,18 @@ export async function readJsonBody(request: Request): Promise<unknown> {
   }
 }
 
-export function parseCalculatorSavePayload(value: unknown):
+export type CalculatorSaveParseError = {
+  code?: string;
+  error: string;
+  ok: false;
+};
+
+export function parseCalculatorSavePayload(
+  value: unknown,
+  options?: ParseCalculatorSavePayloadOptions
+):
   | { ok: true; value: CalculatorSavePayload }
-  | { error: string; ok: false } {
+  | CalculatorSaveParseError {
   if (!isRecord(value)) {
     return { error: 'Request body must be a JSON object.', ok: false };
   }
@@ -273,25 +579,42 @@ export function parseCalculatorSavePayload(value: unknown):
   const currency = parseCurrency(value.currency);
   if (!currency.ok) return currency;
 
+  if (conversionRoute.value === '/goals' && currency.value !== 'USD') {
+    return {
+      code: INCOMPATIBLE_GOAL_CURRENCY_CODE,
+      error: INCOMPATIBLE_GOAL_CURRENCY_MESSAGE,
+      ok: false
+    };
+  }
+
+  const idempotencyKey = resolveIdempotencyKey(value.idempotencyKey, options?.idempotencyHeader);
+  if (!idempotencyKey.ok) return idempotencyKey;
+
   const inputValues = parseInputValues(value.inputValues);
   if (!inputValues.ok) return inputValues;
 
   const result = parseCalculatorResult(value.result);
   if (!result.ok) return result;
 
+  const parsedValue: CalculatorSavePayload = {
+    calculatorCategory: calculatorCategory.value,
+    calculatorRegion: calculatorRegion.value,
+    calculatorSlug: calculatorSlug.value,
+    calculatorTitle: calculatorTitle.value,
+    conversionLabel: conversionLabel.value,
+    conversionRoute: conversionRoute.value,
+    currency: currency.value,
+    inputValues: inputValues.value,
+    result: result.value
+  };
+
+  if (idempotencyKey.value !== undefined) {
+    parsedValue.idempotencyKey = idempotencyKey.value;
+  }
+
   return {
     ok: true,
-    value: {
-      calculatorCategory: calculatorCategory.value,
-      calculatorRegion: calculatorRegion.value,
-      calculatorSlug: calculatorSlug.value,
-      calculatorTitle: calculatorTitle.value,
-      conversionLabel: conversionLabel.value,
-      conversionRoute: conversionRoute.value,
-      currency: currency.value,
-      inputValues: inputValues.value,
-      result: result.value
-    }
+    value: parsedValue
   };
 }
 
@@ -302,43 +625,85 @@ export function destinationTypeForRoute(route: CalculatorSavePayload['conversion
   return 'transaction';
 }
 
-async function createDestinationDraft(
+export async function readPlanDraft(
   database: D1Database,
   userId: string,
-  destinationType: CalculatorDestinationType,
-  payload: CalculatorSavePayload
+  planId: string
+): Promise<SavedCalculatorPlanDraft | null> {
+  await ensureUserProfile(database, userId);
+
+  const row = await database
+    .prepare(
+      `
+        SELECT
+          id,
+          name,
+          plan_type,
+          status,
+          created_at,
+          updated_at
+        FROM plans
+        WHERE id = ? AND user_id = ?
+      `
+    )
+    .bind(planId, userId)
+    .first<{
+      created_at: string;
+      id: string;
+      name: string;
+      plan_type: SavedCalculatorPlanDraft['planType'];
+      status: SavedCalculatorPlanDraft['status'];
+      updated_at: string;
+    }>();
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    createdAt: row.created_at,
+    id: row.id,
+    name: row.name,
+    planType: row.plan_type,
+    status: row.status,
+    updatedAt: row.updated_at
+  };
+}
+
+export async function readDestinationEntity(
+  database: D1Database,
+  userId: string,
+  type: CalculatorCreatedEntityType | null,
+  id: string | null,
+  route: CalculatorSavePayload['conversionRoute']
 ): Promise<CalculatorSaveCreatedEntity> {
-  if (destinationType === 'goal') {
-    const goalPayload = goalPayloadFromCalculator(payload);
-
-    if (!goalPayload) {
-      return null;
-    }
-
-    const goal = await createGoal(database, userId, goalPayload);
-    return { entity: goal, id: goal.id, route: '/goals', type: 'goal' };
+  if (!type || !id) {
+    return null;
   }
 
-  if (destinationType === 'account') {
-    const accountPayload = accountPayloadFromCalculator(payload);
-
-    if (!accountPayload) {
-      return null;
-    }
-
-    const account = await createAccount(database, userId, accountPayload);
-    return { entity: account, id: account.id, route: '/accounts', type: 'account' };
+  if (type === 'goal') {
+    const goal = await readGoal(database, userId, id);
+    return goal ? { entity: goal, id: goal.id, route: '/goals', type: 'goal' } : null;
   }
 
-  if (destinationType === 'plan') {
-    const plan = await createPlanDraft(database, userId, payload);
-    return { entity: plan, id: plan.id, route: '/plans', type: 'plan' };
+  if (type === 'account') {
+    const account = await readAccount(database, userId, id);
+    return account ? { entity: account, id: account.id, route: '/accounts', type: 'account' } : null;
+  }
+
+  if (type === 'plan') {
+    const plan = await readPlanDraft(database, userId, id);
+    return plan ? { entity: plan, id: plan.id, route: '/plans', type: 'plan' } : null;
   }
 
   return null;
 }
 
 export function goalPayloadFromCalculator(payload: CalculatorSavePayload): GoalCreatePayload | null {
+  if (payload.currency !== 'USD') {
+    return null;
+  }
+
   const targetAmountCents = targetAmountCentsForGoal(payload);
 
   if (targetAmountCents === null || targetAmountCents <= 0) {
@@ -695,7 +1060,9 @@ function toSavedCalculatorResult(row: SavedCalculatorResultRow): SavedCalculator
     currency: row.currency,
     destinationType: row.destination_type,
     id: row.id,
+    idempotencyKey: row.idempotency_key ?? null,
     inputValues: parseNumberRecord(row.input_json),
+    payloadHash: row.payload_hash ?? null,
     result: parseResultSnapshot(row.result_json),
     updatedAt: row.updated_at
   };
@@ -732,4 +1099,118 @@ function truncateText(value: string, maxLength: number): string {
 
 function isRecord(value: unknown): value is JsonRecord {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+export function resolveIdempotencyKey(
+  bodyKey: unknown,
+  headerKey?: string | null
+): { ok: true; value: string | null | undefined } | { code?: string; error: string; ok: false } {
+  let normalizedBodyKey: string | null | undefined = undefined;
+  if (bodyKey !== undefined) {
+    if (bodyKey === null || bodyKey === '') {
+      normalizedBodyKey = null;
+    } else if (typeof bodyKey !== 'string') {
+      return { error: 'idempotencyKey must be a string.', ok: false };
+    } else {
+      const trimmed = bodyKey.trim();
+      if (!trimmed) {
+        normalizedBodyKey = null;
+      } else if (trimmed.length > 120) {
+        return { error: 'idempotencyKey must be 120 characters or fewer.', ok: false };
+      } else {
+        normalizedBodyKey = trimmed;
+      }
+    }
+  }
+
+  let normalizedHeaderKey: string | null | undefined = undefined;
+  if (headerKey !== undefined && headerKey !== null) {
+    if (typeof headerKey !== 'string') {
+      return { error: 'Idempotency-Key header must be a string.', ok: false };
+    }
+    const trimmed = headerKey.trim();
+    if (!trimmed) {
+      normalizedHeaderKey = null;
+    } else if (trimmed.length > 120) {
+      return { error: 'Idempotency-Key header must be 120 characters or fewer.', ok: false };
+    } else {
+      normalizedHeaderKey = trimmed;
+    }
+  }
+
+  const hasBody = normalizedBodyKey !== undefined && normalizedBodyKey !== null;
+  const hasHeader = normalizedHeaderKey !== undefined && normalizedHeaderKey !== null;
+
+  if (hasBody && hasHeader) {
+    if (normalizedBodyKey !== normalizedHeaderKey) {
+      return {
+        code: IDEMPOTENCY_KEY_MISMATCH_CODE,
+        error: IDEMPOTENCY_KEY_MISMATCH_MESSAGE,
+        ok: false
+      };
+    }
+    return { ok: true, value: normalizedBodyKey };
+  }
+
+  if (hasBody) {
+    return { ok: true, value: normalizedBodyKey };
+  }
+
+  if (hasHeader) {
+    return { ok: true, value: normalizedHeaderKey };
+  }
+
+  if (normalizedBodyKey === null || normalizedHeaderKey === null) {
+    return { ok: true, value: null };
+  }
+
+  return { ok: true, value: undefined };
+}
+
+export async function hashCalculatorPayload(payload: CalculatorSavePayload): Promise<string> {
+  const canonical = {
+    calculatorCategory: payload.calculatorCategory,
+    calculatorRegion: payload.calculatorRegion,
+    calculatorSlug: payload.calculatorSlug,
+    calculatorTitle: payload.calculatorTitle,
+    conversionLabel: payload.conversionLabel,
+    conversionRoute: payload.conversionRoute,
+    currency: payload.currency,
+    inputValues: Object.keys(payload.inputValues)
+      .sort()
+      .reduce<Record<string, number>>((acc, key) => {
+        acc[key] = payload.inputValues[key];
+        return acc;
+      }, {}),
+    result: {
+      assumptions: [...payload.result.assumptions],
+      metrics: payload.result.metrics.map((metric) => ({
+        description: metric.description ?? '',
+        label: metric.label,
+        tone: metric.tone ?? '',
+        value: metric.value,
+        valueType: metric.valueType
+      })),
+      narrative: payload.result.narrative
+    }
+  };
+
+  const jsonString = JSON.stringify(canonical);
+  const data = new TextEncoder().encode(jsonString);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+export function isUniqueConstraintError(error: unknown): boolean {
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase();
+    return (
+      message.includes('unique constraint') ||
+      message.includes('sqlite_constraint') ||
+      message.includes('d1_error: unique')
+    );
+  }
+  return false;
 }

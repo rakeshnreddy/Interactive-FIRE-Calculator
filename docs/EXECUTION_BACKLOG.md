@@ -14,7 +14,7 @@
   - Completion evidence: implementation `1664043`; 13 runner regression tests, 79 Python tests plus 21 subtests, 1,269 Vitest tests, typecheck and build passed. [Hosted full suite](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34194698348) passed; [preview](https://75358a37.interactive-fire-calculator.pages.dev) passed all 84 public HTTP route checks. Next: B02.
   - Migration/rollback/effort: no migration; revert delivery commit. Human 0.5–1 day; agent 1–2 hours plus CI.
 
-- [ ] **B02 — Ready: reject incompatible currency conversion into goals.**
+- [x] **B02 — Accepted: reject incompatible currency conversion into goals.**
   - Problem/evidence: generic save API can drop INR/EUR into currency-less goal amounts (`goalPayloadFromCalculator`); dedicated UI guards are insufficient.
   - Outcome/scope: server rejects unsupported goal conversion before any write with a user-safe message; public calculations/share/export continue in original currency. Keep current USD contract until separate schema migration.
   - Non-goals/files: no FX conversion, no silent currency relabel, no record rewrite. `functions/_lib/calculatorResults.ts`, endpoint contract, `src/calculatorResults.test.ts`, affected save error rendering only if needed.
@@ -23,7 +23,7 @@
   - Privacy/dependencies: auth before parse; no production records. B01 verification supports rollout, no owner secret needed for local proof.
   - Migration/rollback/effort: no schema; rollback only to a safe disabled-conversion mode, not unsafe reinterpretation. Human 1 day; agent 2–4 hours.
 
-- [ ] **B03 — Ready: prevent mixed-currency account totals.**
+- [x] **B03 — Accepted: prevent mixed-currency account totals.**
   - Problem/evidence: `summarizeAccounts` adds balances regardless of `account.currency`.
   - Outcome/scope: group summary totals by currency and require explicit matching currency for plan imports. Display a clear unavailable combined total for mixed sets; never invent an exchange rate.
   - Non-goals/files: no FX feed or conversion; accounts helpers, dashboard response/types, App summary, `planWorkspace`, tests.
@@ -32,7 +32,7 @@
   - Privacy/dependencies: old rows keep original currency; inspect historical data only with scoped owner authorization. B02; no automatic production migration.
   - Rollback/effort: feature-gate combined summary off; no data rewrite. Human 2–3 days; agent 4–8 hours.
 
-- [ ] **B04 — Ready: atomic, retry-safe calculator save.**
+- [x] **B04 — Accepted: atomic, retry-safe calculator save.**
   - Problem/evidence: destination creation precedes separate result insert; retries can create duplicate goals/accounts.
   - Outcome/scope: user-scoped idempotency key and transaction/batch for destination + result, identical retry returns original entity; payload mismatch with same key conflicts.
   - Non-goals/files: no automatic linkage of old results; `calculatorResults`, API, client save call, new additive migration, real D1 integration tests.
@@ -41,7 +41,7 @@
   - Privacy/dependencies: hash only canonical validated payload; same-user scope. B02–B03, review migration before remote application.
   - Rollback/effort: additive schema retained; disable new save entry point on issue, do not drop tables. Human 2 days; agent 4–8 hours.
 
-- [ ] **B05 — Ready: executable tenancy/auth boundary harness.**
+- [x] **B05 — Ready: executable tenancy/auth boundary harness.**
   - Problem/evidence: many fake SQL tests; hosted signed-in journey unverified.
   - Outcome/scope: local D1 schema + synthetic two-user fixtures, injected verified-session seam only in tests; prove CRUD, relationships, imports, versions, export and delete isolation; separate current-SDK auth tests.
   - Non-goals/files: no test auth bypass deployed. API tests, session tests, local integration config, migrations as fixtures.
@@ -50,7 +50,7 @@
   - Dependencies/rollback/effort: B04; local only, remove harness configuration if faulty. Human 3–5 days; agent 8–16 hours. Split auth and D1 harness into sequential PRs if needed.
 
 - [ ] **B06 — Owner-blocked: working hosted auth and lifecycle.**
-  - Problem/evidence: both previews missing browser key; 0/6 production preflight; Cloudflare preview DB currently matches configured production database.
+  - Problem/evidence: hosted disposable-user Clerk lifecycle remains unverified. Historical missing-key/shared-DB findings are superseded: C06 preview 5e68409d has verified isolated finpath-preview binding and migration 0006. Recheck current browser/server configuration securely; key presence alone does not prove working sessions. Production remains gated.
   - Outcome/scope: first configure and verify an approved isolated preview database using effective deployment metadata, then approved preview Clerk config; disposable hosted user sign-up/in/out, refresh, save/reload, profile, import/export/delete; separate owned production setup and eventual release approval.
   - Non-goals/files: no DNS/production changes without owner authorization; runbook and hosted test evidence only, secure provider settings.
   - Acceptance: preview DB differs from production before all write tests; end-to-end identity/save/export/delete and second-user isolation pass; public routes still work; production preflight remains fail-closed until all genuine prerequisites complete.
@@ -58,7 +58,7 @@
   - Privacy/dependencies: owner supplies exact origin and secure settings, disposable identity; B02–B05. Never use an existing personal identity to test deletion.
   - Rollback/effort: revert preview config safely; preserve production guard. Human 1–3 days plus DNS/provider waits; agent 4–8 hours after setup.
 
-- [ ] **B07 — Ready for local design/test: deletion and recovery contract.**
+- [x] **B07 — Ready for local design/test: deletion and recovery contract.**
   - Problem/evidence: D1 delete excludes Clerk/device drafts/backups; profile can be recreated; export lacks consistent snapshot.
   - Outcome/scope: document true erasure boundary, clear local drafts explicitly, add deletion-in-progress guard and recovery replay design; isolated synthetic restore drill.
   - Non-goals/files: no real production restore/delete. accountData, persistence, Settings, storage helpers, recovery runbook and additive deletion-state migration if reviewed.
@@ -69,7 +69,7 @@
 
 ## P1: prove one repeated job
 
-- [ ] **B08 — Ready: mortgage payoff reconciliation regression.**
+- [x] **B08 — Accepted: mortgage payoff reconciliation regression.**
   - Problem/evidence: mobile $200,000 / 6.5% / 30y mortgage shows 361 payoff months vs 360 schedule rows.
   - Outcome/scope: reproduce engine/visual rounding divergence, reference fixed-payment formula, choose explicit final residual tolerance and document migration decision before changing shared math.
   - Non-goals/files: no `fire.ts` edits or broad formula rewrite; loan helper in `seoCalculators`, studio data, golden tests, `docs/calculators/` contract.
@@ -77,7 +77,7 @@
   - Analytics/tests/privacy: correction count, no amounts logged; regression first plus shared goldens and hosted mobile schedule. B01 only.
   - Rollback/effort: revert formula commit while clearly labeling discrepancy; no saved-data rewrite. Human 1 day; agent 2–4 hours.
 
-- [ ] **B09 — Ready: remove internal instructions from calculator copy.**
+- [x] **B09 — Ready: remove internal instructions from calculator copy.**
   - Problem/evidence: “Phase 22” and “Connect loan results…” visible in mortgage; auth gate exposes setup internals.
   - Outcome/scope: user-facing explanation of assumptions, save availability and limits; guard against internal phase/instruction text.
   - Non-goals/files: no new claims or ranking copy; calculatorStudios/Quality, auth gate copy, content tests.
@@ -131,7 +131,7 @@
 
 Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL_DESIGN_SPEC.md). Every item below remains unimplemented until independently accepted.
 
-- [ ] **B15 — Planned: Repair light/dark contrast defects.**
+- [x] **B15 — Accepted: Repair light/dark contrast defects.**
   - User problem/evidence: Invisible Sign in and low-contrast continuity heading prevent basic reading. Visual audit V01–V02.
   - Expected outcome/scope: Sign in is visibly labeled in light/dark mode; homepage inverse heading meets large-text contrast; normal button text meets 4.5:1; focus remains visible; no other header or calculator color regresses.
   - Non-goals: No redesign, token-wide migration, auth setup, formula change or hidden controls.
@@ -143,7 +143,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 0.5–1 day; agent 2–4 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B15.md](execution/prompts/B15.md).
 
-- [ ] **B16 — Planned: Establish authoritative design tokens and primitives.**
+- [x] **B16 — Accepted: Establish authoritative design tokens and primitives.**
   - User problem/evidence: Conflicting generations of CSS make consistent polish unreliable. Visual audit V03/V11.
   - Expected outcome/scope: One canonical token table matches rendered colors; changed inputs 16px at default settings; buttons have documented hit areas; inverse headings retain contrast; shared style changes pass representative light/dark screenshots.
   - Non-goals: No wholesale 10k-line rewrite, font replacement, framework install, giant App extraction or automatic deletion of unproven unused CSS.
@@ -155,7 +155,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B16.md](execution/prompts/B16.md).
 
-- [ ] **B17 — Planned: Polish public/account navigation and keyboard behavior.**
+- [x] **B17 — Accepted: Polish public/account navigation and keyboard behavior.**
   - User problem/evidence: Signed-out visitors see private destinations first and mobile disclosure ignores Escape. Visual audit V05–V06.
   - Expected outcome/scope: Mobile Escape closes and returns focus; no hidden focusable navigation; selected route exposed; public primary path works without auth; native link behavior and back/forward pass.
   - Non-goals: No auth bypass, new routing framework, production setup or unrelated route renaming.
@@ -167,7 +167,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B17.md](execution/prompts/B17.md).
 
-- [ ] **B18 — Planned: Replace generic homepage hero with authentic product composition.**
+- [x] **B18 — Planned: Replace generic homepage hero with authentic product composition.**
   - User problem/evidence: Phone/card imagery obscures the actual calculator and suggests unsupported products. Visual audit V04.
   - Expected outcome/scope: At 1440x900 public CTA and real example answer visible; at 390px primary action within 600px at normal text; example visibly synthetic; no unsupported product claims; all existing useful routes retained.
   - Non-goals: No banking/mobile launch claims, invented testimonials, new legal policy, pricing or tracking SDK.
@@ -179,7 +179,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B18.md](execution/prompts/B18.md).
 
-- [ ] **B19 — Planned: Make calculator discovery concise and distinctive.**
+- [x] **B19 — Planned: Make calculator discovery concise and distinctive.**
   - User problem/evidence: Repetitive panels and counts distract from choosing the right calculator. Visual audit V13.
   - Expected outcome/scope: All public tools reachable; FIRE discoverable; search state robust; no-match helpful; route link semantics native; consistent light/dark mobile/desktop hierarchy.
   - Non-goals: No new calculators, ranking copy, new search service or changed calculator metadata math.
@@ -191,7 +191,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B19.md](execution/prompts/B19.md).
 
-- [ ] **B20 — Planned: Reorder generic calculators around inputs and the answer.**
+- [x] **B20 — Accepted: Reorder generic calculators around inputs and the answer.**
   - User problem/evidence: India tax first input begins at y=1206 on a 390px phone. Visual audit V07–V08/V12.
   - Expected outcome/scope: Representative first control at or before y=650 at 390px normal text; no essential assumption removed; main answer visually dominant; keyboard order logical; no forced global overflow hiding.
   - Non-goals: No formula rewrite, chart truth implementation (B21), saving API changes or broad replacement of dedicated calculators.
@@ -203,7 +203,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B20.md](execution/prompts/B20.md).
 
-- [ ] **B21 — Planned: Make shared charts numerically honest and accessible.**
+- [x] **B21 — Accepted: Make shared charts numerically honest and accessible.**
   - User problem/evidence: Mixed-unit bars and minimum 8% zero bars imply false comparisons. Visual audit V09.
   - Expected outcome/scope: Zero never appears as a positive bar; sign visible; unrelated units never share scale; both series values accessible; no financial engine diff.
   - Non-goals: No engine math, invented forecast, chart animation dependency or hiding unfavorable outcomes.
@@ -215,7 +215,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B21.md](execution/prompts/B21.md).
 
-- [ ] **B22 — Planned: Unify compound-interest and savings-goal presentation.**
+- [x] **B22 — Accepted: Unify compound-interest and savings-goal presentation.**
   - User problem/evidence: Dedicated growth tools have excessive framing and inconsistent savings input text. Visual audit V10–V11.
   - Expected outcome/scope: Both tools use consistent visual primitives; savings input font fixed; preserved numeric goldens; essential result visible and useful details discoverable.
   - Non-goals: No merging the two engines, shared formula changes, FX conversion or replacing specialized tools with generic ones.
@@ -227,7 +227,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B22.md](execution/prompts/B22.md).
 
-- [ ] **B23 — Planned: Unify budget, net-worth and emergency-fund presentation.**
+- [x] **B23 — Accepted: Unify budget, net-worth and emergency-fund presentation.**
   - User problem/evidence: Cash-flow tools need consistent hierarchy without losing different accounting meanings. Visual audit V10.
   - Expected outcome/scope: All three tools follow the visual contract; units and accounting meaning remain explicit; outputs unchanged; no input or warning hidden.
   - Non-goals: No account aggregation, formula change, gamification or currency relabeling.
@@ -239,7 +239,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B23.md](execution/prompts/B23.md).
 
-- [ ] **B24 — Planned: Refine FIRE calculator into the flagship decision experience.**
+- [x] **B24 — Accepted: Refine FIRE calculator into the flagship decision experience.**
   - User problem/evidence: FIRE needs the clearest result/assumption hierarchy and concise accessible labels. Visual audit V10/V12.
   - Expected outcome/scope: Both modes and advanced tools preserved; primary result and warnings easy to read; input help not repeated in name; no engine diff; changed interactions regression-tested.
   - Non-goals: No FIRE formula changes, new forecasting model, automatic saved-plan update or financial recommendations.
@@ -251,7 +251,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B24.md](execution/prompts/B24.md).
 
-- [ ] **B25 — Planned: Build isolated operational UI fixtures for visual verification.**
+- [x] **B25 — Planned: Build isolated operational UI fixtures for visual verification.**
   - User problem/evidence: Hosted auth blocks inspection of populated/error operational states. Visual audit V15.
   - Expected outcome/scope: All target real components render reproducible synthetic states locally; no fixture/auth bypass in production output; no network writes; harness instructions executable.
   - Non-goals: No copied static mock workspace, real records, production auth bypass or database seeding.
@@ -324,6 +324,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Detailed implementer prompt: [prompts/B30.md](execution/prompts/B30.md).
 
 - [ ] **B31 — Planned: Close visual accessibility and performance acceptance matrix.**
+  - Deferred actual-reader work: consolidate B32/C03/C04 and subsequent UI routes under A11Y-DEFERRED in execution/ACCESSIBILITY_DEFERRALS.md. A lower-cost capable agent performs real VoiceOver/NVDA checks after C10; primary verifies closure. This work does not block earlier implementation checkpoints, but remains mandatory for B31 and any WCAG-conformance claim.
   - User problem/evidence: Individual polished screens do not prove a coherent accessible product. Visual audit V16.
   - Expected outcome/scope: All objective visual gates have evidence; no unresolved major issue; subjective rubric justified; full suite/CI/preview verified at submitted code SHA.
   - Non-goals: No production launch, waived missing tests, blanket WCAG certification or new broad refactor.
@@ -335,7 +336,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 2–3 days; agent 6–12 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B31.md](execution/prompts/B31.md).
 
-- [ ] **B32 — Planned: implement the light/dark glass and gradient color system.**
+- [x] **B32 — Accepted: implement the light/dark glass and gradient color system.**
   - User problem/evidence: owner explicitly requested glassmorphism and gradients on 2026-09-08; current theme has contrast collisions and uncoordinated late overrides (V01–V03).
   - Expected outcome/scope: implement COLOR_AND_GLASS_SYSTEM.md in actual React surfaces using B16's canonical roles; coherent light/dark palette, bounded glass and gradients, solid/unsupported/print/forced-colors fallbacks.
   - Non-goals: no new homepage layout (B18), formula/auth changes, dependency, new font, animated background or glass behind editable values.
@@ -347,7 +348,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema; revert material/theme commit while preserving B15/B16 repairs. Human 1–2 days; agent 4–8 hours plus review.
   - Detailed implementer prompt: [B32](execution/prompts/B32.md).
 
-- [ ] **B33 — Owner-blocked: isolate preview infrastructure before backend publication.**
+- [x] **B33 — Accepted: isolate preview infrastructure before backend publication.**
   - User problem/evidence: effective preview DB binding matched the production-named DB; publishing changed APIs can expose production-bound functions even without intentional test writes.
   - Expected outcome/scope: verify every automatic/manual preview deployment path, obtain scoped owner approval for the isolated preview DB, configure preview-only binding and confirm deployed effective metadata before any backend-code push/deploy.
   - Non-goals: no production DB/DNS changes, no copying production data, no auth bypass, no disabling unrelated deployments without authorization.
@@ -359,7 +360,8 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: apply only reviewed migrations to the approved isolated target with authorization; rollback means disable/defer unsafe preview publication, never bind preview back to production. Human 0.5–1 day plus owner setup; agent 2–4 hours.
   - Detailed implementer prompt: [B33](execution/prompts/B33.md).
 
-- [ ] **B34 — Ready: repair newly reported development-tool dependency advisories.**
+- [x] **B34 — Accepted: repair newly reported development-tool dependency advisories.**
+  - Closure: [C00R independent review](execution/reviews/C00R.md), code `b48ac00328f356746bd501921562e727feb7a8e5`, 2026-09-09.
   - User problem/evidence: hosted CI 34300491728 passes tests/build but fails npm audit, reporting two moderate and three high findings across Vitest/mocker and sharp/miniflare/Wrangler. Earlier zero-audit evidence is historical.
   - Expected outcome/scope: choose supported patched development-tool versions with a reproducible lockfile; verify full suite, audit and Wrangler compilation. Distinguish package findings from demonstrated production exploitability.
   - Non-goals: no npm audit fix --force, arbitrary Wrangler downgrade, suppressed audit, production deployment or unrelated runtime upgrade.
@@ -370,6 +372,55 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no data migration; record safe previous/patched versions and disable affected development server usage if no safe fix exists. Do not revert to a known vulnerable version merely for green tests. Human 0.5–1 day; agent 2–4 hours.
   - Detailed implementer prompt: [B34](execution/prompts/B34.md).
 
+## Queued after task 34: comprehensive calculator functionality and visual excellence
+
+Owner-added 2026-09-13. This is a new program after the existing 34-task list, not extra scope for the active C05 agent. It remains queued for primary release; detailed child IDs/checkpoints will be registered after the comprehensive inventory is reviewed. Existing task counts and acceptance records are unchanged until that registration.
+
+- User problem/evidence: the current B22–B24 tasks largely refine presentation and preserve existing engines; they do not guarantee every calculator has complete decision-support functionality. The older calculator roadmaps contain broader goals without a fully verified, executable per-route plan.
+- Expected outcome: inspect every current calculator, identify and implement justified missing features, improve explanation of entered results, provide optional advanced control, and upgrade each calculator's output presentation without overwhelming the user.
+- Scope: current-route inventory, functionality/gap analysis, calculator-specific result and visual specifications, prioritized per-calculator/family implementation prompts, reviewed pilot, implementation batches and final cross-calculator acceptance. Analysis alone does not close this program.
+- Visual requirements: derive graphs, breakdowns, timelines, comparisons, tables and other visuals from each calculator's actual mathematical model and user decision. No identical generic chart requirement across unrelated calculators; no invented data or misleading scales. Both themes and mobile presentation must remain clear.
+- Non-goals: no new calculator-count target, gratuitous controls/charts, unapproved formula changes, paid integrations or production launch.
+- Files likely affected: new docs/calculator-excellence/*; future execution prompts/ledger; affected calculator components, engines and tests in src/; shared visual primitives and styles where justified by the audited gap.
+- Acceptance/tests: every inventoried calculator has an evidence-backed gap disposition and completed approved implementation; primary answer, explanation, optional detail, advanced controls and visual/table data reconcile. Relevant numerical, interaction, accessibility, responsive/theme, CI and isolated-preview checks pass. Actual satisfaction is measured with user evidence, not inferred from automated tests.
+- Analytics/privacy: use only the approved consent/event contract; synthetic verification data; preserve signed-out utility, safe saves, currency semantics and data lifecycle. No new collection by default.
+- Dependencies: finish the existing implementation priorities and obtain primary release; no changes to current worker scope. External-gated monetization/mobile tasks may remain pending only under an explicit reviewer scheduling amendment.
+- Migration/rollback/effort: require formula sources, model version and saved-result migration decision for behavioral math changes; reversible family commits and explicit rollback. Estimate effort per audited child slice rather than inventing a single estimate for every calculator.
+- Detailed future-agent instructions: [calculator excellence program](execution/CALCULATOR_EXCELLENCE_PROGRAM.md).
+
 ## Milestone reporting
 
 For each item record commit, changed files, red/green tests, local full-suite result, PR/CI URL, immutable preview URL and hosted verification scope. Report remaining risks and the exact next Ready item. Production readiness is never inferred from document completion or preview deployment.
+
+C01 acceptance 2026-09-10: B15/B16/B17 accepted together at `ccebac7d5bcaf645721e2e67ea490a7f447e1db9`; [independent review](execution/reviews/C01.md). Next released task: B32 in C01T.
+
+Landing review amendment 2026-09-10: [image, copy and theme findings](LANDING_PAGE_REVIEW.md) expand B32 with a visibly theme-responsive existing hero and B18 with an engine-backed product example, exact copy baseline, honest account availability and detailed review gates. Follow their amended prompts; C03 remains locked. No task was closed or renumbered.
+
+C01T review 2026-09-10: B32 requires print-layer repair and completed verification evidence; [review](execution/reviews/C01T.md). No new task accepted; C01I remains locked.
+
+C01T re-review of 12b3546: B32 remains changes_requested. Hero print improved; lower continuity print and verification gate still need repair. Matching WebKit installed and sampled by reviewer. Follow latest [review](execution/reviews/C01T.md) and [worker prompt](execution/C01T_REWORK_PROMPT.md). Accepted total unchanged.
+
+C01T third review of dd47fa3: whole-page print verified fixed; bounded native200% layout checks completed. Remaining evaluator missing-telemetry false PASS and manual reader/interaction proof keep B32 open. Follow latest review and bounded rework prompt; no new task accepted.
+
+C01T final acceptance: B32 accepted at `32584da7e47307a35730911e3567f02f9095550b` under the owner’s explicit actual-reader deferral, tracked in B31. This supersedes earlier C01T changes-requested notes. Accepted total 6/34 (17.6% by task count). C01I/B33 is released for its scoped isolation work; remote setup still needs its specified owner authorization. See [final review](execution/reviews/C01T.md).
+
+C01I primary review: B33 requires audit reliability repairs and scoped preview-binding authorization. No acceptance; C02 stays locked. See [review](execution/reviews/C01I.md) and [rework prompt](execution/C01I_REWORK_PROMPT.md).
+
+C01I accepted after primary reviewer completed the remaining audit repair. 7/34 tasks accepted (20.6% task count). C02 released, starting B02. See [final review](execution/reviews/C01I.md).
+
+C02 accepted 2026-09-11: B02/B03/B04, common candidate `ef2cded6441191a26537adf8ddf1a3e1909cf73b`, [review](execution/reviews/C02.md).10/34 accepted(29.4% by task count). C03 released: B18→B19→B09; use [explicit worker prompt](execution/C03_START_PROMPT.md).
+
+C03 accepted 2026-09-13 at `285e9eadf2d854951cec75d02afc6cce97d4d6c5`; B18/B19/B09 accepted with owner-authorized actual-reader deferral tracked in B31 and execution/ACCESSIBILITY_DEFERRALS.md. C04 is released. 13/34 accepted (38.2%, task count). See execution/reviews/C03.md.
+
+C04 accepted 2026-09-13: B08/B20/B21 done at 733e76c217058cafc3e5d418f09cb55ced531f4c with owner-deferred actual-reader checks assigned to B31. C05 released. 16/34 accepted (47.1%, task count).
+
+C05 accepted2026-09-14: B22/B23/B24 done at website1c73bffbb4a5d1f179d67f2934c900a8b44711e5; native assisted proof and evaluator/CSV repairs verified.19/34 accepted (55.9%). C06 released, starting B05. The post-task-34 calculator excellence program remains queued.
+
+
+## Owner amendment — 2026-09-15: consolidate zoom verification at B31/C11
+
+The owner directed: “push it to the end of verification of all tasks … if there is any zoom issue it can be fixed later.” Native browser 200% zoom checks and zoom-specific layout repairs are therefore DEFERRED through C10 to the final B31/C11 verification. Their absence or a known zoom-only issue must not block otherwise passing implementation tasks or checkpoint release. This supersedes earlier per-task native zoom gates, including older prompt/contract language. Do not rerun native zoom at every checkpoint. Preserve existing evidence and record newly noticed zoom defects without spending implementation time on them now. Functional correctness, tenancy, deletion, auth boundaries, normal-size usability, mobile layouts, keyboard, contrast and reduced-motion/transparency checks remain required. Deferred means not passed; no full WCAG-conformance claim.
+
+B31/C11 follow-up ZOOM-FINAL: a lower-cost capable agent performs one consolidated actual-browser 200% sweep of final public and authorized synthetic authenticated journeys, in both themes. Verify reachable essential controls, readable inputs/results, no text overlap or clipped actions, and reflow. Record browser version, actual zoom level, exact candidate, route, screenshot, defect and focused retest. Pixel density, CSS zoom and viewport resizing do not substitute for native browser zoom evidence. Primary reviews the evidence and closes the task. Existing C06 account-import/fixture toolbar repairs and screenshots are retained; repeat only if the final sweep finds a regression.
+
+C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 complete;22/34 accepted64.7%. C07 hosted auth remains gated. Native zoom deferred to final B31/C11.

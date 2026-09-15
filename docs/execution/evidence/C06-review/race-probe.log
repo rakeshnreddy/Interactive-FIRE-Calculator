@@ -1,0 +1,48 @@
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+(node:76653) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/c06ReviewerProbe.test.ts (2 tests | 2 failed) 23ms
+   × review probe: account write must not commit after deletion 18ms
+   × review probe: export cannot combine pre-delete accounts with post-delete user 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/c06ReviewerProbe.test.ts > review probe: account write must not commit after deletion
+AssertionError: expected [ { …(10) } ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/c06ReviewerProbe.test.ts:21:69
+     19|   expect(intercepted).toBe(true);
+     20|   expect(h.getUserRows('users', 'review_synthetic_a')[0].deleted_at).t…
+     21|   expect(h.getUserRows('financial_accounts', 'review_synthetic_a')).to…
+       |                                                                     ^
+     22| });
+     23| it('review probe: export cannot combine pre-delete accounts with post-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/c06ReviewerProbe.test.ts > review probe: export cannot combine pre-delete accounts with post-delete user
+AssertionError: expected null not to be null
+ ❯ src/c06ReviewerProbe.test.ts:50:32
+     48|   expect(intercepted).toBe(true);
+     49|   expect(result.data.financialAccounts).toHaveLength(1);
+     50|   expect(result.data.user).not.toBeNull();
+       |                                ^
+     51| });
+     52|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  18:37:43
+   Duration  247ms (transform 62ms, setup 0ms, import 102ms, tests 23ms, environment 0ms)
+

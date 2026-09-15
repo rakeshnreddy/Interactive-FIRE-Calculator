@@ -1,0 +1,10 @@
+0 standard window FinPath | Synthetic UI Fixtures - Google Chrome - Rakesh, URL: 127.0.0.1:5173/fixtures.html?component=accounts&state=long-value&theme=dark, Secondary Actions: Raise
+	1 container FinPath | Synthetic UI Fixtures - Google Chrome - Rakesh, URL: 127.0.0.1:5173/fixtures.html?component=accounts&state=long-value&theme=dark
+					11 button Zoom: 200%
+				27 HTML content FinPath | Synthetic UI Fixtures, URL: 127.0.0.1:5173/fixtures.html?component=accounts&state=long-value&theme=dark
+							86 container Review balance snapshots
+								88 heading Review balance snapshots, Value: 2
+									89 text Review balance snapshots
+								91 button Template
+								92 button Select CSV
+The focused UI element is 27 HTML content FinPath | Synthetic UI Fixtures, URL: 127.0.0.1:5173/fixtures.html?component=accounts&state=long-value&theme=dark

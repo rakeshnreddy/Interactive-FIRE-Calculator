@@ -1,0 +1,133 @@
+[
+  {
+    "slug": "fire",
+    "mode": "light",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to dark mode, Value: 0"
+    ]
+  },
+  {
+    "slug": "fire",
+    "mode": "dark",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to light mode, Value: 1",
+      "The focused UI element is 32 toggle button Description: Switch to light mode, Value: 1"
+    ]
+  },
+  {
+    "slug": "compound-interest",
+    "mode": "light",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to dark mode, Value: 0",
+      "The focused UI element is 32 toggle button Description: Switch to dark mode, Value: 0"
+    ]
+  },
+  {
+    "slug": "compound-interest",
+    "mode": "dark",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to light mode, Value: 1",
+      "The focused UI element is 32 toggle button Description: Switch to light mode, Value: 1"
+    ]
+  },
+  {
+    "slug": "savings-goal",
+    "mode": "light",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to dark mode, Value: 0",
+      "The focused UI element is 32 toggle button Description: Switch to dark mode, Value: 0"
+    ]
+  },
+  {
+    "slug": "savings-goal",
+    "mode": "dark",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to light mode, Value: 1",
+      "The focused UI element is 32 toggle button Description: Switch to light mode, Value: 1"
+    ]
+  },
+  {
+    "slug": "net-worth",
+    "mode": "light",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to dark mode, Value: 0",
+      "The focused UI element is 32 toggle button Description: Switch to dark mode, Value: 0"
+    ]
+  },
+  {
+    "slug": "net-worth",
+    "mode": "dark",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to light mode, Value: 1",
+      "The focused UI element is 32 toggle button Description: Switch to light mode, Value: 1"
+    ]
+  },
+  {
+    "slug": "budget",
+    "mode": "light",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to dark mode, Value: 0",
+      "The focused UI element is 32 toggle button Description: Switch to dark mode, Value: 0"
+    ]
+  },
+  {
+    "slug": "budget",
+    "mode": "dark",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to light mode, Value: 1",
+      "The focused UI element is 32 toggle button Description: Switch to light mode, Value: 1"
+    ]
+  },
+  {
+    "slug": "emergency-fund",
+    "mode": "light",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to dark mode, Value: 0",
+      "The focused UI element is 32 toggle button Description: Switch to dark mode, Value: 0"
+    ]
+  },
+  {
+    "slug": "emergency-fund",
+    "mode": "dark",
+    "zoom": [
+      "\t\t\t\t\t11 button Zoom: 200%"
+    ],
+    "observedToggle": [
+      "\t\t\t\t\t\t32 toggle button Description: Switch to light mode, Value: 1",
+      "The focused UI element is 32 toggle button Description: Switch to light mode, Value: 1"
+    ]
+  }
+]

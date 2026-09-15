@@ -93,7 +93,7 @@ type PlanningGoal = {
   updatedAt: string;
 };
 
-type PlanVersionSummary = {
+export type PlanVersionSummary = {
   createdAt: string;
   label: string | null;
   notes: string | null;

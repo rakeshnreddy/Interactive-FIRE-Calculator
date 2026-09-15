@@ -1,0 +1,114 @@
+Window: "FinPath | FIRE Calculator and Financial Planning", App: Google Chrome.
+0 standard window FinPath | FIRE Calculator and Financial Planning - Google Chrome - Rakesh, URL: a26c412b.interactive-fire-calculator.pages.dev/, Secondary Actions: Raise
+	1 container FinPath | FIRE Calculator and Financial Planning - Google Chrome - Rakesh, URL: a26c412b.interactive-fire-calculator.pages.dev/
+		2 container
+			3 toolbar
+				4 button Back
+				5 button (disabled) Forward
+				6 button Reload
+				7 button Home
+				8 container
+					9 pop up button View site information
+					10 text field (settable) Description: Address and search bar, Value: a26c412b.interactive-fire-calculator.pages.dev, Placeholder: Ask Google or type a URL
+					11 button Zoom: 200%
+					12 button Bookmark this tab
+				13 container
+					14 pop up button Google Dictionary
+Has access to this site
+					15 pop up button iCloud Bookmarks
+					16 pop up button Table Capture
+Has access to this site
+					17 pop up button Cisco Webex Extension
+					18 pop up button AdGuard Browser Assistant
+Wants access to this site
+					19 pop up button AdGuard AdBlocker
+Protection enabled
+Has access to this site
+					20 pop up button Sign in to websites with accounts on Windows and macOS
+Has access to this site
+					21 pop up button Check US Visa Slots - USVisaScheduling
+Wants access to this site
+					22 pop up button Extensions
+				23 button Rakesh
+				24 pop up button Chrome
+			25 container
+				26 HTML content FinPath | FIRE Calculator and Financial Planning, URL: a26c412b.interactive-fire-calculator.pages.dev/
+					27 container
+						28 link Description: Skip to content, Value: a26c412b.interactive-fire-calculator.pages.dev/#main-content
+						29 link Description: FinPath, Value: a26c412b.interactive-fire-calculator.pages.dev/
+						30 button Sign in
+						31 toggle button Description: Switch to dark mode, Value: 0
+						32 button Open navigation
+						33 container See when you could retire.
+							34 container
+								35 text Plan your financial future
+								36 heading See when you could retire., Value: 1
+									37 text See when you could retire.
+								38 text See how saving more or spending less could change your retirement timeline. Try it free, without an account.
+								39 link Description: Explore my retirement timeline, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/fire
+								40 link Description: Explore all calculators, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators
+								41 container Popular calculators
+									42 text Popular starts
+									43 link Description: Mortgage, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/mortgage
+									44 link Description: Debt payoff, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/debt-payoff
+									45 link Description: Compound interest, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/compound-interest
+									46 link Description: FIRE, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/fire
+								47 container Illustrative FIRE calculation example
+									48 text Illustrative example · USD 30 years  horizon Modeled retirement target
+									49 text $965,931
+									50 text Target nest egg to sustain  $60,000 /yr Current starting point
+									51 text $500,000
+									52 text Gap to modeled target:  $465,931
+									53 text Spending:
+									54 text $60,000 /yr
+									55 text Nominal return:
+									56 text 7%
+									57 text Inflation:
+									58 text 2.5% An estimate based on the assumptions shown, not a guaranteed outcome.
+						59 container Choose a planning path
+							60 link Description: Buying a home? Explore borrowing costs, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/mortgage
+							61 link Description: Growing your savings? Explore compound growth, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/compound-interest
+							62 link Description: Long-term independence? Explore financial independence, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators/fire
+						63 container Start with a question. Leave with a clearer plan.
+							64 container
+								65 text How it works
+								66 heading Start with a question. Leave with a clearer plan., Value: 2
+									67 text Start with a question. Leave with a clearer plan.
+								68 text Each tool helps you test assumptions, inspect the math, and understand what changes the outcome.
+							69 container
+								70 text Add your numbers Start with your savings and spending.
+							71 container
+								72 text Try different assumptions Explore how changes affect the estimate.
+							73 container
+								74 text Review the results See the timeline and the assumptions behind it.
+						75 container Start without an account.
+							76 heading Start without an account., Value: 2
+								77 text Start without an account.
+							78 text Use the public calculators before deciding whether to create an account. Explore calculators without an account.
+						79 container
+							80 link Description: FinPath home, Value: a26c412b.interactive-fire-calculator.pages.dev/
+							81 text Track today. Test tomorrow. Keep the assumptions yours.
+							82 link Description: Browse calculators, Value: a26c412b.interactive-fire-calculator.pages.dev/calculators
+			83 pop up button Tab Search
+			84 container
+				85 tab group
+					86 tab (selected, settable, boolean) Description: FinPath | FIRE Calculator and Financial Planning - Memory usage - 128 MB, Value: on
+						87 button Close
+			88 button New Tab
+			89 button Open Gemini in Chrome
+	90 close button
+	91 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	92 minimize button
+93 menu bar
+	94 Chrome
+	95 File
+	96 Edit
+	97 View
+	98 History
+	99 Bookmarks
+	100 Profiles
+	101 Tab
+	102 Window
+	103 Help
+
+The focused UI element is 26 HTML content FinPath | FIRE Calculator and Financial Planning, URL: a26c412b.interactive-fire-calculator.pages.dev/

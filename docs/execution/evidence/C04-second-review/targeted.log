@@ -1,0 +1,8 @@
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+
+ Test Files  3 passed (3)
+      Tests  26 passed (26)
+   Start at  02:18:13
+   Duration  3.51s (transform 508ms, setup 0ms, import 1.18s, tests 1.30s, environment 5.02s)

@@ -2,7 +2,7 @@
 
 import { parsePlanVersionNumber, readFirePlanVersion } from '../../../../_lib/firePlans';
 import { json } from '../../../../_lib/http';
-import { requireDatabase } from '../../../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../../../_lib/persistence';
 import { requireClerkAuth } from '../../../../_lib/session';
 import type { DatabaseEnv } from '../../../../_lib/persistence';
 import type { ClerkEnv } from '../../../../_lib/session';
@@ -42,8 +42,8 @@ export const onRequestGet: PagesFunction<PlanVersionEnv, PlanVersionParams> = as
     }
 
     return json({ version });
-  } catch {
-    return json({ error: 'Unable to load plan version.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load plan version.');
   }
 };
 

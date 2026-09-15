@@ -1,0 +1,9 @@
+{
+  "duplicateIds": [],
+  "closedHelp": {
+    "expanded": "false",
+    "opacity": "0",
+    "text": "Your age today. It is used to check that the retirement timeline makes sense."
+  }
+}
+secondYearsLabelFocus { id: 'field-years-_r9_', firstInput: false }

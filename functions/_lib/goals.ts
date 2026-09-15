@@ -309,11 +309,31 @@ export async function readJsonBody(request: Request): Promise<unknown> {
   }
 }
 
+export const INCOMPATIBLE_GOAL_CURRENCY_CODE = 'INCOMPATIBLE_GOAL_CURRENCY';
+export const INCOMPATIBLE_GOAL_CURRENCY_MESSAGE =
+  'Goals currently support USD only. Currency conversion into goals is not supported.';
+
+export type GoalParseError = {
+  code?: string;
+  error: string;
+  ok: false;
+};
+
 export function parseGoalCreatePayload(value: unknown):
   | { ok: true; value: GoalCreatePayload }
-  | { error: string; ok: false } {
+  | GoalParseError {
   if (!isRecord(value)) {
     return { error: 'Request body must be a JSON object.', ok: false };
+  }
+
+  if ('currency' in value && value.currency !== undefined && value.currency !== null) {
+    if (typeof value.currency !== 'string' || value.currency.trim().toUpperCase() !== 'USD') {
+      return {
+        code: INCOMPATIBLE_GOAL_CURRENCY_CODE,
+        error: INCOMPATIBLE_GOAL_CURRENCY_MESSAGE,
+        ok: false
+      };
+    }
   }
 
   const name = parseGoalName(value.name);
@@ -360,9 +380,19 @@ export function parseGoalCreatePayload(value: unknown):
 
 export function parseGoalUpdatePayload(value: unknown):
   | { ok: true; value: GoalUpdatePayload }
-  | { error: string; ok: false } {
+  | GoalParseError {
   if (!isRecord(value)) {
     return { error: 'Request body must be a JSON object.', ok: false };
+  }
+
+  if ('currency' in value && value.currency !== undefined && value.currency !== null) {
+    if (typeof value.currency !== 'string' || value.currency.trim().toUpperCase() !== 'USD') {
+      return {
+        code: INCOMPATIBLE_GOAL_CURRENCY_CODE,
+        error: INCOMPATIBLE_GOAL_CURRENCY_MESSAGE,
+        ok: false
+      };
+    }
   }
 
   const payload: GoalUpdatePayload = {};

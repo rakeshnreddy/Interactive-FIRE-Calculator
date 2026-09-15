@@ -1,0 +1,26 @@
+[
+  {
+    "balance": 0.005,
+    "payment": 0.001,
+    "months": 0,
+    "totalPaid": 0
+  },
+  {
+    "balance": 1000.004,
+    "payment": 1000,
+    "months": 1,
+    "totalPaid": 1000.004
+  },
+  {
+    "balance": 1000.005,
+    "payment": 1000,
+    "months": 1,
+    "totalPaid": 1000.005
+  },
+  {
+    "balance": 1000.006,
+    "payment": 1000,
+    "months": 2,
+    "totalPaid": 1000.006
+  }
+]

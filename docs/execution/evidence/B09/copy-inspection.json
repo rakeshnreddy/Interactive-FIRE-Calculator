@@ -1,0 +1,30 @@
+[
+  {
+    "route": "/calculators/mortgage",
+    "clean": true,
+    "hasPhase": false,
+    "hasEnvLeak": false,
+    "hasInternalDirectives": false
+  },
+  {
+    "route": "/calculators/compound-interest",
+    "clean": true,
+    "hasPhase": false,
+    "hasEnvLeak": false,
+    "hasInternalDirectives": false
+  },
+  {
+    "route": "/calculators/debt-payoff",
+    "clean": true,
+    "hasPhase": false,
+    "hasEnvLeak": false,
+    "hasInternalDirectives": false
+  },
+  {
+    "route": "/calculators/amortization",
+    "clean": true,
+    "hasPhase": false,
+    "hasEnvLeak": false,
+    "hasInternalDirectives": false
+  }
+]

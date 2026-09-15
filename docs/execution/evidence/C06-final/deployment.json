@@ -1,0 +1,13 @@
+{
+  "candidate": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
+  "deployment_id": "5e68409d-08e2-48ba-bfaa-181f7b99e428",
+  "url": "https://5e68409d.interactive-fire-calculator.pages.dev",
+  "environment": "preview",
+  "branch": "codex/finpath-quality-execution",
+  "status": "success",
+  "effective_DB": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+  "metadata_commit_hash": "0f3ae8d",
+  "ci": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/34961420359",
+  "ci_status": "success",
+  "source": "Cloudflare deployment API readback, gh run view, Wrangler successful upload; untracked evidence does not affect dist or Functions"
+}
