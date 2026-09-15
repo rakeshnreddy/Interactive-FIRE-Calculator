@@ -1,0 +1,11 @@
+// @vitest-environment node
+import { expect, it } from 'vitest';
+import { createD1TestHarness } from './test/d1TestHarness';
+import { deleteAccountData } from '../functions/_lib/accountData';
+import { ensureUserProfile, UserDeletedError } from '../functions/_lib/persistence';
+it('successful deletion before first profile initialization must block delayed initialization', async () => {
+ const h = createD1TestHarness();
+ const result = await deleteAccountData(h.db, 'synthetic_never_initialized');
+ expect(result.localAccountDataDeleted).toBe(true);
+ await expect(ensureUserProfile(h.db, 'synthetic_never_initialized')).rejects.toBeInstanceOf(UserDeletedError);
+});

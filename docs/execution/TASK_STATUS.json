@@ -67,7 +67,7 @@
       "id": "B05",
       "title": "executable tenancy/auth boundary harness",
       "checkpoint": "C06",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B04",
         "B33"
@@ -77,7 +77,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "2d4bbaf60a7377e1e543a66bbc6c319483aeddd2",
       "review": "reviews/C06.md",
-      "blocked_reason": null
+      "blocked_reason": "C06 resubmission: R2 absent-user deletion, R3 invalid browser assertions, R5 migration/publication gate. See C06_REWORK_2_PROMPT.md."
     },
     {
       "id": "B06",
@@ -102,7 +102,7 @@
       "id": "B07",
       "title": "deletion and recovery contract",
       "checkpoint": "C06",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B05"
       ],
@@ -111,7 +111,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "2d4bbaf60a7377e1e543a66bbc6c319483aeddd2",
       "review": "reviews/C06.md",
-      "blocked_reason": null
+      "blocked_reason": "C06 resubmission: R2 absent-user deletion, R3 invalid browser assertions, R5 migration/publication gate. See C06_REWORK_2_PROMPT.md."
     },
     {
       "id": "B08",
@@ -399,7 +399,7 @@
       "id": "B25",
       "title": "Build isolated operational UI fixtures for visual verification",
       "checkpoint": "C06",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B05",
         "B07",
@@ -410,7 +410,7 @@
       "owner": "FinPath implementation agent",
       "code_sha": "2d4bbaf60a7377e1e543a66bbc6c319483aeddd2",
       "review": "reviews/C06.md",
-      "blocked_reason": null
+      "blocked_reason": "C06 resubmission: R2 absent-user deletion, R3 invalid browser assertions, R5 migration/publication gate. See C06_REWORK_2_PROMPT.md."
     },
     {
       "id": "B26",
