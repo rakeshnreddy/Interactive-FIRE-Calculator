@@ -95,6 +95,32 @@ export function installFixtureNetworkGuard(logger?: FixtureActionLogger): void {
       }
     }
 
+    // 3. Intercept Plan Version Endpoints for synthetic inspection
+    if (urlString.includes('/api/plans/') && urlString.includes('/versions')) {
+      if (method === 'GET') {
+        activeLogger?.('LoadPlanVersions', { url: urlString });
+        return new Response(
+          JSON.stringify({
+            versions: currentFixtureState === 'empty' ? [] : [
+              {
+                versionNumber: 2,
+                label: 'Adjusted Safe Withdrawal Rate',
+                notes: 'Synthetic version 2 iteration',
+                createdAt: '2026-09-10T14:30:00.000Z'
+              },
+              {
+                versionNumber: 1,
+                label: 'Initial Baseline',
+                notes: 'Synthetic baseline plan',
+                createdAt: '2026-09-01T12:00:00.000Z'
+              }
+            ]
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
     // 3. Strict mutation lock: REJECT any outgoing mutation to prevent backend writes
     if (method !== 'GET') {
       const errorMsg = `[SYNTHETIC FIXTURE SECURITY VIOLATION] Outgoing network mutation blocked in fixture harness: ${method} ${urlString}`;

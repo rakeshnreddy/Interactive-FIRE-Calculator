@@ -49,7 +49,19 @@ class FakeDatabase {
   }
 
   batch<T = unknown>(statements: FakeStatement[]): Promise<D1Result<T>[]> {
-    return Promise.resolve(statements.map((_, index) => result<T>([], index + 1)));
+    return Promise.resolve(
+      statements.map((stmt, index) => {
+        const rows = this.all<T>(stmt.sql);
+        if (rows.length > 0) {
+          return result<T>(rows, index + 1);
+        }
+        const single = this.first<T>(stmt.sql);
+        if (single) {
+          return result<T>([single], index + 1);
+        }
+        return result<T>([], index + 1);
+      })
+    );
   }
 
   first<T>(sql: string): T | null {

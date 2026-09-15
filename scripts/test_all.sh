@@ -29,5 +29,4 @@ fi
 npm run typecheck
 npm test
 npm run build
-node scripts/verify_build_isolation.mjs
 

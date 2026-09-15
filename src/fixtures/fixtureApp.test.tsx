@@ -174,23 +174,23 @@ describe('R3: Real Fixture Behavior and Theme Parity (B25)', () => {
 
     // History GET returns synthetic data
     const balanceHistoryRes = await window.fetch('/api/imports/account-balances');
-    const balanceHistory = await balanceHistoryRes.json();
+    const balanceHistory = (await balanceHistoryRes.json()) as any;
     expect(balanceHistory.imports).toHaveLength(1);
     expect(balanceHistory.imports[0].fileName).toBe('apex_credit_union_balances_20260901.csv');
 
     // Preview POST returns synthetic preview
     const balancePreviewRes = await window.fetch('/api/imports/account-balances/preview', { method: 'POST' });
-    const balancePreview = await balancePreviewRes.json();
+    const balancePreview = (await balancePreviewRes.json()) as any;
     expect(balancePreview.preview.rows).toHaveLength(2);
 
     // Commit POST returns synthetic commit record
     const balanceCommitRes = await window.fetch('/api/imports/account-balances/commit', { method: 'POST' });
-    const balanceCommit = await balanceCommitRes.json();
+    const balanceCommit = (await balanceCommitRes.json()) as any;
     expect(balanceCommit.importRecord.importedRows).toBe(2);
 
     // Transaction history GET returns synthetic data
     const txHistoryRes = await window.fetch('/api/imports/transactions');
-    const txHistory = await txHistoryRes.json();
+    const txHistory = (await txHistoryRes.json()) as any;
     expect(txHistory.imports).toHaveLength(1);
     expect(txHistory.imports[0].fileName).toBe('chase_checking_transactions_aug2026.csv');
   });
