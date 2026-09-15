@@ -67,7 +67,7 @@
       "id": "B05",
       "title": "executable tenancy/auth boundary harness",
       "checkpoint": "C06",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B04",
         "B33"
@@ -75,9 +75,9 @@
       "prompt": "prompts/B05.md",
       "submission": "submissions/B05.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "2d4bbaf60a7377e1e543a66bbc6c319483aeddd2",
+      "code_sha": "4f6b919",
       "review": "reviews/C06.md",
-      "blocked_reason": "C06 resubmission: R2 absent-user deletion, R3 invalid browser assertions, R5 migration/publication gate. See C06_REWORK_2_PROMPT.md."
+      "blocked_reason": "Publication and task completion blocked pending owner authorization and deployment of migration 0006 on preview DB (0dbad68e-7493-452f-8504-98d4c61ee5da). See docs/execution/evidence/C06/migration-0006-authorization-packet.md."
     },
     {
       "id": "B06",
@@ -102,16 +102,16 @@
       "id": "B07",
       "title": "deletion and recovery contract",
       "checkpoint": "C06",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B05"
       ],
       "prompt": "prompts/B07.md",
       "submission": "submissions/B07.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "2d4bbaf60a7377e1e543a66bbc6c319483aeddd2",
+      "code_sha": "4f6b919",
       "review": "reviews/C06.md",
-      "blocked_reason": "C06 resubmission: R2 absent-user deletion, R3 invalid browser assertions, R5 migration/publication gate. See C06_REWORK_2_PROMPT.md."
+      "blocked_reason": "Publication and task completion blocked pending owner authorization and deployment of migration 0006 on preview DB (0dbad68e-7493-452f-8504-98d4c61ee5da). See docs/execution/evidence/C06/migration-0006-authorization-packet.md."
     },
     {
       "id": "B08",
@@ -399,7 +399,7 @@
       "id": "B25",
       "title": "Build isolated operational UI fixtures for visual verification",
       "checkpoint": "C06",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B05",
         "B07",
@@ -408,9 +408,9 @@
       "prompt": "prompts/B25.md",
       "submission": "submissions/B25.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "2d4bbaf60a7377e1e543a66bbc6c319483aeddd2",
+      "code_sha": "4f6b919",
       "review": "reviews/C06.md",
-      "blocked_reason": "C06 resubmission: R2 absent-user deletion, R3 invalid browser assertions, R5 migration/publication gate. See C06_REWORK_2_PROMPT.md."
+      "blocked_reason": "Publication and task completion blocked pending owner authorization for migration 0006 on preview DB (0dbad68e-7493-452f-8504-98d4c61ee5da), and native 200% desktop browser UI application zoom verification."
     },
     {
       "id": "B26",

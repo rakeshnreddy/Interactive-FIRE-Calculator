@@ -208,7 +208,9 @@ describe('account data deletion', () => {
 
     expect(database.runs).toEqual([]);
     expect(deleteSql[0]).toBe('DELETE FROM audit_log WHERE user_id = ?');
-    expect(deleteSql.at(-1)).toBe('UPDATE users SET deleted_at = ?, updated_at = ? WHERE id = ?');
+    expect(deleteSql.at(-1)).toBe(
+      "INSERT INTO users (id, provider, provider_user_id, created_at, updated_at, deleted_at) VALUES (?, 'clerk', ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET deleted_at = COALESCE(users.deleted_at, excluded.deleted_at), updated_at = excluded.updated_at"
+    );
     expect(deletion.localAccountDataDeleted).toBe(true);
     expect(deletion.identityProvider).toBe('clerk');
     expect(deletion.deletedRows).toMatchObject({

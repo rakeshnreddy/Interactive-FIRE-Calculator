@@ -222,7 +222,16 @@ const deleteTargets: DeleteTarget[] = [
   { key: 'transactionImports', sql: 'DELETE FROM transaction_imports WHERE user_id = ?' },
   { key: 'balanceImports', sql: 'DELETE FROM balance_imports WHERE user_id = ?' },
   { key: 'profile', sql: 'DELETE FROM user_profiles WHERE user_id = ?' },
-  { key: 'userTombstone', sql: 'UPDATE users SET deleted_at = ?, updated_at = ? WHERE id = ?' }
+  {
+    key: 'userTombstone',
+    sql: `
+      INSERT INTO users (id, provider, provider_user_id, created_at, updated_at, deleted_at)
+      VALUES (?, 'clerk', ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        deleted_at = COALESCE(users.deleted_at, excluded.deleted_at),
+        updated_at = excluded.updated_at
+    `
+  }
 ];
 
 export function parseAccountDataDeletionRequest(value: unknown):
@@ -388,7 +397,7 @@ export async function deleteAccountData(database: D1Database, userId: string): P
   const results = await database.batch(
     deleteTargets.map((target) => {
       if (target.key === 'userTombstone') {
-        return database.prepare(target.sql).bind(now, now, userId);
+        return database.prepare(target.sql).bind(userId, userId, now, now, now);
       }
       return database.prepare(target.sql).bind(userId);
     })
@@ -423,7 +432,7 @@ export async function replayTombstones(
           INSERT INTO users (id, provider, provider_user_id, created_at, updated_at, deleted_at)
           VALUES (?, 'clerk', ?, ?, ?, ?)
           ON CONFLICT(id) DO UPDATE SET
-            deleted_at = excluded.deleted_at,
+            deleted_at = COALESCE(users.deleted_at, excluded.deleted_at),
             updated_at = excluded.updated_at
         `
       )

@@ -267,6 +267,45 @@ describe("Honest Deletion, Export, and Recovery Contract (B07)", () => {
       expect(userRow?.deleted_at).toBeTruthy();
       expect(typeof userRow?.deleted_at).toBe("string");
     });
+
+    it("deletes user before first profile initialization, creates tombstone, and blocks delayed writes with HTTP 410", async () => {
+      const neverInitUser = "user_synthetic_never_initialized_api";
+
+      // Never seeded in D1; 0 rows exist across all tables
+      expect(harness.getUserRows("users", neverInitUser)).toHaveLength(0);
+      expect(harness.getUserTableCounts(neverInitUser).financial_accounts).toBe(0);
+
+      asUser(neverInitUser);
+      const deleteRes = await invokeApi(
+        deleteAccountData,
+        createJsonRequest("http://localhost/api/account-data", "DELETE", {
+          confirmation: "DELETE MY FINPATH DATA"
+        }),
+        { DB: harness.db }
+      );
+      expect(deleteRes.status).toBe(200);
+      expect(deleteRes.body.deletion.localAccountDataDeleted).toBe(true);
+
+      // Verify tombstone exists in users
+      const userRows = harness.getUserRows("users", neverInitUser);
+      expect(userRows).toHaveLength(1);
+      expect(userRows[0].id).toBe(neverInitUser);
+      expect(userRows[0].deleted_at).toBeTruthy();
+
+      // Delayed write: POST /api/accounts must return HTTP 410
+      const delayedCreate = await invokeApi(
+        createAccount,
+        createJsonRequest("http://localhost/api/accounts", "POST", {
+          name: "Zombie Checking",
+          accountType: "checking",
+          currency: "USD"
+        }),
+        { DB: harness.db }
+      );
+      expect(delayedCreate.status).toBe(410);
+      expect(delayedCreate.body.error).toContain("deleted");
+      expect(harness.getUserRows("financial_accounts", neverInitUser)).toHaveLength(0);
+    });
   });
 
   describe("3. Delayed Writes Fail Closed (410 Gone / 0 Rows Written)", () => {
