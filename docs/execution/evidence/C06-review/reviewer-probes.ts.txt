@@ -1,0 +1,51 @@
+// @vitest-environment node
+import { expect, it } from 'vitest';
+import { createD1TestHarness, seedTestUser } from './test/d1TestHarness';
+import { createAccount } from '../functions/_lib/accounts';
+import { deleteAccountData } from '../functions/_lib/accountData';
+it('review probe: account write must not commit after deletion', async () => {
+  const h = createD1TestHarness();
+  await seedTestUser(h, 'review_synthetic_a');
+  const originalBatch = h.db.batch.bind(h.db);
+  let intercepted = false;
+  h.db.batch = async (statements: any[]) => {
+    if (!intercepted && statements.some(s => s.query.includes('INSERT INTO financial_accounts'))) {
+      intercepted = true;
+      await deleteAccountData(h.db, 'review_synthetic_a');
+    }
+    return originalBatch(statements);
+  };
+  await createAccount(h.db, 'review_synthetic_a', {name:'Race probe',accountType:'cash',currency:'USD',institutionName:null} as any).catch(() => {});
+  expect(intercepted).toBe(true);
+  expect(h.getUserRows('users', 'review_synthetic_a')[0].deleted_at).toBeTruthy();
+  expect(h.getUserRows('financial_accounts', 'review_synthetic_a')).toHaveLength(0);
+});
+it('review probe: export cannot combine pre-delete accounts with post-delete user', async () => {
+  const h = createD1TestHarness();
+  await seedTestUser(h, 'review_synthetic_export');
+  await createAccount(h.db, 'review_synthetic_export', {name:'Export probe',accountType:'cash',currency:'USD',institutionName:null} as any);
+  const prepare = h.db.prepare.bind(h.db);
+  let intercepted = false;
+  h.db.prepare = (sql: string) => {
+    const statement = prepare(sql);
+    const bind = statement.bind.bind(statement);
+    statement.bind = (...params: any[]) => {
+      const bound = bind(...params);
+      if (sql.includes('FROM financial_accounts')) {
+        const all = bound.all.bind(bound);
+        bound.all = async () => {
+          const rows = await all();
+          if (!intercepted) { intercepted = true; await deleteAccountData(h.db, 'review_synthetic_export'); }
+          return rows;
+        };
+      }
+      return bound;
+    };
+    return statement;
+  };
+  const { exportAccountData } = await import('../functions/_lib/accountData');
+  const result = await exportAccountData(h.db, 'review_synthetic_export');
+  expect(intercepted).toBe(true);
+  expect(result.data.financialAccounts).toHaveLength(1);
+  expect(result.data.user).not.toBeNull();
+});
