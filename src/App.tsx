@@ -141,7 +141,7 @@ type WarningNotice = {
 type AppSnapshot = PlanningSnapshot;
 type SavedPlan = PlanningSavedPlan;
 
-type AccountProfile = {
+export type AccountProfile = {
   birthYear: number | null;
   defaultCurrency: string;
   displayName: string | null;
@@ -151,7 +151,7 @@ type AccountProfile = {
   userId: string;
 };
 
-type AccountProfileDraft = {
+export type AccountProfileDraft = {
   birthYear: string;
   defaultCurrency: string;
   displayName: string;
@@ -226,7 +226,7 @@ export type AccountSummary = {
   primaryCurrency: string | null;
 };
 
-type AccountDraft = {
+export type AccountDraft = {
   accountType: FinancialAccountType;
   balanceAmount: string;
   balanceDate: string;
@@ -235,12 +235,12 @@ type AccountDraft = {
   name: string;
 };
 
-type BalanceDraft = {
+export type BalanceDraft = {
   amount: string;
   date: string;
 };
 
-type Transaction = {
+export type Transaction = {
   account: {
     accountType: FinancialAccountType;
     currency: string;
@@ -260,7 +260,7 @@ type Transaction = {
   updatedAt: string;
 };
 
-type TransactionSummary = {
+export type TransactionSummary = {
   adjustmentCents: number;
   expenseCents: number;
   incomeCents: number;
@@ -270,7 +270,7 @@ type TransactionSummary = {
   transferCents: number;
 };
 
-type TransactionDraft = {
+export type TransactionDraft = {
   accountId: string;
   amount: string;
   category: string;
@@ -280,7 +280,7 @@ type TransactionDraft = {
   transactionType: TransactionType;
 };
 
-type GoalType =
+export type GoalType =
   | 'retirement'
   | 'emergency_fund'
   | 'debt_payoff'
@@ -289,9 +289,9 @@ type GoalType =
   | 'travel'
   | 'custom';
 
-type GoalStatus = 'active' | 'paused' | 'completed';
+export type GoalStatus = 'active' | 'paused' | 'completed';
 
-type Goal = {
+export type Goal = {
   createdAt: string;
   currentAmountCents: number;
   daysUntilTarget: number | null;
@@ -319,7 +319,7 @@ export type GoalSummary = {
   totalTargetCents: number;
 };
 
-type GoalDraft = {
+export type GoalDraft = {
   currentAmount: string;
   goalType: GoalType;
   name: string;
@@ -327,7 +327,7 @@ type GoalDraft = {
   targetDate: string;
 };
 
-type GoalUpdateDraft = {
+export type GoalUpdateDraft = {
   currentAmount: string;
   status: GoalStatus;
   targetAmount: string;
@@ -351,7 +351,7 @@ type SavedCalculatorResultSnapshot = {
   narrative: string;
 };
 
-type SavedCalculatorResult = {
+export type SavedCalculatorResult = {
   calculatorCategory: string;
   calculatorRegion: string;
   calculatorSlug: string;
@@ -383,7 +383,7 @@ type CalculatorSaveApiResponse = {
 };
 
 const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
-const ACCOUNT_DATA_DELETE_CONFIRMATION = 'DELETE MY FINPATH DATA';
+export const ACCOUNT_DATA_DELETE_CONFIRMATION = 'DELETE MY FINPATH DATA';
 
 export function clearLocalDrafts(): void {
   if (typeof window === 'undefined' || !window.localStorage) {
@@ -2930,7 +2930,7 @@ function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'sig
   );
 }
 
-function ProfileSettingsPanel({
+export function ProfileSettingsPanel({
   draft,
   isLoading,
   isSaving,
@@ -3032,7 +3032,7 @@ function ProfileSettingsPanel({
   );
 }
 
-function PrivacyControlsPanel({
+export function PrivacyControlsPanel({
   deleteConfirmation,
   isDeleting,
   isExporting,
@@ -3462,7 +3462,7 @@ export function DashboardPanel({
   );
 }
 
-function TransactionsPanel({
+export function TransactionsPanel({
   accounts,
   auth,
   allSummary,
@@ -3865,7 +3865,7 @@ function TransactionsPanel({
   );
 }
 
-function InsightsPanel({
+export function InsightsPanel({
   insights,
   onNavigate
 }: {
@@ -3995,7 +3995,7 @@ function InsightsPanel({
   );
 }
 
-function GoalsPanel({
+export function GoalsPanel({
   draft,
   goals,
   isLoading,
