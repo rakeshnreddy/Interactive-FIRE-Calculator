@@ -1,0 +1,795 @@
+{
+  "timestamp": "2026-09-15T02:27:30.712Z",
+  "browserVersion": "152.0.7977.83",
+  "baseUrl": "http://127.0.0.1:5225/fixtures.html",
+  "cases": [
+    {
+      "id": "dashboard-desktop-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "dashboard-desktop-light.png",
+      "sizeBytes": 155459,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "color": "rgb(32, 58, 67)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-desktop-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "dashboard-desktop-dark.png",
+      "sizeBytes": 152669,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "color": "rgb(216, 231, 234)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-desktop-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "accounts-desktop-light.png",
+      "sizeBytes": 121677,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "color": "rgb(32, 58, 67)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-desktop-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "accounts-desktop-dark.png",
+      "sizeBytes": 118420,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "color": "rgb(216, 231, 234)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-desktop-light",
+      "domain": "transactions",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "transactions-desktop-light.png",
+      "sizeBytes": 127235,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "color": "rgb(32, 58, 67)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-desktop-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "transactions-desktop-dark.png",
+      "sizeBytes": 123579,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "color": "rgb(216, 231, 234)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "goals-desktop-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "goals-desktop-light.png",
+      "sizeBytes": 125726,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "color": "rgb(32, 58, 67)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "goals-desktop-dark",
+      "domain": "goals",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "goals-desktop-dark.png",
+      "sizeBytes": 122849,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "color": "rgb(216, 231, 234)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "plans-desktop-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "plans-desktop-light.png",
+      "sizeBytes": 121798,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "color": "rgb(32, 58, 67)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "plans-desktop-dark",
+      "domain": "plans",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "plans-desktop-dark.png",
+      "sizeBytes": 119358,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "color": "rgb(216, 231, 234)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "reports-desktop-light",
+      "domain": "reports",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "reports-desktop-light.png",
+      "sizeBytes": 124704,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "color": "rgb(32, 58, 67)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "reports-desktop-dark",
+      "domain": "reports",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "reports-desktop-dark.png",
+      "sizeBytes": 122209,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "color": "rgb(216, 231, 234)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "settings-desktop-light",
+      "domain": "settings",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "settings-desktop-light.png",
+      "sizeBytes": 136865,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "color": "rgb(32, 58, 67)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "settings-desktop-dark",
+      "domain": "settings",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "settings-desktop-dark.png",
+      "sizeBytes": 132381,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "color": "rgb(216, 231, 234)"
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-390-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "dashboard-390-light.png",
+      "sizeBytes": 52264,
+      "overflowCheck": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-390-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "dashboard-390-dark.png",
+      "sizeBytes": 50919,
+      "overflowCheck": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-390-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "accounts-390-dark.png",
+      "sizeBytes": 48842,
+      "overflowCheck": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-390-light",
+      "domain": "transactions",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "transactions-390-light.png",
+      "sizeBytes": 51469,
+      "overflowCheck": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "goals-390-dark",
+      "domain": "goals",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "goals-390-dark.png",
+      "sizeBytes": 51737,
+      "overflowCheck": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "plans-390-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "plans-390-light.png",
+      "sizeBytes": 54390,
+      "overflowCheck": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-320-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "dashboard-320-light.png",
+      "sizeBytes": 37472,
+      "overflowCheck": {
+        "scrollWidth": 320,
+        "clientWidth": 320
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-320-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "dashboard-320-dark.png",
+      "sizeBytes": 36429,
+      "overflowCheck": {
+        "scrollWidth": 320,
+        "clientWidth": 320
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-320-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "accounts-320-light.png",
+      "sizeBytes": 38794,
+      "overflowCheck": {
+        "scrollWidth": 320,
+        "clientWidth": 320
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-320-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "transactions-320-dark.png",
+      "sizeBytes": 39816,
+      "overflowCheck": {
+        "scrollWidth": 320,
+        "clientWidth": 320
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "goals-320-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "goals-320-light.png",
+      "sizeBytes": 37759,
+      "overflowCheck": {
+        "scrollWidth": 320,
+        "clientWidth": 320
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "plans-320-dark",
+      "domain": "plans",
+      "theme": "dark",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "plans-320-dark.png",
+      "sizeBytes": 38339,
+      "overflowCheck": {
+        "scrollWidth": 320,
+        "clientWidth": 320
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "settings-320-light",
+      "domain": "settings",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "settings-320-light.png",
+      "sizeBytes": 38476,
+      "overflowCheck": {
+        "scrollWidth": 320,
+        "clientWidth": 320
+      },
+      "consoleErrors": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-768-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "state": "populated",
+      "screenshot": "dashboard-768-light.png",
+      "sizeBytes": 125008,
+      "passed": true
+    },
+    {
+      "id": "accounts-768-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "state": "populated",
+      "screenshot": "accounts-768-dark.png",
+      "sizeBytes": 113191,
+      "passed": true
+    },
+    {
+      "id": "plans-768-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "state": "populated",
+      "screenshot": "plans-768-light.png",
+      "sizeBytes": 104223,
+      "passed": true
+    },
+    {
+      "id": "accounts-empty-desktop-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "accounts-empty-desktop-light.png",
+      "sizeBytes": 106552,
+      "passed": true
+    },
+    {
+      "id": "accounts-stale-desktop-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "stale",
+      "screenshot": "accounts-stale-desktop-dark.png",
+      "sizeBytes": 118110,
+      "passed": true
+    },
+    {
+      "id": "accounts-long-value-desktop-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "accounts-long-value-desktop-light.png",
+      "sizeBytes": 125331,
+      "passed": true
+    },
+    {
+      "id": "transactions-empty-desktop-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "transactions-empty-desktop-dark.png",
+      "sizeBytes": 116844,
+      "passed": true
+    },
+    {
+      "id": "transactions-stale-desktop-light",
+      "domain": "transactions",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "stale",
+      "screenshot": "transactions-stale-desktop-light.png",
+      "sizeBytes": 125888,
+      "passed": true
+    },
+    {
+      "id": "transactions-long-value-desktop-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "transactions-long-value-desktop-dark.png",
+      "sizeBytes": 123169,
+      "passed": true
+    },
+    {
+      "id": "goals-empty-desktop-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "goals-empty-desktop-light.png",
+      "sizeBytes": 79058,
+      "passed": true
+    },
+    {
+      "id": "goals-stale-desktop-dark",
+      "domain": "goals",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "stale",
+      "screenshot": "goals-stale-desktop-dark.png",
+      "sizeBytes": 123246,
+      "passed": true
+    },
+    {
+      "id": "goals-long-value-desktop-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "goals-long-value-desktop-light.png",
+      "sizeBytes": 117053,
+      "passed": true
+    },
+    {
+      "id": "plans-empty-desktop-dark",
+      "domain": "plans",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "plans-empty-desktop-dark.png",
+      "sizeBytes": 98076,
+      "passed": true
+    },
+    {
+      "id": "plans-long-value-desktop-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "plans-long-value-desktop-light.png",
+      "sizeBytes": 131194,
+      "passed": true
+    },
+    {
+      "id": "dashboard-loading-desktop-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "loading",
+      "screenshot": "dashboard-loading-desktop-light.png",
+      "sizeBytes": 149396,
+      "passed": true
+    },
+    {
+      "id": "dashboard-failure-desktop-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "failure",
+      "screenshot": "dashboard-failure-desktop-dark.png",
+      "sizeBytes": 154061,
+      "passed": true
+    },
+    {
+      "id": "native-zoom-200-accounts",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dsf": 2
+      },
+      "state": "populated",
+      "screenshot": "native-zoom-200-accounts.png",
+      "sizeBytes": 297239,
+      "passed": true
+    },
+    {
+      "id": "reduced-motion-dashboard-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "reduced-motion-dashboard-dark.png",
+      "sizeBytes": 152718,
+      "passed": true
+    },
+    {
+      "id": "keyboard-focus-accounts",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "keyboard-focus-accounts.png",
+      "focusedTag": "button.fixture-btn fixture-btn-active",
+      "sizeBytes": 122422,
+      "passed": true
+    },
+    {
+      "id": "network-mutation-lock",
+      "domain": "network",
+      "theme": "light",
+      "outgoingMutationsCount": 0,
+      "importResult": {
+        "status": 200,
+        "data": {
+          "importRecord": {
+            "createdAt": "2026-09-02T14:30:00Z",
+            "duplicateRows": 0,
+            "errorRows": 0,
+            "fileName": "chase_checking_transactions_aug2026.csv",
+            "id": "imp_tx_01",
+            "importedRows": 5,
+            "totalRows": 5
+          }
+        }
+      },
+      "blockedResult": {
+        "blocked": true,
+        "message": "[SYNTHETIC FIXTURE SECURITY VIOLATION] Outgoing network mutation blocked in fixture harness: POST /api/accounts"
+      },
+      "passed": true
+    }
+  ]
+}
