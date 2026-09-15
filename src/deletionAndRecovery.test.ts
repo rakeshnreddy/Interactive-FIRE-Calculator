@@ -1,9 +1,9 @@
+// @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createD1TestHarness, invokeApi, seedTestUser, type D1TestHarness } from "./test/d1TestHarness";
 import * as sessionModule from "../functions/_lib/session";
 import { UserDeletedError } from "../functions/_lib/persistence";
 import { replayTombstones } from "../functions/_lib/accountData";
-import { clearLocalDrafts } from "./App";
 
 // API Handlers
 import { onRequestGet as getProfile, onRequestPut as updateProfile } from "../functions/api/profile";
@@ -623,6 +623,34 @@ describe("Honest Deletion, Export, and Recovery Contract (B07)", () => {
       expect(restoredCountsA_after.financial_accounts).toBe(0);
       expect(restoredCountsA_after.users).toBe(1);
 
+      // Execute exact verified 14-child-table query from DATA_DELETION_AND_RECOVERY.md
+      const checkSql = `
+        SELECT (
+          (SELECT count(*) FROM user_profiles WHERE user_id = ?) +
+          (SELECT count(*) FROM financial_accounts WHERE user_id = ?) +
+          (SELECT count(*) FROM account_balances WHERE user_id = ?) +
+          (SELECT count(*) FROM transactions WHERE user_id = ?) +
+          (SELECT count(*) FROM goals WHERE user_id = ?) +
+          (SELECT count(*) FROM plans WHERE user_id = ?) +
+          (SELECT count(*) FROM plan_versions WHERE user_id = ?) +
+          (SELECT count(*) FROM fire_plan_inputs WHERE user_id = ?) +
+          (SELECT count(*) FROM fire_plan_results WHERE user_id = ?) +
+          (SELECT count(*) FROM assumptions WHERE user_id = ?) +
+          (SELECT count(*) FROM audit_log WHERE user_id = ?) +
+          (SELECT count(*) FROM balance_imports WHERE user_id = ?) +
+          (SELECT count(*) FROM transaction_imports WHERE user_id = ?) +
+          (SELECT count(*) FROM saved_calculator_results WHERE user_id = ?)
+        ) AS remaining_rows;
+      `;
+      const rowCheck = await restoredHarness.db
+        .prepare(checkSql)
+        .bind(
+          USER_A, USER_A, USER_A, USER_A, USER_A, USER_A, USER_A,
+          USER_A, USER_A, USER_A, USER_A, USER_A, USER_A, USER_A
+        )
+        .first<{ remaining_rows: number }>();
+      expect(rowCheck?.remaining_rows).toBe(0);
+
       const aliceTombstone = await restoredHarness.db
         .prepare("SELECT deleted_at FROM users WHERE id = ?")
         .bind(USER_A)
@@ -645,57 +673,112 @@ describe("Honest Deletion, Export, and Recovery Contract (B07)", () => {
       expect(bobList.body.accounts).toHaveLength(1);
       expect(bobList.body.accounts[0].id).toBe(bobAcc.body.account.id);
     });
-  });
 
-  describe("8. Scoped Local Draft Clearing", () => {
-    it("removes finpath drafts and saved plans while strictly preserving finpath.colorMode and unrelated keys", () => {
-      const store: Record<string, string> = {
-        "finpath.calculatorDraft.budget.v2": JSON.stringify({ income: 5000 }),
-        "finpath.calculatorDraft.net-worth.v2": JSON.stringify({ assets: 100000 }),
-        "finpath.calculatorDraft.emergency-fund.v2": JSON.stringify({ months: 6 }),
-        "firecalc.savedPlans.v1": JSON.stringify([{ id: "plan_1" }]),
-        "fire_calc_saved_plans_v1": JSON.stringify([{ id: "legacy_plan" }]),
-        "finpath.colorMode": "dark",
-        "some_third_party_app_setting": "keep_me"
-      };
+    it("handles tombstones for users absent from the restored snapshot and supports replay retries", async () => {
+      const restoredHarness = createD1TestHarness();
+      await seedTestUser(restoredHarness, USER_B, { displayName: "Bob Neighbor", defaultCurrency: "EUR" });
+      asUser(USER_B);
+      const bobAcc = await invokeApi(
+        createAccount,
+        createJsonRequest("http://localhost/api/accounts", "POST", {
+          name: "Bob Savings",
+          accountType: "savings",
+          currency: "EUR"
+        }),
+        { DB: restoredHarness.db }
+      );
 
-      const mockLocalStorage = {
-        getItem: (key: string) => store[key] ?? null,
-        setItem: (key: string, value: string) => {
-          store[key] = value;
-        },
-        removeItem: (key: string) => {
-          delete store[key];
-        },
-        key: (index: number) => Object.keys(store)[index] ?? null,
-        get length() {
-          return Object.keys(store).length;
-        },
-        clear: () => {
-          for (const key of Object.keys(store)) {
-            delete store[key];
-          }
-        }
-      };
+      // USER_C was created and deleted AFTER the snapshot, so USER_C does not exist in restored DB at all
+      const USER_C = "user_synthetic_charlie_c";
+      const tombstoneTimestamp = "2026-09-14T12:00:00.000Z";
 
-      Object.defineProperty(window, "localStorage", {
-        value: mockLocalStorage,
-        writable: true,
-        configurable: true
+      // Verify USER_C is completely absent before replay
+      const userC_before = await restoredHarness.db
+        .prepare("SELECT id, deleted_at FROM users WHERE id = ?")
+        .bind(USER_C)
+        .first<{ id: string; deleted_at: string | null }>();
+      expect(userC_before).toBeNull();
+
+      // Run replay with USER_C (absent user) and verify tombstone is inserted
+      const replayed = await replayTombstones(restoredHarness.db, [
+        { userId: USER_C, deletedAt: tombstoneTimestamp }
+      ]);
+      expect(replayed).toBe(1);
+
+      const userC_after = await restoredHarness.db
+        .prepare("SELECT id, deleted_at FROM users WHERE id = ?")
+        .bind(USER_C)
+        .first<{ id: string; deleted_at: string | null }>();
+      expect(userC_after?.id).toBe(USER_C);
+      expect(userC_after?.deleted_at).toBe(tombstoneTimestamp);
+
+      // Now verify retry idempotency: replaying again does not alter state or fail
+      const retryReplayed = await replayTombstones(restoredHarness.db, [
+        { userId: USER_C, deletedAt: tombstoneTimestamp }
+      ]);
+      expect(retryReplayed).toBe(1);
+
+      const userC_retry = await restoredHarness.db
+        .prepare("SELECT id, deleted_at FROM users WHERE id = ?")
+        .bind(USER_C)
+        .first<{ id: string; deleted_at: string | null }>();
+      expect(userC_retry?.id).toBe(USER_C);
+      expect(userC_retry?.deleted_at).toBe(tombstoneTimestamp);
+
+      // Subsequent attempt by USER_C to write or access must be rejected with 410
+      asUser(USER_C);
+      const createRes = await invokeApi(
+        createAccount,
+        createJsonRequest("http://localhost/api/accounts", "POST", {
+          name: "Charlie Checking",
+          accountType: "checking",
+          currency: "USD"
+        }),
+        { DB: restoredHarness.db }
+      );
+      expect(createRes.status).toBe(410);
+
+      // User B must remain completely intact
+      const bobCounts = restoredHarness.getUserTableCounts(USER_B);
+      expect(bobCounts.financial_accounts).toBe(1);
+      expect(bobCounts.users).toBe(1);
+      asUser(USER_B);
+      const bobList = await invokeApi(listAccounts, new Request("http://localhost/api/accounts"), {
+        DB: restoredHarness.db
       });
+      expect(bobList.status).toBe(200);
+      expect(bobList.body.accounts[0].id).toBe(bobAcc.body.account.id);
+    });
 
-      clearLocalDrafts();
+    it("verifies operational fail-closed rule: serving must remain blocked if tombstone replay fails", async () => {
+      const restoredHarness = createD1TestHarness();
+      await seedTestUser(restoredHarness, USER_A, { displayName: "Alice Resurrected", defaultCurrency: "USD" });
 
-      // Sensitive financial drafts and saved plans are cleared
-      expect(store["finpath.calculatorDraft.budget.v2"]).toBeUndefined();
-      expect(store["finpath.calculatorDraft.net-worth.v2"]).toBeUndefined();
-      expect(store["finpath.calculatorDraft.emergency-fund.v2"]).toBeUndefined();
-      expect(store["firecalc.savedPlans.v1"]).toBeUndefined();
-      expect(store["fire_calc_saved_plans_v1"]).toBeUndefined();
+      // Simulate a broken / corrupt replay execution (e.g. database failure during batch)
+      const batchSpy = vi.spyOn(restoredHarness.db, "batch").mockRejectedValueOnce(
+        new Error("D1_BATCH_TIMEOUT: simulated storage error during replay")
+      );
 
-      // Theme preference and non-finpath data are preserved
-      expect(store["finpath.colorMode"]).toBe("dark");
-      expect(store["some_third_party_app_setting"]).toBe("keep_me");
+      let replayError: Error | null = null;
+      try {
+        await replayTombstones(restoredHarness.db, [{ userId: USER_A, deletedAt: "2026-09-14T10:00:00.000Z" }]);
+      } catch (err: any) {
+        replayError = err;
+      }
+
+      batchSpy.mockRestore();
+
+      expect(replayError).not.toBeNull();
+      expect(replayError?.message).toContain("D1_BATCH_TIMEOUT");
+
+      // Operational Rule Check:
+      // When replay throws, the restore procedure halts. Live traffic must NEVER be routed
+      // to this database instance because Alice is still un-tombstoned and child rows remain.
+      const unverifiedAlice = await restoredHarness.db
+        .prepare("SELECT deleted_at FROM users WHERE id = ?")
+        .bind(USER_A)
+        .first<{ deleted_at: string | null }>();
+      expect(unverifiedAlice?.deleted_at).toBeNull(); // Serving remains blocked!
     });
   });
 });

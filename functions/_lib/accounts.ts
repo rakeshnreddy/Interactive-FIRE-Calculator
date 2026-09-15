@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { ensureUserProfile } from './persistence';
+import { ensureUserProfile, UserDeletedError } from './persistence';
 
 export const accountTypes = [
   'cash',
@@ -229,7 +229,14 @@ export async function createAccount(
     );
   }
 
-  await database.batch(statements);
+  try {
+    await database.batch(statements);
+  } catch (error) {
+    if (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED'))) {
+      throw new UserDeletedError();
+    }
+    throw error;
+  }
 
   const account = await readAccount(database, userId, accountId);
 
@@ -345,25 +352,32 @@ export async function addAccountBalance(
 
   const now = new Date().toISOString();
 
-  await database.batch([
-    database
-      .prepare(
-        `
-          INSERT INTO account_balances (id, account_id, user_id, balance_date, balance_cents, created_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `
-      )
-      .bind(crypto.randomUUID(), accountId, userId, payload.balanceDate, payload.balanceCents, now),
-    database
-      .prepare(
-        `
-          UPDATE financial_accounts
-          SET updated_at = ?
-          WHERE id = ? AND user_id = ?
-        `
-      )
-      .bind(now, accountId, userId)
-  ]);
+  try {
+    await database.batch([
+      database
+        .prepare(
+          `
+            INSERT INTO account_balances (id, account_id, user_id, balance_date, balance_cents, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `
+        )
+        .bind(crypto.randomUUID(), accountId, userId, payload.balanceDate, payload.balanceCents, now),
+      database
+        .prepare(
+          `
+            UPDATE financial_accounts
+            SET updated_at = ?
+            WHERE id = ? AND user_id = ?
+          `
+        )
+        .bind(now, accountId, userId)
+    ]);
+  } catch (error) {
+    if (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED'))) {
+      throw new UserDeletedError();
+    }
+    throw error;
+  }
 
   return readAccount(database, userId, accountId);
 }

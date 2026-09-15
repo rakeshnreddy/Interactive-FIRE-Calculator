@@ -9,7 +9,8 @@ const MIGRATION_FILES = [
   "0002_balance_import_history.sql",
   "0003_transaction_import_history.sql",
   "0004_saved_calculator_results.sql",
-  "0005_saved_calculator_idempotency.sql"
+  "0005_saved_calculator_idempotency.sql",
+  "0006_user_tombstone_triggers.sql"
 ];
 
 export const ALL_DATABASE_TABLES = [

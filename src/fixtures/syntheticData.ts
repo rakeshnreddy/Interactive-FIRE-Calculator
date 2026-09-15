@@ -448,6 +448,26 @@ export const populatedTransactionSummary: TransactionSummary = {
   transferCents: 150000
 };
 
+export const staleTransactionSummary: TransactionSummary = {
+  adjustmentCents: 0,
+  expenseCents: 199260,
+  incomeCents: 482000,
+  latestTransactionDate: '2025-06-15',
+  netCashFlowCents: 132740,
+  transactionCount: 5,
+  transferCents: 150000
+};
+
+export const longValueTransactionSummary: TransactionSummary = {
+  adjustmentCents: 0,
+  expenseCents: 450000000,
+  incomeCents: 1250000000,
+  latestTransactionDate: '2026-09-02',
+  netCashFlowCents: 800000000,
+  transactionCount: 2,
+  transferCents: 0
+};
+
 export const populatedCashflow: TransactionCashflowRollup = buildTransactionCashflowRollup(populatedTransactions, '2026-09-05');
 export const emptyCashflow: TransactionCashflowRollup = buildTransactionCashflowRollup([], '2026-09-05');
 export const longValueCashflow: TransactionCashflowRollup = buildTransactionCashflowRollup(longValueTransactions, '2026-09-02');
@@ -558,6 +578,18 @@ export const populatedGoalSummary: GoalSummary = {
   goalCount: 3,
   nextGoal: populatedGoals[0],
   overdueGoalCount: 0,
+  pausedGoalCount: 0,
+  totalCurrentCents: 27950000,
+  totalTargetCents: 47500000
+};
+
+export const staleGoalSummary: GoalSummary = {
+  activeGoalCount: 2,
+  completedGoalCount: 1,
+  fundedPercent: 59.9,
+  goalCount: 3,
+  nextGoal: staleGoals[0],
+  overdueGoalCount: 2,
   pausedGoalCount: 0,
   totalCurrentCents: 27950000,
   totalTargetCents: 47500000
@@ -820,3 +852,120 @@ export const longValueSavedCalculatorResults: SavedCalculatorResult[] = [
     updatedAt: '2026-09-01T00:00:00Z'
   }
 ];
+
+// ============================================================================
+// 8. SYNTHETIC IMPORT FIXTURES
+// ============================================================================
+
+export type SyntheticBalanceImportRecord = {
+  createdAt: string;
+  duplicateRows: number;
+  errorRows: number;
+  fileName: string;
+  id: string;
+  importedRows: number;
+  totalRows: number;
+};
+
+export type SyntheticTransactionImportRecord = {
+  createdAt: string;
+  duplicateRows: number;
+  errorRows: number;
+  fileName: string;
+  id: string;
+  importedRows: number;
+  totalRows: number;
+};
+
+export const populatedBalanceImports: SyntheticBalanceImportRecord[] = [
+  {
+    createdAt: '2026-09-01T10:00:00Z',
+    duplicateRows: 0,
+    errorRows: 0,
+    fileName: 'apex_credit_union_balances_20260901.csv',
+    id: 'imp_bal_01',
+    importedRows: 2,
+    totalRows: 2
+  }
+];
+
+export const populatedTransactionImports: SyntheticTransactionImportRecord[] = [
+  {
+    createdAt: '2026-09-02T14:30:00Z',
+    duplicateRows: 0,
+    errorRows: 0,
+    fileName: 'chase_checking_transactions_aug2026.csv',
+    id: 'imp_tx_01',
+    importedRows: 5,
+    totalRows: 5
+  }
+];
+
+export const syntheticBalancePreview = {
+  rows: [
+    {
+      accountId: 'acc_chk_01',
+      accountName: 'Primary Household Checking',
+      balanceCents: 1425000,
+      balanceDate: '2026-09-01',
+      currency: 'USD',
+      message: 'Ready to import',
+      rowNumber: 1,
+      status: 'ready' as const
+    },
+    {
+      accountId: 'acc_sav_01',
+      accountName: 'Emergency Reserve Fund',
+      balanceCents: 4500000,
+      balanceDate: '2026-09-01',
+      currency: 'USD',
+      message: 'Ready to import',
+      rowNumber: 2,
+      status: 'ready' as const
+    }
+  ],
+  summary: {
+    duplicateRows: 0,
+    errorRows: 0,
+    readyRows: 2,
+    totalRows: 2
+  }
+};
+
+export const syntheticTransactionPreview = {
+  rows: [
+    {
+      accountId: 'acc_chk_01',
+      accountName: 'Primary Household Checking',
+      amountCents: 450000,
+      category: 'Income',
+      description: 'Bi-Weekly Employer Direct Deposit',
+      message: 'Ready to import',
+      notes: null,
+      rowNumber: 1,
+      status: 'ready' as const,
+      transactionDate: '2026-09-01',
+      transactionType: 'income' as const
+    },
+    {
+      accountId: 'acc_chk_01',
+      accountName: 'Primary Household Checking',
+      amountCents: 185000,
+      category: 'Housing',
+      description: 'Residential Mortgage Monthly Escrow',
+      message: 'Ready to import',
+      notes: null,
+      rowNumber: 2,
+      status: 'ready' as const,
+      transactionDate: '2026-09-02',
+      transactionType: 'expense' as const
+    }
+  ],
+  summary: {
+    duplicateRows: 0,
+    errorRows: 0,
+    readyRows: 2,
+    totalRows: 2
+  }
+};
+

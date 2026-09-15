@@ -30,8 +30,14 @@ export class UserDeletedError extends Error {
 }
 
 export function handleApiError(error: unknown, fallbackMessage: string): Response {
-  if (error instanceof UserDeletedError) {
-    return json({ error: error.message }, 410);
+  if (
+    error instanceof UserDeletedError ||
+    (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED')))
+  ) {
+    const msg = error instanceof UserDeletedError
+      ? error.message
+      : 'User account has been deleted and cannot accept new data.';
+    return json({ code: 'ACCOUNT_DELETED', error: msg }, 410);
   }
   return json({ error: fallbackMessage }, 500);
 }
@@ -48,27 +54,34 @@ export async function ensureUserProfile(database: D1Database, userId: string): P
 
   const now = new Date().toISOString();
 
-  await database
-    .prepare(
-      `
-        INSERT INTO users (id, provider, provider_user_id, created_at, updated_at)
-        VALUES (?, 'clerk', ?, ?, ?)
-        ON CONFLICT(id) DO UPDATE SET
-          updated_at = excluded.updated_at
-        WHERE users.deleted_at IS NULL
-      `
-    )
-    .bind(userId, userId, now, now)
-    .run();
+  try {
+    await database
+      .prepare(
+        `
+          INSERT INTO users (id, provider, provider_user_id, created_at, updated_at)
+          VALUES (?, 'clerk', ?, ?, ?)
+          ON CONFLICT(id) DO UPDATE SET
+            updated_at = excluded.updated_at
+          WHERE users.deleted_at IS NULL
+        `
+      )
+      .bind(userId, userId, now, now)
+      .run();
 
-  await database
-    .prepare(
-      `
-        INSERT INTO user_profiles (user_id, created_at, updated_at)
-        VALUES (?, ?, ?)
-        ON CONFLICT(user_id) DO NOTHING
-      `
-    )
-    .bind(userId, now, now)
-    .run();
+    await database
+      .prepare(
+        `
+          INSERT INTO user_profiles (user_id, created_at, updated_at)
+          VALUES (?, ?, ?)
+          ON CONFLICT(user_id) DO NOTHING
+        `
+      )
+      .bind(userId, now, now)
+      .run();
+  } catch (error) {
+    if (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED'))) {
+      throw new UserDeletedError();
+    }
+    throw error;
+  }
 }

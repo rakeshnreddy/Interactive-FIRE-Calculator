@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createD1TestHarness, invokeApi, seedTestUser, type D1TestHarness } from "./test/d1TestHarness";
 import * as sessionModule from "../functions/_lib/session";

@@ -386,13 +386,17 @@ const SAVED_PLANS_KEY = 'firecalc.savedPlans.v1';
 export const ACCOUNT_DATA_DELETE_CONFIRMATION = 'DELETE MY FINPATH DATA';
 
 export function clearLocalDrafts(): void {
-  if (typeof window === 'undefined' || !window.localStorage) {
+  if (typeof window === 'undefined') {
     return;
   }
   try {
+    const storage = window.localStorage;
+    if (!storage) {
+      return;
+    }
     const keysToRemove: string[] = [];
-    for (let i = 0; i < window.localStorage.length; i++) {
-      const key = window.localStorage.key(i);
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
       if (!key) continue;
       if (key === 'finpath.colorMode') {
         continue;
@@ -406,7 +410,7 @@ export function clearLocalDrafts(): void {
       }
     }
     for (const key of keysToRemove) {
-      window.localStorage.removeItem(key);
+      storage.removeItem(key);
     }
   } catch {
     // Storage access may be restricted in private browsing.

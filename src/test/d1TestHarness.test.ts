@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { ALL_DATABASE_TABLES, createD1TestHarness } from "./d1TestHarness";
 

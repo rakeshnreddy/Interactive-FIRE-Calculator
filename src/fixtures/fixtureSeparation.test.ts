@@ -1,6 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
+import { build } from 'vite';
+import { installFixtureNetworkGuard, restoreNetworkGuard } from './fixtureNetworkGuard';
 import {
   SYNTHETIC_FIXTURE_MARKER,
   SYNTHETIC_USER_ID,
@@ -37,15 +40,42 @@ import {
 } from './syntheticData';
 
 describe('B25: Real-Component Synthetic UI Fixtures and Build Separation', () => {
-  const distPath = path.resolve(__dirname, '../../dist');
+  let tempOutDir: string;
 
-  it('proves fixtures.html is strictly excluded from production dist output', () => {
-    expect(fs.existsSync(distPath)).toBe(true);
+  beforeAll(async () => {
+    tempOutDir = fs.mkdtempSync(path.join(os.tmpdir(), 'finpath-fixture-isolation-'));
+    const repoRoot = path.resolve(__dirname, '../..');
+    await build({
+      root: repoRoot,
+      configFile: path.resolve(repoRoot, 'vite.config.ts'),
+      build: {
+        outDir: tempOutDir,
+        emptyOutDir: true,
+        sourcemap: true,
+        rollupOptions: {
+          input: {
+            main: path.resolve(repoRoot, 'index.html')
+          }
+        }
+      },
+      logLevel: 'error'
+    });
+  }, 60000);
 
-    const fixturesHtmlPath = path.join(distPath, 'fixtures.html');
+  afterAll(() => {
+    if (tempOutDir && fs.existsSync(tempOutDir)) {
+      fs.rmSync(tempOutDir, { recursive: true, force: true });
+    }
+    restoreNetworkGuard();
+  });
+
+  it('proves fixtures.html is strictly excluded from fresh production build output', () => {
+    expect(fs.existsSync(tempOutDir)).toBe(true);
+
+    const fixturesHtmlPath = path.join(tempOutDir, 'fixtures.html');
     expect(fs.existsSync(fixturesHtmlPath)).toBe(false);
 
-    const indexHtmlPath = path.join(distPath, 'index.html');
+    const indexHtmlPath = path.join(tempOutDir, 'index.html');
     expect(fs.existsSync(indexHtmlPath)).toBe(true);
 
     const indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
@@ -54,12 +84,12 @@ describe('B25: Real-Component Synthetic UI Fixtures and Build Separation', () =>
     expect(indexHtmlContent).not.toContain(SYNTHETIC_FIXTURE_MARKER);
   });
 
-  it('proves production JS and CSS bundles contain zero synthetic fixture IDs or markers', () => {
-    const assetsDir = path.join(distPath, 'assets');
+  it('proves production JS, CSS, and source map bundles contain zero synthetic fixture IDs or markers', () => {
+    const assetsDir = path.join(tempOutDir, 'assets');
     expect(fs.existsSync(assetsDir)).toBe(true);
 
     const assetFiles = fs.readdirSync(assetsDir);
-    const bundleFiles = assetFiles.filter((f) => f.endsWith('.js') || f.endsWith('.css'));
+    const bundleFiles = assetFiles.filter((f) => f.endsWith('.js') || f.endsWith('.css') || f.endsWith('.map'));
     expect(bundleFiles.length).toBeGreaterThan(0);
 
     for (const file of bundleFiles) {
@@ -70,23 +100,18 @@ describe('B25: Real-Component Synthetic UI Fixtures and Build Separation', () =>
     }
   });
 
-  it('verifies network mutation lock rejects any outgoing fetch in fixture environment', async () => {
-    const originalFetch = window.fetch;
-    const blockedFetches: string[] = [];
+  it('verifies actual fixture network guard rejects any outgoing mutation', async () => {
+    installFixtureNetworkGuard();
 
-    // Mock the trap installed by FixtureApp
-    window.fetch = async (input: RequestInfo | URL) => {
-      const target = typeof input === 'string' ? input : input instanceof Request ? input.url : String(input);
-      blockedFetches.push(target);
-      throw new Error(`[SYNTHETIC FIXTURE SECURITY VIOLATION] Blocked network mutation or API call in isolated harness: ${target}`);
-    };
+    await expect(
+      window.fetch('/api/accounts', { method: 'POST', body: '{}' })
+    ).rejects.toThrow('[SYNTHETIC FIXTURE SECURITY VIOLATION] Outgoing network mutation blocked in fixture harness: POST /api/accounts');
 
-    await expect(window.fetch('/api/accounts', { method: 'POST', body: '{}' })).rejects.toThrow(
-      '[SYNTHETIC FIXTURE SECURITY VIOLATION]'
-    );
-    expect(blockedFetches).toContain('/api/accounts');
+    await expect(
+      window.fetch('/api/goals', { method: 'POST', body: '{}' })
+    ).rejects.toThrow('[SYNTHETIC FIXTURE SECURITY VIOLATION] Outgoing network mutation blocked in fixture harness: POST /api/goals');
 
-    window.fetch = originalFetch;
+    restoreNetworkGuard();
   });
 
   it('provides all 6 named states with typed, truthful datasets', () => {

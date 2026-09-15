@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { ensureUserProfile } from './persistence';
+import { ensureUserProfile, UserDeletedError } from './persistence';
 
 export const ACCOUNT_DATA_DELETE_CONFIRMATION = 'DELETE MY FINPATH DATA';
 
@@ -246,22 +246,128 @@ export function parseAccountDataDeletionRequest(value: unknown):
 export async function exportAccountData(database: D1Database, userId: string): Promise<AccountDataExport> {
   await ensureUserProfile(database, userId);
 
-  const data = {
-    accountBalances: await readAccountBalances(database, userId),
-    assumptions: await readAssumptions(database, userId),
-    auditLog: await readAuditLog(database, userId),
-    balanceImports: await readBalanceImports(database, userId),
-    financialAccounts: await readFinancialAccounts(database, userId),
-    firePlanInputs: await readFirePlanInputs(database, userId),
-    firePlanResults: await readFirePlanResults(database, userId),
-    goals: await readGoals(database, userId),
-    planVersions: await readPlanVersions(database, userId),
-    plans: await readPlans(database, userId),
-    profile: toOptionalDataRow(await readProfile(database, userId)),
-    savedCalculatorResults: await readSavedCalculatorResults(database, userId),
-    transactionImports: await readTransactionImports(database, userId),
-    transactions: await readTransactions(database, userId),
-    user: toOptionalDataRow(await readUser(database, userId))
+  const statements = [
+    database
+      .prepare(`SELECT id, provider, provider_user_id, created_at, updated_at, deleted_at FROM users WHERE id = ?`)
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT user_id, display_name, household_name, default_currency, birth_year, target_retirement_age, created_at, updated_at FROM user_profiles WHERE user_id = ?`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, name, account_type, institution_name, currency, is_active, created_at, updated_at, archived_at FROM financial_accounts WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, account_id, user_id, balance_date, balance_cents, created_at FROM account_balances WHERE user_id = ? ORDER BY balance_date ASC, created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, account_id, transaction_date, description, amount_cents, category, transaction_type, notes, created_at, updated_at FROM transactions WHERE user_id = ? ORDER BY transaction_date ASC, created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, name, goal_type, target_amount_cents, current_amount_cents, target_date, status, created_at, updated_at, archived_at FROM goals WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, goal_id, name, plan_type, status, created_at, updated_at, archived_at FROM plans WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, plan_id, user_id, version_number, label, notes, created_at FROM plan_versions WHERE user_id = ? ORDER BY plan_id ASC, version_number ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT plan_version_id, user_id, input_json, created_at FROM fire_plan_inputs WHERE user_id = ? ORDER BY created_at ASC, plan_version_id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT plan_version_id, user_id, result_json, created_at FROM fire_plan_results WHERE user_id = ? ORDER BY created_at ASC, plan_version_id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, name, assumption_type, value_json, created_at, updated_at FROM assumptions WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, calculator_slug, calculator_title, calculator_category, calculator_region, currency, destination_type, conversion_route, conversion_label, input_json, result_json, created_entity_type, created_entity_id, created_at, updated_at FROM saved_calculator_results WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, file_name, source_hash, total_rows, imported_rows, duplicate_rows, error_rows, created_at FROM balance_imports WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, file_name, source_hash, total_rows, imported_rows, duplicate_rows, error_rows, created_at FROM transaction_imports WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(
+        `SELECT id, user_id, action, entity_type, entity_id, metadata_json, created_at FROM audit_log WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
+      .prepare(`SELECT id, deleted_at FROM users WHERE id = ?`)
+      .bind(userId)
+  ];
+
+  const results = await database.batch(statements);
+
+  const initialUser = (results[0].results[0] as UserRow | undefined) ?? null;
+  const finalUser = (results[15].results[0] as { id: string; deleted_at: string | null } | undefined) ?? null;
+
+  if (!initialUser || initialUser.deleted_at || !finalUser || finalUser.deleted_at) {
+    throw new UserDeletedError('User account has been deleted or is inactive and cannot be exported.');
+  }
+
+  const data: AccountDataExportData = {
+    user: toOptionalDataRow(initialUser),
+    profile: toOptionalDataRow((results[1].results[0] as UserProfileRow | undefined) ?? null),
+    financialAccounts: (results[2].results as FinancialAccountRow[]).map(toDataRow),
+    accountBalances: (results[3].results as AccountBalanceRow[]).map(toDataRow),
+    transactions: (results[4].results as TransactionRow[]).map(toDataRow),
+    goals: (results[5].results as GoalRow[]).map(toDataRow),
+    plans: (results[6].results as PlanRow[]).map(toDataRow),
+    planVersions: (results[7].results as PlanVersionRow[]).map(toDataRow),
+    firePlanInputs: (results[8].results as FirePlanInputRow[]).map(({ input_json: inputJson, ...row }) => ({
+      ...toDataRow(row),
+      input: parseStoredJson(inputJson)
+    })),
+    firePlanResults: (results[9].results as FirePlanResultRow[]).map(({ result_json: resultJson, ...row }) => ({
+      ...toDataRow(row),
+      result: parseStoredJson(resultJson)
+    })),
+    assumptions: (results[10].results as AssumptionRow[]).map(({ value_json: valueJson, ...row }) => ({
+      ...toDataRow(row),
+      value: parseStoredJson(valueJson)
+    })),
+    savedCalculatorResults: (results[11].results as SavedCalculatorResultRow[]).map(
+      ({ input_json: inputJson, result_json: resultJson, ...row }) => ({
+        ...toDataRow(row),
+        input: parseStoredJson(inputJson),
+        result: parseStoredJson(resultJson)
+      })
+    ),
+    balanceImports: (results[12].results as BalanceImportRow[]).map(toDataRow),
+    transactionImports: (results[13].results as TransactionImportRow[]).map(toDataRow),
+    auditLog: (results[14].results as AuditLogRow[]).map(({ metadata_json: metadataJson, ...row }) => ({
+      ...toDataRow(row),
+      metadata: metadataJson ? parseStoredJson(metadataJson) : null
+    }))
   };
 
   return {

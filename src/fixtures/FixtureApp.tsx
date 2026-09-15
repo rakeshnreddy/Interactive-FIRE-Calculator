@@ -16,7 +16,10 @@ import {
 } from '../App';
 import type { TransactionFilters } from '../lib/transactionAnalytics';
 import { PlanningWorkspace, type PlanningSaveDraft, type PlanVersionDetail } from '../PlanningWorkspace';
+import '../styles.css';
+import '../vivid-theme.css';
 import './fixtures.css';
+import { installFixtureNetworkGuard, setFixtureGuardState } from './fixtureNetworkGuard';
 import {
   SYNTHETIC_FIXTURE_MARKER,
   syntheticAuth,
@@ -31,6 +34,8 @@ import {
   longValueTransactions,
   emptyTransactionSummary,
   populatedTransactionSummary,
+  staleTransactionSummary,
+  longValueTransactionSummary,
   populatedCashflow,
   emptyCashflow,
   longValueCashflow,
@@ -40,6 +45,7 @@ import {
   longValueGoals,
   emptyGoalSummary,
   populatedGoalSummary,
+  staleGoalSummary,
   longValueGoalSummary,
   populatedSavedPlans,
   longValueSavedPlans,
@@ -60,16 +66,6 @@ import {
 
 const VALID_COMPONENTS: FixtureComponentName[] = ['dashboard', 'accounts', 'transactions', 'goals', 'plans', 'reports', 'settings'];
 const VALID_STATES: FixtureStateName[] = ['empty', 'populated', 'stale', 'loading', 'failure', 'long-value'];
-
-// Zero-network security guard: install trap on window.fetch inside fixture harness
-if (typeof window !== 'undefined') {
-  window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-    const target = typeof input === 'string' ? input : input instanceof Request ? input.url : String(input);
-    const message = `[SYNTHETIC FIXTURE SECURITY VIOLATION] Blocked network mutation or API call in isolated harness: ${target}`;
-    console.error(message, { input, init });
-    throw new Error(message);
-  };
-}
 
 export function FixtureApp() {
   // Read initial state from URL search params if present
@@ -121,25 +117,35 @@ export function FixtureApp() {
   const [profileDraft, setProfileDraft] = useState<AccountProfileDraft>(populatedProfileDraft);
   const [deleteConfirmation, setDeleteConfirmation] = useState<string>('');
 
-  // Sync state to URL and theme attribute
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const url = new URL(window.location.href);
-    url.searchParams.set('component', selectedComponent);
-    url.searchParams.set('state', selectedState);
-    url.searchParams.set('theme', colorMode);
-    window.history.replaceState({}, '', url.toString());
-
-    document.documentElement.dataset.theme = colorMode;
-    document.documentElement.className = `theme-${colorMode}`;
-  }, [selectedComponent, selectedState, colorMode]);
-
   const logAction = useCallback((name: string, payload?: unknown) => {
     const timestamp = new Date().toISOString().slice(11, 19);
     const logEntry = `[${timestamp}] Synthetic action: "${name}" handled in-memory. Zero network mutation.`;
     setActionLog(logEntry);
     console.log(`[FixtureAction] ${name}`, payload ?? '');
   }, []);
+
+  // Sync state to URL, network guard, and theme attributes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    installFixtureNetworkGuard(logAction);
+    setFixtureGuardState(selectedState, logAction);
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('component', selectedComponent);
+    url.searchParams.set('state', selectedState);
+    url.searchParams.set('theme', colorMode);
+    try {
+      const search = url.searchParams.toString();
+      window.history.replaceState({}, '', `${window.location.pathname}?${search}`);
+    } catch {
+      // replaceState may fail in restricted iframe or jsdom environments
+    }
+
+    document.documentElement.dataset.theme = colorMode;
+    document.documentElement.dataset.mode = colorMode;
+    document.documentElement.className = colorMode === 'dark' ? 'app theme-dark' : 'app theme-light';
+  }, [selectedComponent, selectedState, colorMode, logAction]);
 
   // Compute active dataset based on selected state
   const accountsData = useMemo(() => {
@@ -164,6 +170,8 @@ export function FixtureApp() {
 
   const transactionSummaryData = useMemo(() => {
     if (selectedState === 'empty') return emptyTransactionSummary;
+    if (selectedState === 'long-value') return longValueTransactionSummary;
+    if (selectedState === 'stale') return staleTransactionSummary;
     return populatedTransactionSummary;
   }, [selectedState]);
 
@@ -183,6 +191,7 @@ export function FixtureApp() {
   const goalSummaryData = useMemo(() => {
     if (selectedState === 'empty') return emptyGoalSummary;
     if (selectedState === 'long-value') return longValueGoalSummary;
+    if (selectedState === 'stale') return staleGoalSummary;
     return populatedGoalSummary;
   }, [selectedState]);
 
@@ -216,7 +225,12 @@ export function FixtureApp() {
     : '';
 
   return (
-    <div className="fixture-harness-root" data-testid="fixture-harness-root" data-fixture-marker={SYNTHETIC_FIXTURE_MARKER}>
+    <div
+      className={`fixture-harness-root app ${colorMode === 'dark' ? 'theme-dark' : 'theme-light'}`}
+      data-mode={colorMode}
+      data-testid="fixture-harness-root"
+      data-fixture-marker={SYNTHETIC_FIXTURE_MARKER}
+    >
       {/* Top Fixture Navigation & Control Bar */}
       <header className="fixture-banner" role="region" aria-label="Synthetic Fixture Controls">
         <div className="fixture-banner-top">
@@ -283,7 +297,7 @@ export function FixtureApp() {
 
       {/* Component Render Container */}
       <main className="fixture-render-surface" id="main-content">
-        <div className="app-shell" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 16px' }}>
+        <div className="app app-shell" data-mode={colorMode} style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 16px' }}>
           {selectedComponent === 'dashboard' && (
             <DashboardPanel
               accounts={accountsData}
