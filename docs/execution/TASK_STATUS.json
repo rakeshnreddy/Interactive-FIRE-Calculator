@@ -67,15 +67,15 @@
       "id": "B05",
       "title": "executable tenancy/auth boundary harness",
       "checkpoint": "C06",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B04",
         "B33"
       ],
       "prompt": "prompts/B05.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B05.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "d23def571c3df98571da71aef5541ec4ceb1721e",
       "review": null,
       "blocked_reason": null
     },
@@ -102,14 +102,14 @@
       "id": "B07",
       "title": "deletion and recovery contract",
       "checkpoint": "C06",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B05"
       ],
       "prompt": "prompts/B07.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B07.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "d23def571c3df98571da71aef5541ec4ceb1721e",
       "review": null,
       "blocked_reason": null
     },
@@ -399,16 +399,16 @@
       "id": "B25",
       "title": "Build isolated operational UI fixtures for visual verification",
       "checkpoint": "C06",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B05",
         "B07",
         "B16"
       ],
       "prompt": "prompts/B25.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B25.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "d23def571c3df98571da71aef5541ec4ceb1721e",
       "review": null,
       "blocked_reason": null
     },
