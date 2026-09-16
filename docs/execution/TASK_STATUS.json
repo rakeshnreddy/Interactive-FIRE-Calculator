@@ -83,7 +83,7 @@
       "id": "B06",
       "title": "working hosted auth and lifecycle",
       "checkpoint": "C07",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B02",
         "B03",
@@ -93,7 +93,7 @@
       ],
       "prompt": "prompts/B06.md",
       "submission": null,
-      "owner": null,
+      "owner": "implementing-agent",
       "code_sha": null,
       "review": null,
       "blocked_reason": null

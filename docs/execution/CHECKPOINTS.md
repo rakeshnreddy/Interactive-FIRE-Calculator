@@ -1,6 +1,6 @@
 # Checkpoints and release ledger
 
-C06 is accepted. C07 is locked pending secure preview auth setup and disposable hosted-test authorization; read-only preparation is allowed. C05 is accepted with actual-reader checks deferred to B31. C04 is accepted with the owner-authorized reader deferral tracked in B31. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
+C06 is accepted. C07 is released for owner-authorized free preview Clerk setup and disposable hosted lifecycle verification. C05 is accepted with actual-reader checks deferred to B31. C04 is accepted with the owner-authorized reader deferral tracked in B31. C03 is accepted with the owner-deferred reader check tracked in B31. C02 and C01I are accepted. C01T is accepted with the owner-deferred actual-reader check tracked in B31. C01 was accepted on 2026-09-10. C00R/B34 was accepted on 2026-09-09. This is the user's requested checkpoint process, not a request to merge or deploy production. C00 records already accepted B01. The primary reviewer owns changes to Release, Accepted SHA and Review columns. Workers can submit tasks, not release checkpoints.
 
 | Checkpoint | Purpose | Task order | Release | Accepted SHA | Review |
 |---|---|---|---|---|---|
@@ -14,7 +14,7 @@ C06 is accepted. C07 is locked pending secure preview auth setup and disposable 
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | accepted | 733e76c217058cafc3e5d418f09cb55ced531f4c | [approved with reader deferral](reviews/C04.md) |
 | C05 | Dedicated calculator families | B22 → B23 → B24 | accepted | 1c73bffbb4a5d1f179d67f2934c900a8b44711e5 | [approved](reviews/C05.md) |
 | C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | accepted | 0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a | [approved](reviews/C06.md) |
-| C07 | Owner setup and hosted proof | B06 | locked | — | — |
+| C07 | Owner setup and hosted proof | B06 | released | — | — |
 | C08 | Dashboard and transactions | B26 → B27 | locked | — | — |
 | C09 | Saved decision and monthly review | B10 → B11 → B28 | locked | — | — |
 | C10 | Reports and settings | B29 → B30 | locked | — | — |
@@ -83,3 +83,6 @@ The owner directed: “push it to the end of verification of all tasks … if th
 B31/C11 follow-up ZOOM-FINAL: a lower-cost capable agent performs one consolidated actual-browser 200% sweep of final public and authorized synthetic authenticated journeys, in both themes. Verify reachable essential controls, readable inputs/results, no text overlap or clipped actions, and reflow. Record browser version, actual zoom level, exact candidate, route, screenshot, defect and focused retest. Pixel density, CSS zoom and viewport resizing do not substitute for native browser zoom evidence. Primary reviews the evidence and closes the task. Existing C06 account-import/fixture toolbar repairs and screenshots are retained; repeat only if the final sweep finds a regression.
 
 C06 final acceptance2026-09-15 supersedes earlier C06 release-only notes. B05/B07/B25 accepted together,22/34. C07 is not released; read-only preparation may resolve its exact external gates.
+
+
+Owner authorization / primary release: the owner explicitly answered “yes i authorize it. i never used or setup the clerk” to free Clerk preview configuration and two disposable synthetic users including preview-data deletion. C07/B06 is now released for that exact scope. Independently verify ownership, existing development instance and preview DB before writes; earlier readiness inventory is unverified until reproduced. Use no paid services, production configuration, personal identities or DNS changes. Exact origin only; do not authorize all pages.dev origins. C08 remains locked. See C07_START_PROMPT.md.
