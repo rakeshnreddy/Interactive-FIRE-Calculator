@@ -2,38 +2,46 @@
   "candidate_sha": "d81f31187892f636ab9d2b6cb492e90e9b7d166d",
   "preview_url": "https://3eed38e6.interactive-fire-calculator.pages.dev",
   "effective_db": "0dbad68e-7493-452f-8504-98d4c61ee5da",
-  "started_at": "2026-09-16T14:09:45.928Z",
-  "completed_at": "2026-09-16T14:09:46.418Z",
-  "status": "BLOCKED",
-  "testing_token_used": false,
+  "started_at": "2026-09-16T18:53:43.433Z",
+  "completed_at": "2026-09-16T18:54:24.838Z",
+  "status": "PASS",
+  "testing_token_used": true,
   "proofs": {
     "csv_import": {
       "expected_status": 201,
-      "actual_status": null,
-      "passed": false,
-      "detail": null
+      "actual_status": 201,
+      "passed": true,
+      "preview_status": 200,
+      "reload_status": 200,
+      "reload_balance_and_history_verified": true,
+      "detail": "Preview returned 200, commit returned 201 (1 row imported), D1 verified 1234567 cents on 2026-06-15."
     },
     "cross_user_write_rejection": {
       "expected_status": 404,
-      "actual_status": null,
-      "passed": false,
-      "detail": null
+      "actual_status": 404,
+      "passed": true,
+      "own_get_status": 200,
+      "own_account_count": 0,
+      "cross_get_status": 404,
+      "full_account_unchanged": true,
+      "detail": "User B GET returned 404, PUT returned 404. User A account remained unchanged."
     },
     "deletion_410_rejection": {
       "expected_status": 410,
-      "actual_status": null,
-      "passed": false,
-      "detail": null
+      "actual_status": 410,
+      "passed": true,
+      "before_delete_status": 200,
+      "delete_status": 200,
+      "detail": "DELETE returned 200. Immediate authenticated profile PUT returned 410 with code ACCOUNT_DELETED."
     }
   },
   "deferred": {
     "native_200_zoom": "Deferred through C10 to B31/C11 per owner instruction",
     "actual_screen_reader": "Deferred through C10 to B31/C11 per owner instruction"
   },
-  "blocker": {
-    "step": "Step 2: Clerk Testing Token / Turnstile Bot Detection",
-    "tool_or_error": "Cloudflare Turnstile challenges automated Playwright forms without Clerk testing token",
-    "smallest_owner_action": "Add development Secret Key CLERK_SECRET_KEY=sk_test_... to .env.preview.local (chmod 600, ignored).",
-    "repro_command": "node docs/execution/evidence/C07/remaining/run_remaining_proofs.mjs"
-  }
+  "blocker": null,
+  "synthetic_user_ids": [
+    "user_3JQEKgM4sIyWhIYvDMb1fgEm9L2",
+    "user_3JQEKhcUeLopjSQH6xbMh6u57WN"
+  ]
 }

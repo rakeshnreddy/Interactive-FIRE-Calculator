@@ -1,13 +1,40 @@
 {
-  "active_users_created_this_run": 0,
+  "userA_app_data_deleted": true,
+  "userB_app_data_deleted": true,
   "userA_clerk_deleted": true,
   "userB_clerk_deleted": true,
   "userA_tombstone_present": true,
   "userB_tombstone_present": true,
   "scoped_tables_clean": true,
-  "existing_tombstones_preserved": [
-    "user_3JOGiP2nXKPm7UiZTBk27WNy2SF",
-    "user_3JOH4WytkmA7wx1Xq7BoaRl3sW5"
-  ],
-  "note": "Preflight confirmed existing tombstones and zero active users created prior to blocker halt."
+  "table_counts": {
+    "user_profiles:user_3JQEKgM4s...": 0,
+    "user_profiles:user_3JQEKhcUe...": 0,
+    "financial_accounts:user_3JQEKgM4s...": 0,
+    "financial_accounts:user_3JQEKhcUe...": 0,
+    "account_balances:user_3JQEKgM4s...": 0,
+    "account_balances:user_3JQEKhcUe...": 0,
+    "transactions:user_3JQEKgM4s...": 0,
+    "transactions:user_3JQEKhcUe...": 0,
+    "goals:user_3JQEKgM4s...": 0,
+    "goals:user_3JQEKhcUe...": 0,
+    "plans:user_3JQEKgM4s...": 0,
+    "plans:user_3JQEKhcUe...": 0,
+    "plan_versions:user_3JQEKgM4s...": 0,
+    "plan_versions:user_3JQEKhcUe...": 0,
+    "fire_plan_inputs:user_3JQEKgM4s...": 0,
+    "fire_plan_inputs:user_3JQEKhcUe...": 0,
+    "fire_plan_results:user_3JQEKgM4s...": 0,
+    "fire_plan_results:user_3JQEKhcUe...": 0,
+    "assumptions:user_3JQEKgM4s...": 0,
+    "assumptions:user_3JQEKhcUe...": 0,
+    "balance_imports:user_3JQEKgM4s...": 0,
+    "balance_imports:user_3JQEKhcUe...": 0,
+    "transaction_imports:user_3JQEKgM4s...": 0,
+    "transaction_imports:user_3JQEKhcUe...": 0,
+    "saved_calculator_results:user_3JQEKgM4s...": 0,
+    "saved_calculator_results:user_3JQEKhcUe...": 0,
+    "audit_log:user_3JQEKgM4s...": 0,
+    "audit_log:user_3JQEKhcUe...": 0
+  },
+  "errors": []
 }

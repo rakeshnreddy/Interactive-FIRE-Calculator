@@ -56,6 +56,15 @@ export const VALID_ACCOUNT_TYPES = [
   'other_liability'
 ];
 
+export function verifyReloadedAccount(account) {
+  return account?.latestBalanceCents === 1234567 && account?.latestBalanceDate === '2026-06-15' &&
+    account.balanceHistory?.some(row => row.balanceCents === 1234567 && row.balanceDate === '2026-06-15');
+}
+
+export function verifyIsolation(before, after, ownStatus, ownCount, getStatus, putStatus) {
+  return Boolean(before && after && ownStatus === 200 && ownCount === 0 && getStatus === 404 && putStatus === 404 && JSON.stringify(before) === JSON.stringify(after));
+}
+
 export const CSV_HEADERS = ['account', 'balance_date', 'balance', 'currency'];
 
 export const USER_TABLES = [
@@ -516,15 +525,17 @@ export async function runHarness(options = {}) {
     const emailA = `finpath_test_a_${nonce}+clerk_test@example.com`;
     const emailB = `finpath_test_b_${nonce}+clerk_test@example.com`;
 
-    const clerkUserA = await clerkClient.users.createUser({ emailAddress: [emailA], password: passA });
+    const clerkUserA = await clerkClient.users.createUser({ emailAddress: [emailA], phoneNumber: ['+12015550181'], password: passA });
     manifest.userA = clerkUserA.id;
     recordManifestUser(manifest.userA, 'userA');
     logFn(`Created synthetic User A: ${manifest.userA.slice(0, 14)}...`);
 
-    const clerkUserB = await clerkClient.users.createUser({ emailAddress: [emailB], password: passB });
+    const clerkUserB = await clerkClient.users.createUser({ emailAddress: [emailB], phoneNumber: ['+12015550182'], password: passB });
     manifest.userB = clerkUserB.id;
     recordManifestUser(manifest.userB, 'userB');
     logFn(`Created synthetic User B: ${manifest.userB.slice(0, 14)}...`);
+
+    report.synthetic_user_ids = [manifest.userA, manifest.userB];
 
     // Verify distinct user IDs
     if (manifest.userA === manifest.userB) {
@@ -536,6 +547,7 @@ export async function runHarness(options = {}) {
     await pageA.goto(`${PREVIEW_URL}/`, { waitUntil: 'networkidle' });
     const ticketA = await clerkClient.signInTokens.createSignInToken({ userId: manifest.userA, expiresInSeconds: 300 });
 
+    await pageA.waitForFunction(() => Boolean(window.Clerk?.loaded));
     await pageA.evaluate(async (ticket) => {
       await window.Clerk.client.signIn.create({ strategy: 'ticket', ticket }).then(async (res) => {
         if (res.status === 'complete') {
@@ -546,7 +558,7 @@ export async function runHarness(options = {}) {
       });
     }, ticketA.token);
 
-    await pageA.waitForFunction(() => window.Clerk?.user !== null && window.Clerk?.session !== null);
+    await pageA.waitForFunction(() => Boolean(window.Clerk?.user && window.Clerk?.session));
     const meA = await pageA.evaluate(async () => {
       const res = await fetch('/api/me');
       return { status: res.status, body: await res.json() };
@@ -561,6 +573,7 @@ export async function runHarness(options = {}) {
     await pageB.goto(`${PREVIEW_URL}/`, { waitUntil: 'networkidle' });
     const ticketB = await clerkClient.signInTokens.createSignInToken({ userId: manifest.userB, expiresInSeconds: 300 });
 
+    await pageB.waitForFunction(() => Boolean(window.Clerk?.loaded));
     await pageB.evaluate(async (ticket) => {
       await window.Clerk.client.signIn.create({ strategy: 'ticket', ticket }).then(async (res) => {
         if (res.status === 'complete') {
@@ -571,7 +584,7 @@ export async function runHarness(options = {}) {
       });
     }, ticketB.token);
 
-    await pageB.waitForFunction(() => window.Clerk?.user !== null && window.Clerk?.session !== null);
+    await pageB.waitForFunction(() => Boolean(window.Clerk?.user && window.Clerk?.session));
     const meB = await pageB.evaluate(async () => {
       const res = await fetch('/api/me');
       return { status: res.status, body: await res.json() };
@@ -620,15 +633,14 @@ export async function runHarness(options = {}) {
     const tempCsvPath = join(__dirname, 'test_balances.csv');
     writeFileSync(tempCsvPath, csvContent);
 
+    await pageA.reload({ waitUntil: 'networkidle' });
+
     // Setup network response listeners before triggering file selection
     const previewPromise = pageA.waitForResponse(
       (resp) => resp.url().includes('/api/imports/account-balances/preview') && resp.request().method() === 'POST',
       { timeout: 15000 }
     );
-    const commitPromise = pageA.waitForResponse(
-      (resp) => resp.url().includes('/api/imports/account-balances/commit') && resp.request().method() === 'POST',
-      { timeout: 15000 }
-    );
+
 
     // Select file using exact file input
     const fileInput = pageA.locator('input[type="file"][accept*="csv"]');
@@ -646,10 +658,12 @@ export async function runHarness(options = {}) {
 
     // Click commit button
     const commitButton = pageA.locator('button:has-text("Import 1 balance")');
-    await commitButton.click();
+    const [commitResp] = await Promise.all([
+      pageA.waitForResponse(resp => resp.url().includes('/api/imports/account-balances/commit') && resp.request().method() === 'POST', { timeout: 15000 }),
+      commitButton.click()
+    ]);
 
     // Assert commit response
-    const commitResp = await commitPromise;
     const commitStatus = commitResp.status();
     const commitJson = await commitResp.json();
     logFn(`Observed /commit status: ${commitStatus}, importedRows: ${commitJson?.importRecord?.importedRows}`);
@@ -670,12 +684,17 @@ export async function runHarness(options = {}) {
       return { status: response.status, body: await response.json() };
     });
     if (reloadedBalances.status !== 200) throw new Error('Authenticated account reload failed after import.');
+    const beforeAttack = reloadedBalances.body.accounts?.find(account => account.id === userA_AccountId);
+    const reloadVerified = verifyReloadedAccount(beforeAttack);
     await pageA.screenshot({ path: SCREENSHOT_FILE, fullPage: true });
 
     report.proofs.csv_import = {
       expected_status: 201,
       actual_status: commitStatus,
-      passed: commitStatus === 201 && persistedCorrectly,
+      passed: commitStatus === 201 && commitJson?.importRecord?.importedRows === 1 && persistedCorrectly && reloadVerified,
+      preview_status: previewStatus,
+      reload_status: reloadedBalances.status,
+      reload_balance_and_history_verified: Boolean(reloadVerified),
       detail: `Preview returned 200, commit returned ${commitStatus} (1 row imported), D1 verified 1234567 cents on 2026-06-15.`
     };
 
@@ -716,15 +735,16 @@ export async function runHarness(options = {}) {
     }, userA_AccountId);
     logFn(`User A account name after attack: '${aVerifyRes.body?.account?.name}'`);
 
-    const crossUserPassed = bGetRes.status === 404 &&
-      bPutRes.status === 404 &&
-      aVerifyRes.status === 200 &&
-      aVerifyRes.body?.account?.name === accountPayload.name;
+    const crossUserPassed = aVerifyRes.status === 200 && verifyIsolation(beforeAttack, aVerifyRes.body?.account, bOwnRes.status, bOwnRes.body?.accounts?.length, bGetRes.status, bPutRes.status);
 
     report.proofs.cross_user_write_rejection = {
       expected_status: 404,
       actual_status: bPutRes.status,
       passed: crossUserPassed,
+      own_get_status: bOwnRes.status,
+      own_account_count: bOwnRes.body?.accounts?.length,
+      cross_get_status: bGetRes.status,
+      full_account_unchanged: JSON.stringify(beforeAttack) === JSON.stringify(aVerifyRes.body?.account),
       detail: `User B GET returned ${bGetRes.status}, PUT returned ${bPutRes.status}. User A account remained unchanged.`
     };
 
@@ -769,7 +789,7 @@ export async function runHarness(options = {}) {
     }, freshTokenA);
     logFn(`User A post-delete profile PUT: status ${postDelProfile.status}, code: ${postDelProfile.body?.code}`);
 
-    const deletion410Passed = delRes.status === 200 &&
+    const deletion410Passed = preDelProfile.status === 200 && delRes.status === 200 &&
       postDelProfile.status === 410 &&
       postDelProfile.body?.code === 'ACCOUNT_DELETED';
 
@@ -777,6 +797,8 @@ export async function runHarness(options = {}) {
       expected_status: 410,
       actual_status: postDelProfile.status,
       passed: deletion410Passed,
+      before_delete_status: preDelProfile.status,
+      delete_status: delRes.status,
       detail: `DELETE returned 200. Immediate authenticated profile PUT returned ${postDelProfile.status} with code ${postDelProfile.body?.code}.`
     };
 
@@ -788,6 +810,7 @@ export async function runHarness(options = {}) {
 
   } catch (err) {
     logFn(`[Harness Error] ${err.message}`);
+    if (Array.isArray(err.errors)) logFn(JSON.stringify(err.errors.map(e => ({ code: e.code, parameter: e.meta?.paramName ?? e.meta?.param_names, message: e.message }))));
     report.status = 'FAILED';
     report.blocker = {
       step: 'Execution Exception',

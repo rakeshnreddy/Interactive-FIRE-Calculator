@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  verifyReloadedAccount,
+  verifyIsolation,
   CANDIDATE_SHA,
   PREVIEW_URL,
   PREVIEW_DB_ID,
@@ -326,3 +328,17 @@ test('primary: deployment preflight rejects wrong or missing isolation metadata'
   await assert.rejects(verifyDeployment(fake({ ...deployment, environment: 'production' })));
   await assert.rejects(verifyDeployment(fake({ ...deployment, deployment_trigger: {} })));
 });
+
+ test('primary: imported balance must survive reload with matching history', () => {
+ const good = {latestBalanceCents:1234567, latestBalanceDate:'2026-06-15', balanceHistory:[{balanceCents:1234567,balanceDate:'2026-06-15'}]};
+ assert.equal(verifyReloadedAccount(good),true);
+ assert.equal(Boolean(verifyReloadedAccount({...good, balanceHistory:[]})),false);
+ assert.equal(Boolean(verifyReloadedAccount({...good, latestBalanceCents:1000000})),false);
+ });
+ test('primary: isolation requires full equality and authenticated own-resource access', () => {
+ const before={name:'Checking', latestBalanceCents:1234567};
+ assert.equal(verifyIsolation(before,{...before},200,0,404,404),true);
+ assert.equal(verifyIsolation(before,{...before,latestBalanceCents:0},200,0,404,404),false);
+ assert.equal(verifyIsolation(before,{...before},401,0,404,404),false);
+ assert.equal(verifyIsolation(before,{...before},200,1,404,404),false);
+ });

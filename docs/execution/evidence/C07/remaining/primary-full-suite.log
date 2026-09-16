@@ -1,17 +1,17 @@
-✔ fails before running any stage when python3 is missing (17.93975ms)
-✔ fails before running any stage when node is missing (13.183958ms)
-✔ fails before running any stage when npm is missing (11.950583ms)
-✔ runs every verification stage in order (698.831583ms)
-✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (174.115292ms)
-✔ stops and preserves failure status from node --test scripts/build_preview_auth.test.mjs (176.290375ms)
-✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (326.522625ms)
-✔ stops and preserves failure status from python3 -m pytest -q (368.471709ms)
-✔ stops and preserves failure status from npm run typecheck (512.221041ms)
-✔ stops and preserves failure status from npm test (532.505166ms)
-✔ stops and preserves failure status from npm run build (555.040583ms)
-✔ installs missing dependencies from the lockfile (522.462209ms)
-✔ does not run frontend verification after a failed install (490.201375ms)
-✔ uses the repository virtualenv even without system Python (546.13425ms)
+✔ fails before running any stage when python3 is missing (19.325084ms)
+✔ fails before running any stage when node is missing (14.907583ms)
+✔ fails before running any stage when npm is missing (15.141167ms)
+✔ runs every verification stage in order (828.227334ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (250.769041ms)
+✔ stops and preserves failure status from node --test scripts/build_preview_auth.test.mjs (164.416041ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (346.036583ms)
+✔ stops and preserves failure status from python3 -m pytest -q (316.965292ms)
+✔ stops and preserves failure status from npm run typecheck (504.269708ms)
+✔ stops and preserves failure status from npm test (518.144333ms)
+✔ stops and preserves failure status from npm run build (555.800125ms)
+✔ installs missing dependencies from the lockfile (548.711666ms)
+✔ does not run frontend verification after a failed install (480.711792ms)
+✔ uses the repository virtualenv even without system Python (642.957542ms)
 ℹ tests 14
 ℹ suites 0
 ℹ pass 14
@@ -19,12 +19,12 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 5013.605875
-✔ requires a development publishable key (2.331166ms)
-✔ reads the client-visible key from a private ignored env file (3.473292ms)
-✔ rejects a key file readable by other users (0.627834ms)
-✔ rejects server credentials exposed through Vite client variables (0.289667ms)
-✔ rejects server credentials loaded by Vite from production env files (2.096875ms)
+ℹ duration_ms 5277.542791
+✔ requires a development publishable key (1.204334ms)
+✔ reads the client-visible key from a private ignored env file (2.905625ms)
+✔ rejects a key file readable by other users (0.574917ms)
+✔ rejects server credentials exposed through Vite client variables (0.243917ms)
+✔ rejects server credentials loaded by Vite from production env files (2.019875ms)
 ℹ tests 5
 ℹ suites 0
 ℹ pass 5
@@ -32,10 +32,10 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 178.121667
+ℹ duration_ms 450.285083
 ................................................... [ 64%]
 ............................                                             [100%]
-79 passed, 21 subtests passed in 2.84s
+79 passed, 21 subtests passed in 7.35s
 
 > interactive-fire-calculator@2.0.0 typecheck
 > tsc --noEmit
@@ -47,21 +47,21 @@
 
  RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
 
-(node:51828) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:57535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:51830) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:57537) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:51833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:57540) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:51836) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:57541) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:51846) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:57601) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
 
  Test Files  47 passed (47)
       Tests  1608 passed (1608)
-   Start at  07:13:27
-   Duration  9.33s (transform 3.65s, setup 0ms, import 7.99s, tests 9.28s, environment 38.95s)
+   Start at  11:54:08
+   Duration  12.80s (transform 3.86s, setup 0ms, import 9.45s, tests 16.16s, environment 53.56s)
 
 
 > interactive-fire-calculator@2.0.0 build
@@ -90,7 +90,7 @@ dist/assets/CalculatorLibrary-nT8ACJUc.js                  318.54 kB │ gzip:  
 dist/assets/ProjectionChart-CXZ63G7n.js                    347.89 kB │ gzip: 102.39 kB │ map: 1,758.79 kB
 dist/assets/main-bAwZozDl.js                               528.07 kB │ gzip: 145.34 kB │ map: 1,623.16 kB
 
-✓ built in 435ms
+✓ built in 434ms
 [plugin builtin:vite-reporter] 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application

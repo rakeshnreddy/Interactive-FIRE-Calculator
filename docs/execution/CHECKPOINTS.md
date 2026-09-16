@@ -14,8 +14,8 @@ C06 is accepted. C07 is released for owner-authorized free preview Clerk setup a
 | C04 | Generic calculator and chart truth | B08 → B20 → B21 | accepted | 733e76c217058cafc3e5d418f09cb55ced531f4c | [approved with reader deferral](reviews/C04.md) |
 | C05 | Dedicated calculator families | B22 → B23 → B24 | accepted | 1c73bffbb4a5d1f179d67f2934c900a8b44711e5 | [approved](reviews/C05.md) |
 | C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | accepted | 0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a | [approved](reviews/C06.md) |
-| C07 | Owner setup and hosted proof | B06 | released | — | — |
-| C08 | Dashboard and transactions | B26 → B27 | locked | — | — |
+| C07 | Owner setup and hosted proof | B06 | accepted | d81f31187892f636ab9d2b6cb492e90e9b7d166d | [record](reviews/C07.md) |
+| C08 | Dashboard and transactions | B26 → B27 | released | — | [start prompt](C08_START_PROMPT.md) |
 | C09 | Saved decision and monthly review | B10 → B11 → B28 | locked | — | — |
 | C10 | Reports and settings | B29 → B30 | locked | — | — |
 | C11 | Measurement and final quality | B12 → B31 | locked | — | — |
@@ -88,3 +88,7 @@ C06 final acceptance2026-09-15 supersedes earlier C06 release-only notes. B05/B0
 Owner authorization / primary release: the owner explicitly answered “yes i authorize it. i never used or setup the clerk” to free Clerk preview configuration and two disposable synthetic users including preview-data deletion. C07/B06 is now released for that exact scope. Independently verify ownership, existing development instance and preview DB before writes; earlier readiness inventory is unverified until reproduced. Use no paid services, production configuration, personal identities or DNS changes. Exact origin only; do not authorize all pages.dev origins. C08 remains locked. See C07_START_PROMPT.md.
 
 C07 review2026-09-16: B06 changes_requested per reviews/C07.md. Three hosted proofs unexecuted; submitted harness requires R1–R4 repair before credentialed execution. C08 remains locked,22/34 accepted. No repeated broad audit authorized by this review.
+
+## Current primary decision — 2026-09-16
+
+C07/B06 APPROVED after primary-executed hosted CSV, tenant-denial and deletion410 proofs plus independent cleanup. Earlier C07 blocked/locked statements above are historical and superseded. C08 is released in order B26 → B27; C09 remains locked.23/34 tasks accepted (67.6% by task count, not effort). Use C08_START_PROMPT.md. Preview only; no main merge or production release.

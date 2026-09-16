@@ -49,7 +49,7 @@
   - Analytics/tests: test report and error counters only; successful/failure/concurrent requests. No real records/secrets in fixtures or logs.
   - Dependencies/rollback/effort: B04; local only, remove harness configuration if faulty. Human 3–5 days; agent 8–16 hours. Split auth and D1 harness into sequential PRs if needed.
 
-- [ ] **B06 — Owner-blocked: working hosted auth and lifecycle.**
+- [x] **B06 — Accepted: working hosted preview auth and lifecycle.**
   - Problem/evidence: hosted disposable-user Clerk lifecycle remains unverified. Historical missing-key/shared-DB findings are superseded: C06 preview 5e68409d has verified isolated finpath-preview binding and migration 0006. Recheck current browser/server configuration securely; key presence alone does not prove working sessions. Production remains gated.
   - Outcome/scope: first configure and verify an approved isolated preview database using effective deployment metadata, then approved preview Clerk config; disposable hosted user sign-up/in/out, refresh, save/reload, profile, import/export/delete; separate owned production setup and eventual release approval.
   - Non-goals/files: no DNS/production changes without owner authorization; runbook and hosted test evidence only, secure provider settings.
