@@ -1,0 +1,38 @@
+{
+  "scope": "First C07 synthetic pair only; read-only primary verification",
+  "tombstones": 2,
+  "queries": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "[{\"results\":[{\"table_name\":\"user_profiles\",\"remaining\":0},{\"table_name\":\"financial_accounts\",\"remaining\":0},{\"table_name\":\"account_balances\",\"remaining\":0},{\"table_name\":\"transactions\",\"remaining\":0}],\"success\":true,\"meta\":{\"served_by\":\"v3-prod\",\"served_by_region\":\"APAC\",\"served_by_colo\":\"SIN\",\"served_by_primary\":true,\"timings\":{\"sql_duration_ms\":0.4613},\"duration\":0.4613,\"changes\":0,\"last_row_id\":0,\"changed_db\":false,\"size_after\":258048,\"rows_read\":8,\"rows_written\":0,\"total_attempts\":1}}]"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "[{\"results\":[{\"table_name\":\"goals\",\"remaining\":0},{\"table_name\":\"plans\",\"remaining\":0},{\"table_name\":\"plan_versions\",\"remaining\":0},{\"table_name\":\"fire_plan_inputs\",\"remaining\":0}],\"success\":true,\"meta\":{\"served_by\":\"v3-prod\",\"served_by_region\":\"APAC\",\"served_by_colo\":\"SIN\",\"served_by_primary\":true,\"timings\":{\"sql_duration_ms\":0.5013},\"duration\":0.5013,\"changes\":0,\"last_row_id\":0,\"changed_db\":false,\"size_after\":258048,\"rows_read\":7,\"rows_written\":0,\"total_attempts\":1}}]"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "[{\"results\":[{\"table_name\":\"fire_plan_results\",\"remaining\":0},{\"table_name\":\"assumptions\",\"remaining\":0},{\"table_name\":\"balance_imports\",\"remaining\":0},{\"table_name\":\"transaction_imports\",\"remaining\":0}],\"success\":true,\"meta\":{\"served_by\":\"v3-prod\",\"served_by_region\":\"APAC\",\"served_by_colo\":\"SIN\",\"served_by_primary\":true,\"timings\":{\"sql_duration_ms\":0.5612},\"duration\":0.5612,\"changes\":0,\"last_row_id\":0,\"changed_db\":false,\"size_after\":258048,\"rows_read\":7,\"rows_written\":0,\"total_attempts\":1}}]"
+        }
+      ]
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "[{\"results\":[{\"table_name\":\"saved_calculator_results\",\"remaining\":0},{\"table_name\":\"audit_log\",\"remaining\":0}],\"success\":true,\"meta\":{\"served_by\":\"v3-prod\",\"served_by_region\":\"APAC\",\"served_by_colo\":\"SIN\",\"served_by_primary\":true,\"timings\":{\"sql_duration_ms\":0.3441},\"duration\":0.3441,\"changes\":0,\"last_row_id\":0,\"changed_db\":false,\"size_after\":258048,\"rows_read\":4,\"rows_written\":0,\"total_attempts\":1}}]"
+        }
+      ]
+    }
+  ]
+}
