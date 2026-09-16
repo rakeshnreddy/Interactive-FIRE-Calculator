@@ -1,0 +1,13 @@
+{
+  "active_users_created_this_run": 0,
+  "userA_clerk_deleted": true,
+  "userB_clerk_deleted": true,
+  "userA_tombstone_present": true,
+  "userB_tombstone_present": true,
+  "scoped_tables_clean": true,
+  "existing_tombstones_preserved": [
+    "user_3JOGiP2nXKPm7UiZTBk27WNy2SF",
+    "user_3JOH4WytkmA7wx1Xq7BoaRl3sW5"
+  ],
+  "note": "Preflight confirmed existing tombstones and zero active users created prior to blocker halt."
+}

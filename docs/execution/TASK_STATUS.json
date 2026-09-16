@@ -96,7 +96,7 @@
       "owner": "C07 implementation agent",
       "code_sha": "383790b35249ddf36086bcb1d2253de5a5a93b20",
       "review": null,
-      "blocked_reason": "Hosted lifecycle and cleanup completed, but CSV upload was blocked by the browser file-chooser capability; authenticated cross-user write denial and an observable post-deletion HTTP 410 remain unverified."
+      "blocked_reason": "Reusable instrumented harness implemented in docs/execution/evidence/C07/remaining/; execution halted at Step 2 pending development CLERK_SECRET_KEY in .env.preview.local for testing-token Turnstile bypass."
     },
     {
       "id": "B07",

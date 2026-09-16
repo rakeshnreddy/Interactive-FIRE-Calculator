@@ -1,0 +1,39 @@
+{
+  "candidate_sha": "d81f31187892f636ab9d2b6cb492e90e9b7d166d",
+  "preview_url": "https://3eed38e6.interactive-fire-calculator.pages.dev",
+  "effective_db": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+  "started_at": "2026-09-16T13:57:11.761Z",
+  "completed_at": "2026-09-16T13:57:12.349Z",
+  "status": "BLOCKED",
+  "testing_token_used": false,
+  "proofs": {
+    "csv_import": {
+      "expected_status": 201,
+      "actual_status": null,
+      "passed": false,
+      "detail": null
+    },
+    "cross_user_write_rejection": {
+      "expected_status": 404,
+      "actual_status": null,
+      "passed": false,
+      "detail": null
+    },
+    "deletion_410_rejection": {
+      "expected_status": 410,
+      "actual_status": null,
+      "passed": false,
+      "detail": null
+    }
+  },
+  "deferred": {
+    "native_200_zoom": "Deferred through C10 to B31/C11 per owner instruction",
+    "actual_screen_reader": "Deferred through C10 to B31/C11 per owner instruction"
+  },
+  "blocker": {
+    "step": "Step 2: Clerk Testing Token / Turnstile Bot Detection",
+    "tool_or_error": "Cloudflare Turnstile challenges automated Playwright forms without Clerk testing token",
+    "smallest_owner_action": "Add development Secret Key CLERK_SECRET_KEY=sk_test_... to .env.preview.local (chmod 600, ignored).",
+    "repro_command": "node docs/execution/evidence/C07/remaining/run_remaining_proofs.mjs"
+  }
+}

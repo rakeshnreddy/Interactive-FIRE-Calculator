@@ -1,0 +1,16 @@
+=== C07 Remaining Hosted Proofs Harness ===
+Target Preview: https://3eed38e6.interactive-fire-calculator.pages.dev
+Candidate SHA: d81f31187892f636ab9d2b6cb492e90e9b7d166d
+Preview DB ID: 0dbad68e-7493-452f-8504-98d4c61ee5da
+
+--- Step 1: Preflight D1 DB & Tombstone Integrity ---
+Existing users/tombstones in D1 preview: 2
+  - Tombstone ID: user_3JOGiP2nX... (deleted_at: true)
+  - Tombstone ID: user_3JOH4Wytk... (deleted_at: true)
+
+--- Step 2: Testing Token Check ---
+[BLOCKED] CLERK_SECRET_KEY (sk_test_...) is not set in .env.preview.local.
+Clerk requires a testing token to bypass Cloudflare Turnstile during automated testing.
+
+Report written to: /Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C07/remaining/report.json
+[BLOCKED] Halting run before user creation per C07_FINISH_PROMPT.md section 3.
