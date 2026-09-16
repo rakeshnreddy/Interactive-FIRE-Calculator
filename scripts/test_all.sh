@@ -20,6 +20,7 @@ for FINPATH_TEST_RUNTIME in node npm; do
 done
 
 node --test scripts/test_all.test.mjs
+node --test scripts/build_preview_auth.test.mjs
 "$FINPATH_TEST_PYTHON" -m compileall -q app.py project tests
 "$FINPATH_TEST_PYTHON" -m pytest -q
 
@@ -29,4 +30,3 @@ fi
 npm run typecheck
 npm test
 npm run build
-
