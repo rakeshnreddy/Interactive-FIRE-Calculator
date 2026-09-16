@@ -56,8 +56,8 @@ When opening `/dashboard` at 390px (and all standard desktop/mobile viewports) o
   If either were missing, it would return HTTP 503 (`{"authConfigured":false}`).
 - **Observed Response**:
   `curl -s https://5e68409d.interactive-fire-calculator.pages.dev/api/me` returns HTTP 401 (`{"error":"Unauthorized"}`).
-- **Conclusion**:
-  Server-side preview credentials are active and functioning correctly on Cloudflare edge. Only the frontend build-time key was missing from the client artifact.
+- **Corrected conclusion (2026-09-15)**:
+  The 401 proves only that `readClerkConfig` found a publishable key and either a secret or JWT key. An unauthenticated empty request does not prove that those credentials are valid, mutually compatible, or owned by the user. The frontend build-time key is definitely missing from the client artifact; provider-instance ownership and client/server credential compatibility remain unverified until an authenticated browser session succeeds against the protected API.
 
 ---
 

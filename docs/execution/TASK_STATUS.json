@@ -83,7 +83,7 @@
       "id": "B06",
       "title": "working hosted auth and lifecycle",
       "checkpoint": "C07",
-      "status": "in_progress",
+      "status": "blocked",
       "dependencies": [
         "B02",
         "B03",
@@ -92,11 +92,11 @@
         "B33"
       ],
       "prompt": "prompts/B06.md",
-      "submission": null,
-      "owner": "implementing-agent",
-      "code_sha": null,
+      "submission": "submissions/B06.md",
+      "owner": "C07 implementation agent",
+      "code_sha": "383790b35249ddf36086bcb1d2253de5a5a93b20",
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": "Owner-controlled Clerk development tenant is not available: owner confirmed no Clerk account exists and dashboard is signed out. Existing credential names/401 do not prove ownership or key compatibility."
     },
     {
       "id": "B07",
