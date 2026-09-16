@@ -83,7 +83,7 @@
       "id": "B06",
       "title": "working hosted auth and lifecycle",
       "checkpoint": "C07",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B02",
         "B03",
@@ -96,7 +96,7 @@
       "owner": "C07 implementation agent",
       "code_sha": "383790b35249ddf36086bcb1d2253de5a5a93b20",
       "review": "reviews/C07.md",
-      "blocked_reason": "C07 R1–R4 repaired and verified with 11 local unit/negative tests; awaiting development CLERK_SECRET_KEY in ignored .env.preview.local for single instrumented execution."
+      "blocked_reason": "Primary bounded harness repairs pass local tests; hosted import201, tenant-write404 and deletion410 still unexecuted pending secure development testing credentials and verified provider access."
     },
     {
       "id": "B07",

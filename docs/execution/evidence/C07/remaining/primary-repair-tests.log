@@ -1,0 +1,23 @@
+✔ R1: validateAccountPayload accepts valid accountTypes and rejects depository (0.768792ms)
+✔ R1: deriveClerkFapi correctly derives FAPI from publishable key and rejects invalid keys (0.138959ms)
+✔ R2: buildSyntheticCsv produces exact headers and parsable CSV structure (0.157625ms)
+✔ R2: negative test - wrong CSV headers fail header verification (0.115459ms)
+✔ R2: negative test - missing or failed commit detection (0.104917ms)
+✔ R3: cleanup handles early failure after User A creation and deletes both A and B (0.769375ms)
+✔ R3: cleanup detects failed User B application deletion and reports failure (0.292625ms)
+✔ R3: cleanup detects failed Clerk provider deletion and revokes PASS (0.244209ms)
+✔ R3: fail-closed D1 count queries - missing count is treated as UNKNOWN/fail, never 0/pass (0.1915ms)
+✔ R4: disposable passwords are generated cryptographically with high entropy (0.24825ms)
+✔ R4: historical tombstones are preserved and distinct from synthetic users (0.05725ms)
+✔ primary: failed app deletion cannot pass or revoke provider identity (0.137875ms)
+✔ primary: nonnumeric D1 count cannot pass cleanup (0.143625ms)
+✔ primary: Clerk testing interception relays original response without security rewriting (0.280916ms)
+✔ primary: deployment preflight rejects wrong or missing isolation metadata (4.182042ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 98.178833

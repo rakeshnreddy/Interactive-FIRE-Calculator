@@ -221,6 +221,8 @@ test('R3: cleanup detects failed Clerk provider deletion and revokes PASS', asyn
     manifest: mockManifest,
     d1QueryFn: mockD1Query,
     clerkClient: mockClerkClient,
+    pageA: { isClosed: () => false, evaluate: async () => ({ status: 200, ok: true }) },
+    pageB: { isClosed: () => false, evaluate: async () => ({ status: 200, ok: true }) },
     logFn: () => {}
   });
 
@@ -275,4 +277,52 @@ test('R4: historical tombstones are preserved and distinct from synthetic users'
   assert.ok(HISTORICAL_TOMBSTONES.includes('user_3JOGiP2nXKPm7UiZTBk27WNy2SF'));
   assert.ok(HISTORICAL_TOMBSTONES.includes('user_3JOH4WytkmA7wx1Xq7BoaRl3sW5'));
   assert.equal(USER_TABLES.length, 14);
+});
+
+
+test('primary: failed app deletion cannot pass or revoke provider identity', async () => {
+  let providerDeletes = 0;
+  const outcome = await performCleanup({
+    manifest: { userA: 'synthetic-review-only', userB: null },
+    pageA: { isClosed: () => false, evaluate: async () => ({ status: 500, ok: false }) },
+    clerkClient: { users: { deleteUser: async () => { providerDeletes++; } } },
+    d1QueryFn: async sql => sql.includes('deleted_at') ? [{ deleted_at: 'already-present' }] : [{ count: 0 }],
+    logFn: () => {}
+  });
+  assert.equal(outcome.success, false);
+  assert.equal(providerDeletes, 0);
+});
+
+test('primary: nonnumeric D1 count cannot pass cleanup', async () => {
+  const outcome = await performCleanup({
+    manifest: { userA: 'synthetic-review-only', userB: null },
+    pageA: { isClosed: () => false, evaluate: async () => ({ status: 200, ok: true }) },
+    clerkClient: { users: { deleteUser: async () => {} } },
+    d1QueryFn: async sql => sql.includes('deleted_at') ? [{ deleted_at: 'present' }] : [{ count: 'unknown' }],
+    logFn: () => {}
+  });
+  assert.equal(outcome.success, false);
+  assert.equal(outcome.result.scoped_tables_clean, false);
+});
+
+test('primary: Clerk testing interception relays original response without security rewriting', async () => {
+  const { setupClerkInterception } = await import('./run_remaining_proofs.mjs');
+  let handler;
+  const response = { original: true, captcha_bypass: false };
+  let fulfilled;
+  await setupClerkInterception({ route: async (_, callback) => { handler = callback; } }, 'synthetic-token', 'test.clerk.accounts.dev');
+  await handler({ request: () => ({ url: () => 'https://test.clerk.accounts.dev/v1/client' }), fetch: async () => response, fulfill: async args => { fulfilled = args; } });
+  assert.deepEqual(fulfilled, { response });
+  assert.equal(response.captcha_bypass, false);
+});
+
+
+test('primary: deployment preflight rejects wrong or missing isolation metadata', async () => {
+  const { verifyDeployment } = await import('./run_remaining_proofs.mjs');
+  const deployment = { environment: 'preview', url: PREVIEW_URL, latest_stage: { status: 'success' }, deployment_trigger: { metadata: { commit_hash: CANDIDATE_SHA } }, d1_databases: { DB: { id: PREVIEW_DB_ID } } };
+  const fake = result => async () => ({ ok: true, json: async () => ({ success: true, result }) });
+  assert.equal(await verifyDeployment(fake(deployment)), true);
+  await assert.rejects(verifyDeployment(fake({ ...deployment, d1_databases: {} })));
+  await assert.rejects(verifyDeployment(fake({ ...deployment, environment: 'production' })));
+  await assert.rejects(verifyDeployment(fake({ ...deployment, deployment_trigger: {} })));
 });

@@ -195,6 +195,21 @@ export async function queryD1(sql, params = []) {
 /**
  * Intercepts Clerk FAPI requests in Playwright to inject testing token and bypass bot checks.
  */
+export async function verifyDeployment(fetchFn = fetch) {
+  const response = await fetchFn(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/interactive-fire-calculator/deployments/3eed38e6-e45b-4844-b62b-dd9655f6b57d`, {
+    headers: { Authorization: `Bearer ${getCloudflareToken()}` }
+  });
+  const payload = await response.json();
+  const deployment = payload.result;
+  if (!response.ok || !payload.success || deployment?.environment !== 'preview' ||
+      deployment?.url !== PREVIEW_URL || deployment?.latest_stage?.status !== 'success' ||
+      deployment?.deployment_trigger?.metadata?.commit_hash !== CANDIDATE_SHA ||
+      deployment?.d1_databases?.DB?.id !== PREVIEW_DB_ID) {
+    throw new Error('Immutable preview deployment identity/binding could not be verified; no hosted writes allowed.');
+  }
+  return true;
+}
+
 export async function setupClerkInterception(context, testingToken, fapi) {
   if (!fapi) return;
   const escaped = fapi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -207,22 +222,8 @@ export async function setupClerkInterception(context, testingToken, fapi) {
         url.searchParams.set('__clerk_testing_token', testingToken);
       }
       const response = await route.fetch({ url: url.toString() });
-      const status = response.status();
-      const contentType = response.headers()['content-type'] || '';
-
-      if (contentType.includes('application/json')) {
-        const json = await response.json().catch(() => null);
-        if (json) {
-          if (json.response && json.response.captcha_bypass === false) {
-            json.response.captcha_bypass = true;
-          }
-          if (json.client && json.client.captcha_bypass === false) {
-            json.client.captcha_bypass = true;
-          }
-          await route.fulfill({ response, json });
-          return;
-        }
-      }
+      // Relay the provider response unchanged. A testing token does not authorize
+      // manufacturing a successful security decision in the response body.
       await route.fulfill({ response });
     } catch {
       await route.continue().catch(() => {});
@@ -316,6 +317,10 @@ export async function performCleanup({
     const client = clerkClient || createClerkClient({ secretKey });
     for (const uid of userIds) {
       const isA = uid === manifest?.userA;
+      if (!(isA ? result.userA_app_data_deleted : result.userB_app_data_deleted)) {
+        result.errors.push(`Provider deletion withheld: app cleanup unverified for ${uid.slice(0, 14)}...`);
+        continue;
+      }
       try {
         await client.users.deleteUser(uid);
         if (isA) result.userA_clerk_deleted = true;
@@ -361,7 +366,7 @@ export async function performCleanup({
         } else {
           const count = Number(rows[0].count);
           result.table_counts[`${table}:${uid.slice(0, 14)}...`] = count;
-          if (count > 0) {
+          if (!Number.isInteger(count) || count !== 0) {
             allTablesZero = false;
             result.errors.push(`Table ${table} has ${count} residual rows for ${uid.slice(0, 14)}...`);
           }
@@ -375,9 +380,9 @@ export async function performCleanup({
   }
   result.scoped_tables_clean = allTablesZero;
 
-  const success = result.scoped_tables_clean &&
-    (manifest?.userA ? result.userA_clerk_deleted && result.userA_tombstone_present : true) &&
-    (manifest?.userB ? result.userB_clerk_deleted && result.userB_tombstone_present : true);
+  const success = result.errors.length === 0 && result.scoped_tables_clean &&
+    (manifest?.userA ? result.userA_app_data_deleted && result.userA_clerk_deleted && result.userA_tombstone_present : true) &&
+    (manifest?.userB ? result.userB_app_data_deleted && result.userB_clerk_deleted && result.userB_tombstone_present : true);
 
   // Clean up private manifest file if cleanup succeeded
   if (success && existsSync(PRIVATE_MANIFEST_FILE)) {
@@ -413,6 +418,7 @@ export async function runHarness(options = {}) {
 
   // Step 1: Preflight D1 DB & Historical Tombstone Integrity
   logFn('\n--- Step 1: Preflight D1 DB & Historical Tombstone Integrity ---');
+  await (options.verifyDeploymentFn || verifyDeployment)();
   const d1Query = options.d1QueryFn || queryD1;
   const historicalRows = await d1Query('SELECT id, deleted_at FROM users WHERE id IN (?, ?);', HISTORICAL_TOMBSTONES);
   logFn(`Verified ${historicalRows.length}/${HISTORICAL_TOMBSTONES.length} historical tombstones intact with non-null deleted_at.`);
@@ -657,6 +663,13 @@ export async function runHarness(options = {}) {
       d1Balances.length > 0 &&
       d1Balances[0].balance_cents === 1234567;
 
+    await pageA.reload({ waitUntil: 'networkidle' });
+    const reloadedBalances = await pageA.evaluate(async () => {
+      const token = await window.Clerk.session.getToken();
+      const response = await fetch('/api/accounts', { headers: { Authorization: `Bearer ${token}` } });
+      return { status: response.status, body: await response.json() };
+    });
+    if (reloadedBalances.status !== 200) throw new Error('Authenticated account reload failed after import.');
     await pageA.screenshot({ path: SCREENSHOT_FILE, fullPage: true });
 
     report.proofs.csv_import = {
@@ -816,6 +829,7 @@ export async function runHarness(options = {}) {
       logFn(`Report written to: ${REPORT_FILE}`);
       logFn(`Cleanup status written to: ${CLEANUP_FILE}`);
     } catch (writeErr) {
+      report.status = 'FAILED';
       logFn(`[Report Write Error] ${writeErr.message}`);
     }
 

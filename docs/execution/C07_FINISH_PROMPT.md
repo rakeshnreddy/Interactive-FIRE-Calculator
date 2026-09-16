@@ -96,3 +96,5 @@ Primary will inspect the real HTTP assertions, verify cleanup and candidate rela
 ## Current reviewer correction — 2026-09-16
 
 Read reviews/C07.md first. Submitted harness4a7e785 is not safe/complete to run with a key. Repair R1–R4 and add fail-closed local negative tests before executing the remaining hosted proofs. This supersedes any claim that simply supplying CLERK_SECRET_KEY completes setup. Do not repeat previously accepted product tests unless code changes justify it.
+
+Primary follow-up2026-09-16: use the primary-corrected harness after13ced36; review latest reviews/C07.md addendum. Do not restore mocked Clerk captcha_bypass response changes. Local15-test pass is not hosted proof. Load secrets through private ignored configuration/editor, never echo literal keys into shell history.
