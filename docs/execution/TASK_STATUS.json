@@ -96,7 +96,7 @@
       "owner": "C07 implementation agent",
       "code_sha": "383790b35249ddf36086bcb1d2253de5a5a93b20",
       "review": null,
-      "blocked_reason": "Owner-controlled Clerk development tenant is not available: owner confirmed no Clerk account exists and dashboard is signed out. Existing credential names/401 do not prove ownership or key compatibility."
+      "blocked_reason": "Hosted lifecycle and cleanup completed, but CSV upload was blocked by the browser file-chooser capability; authenticated cross-user write denial and an observable post-deletion HTTP 410 remain unverified."
     },
     {
       "id": "B07",
