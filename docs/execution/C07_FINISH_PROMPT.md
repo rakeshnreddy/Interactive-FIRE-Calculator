@@ -91,3 +91,8 @@ Set B06 ready_for_review only if all applicable nondeferred requirements now hav
 ## 8. Primary reviewer gate to unblock C08
 
 Primary will inspect the real HTTP assertions, verify cleanup and candidate relationship, and rerun only a suspicious/missing check. When B06 genuinely passes, primary marks it done, records C07 acceptance, validates the ledger, and releases C08 in order B26 then B27. Worker self-review does not release C08. No further business decision or paid service is implied by C08 release.
+
+
+## Current reviewer correction — 2026-09-16
+
+Read reviews/C07.md first. Submitted harness4a7e785 is not safe/complete to run with a key. Repair R1–R4 and add fail-closed local negative tests before executing the remaining hosted proofs. This supersedes any claim that simply supplying CLERK_SECRET_KEY completes setup. Do not repeat previously accepted product tests unless code changes justify it.

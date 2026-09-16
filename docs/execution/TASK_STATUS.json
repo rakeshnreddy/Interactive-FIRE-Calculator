@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-15",
+  "updated": "2026-09-16",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -83,7 +83,7 @@
       "id": "B06",
       "title": "working hosted auth and lifecycle",
       "checkpoint": "C07",
-      "status": "blocked",
+      "status": "changes_requested",
       "dependencies": [
         "B02",
         "B03",
@@ -95,8 +95,8 @@
       "submission": "submissions/B06.md",
       "owner": "C07 implementation agent",
       "code_sha": "383790b35249ddf36086bcb1d2253de5a5a93b20",
-      "review": null,
-      "blocked_reason": "Reusable instrumented harness implemented in docs/execution/evidence/C07/remaining/; execution halted at Step 2 pending development CLERK_SECRET_KEY in .env.preview.local for testing-token Turnstile bypass."
+      "review": "reviews/C07.md",
+      "blocked_reason": "C07 R1\u2013R4: repair harness setup, actual response assertions, fail-closed cleanup and scoped evidence; development testing credential missing; three hosted proofs unexecuted."
     },
     {
       "id": "B07",
