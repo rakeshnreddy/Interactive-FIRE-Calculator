@@ -1,12 +1,11 @@
-=== C07 Remaining Hosted Proofs Harness ===
+=== C07 Remaining Hosted Proofs Reusable Harness ===
 Target Preview: https://3eed38e6.interactive-fire-calculator.pages.dev
 Candidate SHA: d81f31187892f636ab9d2b6cb492e90e9b7d166d
 Preview DB ID: 0dbad68e-7493-452f-8504-98d4c61ee5da
+[Preflight] Clerk Frontend API host: tender-filly-71.clerk.accounts.dev
 
---- Step 1: Preflight D1 DB & Tombstone Integrity ---
-Existing users/tombstones in D1 preview: 2
-  - Tombstone ID: user_3JOGiP2nX... (deleted_at: true)
-  - Tombstone ID: user_3JOH4Wytk... (deleted_at: true)
+--- Step 1: Preflight D1 DB & Historical Tombstone Integrity ---
+Verified 2/2 historical tombstones intact with non-null deleted_at.
 
 --- Step 2: Testing Token Check ---
 [BLOCKED] CLERK_SECRET_KEY (sk_test_...) is not set in .env.preview.local.
