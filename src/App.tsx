@@ -2139,8 +2139,31 @@ function moneyInputToCents(value: string): number | null {
   return Math.round(parsed * 100);
 }
 
-function formatCents(value: number, currency = 'USD'): string {
-  return formatMoney(value / 100, { currency });
+export function isBalanceStale(
+  dateStr: string | null | undefined,
+  referenceDate: Date = new Date()
+): boolean {
+  if (!dateStr || typeof dateStr !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr.trim())) {
+    return true;
+  }
+  const parts = dateStr.trim().split('-');
+  const balMidnight = Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  const refMidnight = Date.UTC(referenceDate.getUTCFullYear(), referenceDate.getUTCMonth(), referenceDate.getUTCDate());
+  const diffDays = Math.floor((refMidnight - balMidnight) / (1000 * 60 * 60 * 24));
+  return diffDays > 30;
+}
+
+export function formatCents(
+  value: number,
+  currency = 'USD',
+  options: Intl.NumberFormatOptions = {}
+): string {
+  return formatMoney(value / 100, {
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    ...options
+  });
 }
 
 export function formatAccountMetric(
@@ -2205,16 +2228,17 @@ function transactionAmountClass(transaction: Transaction): string {
   return 'amount-neutral';
 }
 
-function formatTransactionAmount(transaction: Transaction): string {
+export function formatTransactionAmount(transaction: Transaction): string {
+  const currency = transaction.account?.currency ?? 'USD';
   if (transaction.transactionType === 'income') {
-    return `+${formatCents(transaction.amountCents)}`;
+    return `+${formatCents(transaction.amountCents, currency)}`;
   }
 
   if (transaction.transactionType === 'expense') {
-    return `-${formatCents(transaction.amountCents)}`;
+    return `-${formatCents(transaction.amountCents, currency)}`;
   }
 
-  return formatCents(transaction.amountCents);
+  return formatCents(transaction.amountCents, currency);
 }
 
 function accountTypeLabel(value: FinancialAccountType): string {
@@ -2918,7 +2942,8 @@ function AuthActionButton({
   );
 }
 
-function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'signed-in' }> }) {
+export function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'signed-in' }> }) {
+  const hasDistinctEmail = Boolean(auth.user.email && auth.user.email !== auth.user.displayName);
   return (
     <section className="profile-band" aria-label="Signed-in profile">
       <span className="feature-icon">
@@ -2927,7 +2952,7 @@ function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'sig
       <div>
         <span>Signed in as</span>
         <strong>{auth.user.displayName}</strong>
-        {auth.user.email && <small>{auth.user.email}</small>}
+        {hasDistinctEmail && <small>{auth.user.email}</small>}
       </div>
       <small className="profile-private-label">Private workspace</small>
     </section>
@@ -3450,7 +3475,12 @@ export function DashboardPanel({
                   <strong>{account.name}</strong>
                   <small>
                     {accountTypeLabel(account.accountType)}
-                    {account.latestBalanceDate ? ` - ${account.latestBalanceDate}` : ''}
+                    {account.latestBalanceDate ? ` · As of ${account.latestBalanceDate}` : ''}
+                    {isBalanceStale(account.latestBalanceDate) ? (
+                      <em className="account-stale-badge" title="Balance was recorded over 30 days ago or is missing">
+                        Update due
+                      </em>
+                    ) : null}
                   </small>
                 </div>
                 <span className={account.category === 'liability' ? 'amount-negative' : 'amount-positive'}>
@@ -4431,7 +4461,14 @@ export function AccountsPanel({
                       </small>
                     </div>
                     <div className="account-balance">
-                      <span>{account.latestBalanceDate ?? 'No balance date'}</span>
+                      <span className={isBalanceStale(account.latestBalanceDate) ? 'balance-date-stale' : 'balance-date-fresh'}>
+                        {account.latestBalanceDate ? `As of ${account.latestBalanceDate}` : 'No balance date'}
+                        {isBalanceStale(account.latestBalanceDate) ? (
+                          <em className="account-stale-badge" title="Balance was recorded over 30 days ago or is missing">
+                            Update due
+                          </em>
+                        ) : null}
+                      </span>
                       <strong>{formatCents(account.latestBalanceCents, account.currency)}</strong>
                     </div>
                   </div>
@@ -5157,7 +5194,11 @@ function PlatformPage({
                 ? 'Transaction tracking is active.'
               : route === '/reports'
                 ? 'Insights are active.'
-                : `${page.eyebrow} route is wired.`}
+              : route === '/accounts'
+                ? 'Accounts and balances are active.'
+              : route === '/dashboard'
+                ? 'Dashboard overview is active.'
+              : `${page.eyebrow} is active.`}
           </strong>
           {' '}
           <small>
