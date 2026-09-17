@@ -3,16 +3,25 @@
   "deployment_id": "f737cfbb-0d0f-4ffc-9a43-5e3cda77d31a",
   "preview_url": "https://f737cfbb.interactive-fire-calculator.pages.dev",
   "effective_db": "0dbad68e-7493-452f-8504-98d4c61ee5da",
-  "timestamp": "2026-09-17T04:10:49.610Z",
+  "timestamp": "2026-09-17T07:54:30.095Z",
   "b26_accounts_polish": {
     "profile_email_deduplicated": true,
     "user_facing_copy": true,
+    "declared_dates": {
+      "freshDate": "2026-09-12",
+      "updatedFreshDate": "2026-09-15",
+      "staleDate": "2026-08-03"
+    },
+    "account_created_via_ui": true,
+    "balance_updated_via_ui": true,
     "exact_cents_displayed": true,
     "as_of_date_rendered": true,
+    "balance_history_persisted": true,
     "stale_badge_present_for_old_account": true,
+    "stale_badge_absent_for_fresh_account": true,
     "date_input_width": "190px",
     "dashboard_user_facing_copy": true,
-    "dashboard_renders_accounts": false
+    "dashboard_renders_accounts": true
   },
   "b27_transactions_polish": {
     "initial_empty_state": true,
@@ -26,7 +35,7 @@
     "actionable_row_error_displayed": true,
     "commit_imported_rows": 2,
     "ledger_renders_signed_amounts": true,
-    "balances_unchanged": true,
+    "balances_unmodified_equality": true,
     "duplicate_summary": {
       "duplicateRows": 2,
       "errorRows": 1,
@@ -36,11 +45,35 @@
     "duplicate_detection_passed": true,
     "persisted_count_unchanged": true
   },
+  "visual_and_accessibility": {
+    "stale_badge_contrast": {
+      "light": {
+        "ratio": 6.39,
+        "fg": "rgb(136, 81, 0)",
+        "bg": "#fbfdff",
+        "pass": true
+      },
+      "dark": {
+        "ratio": 9.55,
+        "fg": "rgb(240, 191, 114)",
+        "bg": "#10232c",
+        "pass": true
+      }
+    },
+    "stale_badge_contrast_light_pass": true,
+    "stale_badge_contrast_dark_pass": true,
+    "keyboard_interaction_verified": true,
+    "motion_transparency_fallbacks_verified": true,
+    "theme_switching_verified": true,
+    "light_dark_screenshots_distinct": true,
+    "viewport_containment_verified": true
+  },
   "cleanup": {
-    "userId": "user_3JRK4ZhoWzgu0AkRpnecImjZxH4",
+    "userId": "user_3JRlH8MUfsNQFyxTAbxCqaVns29",
     "app_data_deleted": true,
     "user_tombstone_present": true,
     "clerk_user_deleted": true,
+    "clerk_user_absent": true,
     "all_tables_zero": true,
     "table_counts": {
       "user_profiles": 0,
@@ -58,7 +91,9 @@
       "saved_calculator_results": 0,
       "audit_log": 0
     },
-    "clerk_user_absent": true
+    "provider_deletion_withheld": false,
+    "errors": []
   },
-  "status": "SUCCESS"
+  "status": "SUCCESS",
+  "evaluation_failures": []
 }
