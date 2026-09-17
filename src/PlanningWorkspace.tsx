@@ -1,6 +1,9 @@
 import {
   ArrowRight,
+  Calendar,
   Check,
+  CheckCircle2,
+  Clock,
   GitCompare,
   History,
   Link2,
@@ -13,6 +16,13 @@ import type { AuthState } from './auth';
 import { calculateFirePlan, formatMoney, type FirePlanResult, type PlanInput } from './lib/fire';
 import { buildPlanDeepLink } from './lib/navigation';
 import { derivePlanHealth, type PlanHealth } from './lib/planHealth';
+import {
+  calculatePlanReviewDueStatus,
+  type DueStatusResult,
+  type PlanReviewDecision,
+  type PlanReviewPayload,
+  type StoredPlanReview
+} from './lib/planReviews';
 import {
   previewPlanSeed,
   type PlanSeedPreview,
@@ -35,31 +45,35 @@ export type PlanningScenario = {
 };
 
 export type PlanningSnapshot = {
-  calculatorMode?: 'cash-flow' | 'fire-number' | 'portfolio-survival';
+  calculatorMode: 'fire-number' | 'withdrawal-income';
+  engineVersion?: string;
   plan: PlanInput;
   scenarios: PlanningScenario[];
+  schemaVersion?: number;
   seedApplications?: SeedApplication[];
   timeline: PlanningTimeline;
 };
 
 export type PlanningSavedPlan = {
   createdAt: string;
-  goalId: string | null;
+  goalId?: string | null;
   id: string;
   label?: string | null;
   name: string;
   notes?: string | null;
+  result?: FirePlanResult;
   snapshot: PlanningSnapshot;
   updatedAt?: string;
+  versionCreatedAt?: string;
   versionNumber?: number;
 };
 
 export type PlanningAccount = {
   accountType: string;
-  category: 'asset' | 'debt';
+  category: 'asset' | 'liability';
   currency: string;
   id: string;
-  isActive?: boolean;
+  isActive: boolean;
   latestBalanceCents: number;
   latestBalanceDate: string | null;
   name: string;
@@ -79,9 +93,10 @@ export type PlanningGoal = {
 export type PlanningProfile = {
   birthYear: number | null;
   defaultCurrency: string;
-  displayName: string | null;
-  householdName: string | null;
+  displayName?: string | null;
+  householdName?: string | null;
   targetRetirementAge: number | null;
+  updatedAt: string;
 };
 
 export type PlanningSaveDraft = {
@@ -114,6 +129,8 @@ type PlanningWorkspaceProps = {
   currentTimeline: PlanningTimeline;
   deepLinkError?: string | null;
   goals: PlanningGoal[];
+  initialDueStatus?: DueStatusResult | null;
+  initialReviews?: StoredPlanReview[];
   isLoading: boolean;
   isSaving: boolean;
   loadedVersionNumber?: number | null;
@@ -141,6 +158,8 @@ export function PlanningWorkspace({
   currentTimeline,
   deepLinkError,
   goals,
+  initialDueStatus,
+  initialReviews,
   isLoading,
   isSaving,
   loadedVersionNumber: controlledLoadedVersionNumber,
@@ -220,6 +239,106 @@ export function PlanningWorkspace({
     | { type: 'load-version'; versionNumber: number }
     | null
   >(null);
+
+  const [reviews, setReviews] = useState<StoredPlanReview[]>(() => initialReviews ?? []);
+  const [dueStatus, setDueStatus] = useState<DueStatusResult | null>(
+    () =>
+      initialDueStatus ??
+      (activePlan ? calculatePlanReviewDueStatus({ planCreatedAt: activePlan.createdAt }) : null)
+  );
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+  const [reviewMessage, setReviewMessage] = useState('');
+  const [reviewDecision, setReviewDecision] = useState<PlanReviewDecision>('keep');
+  const [reviewNotes, setReviewNotes] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  useEffect(() => {
+    if (initialReviews !== undefined) {
+      setReviews(initialReviews);
+    }
+  }, [initialReviews]);
+
+  useEffect(() => {
+    if (initialDueStatus !== undefined) {
+      setDueStatus(initialDueStatus);
+    }
+  }, [initialDueStatus]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (initialReviews !== undefined) {
+      return;
+    }
+
+    if (!activePlanId || !activePlan) {
+      setReviews([]);
+      setDueStatus(null);
+      setReviewMessage('');
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    setIsLoadingReviews(true);
+    loadPlanReviews(auth, activePlanId)
+      .then((data) => {
+        if (cancelled) return;
+        if (data) {
+          setReviews(data.reviews);
+          setDueStatus(data.dueStatus);
+        } else {
+          setReviews([]);
+          setDueStatus(calculatePlanReviewDueStatus({ planCreatedAt: activePlan.createdAt }));
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setReviews([]);
+        setDueStatus(calculatePlanReviewDueStatus({ planCreatedAt: activePlan.createdAt }));
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingReviews(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activePlanId, activePlan?.createdAt, activePlan?.updatedAt, auth.getToken, auth.user.id, initialReviews]);
+
+  const handleReviewSubmit = async () => {
+    if (!activePlanId || !activePlan) return;
+    const versionNumberToReview = loadedVersionNumber ?? activePlan.versionNumber ?? 1;
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    setIsSubmittingReview(true);
+    setReviewMessage('Recording review...');
+
+    try {
+      const result = await submitPlanReview(auth, activePlanId, {
+        decision: reviewDecision,
+        deferDays: reviewDecision === 'defer' ? 14 : undefined,
+        evidenceDate: todayStr,
+        notes: reviewNotes.trim() || null,
+        planVersionNumber: versionNumberToReview
+      });
+
+      setDueStatus(result.dueStatus);
+      setReviews((current) => [result.review, ...current.filter((r) => r.id !== result.review.id)]);
+      setReviewMessage(
+        reviewDecision === 'keep'
+          ? `Assumptions confirmed for Version ${versionNumberToReview}. Next review due ${result.review.nextReviewDue}.`
+          : reviewDecision === 'revise'
+          ? `Review recorded for Version ${versionNumberToReview}. Save a new version to apply revisions.`
+          : `Review deferred until ${result.review.deferredUntil}.`
+      );
+      setReviewNotes('');
+    } catch (error) {
+      setReviewMessage(error instanceof Error ? error.message : 'Failed to record review.');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -511,6 +630,190 @@ export function PlanningWorkspace({
           <p className="storage-status" role="status" aria-live="polite">{message}</p>
         </div>
       </section>
+
+      {activePlan ? (
+        <section className="panel planning-review-panel" aria-labelledby="planning-review-title">
+          <div className="panel-heading planning-heading-row">
+            <div>
+              <p className="eyebrow">Cadence & Governance</p>
+              <h2 id="planning-review-title">Monthly plan review</h2>
+            </div>
+            {dueStatus ? (
+              <span className={`review-badge review-badge-${dueStatus.status}`}>
+                {dueStatus.status === 'due'
+                  ? 'Review Due'
+                  : dueStatus.status === 'overdue'
+                  ? 'Review Overdue'
+                  : dueStatus.status === 'deferred'
+                  ? 'Deferred'
+                  : dueStatus.status === 'up-to-date'
+                  ? 'Up to Date'
+                  : 'Baseline Active'}
+              </span>
+            ) : null}
+          </div>
+
+          {dueStatus ? (
+            <div
+              className={`review-status-card review-status-${dueStatus.status}`}
+              role="status"
+              aria-label={`Monthly review status: ${dueStatus.status}`}
+            >
+              <div className="review-status-header">
+                <strong>
+                  {dueStatus.status === 'due'
+                    ? 'Monthly review due'
+                    : dueStatus.status === 'overdue'
+                    ? 'Monthly review overdue'
+                    : dueStatus.status === 'deferred'
+                    ? `Review deferred until ${dueStatus.deferredUntil}`
+                    : dueStatus.status === 'up-to-date'
+                    ? 'Assumptions up to date'
+                    : 'Baseline active'}
+                </strong>
+                <span className="review-status-date">
+                  Evidence date: {dueStatus.evidenceDate}
+                </span>
+              </div>
+              <p>
+                {dueStatus.status === 'due'
+                  ? 'Your monthly check-in is due. Confirm current assumptions or record updates.'
+                  : dueStatus.status === 'overdue'
+                  ? 'This plan has not been reviewed within the monthly cadence. Review assumptions and dated evidence.'
+                  : dueStatus.status === 'deferred'
+                  ? `Review is postponed until ${dueStatus.deferredUntil}. You may still confirm or revise earlier.`
+                  : dueStatus.status === 'up-to-date'
+                  ? `Assumptions were confirmed for Version ${loadedVersionNumber ?? activePlan.versionNumber ?? 1}. Next review due ${dueStatus.nextReviewDue}.`
+                  : `Plan baseline recorded. First returning review available in ${dueStatus.daysUntilEligible} days.`}
+              </p>
+              {dueStatus.isEvidenceStale ? (
+                <div className="stale-evidence-box" role="alert">
+                  <span className="stale-evidence-badge">
+                    Stale evidence ({dueStatus.evidenceAgeDays} days old)
+                  </span>
+                  <small className="stale-evidence-warning">
+                    Financial evidence was recorded over 30 days ago. Check your balances or update inputs before confirming.
+                  </small>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
+          {dueStatus?.eligibleForReview ? (
+            <div className="review-action-container">
+              <div className="review-decision-group" role="radiogroup" aria-label="Review decision choice">
+                <label className={`review-choice-card ${reviewDecision === 'keep' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="review-decision"
+                    value="keep"
+                    checked={reviewDecision === 'keep'}
+                    onChange={() => setReviewDecision('keep')}
+                    disabled={isSubmittingReview}
+                  />
+                  <div>
+                    <strong>Keep assumptions</strong>
+                    <small>Confirm current Version {loadedVersionNumber ?? activePlan.versionNumber ?? 1} assumptions remain accurate without changes.</small>
+                  </div>
+                </label>
+                <label className={`review-choice-card ${reviewDecision === 'revise' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="review-decision"
+                    value="revise"
+                    checked={reviewDecision === 'revise'}
+                    onChange={() => setReviewDecision('revise')}
+                    disabled={isSubmittingReview}
+                  />
+                  <div>
+                    <strong>Revise assumptions</strong>
+                    <small>Acknowledge updates in spending, savings rate, or timeline to save a new version.</small>
+                  </div>
+                </label>
+                <label className={`review-choice-card ${reviewDecision === 'defer' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="review-decision"
+                    value="defer"
+                    checked={reviewDecision === 'defer'}
+                    onChange={() => setReviewDecision('defer')}
+                    disabled={isSubmittingReview}
+                  />
+                  <div>
+                    <strong>Defer review (14 days)</strong>
+                    <small>Postpone review while waiting for financial statements or account sync.</small>
+                  </div>
+                </label>
+              </div>
+
+              <label className="field review-notes-field">
+                <span>Review notes (optional)</span>
+                <input
+                  maxLength={1000}
+                  placeholder="Notes for this monthly review..."
+                  value={reviewNotes}
+                  onChange={(e) => setReviewNotes(e.target.value)}
+                  disabled={isSubmittingReview}
+                />
+              </label>
+
+              <div className="planning-actions">
+                <button
+                  type="button"
+                  className="primary-button icon-text-button"
+                  disabled={isSubmittingReview || isLoadingReviews}
+                  onClick={handleReviewSubmit}
+                >
+                  <CheckCircle2 size={16} />
+                  {reviewDecision === 'keep'
+                    ? 'Confirm unchanged assumptions'
+                    : reviewDecision === 'revise'
+                    ? 'Record revision review'
+                    : 'Defer review for 14 days'}
+                </button>
+                {reviewMessage ? (
+                  <p className="storage-status" role="status" aria-live="polite">
+                    {reviewMessage}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          ) : dueStatus ? (
+            <p className="empty-inline">
+              First returning review requires at least 7 days from baseline plan creation (eligible in {dueStatus.daysUntilEligible} days).
+            </p>
+          ) : null}
+
+          <div className="review-history-section" aria-label="Review history">
+            <h3>Review history</h3>
+            {isLoadingReviews ? (
+              <p className="empty-inline">Loading reviews...</p>
+            ) : reviews.length === 0 ? (
+              <p className="empty-inline">No monthly reviews recorded for this plan yet.</p>
+            ) : (
+              <div className="planning-list">
+                {reviews.map((rev) => (
+                  <article className="planning-list-row review-history-row" key={rev.id}>
+                    <div>
+                      <span>Version {rev.planVersionNumber} · {formatDate(rev.completedAt ?? rev.createdAt)}</span>
+                      <strong>
+                        Decision: {rev.decision === 'keep' ? 'Keep assumptions' : rev.decision === 'revise' ? 'Revised assumptions' : 'Deferred review'}
+                      </strong>
+                      <small>
+                        {rev.decision === 'defer' ? `Deferred until ${rev.deferredUntil}` : `Next review due ${rev.nextReviewDue}`}
+                        {rev.notes ? ` · "${rev.notes}"` : ''}
+                      </small>
+                    </div>
+                    <span className={`review-badge review-badge-${rev.decision}`}>
+                      {rev.decision.toUpperCase()}
+                    </span>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      ) : null}
 
       <section className="panel planning-seed-panel" aria-labelledby="planning-seed-title">
         <div className="panel-heading">
@@ -816,4 +1119,41 @@ function isPlanningSnapshot(value: unknown): value is PlanningSnapshot {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+async function loadPlanReviews(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  planId: string
+): Promise<{ dueStatus: DueStatusResult; reviews: StoredPlanReview[] } | null> {
+  const body = await requestJson(auth, `/api/plans/${encodeURIComponent(planId)}/reviews`);
+  if (!isRecord(body) || !Array.isArray(body.reviews) || !isRecord(body.dueStatus)) return null;
+  return {
+    dueStatus: body.dueStatus as unknown as DueStatusResult,
+    reviews: body.reviews as unknown as StoredPlanReview[]
+  };
+}
+
+async function submitPlanReview(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  planId: string,
+  payload: PlanReviewPayload
+): Promise<{ dueStatus: DueStatusResult; review: StoredPlanReview }> {
+  const token = await auth.getToken();
+  if (!token) throw new Error('No Clerk session token is available.');
+
+  const response = await fetch(`/api/plans/${encodeURIComponent(planId)}/reviews`, {
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`
+    },
+    method: 'POST'
+  });
+
+  const body: unknown = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(isRecord(body) && typeof body.error === 'string' ? body.error : 'Failed to record review.');
+  }
+
+  return body as { dueStatus: DueStatusResult; review: StoredPlanReview };
 }

@@ -95,6 +95,7 @@ import {
   type AppRoute
 } from './lib/navigation';
 import type { AuthState } from './auth';
+import { calculatePlanReviewDueStatus } from './lib/planReviews';
 
 const BalanceImportPanel = lazy(() =>
   import('./BalanceImportPanel').then((module) => ({ default: module.BalanceImportPanel }))
@@ -3210,6 +3211,24 @@ export function DashboardPanel({
   const recentGoals = goals.slice(0, 3);
   const recentCalculatorResults = savedCalculatorResults.slice(0, 4);
 
+  const plansWithDueStatus = useMemo(() => {
+    return plans.map((plan) => {
+      const dueStatus =
+        (plan as any).dueStatus ??
+        calculatePlanReviewDueStatus({
+          planCreatedAt: plan.createdAt,
+          evidenceDate: plan.updatedAt ?? plan.createdAt
+        });
+      return { plan, dueStatus };
+    });
+  }, [plans]);
+
+  const duePlans = useMemo(() => {
+    return plansWithDueStatus.filter(
+      ({ dueStatus }) => dueStatus.status === 'due' || dueStatus.status === 'overdue'
+    );
+  }, [plansWithDueStatus]);
+
   return (
     <section className="financial-dashboard" aria-label="Financial dashboard">
       <div className="dashboard-summary-grid">
@@ -3281,6 +3300,45 @@ export function DashboardPanel({
         </div>
       </section>
 
+      {duePlans.length > 0 ? (
+        <section className="account-panel dashboard-reviews-rollup" aria-labelledby="dashboard-reviews-title">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Monthly reviews</p>
+              <h2 id="dashboard-reviews-title">Reviews needing attention ({duePlans.length})</h2>
+            </div>
+            <button className="secondary-button icon-text-button" onClick={() => onNavigate('/plans')}>
+              Plans
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
+          <div className="dashboard-reviews-list">
+            {duePlans.map(({ plan, dueStatus }) => (
+              <button
+                className={`dashboard-review-card dashboard-review-card-${dueStatus.status}`}
+                key={plan.id}
+                type="button"
+                onClick={() => onNavigate(buildPlanDeepLink(plan.id, plan.versionNumber ?? 1))}
+              >
+                <div className="dashboard-review-card-header">
+                  <span className={`review-badge review-badge-${dueStatus.status}`}>
+                    {dueStatus.status === 'overdue' ? 'Review Overdue' : 'Review Due'}
+                  </span>
+                  <span>Version {plan.versionNumber ?? 1}</span>
+                </div>
+                <strong>{plan.name}</strong>
+                <small>
+                  {dueStatus.status === 'overdue'
+                    ? `Review overdue since ${dueStatus.nextReviewDue}. Open plan to review dated evidence.`
+                    : `Review due ${dueStatus.nextReviewDue}. Confirm or revise assumptions.`}
+                </small>
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="account-panel dashboard-calculator-rollup" aria-labelledby="dashboard-calculators-title">
         <div className="panel-heading">
           <div>
@@ -3302,14 +3360,27 @@ export function DashboardPanel({
           </article>
         ) : (
           <div className="dashboard-calculator-list">
-            {plans.map((plan) => (
+            {plansWithDueStatus.map(({ plan, dueStatus }) => (
               <button
                 className="dashboard-calculator-card dashboard-plan-card"
                 key={plan.id}
                 type="button"
                 onClick={() => onNavigate(buildPlanDeepLink(plan.id, plan.versionNumber ?? 1))}
               >
-                <span>Version {plan.versionNumber ?? 1}</span>
+                <div className="dashboard-plan-card-badges">
+                  <span>Version {plan.versionNumber ?? 1}</span>
+                  <span className={`review-badge review-badge-${dueStatus.status}`}>
+                    {dueStatus.status === 'overdue'
+                      ? 'Review Overdue'
+                      : dueStatus.status === 'due'
+                      ? 'Review Due'
+                      : dueStatus.status === 'deferred'
+                      ? 'Deferred'
+                      : dueStatus.status === 'too-early'
+                      ? 'Baseline'
+                      : 'Up to Date'}
+                  </span>
+                </div>
                 <strong>{plan.name}</strong>
                 <small>
                   {plan.label ? `${plan.label} · ` : ''}Updated {new Date(plan.updatedAt ?? plan.createdAt).toLocaleDateString()}. Open saved decision.
@@ -4069,7 +4140,9 @@ export function GoalsPanel({
   onUpdateDraftChange,
   onUpdateGoal,
   summary,
-  updateDrafts
+  updateDrafts,
+  plans = [],
+  onNavigate
 }: {
   draft: GoalDraft;
   goals: Goal[];
@@ -4083,6 +4156,8 @@ export function GoalsPanel({
   onUpdateGoal: (id: string) => void;
   summary: GoalSummary;
   updateDrafts: Record<string, GoalUpdateDraft>;
+  plans?: SavedPlan[];
+  onNavigate?: (route: AppRoute | string) => void;
 }) {
   return (
     <section className="goal-workspace" aria-labelledby="goals-workspace-title">
@@ -4200,6 +4275,13 @@ export function GoalsPanel({
             {goals.map((goal) => {
               const updateDraft = updateDrafts[goal.id] ?? goalToUpdateDraft(goal);
               const progressValue = Math.min(100, Math.max(0, goal.progressPercent));
+              const linkedPlan = plans.find((p) => p.goalId === goal.id);
+              const nowMs = Date.now();
+              const goalUpdatedMs = Date.parse(goal.updatedAt);
+              const goalEvidenceAgeDays = isNaN(goalUpdatedMs)
+                ? 0
+                : Math.max(0, Math.floor((nowMs - goalUpdatedMs) / (24 * 60 * 60 * 1000)));
+              const isGoalEvidenceStale = goalEvidenceAgeDays > 30;
 
               return (
                 <article className="goal-card" key={goal.id}>
@@ -4210,8 +4292,41 @@ export function GoalsPanel({
                         <span className={`goal-status-badge goal-status-${goal.status}`}>
                           {goalStatusLabel(goal.status)}
                         </span>
+                        {goal.isOverdue && goal.status !== 'completed' ? (
+                          <span className="goal-status-badge goal-status-overdue">OVERDUE</span>
+                        ) : null}
                       </div>
                       <strong>{goal.name}</strong>
+                      {linkedPlan ? (
+                        <div className="goal-linked-plan">
+                          <FolderKanban size={14} />
+                          <span>Linked plan: <strong>{linkedPlan.name}</strong> (v{linkedPlan.versionNumber ?? 1})</span>
+                          {onNavigate ? (
+                            <button
+                              type="button"
+                              className="goal-link-button"
+                              onClick={() => onNavigate(buildPlanDeepLink(linkedPlan.id, linkedPlan.versionNumber ?? 1))}
+                            >
+                              Open plan
+                            </button>
+                          ) : null}
+                        </div>
+                      ) : (
+                        <span className="goal-unlinked-note">Manual milestone (unlinked)</span>
+                      )}
+                      <span className="goal-evidence-date">
+                        Evidence recorded: {new Date(goal.updatedAt).toLocaleDateString()}
+                      </span>
+                      {isGoalEvidenceStale ? (
+                        <div className="stale-evidence-box" role="alert">
+                          <span className="stale-evidence-badge">
+                            Stale evidence ({goalEvidenceAgeDays} days old)
+                          </span>
+                          <small className="stale-evidence-warning">
+                            Balance was recorded over 30 days ago. Update current amount to reflect fresh balances.
+                          </small>
+                        </div>
+                      ) : null}
                     </div>
                     <div className="goal-amount-summary">
                       <span>Current / target</span>
@@ -4219,24 +4334,42 @@ export function GoalsPanel({
                         {formatCents(goal.currentAmountCents)} /{' '}
                         {goal.targetAmountCents === null ? 'No target' : formatCents(goal.targetAmountCents)}
                       </strong>
+                      <div className="goal-funding-gap-row">
+                        <span>Funding gap: </span>
+                        <strong>
+                          {goal.targetAmountCents === null
+                            ? 'No target set'
+                            : goal.remainingAmountCents <= 0
+                            ? 'Goal funded'
+                            : `${formatCents(goal.remainingAmountCents)} remaining`}
+                        </strong>
+                      </div>
                     </div>
                   </div>
 
                   <div className="goal-progress-block">
-                    <div>
-                      <span>{formatGoalPercent(goal.progressPercent)} funded</span>
-                      <small>{formatCents(goal.remainingAmountCents)} remaining</small>
-                    </div>
-                    <div
-                      className="goal-progress-track"
-                      role="progressbar"
-                      aria-label={`${goal.name} funding progress`}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-valuenow={progressValue}
-                    >
-                      <span style={{ width: `${progressValue}%` }} />
-                    </div>
+                    {goal.targetAmountCents !== null && goal.targetAmountCents > 0 ? (
+                      <>
+                        <div>
+                          <span>{formatGoalPercent(goal.progressPercent)} funded</span>
+                          <small>{formatCents(goal.remainingAmountCents)} remaining</small>
+                        </div>
+                        <div
+                          className="goal-progress-track"
+                          role="progressbar"
+                          aria-label={`${goal.name} funding progress`}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={progressValue}
+                        >
+                          <span style={{ width: `${progressValue}%` }} />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="goal-no-progress">
+                        <small>Set a target amount to track funding progress</small>
+                      </div>
+                    )}
                     <small className={goal.isOverdue ? 'goal-deadline goal-deadline-overdue' : 'goal-deadline'}>
                       {goalDeadlineLabel(goal)}
                       {goal.targetDate ? ` - ${goal.targetDate}` : ''}
@@ -5000,6 +5133,7 @@ function PlatformPage({
   onTransactionUpdateDraftChange,
   onUpdateTransaction,
   onUpdateGoal,
+  plans = [],
   route,
   savedCalculatorResults,
   onNavigate,
@@ -5069,7 +5203,7 @@ function PlatformPage({
   plans?: SavedPlan[];
   route: PlatformRoute;
   savedCalculatorResults: SavedCalculatorResult[];
-  onNavigate: (route: AppRoute) => void;
+  onNavigate: (route: AppRoute | string) => void;
   profile: AccountProfile | null;
   profileDraft: AccountProfileDraft;
   profileMessage: string;
@@ -5170,6 +5304,8 @@ function PlatformPage({
           onDraftChange={onGoalDraftChange}
           onUpdateDraftChange={onGoalUpdateDraftChange}
           onUpdateGoal={onUpdateGoal}
+          plans={plans}
+          onNavigate={onNavigate}
         />
       ) : null}
 

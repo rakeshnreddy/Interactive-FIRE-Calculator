@@ -6,6 +6,8 @@ import { PlanningWorkspace, type PlanningSaveDraft, type PlanVersionDetail } fro
 import { DashboardPanel } from './App';
 import { calculateFirePlan } from './lib/fire';
 import { buildPlanDeepLink, parsePlanDeepLink } from './lib/navigation';
+import { emptyAccountSummary, emptyCashflow, emptyGoalSummary } from './fixtures/syntheticData';
+import type { AuthState } from './auth';
 
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -29,26 +31,16 @@ function renderComponent(ui: React.ReactElement) {
 }
 
 describe('B10 UI: Saved FIRE Decision Deep Link & Unsaved Changes Protection', () => {
-  const syntheticAuth = {
-    getToken: async () => 'test_token',
-    hasPermission: () => true,
+  const syntheticAuth: Extract<AuthState, { status: 'signed-in' }> = {
+    provider: 'clerk',
+    status: 'signed-in',
+    isConfigured: true,
     isSignedIn: true,
-    orgId: null,
-    orgRole: null,
-    orgSlug: null,
-    sessionId: 'test_session',
-    signOut: async () => {},
-    status: 'signed-in' as const,
+    getToken: async () => 'test_token',
     user: {
-      email: 'test@example.com',
-      firstName: 'Test',
-      fullName: 'Test User',
-      hasImage: false,
-      id: 'usr_test_b10',
-      imageUrl: '',
-      lastName: 'User',
-      phone: '+15555550100',
-      username: 'testuser'
+      id: 'user_1',
+      displayName: 'Test User',
+      email: 'test@example.com'
     }
   };
 
@@ -69,7 +61,11 @@ describe('B10 UI: Saved FIRE Decision Deep Link & Unsaved Changes Protection', (
         inflationRate: 0.025,
         investmentReturn: 0.07,
         retirementAge: 55,
-        lifeExpectancy: 90
+        lifeExpectancy: 90,
+        withdrawalTiming: 'start' as const,
+        desiredFinalValue: 0,
+        ratePeriods: [],
+        oneOffEvents: []
       },
       timeline: { currentAge: 35, retirementAge: 55, planEndAge: 90 },
       scenarios: []
@@ -93,7 +89,11 @@ describe('B10 UI: Saved FIRE Decision Deep Link & Unsaved Changes Protection', (
         inflationRate: 0.025,
         investmentReturn: 0.07,
         retirementAge: 50,
-        lifeExpectancy: 90
+        lifeExpectancy: 90,
+        withdrawalTiming: 'start' as const,
+        desiredFinalValue: 0,
+        ratePeriods: [],
+        oneOffEvents: []
       },
       timeline: { currentAge: 32, retirementAge: 50, planEndAge: 90 },
       scenarios: []
@@ -101,19 +101,6 @@ describe('B10 UI: Saved FIRE Decision Deep Link & Unsaved Changes Protection', (
   };
 
   const sampleResult1 = calculateFirePlan(samplePlan1.snapshot.plan);
-
-  const emptyCashflow = {
-    currentMonth: '2026-06',
-    currentMonthExpenseCents: 0,
-    currentMonthIncomeCents: 0,
-    currentMonthNetCashFlowCents: 0,
-    previousMonth: '2026-05',
-    previousMonthExpenseCents: 0,
-    previousMonthIncomeCents: 0,
-    previousMonthNetCashFlowCents: 0,
-    topExpenseCategories: [],
-    recentTransactions: []
-  };
 
   afterEach(() => {
     while (cleanupFns.length > 0) {
@@ -338,22 +325,10 @@ describe('B10 UI: Saved FIRE Decision Deep Link & Unsaved Changes Protection', (
           isLoadingGoals={false}
           message=""
           goalMessage=""
-          goalSummary={{
-            averageProgressPercent: 0,
-            completedCount: 0,
-            inProgressCount: 0,
-            totalCount: 0,
-            totalCurrentAmountCents: 0,
-            totalTargetAmountCents: 0
-          }}
+          goalSummary={emptyGoalSummary}
           onNavigate={onNavigate}
           savedCalculatorResults={[savedCalcResult as any]}
-          summary={{
-            assetBalanceCents: 0,
-            debtBalanceCents: 0,
-            netWorthCents: 0,
-            totalAccounts: 0
-          }}
+          summary={emptyAccountSummary}
         />
       );
 
@@ -382,23 +357,11 @@ describe('B10 UI: Saved FIRE Decision Deep Link & Unsaved Changes Protection', (
           isLoadingGoals={false}
           message=""
           goalMessage=""
-          goalSummary={{
-            averageProgressPercent: 0,
-            completedCount: 0,
-            inProgressCount: 0,
-            totalCount: 0,
-            totalCurrentAmountCents: 0,
-            totalTargetAmountCents: 0
-          }}
+          goalSummary={emptyGoalSummary}
           onNavigate={onNavigate}
           plans={[samplePlan1]}
           savedCalculatorResults={[]}
-          summary={{
-            assetBalanceCents: 0,
-            debtBalanceCents: 0,
-            netWorthCents: 0,
-            totalAccounts: 0
-          }}
+          summary={emptyAccountSummary}
         />
       );
 
