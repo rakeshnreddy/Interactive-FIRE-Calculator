@@ -92,3 +92,5 @@ C07 review2026-09-16: B06 changes_requested per reviews/C07.md. Three hosted pro
 ## Current primary decision — 2026-09-16
 
 C07/B06 APPROVED after primary-executed hosted CSV, tenant-denial and deletion410 proofs plus independent cleanup. Earlier C07 blocked/locked statements above are historical and superseded. C08 is released in order B26 → B27; C09 remains locked.23/34 tasks accepted (67.6% by task count, not effort). Use C08_START_PROMPT.md. Preview only; no main merge or production release.
+
+C08 primary review2026-09-17: B26/B27 changes_requested per reviews/C08.md and C08_REWORK_PROMPT.md. False-success evaluator, cleanup failure safety and missing true-theme/changed-control evidence prevent acceptance. C08 remains released for rework; C09 locked.23/34 accepted.
