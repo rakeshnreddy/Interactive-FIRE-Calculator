@@ -5505,6 +5505,7 @@ function App({ auth }: { auth: AuthState }) {
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>(initialScenarios);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>(readSavedPlans);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const [activePlanVersionNumber, setActivePlanVersionNumber] = useState<number | null>(null);
   const [seedApplications, setSeedApplications] = useState<SeedApplication[]>([]);
   const [lastSeedImport, setLastSeedImport] = useState<{
     preview: Extract<PlanSeedPreview, { ok: true }>;
@@ -5582,6 +5583,7 @@ function App({ auth }: { auth: AuthState }) {
           const matchingPlan = savedPlans.find((p) => p.id === deepLink.planId);
           if (matchingPlan) {
             setActivePlanId(matchingPlan.id);
+            setActivePlanVersionNumber(deepLink.versionNumber ?? matchingPlan.versionNumber ?? null);
             setSaveName(matchingPlan.name);
             setPlan({
               ...initialPlan,
@@ -5599,6 +5601,7 @@ function App({ auth }: { auth: AuthState }) {
               'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
             );
             setActivePlanId(null);
+            setActivePlanVersionNumber(null);
           }
         } else {
           setPlanDeepLinkError(null);
@@ -5665,6 +5668,7 @@ function App({ auth }: { auth: AuthState }) {
               'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
             );
             setActivePlanId(null);
+            setActivePlanVersionNumber(null);
             setPlanStorageMessage('Saved decision unavailable.');
             return;
           }
@@ -5681,6 +5685,7 @@ function App({ auth }: { auth: AuthState }) {
                   'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
                 );
                 setActivePlanId(null);
+                setActivePlanVersionNumber(null);
                 setPlanStorageMessage('Saved decision unavailable.');
                 return;
               }
@@ -5692,9 +5697,11 @@ function App({ auth }: { auth: AuthState }) {
                   'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
                 );
                 setActivePlanId(null);
+                setActivePlanVersionNumber(null);
                 return;
               }
               setActivePlanId(matchingPlan.id);
+              setActivePlanVersionNumber(deepLink.versionNumber);
               setSaveName(matchingPlan.name);
               setPlan({
                 ...initialPlan,
@@ -5715,12 +5722,14 @@ function App({ auth }: { auth: AuthState }) {
                 'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
               );
               setActivePlanId(null);
+              setActivePlanVersionNumber(null);
               setPlanStorageMessage('Saved decision unavailable.');
               return;
             }
           }
 
           setActivePlanId(matchingPlan.id);
+          setActivePlanVersionNumber(matchingPlan.versionNumber ?? null);
           setSaveName(matchingPlan.name);
           setPlan({
             ...initialPlan,
@@ -5741,6 +5750,7 @@ function App({ auth }: { auth: AuthState }) {
 
         if (latestPlan) {
           setActivePlanId(latestPlan.id);
+          setActivePlanVersionNumber(latestPlan.versionNumber ?? null);
           setSaveName(latestPlan.name);
           setPlan({
             ...initialPlan,
@@ -6331,12 +6341,14 @@ function App({ auth }: { auth: AuthState }) {
 
   const loadSavedPlan = (savedPlan: SavedPlan) => {
     setActivePlanId(savedPlan.id);
+    setActivePlanVersionNumber(savedPlan.versionNumber ?? null);
     setSaveName(savedPlan.name);
     applySnapshot(savedPlan.snapshot);
   };
 
   const loadSavedPlanVersion = (planId: string, version: PlanVersionDetail) => {
     setActivePlanId(planId);
+    setActivePlanVersionNumber(version.versionNumber);
     applySnapshot(version.snapshot);
   };
 
@@ -7070,6 +7082,7 @@ function App({ auth }: { auth: AuthState }) {
 
         setSavedPlans((current) => [savedPlan, ...current.filter((item) => item.id !== savedPlan.id)].slice(0, 8));
         setActivePlanId(savedPlan.id);
+        setActivePlanVersionNumber(savedPlan.versionNumber ?? null);
         setSaveName(savedPlan.name);
         setPlanStorageMessage(activePlan ? `Version ${savedPlan.versionNumber} saved to your account.` : 'New plan saved to your account.');
       } catch (error) {
@@ -7129,6 +7142,7 @@ function App({ auth }: { auth: AuthState }) {
 
       setSavedPlans((current) => [savedPlan, ...current.filter((item) => item.id !== savedPlan.id)].slice(0, 8));
       setActivePlanId(savedPlan.id);
+      setActivePlanVersionNumber(savedPlan.versionNumber ?? null);
       setSaveName(savedPlan.name);
       setPlanStorageMessage(mode === 'new-version' ? `Version ${savedPlan.versionNumber} saved.` : 'New plan created.');
     } catch (error) {
@@ -7150,7 +7164,10 @@ function App({ auth }: { auth: AuthState }) {
       try {
         await deleteAccountPlan(auth, id);
         setSavedPlans((current) => current.filter((item) => item.id !== id));
-        if (activePlanId === id) setActivePlanId(null);
+        if (activePlanId === id) {
+          setActivePlanId(null);
+          setActivePlanVersionNumber(null);
+        }
         setPlanStorageMessage('Plan archived in your account.');
       } catch {
         setPlanStorageMessage('Plan could not be archived in your account.');
@@ -7279,6 +7296,7 @@ function App({ auth }: { auth: AuthState }) {
         const matchingPlan = savedPlans.find((p) => p.id === deepLink.planId);
         if (matchingPlan) {
           setActivePlanId(matchingPlan.id);
+          setActivePlanVersionNumber(deepLink.versionNumber ?? matchingPlan.versionNumber ?? null);
           setSaveName(matchingPlan.name);
           setPlan({
             ...initialPlan,
@@ -7296,6 +7314,7 @@ function App({ auth }: { auth: AuthState }) {
             'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
           );
           setActivePlanId(null);
+          setActivePlanVersionNumber(null);
         }
       } else {
         setPlanDeepLinkError(null);
@@ -7487,6 +7506,7 @@ function App({ auth }: { auth: AuthState }) {
                     goals={goals}
                     isLoading={isLoadingSavedPlans}
                     isSaving={isSavingPlan}
+                    loadedVersionNumber={activePlanVersionNumber}
                     message={planStorageMessage}
                     onApplySeed={applyPlanSeed}
                     onArchive={removeSavedPlan}
