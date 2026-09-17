@@ -1,3 +1,7 @@
+## Primary acceptance update — 2026-09-17
+
+B26/B27 accepted; C09 released. Read [primary review](../../reviews/C08.md). The original submission below is retained as history. Actual composited contrast5.80:1 light/7.11:1 dark supersedes6.39/9.55. Keyboard/media evidence is [local accessibility](primary-local-accessibility.json); CSV keyboard503/retry is [local import](primary-local-import.json);10 state renders are [local states](primary-local-states.json). These are local fixture checks, distinct from the unchanged-candidate hosted persistence proof. Latest [independent cleanup](primary-cleanup-rework.json) passes.17 evaluator tests and full suite pass.
+
 # C08 Progress Digest — B26 & B27 Rework Complete
 
 **Candidate Code Commit**: `a95053b19108634656aef491e46b9be9fe3ea57d`  

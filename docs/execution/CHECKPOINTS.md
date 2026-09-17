@@ -15,8 +15,8 @@ C06 is accepted. C07 is released for owner-authorized free preview Clerk setup a
 | C05 | Dedicated calculator families | B22 → B23 → B24 | accepted | 1c73bffbb4a5d1f179d67f2934c900a8b44711e5 | [approved](reviews/C05.md) |
 | C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | accepted | 0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a | [approved](reviews/C06.md) |
 | C07 | Owner setup and hosted proof | B06 | accepted | d81f31187892f636ab9d2b6cb492e90e9b7d166d | [record](reviews/C07.md) |
-| C08 | Dashboard and transactions | B26 → B27 | released | — | [start prompt](C08_START_PROMPT.md) |
-| C09 | Saved decision and monthly review | B10 → B11 → B28 | locked | — | — |
+| C08 | Dashboard and transactions | B26 → B27 | accepted | a95053b19108634656aef491e46b9be9fe3ea57d | [record](reviews/C08.md) |
+| C09 | Saved decision and monthly review | B10 → B11 → B28 | released | — | [start prompt](C09_START_PROMPT.md) |
 | C10 | Reports and settings | B29 → B30 | locked | — | — |
 | C11 | Measurement and final quality | B12 → B31 | locked | — | — |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
@@ -94,3 +94,5 @@ C07 review2026-09-16: B06 changes_requested per reviews/C07.md. Three hosted pro
 C07/B06 APPROVED after primary-executed hosted CSV, tenant-denial and deletion410 proofs plus independent cleanup. Earlier C07 blocked/locked statements above are historical and superseded. C08 is released in order B26 → B27; C09 remains locked.23/34 tasks accepted (67.6% by task count, not effort). Use C08_START_PROMPT.md. Preview only; no main merge or production release.
 
 C08 primary review2026-09-17: B26/B27 changes_requested per reviews/C08.md and C08_REWORK_PROMPT.md. False-success evaluator, cleanup failure safety and missing true-theme/changed-control evidence prevent acceptance. C08 remains released for rework; C09 locked.23/34 accepted.
+
+Current primary decision2026-09-17: C08/B26/B27 APPROVED after rework and primary supplemental local verification. Earlier changes_requested statements are history. C09 released B10 → B11 → B28; C10 stays locked.25/34 accepted (73.5%, task count). New remote migrations need exact-target owner authorization; local implementation/testing can proceed.

@@ -1,0 +1,25 @@
+✔ Baseline: evaluateReport accepts a completely compliant report and cleanup (4.331042ms)
+✔ R1 Negative Test 1: false dashboard fails closed (0.143292ms)
+✔ R1 Negative Test 2: missing observation fails closed (0.086584ms)
+✔ R1 Negative Test 3: wrong import count fails closed (0.100333ms)
+✔ R1 Negative Test 4: failed app delete fails closed (0.08775ms)
+✔ R1 Negative Test 5: provider-delete failure fails closed (0.066666ms)
+✔ R1 Negative Test 6: provider still present (non-404) fails closed (0.063458ms)
+✔ R1 Negative Test 7: missing or non-numeric D1 table count fails closed (0.075292ms)
+✔ R1 Negative Test 8: tombstone absence fails closed (0.075292ms)
+✔ R1 Negative Test 9: premature selection commit fails closed (0.104458ms)
+✔ R1 Negative Test 10: balance immutability record inequality fails closed (0.073166ms)
+✔ R1 Cleanup Gate: provider deletion is WITHHELD when app data deletion fails (0.308875ms)
+✔ R1 Cleanup Gate: provider deletion proceeds ONLY when app deletion and table purge succeed (0.213125ms)
+✔ R2 Contrast Formula: calculates accurate contrast ratios for theme colors (0.338583ms)
+✔ Primary: recorded exceptions cannot be hidden by otherwise passing observations (0.061083ms)
+✔ Primary: nonnumeric width and unexpected preview URL fail closed (0.042042ms)
+✔ Primary: report-write failure invalidates success and attempts durable failure output (0.298041ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.61

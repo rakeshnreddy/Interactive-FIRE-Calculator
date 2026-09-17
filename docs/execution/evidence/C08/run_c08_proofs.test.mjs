@@ -6,6 +6,7 @@ import {
   PREVIEW_DB_ID,
   USER_TABLES,
   evaluateReport,
+  persistEvidence,
   performCleanup,
   calculateContrast,
   parseRgb,
@@ -288,4 +289,35 @@ test('R2 Contrast Formula: calculates accurate contrast ratios for theme colors'
   // Dark mode stale badge: #f0bf72 on #10232c
   const darkBadgeContrast = calculateContrast('#f0bf72', '#10232c');
   assert.ok(darkBadgeContrast >= 4.5, `Expected >= 4.5, got ${darkBadgeContrast}`);
+});
+
+test('Primary: recorded exceptions cannot be hidden by otherwise passing observations', () => {
+  const report = buildBaselineValidReport();
+  const cleanup = buildBaselineValidCleanup();
+  report.error = 'verification step threw';
+  assert.equal(evaluateReport(report, cleanup).passed, false);
+  delete report.error;
+  cleanup.errors = ['provider verification transport error'];
+  assert.equal(evaluateReport(report, cleanup).passed, false);
+});
+test('Primary: nonnumeric width and unexpected preview URL fail closed', () => {
+  const report = buildBaselineValidReport();
+  report.b26_accounts_polish.date_input_width = 'auto';
+  assert.equal(evaluateReport(report, buildBaselineValidCleanup()).passed, false);
+  report.b26_accounts_polish.date_input_width = '190px';
+  report.preview_url = 'https://unverified.example';
+  assert.equal(evaluateReport(report, buildBaselineValidCleanup()).passed, false);
+});
+
+
+test('Primary: report-write failure invalidates success and attempts durable failure output', () => {
+  const report = {status:'SUCCESS'};
+  let calls = 0;
+  assert.throws(() => persistEvidence(report, {}, () => {
+    calls++;
+    if (calls === 2) throw new Error('disk full');
+  }), /disk full/);
+  assert.equal(report.status, 'FAILED');
+  assert.match(report.error, /Evidence write failed/);
+  assert.equal(calls, 3);
 });

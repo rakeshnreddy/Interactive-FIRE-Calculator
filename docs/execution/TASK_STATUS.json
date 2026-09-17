@@ -416,7 +416,7 @@
       "id": "B26",
       "title": "Polish dashboard and account overview",
       "checkpoint": "C08",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B25",
         "B03",
@@ -433,7 +433,7 @@
       "id": "B27",
       "title": "Polish transactions and import review",
       "checkpoint": "C08",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B25",
         "B06",

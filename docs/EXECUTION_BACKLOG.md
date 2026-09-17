@@ -263,7 +263,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B25.md](execution/prompts/B25.md).
 
-- [ ] **B26 — Planned: Polish dashboard and account overview.**
+- [x] **B26 — Planned: Polish dashboard and account overview.**
   - User problem/evidence: Repeated use needs a dated financial picture and clear next decision. Visual audit V15.
   - Expected outcome/scope: No ambiguous totals; evidence dates visible; next action honest; account data edits persist in approved test environment; mobile rows and keyboard pass.
   - Non-goals: No banking connection, fake history, new account schema or combined FX total.
@@ -275,7 +275,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B26.md](execution/prompts/B26.md).
 
-- [ ] **B27 — Planned: Polish transactions and import review.**
+- [x] **B27 — Planned: Polish transactions and import review.**
   - User problem/evidence: Dense ledger/import interactions must remain clear on phones and during errors. Visual audit V15.
   - Expected outcome/scope: User can inspect what will change before commit; row errors and totals reconcile; filters/mobile/keyboard usable; retry does not duplicate records.
   - Non-goals: No parser replacement, increased limits, balance mutation or real statement upload.

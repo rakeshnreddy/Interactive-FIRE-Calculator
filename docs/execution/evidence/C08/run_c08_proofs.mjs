@@ -267,6 +267,18 @@ export async function switchTheme(page, targetMode) {
 // --------------------------------------------------------------------------
 // Explicit Evaluator (R1)
 // --------------------------------------------------------------------------
+export function persistEvidence(report, cleanup, writer = writeFileSync) {
+  try {
+    writer(CLEANUP_FILE, JSON.stringify(cleanup, null, 2) + '\n');
+    writer(REPORT_FILE, JSON.stringify(report, null, 2) + '\n');
+  } catch (error) {
+    report.status = 'FAILED';
+    report.error = 'Evidence write failed: ' + error.message;
+    try { writer(REPORT_FILE, JSON.stringify(report, null, 2) + '\n'); } catch {}
+    throw error;
+  }
+}
+
 export function evaluateReport(report, cleanup) {
   const failures = [];
 
@@ -276,6 +288,10 @@ export function evaluateReport(report, cleanup) {
   if (!cleanup || typeof cleanup !== 'object') {
     return { passed: false, failures: ['Cleanup is missing or not an object'] };
   }
+
+  if (report.error) failures.push('Recorded verification error: ' + report.error);
+  if (cleanup.errors?.length) failures.push('Recorded cleanup errors: ' + cleanup.errors.join('; '));
+  if (report.preview_url !== PREVIEW_URL) failures.push('Unexpected preview URL');
 
   // Preflight metadata
   if (report.candidate_sha !== CANDIDATE_SHA) {
@@ -320,7 +336,7 @@ export function evaluateReport(report, cleanup) {
     if (b26.stale_badge_absent_for_fresh_account !== true) {
       failures.push(`B26: stale_badge_absent_for_fresh_account expected true, got ${b26.stale_badge_absent_for_fresh_account}`);
     }
-    if (!b26.date_input_width || typeof b26.date_input_width !== 'string' || parseFloat(b26.date_input_width) < 160) {
+    if (!b26.date_input_width || typeof b26.date_input_width !== 'string' || !Number.isFinite(parseFloat(b26.date_input_width)) || parseFloat(b26.date_input_width) < 160) {
       failures.push(`B26: date_input_width expected >= 160px, got ${b26.date_input_width}`);
     }
     if (b26.dashboard_user_facing_copy !== true) {
@@ -525,7 +541,7 @@ export async function performCleanup({
       cleanupResult.clerk_user_deleted = true;
       logFn('Clerk provider user deleted successfully.');
     } catch (e) {
-      if (e.status === 404 || e.message?.includes('not found')) {
+      if (e.status === 404) {
         cleanupResult.clerk_user_deleted = true;
       } else {
         cleanupResult.errors.push(`Clerk delete error: ${e.message}`);
@@ -539,7 +555,7 @@ export async function performCleanup({
       cleanupResult.clerk_user_absent = false;
       cleanupResult.errors.push('Clerk user still returned after deletion');
     } catch (e) {
-      cleanupResult.clerk_user_absent = e.status === 404 || e.message?.includes('not found');
+      cleanupResult.clerk_user_absent = e.status === 404;
       logFn(`Clerk user 404 absence verified: ${cleanupResult.clerk_user_absent}`);
     }
   } else {
@@ -817,29 +833,39 @@ export async function runAllProofs() {
     }
     console.log(`Accounts multi-viewport captures complete. All pairs distinct: ${allScreenshotsDistinct}`);
 
-    // Stale Badge Contrast Measurement (R2)
+    // Stale Badge Contrast Measurement (R2): composite the badge over its
+    // actual ancestor backgrounds; a hard-coded card colour is not evidence.
     const staleBadge = page.locator('.account-stale-badge').first();
-    await switchTheme(page, 'light');
-    const lightBadgeColors = await staleBadge.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      return { color: style.color, backgroundColor: style.backgroundColor };
+    if (await staleBadge.count() !== 1) throw new Error('Missing stale badge for contrast measurement');
+    const measureBadge = async () => staleBadge.evaluate((el) => {
+      const parse = (value) => {
+        const m = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+        if (m) return { r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4] };
+        const h = value.match(/^#([0-9a-f]{6})$/i);
+        return h ? { r: parseInt(h[1].slice(0, 2), 16), g: parseInt(h[1].slice(2, 4), 16), b: parseInt(h[1].slice(4, 6), 16), a: 1 } : { r: 0, g: 0, b: 0, a: 0 };
+      };
+      const blend = (fg, bg) => ({ r: Math.round(fg.r * fg.a + bg.r * (1 - fg.a)), g: Math.round(fg.g * fg.a + bg.g * (1 - fg.a)), b: Math.round(fg.b * fg.a + bg.b * (1 - fg.a)), a: 1 });
+      const chain = [];
+      let node = el;
+      while (node && chain.length < 12) { chain.push({ tag: node.tagName, background: getComputedStyle(node).backgroundColor }); node = node.parentElement; }
+      let bg = { r: 255, g: 255, b: 255, a: 1 };
+      for (const item of chain.reverse()) bg = blend(parse(item.background), bg);
+      const fg = parse(getComputedStyle(el).color);
+      return { fg: getComputedStyle(el).color, ancestorBackgrounds: chain, compositedBackground: `rgb(${bg.r}, ${bg.g}, ${bg.b})`, foreground: fg };
     });
-    // In light mode, badge is on #fbfdff surface
-    const lightContrast = calculateContrast(lightBadgeColors.color, '#fbfdff');
-    console.log(`Stale badge contrast (Light mode): ${lightContrast}:1 (color: ${lightBadgeColors.color})`);
+    await switchTheme(page, 'light');
+    const lightBadgeColors = await measureBadge();
+    const lightContrast = calculateContrast(lightBadgeColors.fg, lightBadgeColors.compositedBackground);
+    console.log(`Stale badge contrast (Light mode): ${lightContrast}:1 over ${lightBadgeColors.compositedBackground}`);
 
     await switchTheme(page, 'dark');
-    const darkBadgeColors = await staleBadge.evaluate((el) => {
-      const style = window.getComputedStyle(el);
-      return { color: style.color, backgroundColor: style.backgroundColor };
-    });
-    // In dark mode, badge is on #10232c surface
-    const darkContrast = calculateContrast(darkBadgeColors.color, '#10232c');
-    console.log(`Stale badge contrast (Dark mode): ${darkContrast}:1 (color: ${darkBadgeColors.color})`);
+    const darkBadgeColors = await measureBadge();
+    const darkContrast = calculateContrast(darkBadgeColors.fg, darkBadgeColors.compositedBackground);
+    console.log(`Stale badge contrast (Dark mode): ${darkContrast}:1 over ${darkBadgeColors.compositedBackground}`);
 
     report.visual_and_accessibility.stale_badge_contrast = {
-      light: { ratio: lightContrast, fg: lightBadgeColors.color, bg: '#fbfdff', pass: lightContrast >= 4.5 },
-      dark: { ratio: darkContrast, fg: darkBadgeColors.color, bg: '#10232c', pass: darkContrast >= 4.5 }
+      light: { ratio: lightContrast, fg: lightBadgeColors.fg, bg: lightBadgeColors.compositedBackground, ancestors: lightBadgeColors.ancestorBackgrounds, pass: lightContrast >= 4.5 },
+      dark: { ratio: darkContrast, fg: darkBadgeColors.fg, bg: darkBadgeColors.compositedBackground, ancestors: darkBadgeColors.ancestorBackgrounds, pass: darkContrast >= 4.5 }
     };
     report.visual_and_accessibility.stale_badge_contrast_light_pass = lightContrast >= 4.5;
     report.visual_and_accessibility.stale_badge_contrast_dark_pass = darkContrast >= 4.5;
@@ -1029,27 +1055,44 @@ export async function runAllProofs() {
     }
     console.log('Captured Transactions multi-viewport screenshots.');
 
-    // Keyboard and motion accessibility checks (R2)
-    console.log('Verifying keyboard focus and motion fallbacks...');
-    const searchInput = page.locator('.transaction-filters input[placeholder*="Search"]').first();
-    let keyboardFocusVisible = false;
-    if (await searchInput.isVisible().catch(() => false)) {
-      await searchInput.focus();
-      keyboardFocusVisible = await searchInput.evaluate((el) => {
-        const style = window.getComputedStyle(el);
-        return style.outlineStyle !== 'none' || style.boxShadow.includes('rgba') || style.boxShadow.includes('rgb');
-      });
-    } else {
-      keyboardFocusVisible = true;
+    // Keyboard and motion accessibility checks (R2): require real tab focus.
+    console.log('Verifying keyboard traversal, motion and transparency fallbacks...');
+    const searchInput = page.locator('input[type="search"]').first();
+    if (await searchInput.count() !== 1 || !(await searchInput.isVisible())) throw new Error('Search control missing; keyboard verification cannot pass');
+    await page.locator('body').click({ position: { x: 2, y: 2 } });
+    let tabCount = 0;
+    let reachedSearch = false;
+    for (; tabCount < 60; tabCount += 1) {
+      await page.keyboard.press('Tab');
+      if (await page.evaluate((el) => document.activeElement === el, await searchInput.elementHandle())) { reachedSearch = true; break; }
     }
-    report.visual_and_accessibility.keyboard_interaction_verified = keyboardFocusVisible;
+    const focusStyle = await searchInput.evaluate((el) => { const s = getComputedStyle(el); return { outline: s.outline, outlineStyle: s.outlineStyle, boxShadow: s.boxShadow }; });
+    const focusVisible = reachedSearch && (focusStyle.outlineStyle !== 'none' || focusStyle.boxShadow !== 'none');
+    if (!focusVisible) throw new Error(`Keyboard search focus not visibly reached after ${tabCount + 1} tabs`);
+    const beforeRows = await page.locator('.transaction-row-card:visible, .transaction-row:visible').count();
+    await page.keyboard.type('Fresh');
+    await page.waitForTimeout(50);
+    const afterRows = await page.locator('.transaction-row-card:visible, .transaction-row:visible').count();
+    report.visual_and_accessibility.keyboard_interaction = { reachedSearch, tabs: tabCount + 1, focusStyle, rowsBefore: beforeRows, rowsAfter: afterRows, filterChanged: afterRows < beforeRows };
+    report.visual_and_accessibility.keyboard_interaction_verified = focusVisible && afterRows < beforeRows;
+    if (!report.visual_and_accessibility.keyboard_interaction_verified) throw new Error('Keyboard filter action did not change transaction rows');
 
-    // Reduced motion & transparency fallback
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    const motionFallbackVerified = await page.evaluate(() => {
-      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }, { name: 'prefers-reduced-transparency', value: 'reduce' }] });
+    const media = await page.evaluate(() => {
+      const targets = [...document.querySelectorAll('.transaction-filter-panel, .transaction-row-card, .account-card')].slice(0, 3).map(el => { const s = getComputedStyle(el); return { className: el.className, transitionDuration: s.transitionDuration, animationDuration: s.animationDuration, backgroundColor: s.backgroundColor, backdropFilter: s.backdropFilter }; });
+      return { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, reducedTransparency: matchMedia('(prefers-reduced-transparency: reduce)').matches, targets };
     });
-    report.visual_and_accessibility.motion_transparency_fallbacks_verified = motionFallbackVerified;
+    const motionPass = media.reducedMotion && media.targets.length > 0 && media.targets.every(t => ['0.01ms', '1e-05s', '0s'].includes(t.transitionDuration) && ['0.01ms', '1e-05s', '0s'].includes(t.animationDuration));
+    const transparencyPass = media.reducedTransparency && media.targets.length > 0 && media.targets.every(t => {
+      const opaque = !t.backgroundColor.startsWith('rgba(') && !t.backgroundColor.includes('/');
+      const noBlur = !t.backdropFilter || t.backdropFilter === 'none';
+      return opaque && noBlur;
+    });
+    report.visual_and_accessibility.motion_transparency = { media, motionPass, transparencyPass };
+    report.visual_and_accessibility.motion_transparency_fallbacks_verified = motionPass && transparencyPass;
+    if (!report.visual_and_accessibility.motion_transparency_fallbacks_verified) throw new Error('Reduced motion/transparency computed fallback failed');
+    await cdp.detach();
 
     report.visual_and_accessibility.theme_switching_verified = true;
     report.visual_and_accessibility.light_dark_screenshots_distinct = allScreenshotsDistinct;
@@ -1061,15 +1104,21 @@ export async function runAllProofs() {
     // ==========================================
     // Fail-Closed Cleanup (R1)
     // ==========================================
-    cleanupResult = await performCleanup({
+    try {
+      cleanupResult = await performCleanup({
       userId,
       page,
       clerkClient,
       queryD1Fn: queryD1,
       logFn: console.log
-    });
-
-    if (browser) await browser.close();
+      });
+    } catch (error) {
+      cleanupResult = { errors: ['Unexpected cleanup failure: ' + error.message] };
+    } finally {
+      if (browser) {
+        try { await browser.close(); } catch (error) { report.error = 'Browser close failed: ' + error.message; }
+      }
+    }
 
     report.cleanup = cleanupResult;
 
@@ -1087,8 +1136,7 @@ export async function runAllProofs() {
       }
     }
 
-    writeFileSync(REPORT_FILE, JSON.stringify(report, null, 2) + '\n');
-    writeFileSync(CLEANUP_FILE, JSON.stringify(cleanupResult, null, 2) + '\n');
+    persistEvidence(report, cleanupResult);
     console.log(`\nReport written to ${REPORT_FILE}`);
     console.log(`Cleanup manifest written to ${CLEANUP_FILE}`);
   }

@@ -1,0 +1,87 @@
+{
+  "candidate": "a95053b19108634656aef491e46b9be9fe3ea57d",
+  "scope": "Local B25 state renders; does not prove hosted recovery or mutation",
+  "checks": [
+    {
+      "component": "accounts",
+      "state": "empty",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 10,
+      "passed": true
+    },
+    {
+      "component": "accounts",
+      "state": "loading",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 10,
+      "passed": true
+    },
+    {
+      "component": "accounts",
+      "state": "failure",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 38,
+      "passed": true
+    },
+    {
+      "component": "accounts",
+      "state": "stale",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 38,
+      "passed": true
+    },
+    {
+      "component": "accounts",
+      "state": "long-value",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 18,
+      "passed": true
+    },
+    {
+      "component": "transactions",
+      "state": "empty",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 18,
+      "passed": true
+    },
+    {
+      "component": "transactions",
+      "state": "loading",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 18,
+      "passed": true
+    },
+    {
+      "component": "transactions",
+      "state": "failure",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 58,
+      "passed": true
+    },
+    {
+      "component": "transactions",
+      "state": "stale",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 58,
+      "passed": true
+    },
+    {
+      "component": "transactions",
+      "state": "long-value",
+      "expected_state_visible": true,
+      "no_page_overflow": true,
+      "control_count": 34,
+      "passed": true
+    }
+  ],
+  "passed": true
+}
