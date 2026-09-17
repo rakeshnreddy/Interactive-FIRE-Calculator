@@ -87,6 +87,8 @@ import {
 import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
 import {
   activeNavigationPath,
+  buildPlanDeepLink,
+  parsePlanDeepLink,
   primaryNavigationFor,
   shouldHandleNavigationClick,
   workspaceNavigation,
@@ -593,6 +595,10 @@ function normalizeRoute(pathname: string): AppRoute {
     case '/settings':
       return cleanPath;
     default:
+      if (cleanPath.startsWith('/plans/')) {
+        return '/plans';
+      }
+
       if (cleanPath.startsWith('/calculators/') && findSeoCalculator(cleanPath)) {
         return cleanPath as `/calculators/${string}`;
       }
@@ -3178,6 +3184,7 @@ export function DashboardPanel({
   goalMessage,
   goalSummary,
   onNavigate,
+  plans = [],
   savedCalculatorResults,
   summary
 }: {
@@ -3192,7 +3199,8 @@ export function DashboardPanel({
   message: string;
   goalMessage: string;
   goalSummary: GoalSummary;
-  onNavigate: (route: AppRoute) => void;
+  onNavigate: (route: AppRoute | string) => void;
+  plans?: SavedPlan[];
   savedCalculatorResults: SavedCalculatorResult[];
   summary: AccountSummary;
 }) {
@@ -3287,13 +3295,27 @@ export function DashboardPanel({
 
         {isLoadingCalculatorResults ? (
           <p className="empty-inline">Loading saved calculator results...</p>
-        ) : recentCalculatorResults.length === 0 ? (
+        ) : recentCalculatorResults.length === 0 && plans.length === 0 ? (
           <article className="scenario-card empty-card">
             <span>No saved calculator results yet</span>
             <small>Run a public calculator, then save the result to connect it to this dashboard.</small>
           </article>
         ) : (
           <div className="dashboard-calculator-list">
+            {plans.map((plan) => (
+              <button
+                className="dashboard-calculator-card dashboard-plan-card"
+                key={plan.id}
+                type="button"
+                onClick={() => onNavigate(buildPlanDeepLink(plan.id, plan.versionNumber ?? 1))}
+              >
+                <span>Version {plan.versionNumber ?? 1}</span>
+                <strong>{plan.name}</strong>
+                <small>
+                  {plan.label ? `${plan.label} · ` : ''}Updated {new Date(plan.updatedAt ?? plan.createdAt).toLocaleDateString()}. Open saved decision.
+                </small>
+              </button>
+            ))}
             {recentCalculatorResults.map((item) => {
               const followUp = buildCalculatorFollowUp(item);
 
@@ -3302,7 +3324,13 @@ export function DashboardPanel({
                   className="dashboard-calculator-card"
                   key={item.id}
                   type="button"
-                  onClick={() => onNavigate(item.conversionRoute)}
+                  onClick={() => {
+                    if (item.conversionRoute === '/plans' && item.createdEntityId) {
+                      onNavigate(buildPlanDeepLink(item.createdEntityId));
+                    } else {
+                      onNavigate(item.conversionRoute);
+                    }
+                  }}
                 >
                   <span>{followUp.label}</span>
                   <strong>{item.calculatorTitle}</strong>
@@ -5038,6 +5066,7 @@ function PlatformPage({
   onTransactionUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
   onUpdateTransaction: (id: string) => void;
   onUpdateGoal: (id: string) => void;
+  plans?: SavedPlan[];
   route: PlatformRoute;
   savedCalculatorResults: SavedCalculatorResult[];
   onNavigate: (route: AppRoute) => void;
@@ -5076,6 +5105,7 @@ function PlatformPage({
           message={accountMessage}
           goalMessage={goalMessage}
           goalSummary={goalSummary}
+          plans={plans}
           savedCalculatorResults={savedCalculatorResults}
           summary={accountSummary}
           onNavigate={onNavigate}
@@ -5347,6 +5377,7 @@ function App({ auth }: { auth: AuthState }) {
   const [isLoadingSavedPlans, setIsLoadingSavedPlans] = useState(false);
   const [isSavingPlan, setIsSavingPlan] = useState(false);
   const [planStorageMessage, setPlanStorageMessage] = useState('');
+  const [planDeepLinkError, setPlanDeepLinkError] = useState<string | null>(null);
   const [accountProfile, setAccountProfile] = useState<AccountProfile | null>(null);
   const [profileDraft, setProfileDraft] = useState<AccountProfileDraft>(emptyProfileDraft);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
@@ -5405,13 +5436,43 @@ function App({ auth }: { auth: AuthState }) {
 
   useEffect(() => {
     const handlePopState = () => {
-      setRoute(readRoute());
+      const nextRoute = readRoute();
+      setRoute(nextRoute);
       setIsMenuOpen(false);
+
+      if (nextRoute === '/plans') {
+        const deepLink = parsePlanDeepLink(window.location.href);
+        if (deepLink.planId) {
+          const matchingPlan = savedPlans.find((p) => p.id === deepLink.planId);
+          if (matchingPlan) {
+            setActivePlanId(matchingPlan.id);
+            setSaveName(matchingPlan.name);
+            setPlan({
+              ...initialPlan,
+              ...matchingPlan.snapshot.plan,
+              recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
+            });
+            setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
+            setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
+            setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
+            setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
+            setHasCalculated(true);
+            setPlanDeepLinkError(null);
+          } else {
+            setPlanDeepLinkError(
+              'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+            );
+            setActivePlanId(null);
+          }
+        } else {
+          setPlanDeepLinkError(null);
+        }
+      }
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, [savedPlans]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -5453,12 +5514,93 @@ function App({ auth }: { auth: AuthState }) {
     setPlanStorageMessage('Loading account plans...');
 
     loadAccountPlans(auth)
-      .then((plans) => {
+      .then(async (plans) => {
         if (isCancelled) {
           return;
         }
 
         setSavedPlans(plans);
+        const deepLink = parsePlanDeepLink(typeof window !== 'undefined' ? window.location.href : '');
+
+        if (deepLink.planId) {
+          const matchingPlan = plans.find((p) => p.id === deepLink.planId);
+          if (!matchingPlan) {
+            setPlanDeepLinkError(
+              'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+            );
+            setActivePlanId(null);
+            setPlanStorageMessage('Saved decision unavailable.');
+            return;
+          }
+
+          if (deepLink.versionNumber && deepLink.versionNumber !== matchingPlan.versionNumber) {
+            try {
+              const res = await authenticatedJsonRequest(
+                auth,
+                `/api/plans/${encodeURIComponent(deepLink.planId)}/versions/${deepLink.versionNumber}`
+              );
+              if (isCancelled) return;
+              if (!res.ok) {
+                setPlanDeepLinkError(
+                  'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+                );
+                setActivePlanId(null);
+                setPlanStorageMessage('Saved decision unavailable.');
+                return;
+              }
+              const verBody: any = await res.json().catch(() => null);
+              if (isCancelled) return;
+              const snapshot = verBody?.version?.snapshot;
+              if (!snapshot || !snapshot.plan || !snapshot.timeline) {
+                setPlanDeepLinkError(
+                  'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+                );
+                setActivePlanId(null);
+                return;
+              }
+              setActivePlanId(matchingPlan.id);
+              setSaveName(matchingPlan.name);
+              setPlan({
+                ...initialPlan,
+                ...snapshot.plan,
+                recurringCashFlows: snapshot.plan.recurringCashFlows ?? []
+              });
+              setTimeline({ ...initialTimeline, ...snapshot.timeline });
+              setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
+              setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
+              setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
+              setHasCalculated(true);
+              setPlanDeepLinkError(null);
+              setPlanStorageMessage(`Version ${deepLink.versionNumber} of "${matchingPlan.name}" loaded.`);
+              return;
+            } catch {
+              if (isCancelled) return;
+              setPlanDeepLinkError(
+                'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+              );
+              setActivePlanId(null);
+              setPlanStorageMessage('Saved decision unavailable.');
+              return;
+            }
+          }
+
+          setActivePlanId(matchingPlan.id);
+          setSaveName(matchingPlan.name);
+          setPlan({
+            ...initialPlan,
+            ...matchingPlan.snapshot.plan,
+            recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
+          });
+          setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
+          setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
+          setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
+          setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
+          setHasCalculated(true);
+          setPlanDeepLinkError(null);
+          setPlanStorageMessage(`Plan "${matchingPlan.name}" loaded.`);
+          return;
+        }
+
         const latestPlan = plans[0];
 
         if (latestPlan) {
@@ -5475,6 +5617,7 @@ function App({ auth }: { auth: AuthState }) {
           setSeedApplications(Array.isArray(latestPlan.snapshot.seedApplications) ? latestPlan.snapshot.seedApplications : []);
           setHasCalculated(true);
         }
+        setPlanDeepLinkError(null);
         setPlanStorageMessage('Account-backed plan storage is active.');
       })
       .catch(() => {
@@ -6984,14 +7127,44 @@ function App({ auth }: { auth: AuthState }) {
     }));
   };
 
-  const navigateTo = (nextRoute: AppRoute) => {
+  const navigateTo = (nextRoute: AppRoute | string) => {
     if (typeof window !== 'undefined') {
       window.history.pushState({}, '', nextRoute);
       window.scrollTo({ top: 0, left: 0 });
     }
 
-    setRoute(nextRoute);
+    const baseRoute = normalizeRoute(nextRoute.split('?')[0]);
+    setRoute(baseRoute);
     setIsMenuOpen(false);
+
+    if (baseRoute === '/plans') {
+      const deepLink = parsePlanDeepLink(nextRoute);
+      if (deepLink.planId) {
+        const matchingPlan = savedPlans.find((p) => p.id === deepLink.planId);
+        if (matchingPlan) {
+          setActivePlanId(matchingPlan.id);
+          setSaveName(matchingPlan.name);
+          setPlan({
+            ...initialPlan,
+            ...matchingPlan.snapshot.plan,
+            recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
+          });
+          setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
+          setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
+          setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
+          setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
+          setHasCalculated(true);
+          setPlanDeepLinkError(null);
+        } else {
+          setPlanDeepLinkError(
+            'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+          );
+          setActivePlanId(null);
+        }
+      } else {
+        setPlanDeepLinkError(null);
+      }
+    }
   };
 
   const navigate = (nextPanel: CalculatorPanel) => {
@@ -7174,19 +7347,26 @@ function App({ auth }: { auth: AuthState }) {
                     currentResult={result}
                     currentSnapshot={buildSnapshot()}
                     currentTimeline={timeline}
+                    deepLinkError={planDeepLinkError}
                     goals={goals}
                     isLoading={isLoadingSavedPlans}
                     isSaving={isSavingPlan}
                     message={planStorageMessage}
-                    plans={savedPlans}
-                    profile={accountProfile}
                     onApplySeed={applyPlanSeed}
                     onArchive={removeSavedPlan}
+                    onClearDeepLinkError={() => {
+                      setPlanDeepLinkError(null);
+                      if (typeof window !== 'undefined') {
+                        window.history.pushState({}, '', '/plans');
+                      }
+                    }}
                     onLoadPlan={loadSavedPlan}
                     onLoadVersion={loadSavedPlanVersion}
                     onNavigateCalculator={() => navigateTo('/calculators/fire')}
                     onSave={savePlanningPlan}
                     onUndoSeed={undoLastPlanSeed}
+                    plans={savedPlans}
+                    profile={accountProfile}
                   />
                 </Suspense>
               </section>
@@ -7210,6 +7390,7 @@ function App({ auth }: { auth: AuthState }) {
                 financialAccounts={financialAccounts}
                 financialInsights={financialInsights}
                 goalDraft={goalDraft}
+                plans={savedPlans}
                 goalMessage={goalMessage}
                 goals={goals}
                 goalSummary={goalSummary}

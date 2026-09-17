@@ -11,6 +11,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import type { AuthState } from './auth';
 import { calculateFirePlan, formatMoney, type FirePlanResult, type PlanInput } from './lib/fire';
+import { buildPlanDeepLink } from './lib/navigation';
 import { derivePlanHealth, type PlanHealth } from './lib/planHealth';
 import {
   previewPlanSeed,
@@ -34,55 +35,37 @@ export type PlanningScenario = {
 };
 
 export type PlanningSnapshot = {
-  calculatorMode: 'fire-number' | 'withdrawal-income';
-  engineVersion?: string;
+  calculatorMode?: 'cash-flow' | 'fire-number' | 'portfolio-survival';
   plan: PlanInput;
   scenarios: PlanningScenario[];
-  schemaVersion?: number;
   seedApplications?: SeedApplication[];
   timeline: PlanningTimeline;
 };
 
 export type PlanningSavedPlan = {
   createdAt: string;
-  goalId?: string | null;
+  goalId: string | null;
   id: string;
   label?: string | null;
   name: string;
   notes?: string | null;
-  result?: FirePlanResult;
   snapshot: PlanningSnapshot;
   updatedAt?: string;
-  versionCreatedAt?: string;
   versionNumber?: number;
 };
 
-export type PlanningSaveDraft = {
-  goalId: string | null;
-  label: string;
-  name: string;
-  notes: string;
-};
-
-type PlanningProfile = {
-  birthYear: number | null;
-  defaultCurrency: string;
-  targetRetirementAge: number | null;
-  updatedAt: string;
-};
-
-type PlanningAccount = {
+export type PlanningAccount = {
   accountType: string;
-  category: 'asset' | 'liability';
+  category: 'asset' | 'debt';
   currency: string;
   id: string;
-  isActive: boolean;
+  isActive?: boolean;
   latestBalanceCents: number;
   latestBalanceDate: string | null;
   name: string;
 };
 
-type PlanningGoal = {
+export type PlanningGoal = {
   currentAmountCents: number;
   goalType: string;
   id: string;
@@ -91,6 +74,21 @@ type PlanningGoal = {
   targetAmountCents: number | null;
   targetDate: string | null;
   updatedAt: string;
+};
+
+export type PlanningProfile = {
+  birthYear: number | null;
+  defaultCurrency: string;
+  displayName: string | null;
+  householdName: string | null;
+  targetRetirementAge: number | null;
+};
+
+export type PlanningSaveDraft = {
+  goalId: string | null;
+  label: string;
+  name: string;
+  notes: string;
 };
 
 export type PlanVersionSummary = {
@@ -114,12 +112,15 @@ type PlanningWorkspaceProps = {
   currentResult: FirePlanResult;
   currentSnapshot: PlanningSnapshot;
   currentTimeline: PlanningTimeline;
+  deepLinkError?: string | null;
   goals: PlanningGoal[];
   isLoading: boolean;
   isSaving: boolean;
+  loadedVersionNumber?: number | null;
   message: string;
   onApplySeed: (preview: Extract<PlanSeedPreview, { ok: true }>) => void;
   onArchive: (id: string) => void;
+  onClearDeepLinkError?: () => void;
   onLoadPlan: (plan: PlanningSavedPlan) => void;
   onLoadVersion: (planId: string, version: PlanVersionDetail) => void;
   onNavigateCalculator: () => void;
@@ -138,12 +139,15 @@ export function PlanningWorkspace({
   currentResult,
   currentSnapshot,
   currentTimeline,
+  deepLinkError,
   goals,
   isLoading,
   isSaving,
+  loadedVersionNumber: controlledLoadedVersionNumber,
   message,
   onApplySeed,
   onArchive,
+  onClearDeepLinkError,
   onLoadPlan,
   onLoadVersion,
   onNavigateCalculator,
@@ -155,7 +159,7 @@ export function PlanningWorkspace({
   const activePlan = plans.find((item) => item.id === activePlanId) ?? null;
   const retirementGoals = goals.filter((goal) => goal.goalType === 'retirement');
   const eligibleAccounts = accounts.filter(
-    (account) => account.isActive && account.category === 'asset'
+    (account) => account.isActive !== false && account.category === 'asset'
   );
   const [draft, setDraft] = useState<PlanningSaveDraft>(() => draftFromPlan(activePlan));
   const [portfolioSource, setPortfolioSource] = useState<'accounts' | 'goal' | 'none'>('none');
@@ -165,7 +169,15 @@ export function PlanningWorkspace({
   const [versions, setVersions] = useState<PlanVersionSummary[]>([]);
   const [isLoadingVersions, setIsLoadingVersions] = useState(false);
   const [versionMessage, setVersionMessage] = useState('');
-  const [loadedVersionNumber, setLoadedVersionNumber] = useState<number | null>(null);
+  const [internalLoadedVersionNumber, setInternalLoadedVersionNumber] = useState<number | null>(
+    () => controlledLoadedVersionNumber ?? activePlan?.versionNumber ?? null
+  );
+  const loadedVersionNumber =
+    controlledLoadedVersionNumber !== undefined
+      ? controlledLoadedVersionNumber
+      : internalLoadedVersionNumber;
+  const setLoadedVersionNumber = setInternalLoadedVersionNumber;
+
   const [selectedCompareVersions, setSelectedCompareVersions] = useState<number[]>([]);
   const [versionDetails, setVersionDetails] = useState<Record<number, PlanVersionDetail>>({});
   const currentHealth = useMemo(
@@ -173,10 +185,41 @@ export function PlanningWorkspace({
     [currentPlan, currentResult]
   );
 
+  const [baselineSnapshot, setBaselineSnapshot] = useState<PlanningSnapshot | null>(
+    () => activePlan?.snapshot ?? currentSnapshot
+  );
+
   useEffect(() => {
     setDraft(draftFromPlan(activePlan));
-    setLoadedVersionNumber(activePlan?.versionNumber ?? null);
-  }, [activePlanId, activePlan?.goalId, activePlan?.label, activePlan?.name, activePlan?.notes, activePlan?.versionNumber]);
+    if (controlledLoadedVersionNumber === undefined) {
+      setLoadedVersionNumber(activePlan?.versionNumber ?? null);
+    }
+    if (activePlan?.snapshot) {
+      setBaselineSnapshot(activePlan.snapshot);
+    }
+  }, [
+    activePlanId,
+    activePlan?.goalId,
+    activePlan?.label,
+    activePlan?.name,
+    activePlan?.notes,
+    activePlan?.versionNumber,
+    controlledLoadedVersionNumber
+  ]);
+
+  const isPlanDirty = useMemo(() => {
+    if (!baselineSnapshot) return false;
+    return (
+      JSON.stringify(currentPlan) !== JSON.stringify(baselineSnapshot.plan) ||
+      JSON.stringify(currentTimeline) !== JSON.stringify(baselineSnapshot.timeline)
+    );
+  }, [baselineSnapshot, currentPlan, currentTimeline]);
+
+  const [pendingAction, setPendingAction] = useState<
+    | { type: 'load-plan'; plan: PlanningSavedPlan }
+    | { type: 'load-version'; versionNumber: number }
+    | null
+  >(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -267,20 +310,63 @@ export function PlanningWorkspace({
     setSeedPreview(preview);
   };
 
-  const loadHistoricalVersion = async (versionNumber: number) => {
+  const performLoadHistoricalVersion = async (versionNumber: number) => {
     if (!activePlanId) return;
 
     setIsLoadingVersions(true);
     try {
-      const version = versionDetails[versionNumber] ?? await loadPlanVersion(auth, activePlanId, versionNumber);
+      const version =
+        versionDetails[versionNumber] ??
+        (await loadPlanVersion(auth, activePlanId, versionNumber));
       setVersionDetails((current) => ({ ...current, [versionNumber]: version }));
       setLoadedVersionNumber(versionNumber);
+      setBaselineSnapshot(version.snapshot);
       onLoadVersion(activePlanId, version);
       setVersionMessage(`Version ${versionNumber} loaded into the calculator workspace.`);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', buildPlanDeepLink(activePlanId, versionNumber));
+      }
     } catch (error) {
       setVersionMessage(error instanceof Error ? error.message : 'Version could not be loaded.');
     } finally {
       setIsLoadingVersions(false);
+    }
+  };
+
+  const handleLoadVersionClick = (versionNumber: number) => {
+    if (isPlanDirty) {
+      setPendingAction({ type: 'load-version', versionNumber });
+    } else {
+      performLoadHistoricalVersion(versionNumber);
+    }
+  };
+
+  const handleOpenPlanClick = (plan: PlanningSavedPlan) => {
+    if (isPlanDirty) {
+      setPendingAction({ type: 'load-plan', plan });
+    } else {
+      setBaselineSnapshot(plan.snapshot);
+      onLoadPlan(plan);
+      setLoadedVersionNumber(plan.versionNumber ?? 1);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', buildPlanDeepLink(plan.id, plan.versionNumber ?? 1));
+      }
+    }
+  };
+
+  const handleConfirmDiscard = () => {
+    if (!pendingAction) return;
+    const action = pendingAction;
+    setPendingAction(null);
+    if (action.type === 'load-plan') {
+      setBaselineSnapshot(action.plan.snapshot);
+      onLoadPlan(action.plan);
+      setLoadedVersionNumber(action.plan.versionNumber ?? 1);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', buildPlanDeepLink(action.plan.id, action.plan.versionNumber ?? 1));
+      }
+    } else if (action.type === 'load-version') {
+      performLoadHistoricalVersion(action.versionNumber);
     }
   };
 
@@ -300,6 +386,37 @@ export function PlanningWorkspace({
 
   return (
     <div className="planning-workspace">
+      {deepLinkError ? (
+        <section className="panel planning-controlled-error" data-testid="planning-error-state" role="alert">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow error-text">Unavailable</p>
+              <h2>Saved decision unavailable</h2>
+              <p>{deepLinkError}</p>
+            </div>
+          </div>
+          <div className="planning-actions">
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={onClearDeepLinkError}
+            >
+              Return to plan library
+            </button>
+          </div>
+        </section>
+      ) : null}
+
+      {loadedVersionNumber ? (
+        <aside className="historical-version-banner" role="status" aria-label={`Version ${loadedVersionNumber} assumptions`}>
+          <div>
+            <strong>Viewing historical Version {loadedVersionNumber}</strong>
+            <p>Assumptions and results from this saved FIRE decision are locked. To make changes, edit values and save a new version.</p>
+          </div>
+          <span className="source-tag">Saved FIRE Decision</span>
+        </aside>
+      ) : null}
+
       <section className="planning-overview" aria-label="Current plan overview">
         <article>
           <span>Plan health</span>
@@ -508,10 +625,7 @@ export function PlanningWorkspace({
               <div className="saved-actions">
                 <button
                   className="secondary-button"
-                  onClick={() => {
-                    onLoadPlan(item);
-                    setLoadedVersionNumber(item.versionNumber ?? 1);
-                  }}
+                  onClick={() => handleOpenPlanClick(item)}
                 >
                   Open
                 </button>
@@ -550,7 +664,7 @@ export function PlanningWorkspace({
                 <strong>{version.label || `Version ${version.versionNumber}`}</strong>
                 <small>{formatDate(version.createdAt)} · {version.notes || 'No notes'}</small>
               </div>
-              <button className="secondary-button" disabled={isLoadingVersions} onClick={() => loadHistoricalVersion(version.versionNumber)}>
+              <button className="secondary-button" disabled={isLoadingVersions} onClick={() => handleLoadVersionClick(version.versionNumber)}>
                 Load
               </button>
             </article>
@@ -580,6 +694,31 @@ export function PlanningWorkspace({
           </div>
         ) : null}
       </section>
+
+      {pendingAction ? (
+        <div className="modal-scrim" role="dialog" aria-modal="true" aria-labelledby="unsaved-changes-title">
+          <div className="modal-content planning-unsaved-modal">
+            <h3 id="unsaved-changes-title">Unsaved changes</h3>
+            <p>You have unsaved changes in your current planning assumptions. Loading another plan or version will discard these changes.</p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setPendingAction(null)}
+              >
+                Keep editing
+              </button>
+              <button
+                type="button"
+                className="primary-button"
+                onClick={handleConfirmDiscard}
+              >
+                Discard and load
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

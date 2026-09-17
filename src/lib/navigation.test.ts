@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   activeNavigationPath,
+  buildPlanDeepLink,
+  parsePlanDeepLink,
   primaryNavigationFor,
   shouldHandleNavigationClick,
   workspaceNavigation
@@ -65,5 +67,67 @@ describe('native navigation click contract', () => {
     expect(shouldHandleNavigationClick({ ...primaryClick, defaultPrevented: true }, {})).toBe(false);
     expect(shouldHandleNavigationClick(primaryClick, { target: '_blank' })).toBe(false);
     expect(shouldHandleNavigationClick(primaryClick, { download: true })).toBe(false);
+  });
+});
+
+describe('plan deep link contract (B10)', () => {
+  it('parses valid planId and versionNumber from query string', () => {
+    const parsed = parsePlanDeepLink('/plans?planId=68268415-1b8f-4260-bb93-b39d1fb6c043&version=2');
+    expect(parsed).toEqual({
+      planId: '68268415-1b8f-4260-bb93-b39d1fb6c043',
+      versionNumber: 2
+    });
+  });
+
+  it('parses short query aliases ?id=...&v=...', () => {
+    const parsed = parsePlanDeepLink('?id=plan-abc-123&v=4');
+    expect(parsed).toEqual({
+      planId: 'plan-abc-123',
+      versionNumber: 4
+    });
+  });
+
+  it('parses path-based plan deep link /plans/:id/versions/:version', () => {
+    const parsed = parsePlanDeepLink('/plans/68268415-1b8f-4260-bb93-b39d1fb6c043/versions/3');
+    expect(parsed).toEqual({
+      planId: '68268415-1b8f-4260-bb93-b39d1fb6c043',
+      versionNumber: 3
+    });
+  });
+
+  it('parses planId without explicit versionNumber', () => {
+    const parsed = parsePlanDeepLink('/plans?planId=68268415-1b8f-4260-bb93-b39d1fb6c043');
+    expect(parsed).toEqual({
+      planId: '68268415-1b8f-4260-bb93-b39d1fb6c043',
+      versionNumber: null
+    });
+  });
+
+  it('rejects malformed or unsafe plan IDs', () => {
+    expect(parsePlanDeepLink('/plans?planId=<script>alert(1)</script>').planId).toBeNull();
+    expect(parsePlanDeepLink('/plans?planId=plan%20with%20spaces').planId).toBeNull();
+    expect(parsePlanDeepLink(`/plans?planId=${'a'.repeat(100)}`).planId).toBeNull();
+    expect(parsePlanDeepLink('/plans?planId=;DROP TABLE plans;').planId).toBeNull();
+  });
+
+  it('rejects invalid or malformed version numbers', () => {
+    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=0').versionNumber).toBeNull();
+    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=-5').versionNumber).toBeNull();
+    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=abc').versionNumber).toBeNull();
+    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=1.5').versionNumber).toBeNull();
+  });
+
+  it('returns nulls for unrelated routes', () => {
+    expect(parsePlanDeepLink('/dashboard')).toEqual({ planId: null, versionNumber: null });
+    expect(parsePlanDeepLink('/accounts')).toEqual({ planId: null, versionNumber: null });
+  });
+
+  it('builds clean plan deep links with stable opaque IDs and no financial parameters', () => {
+    expect(buildPlanDeepLink('68268415-1b8f-4260-bb93-b39d1fb6c043')).toBe(
+      '/plans?planId=68268415-1b8f-4260-bb93-b39d1fb6c043'
+    );
+    expect(buildPlanDeepLink('68268415-1b8f-4260-bb93-b39d1fb6c043', 2)).toBe(
+      '/plans?planId=68268415-1b8f-4260-bb93-b39d1fb6c043&version=2'
+    );
   });
 });
