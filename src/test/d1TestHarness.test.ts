@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { ALL_DATABASE_TABLES, createD1TestHarness } from "./d1TestHarness";
 
 describe("d1TestHarness (B05 persistence foundation)", () => {
-  it("applies all migrations and provisions all 15 tables", () => {
+  it("applies all migrations and provisions all schema tables", () => {
     const harness = createD1TestHarness();
     const counts = harness.getTableCounts();
 

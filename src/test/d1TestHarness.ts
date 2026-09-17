@@ -10,7 +10,8 @@ const MIGRATION_FILES = [
   "0003_transaction_import_history.sql",
   "0004_saved_calculator_results.sql",
   "0005_saved_calculator_idempotency.sql",
-  "0006_user_tombstone_triggers.sql"
+  "0006_user_tombstone_triggers.sql",
+  "0007_monthly_plan_reviews.sql"
 ];
 
 export const ALL_DATABASE_TABLES = [
@@ -24,6 +25,7 @@ export const ALL_DATABASE_TABLES = [
   "plan_versions",
   "fire_plan_inputs",
   "fire_plan_results",
+  "plan_reviews",
   "assumptions",
   "audit_log",
   "balance_imports",

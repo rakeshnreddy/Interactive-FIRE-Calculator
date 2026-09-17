@@ -166,6 +166,22 @@ type SavedCalculatorResultRow = {
   user_id: string;
 };
 
+type PlanReviewRow = {
+  completed_at: string | null;
+  created_at: string;
+  decision: string;
+  deferred_until: string | null;
+  evidence_date: string;
+  id: string;
+  next_review_due: string;
+  notes: string | null;
+  plan_id: string;
+  plan_version_number: number;
+  status: string;
+  updated_at: string;
+  user_id: string;
+};
+
 type AccountDataExportData = {
   accountBalances: DataRow[];
   assumptions: DataRow[];
@@ -175,6 +191,7 @@ type AccountDataExportData = {
   firePlanInputs: DataRow[];
   firePlanResults: DataRow[];
   goals: DataRow[];
+  planReviews: DataRow[];
   planVersions: DataRow[];
   plans: DataRow[];
   profile: DataRow | null;
@@ -213,6 +230,7 @@ const deleteTargets: DeleteTarget[] = [
   { key: 'savedCalculatorResults', sql: 'DELETE FROM saved_calculator_results WHERE user_id = ?' },
   { key: 'firePlanResults', sql: 'DELETE FROM fire_plan_results WHERE user_id = ?' },
   { key: 'firePlanInputs', sql: 'DELETE FROM fire_plan_inputs WHERE user_id = ?' },
+  { key: 'planReviews', sql: 'DELETE FROM plan_reviews WHERE user_id = ?' },
   { key: 'planVersions', sql: 'DELETE FROM plan_versions WHERE user_id = ?' },
   { key: 'plans', sql: 'DELETE FROM plans WHERE user_id = ?' },
   { key: 'goals', sql: 'DELETE FROM goals WHERE user_id = ?' },
@@ -330,6 +348,11 @@ export async function exportAccountData(database: D1Database, userId: string): P
       )
       .bind(userId),
     database
+      .prepare(
+        `SELECT id, user_id, plan_id, plan_version_number, evidence_date, decision, status, notes, completed_at, deferred_until, next_review_due, created_at, updated_at FROM plan_reviews WHERE user_id = ? ORDER BY created_at ASC, id ASC`
+      )
+      .bind(userId),
+    database
       .prepare(`SELECT id, deleted_at FROM users WHERE id = ?`)
       .bind(userId)
   ];
@@ -337,7 +360,7 @@ export async function exportAccountData(database: D1Database, userId: string): P
   const results = await database.batch(statements);
 
   const initialUser = (results[0].results[0] as UserRow | undefined) ?? null;
-  const finalUser = (results[15].results[0] as { id: string; deleted_at: string | null } | undefined) ?? null;
+  const finalUser = (results[16].results[0] as { id: string; deleted_at: string | null } | undefined) ?? null;
 
   if (!initialUser || initialUser.deleted_at || !finalUser || finalUser.deleted_at) {
     throw new UserDeletedError('User account has been deleted or is inactive and cannot be exported.');
@@ -351,6 +374,7 @@ export async function exportAccountData(database: D1Database, userId: string): P
     transactions: (results[4].results as TransactionRow[]).map(toDataRow),
     goals: (results[5].results as GoalRow[]).map(toDataRow),
     plans: (results[6].results as PlanRow[]).map(toDataRow),
+    planReviews: (results[15].results as PlanReviewRow[]).map(toDataRow),
     planVersions: (results[7].results as PlanVersionRow[]).map(toDataRow),
     firePlanInputs: (results[8].results as FirePlanInputRow[]).map(({ input_json: inputJson, ...row }) => ({
       ...toDataRow(row),
@@ -787,6 +811,7 @@ function summarizeExport(data: AccountDataExportData): AccountDataExport['summar
     firePlanInputs: data.firePlanInputs.length,
     firePlanResults: data.firePlanResults.length,
     goals: data.goals.length,
+    planReviews: data.planReviews.length,
     planVersions: data.planVersions.length,
     plans: data.plans.length,
     profile: data.profile ? 1 : 0,
