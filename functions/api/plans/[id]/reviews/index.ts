@@ -60,7 +60,7 @@ export const onRequestPost: PagesFunction<ReviewsEnv, PlanReviewsParams> = async
     return json({ dueStatus: result.dueStatus, review: result.review }, result.isDuplicate ? 200 : 201);
   } catch (error) {
     if (error instanceof ReviewTooEarlyError) {
-      return json({ error: error.message }, 400);
+      return json({ code: 'TOO_EARLY_REVIEW', error: error.message }, 400);
     }
 
     return handleApiError(error, 'Unable to save plan review.');

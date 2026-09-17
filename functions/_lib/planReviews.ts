@@ -84,7 +84,8 @@ export async function createPlanReview(
 
   const baselineUtc = parseToUtcMidnight(plan.created_at);
   const evidenceUtc = parseToUtcMidnight(payload.evidenceDate);
-  const daysSinceBaseline = Math.floor((evidenceUtc.getTime() - baselineUtc.getTime()) / (24 * 60 * 60 * 1000));
+  const nowUtc = getTodayUtcMidnight();
+  const daysSinceBaseline = Math.floor((nowUtc.getTime() - baselineUtc.getTime()) / (24 * 60 * 60 * 1000));
 
   if (!priorReview && daysSinceBaseline < 7) {
     throw new ReviewTooEarlyError(Math.max(0, daysSinceBaseline));
@@ -360,6 +361,11 @@ function toStoredPlanReview(row: PlanReviewRow): StoredPlanReview {
 function parseToUtcMidnight(dateStr: string): Date {
   const [year, month, day] = dateStr.slice(0, 10).split('-').map(Number);
   return new Date(Date.UTC(year, month - 1, day));
+}
+
+function getTodayUtcMidnight(): Date {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 }
 
 function addDaysUtc(d: Date, days: number): Date {
