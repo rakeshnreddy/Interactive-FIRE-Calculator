@@ -1,11 +1,11 @@
 # C09 Validation Matrix (B10, B11 & B28)
 
-- **Candidate Code Commit**: `1edcfc53fc8df66e2557d8dad2d42fdcf5ba3cea`  
-- **Branch / PR**: `codex/finpath-quality-execution` / [PR #140](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/140)  
-- **Immutable Preview URL**: https://e8a100ce.interactive-fire-calculator.pages.dev  
-- **Deployment ID**: `e8a100ce-2d36-4da0-918a-6944d14e7ab9`  
-- **Effective Preview D1 Database**: `0dbad68e-7493-452f-8504-98d4c61ee5da` (`finpath-preview`)  
-- **Candidate Status**: `READY_FOR_REVIEW`  
+- **Candidate Code Commit**: `0fe20e8e55c49808c998ac751e149da65c7eb3d5`<br>
+- **Branch / PR**: `codex/finpath-quality-execution` / [PR #140](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/140)<br>
+- **Immutable Preview URL**: https://3b006fb1.interactive-fire-calculator.pages.dev<br>
+- **Deployment ID**: `3b006fb1-72a6-4a1f-8499-05f9e082bba6`<br>
+- **Effective Preview D1 Database**: `0dbad68e-7493-452f-8504-98d4c61ee5da` (`finpath-preview`)<br>
+- **Candidate Status**: `READY_FOR_REVIEW`
 
 ---
 
@@ -21,7 +21,7 @@
 | **B10-06** | Controlled error states for missing plan/version | **PASS** | Requesting a nonexistent plan ID or an out-of-range version number renders controlled, user-facing error banners without crashing the application. `report.json`, screenshot `03_b10_controlled_missing_error.png` |
 | **B10-07** | Cross-tenant plan isolation | **PASS** | Synthetic User B attempting to fetch or view User A's plan via `/api/plans/:id` receives HTTP 404 / 403 authorization rejection; no foreign data is disclosed. `report.json` |
 | **B10-08** | Full record immutability | **PASS** | Row-level D1 verification proves Version 1 records (`plan_versions`, `fire_plan_inputs`, `fire_plan_results`) remain strictly byte-identical before and after subsequent version creation and reviews. `report.json` |
-| **B11-01** | Additive plan reviews schema | **PASS** | Migration `0007_monthly_plan_reviews.sql` applied to `finpath-preview` D1; `plan_reviews` table supports `plan_id`, `plan_version_number`, `choice`, `status`, `reviewed_at`, and `next_review_due_at`. `report.json` |
+| **B11-01** | Additive plan reviews schema | **PASS** | Migrations `0007_monthly_plan_reviews.sql` and `0008_plan_reviews_unique_cycle.sql` applied to `finpath-preview` D1; `plan_reviews` table supports `plan_id`, `plan_version_number`, `choice`, `status`, `reviewed_at`, and `next_review_due_at`. `report.json` |
 | **B11-02** | Returning review >= 7-day rule | **PASS** | Attempting a review < 7 days from plan baseline creation is rejected with HTTP 400 and structured error code `TOO_EARLY_REVIEW`; review becomes permissible once >= 7 days have elapsed. `report.json` |
 | **B11-03** | Review completion with keep choice | **PASS** | User reviews current progress with "Keep plan as-is"; record is persisted with status `completed` and exact review timestamp. `report.json`, screenshot `04_b11_review_completed_panel.png` |
 | **B11-04** | Next review due date computation | **PASS** | Completion calculates next review due date exactly 30 days out (UTC calendar month cycle); persisted in D1 and displayed in UI. `report.json` |
@@ -40,7 +40,7 @@
 | **B28-06** | Goals panel funding gap rendering | **PASS** | Clear display of calculated funding gap in exact cents between target savings and current net worth. `report.json`, screenshot `06_b28_goals_panel_linked_plan.png` |
 | **B28-07** | Goals panel explicit text status | **PASS** | Goal status conveys explicit textual state (`On track`, `Needs attention`, `Behind`) alongside numerical progress. `report.json`, screenshot `06_b28_goals_panel_linked_plan.png` |
 | **B28-08** | Stale evidence warning (>30 days) | **PASS** | Accounts and goals with evidence older than 30 days display warning banner prompting account balance updates before review. `report.json` |
-| **B28-09** | WCAG AA contrast pass (light & dark) | **PASS** | Measured contrast for review badges and goal statuses: Light mode `5.42:1` (>= 4.5:1), Dark mode `6.81:1` (>= 4.5:1). `report.json`, screenshots `07_b28_light_theme_presentation.png`, `08_b28_dark_theme_presentation.png` |
+| **B28-09** | WCAG AA contrast pass (light & dark) | **PASS** | Measured contrast for review badges and goal statuses: Light mode `5.78:1` (>= 4.5:1), Dark mode `11.25:1` (>= 4.5:1). `report.json`, screenshots `07_b28_light_theme_presentation.png`, `08_b28_dark_theme_presentation.png` |
 | **B28-10** | Theme switching verification | **PASS** | Application `.app[data-mode]` switches cleanly between light and dark themes; verified byte-distinct rendering and valid CSS custom properties. `report.json`, screenshots `07_b28_light_theme_presentation.png`, `08_b28_dark_theme_presentation.png` |
 | **B28-11** | Multi-viewport responsive containment | **PASS** | Verified full layout rendering at Desktop 1280px, Tablet 768px, and Mobile 320px with zero horizontal scrolling or cut-off content. `report.json`, screenshot `09_b28_mobile_320px_presentation.png` |
 | **B28-12** | Keyboard navigation & focus | **PASS** | Interactive review actions, links, and forms are fully navigable via Tab/Shift+Tab and activatable via Enter/Space with visible focus outlines. `report.json` |
@@ -51,7 +51,7 @@
 
 Both synthetic Clerk test users utilized during the hosted verification were subjected to the strict fail-closed cleanup protocol:
 
-1. **User A (`user_3JS8I64CYpTnxEK6cAAyYGQ2wFG`)**:
+1. **User A (`user_3JU8N3Q3WRcPLOvsMyBIpf7mxU6`)**:
    - Application data deletion: `/api/account-data` DELETE completed with HTTP 200.
    - Database table verification: Scoped query `WHERE user_id = ?` across all 15 D1 user tables returned exactly 0 rows:
      - `plan_reviews`: 0
@@ -72,7 +72,7 @@ Both synthetic Clerk test users utilized during the hosted verification were sub
    - User tombstone: Verified non-null `deleted_at` timestamp in `users` table.
    - Provider deletion: Gated on confirmed 0-row database count; Clerk user deleted via Backend API; subsequent GET returned HTTP 404.
 
-2. **User B (`user_3JS8IBhowHLvYdlCeFzlNY3kpGn`)**:
+2. **User B (`user_3JU8N6uvcwkCLs5wlXLhoKy9lpz`)**:
    - Application data deletion: `/api/account-data` DELETE completed with HTTP 200.
    - Database table verification: Scoped query `WHERE user_id = ?` across all 15 D1 user tables returned exactly 0 rows (identical 15-table verification).
    - User tombstone: Verified non-null `deleted_at` timestamp in `users` table.

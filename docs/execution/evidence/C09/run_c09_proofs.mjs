@@ -20,9 +20,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = resolve(__dirname, '../../../..');
 
-export const CANDIDATE_SHA = '1edcfc53fc8df66e2557d8dad2d42fdcf5ba3cea';
-export const DEPLOYMENT_ID = 'e8a100ce-2d36-4da0-918a-6944d14e7ab9';
-export const PREVIEW_URL = 'https://e8a100ce.interactive-fire-calculator.pages.dev';
+export const CANDIDATE_SHA = '0fe20e8e55c49808c998ac751e149da65c7eb3d5';
+export const DEPLOYMENT_ID = '3b006fb1-72a6-4a1f-8499-05f9e082bba6';
+export const PREVIEW_URL = 'https://3b006fb1.interactive-fire-calculator.pages.dev';
 export const PREVIEW_DB_ID = '0dbad68e-7493-452f-8504-98d4c61ee5da';
 export const ACCOUNT_ID = '4e1b7f6a7440770a01779a67602ec5e9';
 export const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -808,19 +808,38 @@ export async function runAllProofs() {
 
     // Step 4: Unsaved changes protection modal
     console.log('\n--- Step 4: Unsaved Changes Protection Modal ---');
-    // Ensure we are on the active plan workspace
-    await pageA.goto(`${PREVIEW_URL}/plans?planId=${planAId}`, { waitUntil: 'domcontentloaded' });
+    // Ensure we are on the active plan workspace with Version 2 explicitly settled
+    await pageA.goto(`${PREVIEW_URL}/plans?planId=${planAId}&version=2`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
+
+    // Wait until draft form and version state are fully settled with loaded Plan A Version 2
+    await pageA.waitForFunction(
+      () => {
+        const input = document.querySelector('.planning-form-grid input');
+        const overview = document.querySelector('.planning-overview')?.innerText || '';
+        return (
+          input &&
+          input.value === 'Retirement Independence Roadmap' &&
+          overview.includes('Version 2 loaded')
+        );
+      },
+      { timeout: 15000 }
+    );
+    await pageA.waitForSelector('.planning-history-panel article', { timeout: 15000 });
+    await pageA.waitForTimeout(500);
 
     // Make the draft assumptions dirty by editing plan name in the form grid
     const planNameInput = pageA.locator('.planning-form-grid input').first();
     await planNameInput.fill('Retirement Base (Unsaved Assumptions)');
     await pageA.waitForTimeout(300);
 
-    // Click "Load" on version 1 in history panel
-    const loadVersionBtn = pageA.locator('.planning-history-panel button:has-text("Load")').first();
+    const filledValue = await planNameInput.inputValue();
+    console.log(`Draft value immediately after fill: "${filledValue}"`);
+
+    // Click "Load" on version 1 in history panel (specifically the row for Version 1)
+    const loadVersionBtn = pageA.locator('.planning-history-panel article:has-text("Version 1") button:has-text("Load")');
     await loadVersionBtn.click();
-    await pageA.waitForTimeout(400);
+    await pageA.waitForSelector('.modal-scrim', { timeout: 5000 }).catch(() => {});
 
     const modalVisible = await pageA.locator('.modal-scrim').isVisible().catch(() => false);
     console.log(`Unsaved changes modal appeared: ${modalVisible}`);
@@ -832,21 +851,25 @@ export async function runAllProofs() {
       // Cancel / Keep editing
       const cancelBtn = pageA.locator('.modal-scrim button:has-text("Keep editing")').first();
       await cancelBtn.click();
-      await pageA.waitForTimeout(300);
+      await pageA.locator('.modal-scrim').waitFor({ state: 'detached', timeout: 5000 }).catch(() => {});
       const modalClosed = !(await pageA.locator('.modal-scrim').isVisible().catch(() => false));
       // Verify dirty input is still intact
       const preservedName = await planNameInput.inputValue().catch(() => '');
+      console.log(`Unsaved cancel check: modalClosed=${modalClosed}, preservedName="${preservedName}"`);
       report.b10_saved_decision_navigation.unsaved_changes_cancel_preserves_dirty_state =
         modalClosed && preservedName === 'Retirement Base (Unsaved Assumptions)';
 
       // Re-trigger and Discard and load
       await loadVersionBtn.click();
-      await pageA.waitForTimeout(300);
+      await pageA.waitForSelector('.modal-scrim', { timeout: 5000 }).catch(() => {});
       const discardBtn = pageA.locator('.modal-scrim button:has-text("Discard and load")').first();
       await discardBtn.click();
-      await pageA.waitForTimeout(500);
+      await pageA.locator('.modal-scrim').waitFor({ state: 'detached', timeout: 5000 }).catch(() => {});
       const modalClosedAfterDiscard = !(await pageA.locator('.modal-scrim').isVisible().catch(() => false));
-      report.b10_saved_decision_navigation.unsaved_changes_confirm_proceeds_navigation = modalClosedAfterDiscard;
+      const v1BannerLoaded = await pageA.locator('.historical-version-banner').isVisible().catch(() => false);
+      console.log(`Unsaved discard check: modalClosedAfterDiscard=${modalClosedAfterDiscard}, v1BannerLoaded=${v1BannerLoaded}`);
+      report.b10_saved_decision_navigation.unsaved_changes_confirm_proceeds_navigation =
+        modalClosedAfterDiscard && v1BannerLoaded;
     } else {
       report.b10_saved_decision_navigation.unsaved_changes_cancel_preserves_dirty_state = false;
       report.b10_saved_decision_navigation.unsaved_changes_confirm_proceeds_navigation = false;
@@ -901,9 +924,9 @@ export async function runAllProofs() {
       v1Snapshot.timeline.retirementAge === 55;
 
     // ==========================================
-    // B11: Monthly Review Loop Verification
+    // B11: Monthly Review Loop & R5 Single Plan Lifecycle
     // ==========================================
-    console.log('\n--- Step 7: B11 Monthly Review Loop ---');
+    console.log('\n--- Step 7: B11 Monthly Review Loop & R5 Single Plan Lifecycle ---');
     const todayStr = new Date().toISOString().slice(0, 10);
 
     // Enforce >=7-day rule (submitting immediately on newly created plan must fail)
@@ -926,12 +949,64 @@ export async function runAllProofs() {
     report.b11_monthly_review_loop.returning_review_rule_enforced_within_7_days =
       tooEarlyRes.status === 400 && (tooEarlyRes.body?.code === 'TOO_EARLY_REVIEW' || (tooEarlyRes.body?.error && tooEarlyRes.body.error.includes('at least 7 days')));
 
-    // Now backdate Plan A in D1 to 14 days ago to establish >= 7-day baseline
-    console.log('Backdating Plan A in D1 to 14 days ago to establish >= 7-day baseline...');
-    await queryD1("UPDATE plans SET created_at = datetime('now', '-14 days') WHERE id = ?;", [planAId]);
-    await queryD1("UPDATE plan_versions SET created_at = datetime('now', '-14 days') WHERE plan_id = ?;", [planAId]);
+    // Backdate Plan A in D1 to 35 days ago to establish a single aged plan needing monthly review (>30 days)
+    // and backdate Goal A updated_at to 35 days ago to surface stale evidence warning
+    console.log('Backdating Plan A and Goal A in D1 to 35 days ago (establishing single aged plan for R5)...');
+    await queryD1("UPDATE plans SET created_at = datetime('now', '-35 days'), updated_at = datetime('now', '-35 days') WHERE id = ?;", [planAId]);
+    await queryD1("UPDATE plan_versions SET created_at = datetime('now', '-35 days') WHERE plan_id = ?;", [planAId]);
+    await queryD1("UPDATE goals SET updated_at = datetime('now', '-35 days') WHERE id = ?;", [goalAId]);
 
-    // Save review 'keep' choice for Plan A Version 1
+    // R5 Stage 1: Observe Dashboard in DUE state
+    console.log('\n--- R5 Stage 1: Dashboard in DUE state ---');
+    await pageA.goto(`${PREVIEW_URL}/dashboard`, { waitUntil: 'domcontentloaded' });
+    await pageA.waitForSelector('.dashboard-summary-grid, .financial-dashboard', { timeout: 15000 });
+    // Wait for the due reviews check to settle past the loading placeholder
+    await pageA.waitForFunction(
+      () => !document.querySelector('.dashboard-reviews-rollup')?.innerText.includes('Checking review cadence'),
+      { timeout: 15000 }
+    );
+    await pageA.waitForSelector('.dashboard-reviews-rollup', { timeout: 15000 });
+
+    const rollupVisible = await pageA.locator('.dashboard-reviews-rollup').isVisible().catch(() => false);
+    console.log(`Dashboard reviews rollup visible (Due state): ${rollupVisible}`);
+    report.b28_presentation_and_accessibility.dashboard_reviews_rollup_rendered = rollupVisible;
+
+    // Wait for due review card or plan card to appear
+    await pageA.waitForSelector('.dashboard-review-card, .dashboard-plan-card', { timeout: 15000 });
+    const dueCardsCount = await pageA.locator('.dashboard-review-card, .dashboard-plan-card').count();
+    console.log(`Dashboard due cards count: ${dueCardsCount}`);
+    report.b28_presentation_and_accessibility.dashboard_due_cards_have_deep_links = dueCardsCount > 0;
+
+    const statusBadgesCount = await pageA.locator('.review-status-badge, .review-badge').count();
+    console.log(`Review status badges on dashboard: ${statusBadgesCount}`);
+    report.b28_presentation_and_accessibility.review_status_badges_explicit_text = statusBadgesCount > 0;
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '05_b28_dashboard_review_rollup.png') });
+
+    // R5 Stage 2: Perform DEFER review on Plan A (7 days)
+    console.log('\n--- R5 Stage 2: Defer Plan A Review (7 days) ---');
+    const deferRes = await pageA.evaluate(async ({ planId, evidenceDate }) => {
+      const res = await fetch(`/api/plans/${planId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planVersionNumber: 1,
+          evidenceDate,
+          decision: 'defer',
+          status: 'deferred',
+          deferDays: 7,
+          idempotencyKey: 'review-defer-c09',
+          notes: 'Deferring review for 1 week'
+        })
+      });
+      return { status: res.status, body: await res.json() };
+    }, { planId: planAId, evidenceDate: todayStr });
+    console.log(`Defer review response: status=${deferRes.status}, decision=${deferRes.body?.review?.decision}`);
+    report.b11_monthly_review_loop.review_defer_choice_persisted =
+      (deferRes.status === 200 || deferRes.status === 201) && deferRes.body?.review?.decision === 'defer' && deferRes.body?.review?.status === 'deferred';
+
+    // R5 Stage 3: Perform KEEP review on Plan A
+    console.log('\n--- R5 Stage 3: Keep Plan A Review ---');
     const submitReviewRes = await pageA.evaluate(async ({ planId, evidenceDate }) => {
       const res = await fetch(`/api/plans/${planId}/reviews`, {
         method: 'POST',
@@ -941,6 +1016,7 @@ export async function runAllProofs() {
           evidenceDate,
           decision: 'keep',
           status: 'completed',
+          idempotencyKey: 'review-keep-c09',
           notes: 'Portfolio on track, assumptions validated'
         })
       });
@@ -949,10 +1025,10 @@ export async function runAllProofs() {
 
     console.log(`Submit review response: status=${submitReviewRes.status}`);
     const reviewRecord = submitReviewRes.body?.review;
-    report.b11_monthly_review_loop.review_saved_keep_choice = submitReviewRes.status === 201 && reviewRecord?.decision === 'keep';
+    report.b11_monthly_review_loop.review_saved_keep_choice = (submitReviewRes.status === 200 || submitReviewRes.status === 201) && reviewRecord?.decision === 'keep';
     report.b11_monthly_review_loop.review_next_due_date_computed = Boolean(reviewRecord?.nextReviewDue) && reviewRecord?.nextReviewDue > todayStr;
 
-    // Reload page and review panel: verify status persisted
+    // Reload page on /plans and review panel: verify status persisted
     await pageA.goto(`${PREVIEW_URL}/plans?planId=${planAId}&version=1`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-review-panel', { timeout: 15000 });
 
@@ -965,7 +1041,8 @@ export async function runAllProofs() {
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '04_b11_review_completed_panel.png') });
 
-    // Idempotent repeat: submitting same evidence date and version
+    // Idempotent repeat: submitting same evidence date, decision and idempotencyKey
+    console.log('Testing idempotent repeat review submission...');
     const idempotencyRes = await pageA.evaluate(async ({ planId, evidenceDate }) => {
       const res = await fetch(`/api/plans/${planId}/reviews`, {
         method: 'POST',
@@ -975,58 +1052,40 @@ export async function runAllProofs() {
           evidenceDate,
           decision: 'keep',
           status: 'completed',
+          idempotencyKey: 'review-keep-c09',
           notes: 'Portfolio on track, assumptions validated'
         })
       });
       return { status: res.status, body: await res.json() };
     }, { planId: planAId, evidenceDate: todayStr });
+    console.log(`Idempotent repeat status: ${idempotencyRes.status}`);
     const reviewCountDb = await queryD1('SELECT count(*) as cnt FROM plan_reviews WHERE plan_id = ?;', [planAId]);
     console.log(`Total reviews in DB for plan A: ${reviewCountDb[0]?.cnt}`);
-    report.b11_monthly_review_loop.idempotent_repeat_review_not_duplicated = (reviewCountDb[0]?.cnt ?? 0) === 1;
+    // 1 defer + 1 keep = 2 reviews; duplicate keep is idempotent and does not add a 3rd row
+    report.b11_monthly_review_loop.idempotent_repeat_review_not_duplicated =
+      idempotencyRes.status === 200 && (reviewCountDb[0]?.cnt ?? 0) === 2;
 
-    // Test defer choice on a new plan
-    console.log('Testing defer review choice on Plan 2...');
-    const createPlan2Res = await pageA.evaluate(async ({ goalId, snapshot }) => {
-      const res = await fetch('/api/plans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          goalId,
-          name: 'Secondary Lean FIRE Plan',
-          label: 'Lean 2026',
-          notes: 'Lean expenses',
-          snapshot,
-          result: { success: true, fireNumber: 800000, yearsToFire: 15 }
-        })
-      });
-      return { status: res.status, body: await res.json() };
-    }, { goalId: goalAId, snapshot: basePlanSnapshot });
-    const plan2Id = createPlan2Res.body.plan.id;
-
-    // Backdate Plan 2 in D1 to 14 days ago to establish >= 7-day baseline
-    await queryD1("UPDATE plans SET created_at = datetime('now', '-14 days') WHERE id = ?;", [plan2Id]);
-    await queryD1("UPDATE plan_versions SET created_at = datetime('now', '-14 days') WHERE plan_id = ?;", [plan2Id]);
-
-    const deferRes = await pageA.evaluate(async ({ planId, evidenceDate }) => {
+    // R5 Stage 4: Revise Review Choice
+    console.log('\n--- R5 Stage 4: Revise Review Choice ---');
+    const reviseRes = await pageA.evaluate(async (planId) => {
       const res = await fetch(`/api/plans/${planId}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          planVersionNumber: 1,
-          evidenceDate,
-          decision: 'defer',
-          status: 'deferred',
-          deferDays: 7,
-          notes: 'Deferring review for 1 week'
+          planVersionNumber: 2,
+          evidenceDate: new Date().toISOString().slice(0, 10),
+          decision: 'revise',
+          idempotencyKey: 'review-revise-c09',
+          notes: 'Revise assumptions based on market shifts'
         })
       });
       return { status: res.status, body: await res.json() };
-    }, { planId: plan2Id, evidenceDate: todayStr });
-    console.log(`Defer review response: status=${deferRes.status}, decision=${deferRes.body?.review?.decision}`);
-    report.b11_monthly_review_loop.review_defer_choice_persisted =
-      deferRes.status === 201 && deferRes.body?.review?.decision === 'defer' && deferRes.body?.review?.status === 'deferred';
+    }, planAId);
+    console.log(`Plan A review (revise) status: ${reviseRes.status}, decision: ${reviseRes.body?.review?.decision}`);
+    report.b11_monthly_review_loop.review_revise_choice_triggers_revision =
+      (reviseRes.status === 200 || reviseRes.status === 201) && reviseRes.body?.review?.decision === 'revise';
 
-    // Due reviews endpoint
+    // Due reviews endpoint verification
     const dueReviewsRes = await pageA.evaluate(async () => {
       const res = await fetch('/api/plans/due-reviews');
       return { status: res.status, body: await res.json() };
@@ -1064,73 +1123,10 @@ export async function runAllProofs() {
     report.b11_monthly_review_loop.plan_reviews_participate_in_data_export =
       exportRes.status === 200 && Array.isArray(exportedReviews) && exportedReviews.length >= 2;
 
-    const reviseRes = await pageA.evaluate(async (planId) => {
-      const res = await fetch(`/api/plans/${planId}/reviews`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          planVersionNumber: 2,
-          evidenceDate: new Date().toISOString().slice(0, 10),
-          decision: 'revise',
-          notes: 'Revise assumptions based on market shifts'
-        })
-      });
-      return { status: res.status, body: await res.json() };
-    }, planAId);
-    console.log(`Plan A review (revise) status: ${reviseRes.status}, decision: ${reviseRes.body?.review?.decision}`);
-    report.b11_monthly_review_loop.review_revise_choice_triggers_revision =
-      (reviseRes.status === 200 || reviseRes.status === 201) && reviseRes.body?.review?.decision === 'revise';
-
-    // Create Plan 3 and backdate it in D1 so it surfaces as Due on the Dashboard
-    const createPlan3Res = await pageA.evaluate(async ({ goalId, snapshot }) => {
-      const res = await fetch('/api/plans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          goalId,
-          name: 'Annual Review Focus Plan',
-          label: 'Annual 2026',
-          notes: 'Plan created 40 days ago needing check-in',
-          snapshot,
-          result: { success: true, fireNumber: 950000, yearsToFire: 18 }
-        })
-      });
-      return { status: res.status, body: await res.json() };
-    }, { goalId: goalAId, snapshot: basePlanSnapshot });
-    const plan3Id = createPlan3Res.body?.plan?.id;
-
-    if (plan3Id) {
-      await queryD1("UPDATE plans SET created_at = datetime('now', '-40 days'), updated_at = datetime('now', '-40 days') WHERE id = ?;", [plan3Id]);
-      await queryD1("UPDATE plan_versions SET created_at = datetime('now', '-40 days') WHERE plan_id = ?;", [plan3Id]);
-    }
-    // Set Goal A updated_at in D1 to 35 days ago to surface the stale evidence warning
-    await queryD1("UPDATE goals SET updated_at = datetime('now', '-35 days') WHERE id = ?;", [goalAId]);
-
     // ==========================================
-    // B28: Goals and Review Presentation
+    // B28: Goals Panel Presentation
     // ==========================================
-    console.log('\n--- Step 8: B28 Goals and Review Presentation ---');
-
-    // Dashboard rollup verification
-    await pageA.goto(`${PREVIEW_URL}/dashboard`, { waitUntil: 'domcontentloaded' });
-    await pageA.waitForSelector('.dashboard-summary-grid, .financial-dashboard', { timeout: 15000 });
-    await pageA.waitForSelector('.dashboard-reviews-rollup', { timeout: 15000 });
-
-    const rollupVisible = await pageA.locator('.dashboard-reviews-rollup').isVisible().catch(() => false);
-    console.log(`Dashboard reviews rollup visible: ${rollupVisible}`);
-    report.b28_presentation_and_accessibility.dashboard_reviews_rollup_rendered = rollupVisible;
-
-    const dueCardsCount = await pageA.locator('.dashboard-review-card, .dashboard-plan-card').count();
-    console.log(`Dashboard due cards count: ${dueCardsCount}`);
-    report.b28_presentation_and_accessibility.dashboard_due_cards_have_deep_links = dueCardsCount > 0;
-
-    const statusBadgesCount = await pageA.locator('.review-status-badge, .review-badge').count();
-    console.log(`Review status badges on dashboard: ${statusBadgesCount}`);
-    report.b28_presentation_and_accessibility.review_status_badges_explicit_text = statusBadgesCount > 0;
-
-    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '05_b28_dashboard_review_rollup.png') });
-
-    // Goals panel verification
+    console.log('\n--- Step 8: B28 Goals Panel Presentation ---');
     await pageA.goto(`${PREVIEW_URL}/goals`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.goal-card, .goal-badges', { timeout: 15000 });
     await pageA.waitForSelector('.goal-linked-plan', { timeout: 15000 });
@@ -1159,6 +1155,10 @@ export async function runAllProofs() {
 
     // Navigate to dashboard for theme switching and review badge contrast measurement
     await pageA.goto(`${PREVIEW_URL}/dashboard`, { waitUntil: 'domcontentloaded' });
+    await pageA.waitForFunction(
+      () => !document.querySelector('.dashboard-reviews-rollup')?.innerText.includes('Checking review cadence'),
+      { timeout: 15000 }
+    );
     await pageA.waitForSelector('.review-badge, .dashboard-plan-card', { timeout: 15000 });
 
     const badgeLocator = pageA.locator('.review-badge').first();

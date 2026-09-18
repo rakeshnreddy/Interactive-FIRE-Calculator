@@ -1,6 +1,6 @@
 {
   "userA": {
-    "userId": "user_3JS8I64CYpTnxEK6cAAyYGQ2wFG",
+    "userId": "user_3JU8N3Q3WRcPLOvsMyBIpf7mxU6",
     "app_data_deleted": true,
     "user_tombstone_present": true,
     "clerk_user_deleted": true,
@@ -27,7 +27,7 @@
     "errors": []
   },
   "userB": {
-    "userId": "user_3JS8IBhowHLvYdlCeFzlNY3kpGn",
+    "userId": "user_3JU8N6uvcwkCLs5wlXLhoKy9lpz",
     "app_data_deleted": true,
     "user_tombstone_present": true,
     "clerk_user_deleted": true,

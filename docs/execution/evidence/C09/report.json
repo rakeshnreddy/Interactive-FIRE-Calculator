@@ -1,10 +1,11 @@
 {
-  "candidate_sha": "1edcfc53fc8df66e2557d8dad2d42fdcf5ba3cea",
-  "deployment_id": "e8a100ce-2d36-4da0-918a-6944d14e7ab9",
-  "preview_url": "https://e8a100ce.interactive-fire-calculator.pages.dev",
+  "candidate_sha": "0fe20e8e55c49808c998ac751e149da65c7eb3d5",
+  "deployment_id": "3b006fb1-72a6-4a1f-8499-05f9e082bba6",
+  "preview_url": "https://3b006fb1.interactive-fire-calculator.pages.dev",
   "effective_db": "0dbad68e-7493-452f-8504-98d4c61ee5da",
-  "timestamp": "2026-09-17T11:03:46.043Z",
+  "timestamp": "2026-09-18T04:04:03.059Z",
   "d1_migration_0007_verified": true,
+  "d1_migration_0008_verified": true,
   "sqlite_plan_reviews_verified": true,
   "b10_saved_decision_navigation": {
     "plan_created_version_1": true,
@@ -22,15 +23,15 @@
   },
   "b11_monthly_review_loop": {
     "returning_review_rule_enforced_within_7_days": true,
+    "review_defer_choice_persisted": true,
     "review_saved_keep_choice": true,
     "review_next_due_date_computed": true,
     "review_completed_status_persisted_after_reload": true,
     "idempotent_repeat_review_not_duplicated": true,
-    "review_defer_choice_persisted": true,
+    "review_revise_choice_triggers_revision": true,
     "due_reviews_endpoint_returned_plans": true,
     "tenant_b_cannot_review_tenant_a_plan": true,
-    "plan_reviews_participate_in_data_export": true,
-    "review_revise_choice_triggers_revision": true
+    "plan_reviews_participate_in_data_export": true
   },
   "b28_presentation_and_accessibility": {
     "dashboard_reviews_rollup_rendered": true,
@@ -51,7 +52,7 @@
   },
   "cleanup": {
     "userA": {
-      "userId": "user_3JS8I64CYpTnxEK6cAAyYGQ2wFG",
+      "userId": "user_3JU8N3Q3WRcPLOvsMyBIpf7mxU6",
       "app_data_deleted": true,
       "user_tombstone_present": true,
       "clerk_user_deleted": true,
@@ -78,7 +79,7 @@
       "errors": []
     },
     "userB": {
-      "userId": "user_3JS8IBhowHLvYdlCeFzlNY3kpGn",
+      "userId": "user_3JU8N6uvcwkCLs5wlXLhoKy9lpz",
       "app_data_deleted": true,
       "user_tombstone_present": true,
       "clerk_user_deleted": true,
