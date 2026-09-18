@@ -96,3 +96,5 @@ C07/B06 APPROVED after primary-executed hosted CSV, tenant-denial and deletion41
 C08 primary review2026-09-17: B26/B27 changes_requested per reviews/C08.md and C08_REWORK_PROMPT.md. False-success evaluator, cleanup failure safety and missing true-theme/changed-control evidence prevent acceptance. C08 remains released for rework; C09 locked.23/34 accepted.
 
 Current primary decision2026-09-17: C08/B26/B27 APPROVED after rework and primary supplemental local verification. Earlier changes_requested statements are history. C09 released B10 → B11 → B28; C10 stays locked.25/34 accepted (73.5%, task count). New remote migrations need exact-target owner authorization; local implementation/testing can proceed.
+
+C09 primary review2026-09-17: B10/B11/B28 changes_requested per reviews/C09.md; execute C09_REWORK_PROMPT.md. C09 remains released for repair; C10 locked.25/34 accepted.

@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+(node:98713) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:98712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  4 passed (4)
+      Tests  33 passed (33)
+   Start at  18:33:08
+   Duration  2.22s (transform 693ms, setup 0ms, import 1.42s, tests 309ms, environment 2.81s)
+

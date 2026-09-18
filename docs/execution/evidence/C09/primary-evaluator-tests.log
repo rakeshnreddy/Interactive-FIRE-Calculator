@@ -1,0 +1,17 @@
+✔ Baseline: evaluateReport accepts a completely compliant report and cleanup (2.20575ms)
+✔ Negative Test 1: false b10 observation fails closed (0.1205ms)
+✔ Negative Test 2: false b11 observation fails closed (0.086834ms)
+✔ Negative Test 3: false b28 observation fails closed (0.080667ms)
+✔ Negative Test 4: nonzero plan_reviews table in cleanup fails closed (0.074416ms)
+✔ Negative Test 5: missing tombstone fails closed (0.064834ms)
+✔ Negative Test 6: Clerk deletion withheld/failed fails closed (0.077042ms)
+✔ Negative Test 7: wrong candidate_sha fails closed (0.07125ms)
+✔ Contrast Utilities: WCAG 2.1 calculation logic (0.294292ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99.201292

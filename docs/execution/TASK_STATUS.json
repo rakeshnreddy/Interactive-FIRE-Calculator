@@ -148,7 +148,7 @@
       "id": "B10",
       "title": "restore the exact saved FIRE decision",
       "checkpoint": "C09",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B02",
         "B03",
@@ -160,14 +160,14 @@
       "submission": "submissions/B10.md",
       "owner": "FinPath implementation agent",
       "code_sha": "1edcfc53fc8df66e2557d8dad2d42fdcf5ba3cea",
-      "review": null,
+      "review": "reviews/C09.md",
       "blocked_reason": null
     },
     {
       "id": "B11",
       "title": "complete one monthly plan review",
       "checkpoint": "C09",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B04",
         "B05",
@@ -179,7 +179,7 @@
       "submission": "submissions/B11.md",
       "owner": "FinPath implementation agent",
       "code_sha": "1edcfc53fc8df66e2557d8dad2d42fdcf5ba3cea",
-      "review": null,
+      "review": "reviews/C09.md",
       "blocked_reason": null
     },
     {
@@ -450,7 +450,7 @@
       "id": "B28",
       "title": "Polish goals and monthly plan-review workflow",
       "checkpoint": "C09",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B10",
         "B11",
@@ -460,7 +460,7 @@
       "submission": "submissions/B28.md",
       "owner": "FinPath implementation agent",
       "code_sha": "1edcfc53fc8df66e2557d8dad2d42fdcf5ba3cea",
-      "review": null,
+      "review": "reviews/C09.md",
       "blocked_reason": null
     },
     {
