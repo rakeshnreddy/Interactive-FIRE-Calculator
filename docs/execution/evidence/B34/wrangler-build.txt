@@ -1,0 +1,7 @@
+wrangler version: 4.130.0
+command: WRANGLER_LOG_PATH=/tmp/finpath-b34-wrangler-final.log ./node_modules/.bin/wrangler pages functions build functions --outdir /tmp/finpath-b34-functions-final --project-directory . --compatibility-date=2026-06-06
+exit: 0
+
+ ⛅️ wrangler 4.130.0
+────────────────────
+✨ Compiled Worker successfully

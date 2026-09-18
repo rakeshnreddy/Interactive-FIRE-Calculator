@@ -1,0 +1,6 @@
+interactive-fire-calculator@2.0.0 /private/tmp/finpath-b34.7zGMfU
+├─┬ vitest@4.1.11
+│ └── @vitest/mocker@4.1.11
+└─┬ wrangler@4.130.0
+  └─┬ miniflare@5.20260908.0-alpha
+    └── sharp@0.35.4 overridden

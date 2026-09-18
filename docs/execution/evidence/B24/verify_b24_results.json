@@ -1,0 +1,138 @@
+{
+  "testedAt": "2026-09-13T21:31:41.025Z",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "scopeChecks": [
+    {
+      "target": "FIRE Calculator",
+      "hasScopeNote": true,
+      "scopeNoteText": "Answer one retirement planning question at a time. Plan retirement portfolio targets or test sustainable annual withdrawals across customizable inflation and market regimes.",
+      "status": "PASS"
+    }
+  ],
+  "accessibilityChecks": [
+    {
+      "target": "Core FIRE Form",
+      "allInputsHaveDescribedBy": true,
+      "allLabelsConcise": true,
+      "allDotsAreButtons": true,
+      "unitsPresent": true,
+      "totalCoreInputs": 5,
+      "totalInfoButtons": 6,
+      "status": "PASS"
+    }
+  ],
+  "lifecycleChecks": [
+    {
+      "case": "Initial fresh state",
+      "expected": "No hero-result before calculate",
+      "observed": "No hero-result",
+      "status": "PASS"
+    },
+    {
+      "case": "First calculation",
+      "expected": "Required FIRE number displayed with health checks",
+      "observed": "Calculated: $1,301,620",
+      "status": "PASS"
+    },
+    {
+      "case": "Input edit stale state",
+      "expected": "hero-result has is-stale, badge rendered, button says Recalculate",
+      "observed": "is-stale=true, badge=\"Inputs changed since last calculation. Click Calculate to update results.\", button=\"Recalculate\"",
+      "status": "PASS"
+    },
+    {
+      "case": "Recalculation refresh",
+      "expected": "is-stale cleared, updated result calculated",
+      "observed": "cleared=true, badgeGone=true, updatedValue=$1,560,025",
+      "status": "PASS"
+    },
+    {
+      "case": "Withdrawal mode calculation",
+      "expected": "Annual withdrawal calculated",
+      "observed": "Annual withdrawal verified",
+      "status": "PASS"
+    }
+  ],
+  "fontChecks": [
+    {
+      "target": "FIRE Calculator",
+      "totalInputs": 22,
+      "allInputs16px": true,
+      "status": "PASS"
+    }
+  ],
+  "disclosureChecks": [
+    {
+      "target": "Advanced Assumptions",
+      "present": true,
+      "status": "PASS"
+    }
+  ],
+  "cases": [
+    {
+      "target": "FIRE Calculator",
+      "viewport": "1440x900 (desktop)",
+      "theme": "light",
+      "firstViewportScreenshot": "fire-desktop-light-viewport.png",
+      "fullPageScreenshot": "fire-desktop-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "FIRE Calculator",
+      "viewport": "1440x900 (desktop)",
+      "theme": "dark",
+      "firstViewportScreenshot": "fire-desktop-dark-viewport.png",
+      "fullPageScreenshot": "fire-desktop-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "FIRE Calculator",
+      "viewport": "768x1024 (tablet)",
+      "theme": "light",
+      "firstViewportScreenshot": "fire-tablet-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "FIRE Calculator",
+      "viewport": "768x1024 (tablet)",
+      "theme": "dark",
+      "firstViewportScreenshot": "fire-tablet-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "FIRE Calculator",
+      "viewport": "390x844 (mobile)",
+      "theme": "light",
+      "firstViewportScreenshot": "fire-mobile-light-viewport.png",
+      "fullPageScreenshot": "fire-mobile-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "FIRE Calculator",
+      "viewport": "390x844 (mobile)",
+      "theme": "dark",
+      "firstViewportScreenshot": "fire-mobile-dark-viewport.png",
+      "fullPageScreenshot": "fire-mobile-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "FIRE Calculator",
+      "viewport": "320x568 (narrow)",
+      "theme": "light",
+      "firstViewportScreenshot": "fire-narrow-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "FIRE Calculator",
+      "viewport": "320x568 (narrow)",
+      "theme": "dark",
+      "firstViewportScreenshot": "fire-narrow-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    }
+  ]
+}

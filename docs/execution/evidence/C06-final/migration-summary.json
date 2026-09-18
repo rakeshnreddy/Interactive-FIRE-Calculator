@@ -1,0 +1,40 @@
+{
+  "target": "finpath-preview",
+  "database_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+  "expectedTriggers": 29,
+  "actualTriggers": 29,
+  "mismatches": 0,
+  "ledger": [
+    {
+      "id": 1,
+      "name": "0001_initial_financial_platform_schema.sql",
+      "applied_at": "2026-06-11 15:37:16"
+    },
+    {
+      "id": 2,
+      "name": "0002_balance_import_history.sql",
+      "applied_at": "2026-06-22 18:37:06"
+    },
+    {
+      "id": 3,
+      "name": "0003_transaction_import_history.sql",
+      "applied_at": "2026-07-05 20:06:03"
+    },
+    {
+      "id": 4,
+      "name": "0004_saved_calculator_results.sql",
+      "applied_at": "2026-07-10 17:04:22"
+    },
+    {
+      "id": 5,
+      "name": "0005_saved_calculator_idempotency.sql",
+      "applied_at": "2026-09-11 11:55:44"
+    },
+    {
+      "id": 6,
+      "name": "0006_user_tombstone_triggers.sql",
+      "applied_at": "2026-09-15 10:51:53"
+    }
+  ],
+  "verified": true
+}

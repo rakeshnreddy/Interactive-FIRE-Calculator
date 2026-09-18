@@ -1,6 +1,8 @@
 # FinPath current-state audit
 
-> Update 2026-09-08: the zero-vulnerability result below is historical. CI 34300491728 now reports 5 findings (2 moderate,3 high) involving Vitest/mocker and sharp/miniflare/Wrangler; tests and build pass. See execution/prompts/B34.md and execution/PACKET_REVIEW.md. Dependency repair is the first released checkpoint.
+> B34 accepted update 2026-09-09: code candidate `b48ac00328f356746bd501921562e727feb7a8e5` resolves Vitest/mocker to 4.1.11 and Wrangler/Miniflare/sharp to 4.130.0/5.20260908.0-alpha/0.35.4. An isolated audit reports zero findings, the full suite passes, and hosted CI passes on the exact code SHA. Primary review independently reproduced clean install, zero audit, full suite and Wrangler compilation; B34 is accepted. See [C00R review](execution/reviews/C00R.md).
+>
+> Historical alert from 2026-09-08: the zero-vulnerability result in the 2026-09-07 baseline below became stale when CI 34300491728 reported 5 findings (2 moderate, 3 high) involving Vitest/mocker and sharp/miniflare/Wrangler. B34 preserves that baseline and its repair evidence separately.
 
 Evidence date: 2026-09-07. Baseline: `e18c517927b75f325e0e8fe482c1877b1c36bf45` on `codex/dependency-security-refresh`. Checkout: `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. This audit distinguishes observed behavior, code findings, and hypotheses. Historical completion percentages are not launch criteria.
 

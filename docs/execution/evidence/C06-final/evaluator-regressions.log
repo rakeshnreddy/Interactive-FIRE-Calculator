@@ -1,0 +1,27 @@
+✔ missing contrast (0.972208ms)
+✔ NaN contrast (0.096542ms)
+✔ missing rendered state (0.665167ms)
+✔ missing geometry widths (0.108208ms)
+✔ missing screenshot size (0.131042ms)
+✔ low debug contrast (0.071916ms)
+✔ native flag without level or proof (0.093583ms)
+✔ missing keyboard observation (0.063875ms)
+✔ missing media observation (0.242666ms)
+✔ missing theme colors (0.152333ms)
+✔ empty suite rejected (0.150959ms)
+✔ duplicate cases rejected (0.104625ms)
+✔ transparent color cannot be treated as opaque black (0.092375ms)
+✔ unknown color rejected (0.085666ms)
+✔ complete ordinary observation still passes (0.0555ms)
+✔ loading requires actual content (0.599083ms)
+✔ unknown combination cannot pass (0.067667ms)
+✔ populated name alone cannot prove stale (0.087708ms)
+✔ observed loading content accepted (0.123083ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.309291

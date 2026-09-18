@@ -1,0 +1,38 @@
+[
+  {
+    "theme": "light",
+    "backgrounds": true,
+    "file": "/tmp/finpath-print/light-bg.pdf",
+    "pages": 2,
+    "firstPageContainsHero": true,
+    "screenControlsOmitted": true,
+    "pass": true
+  },
+  {
+    "theme": "light",
+    "backgrounds": false,
+    "file": "/tmp/finpath-print/light-nobg.pdf",
+    "pages": 2,
+    "firstPageContainsHero": true,
+    "screenControlsOmitted": true,
+    "pass": true
+  },
+  {
+    "theme": "dark",
+    "backgrounds": true,
+    "file": "/tmp/finpath-print/dark-bg.pdf",
+    "pages": 2,
+    "firstPageContainsHero": true,
+    "screenControlsOmitted": true,
+    "pass": true
+  },
+  {
+    "theme": "dark",
+    "backgrounds": false,
+    "file": "/tmp/finpath-print/dark-nobg.pdf",
+    "pages": 2,
+    "firstPageContainsHero": true,
+    "screenControlsOmitted": true,
+    "pass": true
+  }
+]

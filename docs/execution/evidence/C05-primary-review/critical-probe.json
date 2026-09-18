@@ -1,0 +1,46 @@
+{
+  "duplicateIds": [
+    {
+      "id": "field-years",
+      "count": 2
+    },
+    {
+      "id": "field-return",
+      "count": 2
+    },
+    {
+      "id": "field-inflation",
+      "count": 2
+    },
+    {
+      "id": "field-label",
+      "count": 4
+    },
+    {
+      "id": "field-year",
+      "count": 2
+    },
+    {
+      "id": "field-amount",
+      "count": 2
+    },
+    {
+      "id": "field-start",
+      "count": 2
+    },
+    {
+      "id": "field-end",
+      "count": 2
+    },
+    {
+      "id": "field-annual",
+      "count": 2
+    }
+  ],
+  "closedHelp": {
+    "expanded": "false",
+    "opacity": "1",
+    "text": "Your age today. It is used to check that the retirement timeline makes sense."
+  }
+}
+secondYearsLabelFocus { id: 'field-years', firstInput: true }

@@ -1,0 +1,209 @@
+Full suite	Run every test suite and build	﻿2026-09-12T02:38:21.6815094Z ##[group]Run ./scripts/test_all.sh
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6815556Z [36;1m./scripts/test_all.sh[0m
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6861203Z shell: /usr/bin/bash -e {0}
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6861528Z env:
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6861870Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6862439Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib/pkgconfig
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6862995Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6863514Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6864246Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6864746Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib
+Full suite	Run every test suite and build	2026-09-12T02:38:21.6865164Z ##[endgroup]
+Full suite	Run every test suite and build	2026-09-12T02:38:21.7449464Z TAP version 13
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9028983Z # Subtest: fails before running any stage when python3 is missing
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9051332Z ok 1 - fails before running any stage when python3 is missing
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9052178Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9052647Z   duration_ms: 8.927411
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9053105Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9053501Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9054212Z # Subtest: fails before running any stage when node is missing
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9055187Z ok 2 - fails before running any stage when node is missing
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9055907Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9056351Z   duration_ms: 4.327586
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9056836Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9057255Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9058042Z # Subtest: fails before running any stage when npm is missing
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9059053Z ok 3 - fails before running any stage when npm is missing
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9059735Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9060527Z   duration_ms: 4.186693
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9061006Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9061413Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9062021Z # Subtest: runs every verification stage in order
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9062869Z ok 4 - runs every verification stage in order
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9063591Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9064010Z   duration_ms: 11.620702
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9064485Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9064879Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9065796Z # Subtest: stops and preserves failure status from node --test scripts/test_all.test.mjs
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9067204Z ok 5 - stops and preserves failure status from node --test scripts/test_all.test.mjs
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9068030Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9068426Z   duration_ms: 6.059902
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9068889Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9069281Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9095901Z # Subtest: stops and preserves failure status from python3 -m compileall -q app.py project tests
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9097570Z ok 6 - stops and preserves failure status from python3 -m compileall -q app.py project tests
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9098493Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9098922Z   duration_ms: 6.561713
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9099420Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9099842Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9100990Z # Subtest: stops and preserves failure status from python3 -m pytest -q
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9102225Z ok 7 - stops and preserves failure status from python3 -m pytest -q
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9103016Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9103465Z   duration_ms: 7.456188
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9103956Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9104385Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9105152Z # Subtest: stops and preserves failure status from npm run typecheck
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9106251Z ok 8 - stops and preserves failure status from npm run typecheck
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9106943Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9107383Z   duration_ms: 9.109023
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9107850Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9108242Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9111280Z # Subtest: stops and preserves failure status from npm test
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9112566Z ok 9 - stops and preserves failure status from npm test
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9113677Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9114438Z   duration_ms: 9.874961
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9115209Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9115924Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9116977Z # Subtest: stops and preserves failure status from npm run build
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9118881Z ok 10 - stops and preserves failure status from npm run build
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9119824Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9120881Z   duration_ms: 11.030827
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9121598Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9122247Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9126159Z # Subtest: installs missing dependencies from the lockfile
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9127867Z ok 11 - installs missing dependencies from the lockfile
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9128682Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9139760Z   duration_ms: 12.270444
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9140882Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9141378Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9142232Z # Subtest: does not run frontend verification after a failed install
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9143383Z ok 12 - does not run frontend verification after a failed install
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9144128Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9144572Z   duration_ms: 8.59546
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9145057Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9145485Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9146290Z # Subtest: uses the repository virtualenv even without system Python
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9147393Z ok 13 - uses the repository virtualenv even without system Python
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9148122Z   ---
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9148558Z   duration_ms: 12.501932
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9149039Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9149430Z   ...
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9263169Z 1..13
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9263693Z # tests 13
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9264155Z # suites 0
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9264592Z # pass 13
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9265006Z # fail 0
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9265802Z # cancelled 0
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9266564Z # skipped 0
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9267336Z # todo 0
+Full suite	Run every test suite and build	2026-09-12T02:38:21.9268196Z # duration_ms 195.806909
+Full suite	Run every test suite and build	2026-09-12T02:38:24.0447376Z ................................................... [ 64%]
+Full suite	Run every test suite and build	2026-09-12T02:38:24.4081455Z ............................                                             [100%]
+Full suite	Run every test suite and build	2026-09-12T02:38:24.4082244Z 79 passed, 21 subtests passed in 1.82s
+Full suite	Run every test suite and build	2026-09-12T02:38:24.6978949Z
+Full suite	Run every test suite and build	2026-09-12T02:38:24.6979848Z > interactive-fire-calculator@2.0.0 typecheck
+Full suite	Run every test suite and build	2026-09-12T02:38:24.6980668Z > tsc --noEmit
+Full suite	Run every test suite and build	2026-09-12T02:38:24.6980859Z
+Full suite	Run every test suite and build	2026-09-12T02:38:37.4778411Z
+Full suite	Run every test suite and build	2026-09-12T02:38:37.4779234Z > interactive-fire-calculator@2.0.0 test
+Full suite	Run every test suite and build	2026-09-12T02:38:37.4779706Z > vitest run
+Full suite	Run every test suite and build	2026-09-12T02:38:37.4779871Z
+Full suite	Run every test suite and build	2026-09-12T02:38:37.8911544Z
+Full suite	Run every test suite and build	2026-09-12T02:38:37.8917843Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:37.8918808Z
+Full suite	Run every test suite and build	2026-09-12T02:38:38.3128374Z (node:2641) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+Full suite	Run every test suite and build	2026-09-12T02:38:38.3136504Z (Use `node --trace-warnings ...` to show where the warning was created)
+Full suite	Run every test suite and build	2026-09-12T02:38:38.8072914Z  [32m✓[39m src/calculatorResults.test.ts [2m([22m[2m25 tests[22m[2m)[22m[32m 137[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:40.3407324Z  [32m✓[39m src/lib/seoCalculators.test.ts [2m([22m[2m287 tests[22m[2m)[22m[32m 172[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:40.9603023Z  [32m✓[39m src/lib/compoundInterestCalculator.test.ts [2m([22m[2m50 tests[22m[2m)[22m[32m 217[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:41.7195368Z  [32m✓[39m src/lib/calculatorStudios.test.ts [2m([22m[2m354 tests[22m[2m)[22m[33m 1557[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:43.3107764Z  [32m✓[39m src/calculatorSaveManager.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 1065[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:43.3111239Z      [33m[2m✓[22m[39m asserts observable request wire behavior with createCalculatorResultRecord [33m 1042[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:43.4776153Z  [32m✓[39m src/accountUiFixtures.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 88[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:43.8372892Z  [32m✓[39m src/lib/cashflowPlanningCalculators.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:45.6441287Z  [32m✓[39m src/accounts.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 61[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:46.5566172Z  [32m✓[39m src/CompoundInterestCalculator.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 508[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:46.5570564Z      [33m[2m✓[22m[39m renders labeled controls, explicit result definitions, chart alternatives, and closed disclosures [33m 366[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:47.4152631Z  [32m✓[39m src/SavingsGoalCalculator.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 1015[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:47.4157941Z      [33m[2m✓[22m[39m builds isolated deterministic scenarios and monotonic sensitivities [33m 456[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:47.4161440Z      [33m[2m✓[22m[39m renders labeled controls, live results, a truthful chart alternative, and collapsed analysis [33m 331[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:48.4403901Z  [32m✓[39m src/lib/insights.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 111[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:49.4094632Z  [32m✓[39m src/CashflowPlanningCalculator.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 1162[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:49.4097797Z      [33m[2m✓[22m[39m renders the net-worth route with labeled controls, result definitions, and collapsed analysis [33m 414[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:50.0860670Z  [32m✓[39m src/lib/savingsGoalCalculator.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 632[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:50.4242343Z  [32m✓[39m src/lib/fire.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:51.3084443Z  [32m✓[39m src/goals.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:52.0607303Z  [32m✓[39m src/accountData.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:52.6232910Z  [32m✓[39m src/authGateCopy.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:53.1452647Z  [32m✓[39m src/lib/planWorkspace.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:54.5938169Z  [32m✓[39m src/CalculatorLibrary.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 218[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:54.8372395Z  [32m✓[39m src/landingPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 144[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:55.0509502Z  [32m✓[39m src/lib/transactionAnalytics.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:56.3277876Z  [32m✓[39m src/balanceImports.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:56.9849262Z  [32m✓[39m src/transactionImports.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:57.0103087Z  [32m✓[39m src/HeroFireExample.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 136[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:58.5196438Z  [32m✓[39m src/lib/calculatorEngagement.test.ts [2m([22m[2m167 tests[22m[2m)[22m[32m 235[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:58.6538063Z  [32m✓[39m src/transactions.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:38:59.0699378Z  [32m✓[39m src/lib/routeMetadata.test.ts [2m([22m[2m86 tests[22m[2m)[22m[32m 251[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:00.5614564Z  [32m✓[39m src/lib/calculatorQualityCopy.test.ts [2m([22m[2m165 tests[22m[2m)[22m[32m 95[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:00.7462351Z  [32m✓[39m src/lib/planHealth.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 66[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:00.9022954Z  [32m✓[39m src/lib/calculatorContent.test.ts [2m([22m[2m84 tests[22m[2m)[22m[33m 467[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:00.9030685Z      [33m[2m✓[22m[39m does not allow near-identical route introductions [33m 407[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:02.3532695Z  [32m✓[39m src/lib/navigation.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:02.5924136Z  [32m✓[39m src/firePlans.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:02.8546663Z  [32m✓[39m src/lib/transactionCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:03.7498613Z  [32m✓[39m src/lib/balanceCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9686854Z  [32m✓[39m src/lib/calculatorToolkits.test.ts [2m([22m[2m92 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9743161Z
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9756346Z [2m Test Files [22m [1m[32m35 passed[39m[22m[90m (35)[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9765423Z [2m      Tests [22m [1m[32m1510 passed[39m[22m[90m (1510)[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9766766Z [2m   Start at [22m 02:38:37
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9767960Z [2m   Duration [22m 26.06s[2m (transform 3.39s, setup 0ms, import 7.90s, tests 8.69s, environment 49.88s)[22m
+Full suite	Run every test suite and build	2026-09-12T02:39:03.9770600Z
+Full suite	Run every test suite and build	2026-09-12T02:39:04.1403161Z
+Full suite	Run every test suite and build	2026-09-12T02:39:04.1404112Z > interactive-fire-calculator@2.0.0 build
+Full suite	Run every test suite and build	2026-09-12T02:39:04.1404649Z > tsc -b && vite build
+Full suite	Run every test suite and build	2026-09-12T02:39:04.1404837Z
+Full suite	Run every test suite and build	2026-09-12T02:39:15.9934494Z [36mvite v8.0.16 [32mbuilding client environment for production...[36m[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:16.0124487Z [2K
+Full suite	Run every test suite and build	2026-09-12T02:39:16.3557829Z transforming...✓ 2406 modules transformed.
+Full suite	Run every test suite and build	2026-09-12T02:39:16.4688854Z rendering chunks...
+Full suite	Run every test suite and build	2026-09-12T02:39:16.9811503Z computing gzip size...
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0000651Z dist/index.html                                              0.85 kB │ gzip:   0.46 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0001819Z dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0002596Z dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2      11.23 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0003343Z dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2       18.74 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0004029Z dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2          18.99 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0004716Z dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2   25.96 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0005412Z dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2          48.25 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0006452Z dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2      85.06 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0007398Z dist/assets/index-IT8dsfps.css                             174.26 kB │ gzip:  28.61 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0008364Z dist/assets/rotate-ccw-CP_XCHRN.js                           0.23 kB │ gzip:   0.21 kB │ map:     0.88 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0009356Z dist/assets/history-rb613eLN.js                              0.27 kB │ gzip:   0.22 kB │ map:     0.97 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0010732Z dist/assets/jsx-runtime-CdvZGgm7.js                          7.80 kB │ gzip:   3.02 kB │ map:    16.70 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0012599Z dist/assets/BalanceImportPanel-BccG6Cf1.js                   9.51 kB │ gzip:   3.33 kB │ map:    25.18 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0014157Z dist/assets/TransactionImportPanel-DdkwiWiq.js              10.04 kB │ gzip:   3.42 kB │ map:    26.41 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0015548Z dist/assets/PlanningWorkspace-D1XmEpvi.js                   14.20 kB │ gzip:   4.19 kB │ map:    42.25 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0017151Z dist/assets/papaparse.min-CIospbAC.js                       20.09 kB │ gzip:   7.44 kB │ map:    46.10 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0018633Z dist/assets/CalculatorLibrary-BIAPD1Et.js                  316.32 kB │ gzip:  84.28 kB │ map:   775.21 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0020205Z dist/assets/ProjectionChart-BxjDYC36.js                    347.89 kB │ gzip: 102.39 kB │ map: 1,758.79 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0021521Z dist/assets/index-aTqE4G0r.js                              525.01 kB │ gzip: 144.03 kB │ map: 1,611.45 kB
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0022235Z
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0022702Z [32m✓ built in 1.01s[39m
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0023931Z [33m[plugin builtin:vite-reporter]
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0025704Z (!) Some chunks are larger than 500 kB after minification. Consider:
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0027241Z - Using dynamic import() to code-split the application
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0029524Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+Full suite	Run every test suite and build	2026-09-12T02:39:17.0032063Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+Full suite	Audit Node dependencies	﻿2026-09-12T02:39:17.0526932Z ##[group]Run npm audit --audit-level=high
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0527374Z [36;1mnpm audit --audit-level=high[0m
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0569616Z shell: /usr/bin/bash -e {0}
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0569924Z env:
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0570553Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0571078Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib/pkgconfig
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0571587Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0572254Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0572710Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0573155Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.0573530Z ##[endgroup]
+Full suite	Audit Node dependencies	2026-09-12T02:39:17.5340533Z found 0 vulnerabilities

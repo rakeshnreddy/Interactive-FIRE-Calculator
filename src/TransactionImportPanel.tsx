@@ -396,6 +396,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function formatImportCents(cents: number): string {
   return new Intl.NumberFormat(undefined, {
     currency: 'USD',
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
     style: 'currency'
   }).format(cents / 100);

@@ -1,0 +1,123 @@
+{
+  "browser": "Chrome 152.0.7977.83",
+  "cachePolicy": "new context per sample; CDP cache disabled and cleared; service workers blocked",
+  "device": "same local host and installed Chrome process; 1440x900 viewport; no CPU or network throttling",
+  "interaction": "click desktop Calculators link; wait for /calculators URL and H1 to render",
+  "route": "/",
+  "targets": {
+    "baseline": {
+      "sha": "ae10ea516e1df38cf2fce5f0c704e1c855c9db01",
+      "url": "http://127.0.0.1:4181"
+    },
+    "candidate": {
+      "sha": "ccebac7d5bcaf645721e2e67ea490a7f447e1db9",
+      "url": "http://127.0.0.1:4177"
+    }
+  },
+  "samples": [
+    {
+      "target": "baseline",
+      "run": 1,
+      "cls": 0,
+      "domContentLoadedMs": 102.2,
+      "encodedBodyBytes": 435740,
+      "fcpMs": 188,
+      "lcpMs": 188,
+      "loadMs": 102.3,
+      "responseStartMs": 33.4,
+      "routeInteractionMs": 101.48
+    },
+    {
+      "target": "candidate",
+      "run": 1,
+      "cls": 0,
+      "domContentLoadedMs": 46.1,
+      "encodedBodyBytes": 436275,
+      "fcpMs": 104,
+      "lcpMs": 116,
+      "loadMs": 46.1,
+      "responseStartMs": 5.3,
+      "routeInteractionMs": 85.04
+    },
+    {
+      "target": "baseline",
+      "run": 2,
+      "cls": 0,
+      "domContentLoadedMs": 41.1,
+      "encodedBodyBytes": 435740,
+      "fcpMs": 100,
+      "lcpMs": 112,
+      "loadMs": 41.2,
+      "responseStartMs": 3,
+      "routeInteractionMs": 83.29
+    },
+    {
+      "target": "candidate",
+      "run": 2,
+      "cls": 0,
+      "domContentLoadedMs": 40.8,
+      "encodedBodyBytes": 436275,
+      "fcpMs": 100,
+      "lcpMs": 116,
+      "loadMs": 41,
+      "responseStartMs": 2,
+      "routeInteractionMs": 145.25
+    },
+    {
+      "target": "baseline",
+      "run": 3,
+      "cls": 0,
+      "domContentLoadedMs": 43.2,
+      "encodedBodyBytes": 435740,
+      "fcpMs": 100,
+      "lcpMs": 112,
+      "loadMs": 43.8,
+      "responseStartMs": 2.4,
+      "routeInteractionMs": 87.31
+    },
+    {
+      "target": "candidate",
+      "run": 3,
+      "cls": 0,
+      "domContentLoadedMs": 46.9,
+      "encodedBodyBytes": 436275,
+      "fcpMs": 108,
+      "lcpMs": 124,
+      "loadMs": 47,
+      "responseStartMs": 2.9,
+      "routeInteractionMs": 72.6
+    }
+  ],
+  "medians": {
+    "baseline": {
+      "responseStartMs": 3,
+      "domContentLoadedMs": 43.2,
+      "loadMs": 43.8,
+      "fcpMs": 100,
+      "lcpMs": 112,
+      "cls": 0,
+      "routeInteractionMs": 87.31,
+      "encodedBodyBytes": 435740
+    },
+    "candidate": {
+      "responseStartMs": 2.9,
+      "domContentLoadedMs": 46.1,
+      "loadMs": 46.1,
+      "fcpMs": 104,
+      "lcpMs": 116,
+      "cls": 0,
+      "routeInteractionMs": 85.04,
+      "encodedBodyBytes": 436275
+    }
+  },
+  "deltasPercent": {
+    "responseStartMs": -3.33,
+    "domContentLoadedMs": 6.71,
+    "loadMs": 5.25,
+    "fcpMs": 4,
+    "lcpMs": 3.57,
+    "cls": 0,
+    "routeInteractionMs": -2.6,
+    "encodedBodyBytes": 0.12
+  }
+}

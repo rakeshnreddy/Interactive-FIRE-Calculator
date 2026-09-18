@@ -1,0 +1,27 @@
+✓ All required checks pass: exit 0, status PASS
+✓ One false journey: nonzero and exact failing check
+✓ Failed fallback: nonzero and exact failing check
+✓ Overflow/clipping finding: nonzero and exact failing check
+✓ Low contrast: nonzero and exact failing check
+✓ Console error: nonzero and exact failing check
+✓ Page exception: nonzero and exact failing check
+✓ Performance regression: nonzero and exact failing check (acceptance derived)
+✓ Missing required check: nonzero and BLOCKED summary
+✗ Blocked reader or native zoom: nonzero and BLOCKED summary: Cannot read properties of undefined (reading 'some')
+/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/B32/test_evaluator.cjs:44
+    throw err;
+    ^
+
+TypeError: Cannot read properties of undefined (reading 'some')
+    at /Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/B32/test_evaluator.cjs:151:26
+    at runTest (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/B32/test_evaluator.cjs:39:5)
+    at Object.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/B32/test_evaluator.cjs:144:1)
+    at Module._compile (node:internal/modules/cjs/loader:1734:14)
+    at Object..js (node:internal/modules/cjs/loader:1899:10)
+    at Module.load (node:internal/modules/cjs/loader:1469:32)
+    at Module._load (node:internal/modules/cjs/loader:1286:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:152:5)
+
+Node.js v24.2.0

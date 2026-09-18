@@ -49,7 +49,19 @@ class FakeDatabase {
   }
 
   batch<T = unknown>(statements: FakeStatement[]): Promise<D1Result<T>[]> {
-    return Promise.resolve(statements.map((_, index) => result<T>([], index + 1)));
+    return Promise.resolve(
+      statements.map((stmt, index) => {
+        const rows = this.all<T>(stmt.sql);
+        if (rows.length > 0) {
+          return result<T>(rows, index + 1);
+        }
+        const single = this.first<T>(stmt.sql);
+        if (single) {
+          return result<T>([single], index + 1);
+        }
+        return result<T>([], index + 1);
+      })
+    );
   }
 
   first<T>(sql: string): T | null {
@@ -141,6 +153,26 @@ class FakeDatabase {
       ] as T[];
     }
 
+    if (sql.includes('FROM plan_reviews')) {
+      return [
+        {
+          completed_at: '2026-06-03T00:00:00.000Z',
+          created_at: '2026-06-03T00:00:00.000Z',
+          decision: 'keep',
+          deferred_until: null,
+          evidence_date: '2026-06-03',
+          id: 'review_1',
+          next_review_due: '2026-07-03',
+          notes: 'Quarterly review',
+          plan_id: 'plan_1',
+          plan_version_number: 1,
+          status: 'completed',
+          updated_at: '2026-06-03T00:00:00.000Z',
+          user_id: 'user_123'
+        }
+      ] as T[];
+    }
+
     return [];
   }
 }
@@ -181,6 +213,7 @@ describe('account data export', () => {
       balanceImports: 1,
       financialAccounts: 1,
       firePlanInputs: 1,
+      planReviews: 1,
       profile: 1,
       transactionImports: 1,
       user: 1
@@ -196,13 +229,16 @@ describe('account data deletion', () => {
 
     expect(database.runs).toEqual([]);
     expect(deleteSql[0]).toBe('DELETE FROM audit_log WHERE user_id = ?');
-    expect(deleteSql.at(-1)).toBe('DELETE FROM users WHERE id = ?');
+    expect(deleteSql.at(-1)).toBe(
+      "INSERT INTO users (id, provider, provider_user_id, created_at, updated_at, deleted_at) VALUES (?, 'clerk', ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET deleted_at = COALESCE(users.deleted_at, excluded.deleted_at), updated_at = excluded.updated_at"
+    );
     expect(deletion.localAccountDataDeleted).toBe(true);
     expect(deletion.identityProvider).toBe('clerk');
     expect(deletion.deletedRows).toMatchObject({
       auditLog: 1,
       savedCalculatorResults: 3,
-      user: 15
+      planReviews: 6,
+      userTombstone: 16
     });
   });
 });

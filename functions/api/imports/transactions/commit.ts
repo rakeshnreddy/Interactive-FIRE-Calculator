@@ -6,7 +6,7 @@ import {
   parseTransactionImportPayload
 } from '../../../_lib/transactionImports';
 import { json } from '../../../_lib/http';
-import { requireDatabase } from '../../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../../_lib/persistence';
 import { requireClerkAuth } from '../../../_lib/session';
 import type { DatabaseEnv } from '../../../_lib/persistence';
 import type { ClerkEnv } from '../../../_lib/session';
@@ -43,7 +43,7 @@ export const onRequestPost: PagesFunction<TransactionImportCommitEnv> = async ({
       return json({ error: error.message }, 400);
     }
 
-    return json({ error: 'Unable to commit transaction import.' }, 500);
+    return handleApiError(error, 'Unable to commit transaction import.');
   }
 };
 

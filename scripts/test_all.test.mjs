@@ -46,6 +46,7 @@ printf 'venv %s\\n' "$*" >> "$FINPATH_RUNNER_TRACE"
 
 const stages = [
   'node --test scripts/test_all.test.mjs',
+  'node --test scripts/build_preview_auth.test.mjs',
   'python3 -m compileall -q app.py project tests',
   'python3 -m pytest -q',
   'npm run typecheck',
@@ -79,13 +80,19 @@ for (const [index, stage] of stages.entries()) {
 test('installs missing dependencies from the lockfile', () => {
   const result = runFixture({ installed: false });
   assert.equal(result.status, 0, result.stderr);
-  assert.deepEqual(result.stages, [...stages.slice(0, 3), 'npm ci', ...stages.slice(3)]);
+  const dependencyBoundary = stages.indexOf('npm run typecheck');
+  assert.deepEqual(result.stages, [
+    ...stages.slice(0, dependencyBoundary),
+    'npm ci',
+    ...stages.slice(dependencyBoundary)
+  ]);
 });
 
 test('does not run frontend verification after a failed install', () => {
   const result = runFixture({ installed: false, fail: 'npm ci' });
   assert.equal(result.status, 23, result.stderr);
-  assert.deepEqual(result.stages, [...stages.slice(0, 3), 'npm ci']);
+  const dependencyBoundary = stages.indexOf('npm run typecheck');
+  assert.deepEqual(result.stages, [...stages.slice(0, dependencyBoundary), 'npm ci']);
 });
 
 test('uses the repository virtualenv even without system Python', () => {
