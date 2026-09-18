@@ -3,7 +3,13 @@
 import { ensureUserProfile } from './persistence';
 export * from '../../src/lib/planReviews';
 import {
+  addDaysUtc,
   calculatePlanReviewDueStatus,
+  formatYmdUtc,
+  getTodayUtcMidnight,
+  hashPlanReviewPayload,
+  parseToUtcMidnight,
+  ReviewIdempotencyConflictError,
   ReviewTooEarlyError,
   type DueStatusResult,
   type PlanReviewDecision,
@@ -20,8 +26,10 @@ type PlanReviewRow = {
   deferred_until: string | null;
   evidence_date: string;
   id: string;
+  idempotency_key: string | null;
   next_review_due: string;
   notes: string | null;
+  payload_hash: string | null;
   plan_id: string;
   plan_version_number: number;
   status: PlanReviewStatus;
@@ -29,11 +37,24 @@ type PlanReviewRow = {
   user_id: string;
 };
 
+function isUniqueConstraintError(error: unknown): boolean {
+  if (error instanceof Error) {
+    const msg = error.message.toLowerCase();
+    return (
+      msg.includes('unique constraint') ||
+      msg.includes('sqlite_constraint') ||
+      msg.includes('d1_error: unique')
+    );
+  }
+  return false;
+}
+
 export async function createPlanReview(
   database: D1Database,
   userId: string,
   planId: string,
-  payload: PlanReviewPayload
+  payload: PlanReviewPayload,
+  nowOverride?: string
 ): Promise<{ isDuplicate: boolean; review: StoredPlanReview; dueStatus: DueStatusResult } | null> {
   await ensureUserProfile(database, userId);
 
@@ -73,53 +94,76 @@ export async function createPlanReview(
   const priorReview = await database
     .prepare(
       `
-        SELECT id
+        SELECT id, next_review_due, deferred_until, decision, status, created_at
         FROM plan_reviews
         WHERE plan_id = ? AND user_id = ?
+        ORDER BY created_at DESC
         LIMIT 1
       `
     )
     .bind(planId, userId)
-    .first<{ id: string }>();
+    .first<{
+      created_at: string;
+      decision: string;
+      deferred_until: string | null;
+      id: string;
+      next_review_due: string;
+      status: string;
+    }>();
 
   const baselineUtc = parseToUtcMidnight(plan.created_at);
-  const evidenceUtc = parseToUtcMidnight(payload.evidenceDate);
-  const nowUtc = getTodayUtcMidnight();
+  const nowUtc = nowOverride ? parseToUtcMidnight(nowOverride) : getTodayUtcMidnight();
   const daysSinceBaseline = Math.floor((nowUtc.getTime() - baselineUtc.getTime()) / (24 * 60 * 60 * 1000));
 
   if (!priorReview && daysSinceBaseline < 7) {
     throw new ReviewTooEarlyError(Math.max(0, daysSinceBaseline));
   }
 
-  // 4. Check idempotency: identical submission for this (plan, version, evidence_date)
-  const existing = await database
-    .prepare(
-      `
-        SELECT
-          id, user_id, plan_id, plan_version_number, evidence_date,
-          decision, status, notes, completed_at, deferred_until,
-          next_review_due, created_at, updated_at
-        FROM plan_reviews
-        WHERE user_id = ? AND plan_id = ? AND plan_version_number = ? AND evidence_date = ?
-        LIMIT 1
-      `
-    )
-    .bind(userId, planId, payload.planVersionNumber, payload.evidenceDate)
-    .first<PlanReviewRow>();
+  // 4. Resolve atomic idempotency key and payload hash
+  const idempotencyKey = payload.idempotencyKey?.trim() || `v${payload.planVersionNumber}:${payload.evidenceDate}`;
+  const payloadHash = await hashPlanReviewPayload({
+    decision: payload.decision,
+    deferDays: payload.deferDays,
+    notes: payload.notes,
+    planVersionNumber: payload.planVersionNumber
+  });
 
+  const selectByLogicalKey = async () => {
+    return await database
+      .prepare(
+        `
+          SELECT
+            id, user_id, plan_id, plan_version_number, evidence_date,
+            decision, status, notes, completed_at, deferred_until,
+            next_review_due, idempotency_key, payload_hash, created_at, updated_at
+          FROM plan_reviews
+          WHERE user_id = ? AND plan_id = ? AND idempotency_key = ?
+          LIMIT 1
+        `
+      )
+      .bind(userId, planId, idempotencyKey)
+      .first<PlanReviewRow>();
+  };
+
+  const existing = await selectByLogicalKey();
   if (existing) {
     const stored = toStoredPlanReview(existing);
-    const dueStatus = calculatePlanReviewDueStatus({
-      planCreatedAt: plan.created_at,
-      latestReview: stored,
-      evidenceDate: payload.evidenceDate
-    });
-    return { dueStatus, isDuplicate: true, review: stored };
+    if (existing.payload_hash === payloadHash) {
+      const dueStatus = calculatePlanReviewDueStatus({
+        planCreatedAt: plan.created_at,
+        latestReview: stored,
+        evidenceDate: payload.evidenceDate,
+        referenceDate: nowOverride ? nowOverride.slice(0, 10) : undefined
+      });
+      return { dueStatus, isDuplicate: true, review: stored };
+    }
+    throw new ReviewIdempotencyConflictError(stored);
   }
 
-  // 5. Insert new review
+  // 5. Insert new review with trusted server-derived schedule
   const reviewId = crypto.randomUUID();
-  const now = new Date().toISOString();
+  const now = nowOverride ? new Date(nowOverride) : new Date();
+  const nowIso = now.toISOString();
 
   let status: PlanReviewStatus;
   let completedAt: string | null = null;
@@ -129,55 +173,78 @@ export async function createPlanReview(
   if (payload.decision === 'defer') {
     status = 'deferred';
     const deferDays = payload.deferDays ?? 14;
-    deferredUntil = formatYmdUtc(addDaysUtc(evidenceUtc, deferDays));
+    deferredUntil = formatYmdUtc(addDaysUtc(nowUtc, deferDays));
     nextReviewDue = deferredUntil;
   } else {
     status = 'completed';
-    completedAt = now;
-    nextReviewDue = formatYmdUtc(addDaysUtc(evidenceUtc, 30));
+    completedAt = nowIso;
+    nextReviewDue = formatYmdUtc(addDaysUtc(nowUtc, 30));
   }
 
-  await database
-    .prepare(
-      `
-        INSERT INTO plan_reviews (
-          id, user_id, plan_id, plan_version_number, evidence_date,
-          decision, status, notes, completed_at, deferred_until,
-          next_review_due, created_at, updated_at
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `
-    )
-    .bind(
-      reviewId,
-      userId,
-      planId,
-      payload.planVersionNumber,
-      payload.evidenceDate,
-      payload.decision,
-      status,
-      payload.notes ?? null,
-      completedAt,
-      deferredUntil,
-      nextReviewDue,
-      now,
-      now
-    )
-    .run();
+  try {
+    await database
+      .prepare(
+        `
+          INSERT INTO plan_reviews (
+            id, user_id, plan_id, plan_version_number, evidence_date,
+            decision, status, notes, completed_at, deferred_until,
+            next_review_due, idempotency_key, payload_hash, created_at, updated_at
+          )
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `
+      )
+      .bind(
+        reviewId,
+        userId,
+        planId,
+        payload.planVersionNumber,
+        payload.evidenceDate,
+        payload.decision,
+        status,
+        payload.notes ?? null,
+        completedAt,
+        deferredUntil,
+        nextReviewDue,
+        idempotencyKey,
+        payloadHash,
+        nowIso,
+        nowIso
+      )
+      .run();
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      const winner = await selectByLogicalKey();
+      if (winner) {
+        const stored = toStoredPlanReview(winner);
+        if (winner.payload_hash === payloadHash) {
+          const dueStatus = calculatePlanReviewDueStatus({
+            planCreatedAt: plan.created_at,
+            latestReview: stored,
+            evidenceDate: payload.evidenceDate
+          });
+          return { dueStatus, isDuplicate: true, review: stored };
+        }
+        throw new ReviewIdempotencyConflictError(stored);
+      }
+    }
+    throw error;
+  }
 
   const newReview: StoredPlanReview = {
     completedAt,
-    createdAt: now,
+    createdAt: nowIso,
     decision: payload.decision,
     deferredUntil,
     evidenceDate: payload.evidenceDate,
     id: reviewId,
+    idempotencyKey,
     nextReviewDue,
     notes: payload.notes ?? null,
+    payloadHash,
     planId,
     planVersionNumber: payload.planVersionNumber,
     status,
-    updatedAt: now
+    updatedAt: nowIso
   };
 
   const dueStatus = calculatePlanReviewDueStatus({
@@ -217,7 +284,7 @@ export async function listPlanReviews(
         SELECT
           id, user_id, plan_id, plan_version_number, evidence_date,
           decision, status, notes, completed_at, deferred_until,
-          next_review_due, created_at, updated_at
+          next_review_due, idempotency_key, payload_hash, created_at, updated_at
         FROM plan_reviews
         WHERE user_id = ? AND plan_id = ?
         ORDER BY created_at DESC
@@ -349,32 +416,13 @@ function toStoredPlanReview(row: PlanReviewRow): StoredPlanReview {
     deferredUntil: row.deferred_until,
     evidenceDate: row.evidence_date,
     id: row.id,
+    idempotencyKey: row.idempotency_key ?? null,
     nextReviewDue: row.next_review_due,
     notes: row.notes,
+    payloadHash: row.payload_hash ?? null,
     planId: row.plan_id,
     planVersionNumber: row.plan_version_number,
     status: row.status,
     updatedAt: row.updated_at
   };
-}
-
-function parseToUtcMidnight(dateStr: string): Date {
-  const [year, month, day] = dateStr.slice(0, 10).split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day));
-}
-
-function getTodayUtcMidnight(): Date {
-  const now = new Date();
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-}
-
-function addDaysUtc(d: Date, days: number): Date {
-  return new Date(d.getTime() + days * 24 * 60 * 60 * 1000);
-}
-
-function formatYmdUtc(d: Date): string {
-  const year = d.getUTCFullYear();
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(d.getUTCDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
 }

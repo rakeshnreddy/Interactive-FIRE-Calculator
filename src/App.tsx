@@ -32,7 +32,7 @@ import {
   UserCircle,
   X
 } from 'lucide-react';
-import { cloneElement, isValidElement, lazy, Suspense, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { cloneElement, isValidElement, lazy, Suspense, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import type {
   CalculatorSaveOutcome,
@@ -95,7 +95,7 @@ import {
   type AppRoute
 } from './lib/navigation';
 import type { AuthState } from './auth';
-import { calculatePlanReviewDueStatus } from './lib/planReviews';
+import { calculatePlanReviewDueStatus, loadDuePlanReviews, type DueReviewItem } from './lib/planReviews';
 
 const BalanceImportPanel = lazy(() =>
   import('./BalanceImportPanel').then((module) => ({ default: module.BalanceImportPanel }))
@@ -3174,33 +3174,41 @@ export function PrivacyControlsPanel({
 
 export function DashboardPanel({
   accounts,
-  cashflow,
   calculatorResultMessage,
+  cashflow,
+  dueReviews,
+  dueReviewsError,
   goals,
   insights,
   isLoading,
   isLoadingCalculatorResults,
+  isLoadingDueReviews,
   isLoadingGoals,
   message,
   goalMessage,
   goalSummary,
   onNavigate,
+  onRetryDueReviews,
   plans = [],
   savedCalculatorResults,
   summary
 }: {
   accounts: FinancialAccount[];
-  cashflow: TransactionCashflowRollup;
   calculatorResultMessage: string;
+  cashflow: TransactionCashflowRollup;
+  dueReviews?: DueReviewItem[] | null;
+  dueReviewsError?: string | null;
   goals: Goal[];
   insights: FinancialInsight[];
   isLoading: boolean;
   isLoadingCalculatorResults: boolean;
+  isLoadingDueReviews?: boolean;
   isLoadingGoals: boolean;
   message: string;
   goalMessage: string;
   goalSummary: GoalSummary;
   onNavigate: (route: AppRoute | string) => void;
+  onRetryDueReviews?: () => void;
   plans?: SavedPlan[];
   savedCalculatorResults: SavedCalculatorResult[];
   summary: AccountSummary;
@@ -3211,21 +3219,43 @@ export function DashboardPanel({
   const recentGoals = goals.slice(0, 3);
   const recentCalculatorResults = savedCalculatorResults.slice(0, 4);
 
+  const dueReviewCards = useMemo(() => {
+    if (dueReviews !== undefined) {
+      if (!dueReviews) return [];
+      return dueReviews.filter((r) => r.status === 'due' || r.status === 'overdue');
+    }
+    return plans
+      .map((plan) => {
+        const legacyDueStatus = (plan as any).dueStatus;
+        if (legacyDueStatus && (legacyDueStatus.status === 'due' || legacyDueStatus.status === 'overdue')) {
+          return {
+            planId: plan.id,
+            planName: plan.name,
+            latestVersionNumber: plan.versionNumber ?? 1,
+            status: legacyDueStatus.status,
+            evidenceDate: legacyDueStatus.evidenceDate ?? '',
+            nextReviewDue: legacyDueStatus.nextReviewDue ?? '',
+            daysSinceBaseline: legacyDueStatus.daysSinceBaseline ?? 0,
+            daysUntilEligible: legacyDueStatus.daysUntilEligible ?? 0
+          };
+        }
+        return null;
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+  }, [dueReviews, plans]);
+
   const plansWithDueStatus = useMemo(() => {
     return plans.map((plan) => {
-      const dueStatus =
-        (plan as any).dueStatus ??
-        calculatePlanReviewDueStatus({
-          planCreatedAt: plan.createdAt,
-          evidenceDate: plan.updatedAt ?? plan.createdAt
-        });
-      return { plan, dueStatus };
+      const match = dueReviews !== undefined
+        ? (dueReviews?.find((dr) => dr.planId === plan.id) ?? null)
+        : ((plan as any).dueStatus ?? null);
+      return { plan, dueStatus: match };
     });
-  }, [plans]);
+  }, [plans, dueReviews]);
 
   const duePlans = useMemo(() => {
     return plansWithDueStatus.filter(
-      ({ dueStatus }) => dueStatus.status === 'due' || dueStatus.status === 'overdue'
+      ({ dueStatus }) => dueStatus?.status === 'due' || dueStatus?.status === 'overdue'
     );
   }, [plansWithDueStatus]);
 
@@ -3300,12 +3330,37 @@ export function DashboardPanel({
         </div>
       </section>
 
-      {duePlans.length > 0 ? (
+      {isLoadingDueReviews && dueReviews === null ? (
         <section className="account-panel dashboard-reviews-rollup" aria-labelledby="dashboard-reviews-title">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Monthly reviews</p>
-              <h2 id="dashboard-reviews-title">Reviews needing attention ({duePlans.length})</h2>
+              <h2 id="dashboard-reviews-title">Monthly reviews</h2>
+            </div>
+          </div>
+          <p className="empty-inline">Checking review cadence...</p>
+        </section>
+      ) : dueReviewsError ? (
+        <section className="account-panel dashboard-reviews-rollup" aria-labelledby="dashboard-reviews-title">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Monthly reviews</p>
+              <h2 id="dashboard-reviews-title">Review status unavailable</h2>
+            </div>
+            {onRetryDueReviews ? (
+              <button type="button" className="secondary-button" onClick={onRetryDueReviews}>
+                Retry
+              </button>
+            ) : null}
+          </div>
+          <p className="error-banner">{dueReviewsError}</p>
+        </section>
+      ) : dueReviewCards.length > 0 ? (
+        <section className="account-panel dashboard-reviews-rollup" aria-labelledby="dashboard-reviews-title">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Monthly reviews</p>
+              <h2 id="dashboard-reviews-title">Reviews needing attention ({dueReviewCards.length})</h2>
             </div>
             <button className="secondary-button icon-text-button" onClick={() => onNavigate('/plans')}>
               Plans
@@ -3314,24 +3369,24 @@ export function DashboardPanel({
           </div>
 
           <div className="dashboard-reviews-list">
-            {duePlans.map(({ plan, dueStatus }) => (
+            {dueReviewCards.map((review) => (
               <button
-                className={`dashboard-review-card dashboard-review-card-${dueStatus.status}`}
-                key={plan.id}
+                className={`dashboard-review-card dashboard-review-card-${review.status}`}
+                key={review.planId}
                 type="button"
-                onClick={() => onNavigate(buildPlanDeepLink(plan.id, plan.versionNumber ?? 1))}
+                onClick={() => onNavigate(buildPlanDeepLink(review.planId, review.latestVersionNumber))}
               >
                 <div className="dashboard-review-card-header">
-                  <span className={`review-badge review-badge-${dueStatus.status}`}>
-                    {dueStatus.status === 'overdue' ? 'Review Overdue' : 'Review Due'}
+                  <span className={`review-badge review-badge-${review.status}`}>
+                    {review.status === 'overdue' ? 'Review Overdue' : 'Review Due'}
                   </span>
-                  <span>Version {plan.versionNumber ?? 1}</span>
+                  <span>Version {review.latestVersionNumber}</span>
                 </div>
-                <strong>{plan.name}</strong>
+                <strong>{review.planName}</strong>
                 <small>
-                  {dueStatus.status === 'overdue'
-                    ? `Review overdue since ${dueStatus.nextReviewDue}. Open plan to review dated evidence.`
-                    : `Review due ${dueStatus.nextReviewDue}. Confirm or revise assumptions.`}
+                  {review.status === 'overdue'
+                    ? `Review overdue since ${review.nextReviewDue}. Open plan to review dated evidence.`
+                    : `Review due ${review.nextReviewDue}. Confirm or revise assumptions.`}
                 </small>
               </button>
             ))}
@@ -3369,17 +3424,19 @@ export function DashboardPanel({
               >
                 <div className="dashboard-plan-card-badges">
                   <span>Version {plan.versionNumber ?? 1}</span>
-                  <span className={`review-badge review-badge-${dueStatus.status}`}>
-                    {dueStatus.status === 'overdue'
-                      ? 'Review Overdue'
-                      : dueStatus.status === 'due'
-                      ? 'Review Due'
-                      : dueStatus.status === 'deferred'
-                      ? 'Deferred'
-                      : dueStatus.status === 'too-early'
-                      ? 'Baseline'
-                      : 'Up to Date'}
-                  </span>
+                  {dueStatus ? (
+                    <span className={`review-badge review-badge-${dueStatus.status}`}>
+                      {dueStatus.status === 'overdue'
+                        ? 'Review Overdue'
+                        : dueStatus.status === 'due'
+                        ? 'Review Due'
+                        : dueStatus.status === 'deferred'
+                        ? 'Deferred'
+                        : dueStatus.status === 'too-early'
+                        ? 'Baseline'
+                        : 'Up to Date'}
+                    </span>
+                  ) : null}
                 </div>
                 <strong>{plan.name}</strong>
                 <small>
@@ -4315,15 +4372,15 @@ export function GoalsPanel({
                         <span className="goal-unlinked-note">Manual milestone (unlinked)</span>
                       )}
                       <span className="goal-evidence-date">
-                        Evidence recorded: {new Date(goal.updatedAt).toLocaleDateString()}
+                        Goal updated: {goal.updatedAt.slice(0, 10)}
                       </span>
                       {isGoalEvidenceStale ? (
                         <div className="stale-evidence-box" role="alert">
                           <span className="stale-evidence-badge">
-                            Stale evidence ({goalEvidenceAgeDays} days old)
+                            Goal inactive ({goalEvidenceAgeDays} days old)
                           </span>
                           <small className="stale-evidence-warning">
-                            Balance was recorded over 30 days ago. Update current amount to reflect fresh balances.
+                            Goal details have not been updated in over 30 days. Review goal progress to keep targets current.
                           </small>
                         </div>
                       ) : null}
@@ -5094,9 +5151,13 @@ function PlatformPage({
   transactionUpdateDrafts,
   balanceDrafts,
   auth,
+  dueReviews,
+  dueReviewsError,
   financialAccounts,
   financialInsights,
   goalDraft,
+  isLoadingDueReviews,
+  onRetryDueReviews,
   goalMessage,
   goals,
   goalSummary,
@@ -5200,6 +5261,10 @@ function PlatformPage({
   onTransactionUpdateDraftChange: (id: string, field: keyof TransactionDraft, value: string) => void;
   onUpdateTransaction: (id: string) => void;
   onUpdateGoal: (id: string) => void;
+  dueReviews?: DueReviewItem[] | null;
+  dueReviewsError?: string | null;
+  isLoadingDueReviews?: boolean;
+  onRetryDueReviews?: () => void;
   plans?: SavedPlan[];
   route: PlatformRoute;
   savedCalculatorResults: SavedCalculatorResult[];
@@ -5230,15 +5295,19 @@ function PlatformPage({
         <DashboardPanel
           accounts={financialAccounts}
           cashflow={transactionCashflow}
+          dueReviews={dueReviews}
+          dueReviewsError={dueReviewsError}
           goals={goals}
           insights={financialInsights}
           isLoading={isLoadingAccounts}
           isLoadingCalculatorResults={isLoadingCalculatorResults}
+          isLoadingDueReviews={isLoadingDueReviews}
           isLoadingGoals={isLoadingGoals}
           calculatorResultMessage={calculatorResultMessage}
           message={accountMessage}
           goalMessage={goalMessage}
           goalSummary={goalSummary}
+          onRetryDueReviews={onRetryDueReviews}
           plans={plans}
           savedCalculatorResults={savedCalculatorResults}
           summary={accountSummary}
@@ -5515,6 +5584,144 @@ function App({ auth }: { auth: AuthState }) {
   const [isSavingPlan, setIsSavingPlan] = useState(false);
   const [planStorageMessage, setPlanStorageMessage] = useState('');
   const [planDeepLinkError, setPlanDeepLinkError] = useState<string | null>(null);
+  const [dueReviews, setDueReviews] = useState<DueReviewItem[] | null>(null);
+  const [isLoadingDueReviews, setIsLoadingDueReviews] = useState(false);
+  const [dueReviewsError, setDueReviewsError] = useState<string | null>(null);
+  const [isPlanningWorkspaceDirty, setIsPlanningWorkspaceDirty] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<{
+    nextRoute: string;
+    isPopState?: boolean;
+  } | null>(null);
+
+  const refreshDueReviews = useCallback(async () => {
+    if (auth.status !== 'signed-in') {
+      setDueReviews(null);
+      setIsLoadingDueReviews(false);
+      setDueReviewsError(null);
+      return;
+    }
+
+    setIsLoadingDueReviews(true);
+    setDueReviewsError(null);
+
+    try {
+      const data = await loadDuePlanReviews(auth);
+      if (data) {
+        setDueReviews(data.dueReviews);
+      } else {
+        setDueReviews([]);
+      }
+    } catch {
+      setDueReviewsError('Unable to load plan review status.');
+    } finally {
+      setIsLoadingDueReviews(false);
+    }
+  }, [auth]);
+
+  const loadPlanDeepLinkTarget = useCallback(
+    async (
+      targetPlanId: string,
+      targetVersionNumber: number | null,
+      isVersionInvalid: boolean,
+      plansList: SavedPlan[] = savedPlans
+    ) => {
+      if (isVersionInvalid) {
+        setPlanDeepLinkError(
+          'Saved decision unavailable: Invalid version parameter specified in link.'
+        );
+        setActivePlanId(null);
+        setActivePlanVersionNumber(null);
+        setPlanStorageMessage('Saved decision unavailable.');
+        return false;
+      }
+
+      const matchingPlan = plansList.find((p) => p.id === targetPlanId);
+      if (!matchingPlan) {
+        setPlanDeepLinkError(
+          'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+        );
+        setActivePlanId(null);
+        setActivePlanVersionNumber(null);
+        setPlanStorageMessage('Saved decision unavailable.');
+        return false;
+      }
+
+      if (targetVersionNumber && targetVersionNumber !== matchingPlan.versionNumber) {
+        if (auth.status !== 'signed-in') {
+          return false;
+        }
+        try {
+          const res = await authenticatedJsonRequest(
+            auth,
+            `/api/plans/${encodeURIComponent(matchingPlan.id)}/versions/${targetVersionNumber}`
+          );
+          if (!res.ok) {
+            setPlanDeepLinkError(
+              'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+            );
+            setActivePlanId(null);
+            setActivePlanVersionNumber(null);
+            setPlanStorageMessage('Saved decision unavailable.');
+            return false;
+          }
+          const verBody: any = await res.json().catch(() => null);
+          const snapshot = verBody?.version?.snapshot;
+          if (!snapshot || !snapshot.plan || !snapshot.timeline) {
+            setPlanDeepLinkError(
+              'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+            );
+            setActivePlanId(null);
+            setActivePlanVersionNumber(null);
+            setPlanStorageMessage('Saved decision unavailable.');
+            return false;
+          }
+
+          setActivePlanId(matchingPlan.id);
+          setActivePlanVersionNumber(targetVersionNumber);
+          setSaveName(matchingPlan.name);
+          setPlan({
+            ...initialPlan,
+            ...snapshot.plan,
+            recurringCashFlows: snapshot.plan.recurringCashFlows ?? []
+          });
+          setTimeline({ ...initialTimeline, ...snapshot.timeline });
+          setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
+          setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
+          setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
+          setHasCalculated(true);
+          setPlanDeepLinkError(null);
+          setPlanStorageMessage(`Version ${targetVersionNumber} of "${matchingPlan.name}" loaded.`);
+          return true;
+        } catch {
+          setPlanDeepLinkError(
+            'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
+          );
+          setActivePlanId(null);
+          setActivePlanVersionNumber(null);
+          setPlanStorageMessage('Saved decision unavailable.');
+          return false;
+        }
+      }
+
+      setActivePlanId(matchingPlan.id);
+      setActivePlanVersionNumber(matchingPlan.versionNumber ?? null);
+      setSaveName(matchingPlan.name);
+      setPlan({
+        ...initialPlan,
+        ...matchingPlan.snapshot.plan,
+        recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
+      });
+      setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
+      setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
+      setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
+      setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
+      setHasCalculated(true);
+      setPlanDeepLinkError(null);
+      setPlanStorageMessage(`Plan "${matchingPlan.name}" loaded.`);
+      return true;
+    },
+    [auth, savedPlans]
+  );
   const [accountProfile, setAccountProfile] = useState<AccountProfile | null>(null);
   const [profileDraft, setProfileDraft] = useState<AccountProfileDraft>(emptyProfileDraft);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
@@ -5573,36 +5780,30 @@ function App({ auth }: { auth: AuthState }) {
 
   useEffect(() => {
     const handlePopState = () => {
+      const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
       const nextRoute = readRoute();
+
+      if (route === '/plans' && isPlanningWorkspaceDirty) {
+        if (typeof window !== 'undefined') {
+          window.history.pushState(null, '', '/plans');
+        }
+        setPendingNavigation({ nextRoute: currentUrl, isPopState: true });
+        return;
+      }
+
       setRoute(nextRoute);
       setIsMenuOpen(false);
 
       if (nextRoute === '/plans') {
         const deepLink = parsePlanDeepLink(window.location.href);
-        if (deepLink.planId) {
-          const matchingPlan = savedPlans.find((p) => p.id === deepLink.planId);
-          if (matchingPlan) {
-            setActivePlanId(matchingPlan.id);
-            setActivePlanVersionNumber(deepLink.versionNumber ?? matchingPlan.versionNumber ?? null);
-            setSaveName(matchingPlan.name);
-            setPlan({
-              ...initialPlan,
-              ...matchingPlan.snapshot.plan,
-              recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
-            });
-            setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
-            setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
-            setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
-            setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
-            setHasCalculated(true);
-            setPlanDeepLinkError(null);
-          } else {
-            setPlanDeepLinkError(
-              'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
-            );
-            setActivePlanId(null);
-            setActivePlanVersionNumber(null);
-          }
+        if (deepLink.isVersionInvalid) {
+          setPlanDeepLinkError(
+            'Saved decision unavailable: Invalid version parameter specified in link.'
+          );
+          setActivePlanId(null);
+          setActivePlanVersionNumber(null);
+        } else if (deepLink.planId) {
+          void loadPlanDeepLinkTarget(deepLink.planId, deepLink.versionNumber, false);
         } else {
           setPlanDeepLinkError(null);
         }
@@ -5611,7 +5812,7 @@ function App({ auth }: { auth: AuthState }) {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [savedPlans]);
+  }, [isPlanningWorkspaceDirty, loadPlanDeepLinkTarget, route]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -5652,6 +5853,8 @@ function App({ auth }: { auth: AuthState }) {
     setIsLoadingSavedPlans(true);
     setPlanStorageMessage('Loading account plans...');
 
+    void refreshDueReviews();
+
     loadAccountPlans(auth)
       .then(async (plans) => {
         if (isCancelled) {
@@ -5661,88 +5864,24 @@ function App({ auth }: { auth: AuthState }) {
         setSavedPlans(plans);
         const deepLink = parsePlanDeepLink(typeof window !== 'undefined' ? window.location.href : '');
 
+        if (deepLink.isVersionInvalid) {
+          setPlanDeepLinkError(
+            'Saved decision unavailable: Invalid version parameter specified in link.'
+          );
+          setActivePlanId(null);
+          setActivePlanVersionNumber(null);
+          setPlanStorageMessage('Saved decision unavailable.');
+          return;
+        }
+
         if (deepLink.planId) {
-          const matchingPlan = plans.find((p) => p.id === deepLink.planId);
-          if (!matchingPlan) {
-            setPlanDeepLinkError(
-              'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
-            );
-            setActivePlanId(null);
-            setActivePlanVersionNumber(null);
-            setPlanStorageMessage('Saved decision unavailable.');
-            return;
-          }
-
-          if (deepLink.versionNumber && deepLink.versionNumber !== matchingPlan.versionNumber) {
-            try {
-              const res = await authenticatedJsonRequest(
-                auth,
-                `/api/plans/${encodeURIComponent(deepLink.planId)}/versions/${deepLink.versionNumber}`
-              );
-              if (isCancelled) return;
-              if (!res.ok) {
-                setPlanDeepLinkError(
-                  'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
-                );
-                setActivePlanId(null);
-                setActivePlanVersionNumber(null);
-                setPlanStorageMessage('Saved decision unavailable.');
-                return;
-              }
-              const verBody: any = await res.json().catch(() => null);
-              if (isCancelled) return;
-              const snapshot = verBody?.version?.snapshot;
-              if (!snapshot || !snapshot.plan || !snapshot.timeline) {
-                setPlanDeepLinkError(
-                  'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
-                );
-                setActivePlanId(null);
-                setActivePlanVersionNumber(null);
-                return;
-              }
-              setActivePlanId(matchingPlan.id);
-              setActivePlanVersionNumber(deepLink.versionNumber);
-              setSaveName(matchingPlan.name);
-              setPlan({
-                ...initialPlan,
-                ...snapshot.plan,
-                recurringCashFlows: snapshot.plan.recurringCashFlows ?? []
-              });
-              setTimeline({ ...initialTimeline, ...snapshot.timeline });
-              setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
-              setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
-              setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
-              setHasCalculated(true);
-              setPlanDeepLinkError(null);
-              setPlanStorageMessage(`Version ${deepLink.versionNumber} of "${matchingPlan.name}" loaded.`);
-              return;
-            } catch {
-              if (isCancelled) return;
-              setPlanDeepLinkError(
-                'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
-              );
-              setActivePlanId(null);
-              setActivePlanVersionNumber(null);
-              setPlanStorageMessage('Saved decision unavailable.');
-              return;
-            }
-          }
-
-          setActivePlanId(matchingPlan.id);
-          setActivePlanVersionNumber(matchingPlan.versionNumber ?? null);
-          setSaveName(matchingPlan.name);
-          setPlan({
-            ...initialPlan,
-            ...matchingPlan.snapshot.plan,
-            recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
-          });
-          setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
-          setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
-          setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
-          setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
-          setHasCalculated(true);
-          setPlanDeepLinkError(null);
-          setPlanStorageMessage(`Plan "${matchingPlan.name}" loaded.`);
+          const loaded = await loadPlanDeepLinkTarget(
+            deepLink.planId,
+            deepLink.versionNumber,
+            false,
+            plans
+          );
+          if (loaded || isCancelled) return;
           return;
         }
 
@@ -7280,46 +7419,38 @@ function App({ auth }: { auth: AuthState }) {
     }));
   };
 
-  const navigateTo = (nextRoute: AppRoute | string) => {
-    if (typeof window !== 'undefined') {
-      window.history.pushState({}, '', nextRoute);
-      window.scrollTo({ top: 0, left: 0 });
-    }
+  const performNavigateTo = useCallback(
+    (nextRoute: AppRoute | string) => {
+      setIsPlanningWorkspaceDirty(false);
+      setPendingNavigation(null);
 
-    const baseRoute = normalizeRoute(nextRoute.split('?')[0]);
-    setRoute(baseRoute);
-    setIsMenuOpen(false);
-
-    if (baseRoute === '/plans') {
-      const deepLink = parsePlanDeepLink(nextRoute);
-      if (deepLink.planId) {
-        const matchingPlan = savedPlans.find((p) => p.id === deepLink.planId);
-        if (matchingPlan) {
-          setActivePlanId(matchingPlan.id);
-          setActivePlanVersionNumber(deepLink.versionNumber ?? matchingPlan.versionNumber ?? null);
-          setSaveName(matchingPlan.name);
-          setPlan({
-            ...initialPlan,
-            ...matchingPlan.snapshot.plan,
-            recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
-          });
-          setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
-          setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
-          setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
-          setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
-          setHasCalculated(true);
-          setPlanDeepLinkError(null);
-        } else {
-          setPlanDeepLinkError(
-            'Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.'
-          );
-          setActivePlanId(null);
-          setActivePlanVersionNumber(null);
-        }
-      } else {
-        setPlanDeepLinkError(null);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', nextRoute);
+        window.scrollTo({ top: 0, left: 0 });
       }
+
+      const baseRoute = normalizeRoute(nextRoute.split('?')[0]);
+      setRoute(baseRoute);
+      setIsMenuOpen(false);
+
+      if (baseRoute === '/plans') {
+        const deepLink = parsePlanDeepLink(nextRoute);
+        void loadPlanDeepLinkTarget(
+          deepLink.planId ?? '',
+          deepLink.versionNumber,
+          deepLink.isVersionInvalid
+        );
+      }
+    },
+    [loadPlanDeepLinkTarget]
+  );
+
+  const navigateTo = (nextRoute: AppRoute | string) => {
+    if (route === '/plans' && isPlanningWorkspaceDirty) {
+      setPendingNavigation({ nextRoute, isPopState: false });
+      return;
     }
+    performNavigateTo(nextRoute);
   };
 
   const navigate = (nextPanel: CalculatorPanel) => {
@@ -7516,9 +7647,11 @@ function App({ auth }: { auth: AuthState }) {
                         window.history.pushState({}, '', '/plans');
                       }
                     }}
+                    onDirtyStateChange={setIsPlanningWorkspaceDirty}
                     onLoadPlan={loadSavedPlan}
                     onLoadVersion={loadSavedPlanVersion}
                     onNavigateCalculator={() => navigateTo('/calculators/fire')}
+                    onReviewSaved={refreshDueReviews}
                     onSave={savePlanningPlan}
                     onUndoSeed={undoLastPlanSeed}
                     plans={savedPlans}
@@ -7543,9 +7676,13 @@ function App({ auth }: { auth: AuthState }) {
                 transactionUpdateDrafts={transactionUpdateDrafts}
                 balanceDrafts={balanceDrafts}
                 auth={auth}
+                dueReviews={dueReviews}
+                dueReviewsError={dueReviewsError}
                 financialAccounts={financialAccounts}
                 financialInsights={financialInsights}
                 goalDraft={goalDraft}
+                isLoadingDueReviews={isLoadingDueReviews}
+                onRetryDueReviews={refreshDueReviews}
                 plans={savedPlans}
                 goalMessage={goalMessage}
                 goals={goals}
@@ -8485,6 +8622,41 @@ function App({ auth }: { auth: AuthState }) {
           </>
         )}
       </main>
+
+      {pendingNavigation ? (
+        <div
+          className="modal-scrim"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="unsaved-nav-changes-title"
+        >
+          <div className="modal-content planning-unsaved-modal">
+            <h3 id="unsaved-nav-changes-title">Unsaved changes</h3>
+            <p>
+              You have unsaved changes in your current planning assumptions. Navigating away will discard these changes.
+            </p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setPendingNavigation(null)}
+              >
+                Keep editing
+              </button>
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() => {
+                  const next = pendingNavigation.nextRoute;
+                  performNavigateTo(next);
+                }}
+              >
+                Discard and leave
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -138,9 +138,11 @@ type PlanningWorkspaceProps = {
   onApplySeed: (preview: Extract<PlanSeedPreview, { ok: true }>) => void;
   onArchive: (id: string) => void;
   onClearDeepLinkError?: () => void;
+  onDirtyStateChange?: (isDirty: boolean) => void;
   onLoadPlan: (plan: PlanningSavedPlan) => void;
   onLoadVersion: (planId: string, version: PlanVersionDetail) => void;
   onNavigateCalculator: () => void;
+  onReviewSaved?: () => void;
   onSave: (mode: 'new-plan' | 'new-version', draft: PlanningSaveDraft) => void;
   onUndoSeed: () => void;
   plans: PlanningSavedPlan[];
@@ -167,9 +169,11 @@ export function PlanningWorkspace({
   onApplySeed,
   onArchive,
   onClearDeepLinkError,
+  onDirtyStateChange,
   onLoadPlan,
   onLoadVersion,
   onNavigateCalculator,
+  onReviewSaved,
   onSave,
   onUndoSeed,
   plans,
@@ -180,6 +184,25 @@ export function PlanningWorkspace({
   const eligibleAccounts = accounts.filter(
     (account) => account.isActive !== false && account.category === 'asset'
   );
+
+  const latestAccountEvidenceDate = useMemo(() => {
+    const dates = accounts
+      .filter((a) => a.isActive !== false && a.latestBalanceDate)
+      .map((a) => a.latestBalanceDate!)
+      .sort()
+      .reverse();
+    return dates[0] ?? null;
+  }, [accounts]);
+
+  const effectiveEvidenceDate = useMemo(() => {
+    if (latestAccountEvidenceDate) {
+      return latestAccountEvidenceDate.slice(0, 10);
+    }
+    const versionDate = activePlan?.createdAt ? activePlan.createdAt.slice(0, 10) : '';
+    const todayStr = new Date().toISOString().slice(0, 10);
+    return versionDate || todayStr;
+  }, [latestAccountEvidenceDate, activePlan?.createdAt]);
+
   const [draft, setDraft] = useState<PlanningSaveDraft>(() => draftFromPlan(activePlan));
   const [portfolioSource, setPortfolioSource] = useState<'accounts' | 'goal' | 'none'>('none');
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
@@ -226,13 +249,28 @@ export function PlanningWorkspace({
     controlledLoadedVersionNumber
   ]);
 
-  const isPlanDirty = useMemo(() => {
-    if (!baselineSnapshot) return false;
+  const isDraftDirty = useMemo(() => {
+    if (!activePlan) return false;
     return (
+      draft.name !== activePlan.name ||
+      draft.label !== (activePlan.label ?? '') ||
+      draft.notes !== (activePlan.notes ?? '') ||
+      draft.goalId !== (activePlan.goalId ?? null)
+    );
+  }, [activePlan, draft]);
+
+  const isPlanDirty = useMemo(() => {
+    if (!baselineSnapshot) return isDraftDirty;
+    const assumptionsDirty = (
       JSON.stringify(currentPlan) !== JSON.stringify(baselineSnapshot.plan) ||
       JSON.stringify(currentTimeline) !== JSON.stringify(baselineSnapshot.timeline)
     );
-  }, [baselineSnapshot, currentPlan, currentTimeline]);
+    return assumptionsDirty || isDraftDirty;
+  }, [baselineSnapshot, currentPlan, currentTimeline, isDraftDirty]);
+
+  useEffect(() => {
+    onDirtyStateChange?.(isPlanDirty);
+  }, [isPlanDirty, onDirtyStateChange]);
 
   const [pendingAction, setPendingAction] = useState<
     | { type: 'load-plan'; plan: PlanningSavedPlan }
@@ -244,7 +282,12 @@ export function PlanningWorkspace({
   const [dueStatus, setDueStatus] = useState<DueStatusResult | null>(
     () =>
       initialDueStatus ??
-      (activePlan ? calculatePlanReviewDueStatus({ planCreatedAt: activePlan.createdAt }) : null)
+      (activePlan
+        ? calculatePlanReviewDueStatus({
+            planCreatedAt: activePlan.createdAt,
+            evidenceDate: effectiveEvidenceDate
+          })
+        : null)
   );
   const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const [reviewMessage, setReviewMessage] = useState('');
@@ -289,13 +332,23 @@ export function PlanningWorkspace({
           setDueStatus(data.dueStatus);
         } else {
           setReviews([]);
-          setDueStatus(calculatePlanReviewDueStatus({ planCreatedAt: activePlan.createdAt }));
+          setDueStatus(
+            calculatePlanReviewDueStatus({
+              planCreatedAt: activePlan.createdAt,
+              evidenceDate: effectiveEvidenceDate
+            })
+          );
         }
       })
       .catch(() => {
         if (cancelled) return;
         setReviews([]);
-        setDueStatus(calculatePlanReviewDueStatus({ planCreatedAt: activePlan.createdAt }));
+        setDueStatus(
+          calculatePlanReviewDueStatus({
+            planCreatedAt: activePlan.createdAt,
+            evidenceDate: effectiveEvidenceDate
+          })
+        );
       })
       .finally(() => {
         if (!cancelled) setIsLoadingReviews(false);
@@ -304,12 +357,11 @@ export function PlanningWorkspace({
     return () => {
       cancelled = true;
     };
-  }, [activePlanId, activePlan?.createdAt, activePlan?.updatedAt, auth.getToken, auth.user.id, initialReviews]);
+  }, [activePlanId, activePlan?.createdAt, activePlan?.updatedAt, auth.getToken, auth.user.id, effectiveEvidenceDate, initialReviews]);
 
   const handleReviewSubmit = async () => {
     if (!activePlanId || !activePlan) return;
     const versionNumberToReview = loadedVersionNumber ?? activePlan.versionNumber ?? 1;
-    const todayStr = new Date().toISOString().slice(0, 10);
 
     setIsSubmittingReview(true);
     setReviewMessage('Recording review...');
@@ -318,7 +370,7 @@ export function PlanningWorkspace({
       const result = await submitPlanReview(auth, activePlanId, {
         decision: reviewDecision,
         deferDays: reviewDecision === 'defer' ? 14 : undefined,
-        evidenceDate: todayStr,
+        evidenceDate: effectiveEvidenceDate,
         notes: reviewNotes.trim() || null,
         planVersionNumber: versionNumberToReview
       });
@@ -333,6 +385,7 @@ export function PlanningWorkspace({
           : `Review deferred until ${result.review.deferredUntil}.`
       );
       setReviewNotes('');
+      onReviewSaved?.();
     } catch (error) {
       setReviewMessage(error instanceof Error ? error.message : 'Failed to record review.');
     } finally {
@@ -1141,17 +1194,25 @@ async function submitPlanReview(
   const token = await auth.getToken();
   if (!token) throw new Error('No Clerk session token is available.');
 
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    authorization: `Bearer ${token}`
+  };
+  if (payload.idempotencyKey) {
+    headers['Idempotency-Key'] = payload.idempotencyKey;
+  }
+
   const response = await fetch(`/api/plans/${encodeURIComponent(planId)}/reviews`, {
     body: JSON.stringify(payload),
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`
-    },
+    headers,
     method: 'POST'
   });
 
-  const body: unknown = await response.json().catch(() => null);
+  const body: any = await response.json().catch(() => null);
   if (!response.ok) {
+    if (response.status === 409 || body?.code === 'IDEMPOTENCY_CONFLICT') {
+      throw new Error('A review for this cycle already exists with different parameters.');
+    }
     throw new Error(isRecord(body) && typeof body.error === 'string' ? body.error : 'Failed to record review.');
   }
 

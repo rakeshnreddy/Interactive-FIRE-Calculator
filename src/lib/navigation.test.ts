@@ -74,7 +74,10 @@ describe('plan deep link contract (B10)', () => {
   it('parses valid planId and versionNumber from query string', () => {
     const parsed = parsePlanDeepLink('/plans?planId=68268415-1b8f-4260-bb93-b39d1fb6c043&version=2');
     expect(parsed).toEqual({
+      isVersionExplicit: true,
+      isVersionInvalid: false,
       planId: '68268415-1b8f-4260-bb93-b39d1fb6c043',
+      rawVersion: '2',
       versionNumber: 2
     });
   });
@@ -82,7 +85,10 @@ describe('plan deep link contract (B10)', () => {
   it('parses short query aliases ?id=...&v=...', () => {
     const parsed = parsePlanDeepLink('?id=plan-abc-123&v=4');
     expect(parsed).toEqual({
+      isVersionExplicit: true,
+      isVersionInvalid: false,
       planId: 'plan-abc-123',
+      rawVersion: '4',
       versionNumber: 4
     });
   });
@@ -90,7 +96,10 @@ describe('plan deep link contract (B10)', () => {
   it('parses path-based plan deep link /plans/:id/versions/:version', () => {
     const parsed = parsePlanDeepLink('/plans/68268415-1b8f-4260-bb93-b39d1fb6c043/versions/3');
     expect(parsed).toEqual({
+      isVersionExplicit: true,
+      isVersionInvalid: false,
       planId: '68268415-1b8f-4260-bb93-b39d1fb6c043',
+      rawVersion: '3',
       versionNumber: 3
     });
   });
@@ -98,7 +107,10 @@ describe('plan deep link contract (B10)', () => {
   it('parses planId without explicit versionNumber', () => {
     const parsed = parsePlanDeepLink('/plans?planId=68268415-1b8f-4260-bb93-b39d1fb6c043');
     expect(parsed).toEqual({
+      isVersionExplicit: false,
+      isVersionInvalid: false,
       planId: '68268415-1b8f-4260-bb93-b39d1fb6c043',
+      rawVersion: null,
       versionNumber: null
     });
   });
@@ -110,16 +122,43 @@ describe('plan deep link contract (B10)', () => {
     expect(parsePlanDeepLink('/plans?planId=;DROP TABLE plans;').planId).toBeNull();
   });
 
-  it('rejects invalid or malformed version numbers', () => {
-    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=0').versionNumber).toBeNull();
-    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=-5').versionNumber).toBeNull();
-    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=abc').versionNumber).toBeNull();
-    expect(parsePlanDeepLink('/plans?planId=valid-plan&version=1.5').versionNumber).toBeNull();
+  it('rejects invalid or malformed version numbers and marks isVersionInvalid', () => {
+    const v0 = parsePlanDeepLink('/plans?planId=valid-plan&version=0');
+    expect(v0.versionNumber).toBeNull();
+    expect(v0.isVersionExplicit).toBe(true);
+    expect(v0.isVersionInvalid).toBe(true);
+
+    const vNeg = parsePlanDeepLink('/plans?planId=valid-plan&version=-5');
+    expect(vNeg.versionNumber).toBeNull();
+    expect(vNeg.isVersionExplicit).toBe(true);
+    expect(vNeg.isVersionInvalid).toBe(true);
+
+    const vAlpha = parsePlanDeepLink('/plans?planId=valid-plan&version=abc');
+    expect(vAlpha.versionNumber).toBeNull();
+    expect(vAlpha.isVersionExplicit).toBe(true);
+    expect(vAlpha.isVersionInvalid).toBe(true);
+
+    const vFloat = parsePlanDeepLink('/plans?planId=valid-plan&version=1.5');
+    expect(vFloat.versionNumber).toBeNull();
+    expect(vFloat.isVersionExplicit).toBe(true);
+    expect(vFloat.isVersionInvalid).toBe(true);
   });
 
   it('returns nulls for unrelated routes', () => {
-    expect(parsePlanDeepLink('/dashboard')).toEqual({ planId: null, versionNumber: null });
-    expect(parsePlanDeepLink('/accounts')).toEqual({ planId: null, versionNumber: null });
+    expect(parsePlanDeepLink('/dashboard')).toEqual({
+      isVersionExplicit: false,
+      isVersionInvalid: false,
+      planId: null,
+      rawVersion: null,
+      versionNumber: null
+    });
+    expect(parsePlanDeepLink('/accounts')).toEqual({
+      isVersionExplicit: false,
+      isVersionInvalid: false,
+      planId: null,
+      rawVersion: null,
+      versionNumber: null
+    });
   });
 
   it('builds clean plan deep links with stable opaque IDs and no financial parameters', () => {

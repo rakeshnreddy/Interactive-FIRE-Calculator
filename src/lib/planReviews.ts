@@ -9,8 +9,10 @@ export type StoredPlanReview = {
   deferredUntil: string | null;
   evidenceDate: string;
   id: string;
+  idempotencyKey?: string | null;
   nextReviewDue: string;
   notes: string | null;
+  payloadHash?: string | null;
   planId: string;
   planVersionNumber: number;
   status: PlanReviewStatus;
@@ -21,6 +23,7 @@ export type PlanReviewPayload = {
   decision: PlanReviewDecision;
   deferDays?: number;
   evidenceDate: string;
+  idempotencyKey?: string | null;
   notes?: string | null;
   planVersionNumber: number;
 };
@@ -29,6 +32,15 @@ export class ReviewTooEarlyError extends Error {
   constructor(daysSinceBaseline: number) {
     super(`First returning review requires at least 7 days from plan baseline (${daysSinceBaseline} days elapsed).`);
     this.name = 'ReviewTooEarlyError';
+  }
+}
+
+export class ReviewIdempotencyConflictError extends Error {
+  public existingReview: StoredPlanReview;
+  constructor(existingReview: StoredPlanReview) {
+    super('A review for this cycle already exists with different parameters.');
+    this.name = 'ReviewIdempotencyConflictError';
+    this.existingReview = existingReview;
   }
 }
 
@@ -43,6 +55,38 @@ export type DueStatusResult = {
   nextReviewDue: string;
   status: PlanReviewDueStatus;
 };
+
+export type DueReviewItem = {
+  daysSinceBaseline: number;
+  deferredUntil: string | null;
+  evidenceDate: string;
+  isEvidenceStale: boolean;
+  latestReviewId: string | null;
+  latestVersionNumber: number;
+  nextReviewDue: string;
+  planCreatedAt: string;
+  planId: string;
+  planName: string;
+  status: PlanReviewDueStatus;
+};
+
+export async function loadDuePlanReviews(
+  auth: { getToken: () => Promise<string | null>; status: string },
+  referenceDate?: string
+): Promise<{ dueReviews: DueReviewItem[] } | null> {
+  const token = await auth.getToken();
+  if (!token) return null;
+  const url = referenceDate
+    ? `/api/plans/due-reviews?referenceDate=${encodeURIComponent(referenceDate)}`
+    : '/api/plans/due-reviews';
+  const res = await fetch(url, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
 
 export function calculatePlanReviewDueStatus(input: {
   evidenceDate?: string;
@@ -166,9 +210,25 @@ export function calculatePlanReviewDueStatus(input: {
   };
 }
 
-export function parsePlanReviewPayload(body: unknown):
+export function isValidIsoDate(dateStr: string): boolean {
+  if (typeof dateStr !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr.trim())) {
+    return false;
+  }
+  const [year, month, day] = dateStr.trim().split('-').map(Number);
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return (
+    d.getUTCFullYear() === year &&
+    d.getUTCMonth() === month - 1 &&
+    d.getUTCDate() === day
+  );
+}
+
+export function parsePlanReviewPayload(
+  body: unknown,
+  options?: { idempotencyHeader?: string | null }
+):
   | { ok: true; value: PlanReviewPayload }
-  | { error: string; ok: false } {
+  | { code?: string; error: string; ok: false } {
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
     return { error: 'Request body must be a JSON object.', ok: false };
   }
@@ -183,8 +243,16 @@ export function parsePlanReviewPayload(body: unknown):
     return { error: 'planVersionNumber must be a positive integer.', ok: false };
   }
 
-  if (typeof raw.evidenceDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(raw.evidenceDate.trim())) {
-    return { error: 'evidenceDate must be a valid date in YYYY-MM-DD format.', ok: false };
+  if (typeof raw.evidenceDate !== 'string' || !isValidIsoDate(raw.evidenceDate)) {
+    return { code: 'INVALID_EVIDENCE_DATE', error: 'evidenceDate must be a valid calendar date in YYYY-MM-DD format.', ok: false };
+  }
+
+  const evidenceDateTrimmed = raw.evidenceDate.trim();
+  const evidenceUtc = parseToUtcMidnight(evidenceDateTrimmed);
+  const todayUtc = getTodayUtcMidnight();
+
+  if (evidenceUtc.getTime() > todayUtc.getTime()) {
+    return { code: 'FUTURE_EVIDENCE_DATE', error: 'evidenceDate cannot be in the future.', ok: false };
   }
 
   const decision = typeof raw.decision === 'string' ? raw.decision.trim().toLowerCase() : '';
@@ -215,33 +283,102 @@ export function parsePlanReviewPayload(body: unknown):
     notes = raw.notes.trim() || null;
   }
 
+  let normalizedBodyKey: string | null | undefined = undefined;
+  if (raw.idempotencyKey !== undefined) {
+    if (raw.idempotencyKey === null || raw.idempotencyKey === '') {
+      normalizedBodyKey = null;
+    } else if (typeof raw.idempotencyKey !== 'string') {
+      return { error: 'idempotencyKey must be a string.', ok: false };
+    } else {
+      const trimmed = raw.idempotencyKey.trim();
+      if (trimmed.length > 120) {
+        return { error: 'idempotencyKey must be 120 characters or fewer.', ok: false };
+      }
+      normalizedBodyKey = trimmed;
+    }
+  }
+
+  let normalizedHeaderKey: string | null | undefined = undefined;
+  if (options?.idempotencyHeader !== undefined && options.idempotencyHeader !== null) {
+    if (typeof options.idempotencyHeader !== 'string') {
+      return { error: 'Idempotency-Key header must be a string.', ok: false };
+    }
+    const trimmed = options.idempotencyHeader.trim();
+    if (!trimmed) {
+      normalizedHeaderKey = null;
+    } else if (trimmed.length > 120) {
+      return { error: 'Idempotency-Key header must be 120 characters or fewer.', ok: false };
+    } else {
+      normalizedHeaderKey = trimmed;
+    }
+  }
+
+  let idempotencyKey: string | null | undefined = undefined;
+  if (normalizedBodyKey && normalizedHeaderKey) {
+    if (normalizedBodyKey !== normalizedHeaderKey) {
+      return {
+        code: 'IDEMPOTENCY_KEY_MISMATCH',
+        error: 'Idempotency-Key header and request body idempotencyKey do not match.',
+        ok: false
+      };
+    }
+    idempotencyKey = normalizedBodyKey;
+  } else if (normalizedBodyKey) {
+    idempotencyKey = normalizedBodyKey;
+  } else if (normalizedHeaderKey) {
+    idempotencyKey = normalizedHeaderKey;
+  } else if (normalizedBodyKey === null || normalizedHeaderKey === null) {
+    idempotencyKey = null;
+  }
+
   return {
     ok: true,
     value: {
       decision: decision as PlanReviewDecision,
       deferDays,
-      evidenceDate: raw.evidenceDate.trim(),
+      evidenceDate: evidenceDateTrimmed,
+      idempotencyKey,
       notes,
       planVersionNumber: raw.planVersionNumber
     }
   };
 }
 
-function parseToUtcMidnight(dateStr: string): Date {
+export async function hashPlanReviewPayload(input: {
+  decision: string;
+  deferDays?: number | null;
+  notes?: string | null;
+  planVersionNumber: number;
+}): Promise<string> {
+  const canonical = {
+    decision: input.decision,
+    deferDays: input.deferDays ?? (input.decision === 'defer' ? 14 : null),
+    notes: input.notes?.trim() || null,
+    planVersionNumber: input.planVersionNumber
+  };
+  const jsonString = JSON.stringify(canonical);
+  const data = new TextEncoder().encode(jsonString);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+export function parseToUtcMidnight(dateStr: string): Date {
   const [year, month, day] = dateStr.slice(0, 10).split('-').map(Number);
   return new Date(Date.UTC(year, month - 1, day));
 }
 
-function getTodayUtcMidnight(): Date {
+export function getTodayUtcMidnight(): Date {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 }
 
-function addDaysUtc(d: Date, days: number): Date {
+export function addDaysUtc(d: Date, days: number): Date {
   return new Date(d.getTime() + days * 24 * 60 * 60 * 1000);
 }
 
-function formatYmdUtc(d: Date): string {
+export function formatYmdUtc(d: Date): string {
   const year = d.getUTCFullYear();
   const month = String(d.getUTCMonth() + 1).padStart(2, '0');
   const day = String(d.getUTCDate()).padStart(2, '0');

@@ -80,7 +80,10 @@ export function shouldHandleNavigationClick(
 }
 
 export type PlanDeepLink = {
+  isVersionExplicit: boolean;
+  isVersionInvalid: boolean;
   planId: string | null;
+  rawVersion: string | null;
   versionNumber: number | null;
 };
 
@@ -99,7 +102,13 @@ export function parsePlanDeepLink(
         pathname = url.pathname;
         search = url.search;
       } catch {
-        return { planId: null, versionNumber: null };
+        return {
+          isVersionExplicit: false,
+          isVersionInvalid: false,
+          planId: null,
+          rawVersion: null,
+          versionNumber: null
+        };
       }
     } else {
       const queryIndex = target.indexOf('?');
@@ -127,28 +136,31 @@ export function parsePlanDeepLink(
     search.includes('id=');
 
   if (!isPlansContext) {
-    return { planId: null, versionNumber: null };
+    return {
+      isVersionExplicit: false,
+      isVersionInvalid: false,
+      planId: null,
+      rawVersion: null,
+      versionNumber: null
+    };
   }
 
   // Check path-based routing: /plans/:id/versions/:version or /plans/:id
   const pathParts = cleanPath.replace(/^\/+/, '').split('/');
   let pathPlanId: string | null = null;
-  let pathVersion: number | null = null;
+  let pathVersionRaw: string | null = null;
 
   if (pathParts[0] === 'plans' && pathParts[1]) {
     pathPlanId = pathParts[1];
-    if (pathParts[2] === 'versions' && pathParts[3]) {
-      const parsedVer = parseInt(pathParts[3], 10);
-      if (Number.isInteger(parsedVer) && parsedVer > 0 && String(parsedVer) === pathParts[3]) {
-        pathVersion = parsedVer;
-      }
+    if (pathParts[2] === 'versions' && pathParts[3] !== undefined) {
+      pathVersionRaw = pathParts[3];
     }
   }
 
   // Check search params
   const params = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
-  const rawId = params.get('planId') || params.get('id') || pathPlanId;
-  const rawVersion = params.get('version') || params.get('v') || (pathVersion !== null ? String(pathVersion) : null);
+  const rawId = params.get('planId') ?? params.get('id') ?? pathPlanId;
+  const rawVersion = params.get('version') ?? params.get('v') ?? pathVersionRaw;
 
   let planId: string | null = null;
   if (rawId && SAFE_PLAN_ID_REGEX.test(rawId)) {
@@ -156,14 +168,27 @@ export function parsePlanDeepLink(
   }
 
   let versionNumber: number | null = null;
-  if (rawVersion) {
-    const parsed = Number(rawVersion);
-    if (Number.isInteger(parsed) && parsed > 0 && String(parsed) === rawVersion.trim()) {
+  let isVersionExplicit = false;
+  let isVersionInvalid = false;
+
+  if (rawVersion !== null && rawVersion !== undefined) {
+    isVersionExplicit = true;
+    const trimmed = rawVersion.trim();
+    const parsed = Number(trimmed);
+    if (Number.isInteger(parsed) && parsed > 0 && String(parsed) === trimmed) {
       versionNumber = parsed;
+    } else {
+      isVersionInvalid = true;
     }
   }
 
-  return { planId, versionNumber };
+  return {
+    isVersionExplicit,
+    isVersionInvalid,
+    planId,
+    rawVersion: rawVersion ?? null,
+    versionNumber
+  };
 }
 
 export function buildPlanDeepLink(planId: string, versionNumber?: number | null): string {

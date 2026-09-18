@@ -4,6 +4,7 @@ import {
   createPlanReview,
   listPlanReviews,
   parsePlanReviewPayload,
+  ReviewIdempotencyConflictError,
   ReviewTooEarlyError
 } from '../../../../_lib/planReviews';
 import { readJsonBody } from '../../../../_lib/firePlans';
@@ -44,10 +45,11 @@ export const onRequestPost: PagesFunction<ReviewsEnv, PlanReviewsParams> = async
   }
 
   const body = await readJsonBody(request);
-  const parsed = parsePlanReviewPayload(body);
+  const idempotencyHeader = request.headers.get('Idempotency-Key');
+  const parsed = parsePlanReviewPayload(body, { idempotencyHeader });
 
   if (!parsed.ok) {
-    return json({ error: parsed.error }, 400);
+    return json({ code: parsed.code, error: parsed.error }, 400);
   }
 
   try {
@@ -61,6 +63,9 @@ export const onRequestPost: PagesFunction<ReviewsEnv, PlanReviewsParams> = async
   } catch (error) {
     if (error instanceof ReviewTooEarlyError) {
       return json({ code: 'TOO_EARLY_REVIEW', error: error.message }, 400);
+    }
+    if (error instanceof ReviewIdempotencyConflictError) {
+      return json({ code: 'IDEMPOTENCY_CONFLICT', error: error.message, existingReview: error.existingReview }, 409);
     }
 
     return handleApiError(error, 'Unable to save plan review.');

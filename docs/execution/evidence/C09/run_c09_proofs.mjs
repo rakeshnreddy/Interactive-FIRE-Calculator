@@ -161,19 +161,21 @@ export async function setupClerkInterception(context, testingToken, fapi) {
 // WCAG 2.1 Color Contrast Utilities
 // --------------------------------------------------------------------------
 export function parseRgb(colorStr) {
-  if (!colorStr || typeof colorStr !== 'string') return { r: 0, g: 0, b: 0, a: 1 };
-  const rgbMatch = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+  if (!colorStr || typeof colorStr !== 'string') return { r: NaN, g: NaN, b: NaN, a: NaN };
+  const str = colorStr.trim();
+  const rgbMatch = str.match(/^rgba?\(\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)(?:,\s*([\d.]+))?\s*\)$/i);
   if (rgbMatch) {
-    return {
-      r: parseInt(rgbMatch[1], 10),
-      g: parseInt(rgbMatch[2], 10),
-      b: parseInt(rgbMatch[3], 10),
-      a: rgbMatch[4] !== undefined ? parseFloat(rgbMatch[4]) : 1
-    };
+    const a = rgbMatch[4] !== undefined ? parseFloat(rgbMatch[4]) : 1;
+    if (a !== 1) {
+      return { r: NaN, g: NaN, b: NaN, a: NaN };
+    }
+    const [r, g, b] = [parseInt(rgbMatch[1], 10), parseInt(rgbMatch[2], 10), parseInt(rgbMatch[3], 10)];
+    if ([r, g, b].some(c => isNaN(c) || c < 0 || c > 255)) return { r: NaN, g: NaN, b: NaN, a: NaN };
+    return { r, g, b, a: 1 };
   }
-  if (colorStr.startsWith('#')) {
-    const hex = colorStr.replace('#', '');
-    if (hex.length === 3) {
+  if (str.startsWith('#')) {
+    const hex = str.replace('#', '');
+    if (hex.length === 3 && /^[0-9a-f]{3}$/i.test(hex)) {
       return {
         r: parseInt(hex[0] + hex[0], 16),
         g: parseInt(hex[1] + hex[1], 16),
@@ -181,19 +183,20 @@ export function parseRgb(colorStr) {
         a: 1
       };
     }
-    if (hex.length >= 6) {
+    if (hex.length === 6 && /^[0-9a-f]{6}$/i.test(hex)) {
       return {
         r: parseInt(hex.slice(0, 2), 16),
         g: parseInt(hex.slice(2, 4), 16),
         b: parseInt(hex.slice(4, 6), 16),
-        a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1
+        a: 1
       };
     }
   }
-  return { r: 0, g: 0, b: 0, a: 1 };
+  return { r: NaN, g: NaN, b: NaN, a: NaN };
 }
 
 export function sRgbLuminance(r, g, b) {
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return NaN;
   const [rs, gs, bs] = [r, g, b].map(c => {
     const s = c / 255;
     return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
@@ -204,6 +207,9 @@ export function sRgbLuminance(r, g, b) {
 export function calculateContrast(textColorStr, bgColorStr) {
   const fg = parseRgb(textColorStr);
   const bg = parseRgb(bgColorStr);
+  if (isNaN(fg.r) || isNaN(fg.g) || isNaN(fg.b) || isNaN(bg.r) || isNaN(bg.g) || isNaN(bg.b)) {
+    return NaN;
+  }
   const lum1 = sRgbLuminance(fg.r, fg.g, fg.b);
   const lum2 = sRgbLuminance(bg.r, bg.g, bg.b);
   const brighter = Math.max(lum1, lum2);
@@ -286,6 +292,7 @@ export function evaluateReport(report, cleanup) {
   }
 
   if (report.error) failures.push('Recorded verification error: ' + report.error);
+  if (report.status === 'FAILED') failures.push('Report marked FAILED');
   if (report.preview_url !== PREVIEW_URL) failures.push('Unexpected preview URL');
 
   // Preflight metadata
@@ -300,6 +307,9 @@ export function evaluateReport(report, cleanup) {
   }
   if (report.d1_migration_0007_verified !== true) {
     failures.push(`d1_migration_0007_verified expected true, got ${report.d1_migration_0007_verified}`);
+  }
+  if (report.d1_migration_0008_verified !== true) {
+    failures.push(`d1_migration_0008_verified expected true, got ${report.d1_migration_0008_verified}`);
   }
   if (report.sqlite_plan_reviews_verified !== true) {
     failures.push(`sqlite_plan_reviews_verified expected true, got ${report.sqlite_plan_reviews_verified}`);
@@ -368,6 +378,9 @@ export function evaluateReport(report, cleanup) {
     if (!c || typeof c !== 'object') {
       failures.push(`Cleanup for ${name} is missing or not an object`);
       return;
+    }
+    if (c.errors && c.errors.length > 0) {
+      failures.push(`${name} cleanup reported errors: ${c.errors.join(', ')}`);
     }
     if (c.app_data_deleted !== true) failures.push(`${name} cleanup: app_data_deleted expected true, got ${c.app_data_deleted}`);
     if (c.user_tombstone_present !== true) failures.push(`${name} cleanup: user_tombstone_present expected true, got ${c.user_tombstone_present}`);
@@ -538,10 +551,14 @@ export async function runAllProofs() {
   }
   console.log('D1 database query verified.');
 
-  // Preflight 3: Verify migration 0007 applied on remote D1
+  // Preflight 3: Verify migrations 0007 and 0008 applied on remote D1
   const m7Rows = await queryD1('SELECT id, name, applied_at FROM d1_migrations WHERE id = 7;');
   const m7Verified = m7Rows.length > 0 && m7Rows[0].name === '0007_monthly_plan_reviews.sql';
   console.log(`D1 migration 0007 verified: ${m7Verified}`);
+
+  const m8Rows = await queryD1('SELECT id, name, applied_at FROM d1_migrations WHERE id = 8;');
+  const m8Verified = m8Rows.length > 0 && m8Rows[0].name === '0008_plan_reviews_idempotency.sql';
+  console.log(`D1 migration 0008 verified: ${m8Verified}`);
 
   const smRows = await queryD1("SELECT count(*) as cnt FROM sqlite_master WHERE type='table' AND name='plan_reviews';");
   const planReviewsTableVerified = (smRows[0]?.cnt ?? 0) === 1;
@@ -596,6 +613,7 @@ export async function runAllProofs() {
     effective_db: PREVIEW_DB_ID,
     timestamp: new Date().toISOString(),
     d1_migration_0007_verified: m7Verified,
+    d1_migration_0008_verified: m8Verified,
     sqlite_plan_reviews_verified: planReviewsTableVerified,
     b10_saved_decision_navigation: {},
     b11_monthly_review_loop: {},
@@ -790,37 +808,23 @@ export async function runAllProofs() {
 
     // Step 4: Unsaved changes protection modal
     console.log('\n--- Step 4: Unsaved Changes Protection Modal ---');
-    // Test unsaved changes protection via calculator flow
-    const openCalcBtn = pageA.locator('button:has-text("Open calculator")').first();
-    if (await openCalcBtn.isVisible().catch(() => false)) {
-      await openCalcBtn.click();
-      await pageA.waitForTimeout(500);
-      const expenseInput = pageA.locator('#fire-annual-expense input');
-      if (await expenseInput.isVisible().catch(() => false)) {
-        await expenseInput.fill('45000');
-        // Navigate back to workspace plans
-        const workspaceMenu = pageA.locator('button:has-text("Workspace")').first();
-        if (await workspaceMenu.isVisible().catch(() => false)) {
-          await workspaceMenu.click();
-          await pageA.waitForTimeout(200);
-          await pageA.locator('.desktop-nav-dropdown a[href="/plans"]').click();
-        } else {
-          await pageA.goto(`${PREVIEW_URL}/plans`, { waitUntil: 'domcontentloaded' });
-        }
-        await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
-      }
-    }
+    // Ensure we are on the active plan workspace
+    await pageA.goto(`${PREVIEW_URL}/plans?planId=${planAId}`, { waitUntil: 'domcontentloaded' });
+    await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
 
-    // Try loading version 2 in history
+    // Make the draft assumptions dirty by editing plan name in the form grid
+    const planNameInput = pageA.locator('.planning-form-grid input').first();
+    await planNameInput.fill('Retirement Base (Unsaved Assumptions)');
+    await pageA.waitForTimeout(300);
+
+    // Click "Load" on version 1 in history panel
     const loadVersionBtn = pageA.locator('.planning-history-panel button:has-text("Load")').first();
-    if (await loadVersionBtn.isVisible().catch(() => false)) {
-      await loadVersionBtn.click();
-      await pageA.waitForTimeout(500);
-    }
+    await loadVersionBtn.click();
+    await pageA.waitForTimeout(400);
 
     const modalVisible = await pageA.locator('.modal-scrim').isVisible().catch(() => false);
     console.log(`Unsaved changes modal appeared: ${modalVisible}`);
-    report.b10_saved_decision_navigation.unsaved_changes_modal_rendered_on_dirty_nav = modalVisible || true;
+    report.b10_saved_decision_navigation.unsaved_changes_modal_rendered_on_dirty_nav = modalVisible;
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '02_b10_unsaved_changes_modal.png') });
 
@@ -830,20 +834,22 @@ export async function runAllProofs() {
       await cancelBtn.click();
       await pageA.waitForTimeout(300);
       const modalClosed = !(await pageA.locator('.modal-scrim').isVisible().catch(() => false));
-      report.b10_saved_decision_navigation.unsaved_changes_cancel_preserves_dirty_state = modalClosed;
+      // Verify dirty input is still intact
+      const preservedName = await planNameInput.inputValue().catch(() => '');
+      report.b10_saved_decision_navigation.unsaved_changes_cancel_preserves_dirty_state =
+        modalClosed && preservedName === 'Retirement Base (Unsaved Assumptions)';
 
-      // Re-trigger and Discard
-      if (await loadVersionBtn.isVisible().catch(() => false)) {
-        await loadVersionBtn.click();
-        await pageA.waitForTimeout(300);
-        const discardBtn = pageA.locator('.modal-scrim button:has-text("Discard and load")').first();
-        await discardBtn.click();
-        await pageA.waitForTimeout(500);
-      }
-      report.b10_saved_decision_navigation.unsaved_changes_confirm_proceeds_navigation = true;
+      // Re-trigger and Discard and load
+      await loadVersionBtn.click();
+      await pageA.waitForTimeout(300);
+      const discardBtn = pageA.locator('.modal-scrim button:has-text("Discard and load")').first();
+      await discardBtn.click();
+      await pageA.waitForTimeout(500);
+      const modalClosedAfterDiscard = !(await pageA.locator('.modal-scrim').isVisible().catch(() => false));
+      report.b10_saved_decision_navigation.unsaved_changes_confirm_proceeds_navigation = modalClosedAfterDiscard;
     } else {
-      report.b10_saved_decision_navigation.unsaved_changes_cancel_preserves_dirty_state = true;
-      report.b10_saved_decision_navigation.unsaved_changes_confirm_proceeds_navigation = true;
+      report.b10_saved_decision_navigation.unsaved_changes_cancel_preserves_dirty_state = false;
+      report.b10_saved_decision_navigation.unsaved_changes_confirm_proceeds_navigation = false;
     }
 
     // Step 5: Controlled 404 / Missing Plan and Version
@@ -1058,7 +1064,22 @@ export async function runAllProofs() {
     report.b11_monthly_review_loop.plan_reviews_participate_in_data_export =
       exportRes.status === 200 && Array.isArray(exportedReviews) && exportedReviews.length >= 2;
 
-    report.b11_monthly_review_loop.review_revise_choice_triggers_revision = true; // Tested in UI test suite & workspace logic
+    const reviseRes = await pageA.evaluate(async (planId) => {
+      const res = await fetch(`/api/plans/${planId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planVersionNumber: 2,
+          evidenceDate: new Date().toISOString().slice(0, 10),
+          decision: 'revise',
+          notes: 'Revise assumptions based on market shifts'
+        })
+      });
+      return { status: res.status, body: await res.json() };
+    }, planAId);
+    console.log(`Plan A review (revise) status: ${reviseRes.status}, decision: ${reviseRes.body?.review?.decision}`);
+    report.b11_monthly_review_loop.review_revise_choice_triggers_revision =
+      (reviseRes.status === 200 || reviseRes.status === 201) && reviseRes.body?.review?.decision === 'revise';
 
     // Create Plan 3 and backdate it in D1 so it surfaces as Due on the Dashboard
     const createPlan3Res = await pageA.evaluate(async ({ goalId, snapshot }) => {
@@ -1132,52 +1153,81 @@ export async function runAllProofs() {
 
     const staleWarningVisible = await pageA.locator('.stale-evidence-box, .stale-evidence-badge').first().isVisible().catch(() => false);
     console.log(`Goals panel stale evidence warning visible: ${staleWarningVisible}`);
-    report.b28_presentation_and_accessibility.stale_evidence_warning_displayed_when_over_30_days = staleWarningVisible || true;
+    report.b28_presentation_and_accessibility.stale_evidence_warning_displayed_when_over_30_days = staleWarningVisible;
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '06_b28_goals_panel_linked_plan.png') });
 
-    // Theme switching & contrast checks
-    console.log('Testing true theme switching and contrast...');
-    const lightTheme = await switchTheme(pageA, 'light');
-    await pageA.waitForTimeout(300);
+    // Navigate to dashboard for theme switching and review badge contrast measurement
+    await pageA.goto(`${PREVIEW_URL}/dashboard`, { waitUntil: 'domcontentloaded' });
+    await pageA.waitForSelector('.review-badge, .dashboard-plan-card', { timeout: 15000 });
 
-    const lightContrast = await pageA.evaluate(() => {
-      const badge = document.querySelector('.review-status-badge, .review-badge');
-      if (!badge) return { contrast: 5.0, pass: true };
-      const style = window.getComputedStyle(badge);
+    const badgeLocator = pageA.locator('.review-badge').first();
+    if ((await badgeLocator.count()) === 0) {
+      throw new Error('Missing review badge on dashboard for contrast measurement');
+    }
+
+    const measureBadge = async () => badgeLocator.evaluate((el) => {
+      const parse = (value) => {
+        if (!value) return { r: NaN, g: NaN, b: NaN, a: NaN };
+        const m = value.match(/rgba?\((\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)(?:,\s*([\d.]+))?\)/);
+        if (m) return { r: Math.round(+m[1]), g: Math.round(+m[2]), b: Math.round(+m[3]), a: m[4] === undefined ? 1 : +m[4] };
+        const h = value.match(/^#([0-9a-f]{6})$/i);
+        return h ? { r: parseInt(h[1].slice(0, 2), 16), g: parseInt(h[1].slice(2, 4), 16), b: parseInt(h[1].slice(4, 6), 16), a: 1 } : { r: NaN, g: NaN, b: NaN, a: NaN };
+      };
+      const blend = (fg, bg) => {
+        if (isNaN(fg.a)) return bg;
+        return {
+          r: Math.round(fg.r * fg.a + bg.r * (1 - fg.a)),
+          g: Math.round(fg.g * fg.a + bg.g * (1 - fg.a)),
+          b: Math.round(fg.b * fg.a + bg.b * (1 - fg.a)),
+          a: 1
+        };
+      };
+      const chain = [];
+      let node = el;
+      while (node && chain.length < 12) {
+        chain.push({ tag: node.tagName, background: getComputedStyle(node).backgroundColor });
+        node = node.parentElement;
+      }
+      const isDark = document.documentElement.getAttribute('data-mode') === 'dark' || document.querySelector('.app')?.getAttribute('data-mode') === 'dark';
+      let bg = isDark ? { r: 8, g: 21, b: 28, a: 1 } : { r: 255, g: 255, b: 255, a: 1 };
+      for (const item of chain.reverse()) {
+        const parsed = parse(item.background);
+        if (!isNaN(parsed.r)) bg = blend(parsed, bg);
+      }
+      const fgStyle = getComputedStyle(el).color;
       return {
-        color: style.color,
-        backgroundColor: style.backgroundColor
+        fg: fgStyle,
+        ancestorBackgrounds: chain,
+        compositedBackground: `rgb(${bg.r}, ${bg.g}, ${bg.b})`
       };
     });
-    const lightBadgeContrast = lightContrast.color && lightContrast.backgroundColor
-      ? calculateContrast(lightContrast.color, lightContrast.backgroundColor)
-      : 5.5;
-    console.log(`Light badge contrast: ${lightBadgeContrast}:1`);
-    report.b28_presentation_and_accessibility.contrast_review_badges_light_pass = lightBadgeContrast >= 3.0;
+
+    // Theme switching & contrast checks
+    console.log('Testing true theme switching and contrast for review badges...');
+    const lightTheme = await switchTheme(pageA, 'light');
+    await pageA.waitForTimeout(300);
+    const lightBadgeColors = await measureBadge();
+    const lightBadgeContrast = calculateContrast(lightBadgeColors.fg, lightBadgeColors.compositedBackground);
+    console.log(`Light badge contrast: ${lightBadgeContrast}:1 over ${lightBadgeColors.compositedBackground} (fg: ${lightBadgeColors.fg})`);
+    report.b28_presentation_and_accessibility.contrast_review_badges_light_pass =
+      !isNaN(lightBadgeContrast) && lightBadgeContrast >= 4.5;
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '07_b28_light_theme_presentation.png') });
 
     const darkTheme = await switchTheme(pageA, 'dark');
     await pageA.waitForTimeout(300);
-
-    const darkContrast = await pageA.evaluate(() => {
-      const badge = document.querySelector('.review-status-badge, .review-badge');
-      if (!badge) return { contrast: 5.0, pass: true };
-      const style = window.getComputedStyle(badge);
-      return {
-        color: style.color,
-        backgroundColor: style.backgroundColor
-      };
-    });
-    const darkBadgeContrast = darkContrast.color && darkContrast.backgroundColor
-      ? calculateContrast(darkContrast.color, darkContrast.backgroundColor)
-      : 5.5;
-    console.log(`Dark badge contrast: ${darkBadgeContrast}:1`);
-    report.b28_presentation_and_accessibility.contrast_review_badges_dark_pass = darkBadgeContrast >= 3.0;
+    const darkBadgeColors = await measureBadge();
+    const darkBadgeContrast = calculateContrast(darkBadgeColors.fg, darkBadgeColors.compositedBackground);
+    console.log(`Dark badge contrast: ${darkBadgeContrast}:1 over ${darkBadgeColors.compositedBackground} (fg: ${darkBadgeColors.fg})`);
+    report.b28_presentation_and_accessibility.contrast_review_badges_dark_pass =
+      !isNaN(darkBadgeContrast) && darkBadgeContrast >= 4.5;
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '08_b28_dark_theme_presentation.png') });
     report.b28_presentation_and_accessibility.theme_switching_verified = lightTheme.dataMode === 'light' && darkTheme.dataMode === 'dark';
+
+    // Restore light theme
+    await switchTheme(pageA, 'light');
 
     // Viewport Containment Checks
     console.log('Verifying responsive viewport containment...');
@@ -1199,9 +1249,32 @@ export async function runAllProofs() {
     // Restore desktop viewport
     await pageA.setViewportSize({ width: 1280, height: 800 });
 
-    // Keyboard navigation & stale warning check
-    report.b28_presentation_and_accessibility.keyboard_navigation_accessible = true;
-    report.b28_presentation_and_accessibility.stale_evidence_warning_displayed_when_over_30_days = true;
+    // Keyboard navigation verification
+    console.log('Testing keyboard navigation accessibility...');
+    await pageA.locator('body').click();
+    let focusedCount = 0;
+    let hasFocusRing = false;
+    for (let i = 0; i < 10; i++) {
+      await pageA.keyboard.press('Tab');
+      const focusInfo = await pageA.evaluate(() => {
+        const el = document.activeElement;
+        if (!el || el === document.body || el === document.documentElement) return null;
+        const style = window.getComputedStyle(el);
+        const hasOutline = style.outlineStyle !== 'none' && style.outlineWidth !== '0px';
+        const hasShadow = style.boxShadow && style.boxShadow !== 'none';
+        return {
+          tag: el.tagName,
+          isInteractive: ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) || el.hasAttribute('tabindex'),
+          hasVisibleFocus: hasOutline || hasShadow
+        };
+      });
+      if (focusInfo && focusInfo.isInteractive) {
+        focusedCount++;
+        if (focusInfo.hasVisibleFocus) hasFocusRing = true;
+      }
+    }
+    console.log(`Keyboard navigation focused ${focusedCount} interactive elements, visible focus ring: ${hasFocusRing}`);
+    report.b28_presentation_and_accessibility.keyboard_navigation_accessible = focusedCount >= 3 && hasFocusRing;
 
   } catch (err) {
     console.error('Execution error occurred:', err);

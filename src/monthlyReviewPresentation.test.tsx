@@ -495,11 +495,11 @@ describe('B11 & B28: Monthly Plan Review & Goals Presentation UI', () => {
         />
       );
 
-      expect(container.querySelector('.goal-evidence-date')?.textContent).toContain('Evidence recorded:');
+      expect(container.querySelector('.goal-evidence-date')?.textContent).toContain('Goal updated:');
 
       const staleBox = container.querySelector('.stale-evidence-box');
       expect(staleBox).not.toBeNull();
-      expect(staleBox?.textContent).toContain('Stale evidence');
+      expect(staleBox?.textContent).toContain('Goal inactive');
     });
 
     it('displays explicit funding gap amount and completed status', () => {
