@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+// @vitest-environment node
 import { describe, expect, it } from 'vitest';
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'node:fs';

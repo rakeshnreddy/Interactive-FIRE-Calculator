@@ -1,3 +1,9 @@
+# Current status — 2026-09-23
+
+C09 remains pending primary acceptance. Current product candidate is `0fe20e8e55c49808c998ac751e149da65c7eb3d5`, deployed at https://3b006fb1.interactive-fire-calculator.pages.dev. See [the verified resume record](../../C09_RESUME.md) for current checks and remaining review. The older digest below is historical and does not establish current acceptance.
+
+---
+
 # C09 Progress Digest — B10, B11 & B28 Complete
 
 - **Candidate Code Commit**: `1edcfc53fc8df66e2557d8dad2d42fdcf5ba3cea`  
