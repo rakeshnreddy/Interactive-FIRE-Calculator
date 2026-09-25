@@ -411,3 +411,124 @@ test('Collector Negative 19: focus occurs but activation has no effect fails clo
   assert.equal(evaluation.passed, false);
   assert.ok(evaluation.failures.some((f) => f.includes('keyboard_navigation_accessible')));
 });
+
+test('Collector Behavioral 20: target Workspace button reachable beyond 15-Tab window (at 30th step)', async () => {
+  let evaluateCallCount = 0;
+  let tabPressCount = 0;
+  let isDropdownOpen = false;
+
+  const mockPage = {
+    locator: (selector) => ({
+      click: async () => {},
+      isVisible: async () => isDropdownOpen
+    }),
+    keyboard: {
+      press: async (key) => {
+        if (key === 'Tab') {
+          tabPressCount++;
+        } else if (key === 'Enter') {
+          isDropdownOpen = true;
+        } else if (key === 'Escape') {
+          isDropdownOpen = false;
+        }
+      }
+    },
+    evaluate: async (fn) => {
+      evaluateCallCount++;
+      // Traversal step: step 1 to 29 are intermediate interactive elements with focus rings
+      if (evaluateCallCount < 30) {
+        return {
+          tag: 'BUTTON',
+          isInteractive: true,
+          hasVisibleFocus: true,
+          isTarget: false,
+          key: `element-${evaluateCallCount}`
+        };
+      }
+      // Step 30: Workspace navigation button target
+      if (evaluateCallCount === 30) {
+        return {
+          tag: 'BUTTON',
+          isInteractive: true,
+          hasVisibleFocus: true,
+          isTarget: true,
+          key: 'workspace-navigation-button'
+        };
+      }
+      // Step 31: initialExpanded before Enter
+      if (evaluateCallCount === 31) {
+        return isDropdownOpen ? 'true' : 'false';
+      }
+      // Step 32: openExpanded after Enter
+      if (evaluateCallCount === 32) {
+        return isDropdownOpen ? 'true' : 'false';
+      }
+      // Step 33: closeExpanded after Escape
+      return isDropdownOpen ? 'true' : 'false';
+    },
+    waitForTimeout: async () => {}
+  };
+
+  const proofResult = await executeKeyboardActionProof(mockPage);
+  assert.equal(proofResult.targetFocused, true, 'Target control at step 30 must be focused via extended traversal');
+  assert.equal(proofResult.hasFocusRing, true, 'Focus ring must be verified on traversed elements');
+  assert.ok(proofResult.focusedCount >= 30, `Expected at least 30 focused elements, got ${proofResult.focusedCount}`);
+  assert.equal(proofResult.openStateVerified, true, 'Open state must be verified after Enter');
+  assert.equal(proofResult.closeStateVerified, true, 'Close state must be verified after Escape');
+  assert.equal(proofResult.actionActivated, true, 'Action activation must succeed');
+  assert.equal(proofResult.passed, true, 'Proof must pass when target at step 30 is reached and activated');
+
+  const report = buildBaselineValidReport();
+  const cleanup = buildBaselineValidCleanup();
+  report.b28_presentation_and_accessibility.keyboard_navigation_accessible = proofResult.passed;
+  const evaluation = evaluateReport(report, cleanup);
+  assert.equal(evaluation.passed, true, 'Evaluator must accept report when keyboard proof succeeds');
+});
+
+test('Collector Behavioral 21: target never reachable fails closed with cycle detection', async () => {
+  let evaluateCallCount = 0;
+  let tabPressCount = 0;
+
+  // 5 focusable elements looping cyclically; none is the target
+  const mockPage = {
+    locator: (selector) => ({
+      click: async () => {},
+      isVisible: async () => false
+    }),
+    keyboard: {
+      press: async (key) => {
+        if (key === 'Tab') {
+          tabPressCount++;
+        }
+      }
+    },
+    evaluate: async (fn) => {
+      evaluateCallCount++;
+      const elementIndex = ((evaluateCallCount - 1) % 5) + 1;
+      return {
+        tag: 'BUTTON',
+        isInteractive: true,
+        hasVisibleFocus: true,
+        isTarget: false,
+        key: `cyclic-element-${elementIndex}`
+      };
+    },
+    waitForTimeout: async () => {}
+  };
+
+  const proofResult = await executeKeyboardActionProof(mockPage);
+  assert.equal(proofResult.targetFocused, false, 'Target should never be focused when unreachable');
+  assert.equal(proofResult.passed, false, 'Proof must fail closed when target is unreachable');
+  assert.ok(proofResult.reason.includes('not focused'), 'Failure reason should explain target was not focused');
+
+  // Verify bounded latency: cycle detection terminates traversal without wasting full budget
+  assert.ok(tabPressCount <= 10, `Expected early cycle termination (<= 10 tabs), but took ${tabPressCount} tabs`);
+
+  const report = buildBaselineValidReport();
+  const cleanup = buildBaselineValidCleanup();
+  report.b28_presentation_and_accessibility.keyboard_navigation_accessible = proofResult.passed;
+  const evaluation = evaluateReport(report, cleanup);
+  assert.equal(evaluation.passed, false, 'Evaluator must reject report when keyboard proof fails');
+  assert.ok(evaluation.failures.some((f) => f.includes('keyboard_navigation_accessible')));
+});
+
