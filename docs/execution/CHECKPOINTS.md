@@ -17,7 +17,7 @@ C06 is accepted. C07 is released for owner-authorized free preview Clerk setup a
 | C07 | Owner setup and hosted proof | B06 | accepted | d81f31187892f636ab9d2b6cb492e90e9b7d166d | [record](reviews/C07.md) |
 | C08 | Dashboard and transactions | B26 → B27 | accepted | a95053b19108634656aef491e46b9be9fe3ea57d | [record](reviews/C08.md) |
 | C09 | Saved decision and monthly review | B10 → B11 → B28 | released | — | [start prompt](C09_START_PROMPT.md) |
-| C09A | Owner-prioritized FIRE assumption control and calculator audit | B35 | released | — | [contract](prompts/B35.md) |
+| C09A | Owner-prioritized FIRE assumption control and calculator audit | B35 | accepted | 5dda3d2be24246e3470a65e7653a0b6e425cbece | [approved](reviews/C09A.md) |
 | C10 | Reports and settings | B29 → B30 | locked | — | — |
 | C11 | Measurement and final quality | B12 → B31 | locked | — | — |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
@@ -101,3 +101,5 @@ Current primary decision2026-09-17: C08/B26/B27 APPROVED after rework and primar
 C09 primary review2026-09-17: B10/B11/B28 changes_requested per reviews/C09.md; execute C09_REWORK_PROMPT.md. C09 remains released for repair; C10 locked.25/34 accepted.
 
 Primary scheduling amendment2026-09-24: Owner requested immediate correction of hidden FIRE assumptions before continuing. Release C09A/B35 for that bounded implementation and comprehensive source audit; other calculator changes remain queued for reviewed child contracts. C09 remains open, C10 locked. Task universe now35,25 accepted (71.4% by count); denominator increased for new owner scope, no prior acceptance removed.
+
+Primary review 2026-09-25: C09A/B35 APPROVED at website code `5dda3d2be24246e3470a65e7653a0b6e425cbece` on immutable isolated preview 51acbf88. 26/35 accepted (74.3% by task count). C09 remains released for B10/B11/B28 rework/review on the final shared candidate; C10 stays locked. Native zoom and actual screen reader remain deferred to B31/C11; no production release or `main` merge. See [C09A review](reviews/C09A.md).

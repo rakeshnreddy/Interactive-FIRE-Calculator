@@ -427,7 +427,7 @@ C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 c
 
 ## Owner-prioritized assumption-control correction — 2026-09-24
 
-- [ ] **B35 — FIRE assumptions before Calculate, neutral optional defaults, calculator-wide source audit.**
+- [x] **B35 — FIRE assumptions before Calculate, neutral optional defaults, calculator-wide source audit.**
   - User problem/evidence: App.tsx initialPlan injects example equity, house, Social Security and healthcare flows; advanced details follows Calculate/results.
   - Outcome: fresh plans contain no assumed extra cash flows; all active assumptions are visible before calculating and editable without losing saved values.
   - Scope/files: App.tsx, styles if needed, behavioral tests, calculator-excellence audit/backlog; detailed [contract](execution/prompts/B35.md).

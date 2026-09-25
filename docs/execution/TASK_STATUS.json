@@ -575,7 +575,7 @@
       "id": "B35",
       "title": "Make FIRE assumptions explicit, optional and user-controlled; audit calculator defaults",
       "checkpoint": "C09A",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B22",
         "B24"
@@ -583,8 +583,8 @@
       "prompt": "prompts/B35.md",
       "submission": "submissions/B35.md",
       "owner": "Gemini CLI implementation worker",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
+      "review": "reviews/C09A.md",
       "blocked_reason": null
     }
   ]
