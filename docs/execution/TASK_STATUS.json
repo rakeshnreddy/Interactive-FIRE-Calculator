@@ -148,7 +148,7 @@
       "id": "B10",
       "title": "restore the exact saved FIRE decision",
       "checkpoint": "C09",
-      "status": "ready_for_review",
+      "status": "blocked",
       "dependencies": [
         "B02",
         "B03",
@@ -159,15 +159,15 @@
       "prompt": "prompts/B10.md",
       "submission": "submissions/B10.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "0fe20e8e55c49808c998ac751e149da65c7eb3d5",
-      "review": "reviews/C09.md",
-      "blocked_reason": null
+      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
+      "review": "reviews/C09-pending-2026-09-25.md",
+      "blocked_reason": "Final-candidate hosted C09 lifecycle not rerun at 5dda3d2; Cloudflare CLI authentication error 10000 and OAuth approval timed out before any synthetic write. Exact target proof and cleanup remain required."
     },
     {
       "id": "B11",
       "title": "complete one monthly plan review",
       "checkpoint": "C09",
-      "status": "ready_for_review",
+      "status": "blocked",
       "dependencies": [
         "B04",
         "B05",
@@ -178,9 +178,9 @@
       "prompt": "prompts/B11.md",
       "submission": "submissions/B11.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "0fe20e8e55c49808c998ac751e149da65c7eb3d5",
-      "review": "reviews/C09.md",
-      "blocked_reason": null
+      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
+      "review": "reviews/C09-pending-2026-09-25.md",
+      "blocked_reason": "Final-candidate hosted C09 lifecycle not rerun at 5dda3d2; Cloudflare CLI authentication error 10000 and OAuth approval timed out before any synthetic write. Exact target proof and cleanup remain required."
     },
     {
       "id": "B12",
@@ -450,7 +450,7 @@
       "id": "B28",
       "title": "Polish goals and monthly plan-review workflow",
       "checkpoint": "C09",
-      "status": "ready_for_review",
+      "status": "blocked",
       "dependencies": [
         "B10",
         "B11",
@@ -459,9 +459,9 @@
       "prompt": "prompts/B28.md",
       "submission": "submissions/B28.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "0fe20e8e55c49808c998ac751e149da65c7eb3d5",
-      "review": "reviews/C09.md",
-      "blocked_reason": null
+      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
+      "review": "reviews/C09-pending-2026-09-25.md",
+      "blocked_reason": "Final-candidate hosted C09 lifecycle not rerun at 5dda3d2; Cloudflare CLI authentication error 10000 and OAuth approval timed out before any synthetic write. Exact target proof and cleanup remain required."
     },
     {
       "id": "B29",

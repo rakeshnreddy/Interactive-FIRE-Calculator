@@ -6,7 +6,7 @@
  * B11 (Monthly Plan Review Persistence & Due Status Loop),
  * and B28 (Goals & Monthly Review Presentation).
  *
- * Target: preview deployment e8a100ce-2d36-4da0-918a-6944d14e7ab9
+ * Target: preview deployment 51acbf88-db0a-47d1-b399-814dad835a9b
  * on finpath-preview D1 database 0dbad68e-7493-452f-8504-98d4c61ee5da.
  */
 
@@ -20,9 +20,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = resolve(__dirname, '../../../..');
 
-export const CANDIDATE_SHA = '0fe20e8e55c49808c998ac751e149da65c7eb3d5';
-export const DEPLOYMENT_ID = '3b006fb1-72a6-4a1f-8499-05f9e082bba6';
-export const PREVIEW_URL = 'https://3b006fb1.interactive-fire-calculator.pages.dev';
+export const CANDIDATE_SHA = '5dda3d2be24246e3470a65e7653a0b6e425cbece';
+export const DEPLOYMENT_ID = '51acbf88-db0a-47d1-b399-814dad835a9b';
+export const PREVIEW_URL = 'https://51acbf88.interactive-fire-calculator.pages.dev';
 export const PREVIEW_DB_ID = '0dbad68e-7493-452f-8504-98d4c61ee5da';
 export const ACCOUNT_ID = '4e1b7f6a7440770a01779a67602ec5e9';
 export const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -264,6 +264,167 @@ export async function switchTheme(page, targetMode) {
   }
 
   return themeProps;
+}
+
+// --------------------------------------------------------------------------
+// Keyboard Navigation & Action Accessibility Proofs
+// --------------------------------------------------------------------------
+export function evaluateKeyboardActionProof({
+  focusedCount = 0,
+  hasFocusRing = false,
+  targetFocused = false,
+  actionActivated = false,
+  openStateVerified = false,
+  closeStateVerified = false
+} = {}) {
+  if (typeof focusedCount !== 'number' || focusedCount < 3) {
+    return { passed: false, reason: `Insufficient interactive elements focused: ${focusedCount} < 3` };
+  }
+  if (!hasFocusRing) {
+    return { passed: false, reason: 'No visible focus outline/ring detected on focused elements' };
+  }
+  if (!targetFocused) {
+    return { passed: false, reason: 'Target interactive control was not focused via keyboard traversal' };
+  }
+  if (!actionActivated || !openStateVerified || !closeStateVerified) {
+    return { passed: false, reason: 'Keyboard focus occurred but interactive action activation failed or had no effect' };
+  }
+  return { passed: true, reason: null };
+}
+
+export async function executeKeyboardActionProof(page) {
+  // 1. Reset focus to document body
+  await page.locator('body').click();
+
+  let focusedCount = 0;
+  let hasFocusRing = false;
+  let targetFocused = false;
+
+  // 2. Traversal: press Tab sequentially, verifying focus rings on interactive elements
+  for (let i = 0; i < 15; i++) {
+    await page.keyboard.press('Tab');
+    const focusInfo = await page.evaluate(() => {
+      const el = document.activeElement;
+      if (!el || el === document.body || el === document.documentElement) return null;
+      const style = window.getComputedStyle(el);
+      const hasOutline = style.outlineStyle !== 'none' && style.outlineWidth !== '0px';
+      const hasShadow = style.boxShadow && style.boxShadow !== 'none';
+      const isTarget = el.tagName === 'BUTTON' && el.getAttribute('aria-controls') === 'desktop-workspace-navigation';
+      return {
+        tag: el.tagName,
+        isInteractive: ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) || el.hasAttribute('tabindex'),
+        hasVisibleFocus: Boolean(hasOutline || hasShadow),
+        isTarget
+      };
+    });
+
+    if (focusInfo?.isInteractive) {
+      focusedCount++;
+      if (focusInfo.hasVisibleFocus) hasFocusRing = true;
+    }
+    if (focusInfo?.isTarget) {
+      targetFocused = true;
+      break;
+    }
+  }
+
+  // 3. Shift+Tab reverse recovery if overshot or not yet reached
+  if (!targetFocused) {
+    for (let i = 0; i < 10; i++) {
+      await page.keyboard.press('Shift+Tab');
+      const isTarget = await page.evaluate(() => {
+        const el = document.activeElement;
+        return el?.tagName === 'BUTTON' && el.getAttribute('aria-controls') === 'desktop-workspace-navigation';
+      });
+      if (isTarget) {
+        targetFocused = true;
+        break;
+      }
+    }
+  }
+
+  if (!targetFocused) {
+    return {
+      focusedCount,
+      hasFocusRing,
+      targetFocused: false,
+      openStateVerified: false,
+      closeStateVerified: false,
+      actionActivated: false,
+      ...evaluateKeyboardActionProof({
+        focusedCount,
+        hasFocusRing,
+        targetFocused: false,
+        actionActivated: false,
+        openStateVerified: false,
+        closeStateVerified: false
+      })
+    };
+  }
+
+  // 4. Assert initial state: closed dropdown
+  const initialExpanded = await page.evaluate(() => {
+    const trigger = document.querySelector('button[aria-controls="desktop-workspace-navigation"]');
+    return trigger?.getAttribute('aria-expanded');
+  });
+  const initialDropdownVisible = await page.locator('#desktop-workspace-navigation').isVisible().catch(() => false);
+
+  if (initialExpanded === 'true' || initialDropdownVisible) {
+    return {
+      focusedCount,
+      hasFocusRing,
+      targetFocused: true,
+      openStateVerified: false,
+      closeStateVerified: false,
+      actionActivated: false,
+      passed: false,
+      reason: 'Target control was unexpectedly already open before keyboard activation'
+    };
+  }
+
+  // 5. Dispatch keyboard activation (Enter) without click substitution
+  await page.keyboard.press('Enter');
+  if (page.waitForTimeout) await page.waitForTimeout(150);
+
+  // 6. Assert visible DOM open state resulted from keyboard activation
+  const openExpanded = await page.evaluate(() => {
+    const trigger = document.querySelector('button[aria-controls="desktop-workspace-navigation"]');
+    return trigger?.getAttribute('aria-expanded');
+  });
+  const openDropdownVisible = await page.locator('#desktop-workspace-navigation').isVisible().catch(() => false);
+  const openStateVerified = openExpanded === 'true' && Boolean(openDropdownVisible);
+
+  // 7. Dispatch keyboard close action (Escape) and assert closed state
+  await page.keyboard.press('Escape');
+  if (page.waitForTimeout) await page.waitForTimeout(150);
+
+  const closeExpanded = await page.evaluate(() => {
+    const trigger = document.querySelector('button[aria-controls="desktop-workspace-navigation"]');
+    return trigger?.getAttribute('aria-expanded');
+  });
+  const closeDropdownVisible = await page.locator('#desktop-workspace-navigation').isVisible().catch(() => false);
+  const closeStateVerified = closeExpanded === 'false' && !closeDropdownVisible;
+
+  const actionActivated = openStateVerified && closeStateVerified;
+
+  const evalResult = evaluateKeyboardActionProof({
+    focusedCount,
+    hasFocusRing,
+    targetFocused,
+    actionActivated,
+    openStateVerified,
+    closeStateVerified
+  });
+
+  return {
+    focusedCount,
+    hasFocusRing,
+    targetFocused,
+    openStateVerified,
+    closeStateVerified,
+    actionActivated,
+    ...evalResult
+  };
 }
 
 // --------------------------------------------------------------------------
@@ -1249,32 +1410,18 @@ export async function runAllProofs() {
     // Restore desktop viewport
     await pageA.setViewportSize({ width: 1280, height: 800 });
 
-    // Keyboard navigation verification
-    console.log('Testing keyboard navigation accessibility...');
-    await pageA.locator('body').click();
-    let focusedCount = 0;
-    let hasFocusRing = false;
-    for (let i = 0; i < 10; i++) {
-      await pageA.keyboard.press('Tab');
-      const focusInfo = await pageA.evaluate(() => {
-        const el = document.activeElement;
-        if (!el || el === document.body || el === document.documentElement) return null;
-        const style = window.getComputedStyle(el);
-        const hasOutline = style.outlineStyle !== 'none' && style.outlineWidth !== '0px';
-        const hasShadow = style.boxShadow && style.boxShadow !== 'none';
-        return {
-          tag: el.tagName,
-          isInteractive: ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) || el.hasAttribute('tabindex'),
-          hasVisibleFocus: hasOutline || hasShadow
-        };
-      });
-      if (focusInfo && focusInfo.isInteractive) {
-        focusedCount++;
-        if (focusInfo.hasVisibleFocus) hasFocusRing = true;
-      }
+    // Keyboard navigation and deterministic activation proof
+    console.log('Testing keyboard navigation accessibility and deterministic activation...');
+    const keyboardProof = await executeKeyboardActionProof(pageA);
+    console.log(
+      `Keyboard proof: focusedCount=${keyboardProof.focusedCount}, focusRing=${keyboardProof.hasFocusRing}, ` +
+      `targetFocused=${keyboardProof.targetFocused}, open=${keyboardProof.openStateVerified}, ` +
+      `close=${keyboardProof.closeStateVerified}, actionActivated=${keyboardProof.actionActivated}`
+    );
+    if (!keyboardProof.passed) {
+      console.error(`Keyboard proof failed: ${keyboardProof.reason}`);
     }
-    console.log(`Keyboard navigation focused ${focusedCount} interactive elements, visible focus ring: ${hasFocusRing}`);
-    report.b28_presentation_and_accessibility.keyboard_navigation_accessible = focusedCount >= 3 && hasFocusRing;
+    report.b28_presentation_and_accessibility.keyboard_navigation_accessible = keyboardProof.passed === true;
 
   } catch (err) {
     console.error('Execution error occurred:', err);

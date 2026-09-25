@@ -11,7 +11,9 @@ import {
   performCleanup,
   calculateContrast,
   parseRgb,
-  sRgbLuminance
+  sRgbLuminance,
+  evaluateKeyboardActionProof,
+  executeKeyboardActionProof
 } from './run_c09_proofs.mjs';
 
 function buildBaselineValidReport() {
@@ -336,4 +338,76 @@ test('Collector Negative 18: cleanup gate withholds Clerk deletion when app dele
   assert.equal(cleanupResult.provider_deletion_withheld, true);
   assert.equal(clerkDeleteCalled, false, 'Provider deletion MUST NOT be called when app delete fails');
   assert.equal(cleanupResult.clerk_user_deleted, false);
+});
+
+test('Collector Negative 19: focus occurs but activation has no effect fails closed', async () => {
+  // 1. Exported collector unit assertion: focus occurs (3+ items, visible focus ring, target focused)
+  // but activation produces no visible open/close effect on the DOM
+  const evalResult = evaluateKeyboardActionProof({
+    focusedCount: 5,
+    hasFocusRing: true,
+    targetFocused: true,
+    actionActivated: false,
+    openStateVerified: false,
+    closeStateVerified: false
+  });
+  assert.equal(evalResult.passed, false);
+  assert.match(evalResult.reason, /activation failed or had no effect/i);
+
+  // 2. Exported execution helper with mock page:
+  // Actual Tab presses focus elements with focus rings and reach target control,
+  // but pressing Enter produces NO change in aria-expanded or dropdown visibility.
+  let evaluateCallCount = 0;
+  const mockPage = {
+    locator: (selector) => ({
+      click: async () => {},
+      isVisible: async () => false // Dropdown stays hidden even after activation
+    }),
+    keyboard: {
+      press: async (key) => {}
+    },
+    evaluate: async (fn) => {
+      evaluateCallCount++;
+      // Tab 1: Skip link (interactive with focus outline)
+      if (evaluateCallCount === 1) {
+        return { tag: 'A', isInteractive: true, hasVisibleFocus: true, isTarget: false };
+      }
+      // Tab 2: Brand link (interactive with focus outline)
+      if (evaluateCallCount === 2) {
+        return { tag: 'A', isInteractive: true, hasVisibleFocus: true, isTarget: false };
+      }
+      // Tab 3: Workspace button (target interactive control with focus outline)
+      if (evaluateCallCount === 3) {
+        return { tag: 'BUTTON', isInteractive: true, hasVisibleFocus: true, isTarget: true };
+      }
+      // Check initial state before activation: closed
+      if (evaluateCallCount === 4) {
+        return 'false';
+      }
+      // Check open state after Enter key press: BUG SIMULATION - remains 'false' (no effect)
+      if (evaluateCallCount === 5) {
+        return 'false';
+      }
+      // Check close state after Escape: 'false'
+      return 'false';
+    },
+    waitForTimeout: async () => {}
+  };
+
+  const proofResult = await executeKeyboardActionProof(mockPage);
+  assert.equal(proofResult.targetFocused, true, 'Target control should be focused');
+  assert.equal(proofResult.hasFocusRing, true, 'Focus ring must be verified');
+  assert.equal(proofResult.focusedCount >= 3, true, 'Sufficient interactive elements focused');
+  assert.equal(proofResult.openStateVerified, false, 'Open state must fail when activation had no effect');
+  assert.equal(proofResult.actionActivated, false, 'Action activation must be false');
+  assert.equal(proofResult.passed, false, 'Proof must fail closed when activation has no effect');
+
+  // 3. Connect to existing evaluator: report fails closed
+  const report = buildBaselineValidReport();
+  const cleanup = buildBaselineValidCleanup();
+  report.b28_presentation_and_accessibility.keyboard_navigation_accessible = proofResult.passed;
+
+  const evaluation = evaluateReport(report, cleanup);
+  assert.equal(evaluation.passed, false);
+  assert.ok(evaluation.failures.some((f) => f.includes('keyboard_navigation_accessible')));
 });

@@ -1,11 +1,12 @@
 # C09 Validation Matrix (B10, B11 & B28)
 
-- **Candidate Code Commit**: `0fe20e8e55c49808c998ac751e149da65c7eb3d5`<br>
+- **Candidate Code Commit**: `5dda3d2be24246e3470a65e7653a0b6e425cbece` (predecessor C09 implementation: `0fe20e8e55c49808c998ac751e149da65c7eb3d5`)<br>
+- **Current Evidence HEAD**: `18c1c862521de4e6132e1d3f22b2f158929f71eb`<br>
 - **Branch / PR**: `codex/finpath-quality-execution` / [PR #140](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/140)<br>
-- **Immutable Preview URL**: https://3b006fb1.interactive-fire-calculator.pages.dev<br>
+- **Immutable Preview URL**: https://3b006fb1.interactive-fire-calculator.pages.dev (B35 preview: https://51acbf88.interactive-fire-calculator.pages.dev)<br>
 - **Deployment ID**: `3b006fb1-72a6-4a1f-8499-05f9e082bba6`<br>
 - **Effective Preview D1 Database**: `0dbad68e-7493-452f-8504-98d4c61ee5da` (`finpath-preview`)<br>
-- **Candidate Status**: `READY_FOR_REVIEW`
+- **Candidate Status**: `BLOCKED` — historical `report.json` was generated at predecessor `0fe20e8e55c49808c998ac751e149da65c7eb3d5`; it was not re-executed at `5dda3d2be24246e3470a65e7653a0b6e425cbece`. PASS rows below record historical behavior only and are not current-checkpoint acceptance.
 
 ---
 
@@ -21,15 +22,15 @@
 | **B10-06** | Controlled error states for missing plan/version | **PASS** | Requesting a nonexistent plan ID or an out-of-range version number renders controlled, user-facing error banners without crashing the application. `report.json`, screenshot `03_b10_controlled_missing_error.png` |
 | **B10-07** | Cross-tenant plan isolation | **PASS** | Synthetic User B attempting to fetch or view User A's plan via `/api/plans/:id` receives HTTP 404 / 403 authorization rejection; no foreign data is disclosed. `report.json` |
 | **B10-08** | Full record immutability | **PASS** | Row-level D1 verification proves Version 1 records (`plan_versions`, `fire_plan_inputs`, `fire_plan_results`) remain strictly byte-identical before and after subsequent version creation and reviews. `report.json` |
-| **B11-01** | Additive plan reviews schema | **PASS** | Migrations `0007_monthly_plan_reviews.sql` and `0008_plan_reviews_unique_cycle.sql` applied to `finpath-preview` D1; `plan_reviews` table supports `plan_id`, `plan_version_number`, `choice`, `status`, `reviewed_at`, and `next_review_due_at`. `report.json` |
+| **B11-01** | Additive plan reviews schema | **PASS** | Migrations `0007_monthly_plan_reviews.sql` and `0008_plan_reviews_idempotency.sql` applied to `finpath-preview` D1; `plan_reviews` table supports `plan_id`, `plan_version_number`, `evidence_date`, `decision`, `status`, `notes`, `completed_at`, `deferred_until`, `next_review_due`, `idempotency_key`, `payload_hash`. `report.json` |
 | **B11-02** | Returning review >= 7-day rule | **PASS** | Attempting a review < 7 days from plan baseline creation is rejected with HTTP 400 and structured error code `TOO_EARLY_REVIEW`; review becomes permissible once >= 7 days have elapsed. `report.json` |
 | **B11-03** | Review completion with keep choice | **PASS** | User reviews current progress with "Keep plan as-is"; record is persisted with status `completed` and exact review timestamp. `report.json`, screenshot `04_b11_review_completed_panel.png` |
-| **B11-04** | Next review due date computation | **PASS** | Completion calculates next review due date exactly 30 days out (UTC calendar month cycle); persisted in D1 and displayed in UI. `report.json` |
+| **B11-04** | Next review due date computation | **PASS** | Completion calculates next review due date exactly 30 days out from server action time (UTC 30-day interval); persisted in D1 and displayed in UI. `report.json` |
 | **B11-05** | Review status persisted across reloads | **PASS** | Reloading `/plans?planId=${planId}` displays persisted review status badge, last review date, and next review date. `report.json`, screenshot `04_b11_review_completed_panel.png` |
-| **B11-06** | Idempotent repeat review submission | **PASS** | Re-submitting a review for the same version and cycle does not duplicate records or create orphan rows in D1. `report.json` |
-| **B11-07** | Review deferral workflow | **PASS** | Selecting "Defer review" persists status `deferred` with a revised due date (7-14 days out) without mutating plan inputs. `report.json` |
-| **B11-08** | In-app due reviews endpoint | **PASS** | `/api/plan-reviews/due` returns active due/upcoming review cards for the authenticated user; cards deep-link to the target plan. `report.json` |
-| **B11-09** | Cross-tenant review isolation | **PASS** | User B cannot submit a review or view reviews for User A's plans (`/api/plan-reviews` returns 404/403 for unauthorized plan IDs). `report.json` |
+| **B11-06** | Idempotent repeat review submission | **PASS** | Re-submitting a review for the same version and cycle does not duplicate records in D1; exact replay returns 200, conflicting intent returns 409. `report.json` |
+| **B11-07** | Review deferral workflow | **PASS** | Selecting "Defer review" persists status `deferred` with a revised due date (7-14 days out from server action time) without mutating plan inputs. `report.json` |
+| **B11-08** | In-app due reviews endpoint | **PASS** | `/api/plans/due-reviews` returns active due/upcoming review cards for the authenticated user; cards deep-link to the target plan. `report.json` |
+| **B11-09** | Cross-tenant review isolation | **PASS** | User B cannot submit a review or view reviews for User A's plans (`/api/plans/:id/reviews` returns 404 for unauthorized plan IDs). `report.json` |
 | **B11-10** | Account data export inclusion | **PASS** | `/api/account-data/export` includes all `planReviews` records belonging to the authenticated user in the downloadable export payload. `report.json` |
 | **B11-11** | Review revise choice workflow | **PASS** | Selecting "Revise plan" opens the planning workspace with inputs ready for editing, leading to Version 3 creation upon save. `report.json` |
 | **B28-01** | Dashboard reviews rollup | **PASS** | Dashboard renders `.dashboard-reviews-rollup` with clear review status cards, plan titles, and due dates. `report.json`, screenshot `05_b28_dashboard_review_rollup.png` |
