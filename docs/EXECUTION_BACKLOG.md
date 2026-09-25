@@ -424,3 +424,15 @@ The owner directed: “push it to the end of verification of all tasks … if th
 B31/C11 follow-up ZOOM-FINAL: a lower-cost capable agent performs one consolidated actual-browser 200% sweep of final public and authorized synthetic authenticated journeys, in both themes. Verify reachable essential controls, readable inputs/results, no text overlap or clipped actions, and reflow. Record browser version, actual zoom level, exact candidate, route, screenshot, defect and focused retest. Pixel density, CSS zoom and viewport resizing do not substitute for native browser zoom evidence. Primary reviews the evidence and closes the task. Existing C06 account-import/fixture toolbar repairs and screenshots are retained; repeat only if the final sweep finds a regression.
 
 C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 complete;22/34 accepted64.7%. C07 hosted auth remains gated. Native zoom deferred to final B31/C11.
+
+## Owner-prioritized assumption-control correction — 2026-09-24
+
+- [ ] **B35 — FIRE assumptions before Calculate, neutral optional defaults, calculator-wide source audit.**
+  - User problem/evidence: App.tsx initialPlan injects example equity, house, Social Security and healthcare flows; advanced details follows Calculate/results.
+  - Outcome: fresh plans contain no assumed extra cash flows; all active assumptions are visible before calculating and editable without losing saved values.
+  - Scope/files: App.tsx, styles if needed, behavioral tests, calculator-excellence audit/backlog; detailed [contract](execution/prompts/B35.md).
+  - Non-goals: formula engine edits, automatic migration of existing plans, mass calculator rewrites, production release.
+  - Acceptance/tests: DOM order, optional empty/zero defaults, numeric zero-rate boundary, saved-plan preservation, stale/recalculate, actual summary values, keyboard/mobile/theme evidence and full suite.
+  - Analytics: no new data collection; existing consent rules.
+  - Security/privacy: local synthetic verification; no credentials/hosted financial writes; isolated preview only after verification.
+  - Dependencies: existing FIRE presentation B22/B24; primary closure required. Calculator-wide implementation gets separate child contracts after audit review.

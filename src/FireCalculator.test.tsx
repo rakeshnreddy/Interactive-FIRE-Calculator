@@ -198,7 +198,7 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     expect(resultCard).not.toBeNull();
     expect(resultCard?.textContent).toContain('Annual withdrawal');
     expect(resultCard?.textContent).toContain('Need coverage');
-    expect(resultCard?.querySelector('strong')?.textContent?.trim()).toBe('$47,979');
+    expect(resultCard?.querySelector('strong')?.textContent?.trim()).toBe('$25,000');
 
     // Verify stale lifecycle in withdrawal mode
     const portfolioInput = document.querySelector<HTMLInputElement>('input[value="750000"]') ||
@@ -210,7 +210,7 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
         portfolioInput.dispatchEvent(new Event('change', { bubbles: true }));
       });
       expect(resultCard?.classList.contains('is-stale')).toBe(true);
-      expect(resultCard?.querySelector('strong')?.textContent?.trim()).toBe('$47,979');
+      expect(resultCard?.querySelector('strong')?.textContent?.trim()).toBe('$25,000');
 
       // Recalculate
       const recalcBtn = document.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
@@ -219,7 +219,7 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
       });
       const updatedCard = document.querySelector('.hero-result');
       expect(updatedCard?.classList.contains('is-stale')).toBe(false);
-      expect(updatedCard?.querySelector('strong')?.textContent?.trim()).toBe('$50,882');
+      expect(updatedCard?.querySelector('strong')?.textContent?.trim()).toBe('$26,667');
     }
   });
 
@@ -233,6 +233,15 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     for (const details of Array.from(advancedDetails)) {
       details.setAttribute('open', '');
     }
+
+    // Explicitly add a second rate period to verify unique ID generation across repeated rows
+    const addPeriodButton = document.querySelector('#period-title')
+      ?.closest('.panel')
+      ?.querySelector<HTMLButtonElement>('.secondary-button');
+    expect(addPeriodButton).toBeTruthy();
+    await act(async () => {
+      addPeriodButton!.click();
+    });
 
     // Collect all elements with IDs in the document
     const elementsWithId = document.querySelectorAll('[id]');
@@ -355,9 +364,9 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     });
     const initialScenarios = getScenarioCards();
     expect(initialScenarios).toEqual([
-      { name: 'Base', requiredPortfolio: '$1,301,620', deltaText: 'Vs planner: $0' },
-      { name: 'Guardrail', requiredPortfolio: '$1,537,155', deltaText: 'Vs planner: +$235,535' },
-      { name: 'Upside', requiredPortfolio: '$1,124,161', deltaText: 'Vs planner: -$177,459' }
+      { name: 'Base', requiredPortfolio: '$2,400,000', deltaText: 'Vs planner: $0' },
+      { name: 'Guardrail', requiredPortfolio: '$3,145,101', deltaText: 'Vs planner: +$745,101' },
+      { name: 'Upside', requiredPortfolio: '$1,888,146', deltaText: 'Vs planner: -$511,854' }
     ]);
 
     // 2. Switch to inputs and change withdrawal timing to 'start' without recalculating
@@ -394,9 +403,9 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     });
     const staleScenarios = getScenarioCards();
     expect(staleScenarios).toEqual([
-      { name: 'Base', requiredPortfolio: '$1,301,620', deltaText: 'Vs planner: $0' },
-      { name: 'Guardrail', requiredPortfolio: '$1,537,155', deltaText: 'Vs planner: +$235,535' },
-      { name: 'Upside', requiredPortfolio: '$1,124,161', deltaText: 'Vs planner: -$177,459' }
+      { name: 'Base', requiredPortfolio: '$2,400,000', deltaText: 'Vs planner: $0' },
+      { name: 'Guardrail', requiredPortfolio: '$3,145,101', deltaText: 'Vs planner: +$745,101' },
+      { name: 'Upside', requiredPortfolio: '$1,888,146', deltaText: 'Vs planner: -$511,854' }
     ]);
 
     // 3. Edit a scenario modifier (Guardrail spending shift to -10%) while draft is stale
@@ -411,9 +420,9 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     });
 
     const modifiedStaleScenarios = getScenarioCards();
-    expect(modifiedStaleScenarios[0].requiredPortfolio).toBe('$1,301,620');
-    expect(modifiedStaleScenarios[1].requiredPortfolio).toBe('$1,443,890');
-    expect(modifiedStaleScenarios[1].deltaText).toBe('Vs planner: +$142,270');
+    expect(modifiedStaleScenarios[0].requiredPortfolio).toBe('$2,400,000');
+    expect(modifiedStaleScenarios[1].requiredPortfolio).toBe('$2,979,569');
+    expect(modifiedStaleScenarios[1].deltaText).toBe('Vs planner: +$579,569');
 
     // 4. Now recalculate: timing pill updates to 'Start-year' and stale state clears
     await act(async () => {
@@ -435,8 +444,8 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
       getTab('Compare')?.click();
     });
     const recalculatedScenarios = getScenarioCards();
-    expect(recalculatedScenarios[0].requiredPortfolio).toBe('$1,389,105');
-    expect(recalculatedScenarios[1].requiredPortfolio).toBe('$1,518,061');
-    expect(recalculatedScenarios[1].deltaText).toBe('Vs planner: +$128,956');
+    expect(recalculatedScenarios[0].requiredPortfolio).toBe('$2,400,000');
+    expect(recalculatedScenarios[1].requiredPortfolio).toBe('$2,934,875');
+    expect(recalculatedScenarios[1].deltaText).toBe('Vs planner: +$534,875');
   });
 });

@@ -2457,6 +2457,54 @@ h2 {
   margin-top: 1rem;
 }
 
+.example-values-note {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--muted-strong);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.example-values-note svg {
+  flex-shrink: 0;
+  margin-top: 0.14rem;
+  color: var(--accent);
+}
+
+.example-values-note strong {
+  color: var(--heading);
+  font-weight: 750;
+}
+
+.assumption-baseline-note {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin-bottom: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-soft) 60%, var(--surface));
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.assumption-baseline-note svg {
+  flex-shrink: 0;
+  margin-top: 0.12rem;
+  color: var(--accent);
+}
+
+.assumption-baseline-note strong {
+  color: var(--heading);
+}
+
 .result-tabs-panel {
   margin-top: 1rem;
   padding: 0.65rem;

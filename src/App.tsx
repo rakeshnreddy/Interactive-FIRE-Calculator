@@ -10,6 +10,7 @@ import {
   ClipboardList,
   Download,
   FolderKanban,
+  Info,
   LayoutDashboard,
   LockKeyhole,
   LogIn,
@@ -54,6 +55,7 @@ import {
   totalDuration,
   type FirePlanResult,
   type PlanInput,
+  type PlanWarningCode,
   type RatePeriod,
   type RecurringCashFlow,
   type SimulationResult,
@@ -499,18 +501,18 @@ const calculatorModeCopy: Record<
     title: 'Find my FIRE number',
     shortTitle: 'FIRE number',
     primaryLabel: 'Annual withdrawal need',
-    primaryHelp: 'First-year retirement spending.',
+    primaryHelp: 'Example starting value: $80,000/yr. Adjust for your expected first-year retirement spending (not personalized advice).',
     secondaryLabel: 'Current portfolio',
-    secondaryHelp: 'Used for gap and stress checks.'
+    secondaryHelp: 'Example starting value: $750,000. Used for funding gap and stress checks.'
   },
   'withdrawal-income': {
     eyebrow: 'Number to income',
     title: 'Find my annual withdrawal',
     shortTitle: 'Withdrawal income',
     primaryLabel: 'FIRE number / portfolio',
-    primaryHelp: 'Portfolio amount to test.',
+    primaryHelp: 'Example starting value: $750,000. Portfolio amount to test (not personalized advice).',
     secondaryLabel: 'Need benchmark',
-    secondaryHelp: 'Optional spending goal to compare.'
+    secondaryHelp: 'Example spending goal to compare ($80,000/yr).'
   }
 };
 
@@ -520,31 +522,10 @@ export const initialPlan: PlanInput = {
   withdrawalTiming: 'end',
   desiredFinalValue: 0,
   ratePeriods: [
-    { duration: 10, r: 0.075, i: 0.03 },
-    { duration: 20, r: 0.06, i: 0.03 }
+    { duration: 30, r: 0, i: 0 }
   ],
-  oneOffEvents: [
-    { year: 5, amount: 50_000, label: 'Equity vest' },
-    { year: 12, amount: -120_000, label: 'Home upgrade' }
-  ],
-  recurringCashFlows: [
-    {
-      kind: 'income',
-      startYear: 15,
-      endYear: 30,
-      amount: 24_000,
-      label: 'Social Security',
-      inflationAdjusted: true
-    },
-    {
-      kind: 'expense',
-      startYear: 1,
-      endYear: 8,
-      amount: 12_000,
-      label: 'Healthcare bridge',
-      inflationAdjusted: true
-    }
-  ]
+  oneOffEvents: [],
+  recurringCashFlows: []
 };
 
 export const initialTimeline: TimelineInput = {
@@ -651,7 +632,7 @@ function modeledDurationFromTimeline(timeline: TimelineInput): number {
 
 function resizeRatePeriods(periods: RatePeriod[], duration: number): RatePeriod[] {
   const targetDuration = Math.max(1, Math.trunc(duration));
-  const source = periods.length > 0 ? periods : [{ duration: targetDuration, r: 0.06, i: 0.03 }];
+  const source = periods.length > 0 ? periods : [{ duration: targetDuration, r: 0, i: 0 }];
   let remaining = targetDuration;
   const resized: RatePeriod[] = [];
 
@@ -2404,10 +2385,43 @@ function pickString(record: Record<string, unknown>, keys: string[]): string | u
   return undefined;
 }
 
+const ENGINE_WARNING_TITLES: Record<PlanWarningCode, string> = {
+  balance_depleted: 'Portfolio depleted',
+  negative_balance: 'Negative balance',
+  high_return_assumption: 'High return assumption',
+  low_return_assumption: 'Low return assumption',
+  high_inflation_assumption: 'High inflation assumption',
+  low_inflation_assumption: 'Low inflation assumption',
+  invalid_one_off_year: 'Invalid event year',
+  one_off_year_out_of_range: 'Event outside timeline',
+  invalid_one_off_amount: 'Invalid event amount',
+  invalid_recurring_cash_flow: 'Invalid recurring cash flow',
+  recurring_cash_flow_out_of_range: 'Recurring flow outside timeline',
+  empty_rate_periods: 'Missing rate periods',
+  invalid_rate_period: 'Invalid rate period',
+  invalid_money_value: 'Invalid financial value',
+  unsupported_withdrawal_timing: 'Unsupported withdrawal timing',
+  required_portfolio_not_feasible: 'Calculation infeasible'
+};
+
+function humanizeWarningTitle(raw: string): string {
+  if (raw in ENGINE_WARNING_TITLES) {
+    return ENGINE_WARNING_TITLES[raw as PlanWarningCode];
+  }
+  if (!raw.includes('_')) {
+    return raw;
+  }
+  return raw
+    .split('_')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
 function normalizeWarning(value: unknown, index: number): WarningNotice | null {
   if (typeof value === 'string') {
     return {
-      title: `Model warning ${index + 1}`,
+      title: `Model check ${index + 1}`,
       message: value,
       severity: 'warning'
     };
@@ -2425,16 +2439,71 @@ function normalizeWarning(value: unknown, index: number): WarningNotice | null {
     : severityText.includes('warning') || severityText.includes('risk') || severityText.includes('caution')
       ? 'warning'
       : 'info';
-  const title =
-    pickString(value, ['title', 'label', 'name', 'code', 'kind', 'type']) ??
-    `Model warning ${index + 1}`;
+
+  const mode = pickString(value, ['mode']);
+  const modeContext =
+    mode === 'expense'
+      ? 'Target spend'
+      : mode === 'portfolio'
+        ? 'Current portfolio'
+        : null;
+
+  const rawTitle =
+    pickString(value, ['title', 'label', 'name']) ??
+    pickString(value, ['code', 'kind', 'type']) ??
+    `Model check ${index + 1}`;
+
+  const baseTitle = humanizeWarningTitle(rawTitle);
+  const title = modeContext ? `${baseTitle} (${modeContext})` : baseTitle;
+
   const message =
-    pickString(value, ['message', 'description', 'detail', 'text', 'body', 'summary']) ?? title;
+    pickString(value, ['message', 'description', 'detail', 'text', 'body', 'summary']) ?? baseTitle;
 
   return { title, message, severity };
 }
 
-function engineWarnings(result: FirePlanResult): WarningNotice[] {
+function shouldSuppressHorizonDepletion(
+  warning: unknown,
+  duration?: number,
+  desiredFinalValue?: number
+): boolean {
+  if (!isRecord(warning)) {
+    return false;
+  }
+
+  const code = pickString(warning, ['code']);
+  if (code !== 'balance_depleted') {
+    return false;
+  }
+
+  if (desiredFinalValue !== 0 || typeof duration !== 'number') {
+    return false;
+  }
+
+  const year = typeof warning.year === 'number' ? warning.year : undefined;
+  if (year !== duration) {
+    return false;
+  }
+
+  const endingBalance =
+    typeof warning.value === 'number' && Number.isFinite(warning.value)
+      ? warning.value
+      : undefined;
+
+  // Suppress ONLY when ending balance is close to zero (within $1 solver tolerance)
+  // Never suppress substantial negative balances or missing ending balances
+  if (endingBalance === undefined || Math.abs(endingBalance) > 1.0) {
+    return false;
+  }
+
+  return true;
+}
+
+function engineWarnings(
+  result: FirePlanResult,
+  duration?: number,
+  desiredFinalValue?: number
+): WarningNotice[] {
   const warningSource = result as FirePlanResult & {
     warning?: unknown;
     warnings?: unknown;
@@ -2446,6 +2515,7 @@ function engineWarnings(result: FirePlanResult): WarningNotice[] {
       : [warningSource.warning];
 
   return rawWarnings
+    .filter((warning) => !shouldSuppressHorizonDepletion(warning, duration, desiredFinalValue))
     .map((warning, index) => normalizeWarning(warning, index))
     .filter((warning): warning is WarningNotice => warning !== null);
 }
@@ -2486,7 +2556,7 @@ function planWarnings(
   currentRows: YearResult[],
   duration: number
 ): WarningNotice[] {
-  const exportedWarnings = engineWarnings(result);
+  const exportedWarnings = engineWarnings(result, duration, plan.desiredFinalValue);
   const notices: WarningNotice[] = [];
   const depletionYear = firstNegativeYear(currentRows);
   const requiredGap = result.requiredPortfolio - plan.initialPortfolio;
@@ -2528,7 +2598,9 @@ function planWarnings(
     });
   }
 
-  if (averageRate(plan.ratePeriods, 'i') >= averageRate(plan.ratePeriods, 'r')) {
+  const avgInflation = averageRate(plan.ratePeriods, 'i');
+  const avgReturn = averageRate(plan.ratePeriods, 'r');
+  if (avgInflation > 0 && avgInflation >= avgReturn) {
     notices.push({
       title: 'Inflation pressure',
       message: 'Average inflation is at or above average return across the modeled periods.',
@@ -2536,7 +2608,18 @@ function planWarnings(
     });
   }
 
-  return [...exportedWarnings, ...notices];
+  const combined = [...exportedWarnings, ...notices];
+
+  // Ensure no duplicate identical notices within same context
+  const seen = new Set<string>();
+  return combined.filter((notice) => {
+    const key = `${notice.severity}|${notice.title}|${notice.message}`;
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 }
 
 function Metric({
@@ -6225,6 +6308,24 @@ function App({ auth }: { auth: AuthState }) {
   const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
   const incomeStreams = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'income');
   const expensePhases = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'expense');
+  const ratesSummary =
+    plan.ratePeriods.length === 1
+      ? `${(plan.ratePeriods[0].r * 100).toFixed(1)}% return, ${(plan.ratePeriods[0].i * 100).toFixed(1)}% inflation`
+      : plan.ratePeriods
+          .map(
+            (p, idx) =>
+              `P${idx + 1} (${p.duration}y): ${(p.r * 100).toFixed(1)}% return, ${(p.i * 100).toFixed(1)}% inflation`
+          )
+          .join('; ');
+  const timingSummary = plan.withdrawalTiming === 'start' ? 'Start-year timing' : 'End-year timing';
+  const estateSummary = `${formatMoney(plan.desiredFinalValue)} estate`;
+  const eventCount = plan.oneOffEvents.length;
+  const eventsSummary = `${eventCount} event${eventCount === 1 ? '' : 's'}`;
+  const incomeCount = incomeStreams.length;
+  const incomeSummary = `${incomeCount} income stream${incomeCount === 1 ? '' : 's'}`;
+  const expenseCount = expensePhases.length;
+  const expenseSummary = `${expenseCount} expense phase${expenseCount === 1 ? '' : 's'}`;
+  const advancedSummaryDescription = `${ratesSummary} • ${timingSummary} • ${estateSummary} • ${eventsSummary} • ${incomeSummary} • ${expenseSummary}`;
   const activeCalculator = calculatorModeCopy[calculatorMode];
   const annualExpenseLabel =
     calculatorMode === 'fire-number'
@@ -7352,7 +7453,7 @@ function App({ auth }: { auth: AuthState }) {
     markInputsChanged();
     setPlan((current) => ({
       ...current,
-      ratePeriods: [...current.ratePeriods, { duration: 10, r: 0.06, i: 0.03 }]
+      ratePeriods: [...current.ratePeriods, { duration: 10, r: 0, i: 0 }]
     }));
   };
 
@@ -7371,7 +7472,7 @@ function App({ auth }: { auth: AuthState }) {
     markInputsChanged();
     setPlan((current) => ({
       ...current,
-      oneOffEvents: [...current.oneOffEvents, { year: 1, amount: 0, label: 'New event' }]
+      oneOffEvents: [...current.oneOffEvents, { year: 1, amount: 0, label: '' }]
     }));
   };
 
@@ -7391,14 +7492,27 @@ function App({ auth }: { auth: AuthState }) {
         ...(current.recurringCashFlows ?? []),
         {
           kind,
-          startYear: kind === 'income' ? Math.min(15, duration) : 1,
+          startYear: 1,
           endYear: duration,
-          amount: kind === 'income' ? 24_000 : 10_000,
-          label: kind === 'income' ? 'New income' : 'New expense',
+          amount: 0,
+          label: '',
           inflationAdjusted: true
         }
       ]
     }));
+  };
+
+  const resetToFreshPlan = () => {
+    markInputsChanged();
+    setPlan(initialPlan);
+    setTimeline(initialTimeline);
+    setActivePlanId(null);
+    setActivePlanVersionNumber(null);
+    setSaveName('Retirement base');
+    setHasCalculated(false);
+    setIsStale(false);
+    setDisplayedResult(null);
+    setPlanStorageMessage('Reset to clean baseline.');
   };
 
   const updateRecurringCashFlow = (index: number, updates: Partial<RecurringCashFlow>) => {
@@ -7790,6 +7904,21 @@ function App({ auth }: { auth: AuthState }) {
               </div>
             </div>
 
+            <div className="full-field example-values-note" role="note">
+              <Info size={16} aria-hidden="true" />
+              <span>
+                {calculatorMode === 'fire-number' ? (
+                  <>
+                    <strong>Starting example values:</strong> $80,000 annual spending and $750,000 current portfolio are starting examples, not personalized recommendations. Replace with your own numbers before calculating.
+                  </>
+                ) : (
+                  <>
+                    <strong>Starting example values:</strong> $750,000 portfolio and $80,000 spending benchmark are starting examples, not personalized recommendations. Replace with your own numbers before calculating.
+                  </>
+                )}
+              </span>
+            </div>
+
             <Field
               id="fire-current-age"
               label="Current age"
@@ -7884,7 +8013,7 @@ function App({ auth }: { auth: AuthState }) {
                 id="fire-initial-portfolio"
                 label={portfolioLabel}
                 prefix="$"
-                help="Your current invested assets. This is used for the funding gap and stress test."
+                help="Example starting assets: $750,000. Used for funding gap and stress checks (not personalized advice)."
                 issue={fieldIssue('initialPortfolio')}
               >
                 <input
@@ -7896,6 +8025,423 @@ function App({ auth }: { auth: AuthState }) {
               </Field>
             )}
           </div>
+
+          <details className="advanced-shell">
+            <summary className="advanced-summary">
+              <span>
+                <strong>Advanced assumptions</strong>
+                <small>{advancedSummaryDescription}</small>
+              </span>
+              <SlidersHorizontal size={18} />
+            </summary>
+            <div className="planner-grid" id="planner">
+              <section className="panel" aria-labelledby="period-title">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Rates</p>
+                    <h2 id="period-title">Market periods</h2>
+                  </div>
+                  <button className="secondary-button" onClick={addPeriod}>
+                    Add
+                  </button>
+                </div>
+
+                {plan.ratePeriods.every((p) => p.r === 0 && p.i === 0) && (
+                  <div className="assumption-baseline-note" role="note">
+                    <Info size={16} />
+                    <span>
+                      <strong>No growth or inflation assumed</strong> — 0.0% is a transparent baseline simplification, not an economic forecast. Adjust return and inflation for your expected asset allocation.
+                    </span>
+                  </div>
+                )}
+
+                <div className="period-list">
+                  {plan.ratePeriods.map((period, index) => (
+                    <div className="repeat-row" key={`${index}-${period.duration}`}>
+                      <span className="row-number">{index + 1}</span>
+                      <Field label="Years" issue={fieldIssue(`ratePeriods.${index}`)}>
+                        <input
+                          type="number"
+                          min="1"
+                          value={period.duration}
+                          onChange={(event) => {
+                            markInputsChanged();
+                            setPlan((current) => ({
+                              ...current,
+                              ratePeriods: updateRatePeriod(
+                                current.ratePeriods,
+                                index,
+                                'duration',
+                                numericValue(event.target.value, 1)
+                              )
+                            }));
+                          }}
+                        />
+                      </Field>
+                      <Field label="Return" issue={fieldIssue(`ratePeriods.${index}.r`)}>
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={(period.r * 100).toFixed(1)}
+                          onChange={(event) => {
+                            markInputsChanged();
+                            setPlan((current) => ({
+                              ...current,
+                              ratePeriods: updateRatePeriod(
+                                current.ratePeriods,
+                                index,
+                                'r',
+                                numericValue(event.target.value) / 100
+                              )
+                            }));
+                          }}
+                        />
+                      </Field>
+                      <Field label="Inflation" issue={fieldIssue(`ratePeriods.${index}.i`)}>
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={(period.i * 100).toFixed(1)}
+                          onChange={(event) => {
+                            markInputsChanged();
+                            setPlan((current) => ({
+                              ...current,
+                              ratePeriods: updateRatePeriod(
+                                current.ratePeriods,
+                                index,
+                                'i',
+                                numericValue(event.target.value) / 100
+                              )
+                            }));
+                          }}
+                        />
+                      </Field>
+                      <button
+                        className="icon-button row-action"
+                        aria-label="Remove period"
+                        onClick={() => removePeriod(index)}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="panel" aria-labelledby="model-options-title">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Model</p>
+                    <h2 id="model-options-title">Retirement model options</h2>
+                  </div>
+                </div>
+
+                <div className="form-grid">
+                  <Field
+                    label="Estate target"
+                    help="The amount you want remaining at the end of the plan."
+                    issue={fieldIssue('desiredFinalValue')}
+                  >
+                    <input
+                      type="number"
+                      min="0"
+                      value={plan.desiredFinalValue}
+                      onChange={setMoney('desiredFinalValue')}
+                    />
+                  </Field>
+                  <div className="field">
+                    <span className="field-label">
+                      Withdrawal timing
+                      <InfoTip text="Start means withdrawals happen before annual growth. End means withdrawals happen after annual growth." />
+                    </span>
+                    <div className="segmented">
+                      <button
+                        className={plan.withdrawalTiming === 'end' ? 'active' : ''}
+                        onClick={() => setTiming('end')}
+                      >
+                        End
+                      </button>
+                      <button
+                        className={plan.withdrawalTiming === 'start' ? 'active' : ''}
+                        onClick={() => setTiming('start')}
+                      >
+                        Start
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="panel" aria-labelledby="events-title">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Cash flows</p>
+                    <h2 id="events-title">One-off events</h2>
+                  </div>
+                  <button className="secondary-button" onClick={addEvent}>
+                    Add
+                  </button>
+                </div>
+
+                <div className="event-list">
+                  {plan.oneOffEvents.length === 0 && (
+                    <article className="scenario-card empty-card">
+                      <span>No one-off events</span>
+                      <small>Optional: Add home purchases, inheritances, or capital expenses. Never required.</small>
+                    </article>
+                  )}
+                  {plan.oneOffEvents.map((event, index) => (
+                    <div className="repeat-row event-row" key={`${index}-${event.label}`}>
+                      <Field label="Label">
+                        <input
+                          type="text"
+                          placeholder="e.g. Home upgrade"
+                          value={event.label ?? ''}
+                          onChange={(changeEvent) => {
+                            markInputsChanged();
+                            setPlan((current) => ({
+                              ...current,
+                              oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
+                                itemIndex === index ? { ...item, label: changeEvent.target.value } : item
+                              )
+                            }));
+                          }}
+                        />
+                      </Field>
+                      <Field label="Year" issue={fieldIssue(`oneOffEvents.${index}.year`)}>
+                        <input
+                          type="number"
+                          min="1"
+                          value={event.year}
+                          onChange={(changeEvent) => {
+                            markInputsChanged();
+                            setPlan((current) => ({
+                              ...current,
+                              oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
+                                itemIndex === index
+                                  ? { ...item, year: Math.trunc(numericValue(changeEvent.target.value, 1)) }
+                                  : item
+                              )
+                            }));
+                          }}
+                        />
+                      </Field>
+                      <Field label="Amount" issue={fieldIssue(`oneOffEvents.${index}.amount`)}>
+                        <input
+                          type="number"
+                          value={event.amount}
+                          onChange={(changeEvent) => {
+                            markInputsChanged();
+                            setPlan((current) => ({
+                              ...current,
+                              oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
+                                itemIndex === index
+                                  ? { ...item, amount: numericValue(changeEvent.target.value) }
+                                  : item
+                              )
+                            }));
+                          }}
+                        />
+                      </Field>
+                      <button
+                        className="icon-button row-action"
+                        aria-label="Remove event"
+                        onClick={() => removeEvent(index)}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="panel" aria-labelledby="income-title">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Income</p>
+                    <h2 id="income-title">Recurring income streams</h2>
+                  </div>
+                  <button className="secondary-button" onClick={() => addRecurringCashFlow('income')}>
+                    Add
+                  </button>
+                </div>
+
+                <div className="event-list">
+                  {incomeStreams.length === 0 && (
+                    <article className="scenario-card empty-card">
+                      <span>No income streams</span>
+                      <small>Optional: Add Social Security, pension, rental, or part-time income. Never required.</small>
+                    </article>
+                  )}
+                  {incomeStreams.map(({ flow, index }) => (
+                    <div className="repeat-row recurring-row" key={`income-${index}-${flow.label}`}>
+                      <Field label="Label">
+                        <input
+                          type="text"
+                          placeholder="e.g. Social Security"
+                          value={flow.label ?? ''}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, { label: event.target.value })
+                          }
+                        />
+                      </Field>
+                      <Field label="Start" issue={fieldIssue(`recurringCashFlows.${index}.startYear`)}>
+                        <input
+                          type="number"
+                          min="1"
+                          value={flow.startYear}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, {
+                              startYear: Math.trunc(numericValue(event.target.value, 1))
+                            })
+                          }
+                        />
+                      </Field>
+                      <Field label="End" issue={fieldIssue(`recurringCashFlows.${index}.endYear`)}>
+                        <input
+                          type="number"
+                          min="1"
+                          value={flow.endYear}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, {
+                              endYear: Math.trunc(numericValue(event.target.value, duration))
+                            })
+                          }
+                        />
+                      </Field>
+                      <Field label="Annual" issue={fieldIssue(`recurringCashFlows.${index}.amount`)}>
+                        <input
+                          type="number"
+                          min="0"
+                          value={flow.amount}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, { amount: numericValue(event.target.value) })
+                          }
+                        />
+                      </Field>
+                      <div className="field">
+                        <span>Growth</span>
+                        <div className="segmented">
+                          <button
+                            className={flow.inflationAdjusted !== false ? 'active' : ''}
+                            onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: true })}
+                          >
+                            Inflates
+                          </button>
+                          <button
+                            className={flow.inflationAdjusted === false ? 'active' : ''}
+                            onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: false })}
+                          >
+                            Fixed
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        className="icon-button row-action"
+                        aria-label="Remove income stream"
+                        onClick={() => removeRecurringCashFlow(index)}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="panel" aria-labelledby="phase-title">
+                <div className="panel-heading">
+                  <div>
+                    <p className="eyebrow">Expense phases</p>
+                    <h2 id="phase-title">Recurring spending phases</h2>
+                  </div>
+                  <button className="secondary-button" onClick={() => addRecurringCashFlow('expense')}>
+                    Add
+                  </button>
+                </div>
+
+                <div className="event-list">
+                  {expensePhases.length === 0 && (
+                    <article className="scenario-card empty-card">
+                      <span>No extra phases</span>
+                      <small>Optional: Add healthcare bridge, travel, mortgage, or care phases. Never required.</small>
+                    </article>
+                  )}
+                  {expensePhases.map(({ flow, index }) => (
+                    <div className="repeat-row recurring-row" key={`expense-${index}-${flow.label}`}>
+                      <Field label="Label">
+                        <input
+                          type="text"
+                          placeholder="e.g. Healthcare bridge"
+                          value={flow.label ?? ''}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, { label: event.target.value })
+                          }
+                        />
+                      </Field>
+                      <Field label="Start" issue={fieldIssue(`recurringCashFlows.${index}.startYear`)}>
+                        <input
+                          type="number"
+                          min="1"
+                          value={flow.startYear}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, {
+                              startYear: Math.trunc(numericValue(event.target.value, 1))
+                            })
+                          }
+                        />
+                      </Field>
+                      <Field label="End" issue={fieldIssue(`recurringCashFlows.${index}.endYear`)}>
+                        <input
+                          type="number"
+                          min="1"
+                          value={flow.endYear}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, {
+                              endYear: Math.trunc(numericValue(event.target.value, duration))
+                            })
+                          }
+                        />
+                      </Field>
+                      <Field label="Annual" issue={fieldIssue(`recurringCashFlows.${index}.amount`)}>
+                        <input
+                          type="number"
+                          min="0"
+                          value={flow.amount}
+                          onChange={(event) =>
+                            updateRecurringCashFlow(index, { amount: numericValue(event.target.value) })
+                          }
+                        />
+                      </Field>
+                      <div className="field">
+                        <span>Growth</span>
+                        <div className="segmented">
+                          <button
+                            className={flow.inflationAdjusted !== false ? 'active' : ''}
+                            onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: true })}
+                          >
+                            Inflates
+                          </button>
+                          <button
+                            className={flow.inflationAdjusted === false ? 'active' : ''}
+                            onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: false })}
+                          >
+                            Fixed
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        className="icon-button row-action"
+                        aria-label="Remove expense phase"
+                        onClick={() => removeRecurringCashFlow(index)}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+          </details>
 
           <div className="quick-actions">
             <button className="primary-button icon-text-button" onClick={calculateNow}>
@@ -7966,409 +8512,23 @@ function App({ auth }: { auth: AuthState }) {
           </section>
         )}
 
-        <details className="advanced-shell">
-          <summary className="advanced-summary">
-            <span>
-              <strong>Advanced assumptions</strong>
-              <small>Market periods, withdrawal timing, cash-flow events, and local draft tools</small>
-            </span>
-            <SlidersHorizontal size={18} />
-          </summary>
-          <div className="planner-grid" id="planner">
-            <section className="panel" aria-labelledby="model-options-title">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">Model</p>
-                  <h2 id="model-options-title">Retirement model options</h2>
-                </div>
-              </div>
 
-              <div className="form-grid">
-                <Field
-                  label="Estate target"
-                  help="The amount you want remaining at the end of the plan."
-                  issue={fieldIssue('desiredFinalValue')}
-                >
-                  <input
-                    type="number"
-                    min="0"
-                    value={plan.desiredFinalValue}
-                    onChange={setMoney('desiredFinalValue')}
-                  />
-                </Field>
-                <div className="field">
-                  <span className="field-label">
-                    Withdrawal timing
-                    <InfoTip text="Start means withdrawals happen before annual growth. End means withdrawals happen after annual growth." />
-                  </span>
-                  <div className="segmented">
-                    <button
-                      className={plan.withdrawalTiming === 'end' ? 'active' : ''}
-                      onClick={() => setTiming('end')}
-                    >
-                      End
-                    </button>
-                    <button
-                      className={plan.withdrawalTiming === 'start' ? 'active' : ''}
-                      onClick={() => setTiming('start')}
-                    >
-                      Start
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className="panel" aria-labelledby="period-title">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">Rates</p>
-                  <h2 id="period-title">Market periods</h2>
-                </div>
-                <button className="secondary-button" onClick={addPeriod}>
-                  Add
-                </button>
-              </div>
 
-              <div className="period-list">
-                {plan.ratePeriods.map((period, index) => (
-                  <div className="repeat-row" key={`${index}-${period.duration}`}>
-                    <span className="row-number">{index + 1}</span>
-                    <Field label="Years" issue={fieldIssue(`ratePeriods.${index}`)}>
-                      <input
-                        type="number"
-                        min="1"
-                        value={period.duration}
-                        onChange={(event) => {
-                          markInputsChanged();
-                          setPlan((current) => ({
-                            ...current,
-                            ratePeriods: updateRatePeriod(
-                              current.ratePeriods,
-                              index,
-                              'duration',
-                              numericValue(event.target.value, 1)
-                            )
-                          }));
-                        }}
-                      />
-                    </Field>
-                    <Field label="Return" issue={fieldIssue(`ratePeriods.${index}.r`)}>
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(period.r * 100).toFixed(1)}
-                        onChange={(event) => {
-                          markInputsChanged();
-                          setPlan((current) => ({
-                            ...current,
-                            ratePeriods: updateRatePeriod(
-                              current.ratePeriods,
-                              index,
-                              'r',
-                              numericValue(event.target.value) / 100
-                            )
-                          }));
-                        }}
-                      />
-                    </Field>
-                    <Field label="Inflation" issue={fieldIssue(`ratePeriods.${index}.i`)}>
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(period.i * 100).toFixed(1)}
-                        onChange={(event) => {
-                          markInputsChanged();
-                          setPlan((current) => ({
-                            ...current,
-                            ratePeriods: updateRatePeriod(
-                              current.ratePeriods,
-                              index,
-                              'i',
-                              numericValue(event.target.value) / 100
-                            )
-                          }));
-                        }}
-                      />
-                    </Field>
-                    <button
-                      className="icon-button row-action"
-                      aria-label="Remove period"
-                      onClick={() => removePeriod(index)}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
 
-            <section className="panel" aria-labelledby="events-title">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">Cash flows</p>
-                  <h2 id="events-title">One-off events</h2>
-                </div>
-                <button className="secondary-button" onClick={addEvent}>
-                  Add
-                </button>
-              </div>
 
-              <div className="event-list">
-                {plan.oneOffEvents.map((event, index) => (
-                  <div className="repeat-row event-row" key={`${index}-${event.label}`}>
-                    <Field label="Label">
-                      <input
-                        type="text"
-                        value={event.label ?? ''}
-                        onChange={(changeEvent) => {
-                          markInputsChanged();
-                          setPlan((current) => ({
-                            ...current,
-                            oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
-                              itemIndex === index ? { ...item, label: changeEvent.target.value } : item
-                            )
-                          }));
-                        }}
-                      />
-                    </Field>
-                    <Field label="Year" issue={fieldIssue(`oneOffEvents.${index}.year`)}>
-                      <input
-                        type="number"
-                        min="1"
-                        value={event.year}
-                        onChange={(changeEvent) => {
-                          markInputsChanged();
-                          setPlan((current) => ({
-                            ...current,
-                            oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
-                              itemIndex === index
-                                ? { ...item, year: Math.trunc(numericValue(changeEvent.target.value, 1)) }
-                                : item
-                            )
-                          }));
-                        }}
-                      />
-                    </Field>
-                    <Field label="Amount" issue={fieldIssue(`oneOffEvents.${index}.amount`)}>
-                      <input
-                        type="number"
-                        value={event.amount}
-                        onChange={(changeEvent) => {
-                          markInputsChanged();
-                          setPlan((current) => ({
-                            ...current,
-                            oneOffEvents: current.oneOffEvents.map((item, itemIndex) =>
-                              itemIndex === index
-                                ? { ...item, amount: numericValue(changeEvent.target.value) }
-                                : item
-                            )
-                          }));
-                        }}
-                      />
-                    </Field>
-                    <button
-                      className="icon-button row-action"
-                      aria-label="Remove event"
-                      onClick={() => removeEvent(index)}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
 
-            <section className="panel" aria-labelledby="income-title">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">Income</p>
-                  <h2 id="income-title">Recurring income streams</h2>
-                </div>
-                <button className="secondary-button" onClick={() => addRecurringCashFlow('income')}>
-                  Add
-                </button>
-              </div>
 
-              <div className="event-list">
-                {incomeStreams.length === 0 && (
-                  <article className="scenario-card empty-card">
-                    <span>No income streams</span>
-                    <small>Add Social Security, pension, rental, or part-time income.</small>
-                  </article>
-                )}
-                {incomeStreams.map(({ flow, index }) => (
-                  <div className="repeat-row recurring-row" key={`income-${index}-${flow.label}`}>
-                    <Field label="Label">
-                      <input
-                        type="text"
-                        value={flow.label ?? ''}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, { label: event.target.value })
-                        }
-                      />
-                    </Field>
-                    <Field label="Start" issue={fieldIssue(`recurringCashFlows.${index}.startYear`)}>
-                      <input
-                        type="number"
-                        min="1"
-                        value={flow.startYear}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, {
-                            startYear: Math.trunc(numericValue(event.target.value, 1))
-                          })
-                        }
-                      />
-                    </Field>
-                    <Field label="End" issue={fieldIssue(`recurringCashFlows.${index}.endYear`)}>
-                      <input
-                        type="number"
-                        min="1"
-                        value={flow.endYear}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, {
-                            endYear: Math.trunc(numericValue(event.target.value, duration))
-                          })
-                        }
-                      />
-                    </Field>
-                    <Field label="Annual" issue={fieldIssue(`recurringCashFlows.${index}.amount`)}>
-                      <input
-                        type="number"
-                        min="0"
-                        value={flow.amount}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, { amount: numericValue(event.target.value) })
-                        }
-                      />
-                    </Field>
-                    <div className="field">
-                      <span>Growth</span>
-                      <div className="segmented">
-                        <button
-                          className={flow.inflationAdjusted !== false ? 'active' : ''}
-                          onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: true })}
-                        >
-                          Inflates
-                        </button>
-                        <button
-                          className={flow.inflationAdjusted === false ? 'active' : ''}
-                          onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: false })}
-                        >
-                          Fixed
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      className="icon-button row-action"
-                      aria-label="Remove income stream"
-                      onClick={() => removeRecurringCashFlow(index)}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="panel" aria-labelledby="phase-title">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">Expense phases</p>
-                  <h2 id="phase-title">Recurring spending phases</h2>
-                </div>
-                <button className="secondary-button" onClick={() => addRecurringCashFlow('expense')}>
-                  Add
-                </button>
-              </div>
-
-              <div className="event-list">
-                {expensePhases.length === 0 && (
-                  <article className="scenario-card empty-card">
-                    <span>No extra phases</span>
-                    <small>Add healthcare, travel, mortgage, or late-life care phases.</small>
-                  </article>
-                )}
-                {expensePhases.map(({ flow, index }) => (
-                  <div className="repeat-row recurring-row" key={`expense-${index}-${flow.label}`}>
-                    <Field label="Label">
-                      <input
-                        type="text"
-                        value={flow.label ?? ''}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, { label: event.target.value })
-                        }
-                      />
-                    </Field>
-                    <Field label="Start" issue={fieldIssue(`recurringCashFlows.${index}.startYear`)}>
-                      <input
-                        type="number"
-                        min="1"
-                        value={flow.startYear}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, {
-                            startYear: Math.trunc(numericValue(event.target.value, 1))
-                          })
-                        }
-                      />
-                    </Field>
-                    <Field label="End" issue={fieldIssue(`recurringCashFlows.${index}.endYear`)}>
-                      <input
-                        type="number"
-                        min="1"
-                        value={flow.endYear}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, {
-                            endYear: Math.trunc(numericValue(event.target.value, duration))
-                          })
-                        }
-                      />
-                    </Field>
-                    <Field label="Annual" issue={fieldIssue(`recurringCashFlows.${index}.amount`)}>
-                      <input
-                        type="number"
-                        min="0"
-                        value={flow.amount}
-                        onChange={(event) =>
-                          updateRecurringCashFlow(index, { amount: numericValue(event.target.value) })
-                        }
-                      />
-                    </Field>
-                    <div className="field">
-                      <span>Growth</span>
-                      <div className="segmented">
-                        <button
-                          className={flow.inflationAdjusted !== false ? 'active' : ''}
-                          onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: true })}
-                        >
-                          Inflates
-                        </button>
-                        <button
-                          className={flow.inflationAdjusted === false ? 'active' : ''}
-                          onClick={() => updateRecurringCashFlow(index, { inflationAdjusted: false })}
-                        >
-                          Fixed
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      className="icon-button row-action"
-                      aria-label="Remove expense phase"
-                      onClick={() => removeRecurringCashFlow(index)}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="panel utility-panel" aria-labelledby="saved-title">
-              <div className="panel-heading">
-                <div>
-                  <p className="eyebrow">Scenarios</p>
-                  <h2 id="saved-title">Save and move plans</h2>
-                </div>
-              </div>
+        <section className="panel utility-panel" id="saved-plans" aria-labelledby="saved-title">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Scenarios</p>
+              <h2 id="saved-title">Save and move plans</h2>
+            </div>
+            <button className="secondary-button icon-text-button" onClick={resetToFreshPlan}>
+              <RotateCcw size={16} />
+              New plan
+            </button>
+          </div>
 
               <div className="auth-save-note">
                 <UserCircle size={17} />
@@ -8452,9 +8612,7 @@ function App({ auth }: { auth: AuthState }) {
                   ))
                 )}
               </div>
-            </section>
-          </div>
-        </details>
+        </section>
 
         {hasCalculated && (
           <section className="panel result-tabs-panel" aria-label="Calculated outputs">

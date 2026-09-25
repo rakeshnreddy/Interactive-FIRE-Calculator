@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-17",
+  "updated": "2026-09-24",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -569,6 +569,22 @@
       "owner": "Codex implementing session 2026-09-08",
       "code_sha": "b48ac00328f356746bd501921562e727feb7a8e5",
       "review": "reviews/C00R.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B35",
+      "title": "Make FIRE assumptions explicit, optional and user-controlled; audit calculator defaults",
+      "checkpoint": "C09A",
+      "status": "in_progress",
+      "dependencies": [
+        "B22",
+        "B24"
+      ],
+      "prompt": "prompts/B35.md",
+      "submission": "submissions/B35.md",
+      "owner": "Gemini CLI implementation worker",
+      "code_sha": null,
+      "review": null,
       "blocked_reason": null
     }
   ]
