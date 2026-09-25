@@ -85,7 +85,7 @@
   - Analytics/tests/privacy: comprehension task, not conversion pressure; copy guard tests and public render. B01; no analytics added by this copy change.
   - Rollback/effort: revert copy only. Human 0.5 day; agent 1–3 hours.
 
-- [ ] **B10 — Ready after B02–B06: restore the exact saved FIRE decision.**
+- [x] **B10 — Ready after B02–B06: restore the exact saved FIRE decision.**
   - Problem/evidence: dashboard follow-ups navigate only to list routes; users must find their saved work.
   - Outcome/scope: stable decision/plan deep link with explicit version loading and missing/archived states; first pilot FIRE only.
   - Non-goals/files: no new calculator routes/auto-imports; App navigation, PlanningWorkspace, safe route parser, tests.

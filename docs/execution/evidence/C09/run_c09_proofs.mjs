@@ -267,6 +267,45 @@ export async function switchTheme(page, targetMode) {
 }
 
 // --------------------------------------------------------------------------
+// Target Locator Screenshot Verification Helpers
+// --------------------------------------------------------------------------
+export async function assertTargetLocatorVisible(locator, name = 'Target locator') {
+  if (!locator) {
+    throw new Error(`${name} is missing or undefined`);
+  }
+  if (typeof locator.all === 'function') {
+    const items = await locator.all().catch(() => []);
+    for (const item of items) {
+      const visible = typeof item?.isVisible === 'function'
+        ? await item.isVisible().catch(() => false)
+        : false;
+      if (visible) {
+        return item;
+      }
+    }
+  } else if (typeof locator.count === 'function' && typeof locator.nth === 'function') {
+    const count = await locator.count().catch(() => 0);
+    for (let i = 0; i < count; i++) {
+      const item = locator.nth(i);
+      const visible = typeof item?.isVisible === 'function'
+        ? await item.isVisible().catch(() => false)
+        : false;
+      if (visible) {
+        return item;
+      }
+    }
+  }
+  const target = typeof locator.first === 'function' ? locator.first() : locator;
+  const visible = typeof target?.isVisible === 'function'
+    ? await target.isVisible().catch(() => false)
+    : false;
+  if (!visible) {
+    throw new Error(`${name} is not visible on page`);
+  }
+  return target;
+}
+
+// --------------------------------------------------------------------------
 // Keyboard Navigation & Action Accessibility Proofs
 // --------------------------------------------------------------------------
 export function evaluateKeyboardActionProof({
@@ -1154,7 +1193,23 @@ export async function runAllProofs() {
     console.log(`Review status badges on dashboard: ${statusBadgesCount}`);
     report.b28_presentation_and_accessibility.review_status_badges_explicit_text = statusBadgesCount > 0;
 
-    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '05_b28_dashboard_review_rollup.png') });
+    // Stage 1 visual capture: verify target locators visible before screenshots
+    const stage1Rollup = await assertTargetLocatorVisible(
+      pageA.locator('.dashboard-reviews-rollup'),
+      '.dashboard-reviews-rollup'
+    );
+    const stage1DueCard = await assertTargetLocatorVisible(
+      stage1Rollup.locator('.dashboard-review-card'),
+      '.dashboard-review-card in .dashboard-reviews-rollup'
+    );
+    await assertTargetLocatorVisible(
+      stage1DueCard.locator('.review-badge, .review-status-badge'),
+      'review badge in due review card'
+    );
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '05_b28_dashboard_review_rollup.png'), fullPage: true });
+    await stage1Rollup.scrollIntoViewIfNeeded().catch(() => {});
+    await stage1Rollup.screenshot({ path: join(SCREENSHOTS_DIR, '05_b28_dashboard_review_rollup_focused.png') });
 
     // R5 Stage 2: Perform DEFER review on Plan A (7 days)
     console.log('\n--- R5 Stage 2: Defer Plan A Review (7 days) ---');
@@ -1212,7 +1267,26 @@ export async function runAllProofs() {
       reviewStatusText.toLowerCase().includes('completed') ||
       reviewStatusText.toLowerCase().includes('assumptions');
 
-    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '04_b11_review_completed_panel.png') });
+    // After Keep review visual capture: verify target locators visible before screenshots
+    const reviewPanelLocator = await assertTargetLocatorVisible(
+      pageA.locator('.planning-review-panel'),
+      '.planning-review-panel'
+    );
+    const reviewStatusCardLocator = await assertTargetLocatorVisible(
+      reviewPanelLocator.locator('.review-status-card'),
+      '.review-status-card inside .planning-review-panel'
+    );
+    const reviewCardFullText = (await reviewStatusCardLocator.innerText().catch(() => '')).toLowerCase();
+    if (!reviewCardFullText.includes('up to date') && !reviewCardFullText.includes('completed') && !reviewCardFullText.includes('assumptions')) {
+      throw new Error(`Target status text missing in .review-status-card: got "${reviewCardFullText}"`);
+    }
+    if (!reviewCardFullText.includes('next review due')) {
+      throw new Error(`Target next review due text missing in .review-status-card: got "${reviewCardFullText}"`);
+    }
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '04_b11_review_completed_panel.png'), fullPage: true });
+    await reviewPanelLocator.scrollIntoViewIfNeeded().catch(() => {});
+    await reviewPanelLocator.screenshot({ path: join(SCREENSHOTS_DIR, '04_b11_review_completed_panel_focused.png') });
 
     // Idempotent repeat: submitting same evidence date, decision and idempotencyKey
     console.log('Testing idempotent repeat review submission...');
@@ -1324,7 +1398,31 @@ export async function runAllProofs() {
     console.log(`Goals panel stale evidence warning visible: ${staleWarningVisible}`);
     report.b28_presentation_and_accessibility.stale_evidence_warning_displayed_when_over_30_days = staleWarningVisible;
 
-    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '06_b28_goals_panel_linked_plan.png') });
+    // Goals page visual capture: verify target locators visible before screenshots
+    const goalCardLocator = await assertTargetLocatorVisible(
+      pageA.locator('.goal-card'),
+      '.goal-card'
+    );
+    await assertTargetLocatorVisible(
+      goalCardLocator.locator('.goal-linked-plan'),
+      '.goal-linked-plan inside .goal-card'
+    );
+    await assertTargetLocatorVisible(
+      goalCardLocator.locator('.goal-evidence-date'),
+      '.goal-evidence-date inside .goal-card'
+    );
+    await assertTargetLocatorVisible(
+      goalCardLocator.locator('.goal-funding-gap-row'),
+      '.goal-funding-gap-row inside .goal-card'
+    );
+    await assertTargetLocatorVisible(
+      goalCardLocator.locator('.stale-evidence-box, .stale-evidence-badge'),
+      'stale warning (.stale-evidence-box, .stale-evidence-badge) inside .goal-card'
+    );
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '06_b28_goals_panel_linked_plan.png'), fullPage: true });
+    await goalCardLocator.scrollIntoViewIfNeeded().catch(() => {});
+    await goalCardLocator.screenshot({ path: join(SCREENSHOTS_DIR, '06_b28_goals_panel_linked_plan_focused.png') });
 
     // Navigate to dashboard for theme switching and review badge contrast measurement
     await pageA.goto(`${PREVIEW_URL}/dashboard`, { waitUntil: 'domcontentloaded' });
@@ -1386,7 +1484,16 @@ export async function runAllProofs() {
     report.b28_presentation_and_accessibility.contrast_review_badges_light_pass =
       !isNaN(lightBadgeContrast) && lightBadgeContrast >= 4.5;
 
-    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '07_b28_light_theme_presentation.png') });
+    // Light theme visual capture: verify target locators visible before screenshots
+    await assertTargetLocatorVisible(pageA.locator('.review-badge'), '.review-badge in light theme');
+    const lightReviewContainer = await assertTargetLocatorVisible(
+      pageA.locator('.dashboard-reviews-rollup, .dashboard-review-card, .dashboard-plan-card'),
+      'review container in light theme'
+    );
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '07_b28_light_theme_presentation.png'), fullPage: true });
+    await lightReviewContainer.scrollIntoViewIfNeeded().catch(() => {});
+    await lightReviewContainer.screenshot({ path: join(SCREENSHOTS_DIR, '07_b28_light_theme_review_focused.png') });
 
     const darkTheme = await switchTheme(pageA, 'dark');
     await pageA.waitForTimeout(300);
@@ -1396,7 +1503,16 @@ export async function runAllProofs() {
     report.b28_presentation_and_accessibility.contrast_review_badges_dark_pass =
       !isNaN(darkBadgeContrast) && darkBadgeContrast >= 4.5;
 
-    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '08_b28_dark_theme_presentation.png') });
+    // Dark theme visual capture: verify target locators visible before screenshots
+    await assertTargetLocatorVisible(pageA.locator('.review-badge'), '.review-badge in dark theme');
+    const darkReviewContainer = await assertTargetLocatorVisible(
+      pageA.locator('.dashboard-reviews-rollup, .dashboard-review-card, .dashboard-plan-card'),
+      'review container in dark theme'
+    );
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '08_b28_dark_theme_presentation.png'), fullPage: true });
+    await darkReviewContainer.scrollIntoViewIfNeeded().catch(() => {});
+    await darkReviewContainer.screenshot({ path: join(SCREENSHOTS_DIR, '08_b28_dark_theme_review_focused.png') });
     report.b28_presentation_and_accessibility.theme_switching_verified = lightTheme.dataMode === 'light' && darkTheme.dataMode === 'dark';
 
     // Restore light theme
@@ -1417,7 +1533,23 @@ export async function runAllProofs() {
     report.b28_presentation_and_accessibility.viewport_containment_desktop_1280px_verified = await testViewport(1280, 800, 'desktop');
     report.b28_presentation_and_accessibility.viewport_containment_tablet_768px_verified = await testViewport(768, 1024, 'tablet');
     report.b28_presentation_and_accessibility.viewport_containment_mobile_320px_verified = await testViewport(320, 568, 'mobile320');
-    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '09_b28_mobile_320px_presentation.png') });
+    // Mobile 320 visual capture: verify target locators visible before screenshots
+    const mobileReviewCard = await assertTargetLocatorVisible(
+      pageA.locator('.dashboard-review-card, .dashboard-plan-card'),
+      'review card (.dashboard-review-card, .dashboard-plan-card) at 320px'
+    );
+    await assertTargetLocatorVisible(
+      mobileReviewCard.locator('.review-badge'),
+      '.review-badge on review card at 320px'
+    );
+    await assertTargetLocatorVisible(
+      pageA.locator('.mobile-menu-button:visible'),
+      'navigation/action controls at 320px'
+    );
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '09_b28_mobile_320px_presentation.png'), fullPage: true });
+    await mobileReviewCard.scrollIntoViewIfNeeded().catch(() => {});
+    await mobileReviewCard.screenshot({ path: join(SCREENSHOTS_DIR, '09_b28_mobile_320px_review_card_focused.png') });
 
     // Restore desktop viewport
     await pageA.setViewportSize({ width: 1280, height: 800 });

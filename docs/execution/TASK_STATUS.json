@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-24",
+  "updated": "2026-09-25",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -148,7 +148,7 @@
       "id": "B10",
       "title": "restore the exact saved FIRE decision",
       "checkpoint": "C09",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B02",
         "B03",
@@ -160,8 +160,8 @@
       "submission": "submissions/B10.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-pending-2026-09-25.md",
-      "blocked_reason": "Final-candidate hosted C09 lifecycle not rerun at 5dda3d2; Cloudflare CLI authentication error 10000 and OAuth approval timed out before any synthetic write. Exact target proof and cleanup remain required."
+      "review": "reviews/C09-final-candidate-2026-09-25.md",
+      "blocked_reason": null
     },
     {
       "id": "B11",
@@ -179,8 +179,8 @@
       "submission": "submissions/B11.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-pending-2026-09-25.md",
-      "blocked_reason": "Final-candidate hosted C09 lifecycle not rerun at 5dda3d2; Cloudflare CLI authentication error 10000 and OAuth approval timed out before any synthetic write. Exact target proof and cleanup remain required."
+      "review": "reviews/C09-final-candidate-2026-09-25.md",
+      "blocked_reason": "Current hosted proof posts decision=revise directly and reports success without UI selection, deliberate edit, Version 3 save/reload, or immutability verification; matrix B11-11 PASS is unsupported."
     },
     {
       "id": "B12",
@@ -460,8 +460,8 @@
       "submission": "submissions/B28.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-pending-2026-09-25.md",
-      "blocked_reason": "Final-candidate hosted C09 lifecycle not rerun at 5dda3d2; Cloudflare CLI authentication error 10000 and OAuth approval timed out before any synthetic write. Exact target proof and cleanup remain required."
+      "review": "reviews/C09-final-candidate-2026-09-25.md",
+      "blocked_reason": "Focused hosted screenshot shows sticky top navigation covering Monthly plan review heading/badge; fix actual scroll/focus overlap and retest at desktop and mobile in both themes."
     },
     {
       "id": "B29",

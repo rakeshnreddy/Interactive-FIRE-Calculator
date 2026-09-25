@@ -3,7 +3,7 @@
   "deployment_id": "51acbf88-db0a-47d1-b399-814dad835a9b",
   "preview_url": "https://51acbf88.interactive-fire-calculator.pages.dev",
   "effective_db": "0dbad68e-7493-452f-8504-98d4c61ee5da",
-  "timestamp": "2026-09-25T17:49:38.452Z",
+  "timestamp": "2026-09-25T17:42:04.714Z",
   "d1_migration_0007_verified": true,
   "d1_migration_0008_verified": true,
   "sqlite_plan_reviews_verified": true,
@@ -47,12 +47,11 @@
     "theme_switching_verified": true,
     "viewport_containment_desktop_1280px_verified": true,
     "viewport_containment_tablet_768px_verified": true,
-    "viewport_containment_mobile_320px_verified": true,
-    "keyboard_navigation_accessible": true
+    "viewport_containment_mobile_320px_verified": true
   },
   "cleanup": {
     "userA": {
-      "userId": "user_3JpWdV3iZAxxcCxg0agk6FO6tsC",
+      "userId": "user_3JpViT7KQS0r7nStYA695o8oR3e",
       "app_data_deleted": true,
       "user_tombstone_present": true,
       "clerk_user_deleted": true,
@@ -79,7 +78,7 @@
       "errors": []
     },
     "userB": {
-      "userId": "user_3JpWdgTm4B1FAvAMwRDXG0egAhS",
+      "userId": "user_3JpVicwWja5qT6crI7B8RiE9u2G",
       "app_data_deleted": true,
       "user_tombstone_present": true,
       "clerk_user_deleted": true,
@@ -105,5 +104,7 @@
       "provider_deletion_withheld": false,
       "errors": []
     }
-  }
+  },
+  "status": "FAILED",
+  "error": "navigation/action controls at 320px is not visible on page"
 }

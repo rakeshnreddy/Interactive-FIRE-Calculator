@@ -13,7 +13,8 @@ import {
   parseRgb,
   sRgbLuminance,
   evaluateKeyboardActionProof,
-  executeKeyboardActionProof
+  executeKeyboardActionProof,
+  assertTargetLocatorVisible
 } from './run_c09_proofs.mjs';
 
 function buildBaselineValidReport() {
@@ -530,5 +531,64 @@ test('Collector Behavioral 21: target never reachable fails closed with cycle de
   const evaluation = evaluateReport(report, cleanup);
   assert.equal(evaluation.passed, false, 'Evaluator must reject report when keyboard proof fails');
   assert.ok(evaluation.failures.some((f) => f.includes('keyboard_navigation_accessible')));
+});
+
+test('Collector Behavioral 22: assertTargetLocatorVisible passes when visible and fails closed when missing/hidden', async () => {
+  const visibleMock = {
+    first: () => visibleMock,
+    isVisible: async () => true
+  };
+  const resolved = await assertTargetLocatorVisible(visibleMock, 'test-element');
+  assert.equal(resolved, visibleMock);
+
+  const hiddenMock = {
+    first: () => hiddenMock,
+    isVisible: async () => false
+  };
+  await assert.rejects(
+    async () => assertTargetLocatorVisible(hiddenMock, 'hidden-element'),
+    /hidden-element is not visible on page/
+  );
+
+  const throwingMock = {
+    first: () => throwingMock,
+    isVisible: async () => { throw new Error('DOM detached'); }
+  };
+  await assert.rejects(
+    async () => assertTargetLocatorVisible(throwingMock, 'detached-element'),
+    /detached-element is not visible on page/
+  );
+
+  await assert.rejects(
+    async () => assertTargetLocatorVisible(null, 'null-element'),
+    /null-element is missing or undefined/
+  );
+});
+
+test('Collector Behavioral 23: assertTargetLocatorVisible resolves visible element when earlier matched element is hidden', async () => {
+  const hiddenEarlier = {
+    isVisible: async () => false
+  };
+  const visibleMobileButton = {
+    isVisible: async () => true
+  };
+  const multiLocatorAll = {
+    all: async () => [hiddenEarlier, visibleMobileButton],
+    first: () => hiddenEarlier,
+    isVisible: async () => false
+  };
+
+  const resolvedAll = await assertTargetLocatorVisible(multiLocatorAll, 'navigation/action controls at 320px');
+  assert.equal(resolvedAll, visibleMobileButton, 'Must resolve the visible mobile control rather than being masked by earlier hidden element (via all)');
+
+  const multiLocatorNth = {
+    count: async () => 2,
+    nth: (i) => (i === 0 ? hiddenEarlier : visibleMobileButton),
+    first: () => hiddenEarlier,
+    isVisible: async () => false
+  };
+
+  const resolvedNth = await assertTargetLocatorVisible(multiLocatorNth, 'navigation/action controls at 320px');
+  assert.equal(resolvedNth, visibleMobileButton, 'Must resolve the visible mobile control rather than being masked by earlier hidden element (via nth)');
 });
 
