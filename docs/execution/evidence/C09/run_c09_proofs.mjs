@@ -292,16 +292,17 @@ export function evaluateKeyboardActionProof({
   return { passed: true, reason: null };
 }
 
-export async function executeKeyboardActionProof(page) {
+export async function executeKeyboardActionProof(page, { maxTabs = 120 } = {}) {
   // 1. Reset focus to document body
   await page.locator('body').click();
 
   let focusedCount = 0;
   let hasFocusRing = false;
   let targetFocused = false;
+  const visitedKeys = new Set();
 
   // 2. Traversal: press Tab sequentially, verifying focus rings on interactive elements
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < maxTabs; i++) {
     await page.keyboard.press('Tab');
     const focusInfo = await page.evaluate(() => {
       const el = document.activeElement;
@@ -310,11 +311,28 @@ export async function executeKeyboardActionProof(page) {
       const hasOutline = style.outlineStyle !== 'none' && style.outlineWidth !== '0px';
       const hasShadow = style.boxShadow && style.boxShadow !== 'none';
       const isTarget = el.tagName === 'BUTTON' && el.getAttribute('aria-controls') === 'desktop-workspace-navigation';
+
+      // Compute unique DOM path key for cycle detection
+      const path = [];
+      let curr = el;
+      while (curr && curr !== document.body && curr !== document.documentElement) {
+        let index = 1;
+        let sibling = curr.previousElementSibling;
+        while (sibling) {
+          if (sibling.tagName === curr.tagName) index++;
+          sibling = sibling.previousElementSibling;
+        }
+        path.unshift(`${curr.tagName}:nth-of-type(${index})`);
+        curr = curr.parentElement;
+      }
+      const key = (el.id ? `#${el.id}` : '') + (path.length ? `>${path.join('>')}` : '');
+
       return {
         tag: el.tagName,
         isInteractive: ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) || el.hasAttribute('tabindex'),
         hasVisibleFocus: Boolean(hasOutline || hasShadow),
-        isTarget
+        isTarget,
+        key
       };
     });
 
@@ -326,20 +344,14 @@ export async function executeKeyboardActionProof(page) {
       targetFocused = true;
       break;
     }
-  }
 
-  // 3. Shift+Tab reverse recovery if overshot or not yet reached
-  if (!targetFocused) {
-    for (let i = 0; i < 10; i++) {
-      await page.keyboard.press('Shift+Tab');
-      const isTarget = await page.evaluate(() => {
-        const el = document.activeElement;
-        return el?.tagName === 'BUTTON' && el.getAttribute('aria-controls') === 'desktop-workspace-navigation';
-      });
-      if (isTarget) {
-        targetFocused = true;
+    // Cycle detection: if a unique key was returned and already visited, break early
+    const elementKey = focusInfo?.key || (focusInfo?.id ? `#${focusInfo.id}` : null);
+    if (elementKey) {
+      if (visitedKeys.has(elementKey)) {
         break;
       }
+      visitedKeys.add(elementKey);
     }
   }
 
