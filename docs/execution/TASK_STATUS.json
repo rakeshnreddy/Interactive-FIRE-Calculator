@@ -179,8 +179,8 @@
       "submission": "submissions/B11.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-hosted-runner-readiness-2026-09-25.md",
-      "blocked_reason": "Uncommitted runner seeds Version 2 with a fake result lacking requiredPortfolio, then requires that field; its post-conflict query counts three legitimate plan reviews against a one-row expectation. Fix source-backed seed, exact review scope, and fresh deployment inputs before hosted proof."
+      "review": "reviews/C09-hosted-attempt-7467116.md",
+      "blocked_reason": "Candidate 7467116 passed full local suite, CI and preview isolation, but hosted runner stopped on a strict review-badge selector before Version 2 revise and Version 3 proof. Synthetic users were fully cleaned. Correct and regress the ambiguous locator, then rerun complete hosted lifecycle on a new candidate."
     },
     {
       "id": "B12",
@@ -460,8 +460,8 @@
       "submission": "submissions/B28.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-hosted-runner-readiness-2026-09-25.md",
-      "blocked_reason": "Fixture isolation/server security are repaired locally, but hosted clearance still forces theme DOM state with a wrong storage key and swallows focus failure on an unfocusable heading. Prove real theme switching and actual keyboard focus on a fresh authenticated preview."
+      "review": "reviews/C09-hosted-attempt-7467116.md",
+      "blocked_reason": "Candidate 7467116 hosted proof reached the real authenticated review panel but failed before clearance measurement because .review-badge matched status and history badges. Fix exact header badge selection and prove real desktop/mobile light/dark clearance and focus on a fresh preview."
     },
     {
       "id": "B29",
