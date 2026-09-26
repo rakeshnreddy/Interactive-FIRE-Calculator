@@ -441,7 +441,7 @@ C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 c
 
 OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and required, with an explicit sourced illustrative-value action; an entered 0% is valid. B35's prohibition on silently injected equity, housing, Social Security and healthcare flows remains. OD-2 permits an additive accumulation function with independent goldens, leaving existing drawdown behavior unchanged. These are new B36 work, not a retroactive claim that B35 implemented them. C09B is released after C09 residual acceptance. Complete B37 → B39 → B42 → B36, then C10 B29 → B30, then C11 B41 → B38 → B12 → B31. B40 is queued after C11. Only Astra checks boxes.
 
-- [ ] **B37 — Delivery hygiene and stack retirement (C09B, first).**
+- [x] **B37 — Delivery hygiene and stack retirement (C09B, first).**
   - User problem/evidence: historical Flask/Python remains in the test path; tracked bulk evidence and two `.pyc` files inflate the current index. The previous worker submission also assigned an unrelated C09 preview to old C01 images.
   - Expected outcome/scope: port indispensable finance goldens, retire unused Flask/Firebase files and Python CI steps, implement PA-4 ignore/manifest with Git-derived provenance, untrack reviewed evidence and `.pyc` from the current index, and correct active normative docs.
   - Non-goals: no hosted runner or C09 revise proof (B42), history rewrite, shipped formula/UI change, lost accepted review link or production write.

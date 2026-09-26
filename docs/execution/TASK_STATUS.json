@@ -615,7 +615,7 @@
       "id": "B37",
       "title": "Retire legacy stack and shrink tracked delivery evidence",
       "checkpoint": "C09B",
-      "status": "changes_requested",
+      "status": "done",
       "dependencies": [
         "B11",
         "B28"
@@ -623,9 +623,9 @@
       "prompt": "prompts/B37.md",
       "submission": "submissions/B37.md",
       "owner": "Gemini implementation worker",
-      "code_sha": null,
-      "review": "reviews/B37-hygiene-review-2026-09-26.md",
-      "blocked_reason": "Narrowed hygiene review: seven manifest origin commits wrong, two concrete evidence references missing, current docs stale, baseline/log and finance-golden coverage require correction; see B37_HYGIENE_CORRECTION_PROMPT.md. B42 retains hosted residual."
+      "code_sha": "83bc1a27b54203a3d30e85b85a042c5b308190fe",
+      "review": "reviews/B37-closure-2026-09-26.md",
+      "blocked_reason": null
     },
     {
       "id": "B38",
