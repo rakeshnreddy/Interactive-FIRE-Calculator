@@ -278,7 +278,7 @@ export async function runSmoke({ config, adapters, scenario, tables, log = () =>
     await stage('sign-in', async () => {
       for (const tenant of tenants) await adapters.browser.signIn(tenant, config.url);
     });
-    await scenario.run({ config, tenants, stage, d1: adapters.d1, log });
+    await scenario.run({ config, tenants, stage, d1: adapters.d1, log, helpers: { SmokeError, waitForWorkspace } });
     const recorded = new Set(result.stages.filter((s) => s.status === 'PASS').map((s) => s.name));
     const missing = scenario.requiredStages.filter((name) => !recorded.has(name));
     if (missing.length) throw new SmokeError(`Scenario ended without observing: ${missing.join(', ')}`);
@@ -355,9 +355,13 @@ async function createLiveAdapters(config) {
     clerk: {
       async createTenant(label) {
         const nonce = crypto.randomBytes(4).toString('hex');
+        // Clerk development test identities: +clerk_test emails and 555-01xx numbers never send messages.
         const user = await clerkClient.users.createUser({
           emailAddress: [`finpath_smoke_${label.toLowerCase()}_${nonce}+clerk_test@example.com`],
+          phoneNumber: [`+1201555${String(100 + crypto.randomInt(100)).padStart(4, '0')}`],
           password: `FinPath!${crypto.randomBytes(18).toString('base64url')}#9`
+        }).catch((error) => {
+          throw new SmokeError(`Clerk createUser failed: ${error?.errors?.[0]?.code || error?.status || 'unknown'}`);
         });
         return { id: user.id, label, touchedApp: false };
       },

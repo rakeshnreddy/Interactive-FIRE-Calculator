@@ -2,11 +2,9 @@
 // Version 2 -> Revise in the UI -> explicit next step -> change annual expense 50,000 -> 45,000 in the
 // calculator -> save Version 3 -> hard reload -> D1 agrees with the UI -> Versions 1 and 2 unchanged
 // -> tenant B denied -> dashboard review card transitions from due to cleared.
-import { SmokeError, waitForWorkspace } from '../hosted_smoke.mjs';
-
-const fail = (message) => {
-  throw new SmokeError(message);
-};
+// Helpers arrive through the run() context so scenarios never import the runner (no import cycle).
+let fail;
+let waitForWorkspace;
 
 const versionRows = async (d1, planId, versionNumber) => {
   const version = await d1('SELECT * FROM plan_versions WHERE plan_id = ? AND version_number = ?;', [planId, versionNumber]);
@@ -25,14 +23,30 @@ async function exactlyOne(page, selector, label) {
   return page.locator(selector).first();
 }
 
-async function dashboardCardFor(page, baseUrl, planName) {
+async function dashboardReviewState(page, baseUrl, planName) {
+  const response = page.waitForResponse((r) => r.url().includes('/api/plans/due-reviews') && r.request().method() === 'GET', { timeout: 30000 });
   await page.goto(`${baseUrl}/dashboard`, { waitUntil: 'domcontentloaded' });
-  await page.waitForFunction(() => {
-    const text = document.body.innerText;
-    return !text.includes('Checking review cadence') && document.querySelector('.dashboard-calculator-rollup');
-  }, null, { timeout: 30000 });
+  const res = await response;
+  if (res.status() !== 200) fail(`due-reviews returned ${res.status()}`);
+  const item = ((await res.json())?.dueReviews || []).find((r) => r.planName === planName);
+  await page.waitForFunction(() => !document.body.innerText.includes('Checking review cadence'), null, { timeout: 30000 });
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
   if (await visibleCount(page, '.dashboard-reviews-rollup .error-banner')) fail('dashboard review status is in an error state');
-  return page.locator('.dashboard-review-card').filter({ hasText: planName }).count();
+  const cards = await page.locator('.dashboard-review-card').filter({ hasText: planName }).count();
+  return { apiStatus: item?.status ?? null, cards };
+}
+
+async function navigateByClick(page, locator, urlPattern, label) {
+  await locator.click();
+  try {
+    await page.waitForURL(urlPattern, { timeout: 20000, waitUntil: 'commit' });
+  } catch {
+    const seen = await page.evaluate(() => ({
+      path: location.pathname,
+      dialog: (document.querySelector('[role="dialog"], [role="alertdialog"]')?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 200)
+    }));
+    fail(`${label} did not navigate: ${JSON.stringify(seen)}`);
+  }
 }
 
 export default {
@@ -51,7 +65,11 @@ export default {
     'review-panel-layout'
   ],
 
-  async run({ config, tenants, stage, d1 }) {
+  async run({ config, tenants, stage, d1, helpers }) {
+    ({ waitForWorkspace } = helpers);
+    fail = (message) => {
+      throw new helpers.SmokeError(message);
+    };
     const [a, b] = tenants;
     const { calculateFirePlan } = await import('../../src/lib/fire.ts');
     const planName = `Smoke revise ${Date.now().toString(36)}`;
@@ -83,9 +101,9 @@ export default {
     const detail = { planId: '[synthetic]' };
 
     await stage('dashboard-shows-due-review', async () => {
-      const cards = await dashboardCardFor(a.page, config.url, planName);
-      if (cards !== 1) fail(`expected one due review card for the aged plan, found ${cards}`);
-      return detail;
+      const state = await dashboardReviewState(a.page, config.url, planName);
+      if (!['due', 'overdue'].includes(state.apiStatus) || state.cards !== 1) fail(`aged plan review state ${JSON.stringify(state)}; expected due/overdue with one card`);
+      return { ...detail, ...state };
     });
 
     const expectedV2 = { planId, version: 2 };
@@ -118,8 +136,7 @@ export default {
 
     await stage('calculator-edit-annual-expense', async () => {
       const open = await exactlyOne(a.page, '[data-testid="plan-revision-prompt"] button:has-text("Open calculator")', 'open calculator');
-      await open.click();
-      await a.page.waitForURL('**/calculators/fire', { timeout: 20000 });
+      await navigateByClick(a.page, open, '**/calculators/fire', 'Open calculator from revision prompt');
       await exactlyOne(a.page, '[data-testid="calculator-plan-context"]', 'calculator plan context');
       const input = await exactlyOne(a.page, 'input#fire-annual-expense', 'annual expense input');
       if ((await input.inputValue()) !== '50000') fail(`calculator did not load Version 2 expense (got ${await input.inputValue()})`);
@@ -130,8 +147,7 @@ export default {
 
     await stage('version-3-saved', async () => {
       const back = await exactlyOne(a.page, '[data-testid="calculator-plan-context"] button:has-text("Back to Planning Workspace")', 'back to workspace');
-      await back.click();
-      await a.page.waitForURL('**/plans**', { timeout: 20000 });
+      await navigateByClick(a.page, back, '**/plans**', 'Back to Planning Workspace');
       const notes = await exactlyOne(a.page, '.planning-save-panel .planning-notes-field input', 'version notes');
       await notes.fill('Smoke v3: annual expense 45,000');
       const save = await exactlyOne(a.page, '.planning-save-panel button:has-text("Save new version")', 'save new version');
@@ -159,8 +175,7 @@ export default {
       await a.page.reload({ waitUntil: 'domcontentloaded' });
       await waitForWorkspace(a.snapshot, { planId, version: 3 });
       const open = await exactlyOne(a.page, '.planning-save-panel .panel-heading button:has-text("Open calculator")', 'open calculator from plan');
-      await open.click();
-      await a.page.waitForURL('**/calculators/fire', { timeout: 20000 });
+      await navigateByClick(a.page, open, '**/calculators/fire', 'Open calculator from plan');
       const value = await (await exactlyOne(a.page, 'input#fire-annual-expense', 'annual expense input')).inputValue();
       if (value !== String(v3Expense)) fail(`reloaded calculator shows ${value}, D1 has ${v3Expense}`);
     });
@@ -172,8 +187,9 @@ export default {
     });
 
     await stage('dashboard-review-cleared', async () => {
-      const cards = await dashboardCardFor(a.page, config.url, planName);
-      if (cards !== 0) fail(`dashboard still shows ${cards} due card(s) after the review was recorded`);
+      const state = await dashboardReviewState(a.page, config.url, planName);
+      if (['due', 'overdue'].includes(state.apiStatus) || state.cards !== 0) fail(`after the revise review: ${JSON.stringify(state)}; expected no due card`);
+      return state;
     });
 
     await stage('review-panel-layout', async () => {
