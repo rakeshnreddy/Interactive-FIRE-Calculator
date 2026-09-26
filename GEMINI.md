@@ -14,7 +14,7 @@ This file defines the execution rules and operating boundaries for Gemini acting
 ## 2. Strict Prohibitions
 
 1. **No Recursive Delegation**: Do NOT invoke `tools/run-gemini.sh` or launch recursive worker sessions from within a worker run.
-2. **No Git Mutations**: NEVER run `git commit`, `git push`, `git merge`, `git rebase`, `git reset`, `git checkout`, `git branch -D`, alter remotes, or modify files inside `.git/`. Read-only commands (`git status`, `git diff`, `git log`, `git rev-parse`) are allowed.
+2. **No Git Publication or History Mutation**: NEVER run `git commit`, `git push`, `git merge`, `git rebase`, `git reset`, `git checkout`, `git branch -D`, alter remotes, or modify files inside `.git/`. Read-only commands (`git status`, `git diff`, `git log`, `git rev-parse`) are allowed. OA-2 narrowly permits B37 `git rm --cached` on the explicit reviewed bulk-evidence/`.pyc` index list only; preserve files on disk and leave publication to Astra.
 3. **No Financial Formula Alterations**: Preserve all core FIRE calculations, compound growth equations, withdrawal rates, and tax modeling rules unless explicitly directed by a signed contract.
 4. **No Secret or Credential Access**: Never read private `.env` files (`.env.*.local`, `.env`), credentials, cookies, or shell history. Error messages never output sensitive credential excerpts.
 5. **No Paid API Calls or Fallbacks**: Use account-based login only. Never silently fall back to paid API keys or external services.
@@ -33,5 +33,9 @@ When responding to Astra at the conclusion of a task:
 
 - Astra is the active architect/reviewer **role**, whether staffed by Codex or Claude; the authority and quality rules are the same.
 - From C09B onward, use the normal unit/integration suite and add minimal steps to the single shared hosted smoke runner. Do not build a new checkpoint-specific proof harness. Follow PA-1 in `docs/execution/IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md`.
-- Do not commit screenshots or raw output. Store raw files under ignored `docs/execution/evidence/**/raw/` and provide a manifest with path, SHA-256, size, exact commit and preview URL. Astra may select at most three review PNGs per task, each ≤300 KB. Keep old C09 evidence intact.
+- Do not commit screenshots or raw output. Store raw files under ignored `docs/execution/evidence/**/raw/` and provide a manifest with path, SHA-256, size and Git-derived source commit; include a preview URL only when its provenance is verified, otherwise null/unknown. Astra may select at most three review PNGs per task, each ≤300 KB. Keep old C09 evidence intact.
 - After the checkpoint correction cap, stop and report the observed residual. Never claim an unobserved hosted step passed. PA-2/PA-3 apply to C09 now; PA-4 onward begin C09B.
+
+## PA-10 — worker-hosted boundary (owner amendment 2026-09-26)
+
+The worker **never produces, simulates or labels live or hosted results**. If a step needs authority the worker lacks—deployment, credentials, hosted account creation, remote D1 writes or provider cleanup—report **`NOT RUN — requires Astra`** and give the exact command and prerequisites. Adapter-based local tests are LOCAL PASS only, never hosted PASS. Any worker-authored hosted PASS is automatic rejection. B37 is hygiene only; the shared runner and C09 revise residual belong to B42 after B39. Astra alone executes the hosted run and records the observed outcome. This rule overrides any older prompt asking Gemini to prove a hosted journey.

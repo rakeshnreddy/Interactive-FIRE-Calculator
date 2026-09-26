@@ -439,15 +439,15 @@ C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 c
 
 ## Owner amendment — 2026-09-26: C09B, C11 and calculator-excellence order
 
-OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and required, with an explicit sourced illustrative-value action; an entered 0% is valid. B35's prohibition on silently injected equity, housing, Social Security and healthcare flows remains. OD-2 permits an additive accumulation function with independent goldens, leaving existing drawdown behavior unchanged. These are new B36 work, not a retroactive claim that B35 implemented them. C09B is released after C09 residual acceptance. Complete B37 → B39 → B36, then C10 B29 → B30, then C11 B41 → B38 → B12 → B31. B40 is queued after C11. Only Astra checks boxes.
+OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and required, with an explicit sourced illustrative-value action; an entered 0% is valid. B35's prohibition on silently injected equity, housing, Social Security and healthcare flows remains. OD-2 permits an additive accumulation function with independent goldens, leaving existing drawdown behavior unchanged. These are new B36 work, not a retroactive claim that B35 implemented them. C09B is released after C09 residual acceptance. Complete B37 → B39 → B42 → B36, then C10 B29 → B30, then C11 B41 → B38 → B12 → B31. B40 is queued after C11. Only Astra checks boxes.
 
 - [ ] **B37 — Delivery hygiene and stack retirement (C09B, first).**
-  - User problem/evidence: 1,005 tracked evidence files (120,681,806 bytes), 53 tracked `output/` files (19,544,131 bytes) and two `.pyc` files were measured in this checkout; Python remains a test prerequisite for a Pages/TypeScript product.
-  - Expected outcome/scope: port indispensable finance goldens into TypeScript, retire unused Flask/Firebase files and Python CI steps, establish the PA-1 shared hosted smoke runner and PA-4 raw-evidence manifest/ignore rules; Astra alone performs reviewed Git untracking.
-  - Non-goals: no history rewrite, shipped formula or UI change, lost review link or deletion of accepted review records.
-  - Likely files: legacy app/tests/config, `scripts/test_all.sh`, workflows, `scripts/hosted_smoke.mjs`, `.gitignore`, README, evidence manifests.
-  - Acceptance: full suite and CI work without Python; ported goldens detect changed math; exact preview/DB and cleanup negative tests pass; accepted review links resolve; before/after tracked size is measured.
-  - Analytics/tests/security: no analytics; synthetic tenants only, no tokens in artifacts; public smoke and build isolation pass. Dependencies: B11/B28 accepted, C09B released; OA-2 before untracking. Rollback: restore retired paths from task commit, never rewrite history. Human 1–2 days; agent 2–4 h excluding review/provider waits. [Contract](execution/prompts/B37.md).
+  - User problem/evidence: historical Flask/Python remains in the test path; tracked bulk evidence and two `.pyc` files inflate the current index. The previous worker submission also assigned an unrelated C09 preview to old C01 images.
+  - Expected outcome/scope: port indispensable finance goldens, retire unused Flask/Firebase files and Python CI steps, implement PA-4 ignore/manifest with Git-derived provenance, untrack reviewed evidence and `.pyc` from the current index, and correct active normative docs.
+  - Non-goals: no hosted runner or C09 revise proof (B42), history rewrite, shipped formula/UI change, lost accepted review link or production write.
+  - Likely files: legacy app/tests/config, `src/lib/fire.test.ts`, `scripts/test_all.sh`, workflows, `.gitignore`, README and evidence manifest. Existing untracked `scripts/hosted_smoke*` belongs to B42, excluded from B37 candidate.
+  - Acceptance: finance goldens detect deliberate perturbation; full suite/CI work without Python and propagate failures; manifest Git-add commit and SHA-256 verified via `git show` or clean clone; normative docs do not point to removed runtime paths; baseline tracked size measured and post-commit clone sizes measured by Astra. Historic preview attribution must be truthful.
+  - Analytics/tests/security: no analytics or secrets; no hosted writes. Dependencies: B11/B28 accepted, C09B released, OA-2 done. Rollback: restore retired paths/index from reviewed commit; no history rewrite. Human 1–2 days; agent 2–4 h. [Contract](execution/prompts/B37.md); [focused rework](execution/B37_REWORK_PROMPT.md).
 
 - [ ] **B39 — Extract pure modules from App.tsx (C09B, second).**
   - User problem/evidence: `App.tsx` measured 8,841 lines and later feature work touches it; utility/parsing and shared primitives obscure review.
@@ -457,13 +457,21 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Acceptance: `App.tsx` shrinks ≥2,000 lines; parser negative tests and existing behavior pass; public rendered routes remain visually equivalent; full suite/build/CI/smoke pass.
   - Analytics/tests/security: none added; preserve auth/tenant handling and export values. Dependencies: B37 accepted. Rollback: revert isolated refactor. Human 1 day; agent 2–4 h. [Contract](execution/prompts/B39.md).
 
-- [ ] **B36 — FIRE answers when can I retire (C09B, third).**
+- [ ] **B42 — Shared hosted smoke runner plus C09 revise residual (C09B, third).**
+  - User problem/evidence: C09 Version 2 Revise → Version 3 remains unobserved hosted; the B37 worker stub returned a false preflight success without network or credentials. The worker lacks live deployment/write authority.
+  - Expected outcome/scope: reusable runner with injectable Cloudflare, Clerk, browser and D1 adapters; exact-code/isolated preview preflight; two synthetic tenants; real revise/Version 3 and downstream B28 observations; independent scoped cleanup. Gemini implements local tests; Astra alone runs and records hosted results.
+  - Non-goals: no worker-authored hosted PASS, production data, real-user accounts, migration, paid service or new calculator behavior.
+  - Likely files: `scripts/hosted_smoke.mjs`, adapter modules/tests, shared runner scripts, criterion matrix and `docs/execution/submissions/B42.md`.
+  - Acceptance: absent credentials/metadata exit nonzero; exact deployment SHA/ID/preview D1 verified before writes; plan ID/version readiness enforced; 15 cleanup tables derived from migrations with retained users tombstone; all reviewed negative cases fail closed locally; Astra-observed hosted journey and cleanup pass on one exact candidate, or a real defect is registered. Any worker-authored hosted PASS is rejected.
+  - Analytics/tests/security: no analytics; synthetic disposable users only; no secret output; full suite/CI and reviewer-run hosted proof. Dependencies: B37 and B39 accepted. Rollback: revert runner only, no data/schema change. Human 0.5–1 day; Gemini 4–8 h plus Astra hosted/review. [Contract](execution/prompts/B42.md).
+
+- [ ] **B36 — FIRE answers when can I retire (C09B, fourth).**
   - User problem/evidence: fresh FIRE rates silently initialize at 0%, no accumulation path or retire-age answer, and invalid/blank inputs can yield misleading results; measured live-audit observations require task-specific repro.
   - Expected outcome/scope: OD-1 empty required return/inflation with cited hint and explicit example action; OD-2 additive pure accumulation engine and retire-age estimate; input validation, explanatory result/chart, USD/INR formatting and old-plan compatibility. Apply PA-9 to touched App region.
   - Non-goals: existing drawdown behavior changes, Monte Carlo, tax model, injected cash flows, automatic historical-plan mutation.
   - Likely files: FIRE UI extraction from `src/App.tsx`, new pure engine near `src/lib/fire.ts`, shared currency formatter, tests and possibly an additive model-version migration.
   - Acceptance: ≥5 independent accumulation goldens including deliberate 0%, already-FI, never-FI and savings growth; all existing drawdown goldens unchanged; fresh rates blank/no result; invalid cases fail at field level; old saved plan unchanged; headline/chart/table agree; desktop/375px themes/keyboard/reduced-motion and PA-7 walkthrough pass.
-  - Analytics/tests/security: no new tracking; public signed-out use and synthetic saved-plan compatibility; formula references and migration decision required. Dependencies: B35/B39 and released C09B. Rollback: feature revert with safe additive schema. Human 2–4 days; agent 8–14 h plus Astra golden review. [Contract](execution/prompts/B36.md).
+  - Analytics/tests/security: no new tracking; public signed-out use and synthetic saved-plan compatibility; formula references and migration decision required. Dependencies: B35/B39/B42 and released C09B. Rollback: feature revert with safe additive schema. Human 2–4 days; agent 8–14 h plus Astra golden review. [Contract](execution/prompts/B36.md).
 
 - [ ] **B41 — Harden shared API boundaries (C11, first).**
   - User problem/evidence: repeated auth/body parsers, absent uniform size limits and message-substring deleted-user detection increase tenant and availability risk.

@@ -1,3 +1,5 @@
+> **Later owner reassignment (2026-09-26):** The unobserved C09 hosted residual moves from B37 to B42. B37 is hygiene only. The hosted criteria below remain unobserved until Astra runs B42.
+
 > **Primary reviewer closure amendment (2026-09-26):** This worker matrix records the pre-rerun pending criteria. The single final hosted run at `c4bf784b106878e7e0c940564216ec44a72ecb38` on preview `18b043da` failed during Clerk readiness before Version 2 revise and downstream B28 checks. Those remain **UNOBSERVED HOSTED**, not PASS. The owner-authorized PA-2/PA-3 C09 residual rule accepted B11/B28 and released C09B; B37's PA-1 shared smoke must observe the residual before B37 acceptance. See [primary closure review](../../reviews/C09-closure-2026-09-26.md) and [failed final attempt](attempt-c4bf784/).
 
 # C09 Validation Matrix (B10, B11 & B28)

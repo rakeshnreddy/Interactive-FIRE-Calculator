@@ -4,7 +4,7 @@ Owner: primary reviewing session (the session that prepared this packet). Implem
 
 ## Start here
 
-**Current-state entry point (2026-09-26):** [RESUME.md](RESUME.md), then [CHECKPOINTS.md](CHECKPOINTS.md) and [TASK_STATUS.json](TASK_STATUS.json). Older narrative release statements and the table's “Initial status” column are historical; the JSON ledger is authoritative. C09 remains open, C09B locked. Astra names the active architect/reviewer role, whether staffed by Codex or Claude. The [dated protocol amendment](IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md#owner-amendment--2026-09-26-proof-cost-correction-cap-and-answer-quality) governs PA-1 through PA-9 and C09's final correction round.
+**Current-state entry point (2026-09-26):** [RESUME.md](RESUME.md), then [CHECKPOINTS.md](CHECKPOINTS.md) and [TASK_STATUS.json](TASK_STATUS.json). Older narrative release statements and the table's “Initial status” column are historical; the JSON ledger is authoritative. C09 is accepted with an explicitly unobserved hosted residual; C09B is released in order B37 → B39 → B42 → B36. B37 is changes_requested. Astra names the active architect/reviewer role, whether staffed by Codex or Claude. The [dated protocol amendment](IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md#owner-amendment--2026-09-26-proof-cost-correction-cap-and-answer-quality) governs PA-1 through PA-10 and C09's final correction round.
 
 1. [MASTER_WORKER_PROMPT.md](MASTER_WORKER_PROMPT.md): paste into the implementing session. It chooses the current released checkpoint and processes its tasks sequentially.
 2. [CHECKPOINTS.md](CHECKPOINTS.md): order, release gates and accepted revisions. Only the primary reviewer edits release/approval fields.
@@ -112,6 +112,7 @@ The exact order is in CHECKPOINTS.md; ID order is retained here for lookup.
 | B39 | [Extract pure App modules](prompts/B39.md) | C09B | pending |
 | B40 | [Calculator library/copy consolidation](prompts/B40.md) | C14 | pending |
 | B41 | [Harden shared API boundaries](prompts/B41.md) | C11 | pending |
+| B42 | [Shared hosted smoke and C09 revise residual](prompts/B42.md) | C09B | pending |
 
 B33 bootstrap exception: with explicit owner authorization, publish configuration only using unchanged, identified backend code. Verify intended isolated preview binding before publication and effective deployed binding afterward. This is the narrow setup operation needed to prove isolation, not permission to publish changed APIs or perform financial writes. Those remain blocked until B33 is accepted. If the provider cannot establish the intended binding safely before publication, stop and request a separate isolated target.
 

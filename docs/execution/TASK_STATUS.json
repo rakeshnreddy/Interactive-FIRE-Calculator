@@ -601,7 +601,8 @@
       "status": "pending",
       "dependencies": [
         "B35",
-        "B39"
+        "B39",
+        "B42"
       ],
       "prompt": "prompts/B36.md",
       "submission": null,
@@ -614,17 +615,17 @@
       "id": "B37",
       "title": "Retire legacy stack and shrink tracked delivery evidence",
       "checkpoint": "C09B",
-      "status": "pending",
+      "status": "changes_requested",
       "dependencies": [
         "B11",
         "B28"
       ],
       "prompt": "prompts/B37.md",
-      "submission": null,
-      "owner": null,
+      "submission": "submissions/B37.md",
+      "owner": "Gemini implementation worker",
       "code_sha": null,
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/B37-first-review-2026-09-26.md",
+      "blocked_reason": "Hygiene rework pending: Git-derived manifest provenance, normative docs, truthful baseline clone measurements, Python-free suite. Hosted runner findings moved to B42."
     },
     {
       "id": "B38",
@@ -683,6 +684,22 @@
         "B37"
       ],
       "prompt": "prompts/B41.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B42",
+      "title": "Shared hosted smoke runner plus the C09 revise residual",
+      "checkpoint": "C09B",
+      "status": "pending",
+      "dependencies": [
+        "B37",
+        "B39"
+      ],
+      "prompt": "prompts/B42.md",
       "submission": null,
       "owner": null,
       "code_sha": null,
