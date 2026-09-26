@@ -131,3 +131,13 @@ Owner scope amendment 2026-09-26 (supersedes the B37 proof assignment above): B3
 B37 closure 2026-09-26: accepted at initial candidate `0c6e35cd9720a1e79b05a1dc7baad7498848ff93` and final two-file verification fix `83bc1a27b54203a3d30e85b85a042c5b308190fe` after finance golden coverage, independently repeated Python-free full suite, 53-object dual-provenance manifest verification, with initial exact-code GitHub CI 36237024836 and final [Verify run 36237336507](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/36237336507) both passing. [Review](reviews/B37-closure-2026-09-26.md). Historical screenshot bytes remain retrievable from Git objects; no history rewrite. One unchanged UI test timed out on an initial reviewer run and passed the clean retry. No new B37 hosted result or preview is claimed. C09B remains released with **B39 now available**, followed by B42 and B36. C10 remains locked. Ledger: 30/42 done (71.4% by task count, not effort).
 
 B39 first review 2026-09-26: Gemini’s uncommitted 2,241-line extraction is preserved, but [review](reviews/B39-first-review-2026-09-26.md) found a parity test that overwrites the supposed baseline, no normal desktop/375px browser proof, and changed malformed-success API error behavior. B39 is changes_requested with a [focused correction](B39_REWORK_PROMPT.md); B42 and B36 stay locked. B37 remains accepted; ledger stays 30/42 done. No B39 commit, exact-code CI, isolated preview, main merge or production deployment is claimed.
+
+## Owner takeover amendment — 2026-09-26
+
+The owner assigned all remaining delivery to Claude: design, planning, architecture, implementation, local and hosted verification, commits to PR #140, isolated preview deploys, and tracker upkeep. This supersedes the "Astra does not write code" rule for the rest of this program. **Claude does not accept tasks.** Each completed task is set to `ready_for_review`, with a submission, evidence and an implementer-side pre-review. Codex then verifies them independently at the end and alone records `done` and APPROVED closures.
+
+- **Order:** B39 → B42 → B36 → C10 (B29 → B30) → C11 (B41 → B38 → B12 → B31) → C14/B40. Later tasks may start on provisional dependencies that are `ready_for_review` (submitted and green), following the existing ordering rule.
+- **End state:** PR #140 with CI green and a verified isolated preview. No `main` merge and no production deploy. B12 is built to MEASUREMENT_AND_EXPERIMENT_PLAN.md with collection off by default. B13 and B14 stay gated on retention evidence.
+- **Verification handoff:** a verification prompt for Codex will be recorded in RESUME.md.
+
+B39: `ready_for_review` at `c7c5b31`; see [pre-review](reviews/B39-claude-prereview-2026-09-26.md). B42 is in progress.
