@@ -35,7 +35,7 @@ export function AnalyticsConsentPanel({
           disabled={granted === null || isSaving}
           onChange={(event) => onChange(event.target.checked)}
         />
-        <span>{granted ? 'Product analytics is on' : 'Product analytics is off'}</span>
+        <span>{isSaving ? 'Updating…' : granted ? 'Product analytics is on' : 'Product analytics is off'}</span>
       </label>
       <small>Turning it off stops collection immediately and deletes what was collected.</small>
       {message ? <p className="profile-status" role="status">{message}</p> : null}
