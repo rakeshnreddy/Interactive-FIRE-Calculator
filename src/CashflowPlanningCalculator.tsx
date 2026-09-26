@@ -44,6 +44,7 @@ import {
   type PlanningValidation
 } from './lib/cashflowPlanningCalculators';
 import type { CalculatorResult, SeoCalculator } from './lib/seoCalculators';
+import { resolveMoneyLocale } from './lib/money';
 
 export type PlanningCurrencyCode = 'AUD' | 'CAD' | 'EUR' | 'GBP' | 'INR' | 'JPY' | 'USD';
 export type PlanningLocaleCode = 'auto' | 'de-DE' | 'en-IN' | 'en-US';
@@ -90,7 +91,7 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
   const [isSaving, setIsSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const projection = useMemo(() => calculateNetWorth(inputs), [inputs]);
-  const resolvedLocale = locale === 'auto' ? undefined : locale;
+  const resolvedLocale = resolveMoneyLocale(currency, locale);
   const money = useMemo(() => moneyFormatter(currency, resolvedLocale), [currency, resolvedLocale]);
   const history = routeHistory(savedResults, calculator.slug);
 
@@ -268,7 +269,7 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
   const [isSaving, setIsSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const projection = useMemo(() => calculateBudget(inputs), [inputs]);
-  const resolvedLocale = locale === 'auto' ? undefined : locale;
+  const resolvedLocale = resolveMoneyLocale(currency, locale);
   const money = useMemo(() => moneyFormatter(currency, resolvedLocale), [currency, resolvedLocale]);
   const history = routeHistory(savedResults, calculator.slug);
 
@@ -456,7 +457,7 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
   const [isSaving, setIsSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const projection = useMemo(() => calculateEmergencyFund(inputs), [inputs]);
-  const resolvedLocale = locale === 'auto' ? undefined : locale;
+  const resolvedLocale = resolveMoneyLocale(currency, locale);
   const money = useMemo(() => moneyFormatter(currency, resolvedLocale), [currency, resolvedLocale]);
   const history = routeHistory(savedResults, calculator.slug);
 

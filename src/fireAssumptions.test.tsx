@@ -59,6 +59,21 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
+
+// B36/OD-1: return and inflation start empty; tests that exercise a calculated result enter them
+// explicitly (0% here is a deliberate user value, preserving the earlier numeric expectations).
+async function enterRates(returnPercent: string, inflationPercent: string) {
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!;
+  for (const [id, value] of [['fire-return', returnPercent], ['fire-inflation', inflationPercent]] as const) {
+    const input = document.querySelector<HTMLInputElement>(`#${id}`);
+    if (!input) throw new Error(`missing #${id}`);
+    await act(async () => {
+      setter.call(input, value);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  }
+}
+
 describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
   it('1. Numerical engine correctness: public calculateFirePlan handles transparent 0%/0% baseline safely', () => {
     // 30-year plan, $80k annual expense, 0% return, 0% inflation, desired final value 0
@@ -111,6 +126,7 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
+    await enterRates('0', '0');
 
     const summary = document.querySelector('.advanced-summary');
     expect(summary).not.toBeNull();
@@ -127,6 +143,7 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
+    await enterRates('0', '0');
 
     const advancedShell = document.querySelector('details.advanced-shell') as HTMLDetailsElement;
     expect(advancedShell).not.toBeNull();
@@ -183,6 +200,7 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
+    await enterRates('0', '0');
 
     const calcButton = document.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
     expect(calcButton.textContent).toContain('Calculate');
@@ -362,6 +380,7 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
+    await enterRates('0', '0');
 
     const calcButton = document.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
     await act(async () => {
@@ -376,7 +395,7 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     const cardMessages = warningCards.map((c) => c.querySelector('small')?.textContent?.trim() ?? '');
 
     // 1. Plan health must retain meaningful checks for $80k spend / $750k portfolio baseline
-    expect(cardTitles).toContain('Current portfolio drawdown');
+    expect(cardTitles).toContain('If withdrawals started now');
     expect(cardTitles).toContain('Funding gap');
     expect(cardTitles).toContain('High starting withdrawal');
 

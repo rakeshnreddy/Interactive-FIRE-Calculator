@@ -206,8 +206,8 @@ export function planWarnings(
 
   if (depletionYear !== null) {
     notices.push({
-      title: 'Current portfolio drawdown',
-      message: `At the entered spending level, the current portfolio crosses below zero in year ${depletionYear}.`,
+      title: 'If withdrawals started now',
+      message: `Withdrawing the entered spending from today's portfolio, with no further savings, would run out in year ${depletionYear} of retirement.`,
       severity: 'warning'
     });
   }

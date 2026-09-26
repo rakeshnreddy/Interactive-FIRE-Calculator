@@ -87,6 +87,11 @@ import {
   type TransactionType
 } from './lib/transactionAnalytics';
 import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
+import { estimateRetirementAge, fitRatePeriods, projectPortfolioAtAge, type AccumulationResult } from './lib/fireAccumulation';
+import { validateFireForm } from './lib/fireValidation';
+import { formatCompactMoney } from './lib/money';
+import { HERO_FIRE_FIXTURE } from './lib/heroExample';
+import { FireRetirementEstimate } from './components/FireRetirementEstimate';
 import {
   activeNavigationPath,
   buildPlanDeepLink,
@@ -403,6 +408,28 @@ export const initialTimeline: TimelineInput = {
 // against the same normalization so legacy snapshots do not look like unsaved edits.
 export function normalizeSnapshotPlan(plan: Partial<PlanInput>): PlanInput {
   return { ...initialPlan, ...plan, recurringCashFlows: plan.recurringCashFlows ?? [] };
+}
+
+export type FireCurrency = 'USD' | 'INR';
+export type SavingsEntry = { annualSavings: string; savingsGrowth: string };
+export type RateEntry = { r: string; i: string };
+
+// Example rates offered by "Use example values": the homepage illustration, so the two always agree.
+export const EXAMPLE_RATE_ENTRY: RateEntry = {
+  r: String(Math.round(HERO_FIRE_FIXTURE.ratePeriods[0].r * 1000) / 10),
+  i: String(Math.round(HERO_FIRE_FIXTURE.ratePeriods[0].i * 1000) / 10)
+};
+export const EMPTY_RATE_ENTRY: RateEntry = { r: '', i: '' };
+export const EMPTY_SAVINGS_ENTRY: SavingsEntry = { annualSavings: '', savingsGrowth: '' };
+
+export function formatRateText(rate: number): string {
+  return String(Math.round(rate * 100 * 10_000) / 10_000);
+}
+
+export function parseSavingsEntry(entry: SavingsEntry): { annualSavings: number | null; savingsGrowth: number } {
+  const savings = entry.annualSavings.trim() === '' ? null : Number(entry.annualSavings);
+  const growth = entry.savingsGrowth.trim() === '' ? 0 : Number(entry.savingsGrowth) / 100;
+  return { annualSavings: savings !== null && Number.isFinite(savings) ? savings : null, savingsGrowth: Number.isFinite(growth) ? growth : 0 };
 }
 
 export function normalizeSnapshotTimeline(timeline: Partial<TimelineInput>): TimelineInput {
@@ -3423,6 +3450,11 @@ function App({ auth }: { auth: AuthState }) {
     timeline: TimelineInput;
   } | null>(null);
   const [resultsMode, setResultsMode] = useState<ResultsMode>('chart');
+  // Return/inflation start empty and required (OD-1). null means "show the loaded plan's rates".
+  const [rateEntry, setRateEntry] = useState<RateEntry | null>(EMPTY_RATE_ENTRY);
+  const [savingsEntry, setSavingsEntry] = useState<SavingsEntry>(EMPTY_SAVINGS_ENTRY);
+  const [fireCurrency, setFireCurrency] = useState<FireCurrency>('USD');
+  const [calculatedSavings, setCalculatedSavings] = useState<ReturnType<typeof parseSavingsEntry>>({ annualSavings: null, savingsGrowth: 0 });
   const [projectionBasis, setProjectionBasis] = useState<ProjectionBasis>('fire-number');
   const [scenarios, setScenarios] = useState<ScenarioConfig[]>(initialScenarios);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>(readSavedPlans);
@@ -3532,15 +3564,7 @@ function App({ auth }: { auth: AuthState }) {
           setActivePlanId(matchingPlan.id);
           setActivePlanVersionNumber(targetVersionNumber);
           setSaveName(matchingPlan.name);
-          setPlan({
-            ...initialPlan,
-            ...snapshot.plan,
-            recurringCashFlows: snapshot.plan.recurringCashFlows ?? []
-          });
-          setTimeline(normalizeSnapshotTimeline(snapshot.timeline));
-          setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
-          setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
-          setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
+          hydrateFromSnapshot(snapshot);
           setHasCalculated(true);
           setPlanDeepLinkError(null);
           setPlanStorageMessage(`Version ${targetVersionNumber} of "${matchingPlan.name}" loaded.`);
@@ -3559,15 +3583,7 @@ function App({ auth }: { auth: AuthState }) {
       setActivePlanId(matchingPlan.id);
       setActivePlanVersionNumber(matchingPlan.versionNumber ?? null);
       setSaveName(matchingPlan.name);
-      setPlan({
-        ...initialPlan,
-        ...matchingPlan.snapshot.plan,
-        recurringCashFlows: matchingPlan.snapshot.plan.recurringCashFlows ?? []
-      });
-      setTimeline({ ...initialTimeline, ...matchingPlan.snapshot.timeline });
-      setCalculatorMode(matchingPlan.snapshot.calculatorMode ?? 'fire-number');
-      setScenarios(Array.isArray(matchingPlan.snapshot.scenarios) ? matchingPlan.snapshot.scenarios : initialScenarios);
-      setSeedApplications(Array.isArray(matchingPlan.snapshot.seedApplications) ? matchingPlan.snapshot.seedApplications : []);
+      hydrateFromSnapshot(matchingPlan.snapshot);
       setHasCalculated(true);
       setPlanDeepLinkError(null);
       setPlanStorageMessage(`Plan "${matchingPlan.name}" loaded.`);
@@ -3739,15 +3755,7 @@ function App({ auth }: { auth: AuthState }) {
           setActivePlanId(latestPlan.id);
           setActivePlanVersionNumber(latestPlan.versionNumber ?? null);
           setSaveName(latestPlan.name);
-          setPlan({
-            ...initialPlan,
-            ...latestPlan.snapshot.plan,
-            recurringCashFlows: latestPlan.snapshot.plan.recurringCashFlows ?? []
-          });
-          setTimeline({ ...initialTimeline, ...latestPlan.snapshot.timeline });
-          setCalculatorMode(latestPlan.snapshot.calculatorMode ?? 'fire-number');
-          setScenarios(Array.isArray(latestPlan.snapshot.scenarios) ? latestPlan.snapshot.scenarios : initialScenarios);
-          setSeedApplications(Array.isArray(latestPlan.snapshot.seedApplications) ? latestPlan.snapshot.seedApplications : []);
+          hydrateFromSnapshot(latestPlan.snapshot);
           setHasCalculated(true);
         }
         setPlanDeepLinkError(null);
@@ -4068,13 +4076,17 @@ function App({ auth }: { auth: AuthState }) {
       }),
     [activeSavedPlan?.name, activeSavedPlan?.versionNumber, auth.status, financialAccounts, goalSummary, goals, plan, result, transactions]
   );
+  const formatFireMoney = (value: number, options: Intl.NumberFormatOptions = {}) =>
+    formatMoney(value, { currency: fireCurrency, ...options });
+  const currencySymbol = fireCurrency === 'INR' ? '₹' : '$';
   const duration = totalDuration(plan.ratePeriods);
   const timelineDuration = modeledDurationFromTimeline(timeline);
   const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
   const incomeStreams = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'income');
   const expensePhases = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'expense');
-  const ratesSummary =
-    plan.ratePeriods.length === 1
+  const ratesSummary = rateEntry && (rateEntry.r.trim() === '' || rateEntry.i.trim() === '')
+    ? 'Return and inflation not set yet'
+    : plan.ratePeriods.length === 1
       ? `${(plan.ratePeriods[0].r * 100).toFixed(1)}% return, ${(plan.ratePeriods[0].i * 100).toFixed(1)}% inflation`
       : plan.ratePeriods
           .map(
@@ -4083,7 +4095,7 @@ function App({ auth }: { auth: AuthState }) {
           )
           .join('; ');
   const timingSummary = plan.withdrawalTiming === 'start' ? 'Start-year timing' : 'End-year timing';
-  const estateSummary = `${formatMoney(plan.desiredFinalValue)} estate`;
+  const estateSummary = `${formatFireMoney(plan.desiredFinalValue)} estate`;
   const eventCount = plan.oneOffEvents.length;
   const eventsSummary = `${eventCount} event${eventCount === 1 ? '' : 's'}`;
   const incomeCount = incomeStreams.length;
@@ -4100,11 +4112,59 @@ function App({ auth }: { auth: AuthState }) {
     calculatorMode === 'fire-number'
       ? activeCalculator.secondaryLabel
       : activeCalculator.primaryLabel;
+  const primaryPeriod = plan.ratePeriods[0] ?? { duration: 1, r: 0, i: 0 };
+  const returnPercentText = rateEntry ? rateEntry.r : formatRateText(primaryPeriod.r);
+  const inflationPercentText = rateEntry ? rateEntry.i : formatRateText(primaryPeriod.i);
+  const fireValidation = validateFireForm({
+    mode: calculatorMode,
+    currentAge: timeline.currentAge,
+    retirementAge: timeline.retirementAge,
+    planEndAge: timeline.planEndAge,
+    annualExpense: plan.annualExpense,
+    initialPortfolio: plan.initialPortfolio,
+    returnPercent: returnPercentText,
+    inflationPercent: inflationPercentText,
+    annualSavings: savingsEntry.annualSavings,
+    savingsGrowthPercent: savingsEntry.savingsGrowth
+  });
   const activePlanForDisplay = (hasCalculated && displayedResult) ? displayedResult.plan : plan;
   const activeResultForDisplay = (hasCalculated && displayedResult) ? displayedResult.result : result;
   const activeModeForDisplay = (hasCalculated && displayedResult) ? displayedResult.mode : calculatorMode;
   const activeSimulationForDisplay = (hasCalculated && displayedResult) ? displayedResult.simulation : currentSimulation;
   const activeTimelineForDisplay = (hasCalculated && displayedResult) ? displayedResult.timeline : timeline;
+
+  // "When could I retire?" — computed from the calculated snapshot only (B36, OD-2).
+  const retirementEstimate = useMemo(() => {
+    if (!hasCalculated || !displayedResult || displayedResult.mode !== 'fire-number') return null;
+    const shownPlan = displayedResult.plan;
+    const shownTimeline = displayedResult.timeline;
+    const first = shownPlan.ratePeriods[0] ?? { duration: 1, r: 0, i: 0 };
+    const neededAt = (age: number) =>
+      calculateFirePlan({ ...shownPlan, ratePeriods: fitRatePeriods(shownPlan.ratePeriods, shownTimeline.planEndAge - age) }).requiredPortfolio;
+    const accumulationBase = {
+      currentAge: shownTimeline.currentAge,
+      currentPortfolio: shownPlan.initialPortfolio,
+      annualSavings: calculatedSavings.annualSavings ?? 0,
+      savingsGrowth: calculatedSavings.savingsGrowth,
+      nominalReturn: first.r,
+      inflation: first.i
+    };
+    let estimate: AccumulationResult | null = null;
+    try {
+      estimate = calculatedSavings.annualSavings === null
+        ? null
+        : estimateRetirementAge({ ...accumulationBase, planEndAge: shownTimeline.planEndAge, targetAtAge: neededAt });
+    } catch {
+      estimate = null;
+    }
+    return {
+      estimate,
+      returnRate: first.r,
+      inflationRate: first.i,
+      neededAtChosenAge: neededAt(shownTimeline.retirementAge),
+      projectedAtChosenAge: calculatedSavings.annualSavings === null ? null : projectPortfolioAtAge(accumulationBase, shownTimeline.retirementAge)
+    };
+  }, [calculatedSavings, displayedResult, hasCalculated]);
 
   const withdrawalCoverage = activeResultForDisplay.maxAnnualExpense - activePlanForDisplay.annualExpense;
   const requiredWithdrawalRate =
@@ -4117,13 +4177,13 @@ function App({ auth }: { auth: AuthState }) {
     activeModeForDisplay === 'fire-number'
       ? {
           label: 'Required FIRE number',
-          value: formatMoney(activeResultForDisplay.requiredPortfolio),
+          value: formatFireMoney(activeResultForDisplay.requiredPortfolio),
           tone: 'accent' as const,
-          detail: `${formatMoney(activePlanForDisplay.annualExpense)} first-year withdrawal need.`
+          detail: `${formatFireMoney(activePlanForDisplay.annualExpense)} first-year withdrawal need.`
         }
       : {
           label: 'Annual withdrawal',
-          value: formatMoney(activeResultForDisplay.maxAnnualExpense),
+          value: formatFireMoney(activeResultForDisplay.maxAnnualExpense),
           tone: 'success' as const,
           detail: `${formatPercent(portfolioWithdrawalRate)} initial withdrawal rate.`
         };
@@ -4138,8 +4198,8 @@ function App({ auth }: { auth: AuthState }) {
           label: 'Need coverage',
           value:
             withdrawalCoverage >= 0
-              ? `+${formatMoney(withdrawalCoverage)}`
-              : formatMoney(withdrawalCoverage),
+              ? `+${formatFireMoney(withdrawalCoverage)}`
+              : formatFireMoney(withdrawalCoverage),
           tone: withdrawalCoverage >= 0 ? ('success' as const) : ('warning' as const)
         };
   const fireNumberGap = activeResultForDisplay.requiredPortfolio - activePlanForDisplay.initialPortfolio;
@@ -4148,15 +4208,15 @@ function App({ auth }: { auth: AuthState }) {
       ? fireNumberGap > 0
         ? {
             label: 'Gap to FIRE number',
-            value: formatMoney(fireNumberGap)
+            value: formatFireMoney(fireNumberGap)
           }
         : {
             label: 'Above FIRE number',
-            value: `+${formatMoney(Math.abs(fireNumberGap))}`
+            value: `+${formatFireMoney(Math.abs(fireNumberGap))}`
           }
       : {
           label: 'Portfolio tested',
-          value: formatMoney(activePlanForDisplay.initialPortfolio)
+          value: formatFireMoney(activePlanForDisplay.initialPortfolio)
         };
   const projectionRows =
     projectionBasis === 'fire-number' ? activeResultForDisplay.expenseMode.rows : activeSimulationForDisplay.rows;
@@ -4245,6 +4305,8 @@ function App({ auth }: { auth: AuthState }) {
   };
 
   const calculateNow = () => {
+    if (!fireValidation.ok) return;
+    setCalculatedSavings(parseSavingsEntry(savingsEntry));
     setDisplayedResult({
       result,
       plan: { ...plan },
@@ -4276,8 +4338,44 @@ function App({ auth }: { auth: AuthState }) {
   const setMoney = (key: keyof Pick<PlanInput, 'annualExpense' | 'initialPortfolio' | 'desiredFinalValue'>) =>
     (event: ChangeEvent<HTMLInputElement>) => {
       markInputsChanged();
-      setPlan((current) => ({ ...current, [key]: numericValue(event.target.value) }));
+      const text = event.target.value.trim();
+      const parsed = text === '' ? Number.NaN : Number(text);
+      setPlan((current) => ({ ...current, [key]: Number.isFinite(parsed) ? parsed : Number.NaN }));
     };
+
+  const setPrimaryRate = (key: 'r' | 'i') => (event: ChangeEvent<HTMLInputElement>) => {
+    markInputsChanged();
+    const text = event.target.value;
+    const first = plan.ratePeriods[0];
+    setRateEntry((current) => ({
+      r: key === 'r' ? text : current?.r ?? formatRateText(first?.r ?? 0),
+      i: key === 'i' ? text : current?.i ?? formatRateText(first?.i ?? 0)
+    }));
+    const parsed = Number(text);
+    if (text.trim() !== '' && Number.isFinite(parsed)) {
+      setPlan((current) => ({ ...current, ratePeriods: updateRatePeriod(current.ratePeriods, 0, key, parsed / 100) }));
+    }
+  };
+
+  const applyExampleRates = () => {
+    markInputsChanged();
+    setRateEntry(EXAMPLE_RATE_ENTRY);
+    setPlan((current) => ({
+      ...current,
+      ratePeriods: updateRatePeriod(
+        updateRatePeriod(current.ratePeriods, 0, 'r', Number(EXAMPLE_RATE_ENTRY.r) / 100),
+        0,
+        'i',
+        Number(EXAMPLE_RATE_ENTRY.i) / 100
+      )
+    }));
+  };
+
+  const setSavingsValue = (key: keyof SavingsEntry) => (event: ChangeEvent<HTMLInputElement>) => {
+    markInputsChanged();
+    const text = event.target.value;
+    setSavingsEntry((current) => ({ ...current, [key]: text }));
+  };
 
   const setTiming = (timing: WithdrawalTiming) => {
     markInputsChanged();
@@ -4306,7 +4404,9 @@ function App({ auth }: { auth: AuthState }) {
   };
 
   const buildSnapshot = (): AppSnapshot => ({
+    accumulation: parseSavingsEntry(savingsEntry),
     calculatorMode,
+    currency: fireCurrency,
     engineVersion: 'fire-ts-v1',
     plan,
     scenarios,
@@ -4315,18 +4415,33 @@ function App({ auth }: { auth: AuthState }) {
     timeline
   });
 
-  const applySnapshot = (snapshot: AppSnapshot) => {
+  // Every path that loads a saved snapshot goes through here so stored rates, savings and currency
+  // are restored exactly (older snapshots simply lack the optional fields).
+  const hydrateFromSnapshot = (snapshot: AppSnapshot) => {
     const nextPlan = normalizeSnapshotPlan(snapshot.plan);
     const nextTimeline = normalizeSnapshotTimeline(snapshot.timeline);
+    const savings: SavingsEntry = {
+      annualSavings: typeof snapshot.accumulation?.annualSavings === 'number' ? String(snapshot.accumulation.annualSavings) : '',
+      savingsGrowth: snapshot.accumulation?.savingsGrowth ? formatRateText(snapshot.accumulation.savingsGrowth) : ''
+    };
+    setPlan(nextPlan);
+    setTimeline(nextTimeline);
+    setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
+    setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
+    setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
+    setRateEntry(null);
+    setSavingsEntry(savings);
+    setCalculatedSavings(parseSavingsEntry(savings));
+    setFireCurrency(snapshot.currency === 'INR' ? 'INR' : 'USD');
+    return { nextPlan, nextTimeline };
+  };
+
+  const applySnapshot = (snapshot: AppSnapshot) => {
+    const { nextPlan, nextTimeline } = hydrateFromSnapshot(snapshot);
     const nextMode = snapshot.calculatorMode ?? 'fire-number';
     const nextResult = calculateFirePlan(nextPlan);
     const nextSimulation = stressTestCurrentPortfolio(nextPlan);
 
-    setPlan(nextPlan);
-    setTimeline(nextTimeline);
-    setCalculatorMode(nextMode);
-    setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
-    setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
     setLastSeedImport(null);
     setDisplayedResult({
       result: nextResult,
@@ -5052,6 +5167,10 @@ function App({ auth }: { auth: AuthState }) {
   };
 
   const saveCurrentPlan = async () => {
+    if (!fireValidation.ok) {
+      setPlanStorageMessage('Complete the highlighted FIRE fields before saving.');
+      return;
+    }
     const name = saveName.trim() || 'Retirement plan';
     const snapshot = buildSnapshot();
 
@@ -5112,6 +5231,10 @@ function App({ auth }: { auth: AuthState }) {
     draft: PlanningSaveDraft
   ) => {
     if (auth.status !== 'signed-in') return;
+    if (!fireValidation.ok) {
+      setPlanStorageMessage('Complete the highlighted FIRE fields in the calculator before saving a version.');
+      return;
+    }
 
     const name = draft.name.trim() || 'Retirement plan';
     const snapshot = buildSnapshot();
@@ -5267,6 +5390,8 @@ function App({ auth }: { auth: AuthState }) {
     markInputsChanged();
     setPlan(initialPlan);
     setTimeline(initialTimeline);
+    setRateEntry(EMPTY_RATE_ENTRY);
+    setSavingsEntry(EMPTY_SAVINGS_ENTRY);
     setActivePlanId(null);
     setActivePlanVersionNumber(null);
     setSaveName('Retirement base');
@@ -5692,11 +5817,11 @@ function App({ auth }: { auth: AuthState }) {
               <span>
                 {calculatorMode === 'fire-number' ? (
                   <>
-                    <strong>Starting example values:</strong> $80,000 annual spending and $750,000 current portfolio are starting examples, not personalized recommendations. Replace with your own numbers before calculating.
+                    <strong>Starting example values:</strong> {formatFireMoney(initialPlan.annualExpense)} annual spending and {formatFireMoney(initialPlan.initialPortfolio)} current portfolio are starting examples, not personalized recommendations. Replace with your own numbers before calculating.
                   </>
                 ) : (
                   <>
-                    <strong>Starting example values:</strong> $750,000 portfolio and $80,000 spending benchmark are starting examples, not personalized recommendations. Replace with your own numbers before calculating.
+                    <strong>Starting example values:</strong> {formatFireMoney(initialPlan.initialPortfolio)} portfolio and {formatFireMoney(initialPlan.annualExpense)} spending benchmark are starting examples, not personalized recommendations. Replace with your own numbers before calculating.
                   </>
                 )}
               </span>
@@ -5707,11 +5832,7 @@ function App({ auth }: { auth: AuthState }) {
               label="Current age"
               suffix="years"
               help="Your age today. It is used to check that the retirement timeline makes sense."
-              issue={
-                timeline.retirementAge <= timeline.currentAge
-                  ? 'Current age should be below retirement age.'
-                  : undefined
-              }
+              issue={fireValidation.issues.currentAge}
             >
               <input
                 type="number"
@@ -5725,11 +5846,7 @@ function App({ auth }: { auth: AuthState }) {
               label="Retirement age"
               suffix="years"
               help="The age when withdrawals start in this plan."
-              issue={
-                timeline.retirementAge <= timeline.currentAge
-                  ? 'Retirement age should be higher.'
-                  : undefined
-              }
+              issue={fireValidation.issues.retirementAge}
             >
               <input
                 type="number"
@@ -5743,9 +5860,7 @@ function App({ auth }: { auth: AuthState }) {
               label="Plan end age"
               suffix="years"
               help="The age through which the model should keep funding withdrawals."
-              issue={
-                timeline.planEndAge <= timeline.retirementAge ? 'End age should be higher.' : undefined
-              }
+              issue={fireValidation.issues.planEndAge}
             >
               <input
                 type="number"
@@ -5759,14 +5874,14 @@ function App({ auth }: { auth: AuthState }) {
               <Field
                 id="fire-initial-portfolio"
                 label={portfolioLabel}
-                prefix="$"
+                prefix={currencySymbol}
                 help="The portfolio balance you want to test for retirement income."
-                issue={fieldIssue('initialPortfolio')}
+                issue={fireValidation.issues.initialPortfolio ?? fieldIssue('initialPortfolio')}
               >
                 <input
                   type="number"
                   min="0"
-                  value={plan.initialPortfolio}
+                  value={Number.isFinite(plan.initialPortfolio) ? plan.initialPortfolio : ''}
                   onChange={setMoney('initialPortfolio')}
                 />
               </Field>
@@ -5775,18 +5890,18 @@ function App({ auth }: { auth: AuthState }) {
             <Field
               id="fire-annual-expense"
               label={annualExpenseLabel}
-              prefix="$"
+              prefix={currencySymbol}
               help={
                 calculatorMode === 'fire-number'
-                  ? 'Your estimated first-year retirement spending before inflation.'
+                  ? "Your yearly spending in retirement, in today's money."
                   : 'An optional spending goal used to show whether the calculated withdrawal covers your need.'
               }
-              issue={fieldIssue('annualExpense')}
+              issue={fireValidation.issues.annualExpense ?? fieldIssue('annualExpense')}
             >
               <input
                 type="number"
                 min="0"
-                value={plan.annualExpense}
+                value={Number.isFinite(plan.annualExpense) ? plan.annualExpense : ''}
                 onChange={setMoney('annualExpense')}
               />
             </Field>
@@ -5795,18 +5910,114 @@ function App({ auth }: { auth: AuthState }) {
               <Field
                 id="fire-initial-portfolio"
                 label={portfolioLabel}
-                prefix="$"
-                help="Example starting assets: $750,000. Used for funding gap and stress checks (not personalized advice)."
-                issue={fieldIssue('initialPortfolio')}
+                prefix={currencySymbol}
+                help="What you have invested for retirement today (0 is fine)."
+                issue={fireValidation.issues.initialPortfolio ?? fieldIssue('initialPortfolio')}
               >
                 <input
                   type="number"
                   min="0"
-                  value={plan.initialPortfolio}
+                  value={Number.isFinite(plan.initialPortfolio) ? plan.initialPortfolio : ''}
                   onChange={setMoney('initialPortfolio')}
                 />
               </Field>
             )}
+
+            <Field
+              id="fire-return"
+              label="Expected return"
+              suffix="% / yr"
+              help="Your assumed average yearly investment return before inflation. Required; 0 is allowed."
+              issue={returnPercentText.trim() === '' ? undefined : fireValidation.issues.return}
+            >
+              <input
+                type="number"
+                step="0.1"
+                inputMode="decimal"
+                placeholder="e.g. 7"
+                value={returnPercentText}
+                onChange={setPrimaryRate('r')}
+              />
+            </Field>
+            <Field
+              id="fire-inflation"
+              label="Inflation"
+              suffix="% / yr"
+              help="Your assumed average yearly inflation. Required; 0 is allowed."
+              issue={inflationPercentText.trim() === '' ? undefined : fireValidation.issues.inflation}
+            >
+              <input
+                type="number"
+                step="0.1"
+                inputMode="decimal"
+                placeholder="e.g. 2.5"
+                value={inflationPercentText}
+                onChange={setPrimaryRate('i')}
+              />
+            </Field>
+            <div className="full-field rate-example-note" role="note">
+              <Info size={16} aria-hidden="true" />
+              <span>
+                Not sure? The homepage illustration uses <strong>{EXAMPLE_RATE_ENTRY.r}% return</strong> and{' '}
+                <strong>{EXAMPLE_RATE_ENTRY.i}% inflation</strong>. These are illustrative assumptions, not forecasts or historical averages.
+                {plan.ratePeriods.length > 1 ? ` These fields set period 1 of ${plan.ratePeriods.length}; edit every period in Advanced assumptions.` : ''}
+              </span>
+              <button type="button" className="secondary-button" onClick={applyExampleRates}>
+                Use example values
+              </button>
+            </div>
+
+            {calculatorMode === 'fire-number' && (
+              <>
+                <Field
+                  id="fire-annual-savings"
+                  label="Annual savings"
+                  prefix={currencySymbol}
+                  help="How much you add to investments each year until you retire, in today's money. Optional: leave blank to skip the retirement-age estimate."
+                  issue={fireValidation.issues.annualSavings}
+                >
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Optional"
+                    value={savingsEntry.annualSavings}
+                    onChange={setSavingsValue('annualSavings')}
+                  />
+                </Field>
+                <Field
+                  id="fire-savings-growth"
+                  label="Savings growth"
+                  suffix="% / yr"
+                  help="Optional: how much your yearly savings rise above inflation (for example with pay rises)."
+                  issue={fireValidation.issues.savingsGrowth}
+                >
+                  <input
+                    type="number"
+                    step="0.5"
+                    placeholder="0"
+                    value={savingsEntry.savingsGrowth}
+                    onChange={setSavingsValue('savingsGrowth')}
+                  />
+                </Field>
+              </>
+            )}
+
+            <div className="field full-field">
+              <span className="field-label">Currency</span>
+              <div className="segmented" role="group" aria-label="Currency">
+                {(['USD', 'INR'] as const).map((code) => (
+                  <button
+                    key={code}
+                    type="button"
+                    className={fireCurrency === code ? 'active' : ''}
+                    aria-pressed={fireCurrency === code}
+                    onClick={() => setFireCurrency(code)}
+                  >
+                    {code === 'USD' ? 'US dollar ($)' : 'Indian rupee (₹)'}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           <details className="advanced-shell">
@@ -5829,7 +6040,7 @@ function App({ auth }: { auth: AuthState }) {
                   </button>
                 </div>
 
-                {plan.ratePeriods.every((p) => p.r === 0 && p.i === 0) && (
+                {!fireValidation.ratesMissing && plan.ratePeriods.every((p) => p.r === 0 && p.i === 0) && (
                   <div className="assumption-baseline-note" role="note">
                     <Info size={16} />
                     <span>
@@ -5877,6 +6088,10 @@ function App({ auth }: { auth: AuthState }) {
                                 numericValue(event.target.value) / 100
                               )
                             }));
+                            if (index === 0) {
+                              const text = event.target.value;
+                              setRateEntry((entry) => (entry ? { ...entry, r: text } : entry));
+                            }
                           }}
                         />
                       </Field>
@@ -5896,6 +6111,10 @@ function App({ auth }: { auth: AuthState }) {
                                 numericValue(event.target.value) / 100
                               )
                             }));
+                            if (index === 0) {
+                              const text = event.target.value;
+                              setRateEntry((entry) => (entry ? { ...entry, i: text } : entry));
+                            }
                           }}
                         />
                       </Field>
@@ -6227,10 +6446,22 @@ function App({ auth }: { auth: AuthState }) {
           </details>
 
           <div className="quick-actions">
-            <button className="primary-button icon-text-button" onClick={calculateNow}>
+            <button
+              className="primary-button icon-text-button"
+              onClick={calculateNow}
+              disabled={!fireValidation.ok}
+              aria-describedby={fireValidation.ok ? undefined : 'fire-calc-blocker'}
+            >
               {isStale ? <RotateCcw size={17} /> : <Calculator size={17} />}
               {isStale ? 'Recalculate' : 'Calculate'}
             </button>
+            {!fireValidation.ok ? (
+              <p className="calc-blocker" id="fire-calc-blocker" role="status">
+                {fireValidation.ratesMissing
+                  ? 'Enter expected return and inflation (or use the example values) to see your answer.'
+                  : 'Fix the highlighted fields to see your answer.'}
+              </p>
+            ) : null}
           </div>
 
           {hasCalculated && (
@@ -6238,7 +6469,7 @@ function App({ auth }: { auth: AuthState }) {
               {isStale && (
                 <div className="stale-result-badge" role="status" aria-live="polite">
                   <RotateCcw size={14} aria-hidden="true" />
-                  <span>Inputs changed since last calculation. Click Calculate to update results.</span>
+                  <span>Inputs changed since this result. Select Recalculate to update it.</span>
                 </div>
               )}
               <span>{primaryResult.label}</span>
@@ -6252,6 +6483,18 @@ function App({ auth }: { auth: AuthState }) {
                   {supportResult.label}: <strong>{supportResult.value}</strong>
                 </span>
               </div>
+              {retirementEstimate ? (
+                <FireRetirementEstimate
+                  estimate={retirementEstimate.estimate}
+                  currency={fireCurrency}
+                  chosenRetirementAge={activeTimelineForDisplay.retirementAge}
+                  planEndAge={activeTimelineForDisplay.planEndAge}
+                  projectedAtChosenAge={retirementEstimate.projectedAtChosenAge}
+                  neededAtChosenAge={retirementEstimate.neededAtChosenAge}
+                  returnRate={retirementEstimate.returnRate}
+                  inflationRate={retirementEstimate.inflationRate}
+                />
+              ) : null}
             </div>
           )}
         </section>
@@ -6300,6 +6543,180 @@ function App({ auth }: { auth: AuthState }) {
 
 
 
+
+        {hasCalculated && (
+          <section className="panel result-tabs-panel" aria-label="Calculated outputs">
+            <div className="panel-tabs" role="tablist" aria-label="FIRE result views">
+              {calculatorPanels.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    className={calculatorPanel === item.id ? 'active' : ''}
+                    onClick={() => navigate(item.id)}
+                    role="tab"
+                    aria-selected={calculatorPanel === item.id}
+                  >
+                    <Icon size={16} />
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {hasCalculated && calculatorPanel === 'results' && (
+          <section className="panel chart-panel" id="results" aria-labelledby="results-title">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">Projection</p>
+                <h2 id="results-title">Year-by-year cash flow</h2>
+                <p>Switch between the calculated FIRE plan and the entered portfolio stress test.</p>
+              </div>
+              <div className="topbar-actions">
+                <button className="secondary-button" onClick={exportSelectedProjection}>
+                  Export CSV
+                </button>
+                <span className="pill">{activePlanForDisplay.withdrawalTiming === 'start' ? 'Start-year' : 'End-year'}</span>
+              </div>
+            </div>
+
+            <div className="form-grid">
+              <div className="field">
+                <span>Projection basis</span>
+                <div className="segmented">
+                  <button
+                    className={projectionBasis === 'fire-number' ? 'active' : ''}
+                    onClick={() => setProjectionBasis('fire-number')}
+                  >
+                    FIRE number
+                  </button>
+                  <button
+                    className={projectionBasis === 'current-portfolio' ? 'active' : ''}
+                    onClick={() => setProjectionBasis('current-portfolio')}
+                  >
+                    Current
+                  </button>
+                </div>
+              </div>
+              <div className="field">
+                <span>View</span>
+                <div className="segmented">
+                  <button
+                    className={resultsMode === 'chart' ? 'active' : ''}
+                    onClick={() => setResultsMode('chart')}
+                  >
+                    Chart
+                  </button>
+                  <button
+                    className={resultsMode === 'table' ? 'active' : ''}
+                    onClick={() => setResultsMode('table')}
+                  >
+                    Table
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {resultsMode === 'chart' ? (
+              <Suspense
+                fallback={
+                  <div className="chart-frame chart-loading" role="status" aria-live="polite">
+                    Loading projection chart...
+                  </div>
+                }
+              >
+                <ProjectionChart
+                  label={projectionLabel}
+                  rows={chartRows}
+                  startAge={activeTimelineForDisplay.retirementAge}
+                  currency={fireCurrency}
+                />
+              </Suspense>
+            ) : (
+              <YearByYearTable
+                rows={projectionRows}
+                label={projectionLabel}
+                startAge={activeTimelineForDisplay.retirementAge}
+                currency={fireCurrency}
+              />
+            )}
+          </section>
+        )}
+
+        {hasCalculated && calculatorPanel === 'compare' && (
+          <section className="panel" id="compare" aria-labelledby="compare-title">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">Scenarios</p>
+                <h2 id="compare-title">Three-way assumption comparison</h2>
+                <p>Test spending, portfolio, return, and inflation changes against the same timeline.</p>
+              </div>
+              <span className="pill">3 scenarios</span>
+            </div>
+            <div className="comparison-grid">
+              {comparisonRows.map((row) => (
+                <article className="scenario-card" key={row.id}>
+                  <Field label="Scenario name">
+                    <input type="text" value={row.scenario.label} onChange={setScenarioLabel(row.id)} />
+                  </Field>
+                  <strong>{formatFireMoney(row.requiredPortfolio)}</strong>
+                  <small>FIRE number for {row.label}</small>
+                  <small>
+                    Vs planner: {row.requiredDelta > 0 ? '+' : ''}
+                    {formatFireMoney(row.requiredDelta)}
+                  </small>
+                  <small>Portfolio income: {formatFireMoney(row.maxAnnualExpense)}</small>
+                  <small>Current ending: {formatFireMoney(row.actualFinalBalance)}</small>
+                  <small>
+                    {row.depletionYear === null
+                      ? 'No current-portfolio depletion in this timeline'
+                      : `Current portfolio depletes in year ${row.depletionYear}`}
+                  </small>
+                  <div className="form-grid">
+                    <Field label="Spend shift">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={(row.scenario.spendingDelta * 100).toFixed(1)}
+                        onChange={setScenarioPercent(row.id, 'spendingDelta')}
+                      />
+                    </Field>
+                    <Field label="Portfolio shift">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={(row.scenario.portfolioDelta * 100).toFixed(1)}
+                        onChange={setScenarioPercent(row.id, 'portfolioDelta')}
+                      />
+                    </Field>
+                    <Field label="Return shift">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={(row.scenario.returnDelta * 100).toFixed(1)}
+                        onChange={setScenarioPercent(row.id, 'returnDelta')}
+                      />
+                    </Field>
+                    <Field label="Inflation shift">
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={(row.scenario.inflationDelta * 100).toFixed(1)}
+                        onChange={setScenarioPercent(row.id, 'inflationDelta')}
+                      />
+                    </Field>
+                  </div>
+                  <small>
+                    Return {formatSignedPercent(row.scenario.returnDelta)}; inflation{' '}
+                    {formatSignedPercent(row.scenario.inflationDelta)}
+                  </small>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="panel utility-panel" id="saved-plans" aria-labelledby="saved-title">
           <div className="panel-heading">
@@ -6396,170 +6813,6 @@ function App({ auth }: { auth: AuthState }) {
                 )}
               </div>
         </section>
-
-        {hasCalculated && (
-          <section className="panel result-tabs-panel" aria-label="Calculated outputs">
-            <div className="panel-tabs" role="tablist" aria-label="FIRE result views">
-              {calculatorPanels.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    className={calculatorPanel === item.id ? 'active' : ''}
-                    onClick={() => navigate(item.id)}
-                    role="tab"
-                    aria-selected={calculatorPanel === item.id}
-                  >
-                    <Icon size={16} />
-                    {item.label}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {hasCalculated && calculatorPanel === 'results' && (
-          <section className="panel chart-panel" id="results" aria-labelledby="results-title">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Projection</p>
-                <h2 id="results-title">Year-by-year cash flow</h2>
-                <p>Switch between the calculated FIRE plan and the entered portfolio stress test.</p>
-              </div>
-              <div className="topbar-actions">
-                <button className="secondary-button" onClick={exportSelectedProjection}>
-                  Export CSV
-                </button>
-                <span className="pill">{activePlanForDisplay.withdrawalTiming === 'start' ? 'Start-year' : 'End-year'}</span>
-              </div>
-            </div>
-
-            <div className="form-grid">
-              <div className="field">
-                <span>Projection basis</span>
-                <div className="segmented">
-                  <button
-                    className={projectionBasis === 'fire-number' ? 'active' : ''}
-                    onClick={() => setProjectionBasis('fire-number')}
-                  >
-                    FIRE number
-                  </button>
-                  <button
-                    className={projectionBasis === 'current-portfolio' ? 'active' : ''}
-                    onClick={() => setProjectionBasis('current-portfolio')}
-                  >
-                    Current
-                  </button>
-                </div>
-              </div>
-              <div className="field">
-                <span>View</span>
-                <div className="segmented">
-                  <button
-                    className={resultsMode === 'chart' ? 'active' : ''}
-                    onClick={() => setResultsMode('chart')}
-                  >
-                    Chart
-                  </button>
-                  <button
-                    className={resultsMode === 'table' ? 'active' : ''}
-                    onClick={() => setResultsMode('table')}
-                  >
-                    Table
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {resultsMode === 'chart' ? (
-              <Suspense
-                fallback={
-                  <div className="chart-frame chart-loading" role="status" aria-live="polite">
-                    Loading projection chart...
-                  </div>
-                }
-              >
-                <ProjectionChart label={projectionLabel} rows={chartRows} />
-              </Suspense>
-            ) : (
-              <YearByYearTable rows={projectionRows} label={projectionLabel} />
-            )}
-          </section>
-        )}
-
-        {hasCalculated && calculatorPanel === 'compare' && (
-          <section className="panel" id="compare" aria-labelledby="compare-title">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Scenarios</p>
-                <h2 id="compare-title">Three-way assumption comparison</h2>
-                <p>Test spending, portfolio, return, and inflation changes against the same timeline.</p>
-              </div>
-              <span className="pill">3 scenarios</span>
-            </div>
-            <div className="comparison-grid">
-              {comparisonRows.map((row) => (
-                <article className="scenario-card" key={row.id}>
-                  <Field label="Scenario name">
-                    <input type="text" value={row.scenario.label} onChange={setScenarioLabel(row.id)} />
-                  </Field>
-                  <strong>{formatMoney(row.requiredPortfolio)}</strong>
-                  <small>FIRE number for {row.label}</small>
-                  <small>
-                    Vs planner: {row.requiredDelta > 0 ? '+' : ''}
-                    {formatMoney(row.requiredDelta)}
-                  </small>
-                  <small>Portfolio income: {formatMoney(row.maxAnnualExpense)}</small>
-                  <small>Current ending: {formatMoney(row.actualFinalBalance)}</small>
-                  <small>
-                    {row.depletionYear === null
-                      ? 'No current-portfolio depletion in this timeline'
-                      : `Current portfolio depletes in year ${row.depletionYear}`}
-                  </small>
-                  <div className="form-grid">
-                    <Field label="Spend shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.spendingDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'spendingDelta')}
-                      />
-                    </Field>
-                    <Field label="Portfolio shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.portfolioDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'portfolioDelta')}
-                      />
-                    </Field>
-                    <Field label="Return shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.returnDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'returnDelta')}
-                      />
-                    </Field>
-                    <Field label="Inflation shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.inflationDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'inflationDelta')}
-                      />
-                    </Field>
-                  </div>
-                  <small>
-                    Return {formatSignedPercent(row.scenario.returnDelta)}; inflation{' '}
-                    {formatSignedPercent(row.scenario.inflationDelta)}
-                  </small>
-                </article>
-              ))}
-            </div>
-          </section>
-        )}
           </>
         )}
       </main>

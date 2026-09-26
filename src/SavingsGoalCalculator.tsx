@@ -31,6 +31,7 @@ import {
   type SavingsTargetBasis
 } from './lib/savingsGoalCalculator';
 import type { CalculatorResult, SeoCalculator } from './lib/seoCalculators';
+import { resolveMoneyLocale } from './lib/money';
 
 export type SavingsCurrencyCode = 'AUD' | 'CAD' | 'EUR' | 'GBP' | 'INR' | 'JPY' | 'USD';
 export type SavingsLocaleCode = 'auto' | 'de-DE' | 'en-IN' | 'en-US';
@@ -108,7 +109,7 @@ export function SavingsGoalCalculator({
     [calculator.slug, savedResults]
   );
   const schedule = schedulePeriod === 'annual' ? projection.annualSchedule : projection.detailedSchedule;
-  const resolvedLocale = locale === 'auto' ? undefined : locale;
+  const resolvedLocale = resolveMoneyLocale(currency, locale);
   const minorUnitDigits = currencyFractionDigits(currency);
   const practicalContribution = projection.requiredContribution === null
     ? null

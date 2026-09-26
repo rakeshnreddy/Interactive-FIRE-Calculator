@@ -57,6 +57,21 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
+
+// B36/OD-1: return and inflation start empty; tests that exercise a calculated result enter them
+// explicitly (0% here is a deliberate user value, preserving the earlier numeric expectations).
+async function enterRates(returnPercent: string, inflationPercent: string) {
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!;
+  for (const [id, value] of [['fire-return', returnPercent], ['fire-inflation', inflationPercent]] as const) {
+    const input = document.querySelector<HTMLInputElement>(`#${id}`);
+    if (!input) throw new Error(`missing #${id}`);
+    await act(async () => {
+      setter.call(input, value);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  }
+}
+
 describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
   it('renders a concise scope note in the header (V10)', async () => {
     await act(async () => {
@@ -112,6 +127,7 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
+    await enterRates('0', '0');
 
     // Before calculation: no hero-result card exists
     expect(document.querySelector('.hero-result')).toBeNull();
@@ -177,6 +193,7 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
+    await enterRates('0', '0');
 
     // Switch to Withdrawal mode
     const withdrawalModeButton = Array.from(document.querySelectorAll('.segmented button')).find(
@@ -332,6 +349,7 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
+    await enterRates('0', '0');
 
     const getTab = (name: string) =>
       Array.from(document.querySelectorAll<HTMLButtonElement>('.result-tabs-panel button[role="tab"]')).find(

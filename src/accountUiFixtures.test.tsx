@@ -195,9 +195,9 @@ describe('B03 Rendered Local UI Fixtures (R5 Verification)', () => {
       );
 
       // Verify Indian Rupee formatting appears in the rendered overview strip
-      expect(accountsHtml).toContain('₹4,000,000');
-      expect(accountsHtml).toContain('₹5,000,000');
-      expect(accountsHtml).toContain('₹1,000,000');
+      expect(accountsHtml).toContain('₹40,00,000');
+      expect(accountsHtml).toContain('₹50,00,000');
+      expect(accountsHtml).toContain('₹10,00,000');
       const overviewStrip = accountsHtml.slice(
         accountsHtml.indexOf('account-overview-strip'),
         accountsHtml.indexOf('account-panel')
@@ -273,12 +273,12 @@ describe('B03 Rendered Local UI Fixtures (R5 Verification)', () => {
       // Per-currency breakdown is rendered in small element
       expect(dashHtml).toContain('currency-breakdown');
       expect(dashHtml).toContain('USD: $45,000');
-      expect(dashHtml).toContain('INR: ₹8,000,000');
+      expect(dashHtml).toContain('INR: ₹80,00,000');
       // No false arithmetic sum like $8,045,000 or ₹8,045,000
       expect(dashHtml).not.toContain('$8,045,000');
-      expect(dashHtml).not.toContain('₹8,045,000');
+      expect(dashHtml).not.toContain('₹80,45,000');
       const snapshot = dashHtml.slice(dashHtml.indexOf('dashboard-account-list'));
-      expect(snapshot).toContain('₹8,000,000');
+      expect(snapshot).toContain('₹80,00,000');
       expect(snapshot).not.toContain('$8,000,000');
     });
   });

@@ -158,7 +158,7 @@ describe('warnings.ts', () => {
       const notices = planWarnings(mockPlan, mockResult, currentRows, 30);
 
       // Drawdown: year 2
-      expect(notices.some((n) => n.title === 'Current portfolio drawdown')).toBe(true);
+      expect(notices.some((n) => n.title === 'If withdrawals started now')).toBe(true);
       // Gap: 1,500,000 - 500,000 = 1,000,000
       expect(notices.some((n) => n.title === 'Funding gap')).toBe(true);
       // High withdrawal: 60,000 / 500,000 = 12% (> 6%)

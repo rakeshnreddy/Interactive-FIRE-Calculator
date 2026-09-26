@@ -954,7 +954,7 @@ export function formatMoney(value: number, options: Intl.NumberFormatOptions = {
     return 'Not feasible';
   }
 
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat(options.currency === 'INR' ? 'en-IN' : 'en-US', {
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 0,

@@ -32,6 +32,7 @@ import {
   type TargetBasis
 } from './lib/compoundInterestCalculator';
 import type { CalculatorResult, SeoCalculator } from './lib/seoCalculators';
+import { resolveMoneyLocale } from './lib/money';
 
 export type CurrencyCode = 'AUD' | 'CAD' | 'EUR' | 'GBP' | 'INR' | 'JPY' | 'USD';
 export type LocaleCode = 'auto' | 'de-DE' | 'en-IN' | 'en-US';
@@ -118,7 +119,7 @@ export function CompoundInterestCalculator({
   const schedule = schedulePeriod === 'annual'
     ? projection.annualSchedule
     : projection.detailedSchedule;
-  const resolvedLocale = locale === 'auto' ? undefined : locale;
+  const resolvedLocale = resolveMoneyLocale(currency, locale);
   const growthShare = projection.endingValue === 0 ? 0 : projection.netGrowth / projection.endingValue;
   const recurringSummary = useMemo(() => buildRecurringContributionSummary(inputs), [inputs]);
   const showInflationAdjusted = Math.abs(scenarioInputs.inflationPercent) > 1e-12;

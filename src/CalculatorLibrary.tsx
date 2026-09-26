@@ -67,6 +67,7 @@ import {
   type CalculatorResult,
   type SeoCalculator
 } from './lib/seoCalculators';
+import { resolveMoneyLocale } from './lib/money';
 
 const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment']);
 
@@ -1611,7 +1612,7 @@ export function formatChartValue(
   const effectiveCurrency = currency ?? calculatorCurrency(calculator);
 
   if (effectiveType === 'currency') {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(resolveMoneyLocale(effectiveCurrency), {
       currency: effectiveCurrency,
       maximumFractionDigits: 0,
       style: 'currency'
@@ -1631,7 +1632,7 @@ export function formatChartValue(
 
 function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): string {
   if (metric.valueType === 'currency') {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
       currency: calculatorCurrency(calculator),
       maximumFractionDigits: 0,
       style: 'currency'
@@ -1669,7 +1670,7 @@ function formatScheduleCell(
   }
 
   if (valueType === 'currency') {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
       currency: calculatorCurrency(calculator),
       maximumFractionDigits: 0,
       style: 'currency'

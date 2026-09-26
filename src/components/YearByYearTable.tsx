@@ -1,12 +1,24 @@
 import { formatMoney, formatPercent, type YearResult } from '../lib/fire';
 
-export function YearByYearTable({ rows, label }: { rows: YearResult[]; label: string }) {
+export function YearByYearTable({
+  rows,
+  label,
+  startAge,
+  currency = 'USD'
+}: {
+  rows: YearResult[];
+  label: string;
+  startAge?: number;
+  currency?: string;
+}) {
+  const money = (value: number) => formatMoney(value, { currency });
   return (
     <div className="table-wrap">
       <table aria-label={`${label} year-by-year projection`}>
         <thead>
           <tr>
             <th scope="col">Year</th>
+            {startAge !== undefined ? <th scope="col">Age</th> : null}
             <th scope="col">Start</th>
             <th scope="col">Base</th>
             <th scope="col">Income</th>
@@ -22,15 +34,16 @@ export function YearByYearTable({ rows, label }: { rows: YearResult[]; label: st
           {rows.map((row) => (
             <tr key={row.year}>
               <th scope="row">{row.year}</th>
-              <td>{formatMoney(row.startingBalance)}</td>
-              <td>{formatMoney(row.baseWithdrawal)}</td>
-              <td>{formatMoney(row.recurringIncome)}</td>
-              <td>{formatMoney(row.recurringExpense)}</td>
-              <td>{formatMoney(row.withdrawal)}</td>
-              <td>{formatMoney(row.oneOffAmount)}</td>
+              {startAge !== undefined ? <td>{startAge + row.year - 1}</td> : null}
+              <td>{money(row.startingBalance)}</td>
+              <td>{money(row.baseWithdrawal)}</td>
+              <td>{money(row.recurringIncome)}</td>
+              <td>{money(row.recurringExpense)}</td>
+              <td>{money(row.withdrawal)}</td>
+              <td>{money(row.oneOffAmount)}</td>
               <td>{formatPercent(row.returnRate)}</td>
               <td>{formatPercent(row.inflationRate)}</td>
-              <td>{formatMoney(row.endingBalance)}</td>
+              <td>{money(row.endingBalance)}</td>
             </tr>
           ))}
         </tbody>

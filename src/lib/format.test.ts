@@ -24,7 +24,7 @@ describe('format.ts', () => {
       expect(inrZero).toContain('0.00');
 
       const inrAmount = formatCents(10000000, 'INR');
-      expect(inrAmount).toContain('100,000.00');
+      expect(inrAmount).toContain('1,00,000.00');
       expect(inrAmount).toContain('₹');
     });
 

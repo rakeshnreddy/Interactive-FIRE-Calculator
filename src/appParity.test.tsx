@@ -114,16 +114,19 @@ describe('B39 App Parity Verification (Read-Only against Immutable Baseline)', (
     expect(candidateHtml).toContain('Explore all calculators');
   });
 
-  it('renders route /calculators/fire with exact HTML hash and landmark match against baseline', () => {
+  // B39's exact-hash proof for this route is recorded in its review. B36 intentionally changed the
+  // FIRE form (required return/inflation, savings, currency), so only landmarks are asserted here;
+  // every other route still compares byte-for-byte with the 42780b4 baseline.
+  it('renders route /calculators/fire landmarks (intentionally changed by B36 after the B39 baseline)', () => {
     const fixture: BaselineFixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
     const baseline = fixture.routes['/calculators/fire'];
 
     window.history.replaceState({}, '', '/calculators/fire');
     const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
-    const candidateSha = computeSha256(candidateHtml);
 
-    expect(candidateSha).toBe(baseline.sha256);
-    expect(candidateHtml).toBe(baseline.html);
+    expect(candidateHtml).not.toBe(baseline.html);
+    expect(candidateHtml).toContain('Expected return');
+    expect(candidateHtml).toContain('Use example values');
 
     expect(candidateHtml).toContain('FinPath');
     expect(candidateHtml).toContain('FIRE Calculator');

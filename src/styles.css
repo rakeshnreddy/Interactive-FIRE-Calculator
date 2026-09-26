@@ -2482,6 +2482,77 @@ h2 {
   font-weight: 750;
 }
 
+.rate-example-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--muted-strong);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.rate-example-note span {
+  flex: 1 1 16rem;
+}
+
+.rate-example-note svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.rate-example-note strong {
+  color: var(--heading);
+}
+
+.calc-blocker {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.86rem;
+}
+
+.fire-retirement-estimate {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.fire-retirement-estimate p {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.fire-estimate-headline {
+  color: var(--heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.fire-estimate-chosen strong {
+  font-size: inherit;
+  font-weight: 800;
+  color: var(--heading);
+}
+
+.fire-estimate-rates {
+  font-size: 0.82rem !important;
+}
+
+.fire-estimate-path summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
 .assumption-baseline-note {
   display: flex;
   gap: 0.65rem;

@@ -1,4 +1,5 @@
 import { formatMoney, formatPercent } from './fire';
+import { resolveMoneyLocale } from './money';
 
 export function formatCents(
   value: number,
@@ -22,7 +23,7 @@ export function formatSignedCents(value: number, currency = 'USD'): string {
 }
 
 export function formatStoredCurrency(value: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat(resolveMoneyLocale(currency), {
     currency,
     maximumFractionDigits: 0,
     style: 'currency'

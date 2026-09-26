@@ -47,7 +47,10 @@ export type PlanningScenario = {
 };
 
 export type PlanningSnapshot = {
+  // Optional B36 fields: absent in older saved versions, which load unchanged.
+  accumulation?: { annualSavings: number | null; savingsGrowth: number };
   calculatorMode: 'fire-number' | 'withdrawal-income';
+  currency?: 'USD' | 'INR';
   engineVersion?: string;
   plan: PlanInput;
   scenarios: PlanningScenario[];
