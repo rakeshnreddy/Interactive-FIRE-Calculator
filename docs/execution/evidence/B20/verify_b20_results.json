@@ -1,0 +1,185 @@
+{
+  "testedAt": "2026-09-13T07:53:41.471Z",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "mobileInputPositions": {
+    "mortgage_light_390": {
+      "calculator": "Mortgage",
+      "theme": "light",
+      "firstInputY": 490.578125,
+      "underThreshold": true,
+      "h1Text": "Mortgage Payment Calculator",
+      "scopeNote": "Mortgage Payment Calculator helps you estimate a fixed payment and lifetime borrowing cost using loan amount, interest rate, term, and additional monthly payment.",
+      "hasPrimaryMetric": true,
+      "primaryMetricLabel": "Monthly payment",
+      "primaryMetricValue": "$1,896",
+      "helperText": "Enter the loan amount in the calculator currency.",
+      "methodologyFollowsGrid": true
+    },
+    "mortgage_dark_390": {
+      "calculator": "Mortgage",
+      "theme": "dark",
+      "firstInputY": 490.578125,
+      "underThreshold": true,
+      "h1Text": "Mortgage Payment Calculator",
+      "scopeNote": "Mortgage Payment Calculator helps you estimate a fixed payment and lifetime borrowing cost using loan amount, interest rate, term, and additional monthly payment.",
+      "hasPrimaryMetric": true,
+      "primaryMetricLabel": "Monthly payment",
+      "primaryMetricValue": "$1,896",
+      "helperText": "Enter the loan amount in the calculator currency.",
+      "methodologyFollowsGrid": true
+    },
+    "sip_light_390": {
+      "calculator": "SIP",
+      "theme": "light",
+      "firstInputY": 456.03125,
+      "underThreshold": true,
+      "h1Text": "SIP Calculator",
+      "scopeNote": "SIP Calculator helps you project a recurring mutual-fund contribution path using monthly sip, additional yearly contribution, years, and annual return / rate.",
+      "hasPrimaryMetric": true,
+      "primaryMetricLabel": "Projected corpus",
+      "primaryMetricValue": "₹1,829,460",
+      "helperText": "Enter the monthly sip as a recurring amount in the calculator currency.",
+      "methodologyFollowsGrid": true
+    },
+    "sip_dark_390": {
+      "calculator": "SIP",
+      "theme": "dark",
+      "firstInputY": 456.03125,
+      "underThreshold": true,
+      "h1Text": "SIP Calculator",
+      "scopeNote": "SIP Calculator helps you project a recurring mutual-fund contribution path using monthly sip, additional yearly contribution, years, and annual return / rate.",
+      "hasPrimaryMetric": true,
+      "primaryMetricLabel": "Projected corpus",
+      "primaryMetricValue": "₹1,829,460",
+      "helperText": "Enter the monthly sip as a recurring amount in the calculator currency.",
+      "methodologyFollowsGrid": true
+    },
+    "income-tax-india_light_390": {
+      "calculator": "India Tax",
+      "theme": "light",
+      "firstInputY": 516.171875,
+      "underThreshold": true,
+      "h1Text": "Income Tax Calculator Old vs New Regime",
+      "scopeNote": "Income Tax Calculator Old vs New Regime helps you compare simplified old- and new-regime income-tax estimates using annual taxable income before deductions and old-regime deductions and exemptions.",
+      "hasPrimaryMetric": true,
+      "primaryMetricLabel": "Estimated lower-regime net income",
+      "primaryMetricValue": "₹1,390,800",
+      "helperText": "Enter the annual taxable income before deductions in the calculator currency.",
+      "methodologyFollowsGrid": true
+    },
+    "income-tax-india_dark_390": {
+      "calculator": "India Tax",
+      "theme": "dark",
+      "firstInputY": 516.171875,
+      "underThreshold": true,
+      "h1Text": "Income Tax Calculator Old vs New Regime",
+      "scopeNote": "Income Tax Calculator Old vs New Regime helps you compare simplified old- and new-regime income-tax estimates using annual taxable income before deductions and old-regime deductions and exemptions.",
+      "hasPrimaryMetric": true,
+      "primaryMetricLabel": "Estimated lower-regime net income",
+      "primaryMetricValue": "₹1,390,800",
+      "helperText": "Enter the annual taxable income before deductions in the calculator currency.",
+      "methodologyFollowsGrid": true
+    }
+  },
+  "cases": [
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "390x844",
+      "inputY": 490.578125,
+      "status": "PASS",
+      "screenshot": "mortgage-390-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "dark",
+      "viewport": "390x844",
+      "inputY": 490.578125,
+      "status": "PASS",
+      "screenshot": "mortgage-390-dark.png"
+    },
+    {
+      "calc": "SIP",
+      "theme": "light",
+      "viewport": "390x844",
+      "inputY": 456.03125,
+      "status": "PASS",
+      "screenshot": "sip-390-light.png"
+    },
+    {
+      "calc": "SIP",
+      "theme": "dark",
+      "viewport": "390x844",
+      "inputY": 456.03125,
+      "status": "PASS",
+      "screenshot": "sip-390-dark.png"
+    },
+    {
+      "calc": "India Tax",
+      "theme": "light",
+      "viewport": "390x844",
+      "inputY": 516.171875,
+      "status": "PASS",
+      "screenshot": "income-tax-india-390-light.png"
+    },
+    {
+      "calc": "India Tax",
+      "theme": "dark",
+      "viewport": "390x844",
+      "inputY": 516.171875,
+      "status": "PASS",
+      "screenshot": "income-tax-india-390-dark.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "320x600",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-320-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "dark",
+      "viewport": "320x600",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-320-dark.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "768x1024",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-768-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "1440x900",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-1440-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-1440-dark.png"
+    }
+  ],
+  "disclosureAndScenario": {
+    "initialExpanded": "false",
+    "openedExpanded": "true",
+    "closedExpanded": "false",
+    "helpRegionVisible": true,
+    "helpRegionHidden": true,
+    "helpRegionText": "Estimated fixed monthly payment.",
+    "isFocusPreserved": true,
+    "isScenarioSelected": true
+  }
+}

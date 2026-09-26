@@ -9,6 +9,7 @@ import { requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
+import { readJsonBody } from '../../_lib/http';
 
 type AccountDataEnv = ClerkEnv & DatabaseEnv;
 
@@ -45,11 +46,3 @@ export const onRequestDelete: PagesFunction<AccountDataEnv> = async ({ request, 
     return json({ error: 'Unable to delete account data.' }, 500);
   }
 };
-
-async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}

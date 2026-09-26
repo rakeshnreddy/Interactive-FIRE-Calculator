@@ -1,0 +1,27 @@
+B16 exact-SHA verification
+Date: 2026-09-09 America/Los_Angeles
+Code SHA: bcfcfd288eb3e27d7bfed8d32d09fd5b63b43a99
+Archive: /tmp/finpath-b16.hGKSpD (ephemeral working location; results are durable here)
+
+Clean install
+Command: npm ci --no-audit --no-fund
+Exit: 0
+Result: added 265 packages from package-lock.json
+
+Full suite
+Command: ./scripts/test_all.sh
+Exit: 0
+Result:
+- runner contract: 13 passed
+- Python: 79 passed, 21 subtests passed
+- TypeScript: tsc --noEmit passed
+- Vitest 4.1.11: 26 files passed, 1,269 tests passed
+- production build: passed; CSS 158.82 kB / 26.32 kB gzip; entry JS 512.10 kB / 140.35 kB gzip
+- existing build warning: entry chunk exceeds 500 kB
+
+The first archive run used the wrong local environment link name (`.venv`) and stopped at `No module named pytest`; the runner selects `venv/bin/python`. Linking the existing repository `venv` under that expected name and rerunning produced the complete passing result above. No assertion, product code, dependency, or test was changed between attempts.
+
+Dependency audit
+Command: npm audit --json
+Exit: 0
+Result: 0 info, low, moderate, high, critical, or total vulnerabilities; 265 dependencies.

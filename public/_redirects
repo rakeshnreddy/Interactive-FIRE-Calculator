@@ -1,1 +1,2 @@
-/* /index.html 200
+# Plan deep links under /plans/* use the app shell; every other unknown path gets the real 404.html (B38).
+/plans/*  /plans  200

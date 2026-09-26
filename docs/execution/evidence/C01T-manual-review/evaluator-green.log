@@ -1,0 +1,30 @@
+✓ All required checks pass: exit 0, status PASS
+✓ One false journey: nonzero and exact failing check
+✓ Failed fallback: nonzero and exact failing check
+✓ Overflow/clipping finding: nonzero and exact failing check
+✓ Low contrast: nonzero and exact failing check
+✓ Console error: nonzero and exact failing check
+✓ Page exception: nonzero and exact failing check
+✓ Performance regression: nonzero and exact failing check (acceptance derived)
+✓ Missing required check: nonzero and BLOCKED summary
+✓ Blocked reader or native zoom: nonzero and BLOCKED summary
+✓ Page exception recorded late: included in saved JSON and final status
+✓ CLI execution with passing fixture exits 0
+✓ CLI execution with failing fixture exits 1
+✓ CLI execution with blocked fixture exits 2
+✓ Missing or malformed recordedConsoleErrors is blocked
+✓ Missing or malformed recordedConsoleErrors is blocked
+✓ Missing or malformed recordedConsoleErrors is blocked
+✓ Missing or malformed recordedConsoleErrors is blocked
+✓ Missing or malformed recordedPageExceptions is blocked
+✓ Missing or malformed recordedPageExceptions is blocked
+✓ Missing or malformed recordedPageExceptions is blocked
+✓ Missing or malformed recordedPageExceptions is blocked
+✓ Uncompleted telemetry collection cannot pass
+✓ Incomplete performance evidence blocks acceptance
+✓ Incomplete performance evidence blocks acceptance
+✓ Incomplete performance evidence blocks acceptance
+✓ Incomplete performance evidence blocks acceptance
+✓ Owner-deferred reader remains visible without blocking C01T
+
+=== ALL 28/28 EVALUATOR TESTS PASSED ===

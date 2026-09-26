@@ -1,0 +1,40 @@
+=== C07 Remaining Hosted Proofs Reusable Harness ===
+Target Preview: https://3eed38e6.interactive-fire-calculator.pages.dev
+Candidate SHA: d81f31187892f636ab9d2b6cb492e90e9b7d166d
+Preview DB ID: 0dbad68e-7493-452f-8504-98d4c61ee5da
+[Preflight] Clerk Frontend API host: tender-filly-71.clerk.accounts.dev
+
+--- Step 1: Preflight D1 DB & Historical Tombstone Integrity ---
+Verified 2/2 historical tombstones intact with non-null deleted_at.
+
+--- Step 2: Initializing Clerk Backend Client & Testing Token ---
+[PASS] Successfully minted Clerk testing token for bot bypass.
+
+--- Step 3: Creating and Authenticating Disposable Users A & B ---
+Created synthetic User A: user_3JQEKgM4s...
+Created synthetic User B: user_3JQEKhcUe...
+User A authenticated. /api/me: status 200
+User B authenticated. /api/me: status 200
+
+--- Proof 1: Browser CSV Selection, Preview 200, Commit 201 & Persisted Data ---
+User A created checking account: 0f15fd02-2bb6-42d6-aad6-22886fc30f88 (status 201).
+Observed /preview status: 200, readyRows: 1
+Observed /commit status: 201, importedRows: 1
+
+--- Proof 2: Authenticated Cross-User Write Rejection (HTTP 404) ---
+User B own accounts GET: status 200, count: 0
+User B GET User A account: status 404
+User B PUT User A account: status 404
+User A account name after attack: 'Primary Checking 828586'
+
+--- Proof 3: Authenticated HTTP 410 Rejection After Data Deletion ---
+User A pre-delete profile PUT: status 200
+User A DELETE /api/account-data: status 200
+User A post-delete profile PUT: status 410, code: ACCOUNT_DELETED
+
+--- Step 4: Robust Fail-Closed Cleanup ---
+[Cleanup] Starting cleanup for scoped users: user_3JQEKgM4s..., user_3JQEKhcUe...
+Report written to: /Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C07/remaining/report.json
+Cleanup status written to: /Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C07/remaining/cleanup.json
+
+Final Status: PASS

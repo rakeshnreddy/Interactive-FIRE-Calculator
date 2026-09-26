@@ -1,0 +1,28 @@
+{
+  "reducedTransparency": {
+    "matches": true,
+    "styles": {
+      "light": {
+        "backdropFilter": "none",
+        "backgroundColor": "rgb(11, 36, 33)"
+      },
+      "dark": {
+        "backdropFilter": "none",
+        "backgroundColor": "rgb(8, 21, 28)"
+      }
+    },
+    "pass": true
+  },
+  "reducedMotion": {
+    "matches": true,
+    "violations": [],
+    "pass": true
+  },
+  "forcedColors": {
+    "matches": true,
+    "styles": {
+      "backdropFilter": "none"
+    },
+    "pass": true
+  }
+}

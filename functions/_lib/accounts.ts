@@ -1,6 +1,8 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { ensureUserProfile } from './persistence';
+import { ensureUserProfile, toTypedDatabaseError } from './persistence';
+import { readJsonBody } from './http';
+export { readJsonBody };
 
 export const accountTypes = [
   'cash',
@@ -28,6 +30,7 @@ export type AccountBalance = {
 
 export type FinancialAccount = {
   accountType: AccountType;
+  archivedAt?: string | null;
   balanceHistory: AccountBalance[];
   category: AccountCategory;
   createdAt: string;
@@ -41,12 +44,25 @@ export type FinancialAccount = {
   updatedAt: string;
 };
 
-export type AccountSummary = {
+export type CurrencyAccountSummary = {
   accountCount: number;
   assetsCents: number;
+  currency: string;
   liabilityAccountCount: number;
   liabilitiesCents: number;
   netWorthCents: number;
+};
+
+export type AccountSummary = {
+  accountCount: number;
+  assetsCents: number | null;
+  byCurrency: Record<string, CurrencyAccountSummary>;
+  currencies: string[];
+  hasMixedCurrencies: boolean;
+  liabilityAccountCount: number;
+  liabilitiesCents: number | null;
+  netWorthCents: number | null;
+  primaryCurrency: string | null;
 };
 
 export type AccountCreatePayload = {
@@ -215,7 +231,11 @@ export async function createAccount(
     );
   }
 
-  await database.batch(statements);
+  try {
+    await database.batch(statements);
+  } catch (error) {
+    throw toTypedDatabaseError(error);
+  }
 
   const account = await readAccount(database, userId, accountId);
 
@@ -331,67 +351,116 @@ export async function addAccountBalance(
 
   const now = new Date().toISOString();
 
-  await database.batch([
-    database
-      .prepare(
-        `
-          INSERT INTO account_balances (id, account_id, user_id, balance_date, balance_cents, created_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `
-      )
-      .bind(crypto.randomUUID(), accountId, userId, payload.balanceDate, payload.balanceCents, now),
-    database
-      .prepare(
-        `
-          UPDATE financial_accounts
-          SET updated_at = ?
-          WHERE id = ? AND user_id = ?
-        `
-      )
-      .bind(now, accountId, userId)
-  ]);
+  try {
+    await database.batch([
+      database
+        .prepare(
+          `
+            INSERT INTO account_balances (id, account_id, user_id, balance_date, balance_cents, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `
+        )
+        .bind(crypto.randomUUID(), accountId, userId, payload.balanceDate, payload.balanceCents, now),
+      database
+        .prepare(
+          `
+            UPDATE financial_accounts
+            SET updated_at = ?
+            WHERE id = ? AND user_id = ?
+          `
+        )
+        .bind(now, accountId, userId)
+    ]);
+  } catch (error) {
+    throw toTypedDatabaseError(error);
+  }
 
   return readAccount(database, userId, accountId);
 }
 
 export function summarizeAccounts(accounts: FinancialAccount[]): AccountSummary {
-  const summary = accounts.reduce(
-    (current, account) => {
-      if (account.category === 'liability') {
-        return {
-          ...current,
-          liabilitiesCents: current.liabilitiesCents + account.latestBalanceCents,
-          liabilityAccountCount: current.liabilityAccountCount + 1
-        };
-      }
-
-      return {
-        ...current,
-        assetsCents: current.assetsCents + account.latestBalanceCents
-      };
-    },
-    {
-      accountCount: accounts.length,
-      assetsCents: 0,
-      liabilityAccountCount: 0,
-      liabilitiesCents: 0,
-      netWorthCents: 0
-    }
+  const activeAccounts = accounts.filter(
+    (account) => account.isActive !== false && !(account as { archivedAt?: string | null }).archivedAt
   );
 
+  if (activeAccounts.length === 0) {
+    return {
+      accountCount: 0,
+      assetsCents: 0,
+      byCurrency: {},
+      currencies: [],
+      hasMixedCurrencies: false,
+      liabilityAccountCount: 0,
+      liabilitiesCents: 0,
+      netWorthCents: 0,
+      primaryCurrency: null
+    };
+  }
+
+  const byCurrency: Record<string, CurrencyAccountSummary> = {};
+
+  for (const account of activeAccounts) {
+    const currency = (account.currency || 'USD').trim().toUpperCase();
+    if (!byCurrency[currency]) {
+      byCurrency[currency] = {
+        accountCount: 0,
+        assetsCents: 0,
+        currency,
+        liabilityAccountCount: 0,
+        liabilitiesCents: 0,
+        netWorthCents: 0
+      };
+    }
+
+    const cur = byCurrency[currency];
+    cur.accountCount += 1;
+
+    if (account.category === 'liability') {
+      cur.liabilityAccountCount += 1;
+      cur.liabilitiesCents += account.latestBalanceCents;
+    } else {
+      cur.assetsCents += account.latestBalanceCents;
+    }
+
+    cur.netWorthCents = cur.assetsCents - cur.liabilitiesCents;
+  }
+
+  const currencies = Object.keys(byCurrency).sort();
+  const totalLiabilityAccounts = Object.values(byCurrency).reduce(
+    (sum, cur) => sum + cur.liabilityAccountCount,
+    0
+  );
+
+  if (currencies.length === 1) {
+    const primaryCurrency = currencies[0];
+    const single = byCurrency[primaryCurrency];
+
+    return {
+      accountCount: activeAccounts.length,
+      assetsCents: single.assetsCents,
+      byCurrency,
+      currencies,
+      hasMixedCurrencies: false,
+      liabilityAccountCount: totalLiabilityAccounts,
+      liabilitiesCents: single.liabilitiesCents,
+      netWorthCents: single.netWorthCents,
+      primaryCurrency
+    };
+  }
+
   return {
-    ...summary,
-    netWorthCents: summary.assetsCents - summary.liabilitiesCents
+    accountCount: activeAccounts.length,
+    assetsCents: null,
+    byCurrency,
+    currencies,
+    hasMixedCurrencies: true,
+    liabilityAccountCount: totalLiabilityAccounts,
+    liabilitiesCents: null,
+    netWorthCents: null,
+    primaryCurrency: null
   };
 }
 
-export async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 export function parseAccountCreatePayload(value: unknown):
   | {

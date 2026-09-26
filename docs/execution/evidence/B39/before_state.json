@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "baselineCommit": "42780b4c5a46004e3d008bd1b6dafee6ba5bc501",
+    "generatedAt": "2026-09-26T16:55:16.287Z",
+    "captureScript": "scripts/capture_parity_fixture.tsx",
+    "captureCommand": "npx vitest run --config scripts/vitest.capture.config.ts scripts/capture_baseline.test.tsx",
+    "provenance": "Generated in clean /tmp/baseline-42780b4 directory from git archive 42780b4"
+  },
+  "routes": {
+    "landing": {
+      "path": "/",
+      "mode": "app-routed",
+      "sha256": "5627a74c48e373b0ece1e3950f84bf508b110f1cf8de99bce6618b0c68cb9eba",
+      "htmlLength": 19403,
+      "landmarks": {
+        "hasBrand": true,
+        "hasTitle": true,
+        "hasRetireSubtitle": true,
+        "hasHero": true,
+        "hasWorkspaceNav": true
+      }
+    },
+    "fireCalculator": {
+      "path": "/calculators/fire",
+      "mode": "app-routed",
+      "sha256": "2b48d30ae639cf963001c54126e4ed43ca8b7dbf8d7e7b1c8a6ddaeb317e703d",
+      "htmlLength": 18676,
+      "landmarks": {
+        "hasBrand": true,
+        "hasFireTitle": true,
+        "hasPlanningQuestion": true,
+        "hasCurrentAge": true,
+        "hasRetirementAge": true,
+        "hasCalculateButton": true
+      }
+    },
+    "mortgageCalculatorShell": {
+      "path": "/calculators/mortgage",
+      "mode": "app-routed",
+      "sha256": "2197d05f882e648ad3520e25581c0a1d2b5e428b75996d8e0785145425786804",
+      "htmlLength": 4424,
+      "landmarks": {
+        "hasBrand": true,
+        "hasSuspenseShell": true,
+        "hasLoadingText": true
+      }
+    },
+    "signedOutDashboard": {
+      "path": "/dashboard",
+      "mode": "app-routed",
+      "sha256": "e74982b5210eedd110ab783e1bfb171e128e0c3d20d7af10ab29e8a41e019633",
+      "htmlLength": 6592,
+      "landmarks": {
+        "hasBrand": true,
+        "hasSignInPrompt": true,
+        "hasShellDescription": true,
+        "hasBrowseCalculators": true
+      }
+    },
+    "mortgageCalculatorComponent": {
+      "path": "/calculators/mortgage",
+      "mode": "component-only",
+      "component": "CalculatorLibrary",
+      "sha256": "0f22b134cf314b9cd2718a910b5556b9151e7aa324ff14e7833320e87d732a53",
+      "htmlLength": 86106,
+      "landmarks": {
+        "hasMortgageTitle": true,
+        "hasLoanAmount": true,
+        "hasInterestRate": true,
+        "hasMonthlyPayment": true,
+        "hasTotalInterest": true
+      }
+    }
+  }
+}

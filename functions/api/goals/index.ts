@@ -8,7 +8,7 @@ import {
   summarizeGoals
 } from '../../_lib/goals';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
@@ -26,8 +26,8 @@ export const onRequestGet: PagesFunction<GoalsEnv> = async ({ request, env }) =>
     const goals = await listGoals(context.database, context.userId);
 
     return json({ goals, summary: summarizeGoals(goals) });
-  } catch {
-    return json({ error: 'Unable to load goals.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load goals.');
   }
 };
 
@@ -42,13 +42,16 @@ export const onRequestPost: PagesFunction<GoalsEnv> = async ({ request, env }) =
   const parsed = parseGoalCreatePayload(body);
 
   if (!parsed.ok) {
-    return json({ error: parsed.error }, 400);
+    return json(
+      parsed.code ? { code: parsed.code, error: parsed.error } : { error: parsed.error },
+      400
+    );
   }
 
   try {
     return json({ goal: await createGoal(context.database, context.userId, parsed.value) }, 201);
-  } catch {
-    return json({ error: 'Unable to create goal.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to create goal.');
   }
 };
 

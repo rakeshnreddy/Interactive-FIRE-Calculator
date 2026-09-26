@@ -1,0 +1,454 @@
+import { cloneElement } from 'react';
+import { renderToStaticMarkup as originalRender } from 'react-dom/server';
+import { describe, expect, it } from 'vitest';
+import { writeFileSync } from 'node:fs';
+const CSS_FILE='index-B1zU0TSC.css';
+let captureIndex=0;
+function renderToStaticMarkup(element: Parameters<typeof originalRender>[0]) {
+const html=originalRender(element);const index=++captureIndex;
+if (element.type === DashboardPanel || element.type === AccountsPanel) {
+ const panel=element.type===DashboardPanel?'dashboard':'accounts';
+ const states={empty:[],usd:[makeAccount({currency:'USD',latestBalanceCents:10000000})],inr:[makeAccount({currency:'INR',latestBalanceCents:800000000})],mixed:[makeAccount({currency:'USD',latestBalanceCents:10000000}),makeAccount({currency:'INR',latestBalanceCents:800000000}),makeAccount({currency:'USD',category:'liability',latestBalanceCents:500000})],long:[makeAccount({currency:'USD',latestBalanceCents:1234567890100})]};
+ for(const [name,accounts]of Object.entries(states)) {
+ const stateHtml=originalRender(cloneElement(element as any,{accounts,summary:summarizeAccountList(accounts)}));
+ writeFileSync('/tmp/c02-browser-fixtures/'+panel+'-'+name+'.html','<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/assets/'+CSS_FILE+'"><title>FinPath synthetic UI review</title><div class="app" data-mode="light"><main>'+stateHtml+'</main></div>');
+ }
+}
+
+writeFileSync('/tmp/c02-browser-fixtures/'+index+'.html', '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/assets/index-B1zU0TSC.css"><title>FinPath synthetic UI review</title><div class="app" data-mode="light"><main>'+html+'</main></div>');return html;
+}
+
+import {
+  AccountsPanel,
+  DashboardPanel,
+  formatAccountMetric,
+  formatCurrencyBreakdown,
+  initialPlan,
+  initialTimeline,
+  summarizeAccountList,
+  summarizeGoalList,
+  type AccountSummary,
+  type FinancialAccount,
+  type GoalSummary,
+  type TimelineInput
+} from './App';
+import { buildTransactionCashflowRollup } from './lib/transactionAnalytics';
+import { PLAN_SEED_ERROR_REASONS, previewPlanSeed, type SeedTimeline } from './lib/planWorkspace';
+
+function makeAccount(overrides: Partial<FinancialAccount> = {}): FinancialAccount {
+  return {
+    accountType: 'investment',
+    balanceHistory: [],
+    category: 'asset',
+    createdAt: '2026-06-01T00:00:00.000Z',
+    currency: 'USD',
+    id: `acc_${Math.random().toString(36).slice(2, 8)}`,
+    institutionName: 'Vanguard',
+    isActive: true,
+    latestBalanceCents: 50_00_00,
+    latestBalanceDate: '2026-09-01',
+    name: 'Brokerage',
+    updatedAt: '2026-09-01T00:00:00.000Z',
+    ...overrides
+  };
+}
+
+const mockGoalSummary: GoalSummary = {
+  ...summarizeGoalList([]),
+  activeGoalCount: 1,
+  fundedPercent: 50,
+  goalCount: 1,
+  totalCurrentCents: 10_000_00,
+  totalTargetCents: 20_000_00
+};
+
+const mockCashflow = buildTransactionCashflowRollup([]);
+
+const mockAuth: any = {
+  getToken: async () => 'mock_token',
+  isConfigured: true,
+  isSignedIn: true,
+  provider: 'clerk',
+  status: 'signed-in',
+  user: { displayName: 'Alex Doe', id: 'user_ui_fixture' }
+};
+
+describe('B03 Rendered Local UI Fixtures (R5 Verification)', () => {
+  describe('1. Empty state', () => {
+    it('renders empty account summary with zero totals and no crashes', () => {
+      const summary = summarizeAccountList([]);
+      expect(summary.accountCount).toBe(0);
+      expect(summary.hasMixedCurrencies).toBe(false);
+      expect(summary.assetsCents).toBe(0);
+      expect(summary.liabilitiesCents).toBe(0);
+      expect(summary.netWorthCents).toBe(0);
+
+      const html = renderToStaticMarkup(
+        <DashboardPanel
+          accounts={[]}
+          cashflow={mockCashflow}
+          calculatorResultMessage=""
+          goals={[]}
+          insights={[]}
+          isLoading={false}
+          isLoadingCalculatorResults={false}
+          isLoadingGoals={false}
+          message=""
+          goalMessage=""
+          goalSummary={{ ...mockGoalSummary, activeGoalCount: 0, fundedPercent: 0 }}
+          onNavigate={() => undefined}
+          savedCalculatorResults={[]}
+          summary={summary}
+        />
+      );
+
+      expect(html).toContain('Net worth');
+      expect(html).toContain('$0');
+      expect(html).toContain('0 active accounts');
+      expect(html).not.toContain('NaN');
+      expect(html).not.toContain('Unavailable');
+    });
+  });
+
+  describe('2. USD-only state', () => {
+    it('renders single-currency USD accounts with proper dollar symbols and active count', () => {
+      const accounts: FinancialAccount[] = [
+        makeAccount({
+          category: 'asset',
+          currency: 'USD',
+          latestBalanceCents: 100_000_00,
+          name: 'US Index Fund'
+        }),
+        makeAccount({
+          category: 'liability',
+          currency: 'USD',
+          latestBalanceCents: 25_000_00,
+          name: 'Student Loan'
+        })
+      ];
+
+      const summary = summarizeAccountList(accounts);
+      expect(summary.hasMixedCurrencies).toBe(false);
+      expect(summary.primaryCurrency).toBe('USD');
+      expect(summary.assetsCents).toBe(100_000_00);
+      expect(summary.liabilitiesCents).toBe(25_000_00);
+      expect(summary.netWorthCents).toBe(75_000_00);
+
+      const dashHtml = renderToStaticMarkup(
+        <DashboardPanel
+          accounts={accounts}
+          cashflow={mockCashflow}
+          calculatorResultMessage=""
+          goals={[]}
+          insights={[]}
+          isLoading={false}
+          isLoadingCalculatorResults={false}
+          isLoadingGoals={false}
+          message=""
+          goalMessage=""
+          goalSummary={mockGoalSummary}
+          onNavigate={() => undefined}
+          savedCalculatorResults={[]}
+          summary={summary}
+        />
+      );
+
+      expect(dashHtml).toContain('$75,000');
+      expect(dashHtml).toContain('$100,000');
+      expect(dashHtml).toContain('$25,000');
+      expect(dashHtml).toContain('2 active accounts');
+      expect(dashHtml).toContain('1 debt accounts');
+      expect(dashHtml).not.toContain('Unavailable');
+    });
+  });
+
+  describe('3. INR-only state', () => {
+    it('renders single-currency INR accounts with rupee symbol and no USD contamination', () => {
+      const accounts: FinancialAccount[] = [
+        makeAccount({
+          category: 'asset',
+          currency: 'INR',
+          latestBalanceCents: 50_00_000_00,
+          name: 'Nifty 50 Index'
+        }),
+        makeAccount({
+          category: 'liability',
+          currency: 'INR',
+          latestBalanceCents: 10_00_000_00,
+          name: 'Home Loan India'
+        })
+      ];
+
+      const summary = summarizeAccountList(accounts);
+      expect(summary.hasMixedCurrencies).toBe(false);
+      expect(summary.primaryCurrency).toBe('INR');
+      expect(summary.assetsCents).toBe(50_00_000_00);
+      expect(summary.liabilitiesCents).toBe(10_00_000_00);
+      expect(summary.netWorthCents).toBe(40_00_000_00);
+
+      const accountsHtml = renderToStaticMarkup(
+        <AccountsPanel
+          accounts={accounts}
+          auth={mockAuth}
+          balanceDrafts={{}}
+          draft={{
+            accountType: 'investment',
+            balanceAmount: '',
+            balanceDate: '',
+            currency: 'INR',
+            institutionName: '',
+            name: ''
+          }}
+          isLoading={false}
+          isSaving={false}
+          message=""
+          onArchiveAccount={() => undefined}
+          onBalanceDraftChange={() => undefined}
+          onCreateAccount={() => undefined}
+          onDraftChange={() => undefined}
+          onImportComplete={async () => undefined}
+          onRecordBalance={() => undefined}
+          summary={summary}
+        />
+      );
+
+      // Verify Indian Rupee formatting appears in the rendered overview strip
+      expect(accountsHtml).toContain('₹4,000,000');
+      expect(accountsHtml).toContain('₹5,000,000');
+      expect(accountsHtml).toContain('₹1,000,000');
+      const overviewStrip = accountsHtml.slice(
+        accountsHtml.indexOf('account-overview-strip'),
+        accountsHtml.indexOf('account-panel')
+      );
+      expect(overviewStrip).not.toContain('$');
+      expect(overviewStrip).not.toContain('Unavailable');
+    });
+  });
+
+  describe('4. Mixed USD/INR state (No Cross-Currency Addition)', () => {
+    it('shows Unavailable for aggregated metrics and renders per-currency breakdowns without false sums', () => {
+      const accounts: FinancialAccount[] = [
+        makeAccount({
+          category: 'asset',
+          currency: 'USD',
+          latestBalanceCents: 50_000_00,
+          name: 'US Savings'
+        }),
+        makeAccount({
+          category: 'asset',
+          currency: 'INR',
+          latestBalanceCents: 80_00_000_00,
+          name: 'India Mutual Fund'
+        }),
+        makeAccount({
+          category: 'liability',
+          currency: 'USD',
+          latestBalanceCents: 5_000_00,
+          name: 'US Credit Card'
+        })
+      ];
+
+      const summary = summarizeAccountList(accounts);
+      expect(summary.hasMixedCurrencies).toBe(true);
+      expect(summary.primaryCurrency).toBeNull();
+      // Crucial requirement: aggregated cents MUST be null to prevent adding 50,000 USD to 80,00,000 INR
+      expect(summary.assetsCents).toBeNull();
+      expect(summary.liabilitiesCents).toBeNull();
+      expect(summary.netWorthCents).toBeNull();
+
+      // Per-currency breakdown exists
+      expect(summary.currencies).toEqual(['INR', 'USD']);
+      expect(summary.byCurrency.USD.assetsCents).toBe(50_000_00);
+      expect(summary.byCurrency.USD.liabilitiesCents).toBe(5_000_00);
+      expect(summary.byCurrency.USD.netWorthCents).toBe(45_000_00);
+      expect(summary.byCurrency.INR.assetsCents).toBe(80_00_000_00);
+      expect(summary.byCurrency.INR.netWorthCents).toBe(80_00_000_00);
+
+      // Rendered HTML verification
+      const dashHtml = renderToStaticMarkup(
+        <DashboardPanel
+          accounts={accounts}
+          cashflow={mockCashflow}
+          calculatorResultMessage=""
+          goals={[]}
+          insights={[]}
+          isLoading={false}
+          isLoadingCalculatorResults={false}
+          isLoadingGoals={false}
+          message=""
+          goalMessage=""
+          goalSummary={mockGoalSummary}
+          onNavigate={() => undefined}
+          savedCalculatorResults={[]}
+          summary={summary}
+        />
+      );
+
+      // Top-level big metric displays 'Unavailable'
+      expect(dashHtml).toContain('<strong>Unavailable</strong>');
+      // Per-currency breakdown is rendered in small element
+      expect(dashHtml).toContain('currency-breakdown');
+      expect(dashHtml).toContain('USD: $45,000');
+      expect(dashHtml).toContain('INR: ₹8,000,000');
+      // No false arithmetic sum like $8,045,000 or ₹8,045,000
+      expect(dashHtml).not.toContain('$8,045,000');
+      expect(dashHtml).not.toContain('₹8,045,000');
+    });
+  });
+
+  describe('5. Excluded accounts (archived / inactive)', () => {
+    it('completely excludes archived and inactive accounts from summaries and totals', () => {
+      const accounts: FinancialAccount[] = [
+        makeAccount({
+          category: 'asset',
+          currency: 'USD',
+          isActive: true,
+          latestBalanceCents: 20_000_00,
+          name: 'Active Checking'
+        }),
+        makeAccount({
+          archivedAt: '2026-08-01T00:00:00.000Z',
+          category: 'asset',
+          currency: 'USD',
+          isActive: true,
+          latestBalanceCents: 999_999_00,
+          name: 'Archived Old Account'
+        }),
+        makeAccount({
+          category: 'asset',
+          currency: 'USD',
+          isActive: false,
+          latestBalanceCents: 888_888_00,
+          name: 'Inactive Old Account'
+        })
+      ];
+
+      const summary = summarizeAccountList(accounts);
+      expect(summary.accountCount).toBe(1);
+      expect(summary.assetsCents).toBe(20_000_00);
+      expect(summary.netWorthCents).toBe(20_000_00);
+
+      const html = renderToStaticMarkup(
+        <DashboardPanel
+          accounts={accounts}
+          cashflow={mockCashflow}
+          calculatorResultMessage=""
+          goals={[]}
+          insights={[]}
+          isLoading={false}
+          isLoadingCalculatorResults={false}
+          isLoadingGoals={false}
+          message=""
+          goalMessage=""
+          goalSummary={mockGoalSummary}
+          onNavigate={() => undefined}
+          savedCalculatorResults={[]}
+          summary={summary}
+        />
+      );
+
+      expect(html).toContain('$20,000');
+      expect(html).not.toContain('$999,999');
+      expect(html).not.toContain('$888,888');
+    });
+  });
+
+  describe('6. Long values and high-magnitude balances', () => {
+    it('formats large multi-million and multi-billion amounts without overflow or exponent notation', () => {
+      const hugeAccount = makeAccount({
+        category: 'asset',
+        currency: 'USD',
+        latestBalanceCents: 12_345_678_901_00,
+        name: 'Family Office Trust'
+      });
+
+      const summary = summarizeAccountList([hugeAccount]);
+      expect(summary.netWorthCents).toBe(12_345_678_901_00);
+
+      const formatted = formatAccountMetric(summary.netWorthCents, summary);
+      expect(formatted).toBe('$12,345,678,901');
+      expect(formatted).not.toContain('e+');
+      expect(formatted).not.toContain('NaN');
+    });
+  });
+
+  describe('7. Theme & Viewport Structure', () => {
+    it('provides semantic layout markup compatible with light/dark and mobile/desktop viewports', () => {
+      const summary = summarizeAccountList([makeAccount()]);
+      const html = renderToStaticMarkup(
+        <div data-color-mode="dark" className="app-root theme-dark">
+          <DashboardPanel
+            accounts={[makeAccount()]}
+            cashflow={mockCashflow}
+            calculatorResultMessage=""
+            goals={[]}
+            insights={[]}
+            isLoading={false}
+            isLoadingCalculatorResults={false}
+            isLoadingGoals={false}
+            message=""
+            goalMessage=""
+            goalSummary={mockGoalSummary}
+            onNavigate={() => undefined}
+            savedCalculatorResults={[]}
+            summary={summary}
+          />
+        </div>
+      );
+
+      expect(html).toContain('dashboard-summary-grid');
+      expect(html).toContain('financial-dashboard');
+      expect(html).toContain('aria-label="Financial dashboard"');
+      expect(html).toContain('tracker-metric tracker-metric-primary');
+    });
+  });
+
+  describe('8. Plan Seed Rejection on Currency Mismatch', () => {
+    it('rejects seeding when account currency does not match profile/plan currency', () => {
+      const testTimeline: SeedTimeline = {
+        currentAge: 35,
+        planEndAge: 90,
+        retirementAge: 60
+      };
+
+      const inrAccount = makeAccount({
+        category: 'asset',
+        currency: 'INR',
+        id: 'acc_inr_1',
+        latestBalanceCents: 50_00_000_00,
+        latestBalanceDate: '2026-09-01',
+        name: 'India Account'
+      });
+
+      // Seeding a USD plan with an INR account must be rejected
+      const seedResult = previewPlanSeed({
+        accounts: [inrAccount],
+        goal: null,
+        plan: initialPlan,
+        portfolioSource: 'accounts',
+        profile: {
+          birthYear: 1991,
+          defaultCurrency: 'USD',
+          targetRetirementAge: 60,
+          updatedAt: '2026-09-01'
+        },
+        selectedAccountIds: ['acc_inr_1'],
+        timeline: testTimeline,
+        todayYear: 2026
+      });
+
+      expect(seedResult.ok).toBe(false);
+      if (!seedResult.ok) {
+        expect(seedResult.errors[0]).toContain('India Account uses INR, not USD.');
+        expect(seedResult.errorDetails).toBeDefined();
+        expect(seedResult.errorDetails![0]).toMatchObject({
+          accountName: 'India Account',
+          currency: 'INR',
+          expectedCurrency: 'USD',
+          reason: PLAN_SEED_ERROR_REASONS.CURRENCY_MISMATCH,
+          sourceId: 'acc_inr_1'
+        });
+      }
+    });
+  });
+});

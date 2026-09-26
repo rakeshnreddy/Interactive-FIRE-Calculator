@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { PlanInput } from './fire';
-import { previewPlanSeed, undoPlanSeed } from './planWorkspace';
+import { PLAN_SEED_ERROR_REASONS, hasUnsavedAssumptions, previewPlanSeed, undoPlanSeed } from './planWorkspace';
 
 const plan: PlanInput = {
   annualExpense: 45_000,
@@ -93,6 +93,87 @@ describe('previewPlanSeed', () => {
     });
   });
 
+  it('rejects account sources with mismatched currency using CURRENCY_MISMATCH error enum', () => {
+    const preview = previewPlanSeed({
+      accounts: [
+        {
+          accountType: 'investment',
+          category: 'asset',
+          currency: 'EUR',
+          id: 'eur_account',
+          isActive: true,
+          latestBalanceCents: 10_000_000,
+          latestBalanceDate: '2026-06-20',
+          name: 'European ETF'
+        }
+      ],
+      goal: null,
+      plan,
+      portfolioSource: 'accounts',
+      profile,
+      selectedAccountIds: ['eur_account'],
+      timeline,
+      todayYear: 2026
+    });
+
+    expect(preview.ok).toBe(false);
+    if (preview.ok) return;
+
+    expect(preview.errors).toContain('European ETF uses EUR, not USD.');
+    expect(preview.errorDetails).toEqual([
+      expect.objectContaining({
+        accountName: 'European ETF',
+        currency: 'EUR',
+        expectedCurrency: 'USD',
+        reason: PLAN_SEED_ERROR_REASONS.CURRENCY_MISMATCH
+      })
+    ]);
+  });
+
+  it('rejects multiple accounts with mixed currencies in plan import', () => {
+    const preview = previewPlanSeed({
+      accounts: [
+        {
+          accountType: 'investment',
+          category: 'asset',
+          currency: 'USD',
+          id: 'usd_account',
+          isActive: true,
+          latestBalanceCents: 10_000_000,
+          latestBalanceDate: '2026-06-20',
+          name: 'US Index'
+        },
+        {
+          accountType: 'investment',
+          category: 'asset',
+          currency: 'INR',
+          id: 'inr_account',
+          isActive: true,
+          latestBalanceCents: 50_000_000,
+          latestBalanceDate: '2026-06-20',
+          name: 'India Fund'
+        }
+      ],
+      goal: null,
+      plan,
+      portfolioSource: 'accounts',
+      profile,
+      selectedAccountIds: ['usd_account', 'inr_account'],
+      timeline,
+      todayYear: 2026
+    });
+
+    expect(preview.ok).toBe(false);
+    if (preview.ok) return;
+
+    expect(preview.errors.some((e) => e.includes('INR'))).toBe(true);
+    expect(
+      preview.errorDetails?.some(
+        (detail) => detail.reason === PLAN_SEED_ERROR_REASONS.CURRENCY_MISMATCH
+      )
+    ).toBe(true);
+  });
+
   it('maps a retirement goal current amount and target date but keeps its target as a benchmark', () => {
     const preview = previewPlanSeed({
       accounts: [],
@@ -140,5 +221,28 @@ describe('previewPlanSeed', () => {
 
     expect(preview.nextPlan.initialPortfolio).toBe(plan.initialPortfolio);
     expect(preview.nextTimeline).toMatchObject({ currentAge: 40, retirementAge: 58 });
+  });
+});
+
+describe('hasUnsavedAssumptions', () => {
+  const normalizePlan = (p: Partial<PlanInput>): PlanInput => ({ ...plan, ...p, recurringCashFlows: p.recurringCashFlows ?? [] });
+  const normalizeTimeline = <T extends object>(t: T) => ({ ...timeline, ...t });
+
+  it('treats a legacy snapshot missing newer fields as unchanged once loaded', () => {
+    const { recurringCashFlows: _omitted, ...legacy } = plan;
+    const loaded = normalizePlan(legacy);
+    expect(hasUnsavedAssumptions({ plan: loaded, timeline }, { plan: legacy, timeline }, { normalizePlan, normalizeTimeline })).toBe(false);
+  });
+
+  it('ignores key order differences between saved and loaded state', () => {
+    const reordered = Object.fromEntries(Object.entries(plan).reverse()) as PlanInput;
+    const reorderedTimeline = { retirementAge: 55, planEndAge: 90, currentAge: 35 };
+    expect(hasUnsavedAssumptions({ plan, timeline }, { plan: reordered, timeline: reorderedTimeline }, { normalizePlan, normalizeTimeline })).toBe(false);
+  });
+
+  it('reports a real assumption or timeline change', () => {
+    expect(hasUnsavedAssumptions({ plan: { ...plan, annualExpense: 44_000 }, timeline }, { plan, timeline }, { normalizePlan, normalizeTimeline })).toBe(true);
+    expect(hasUnsavedAssumptions({ plan, timeline: { ...timeline, retirementAge: 50 } }, { plan, timeline }, { normalizePlan, normalizeTimeline })).toBe(true);
+    expect(hasUnsavedAssumptions({ plan: { ...plan, ratePeriods: [{ duration: 35, i: 0.03, r: 0.05 }] }, timeline }, { plan, timeline }, { normalizePlan, normalizeTimeline })).toBe(true);
   });
 });

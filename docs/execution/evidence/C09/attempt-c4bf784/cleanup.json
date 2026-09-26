@@ -1,0 +1,56 @@
+{
+  "userA": {
+    "userId": "user_3JrE2vrKXITA3f6Qj2O211P9Djl",
+    "app_data_deleted": true,
+    "user_tombstone_present": true,
+    "clerk_user_deleted": true,
+    "clerk_user_absent": true,
+    "all_tables_zero": true,
+    "table_counts": {
+      "plan_reviews": 0,
+      "user_profiles": 0,
+      "financial_accounts": 0,
+      "account_balances": 0,
+      "transactions": 0,
+      "goals": 0,
+      "plans": 0,
+      "plan_versions": 0,
+      "fire_plan_inputs": 0,
+      "fire_plan_results": 0,
+      "assumptions": 0,
+      "balance_imports": 0,
+      "transaction_imports": 0,
+      "saved_calculator_results": 0,
+      "audit_log": 0
+    },
+    "provider_deletion_withheld": false,
+    "errors": []
+  },
+  "userB": {
+    "userId": "user_3JrE35FdBcoYBuXiunwQJ5hwnQX",
+    "app_data_deleted": true,
+    "user_tombstone_present": true,
+    "clerk_user_deleted": true,
+    "clerk_user_absent": true,
+    "all_tables_zero": true,
+    "table_counts": {
+      "plan_reviews": 0,
+      "user_profiles": 0,
+      "financial_accounts": 0,
+      "account_balances": 0,
+      "transactions": 0,
+      "goals": 0,
+      "plans": 0,
+      "plan_versions": 0,
+      "fire_plan_inputs": 0,
+      "fire_plan_results": 0,
+      "assumptions": 0,
+      "balance_imports": 0,
+      "transaction_imports": 0,
+      "saved_calculator_results": 0,
+      "audit_log": 0
+    },
+    "provider_deletion_withheld": false,
+    "errors": []
+  }
+}

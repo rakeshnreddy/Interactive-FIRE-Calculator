@@ -66,3 +66,17 @@ Open failures/blockers and exact missing owner input:
 Next task within checkpoint, or checkpoint STOP for master review:
 
 Implementation is submitted, not accepted. Do not check the backlog complete.
+
+## Contract coverage and independent self-review
+
+Contract path and latest reviewer record:
+Validation matrix path (one row per acceptance requirement):
+Negative cases executed, with expected outcomes and evidence:
+Actual collector/CLI or product-integration path exercised:
+Prior finding IDs -> correction/test/evidence:
+Remaining rows that do not pass (write none only when evidenced):
+Implementation/config/tooling SHA from git:
+CI literal head SHA and conclusion from gh:
+Deployment literal trigger SHA, dirty flag and exact ID from provider:
+Relevant tree equivalence when website, tooling and evidence revisions differ:
+Self-review: omissions, malformed data, wrong-resource identity and partial collections checked:

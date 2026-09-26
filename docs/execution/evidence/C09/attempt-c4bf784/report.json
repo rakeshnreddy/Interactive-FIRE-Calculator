@@ -1,0 +1,96 @@
+{
+  "candidate_sha": "c4bf784b106878e7e0c940564216ec44a72ecb38",
+  "deployment_id": "18b043da-e736-4f8f-83b0-3a0642ff6685",
+  "preview_url": "https://18b043da.interactive-fire-calculator.pages.dev",
+  "effective_db": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+  "timestamp": "2026-09-26T08:16:24.613Z",
+  "d1_migration_0007_verified": true,
+  "d1_migration_0008_verified": true,
+  "sqlite_plan_reviews_verified": true,
+  "b10_saved_decision_navigation": {
+    "plan_created_version_1": true,
+    "plan_revised_version_2": true,
+    "exact_v1_link_navigated": true,
+    "v2_inputs_not_rendered_on_v1_link": true,
+    "exact_v1_inputs_restored_after_reload": true,
+    "unsaved_changes_modal_rendered_on_dirty_nav": true,
+    "unsaved_changes_cancel_preserves_dirty_state": true,
+    "unsaved_changes_confirm_proceeds_navigation": true,
+    "controlled_error_on_missing_plan": true,
+    "controlled_error_on_missing_version": true,
+    "tenant_b_cannot_access_tenant_a_plan": true,
+    "full_record_immutability_verified": true
+  },
+  "b11_monthly_review_loop": {
+    "returning_review_rule_enforced_within_7_days": true,
+    "review_defer_choice_persisted": true,
+    "review_saved_keep_choice": true,
+    "review_next_due_date_computed": true,
+    "review_completed_status_persisted_after_reload": true,
+    "idempotent_repeat_review_not_duplicated": true
+  },
+  "b28_presentation_and_accessibility": {
+    "dashboard_reviews_rollup_rendered": true,
+    "dashboard_due_cards_have_deep_links": true,
+    "review_status_badges_explicit_text": true,
+    "review_panel_no_topbar_overlap": true
+  },
+  "cleanup": {
+    "userA": {
+      "userId": "user_3JrE2vrKXITA3f6Qj2O211P9Djl",
+      "app_data_deleted": true,
+      "user_tombstone_present": true,
+      "clerk_user_deleted": true,
+      "clerk_user_absent": true,
+      "all_tables_zero": true,
+      "table_counts": {
+        "plan_reviews": 0,
+        "user_profiles": 0,
+        "financial_accounts": 0,
+        "account_balances": 0,
+        "transactions": 0,
+        "goals": 0,
+        "plans": 0,
+        "plan_versions": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "assumptions": 0,
+        "balance_imports": 0,
+        "transaction_imports": 0,
+        "saved_calculator_results": 0,
+        "audit_log": 0
+      },
+      "provider_deletion_withheld": false,
+      "errors": []
+    },
+    "userB": {
+      "userId": "user_3JrE35FdBcoYBuXiunwQJ5hwnQX",
+      "app_data_deleted": true,
+      "user_tombstone_present": true,
+      "clerk_user_deleted": true,
+      "clerk_user_absent": true,
+      "all_tables_zero": true,
+      "table_counts": {
+        "plan_reviews": 0,
+        "user_profiles": 0,
+        "financial_accounts": 0,
+        "account_balances": 0,
+        "transactions": 0,
+        "goals": 0,
+        "plans": 0,
+        "plan_versions": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "assumptions": 0,
+        "balance_imports": 0,
+        "transaction_imports": 0,
+        "saved_calculator_results": 0,
+        "audit_log": 0
+      },
+      "provider_deletion_withheld": false,
+      "errors": []
+    }
+  },
+  "status": "FAILED",
+  "error": "[Stage 4 Version 2] User authentication lost or auth-gate shown (clerkLoaded: false, isSignedIn: false, Route: {\"pathname\":\"/plans\",\"params\":{\"planId\":\"[REDACTED_PLAN_ID]\",\"version\":\"2\"}})"
+}

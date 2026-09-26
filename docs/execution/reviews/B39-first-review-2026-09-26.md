@@ -1,0 +1,18 @@
+# B39 first independent review — 2026-09-26
+
+Reviewer: Astra. Decision: **CHANGES_REQUESTED**. B39 remains open; B42 and B36 are not released. Baseline HEAD is `42780b4c5a46004e3d008bd1b6dafee6ba5bc501`. Gemini's B39 implementation is uncommitted. There is no B39 exact-code CI or preview; the earlier C09 URL is not B39 evidence.
+
+## What passes inspection
+
+- `src/App.tsx` is 6,600 lines versus 8,841 at baseline: a 2,241-line reduction. The 15 extracted implementation files are scoped, with the largest at 448 lines. `src/lib/fire.ts`, Functions, migrations, CSS and product copy have no candidate diff. The two B42 `scripts/hosted_smoke*` files remain untracked and excluded.
+- Focused TypeScript/API/format/warning/component tests and the Python-free full suite are worker-reported green. They are not independently repeated yet because the parity contract below fails decisively. The extraction should be preserved and corrected in place.
+
+## Reproducible blocking findings
+
+1. **CR-8 parity proof is tautological and overstated.** `src/appParity.test.tsx` contains phrase-presence assertions but never reads `docs/execution/evidence/B39/before_state.json` or compares rendered HTML to it. At lines 96–130 it constructs a `beforeState` from the *current candidate* and overwrites that file during the test. Thus the test would pass after unrelated DOM changes if a few phrases remain. `after_state.json` records matching lengths and manually asserts `parityWithBefore: true`, but equal lengths do not establish equal bytes. Three recorded flags are false (`hasSteps`, `hasHomePrice`, `hasSignInGate`), contradicting the claimed landmark match. The test renders `LandingPage`, `CalculatorLibrary` and `AuthGate` directly for three paths, so route wiring through `App` is not covered. No provenance ties the before fixture to baseline `42780b4`.
+2. **Normal desktop and 375px visual/interaction parity are unobserved.** The evidence directory contains only two JSON files. No local browser result records widths, console/page errors, overflow, keyboard focus or changed user flow. Static SSR cannot establish responsive CSS or interaction behavior. These were explicit B39 acceptance checks; no hosted PASS is required from Gemini, but truthful local verification is.
+3. **API success-error behavior changed without a migration decision.** Baseline `readFinancialAccountResponse` and `readGoalResponse` in `src/App.tsx` call `await response.json()` after `response.ok`, so a malformed/empty 200 body rejects with the JSON parse error. The extracted versions call `readApiJson` (`src/lib/api/client.ts:29–49`), whose catch replaces that rejection with the caller's generic error message. New tests assert the new generic behavior but do not compare it with the baseline. B39 explicitly requires status/error semantics and user-visible behavior preservation. Keep the helper, but preserve the old successful-response parse failure unless a separately reviewed behavior change is in scope.
+
+A B39 published commit, exact-code CI, isolated preview and hosted public-route smoke remain **NOT RUN — requires Astra**. PA-10 was followed by the worker; the issue is proof and one changed local error path, not unauthorized hosted work. The submission's `git add src/ docs/` and destructive checkout/remove rollback instructions must be replaced with reviewer-safe, explicit-path publication and a reversible post-commit revert plan. No B39 files are discarded.
+
+Use [the focused correction prompt](../B39_REWORK_PROMPT.md). Do not mark B39 done, release B42, merge main or deploy production. Astra will independently verify the corrected parity harness, run the relevant suite once on the final candidate, then publish and verify hosted parity if it passes.

@@ -1,0 +1,466 @@
+[
+  {
+    "route": "/",
+    "width": 320,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 360.234375,
+        "width": 269,
+        "height": 48,
+        "right": 303,
+        "bottom": 408.234375
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 649.5,
+        "width": 252,
+        "height": 705.125,
+        "right": 286,
+        "bottom": 1354.625
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 320,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 360.234375,
+        "width": 269,
+        "height": 48,
+        "right": 303,
+        "bottom": 408.234375
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 649.5,
+        "width": 252,
+        "height": 705.125,
+        "right": 286,
+        "bottom": 1354.625
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 332.25,
+        "width": 322,
+        "height": 48,
+        "right": 356,
+        "bottom": 380.25
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 621.515625,
+        "width": 322,
+        "height": 630.859375,
+        "right": 356,
+        "bottom": 1252.375
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 34,
+        "y": 332.25,
+        "width": 322,
+        "height": 48,
+        "right": 356,
+        "bottom": 380.25
+      }
+    ],
+    "example": [
+      {
+        "x": 34,
+        "y": 621.515625,
+        "width": 322,
+        "height": 630.859375,
+        "right": 356,
+        "bottom": 1252.375
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 768,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 24,
+        "y": 298.46875,
+        "width": 269,
+        "height": 48,
+        "right": 293,
+        "bottom": 346.46875
+      }
+    ],
+    "example": [
+      {
+        "x": 24,
+        "y": 469.046875,
+        "width": 720,
+        "height": 567.671875,
+        "right": 744,
+        "bottom": 1036.71875
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 768,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 24,
+        "y": 298.46875,
+        "width": 269,
+        "height": 48,
+        "right": 293,
+        "bottom": 346.46875
+      }
+    ],
+    "example": [
+      {
+        "x": 24,
+        "y": 469.046875,
+        "width": 720,
+        "height": 567.671875,
+        "right": 744,
+        "bottom": 1036.71875
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "mode": "light",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 120,
+        "y": 469.40625,
+        "width": 269,
+        "height": 48,
+        "right": 389,
+        "bottom": 517.40625
+      }
+    ],
+    "example": [
+      {
+        "x": 840,
+        "y": 136,
+        "width": 480,
+        "height": 517.1875,
+        "right": 1320,
+        "bottom": 653.1875
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "mode": "dark",
+    "heading": "See when you could retire.",
+    "overflow": false,
+    "cta": [
+      {
+        "x": 120,
+        "y": 469.40625,
+        "width": 269,
+        "height": 48,
+        "right": 389,
+        "bottom": 517.40625
+      }
+    ],
+    "example": [
+      {
+        "x": 840,
+        "y": 136,
+        "width": 480,
+        "height": 517.1875,
+        "right": 1320,
+        "bottom": 653.1875
+      }
+    ],
+    "text": [
+      "$965,931",
+      "$500,000",
+      "Final balance: Sustained"
+    ],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 320,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 320,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 390,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 390,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 768,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 768,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 1440,
+    "mode": "light",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/calculators",
+    "width": 1440,
+    "mode": "dark",
+    "heading": "Start with the question, not the formula.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 320,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 320,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 390,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 390,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 768,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 768,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 1440,
+    "mode": "light",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "route": "/dashboard",
+    "width": 1440,
+    "mode": "dark",
+    "heading": "Account features are currently unavailable.",
+    "overflow": false,
+    "cta": [],
+    "example": [],
+    "text": [],
+    "clipped": [],
+    "errors": []
+  }
+]

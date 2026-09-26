@@ -50,8 +50,28 @@ export type SeedChange = {
   field: SeedApplication['destination'];
 };
 
+export const PLAN_SEED_ERROR_REASONS = {
+  CURRENCY_MISMATCH: 'CURRENCY_MISMATCH',
+  INACTIVE_ACCOUNT: 'INACTIVE_ACCOUNT',
+  NOT_ASSET: 'NOT_ASSET',
+  NO_DATED_BALANCE: 'NO_DATED_BALANCE',
+  NO_SELECTION: 'NO_SELECTION',
+  UNAVAILABLE_GOAL: 'UNAVAILABLE_GOAL'
+} as const;
+
+export type PlanSeedErrorReason = (typeof PLAN_SEED_ERROR_REASONS)[keyof typeof PLAN_SEED_ERROR_REASONS];
+
+export type PlanSeedErrorDetail = {
+  accountName?: string;
+  currency?: string;
+  expectedCurrency?: string;
+  message: string;
+  reason: PlanSeedErrorReason;
+  sourceId?: string;
+};
+
 export type PlanSeedPreview =
-  | { errors: string[]; ok: false }
+  | { errorDetails?: PlanSeedErrorDetail[]; errors: string[]; ok: false }
   | {
       applications: SeedApplication[];
       changes: SeedChange[];
@@ -75,6 +95,7 @@ export function previewPlanSeed(input: {
   todayYear?: number;
 }): PlanSeedPreview {
   const errors: string[] = [];
+  const errorDetails: PlanSeedErrorDetail[] = [];
   const appliedAt = input.appliedAt ?? new Date().toISOString();
   const todayYear = input.todayYear ?? new Date().getUTCFullYear();
   const currency = input.profile?.defaultCurrency.toUpperCase() ?? 'USD';
@@ -130,7 +151,16 @@ export function previewPlanSeed(input: {
       } else if (!account.latestBalanceDate) {
         errors.push(`${account.name} does not have a dated balance.`);
       } else if (account.currency.toUpperCase() !== currency) {
-        errors.push(`${account.name} uses ${account.currency}, not ${currency}.`);
+        const message = `${account.name} uses ${account.currency}, not ${currency}.`;
+        errors.push(message);
+        errorDetails.push({
+          accountName: account.name,
+          currency: account.currency,
+          expectedCurrency: currency,
+          message,
+          reason: PLAN_SEED_ERROR_REASONS.CURRENCY_MISMATCH,
+          sourceId: account.id
+        });
       }
     }
 
@@ -189,7 +219,9 @@ export function previewPlanSeed(input: {
   }
 
   if (errors.length > 0) {
-    return { errors, ok: false };
+    return errorDetails.length > 0
+      ? { errorDetails, errors, ok: false }
+      : { errors, ok: false };
   }
 
   return {
@@ -223,4 +255,32 @@ function addChange(
   if (before !== after) {
     changes.push({ after, before, field });
   }
+}
+
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value as Record<string, unknown>)
+      .filter((key) => (value as Record<string, unknown>)[key] !== undefined)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableStringify((value as Record<string, unknown>)[key])}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+type AssumptionState<TTimeline> = { plan: PlanInput; timeline: TTimeline };
+type SavedAssumptionState<TTimeline> = { plan: Partial<PlanInput>; timeline: Partial<TTimeline> };
+
+// A saved snapshot is compared after the same normalization the app applies when loading it, so
+// legacy snapshots (missing newer fields) or different key order never look like unsaved edits.
+export function hasUnsavedAssumptions<TTimeline extends object>(
+  current: AssumptionState<TTimeline>,
+  saved: SavedAssumptionState<TTimeline>,
+  normalize: { normalizePlan: (plan: Partial<PlanInput>) => PlanInput; normalizeTimeline: (timeline: Partial<TTimeline>) => TTimeline }
+): boolean {
+  return (
+    stableStringify(current.plan) !== stableStringify(normalize.normalizePlan(saved.plan)) ||
+    stableStringify(current.timeline) !== stableStringify(normalize.normalizeTimeline(saved.timeline))
+  );
 }

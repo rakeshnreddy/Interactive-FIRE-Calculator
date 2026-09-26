@@ -1,16 +1,20 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import {
+  CALCULATOR_SAVE_STATUS,
   createSavedCalculatorResult,
+  IdempotencyConflictError,
+  IncompatibleGoalCurrencyError,
   listSavedCalculatorResults,
   parseCalculatorSavePayload,
   readJsonBody
 } from '../../_lib/calculatorResults';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
+import { recordServerEvent } from '../../_lib/analytics';
 
 type CalculatorResultsEnv = ClerkEnv & DatabaseEnv;
 
@@ -23,8 +27,8 @@ export const onRequestGet: PagesFunction<CalculatorResultsEnv> = async ({ reques
 
   try {
     return json({ calculatorResults: await listSavedCalculatorResults(context.database, context.userId) });
-  } catch {
-    return json({ error: 'Unable to load saved calculator results.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load saved calculator results.');
   }
 };
 
@@ -36,17 +40,29 @@ export const onRequestPost: PagesFunction<CalculatorResultsEnv> = async ({ reque
   }
 
   const body = await readJsonBody(request);
-  const parsed = parseCalculatorSavePayload(body);
+  const idempotencyHeader = request.headers.get('Idempotency-Key');
+  const parsed = parseCalculatorSavePayload(body, { idempotencyHeader });
 
   if (!parsed.ok) {
-    return json({ error: parsed.error }, 400);
+    return json(
+      parsed.code ? { code: parsed.code, error: parsed.error } : { error: parsed.error },
+      400
+    );
   }
 
   try {
     const saved = await createSavedCalculatorResult(context.database, context.userId, parsed.value);
-    return json(saved, 201);
-  } catch {
-    return json({ error: 'Unable to save calculator result.' }, 500);
+    const status = saved.saveStatus === CALCULATOR_SAVE_STATUS.RETRY ? 200 : 201;
+    if (status === 201) await recordServerEvent(context.database, context.userId, 'decision_saved', { family: 'calculator' });
+    return json(saved, status);
+  } catch (error) {
+    if (error instanceof IncompatibleGoalCurrencyError) {
+      return json({ code: error.code, error: error.message }, 400);
+    }
+    if (error instanceof IdempotencyConflictError) {
+      return json({ code: error.code, error: error.message }, 409);
+    }
+    return handleApiError(error, 'Unable to save calculator result.');
   }
 };
 

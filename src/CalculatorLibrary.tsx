@@ -1,4 +1,4 @@
-import { SignUpButton } from '@clerk/react';
+import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
   Banknote,
@@ -67,6 +67,7 @@ import {
   type CalculatorResult,
   type SeoCalculator
 } from './lib/seoCalculators';
+import { resolveMoneyLocale } from './lib/money';
 
 const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment']);
 
@@ -164,11 +165,68 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
   return <CalculatorHub onNavigate={onNavigate} />;
 }
 
+const libraryStartingPaths = [
+  {
+    question: 'Planning for retirement?',
+    title: 'Interactive FIRE Calculator',
+    description: 'Model required nest egg, target retirement age, and sustainable withdrawals.',
+    path: '/calculators/fire',
+    badge: 'Retirement'
+  },
+  {
+    question: 'Buying a home?',
+    title: 'Mortgage Payment Calculator',
+    description: 'Estimate monthly principal and interest, amortized interest, and total cost.',
+    path: '/calculators/mortgage',
+    badge: 'Home & Loans'
+  },
+  {
+    question: 'Growing your savings?',
+    title: 'Compound Interest Calculator',
+    description: 'Project regular contributions, compound growth schedules, and return scenarios.',
+    path: '/calculators/compound-interest',
+    badge: 'Savings & Growth'
+  },
+  {
+    question: 'Paying off debt?',
+    title: 'Debt Payoff Calculator',
+    description: 'Compare avalanche and snowball strategies to eliminate high-interest debt faster.',
+    path: '/calculators/debt-payoff',
+    badge: 'Debt Payoff'
+  }
+];
+
+const fireSearchKeywords = [
+  'fire',
+  'financial independence',
+  'retire early',
+  'retirement',
+  'retirement timeline',
+  'nest egg',
+  'sustainable withdrawal',
+  'swr',
+  'safe withdrawal rate',
+  '4% rule',
+  'pension',
+  'portfolio target'
+];
+
 function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) {
   const [query, setQuery] = useState(() => (
     typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('q') ?? ''
   ));
   const normalizedQuery = query.trim().toLowerCase();
+
+  const fireMatches = useMemo(() => {
+    if (!normalizedQuery) return false;
+    return [
+      'Interactive FIRE Calculator',
+      'Model retirement timelines, required nest egg, and sustainable withdrawal rates.',
+      'Retirement Planning',
+      ...fireSearchKeywords
+    ].join(' ').toLowerCase().includes(normalizedQuery);
+  }, [normalizedQuery]);
+
   const visibleCalculators = useMemo(
     () =>
       seoCalculators.filter((calculator) =>
@@ -182,6 +240,8 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
       ),
     [normalizedQuery]
   );
+
+  const totalMatches = visibleCalculators.length + (fireMatches ? 1 : 0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -200,7 +260,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
         <p>Choose a planning toolkit or search for an exact calculator. Every estimate includes explanations, scenarios, visual context, and detailed schedules where they add value.</p>
         <div className="calculator-library-stats" aria-label="Calculator library summary">
           <span><strong>{calculatorToolkits.length}</strong> planning toolkits</span>
-          <span><strong>{seoCalculators.length}</strong> focused calculators</span>
+          <span><strong>{seoCalculators.length + 1}</strong> public calculators</span>
           <span><strong>0</strong> account required</span>
         </div>
       </div>
@@ -212,7 +272,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           autoComplete="off"
           name="calculator-search"
           type="search"
-          placeholder="Search mortgage, SIP, tax, debt payoff, retirement"
+          placeholder="Search mortgage, SIP, tax, debt payoff, retirement, FIRE"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -228,10 +288,10 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Search results</p>
-              <h2>{visibleCalculators.length} {visibleCalculators.length === 1 ? 'match' : 'matches'}</h2>
+              <h2>{totalMatches} {totalMatches === 1 ? 'match' : 'matches'}</h2>
             </div>
           </div>
-          {visibleCalculators.length === 0 ? (
+          {totalMatches === 0 ? (
             <div className="calculator-empty-state">
               <CircleHelp size={22} />
               <strong>No calculator matches that phrase.</strong>
@@ -239,6 +299,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
             </div>
           ) : (
             <div className="calculator-card-grid">
+              {fireMatches && <FireSearchCard onNavigate={onNavigate} />}
               {visibleCalculators.map((calculator) => (
                 <CalculatorSearchCard calculator={calculator} key={calculator.slug} onNavigate={onNavigate} />
               ))}
@@ -246,13 +307,59 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           )}
         </section>
       ) : (
-        <div className="calculator-toolkit-grid">
-          {calculatorToolkits.map((toolkit) => (
-            <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} toolkit={toolkit} />
-          ))}
-        </div>
+        <>
+          <section className="calculator-starting-paths" aria-labelledby="starting-paths-title">
+            <div className="starting-paths-header">
+              <p className="eyebrow">Starting paths</p>
+              <h2 id="starting-paths-title">Popular decisions to start with</h2>
+              <p>Explore high-impact planning questions before diving into specialized toolkits.</p>
+            </div>
+            <div className="starting-paths-grid">
+              {libraryStartingPaths.map((item) => (
+                <a
+                  key={item.path}
+                  href={item.path}
+                  className="starting-path-card"
+                  onClick={(event) => navigateInternalLink(event, item.path, onNavigate)}
+                >
+                  <div className="starting-path-head">
+                    <span className="starting-path-badge">{item.badge}</span>
+                    <ArrowRight size={16} />
+                  </div>
+                  <span className="starting-path-question">{item.question}</span>
+                  <strong className="starting-path-title">{item.title}</strong>
+                  <p className="starting-path-description">{item.description}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <div className="calculator-toolkit-grid">
+            {calculatorToolkits.map((toolkit) => (
+              <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} toolkit={toolkit} />
+            ))}
+          </div>
+        </>
       )}
     </section>
+  );
+}
+
+function FireSearchCard({ onNavigate }: { onNavigate: (route: string) => void }) {
+  return (
+    <a
+      className="calculator-card calculator-card-fire"
+      href="/calculators/fire"
+      onClick={(event) => navigateInternalLink(event, '/calculators/fire', onNavigate)}
+    >
+      <span className="calculator-card-meta">Retirement Planning</span>
+      <strong>Interactive FIRE Calculator</strong>
+      <small>Model required nest egg, target retirement age, sustainable withdrawal rates, and inflation-adjusted cash flows.</small>
+      <em>
+        Open calculator
+        <ArrowRight size={14} />
+      </em>
+    </a>
   );
 }
 
@@ -275,7 +382,7 @@ function CalculatorToolkitPanel({
           <span>{toolkit.prompt}</span>
           <h2>{toolkit.title}</h2>
         </div>
-        <strong>{toolkit.calculators.length}</strong>
+        <span className="calculator-toolkit-count">{toolkit.calculators.length}</span>
       </header>
       <p>{toolkit.description}</p>
       <nav className="calculator-toolkit-featured" aria-label={`${toolkit.title} starting points`}>
@@ -285,7 +392,7 @@ function CalculatorToolkitPanel({
             key={calculator.slug}
             onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
           >
-            <span>{index === 0 ? 'Start here' : 'Also useful'}</span>
+            {index === 0 ? <span className="calculator-featured-tag">Start here</span> : null}
             <strong>{calculator.title}</strong>
             <ArrowRight size={15} />
           </a>
@@ -432,6 +539,8 @@ function CalculatorDetail({
     });
   }, [auth.status, calculator.slug, result, selectedScenarioId, values]);
 
+  const [openMetricHelp, setOpenMetricHelp] = useState<Record<string, boolean>>({});
+
   const setValue = (key: string, value: string) => {
     const parsed = Number(value);
     setLastSavedRoute(null);
@@ -444,35 +553,38 @@ function CalculatorDetail({
 
   const standardInputs = calculator.inputs.filter((input) => !optionalCalculatorInputKeys.has(input.key));
   const optionalInputs = calculator.inputs.filter((input) => optionalCalculatorInputKeys.has(input.key));
-  const renderInput = (input: SeoCalculator['inputs'][number]) => (
-    <label className="field" key={input.key}>
-      <span className="calculator-field-label">
-        <span>{input.label}</span>
-        <span
-          className="calculator-help-dot"
-          title={input.helper}
-          aria-label={`${input.label}: ${input.helper}`}
-          tabIndex={0}
-        >
-          <CircleHelp size={14} />
+  const renderInput = (input: SeoCalculator['inputs'][number]) => {
+    const inputId = `input-${calculator.slug}-${input.key}`;
+    const helperId = input.helper ? `helper-${calculator.slug}-${input.key}` : undefined;
+    return (
+      <label className="field" key={input.key} htmlFor={inputId}>
+        <span className="calculator-field-label">
+          <span>{input.label}</span>
         </span>
-      </span>
-      <div className="calculator-input-control">
-        {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
-        <input
-          type="number"
-          min={input.min}
-          max={input.max}
-          step={input.type === 'percent' ? '0.01' : '1'}
-          value={values[input.key] ?? 0}
-          onChange={(event) => setValue(input.key, event.target.value)}
-        />
-        {input.type === 'percent' ? <small>%</small> : null}
-        {input.suffix ? <small>{input.suffix}</small> : null}
-      </div>
-      {input.helper ? <small>{input.helper}</small> : null}
-    </label>
-  );
+        <div className="calculator-input-control">
+          {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
+          <input
+            id={inputId}
+            name={input.key}
+            type="number"
+            min={input.min}
+            max={input.max}
+            step={input.type === 'percent' ? '0.01' : '1'}
+            value={values[input.key] ?? 0}
+            onChange={(event) => setValue(input.key, event.target.value)}
+            aria-describedby={helperId}
+          />
+          {input.type === 'percent' ? <small>%</small> : null}
+          {input.suffix ? <small>{input.suffix}</small> : null}
+        </div>
+        {input.helper ? (
+          <small className="calculator-field-helper" id={helperId}>
+            {input.helper}
+          </small>
+        ) : null}
+      </label>
+    );
+  };
 
   const persistSignedOutDraft = () => {
     writeCalculatorDraft({
@@ -543,7 +655,7 @@ function CalculatorDetail({
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">{toolkit.title}</p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
-        <p>{calculator.description}</p>
+        <p className="calculator-scope-note">{calculator.description}</p>
         <a
           className="calculator-toolkit-backlink"
           href="/calculators"
@@ -553,25 +665,6 @@ function CalculatorDetail({
           Explore the {toolkit.title} toolkit
         </a>
       </div>
-
-      <section className="calculator-context-panel" aria-label={`${calculator.title} overview`}>
-        <article>
-          <p className="eyebrow">What it answers</p>
-          <p>{calculator.explanation}</p>
-        </article>
-        <article>
-          <p className="eyebrow">Why it matters</p>
-          <p>{qualitySpec.decisionUsefulness}</p>
-        </article>
-        <article>
-          <p className="eyebrow">How it fits</p>
-          <p>{toolkit.description}</p>
-        </article>
-        <article>
-          <p className="eyebrow">How to read it</p>
-          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
-        </article>
-      </section>
 
       <div className="calculator-detail-grid">
         <section className="calculator-input-panel" aria-label={`${calculator.title} inputs`}>
@@ -615,22 +708,42 @@ function CalculatorDetail({
             </div>
           </div>
           <div className="calculator-result-metrics">
-            {result.metrics.map((metric) => (
-              <article className={`calculator-result-metric metric-${metric.tone ?? 'neutral'}`} key={metric.label}>
-                <span className="calculator-metric-label">
-                  <span>{metric.label}</span>
-                  <span
-                    className="calculator-help-dot"
-                    title={metricDescription(metric)}
-                    aria-label={`${metric.label}: ${metricDescription(metric)}`}
-                    tabIndex={0}
-                  >
-                    <CircleHelp size={14} />
+            {result.metrics.map((metric, index) => {
+              const isPrimary = index === 0;
+              const helpId = `metric-help-${calculator.slug}-${index}`;
+              const isHelpOpen = Boolean(openMetricHelp[metric.label]);
+              return (
+                <article
+                  className={`calculator-result-metric metric-${metric.tone ?? 'neutral'}${isPrimary ? ' calculator-result-metric-primary' : ''}`}
+                  key={metric.label}
+                >
+                  <span className="calculator-metric-label">
+                    <span>{metric.label}</span>
+                    <button
+                      type="button"
+                      className="calculator-help-btn"
+                      aria-expanded={isHelpOpen}
+                      aria-controls={helpId}
+                      aria-label={`About ${metric.label}`}
+                      onClick={() =>
+                        setOpenMetricHelp((prev) => ({
+                          ...prev,
+                          [metric.label]: !prev[metric.label]
+                        }))
+                      }
+                    >
+                      <CircleHelp size={14} />
+                    </button>
                   </span>
-                </span>
-                <strong>{formatMetric(metric, calculator)}</strong>
-              </article>
-            ))}
+                  <strong>{formatMetric(metric, calculator)}</strong>
+                  {isHelpOpen ? (
+                    <p id={helpId} className="calculator-metric-help-text" role="region">
+                      {metricDescription(metric)}
+                    </p>
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
           <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} />
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} />
@@ -655,12 +768,12 @@ function CalculatorDetail({
                 <ArrowRight size={16} />
               </button>
             ) : (
-              <SignUpButton mode="modal">
+              <SignUpIntent mode="modal">
                 <button className="primary-button icon-text-button" type="button" onClick={persistSignedOutDraft}>
                   Create account to save
                   <ArrowRight size={16} />
                 </button>
-              </SignUpButton>
+              </SignUpIntent>
             )}
           </div>
           {saveMessage ? (
@@ -675,6 +788,25 @@ function CalculatorDetail({
           ) : null}
         </section>
       </div>
+
+      <section className="calculator-methodology-panel" aria-label={`${calculator.title} methodology and context`}>
+        <article>
+          <p className="eyebrow">What it answers</p>
+          <p>{calculator.explanation}</p>
+        </article>
+        <article>
+          <p className="eyebrow">Why it matters</p>
+          <p>{qualitySpec.decisionUsefulness}</p>
+        </article>
+        <article>
+          <p className="eyebrow">How it fits</p>
+          <p>{toolkit.description}</p>
+        </article>
+        <article>
+          <p className="eyebrow">How to read it</p>
+          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
+        </article>
+      </section>
 
       <CalculatorEngagementPanel
         auth={auth}
@@ -902,7 +1034,7 @@ function CalculatorScenarioPanel({
         {scenarios.map((scenario) => (
           <button
             aria-selected={scenario.id === selectedScenarioId}
-            className={scenario.id === selectedScenarioId ? 'is-active' : ''}
+            className={`calculator-scenario-tab${scenario.id === selectedScenarioId ? ' is-active' : ''}`}
             key={scenario.id}
             role="tab"
             type="button"
@@ -1075,21 +1207,53 @@ function CalculatorEngagementPanel({
   );
 }
 
-function CalculatorStudioVisual({
+export function CalculatorStudioVisual({
   calculator,
-  chart,
-  metrics
+  chart
 }: {
   calculator: SeoCalculator;
   chart: CalculatorStudioChart;
-  metrics: CalculatorMetric[];
+  metrics?: CalculatorMetric[];
 }) {
-  const visibleMetrics = metrics.slice(0, 4);
-  const maxVisualValue = Math.max(1, ...visibleMetrics.map((metric) => visualMetricValue(metric)));
-  const maxChartValue = Math.max(
-    1,
-    ...chart.entries.flatMap((entry) => [Math.abs(entry.primary), Math.abs(entry.secondary ?? 0)])
-  );
+  const allValues = chart.entries.flatMap((entry) => [
+    entry.primary,
+    ...(entry.secondary !== undefined ? [entry.secondary] : [])
+  ]);
+
+  const minVal = Math.min(0, ...allValues);
+  const maxVal = Math.max(0, ...allValues);
+  const span = maxVal - minVal === 0 ? 1 : maxVal - minVal;
+  const hasNegative = minVal < 0;
+  const zeroBaselinePct = hasNegative ? (-minVal / span) * 100 : 0;
+
+  const computeBarStyle = (value: number) => {
+    if (value === 0) {
+      return { width: '0%', left: `${zeroBaselinePct}%` };
+    }
+
+    if (value > 0) {
+      if (hasNegative) {
+        const widthPct = Math.min(100 - zeroBaselinePct, (value / span) * 100);
+        return {
+          width: `${widthPct}%`,
+          left: `${zeroBaselinePct}%`
+        };
+      }
+      const widthPct = Math.min(100, (value / (maxVal || 1)) * 100);
+      return {
+        width: `${widthPct}%`,
+        left: '0%'
+      };
+    }
+
+    // value < 0
+    const widthPct = Math.min(zeroBaselinePct, (Math.abs(value) / span) * 100);
+    const leftPct = zeroBaselinePct - widthPct;
+    return {
+      width: `${widthPct}%`,
+      left: `${leftPct}%`
+    };
+  };
 
   return (
     <div className={`calculator-visual-panel visual-${chart.type}`} aria-label={`${calculator.title} visual summary`}>
@@ -1098,59 +1262,117 @@ function CalculatorStudioVisual({
         <strong>{chart.title}</strong>
         <small>{chart.description}</small>
       </div>
+
       <div className="calculator-studio-chart" aria-label={chart.summary}>
         {chart.entries.map((entry, entryIndex) => {
-          const primaryWidth = Math.max(8, Math.min(100, Math.abs(entry.primary) / maxChartValue * 100));
-          const secondaryWidth = entry.secondary === undefined
-            ? 0
-            : Math.max(8, Math.min(100, Math.abs(entry.secondary) / maxChartValue * 100));
+          const entryValueType = entry.valueType ?? chart.valueType;
+          const entryCurrency = entry.currency ?? chart.currency;
+          const primaryStyle = computeBarStyle(entry.primary);
+          const secondaryStyle = entry.secondary !== undefined ? computeBarStyle(entry.secondary) : null;
+          const isNegative = entry.primary < 0 || (entry.secondary !== undefined && entry.secondary < 0);
 
           return (
-            <div className="calculator-studio-chart-row" key={`${entry.label}-${entryIndex}`}>
-              <div>
-                <span>{entry.label}</span>
-                <strong>{formatChartValue(entry.primary, calculator)}</strong>
+            <div
+              className={`calculator-studio-chart-row${isNegative ? ' is-negative' : ''}`}
+              key={`${entry.label}-${entryIndex}`}
+            >
+              <div className="calculator-chart-row-header">
+                <span className="calculator-chart-row-label">{entry.label}</span>
+                <div className="calculator-chart-values-group">
+                  <span className="calculator-chart-val primary-val">
+                    {chart.legend.secondary ? <span className="sr-only">{chart.legend.primary}: </span> : null}
+                    <strong>{formatChartValue(entry.primary, calculator, entryValueType, entryCurrency)}</strong>
+                  </span>
+                  {entry.secondary !== undefined ? (
+                    <span className="calculator-chart-val secondary-val">
+                      <span className="sr-only">{chart.legend.secondary}: </span>
+                      <strong>{formatChartValue(entry.secondary, calculator, entryValueType, entryCurrency)}</strong>
+                    </span>
+                  ) : null}
+                </div>
               </div>
-              <span className="calculator-visual-track" aria-hidden="true">
-                <span
-                  className={`calculator-visual-fill metric-${entry.tone ?? 'neutral'}`}
-                  style={{ width: `${primaryWidth}%` }}
-                />
-              </span>
-              {entry.secondary !== undefined ? (
-                <span className="calculator-visual-track secondary-track" aria-hidden="true">
-                  <span className="calculator-visual-fill metric-neutral" style={{ width: `${secondaryWidth}%` }} />
-                </span>
-              ) : null}
+
+              <div className="calculator-chart-tracks">
+                <div className="calculator-visual-track" aria-hidden="true">
+                  {hasNegative ? (
+                    <span className="calculator-chart-baseline" style={{ left: `${zeroBaselinePct}%` }} />
+                  ) : null}
+                  {entry.primary === 0 ? (
+                    <span className="calculator-zero-marker" style={{ left: `${zeroBaselinePct}%` }} />
+                  ) : null}
+                  <span
+                    className={`calculator-visual-fill metric-${entry.tone ?? 'neutral'}${entry.primary < 0 ? ' is-negative' : ''}`}
+                    style={primaryStyle}
+                  />
+                </div>
+                {entry.secondary !== undefined && secondaryStyle ? (
+                  <div className="calculator-visual-track secondary-track" aria-hidden="true">
+                    {hasNegative ? (
+                      <span className="calculator-chart-baseline" style={{ left: `${zeroBaselinePct}%` }} />
+                    ) : null}
+                    {entry.secondary === 0 ? (
+                      <span className="calculator-zero-marker" style={{ left: `${zeroBaselinePct}%` }} />
+                    ) : null}
+                    <span
+                      className={`calculator-visual-fill metric-neutral${entry.secondary < 0 ? ' is-negative' : ''}`}
+                      style={secondaryStyle}
+                    />
+                  </div>
+                ) : null}
+              </div>
               {entry.note ? <small>{entry.note}</small> : null}
             </div>
           );
         })}
       </div>
-      <div className="calculator-chart-legend">
-        <span>{chart.legend.primary}</span>
-        {chart.legend.secondary ? <span>{chart.legend.secondary}</span> : null}
-      </div>
-      <div className="calculator-visual-bars">
-        {visibleMetrics.map((metric) => {
-          const width = Math.max(8, Math.min(100, (visualMetricValue(metric) / maxVisualValue) * 100));
 
-          return (
-            <div className="calculator-visual-row" key={metric.label}>
-              <div>
-                <span>{metric.label}</span>
-                <strong>{formatMetric(metric, calculator)}</strong>
-              </div>
-              <span className="calculator-visual-track" aria-hidden="true">
-                <span
-                  className={`calculator-visual-fill metric-${metric.tone ?? 'neutral'}`}
-                  style={{ width: `${width}%` }}
-                />
-              </span>
-            </div>
-          );
-        })}
+      <div className="calculator-chart-legend" role="list" aria-label="Chart series legend">
+        <span className="calculator-legend-item" role="listitem">
+          <span className="calculator-legend-swatch swatch-primary" aria-hidden="true" />
+          <span>{chart.legend.primary}</span>
+        </span>
+        {chart.legend.secondary ? (
+          <span className="calculator-legend-item" role="listitem">
+            <span className="calculator-legend-swatch swatch-secondary" aria-hidden="true" />
+            <span>{chart.legend.secondary}</span>
+          </span>
+        ) : null}
       </div>
+
+      <details className="calculator-chart-table-details">
+        <summary>
+          <span>View chart data as table</span>
+        </summary>
+        <div className="calculator-chart-table-wrap">
+          <table className="calculator-chart-table">
+            <caption className="sr-only">{chart.title} data table</caption>
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                <th scope="col">{chart.legend.primary}</th>
+                {chart.legend.secondary ? <th scope="col">{chart.legend.secondary}</th> : null}
+                {chart.entries.some((e) => e.note) ? <th scope="col">Note</th> : null}
+              </tr>
+            </thead>
+            <tbody>
+              {chart.entries.map((entry, idx) => {
+                const entryValueType = entry.valueType ?? chart.valueType;
+                const entryCurrency = entry.currency ?? chart.currency;
+                return (
+                  <tr key={`tbl-${entry.label}-${idx}`}>
+                    <th scope="row">{entry.label}</th>
+                    <td>{formatChartValue(entry.primary, calculator, entryValueType, entryCurrency)}</td>
+                    {chart.legend.secondary ? (
+                      <td>{entry.secondary !== undefined ? formatChartValue(entry.secondary, calculator, entryValueType, entryCurrency) : '—'}</td>
+                    ) : null}
+                    {chart.entries.some((e) => e.note) ? <td>{entry.note ?? ''}</td> : null}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   );
 }
@@ -1380,13 +1602,29 @@ function visualMetricValue(metric: CalculatorMetric): number {
   return Math.abs(metric.value);
 }
 
-function formatChartValue(value: number, calculator: SeoCalculator): string {
-  if (Math.abs(value) >= 1000) {
-    return new Intl.NumberFormat(undefined, {
-      currency: calculatorCurrency(calculator),
+export function formatChartValue(
+  value: number,
+  calculator: SeoCalculator,
+  valueType?: CalculatorMetric['valueType'],
+  currency?: string
+): string {
+  const effectiveType = valueType ?? (calculator.slug === 'cagr' ? 'percent' : 'currency');
+  const effectiveCurrency = currency ?? calculatorCurrency(calculator);
+
+  if (effectiveType === 'currency') {
+    return new Intl.NumberFormat(resolveMoneyLocale(effectiveCurrency), {
+      currency: effectiveCurrency,
       maximumFractionDigits: 0,
       style: 'currency'
     }).format(value);
+  }
+
+  if (effectiveType === 'percent') {
+    return `${(value * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+  }
+
+  if (effectiveType === 'years') {
+    return `${value.toLocaleString(undefined, { maximumFractionDigits: 1 })} years`;
   }
 
   return value.toLocaleString(undefined, { maximumFractionDigits: 1 });
@@ -1394,7 +1632,7 @@ function formatChartValue(value: number, calculator: SeoCalculator): string {
 
 function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): string {
   if (metric.valueType === 'currency') {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
       currency: calculatorCurrency(calculator),
       maximumFractionDigits: 0,
       style: 'currency'
@@ -1432,7 +1670,7 @@ function formatScheduleCell(
   }
 
   if (valueType === 'currency') {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
       currency: calculatorCurrency(calculator),
       maximumFractionDigits: 0,
       style: 'currency'

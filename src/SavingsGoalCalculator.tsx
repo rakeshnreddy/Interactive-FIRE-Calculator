@@ -1,4 +1,4 @@
-import { SignUpButton } from '@clerk/react';
+import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
   ChevronDown,
@@ -7,10 +7,7 @@ import {
   History,
   Landmark,
   RotateCcw,
-  ShieldCheck,
-  Table2,
-  Target,
-  TrendingUp
+  Target
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type { AuthState } from './auth';
@@ -34,6 +31,7 @@ import {
   type SavingsTargetBasis
 } from './lib/savingsGoalCalculator';
 import type { CalculatorResult, SeoCalculator } from './lib/seoCalculators';
+import { resolveMoneyLocale } from './lib/money';
 
 export type SavingsCurrencyCode = 'AUD' | 'CAD' | 'EUR' | 'GBP' | 'INR' | 'JPY' | 'USD';
 export type SavingsLocaleCode = 'auto' | 'de-DE' | 'en-IN' | 'en-US';
@@ -111,7 +109,7 @@ export function SavingsGoalCalculator({
     [calculator.slug, savedResults]
   );
   const schedule = schedulePeriod === 'annual' ? projection.annualSchedule : projection.detailedSchedule;
-  const resolvedLocale = locale === 'auto' ? undefined : locale;
+  const resolvedLocale = resolveMoneyLocale(currency, locale);
   const minorUnitDigits = currencyFractionDigits(currency);
   const practicalContribution = projection.requiredContribution === null
     ? null
@@ -251,7 +249,7 @@ export function SavingsGoalCalculator({
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">Growth &amp; goal planning</p>
         <h1 id="calculator-detail-title">Savings Goal Calculator</h1>
-        <p>Turn a target and deadline into a practical saving pace, then test whether your current plan is on track.</p>
+        <p className="calculator-scope-note">Turn a target and deadline into a practical saving pace, then test whether your current plan is on track.</p>
         <a href="/calculators" onClick={(event) => {
           event.preventDefault();
           onNavigate('/calculators');
@@ -259,12 +257,6 @@ export function SavingsGoalCalculator({
           <ArrowRight size={15} /> Explore all calculators
         </a>
       </div>
-
-      <section className="compound-trust-strip" aria-label="Calculator scope">
-        <span><ShieldCheck size={17} /><strong>Public by default</strong><small>No account required</small></span>
-        <span><TrendingUp size={17} /><strong>Constant-assumption estimate</strong><small>Not a prediction or guarantee</small></span>
-        <span><Table2 size={17} /><strong>Auditable math</strong><small>Headline and schedule reconcile</small></span>
-      </section>
 
       <div className="calculator-detail-grid compound-workspace">
         <section className="calculator-input-panel" aria-labelledby="savings-input-title">
@@ -393,7 +385,7 @@ export function SavingsGoalCalculator({
                 ) : auth.status === 'not-configured' ? (
                   <button className="primary-button" type="button" onClick={() => onNavigate(calculator.conversionRoute)}>Create savings goal</button>
                 ) : (
-                  <SignUpButton mode="modal"><button className="primary-button" type="button" onClick={saveResult}>Create account to save</button></SignUpButton>
+                  <SignUpIntent mode="modal"><button className="primary-button" type="button" onClick={saveResult}>Create account to save</button></SignUpIntent>
                 )}
               </div>
             </>

@@ -1,6 +1,10 @@
 import {
+  AlertCircle,
   ArrowRight,
+  Calendar,
   Check,
+  CheckCircle2,
+  Clock,
   GitCompare,
   History,
   Link2,
@@ -11,8 +15,17 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import type { AuthState } from './auth';
 import { calculateFirePlan, formatMoney, type FirePlanResult, type PlanInput } from './lib/fire';
+import { buildPlanDeepLink } from './lib/navigation';
 import { derivePlanHealth, type PlanHealth } from './lib/planHealth';
 import {
+  calculatePlanReviewDueStatus,
+  type DueStatusResult,
+  type PlanReviewDecision,
+  type PlanReviewPayload,
+  type StoredPlanReview
+} from './lib/planReviews';
+import {
+  hasUnsavedAssumptions,
   previewPlanSeed,
   type PlanSeedPreview,
   type SeedApplication
@@ -34,7 +47,10 @@ export type PlanningScenario = {
 };
 
 export type PlanningSnapshot = {
+  // Optional B36 fields: absent in older saved versions, which load unchanged.
+  accumulation?: { annualSavings: number | null; savingsGrowth: number };
   calculatorMode: 'fire-number' | 'withdrawal-income';
+  currency?: 'USD' | 'INR';
   engineVersion?: string;
   plan: PlanInput;
   scenarios: PlanningScenario[];
@@ -57,21 +73,7 @@ export type PlanningSavedPlan = {
   versionNumber?: number;
 };
 
-export type PlanningSaveDraft = {
-  goalId: string | null;
-  label: string;
-  name: string;
-  notes: string;
-};
-
-type PlanningProfile = {
-  birthYear: number | null;
-  defaultCurrency: string;
-  targetRetirementAge: number | null;
-  updatedAt: string;
-};
-
-type PlanningAccount = {
+export type PlanningAccount = {
   accountType: string;
   category: 'asset' | 'liability';
   currency: string;
@@ -82,7 +84,7 @@ type PlanningAccount = {
   name: string;
 };
 
-type PlanningGoal = {
+export type PlanningGoal = {
   currentAmountCents: number;
   goalType: string;
   id: string;
@@ -93,7 +95,23 @@ type PlanningGoal = {
   updatedAt: string;
 };
 
-type PlanVersionSummary = {
+export type PlanningProfile = {
+  birthYear: number | null;
+  defaultCurrency: string;
+  displayName?: string | null;
+  householdName?: string | null;
+  targetRetirementAge: number | null;
+  updatedAt: string;
+};
+
+export type PlanningSaveDraft = {
+  goalId: string | null;
+  label: string;
+  name: string;
+  notes: string;
+};
+
+export type PlanVersionSummary = {
   createdAt: string;
   label: string | null;
   notes: string | null;
@@ -114,15 +132,24 @@ type PlanningWorkspaceProps = {
   currentResult: FirePlanResult;
   currentSnapshot: PlanningSnapshot;
   currentTimeline: PlanningTimeline;
+  deepLinkError?: string | null;
   goals: PlanningGoal[];
+  initialDueStatus?: DueStatusResult | null;
+  initialReviews?: StoredPlanReview[];
   isLoading: boolean;
   isSaving: boolean;
+  loadedVersionNumber?: number | null;
   message: string;
   onApplySeed: (preview: Extract<PlanSeedPreview, { ok: true }>) => void;
   onArchive: (id: string) => void;
+  onClearDeepLinkError?: () => void;
+  onDirtyStateChange?: (isDirty: boolean) => void;
+  normalizeSnapshotPlan?: (plan: Partial<PlanInput>) => PlanInput;
+  normalizeSnapshotTimeline?: (timeline: Partial<PlanningTimeline>) => PlanningTimeline;
   onLoadPlan: (plan: PlanningSavedPlan) => void;
   onLoadVersion: (planId: string, version: PlanVersionDetail) => void;
   onNavigateCalculator: () => void;
+  onReviewSaved?: () => void;
   onSave: (mode: 'new-plan' | 'new-version', draft: PlanningSaveDraft) => void;
   onUndoSeed: () => void;
   plans: PlanningSavedPlan[];
@@ -138,15 +165,24 @@ export function PlanningWorkspace({
   currentResult,
   currentSnapshot,
   currentTimeline,
+  deepLinkError,
   goals,
+  initialDueStatus,
+  initialReviews,
   isLoading,
   isSaving,
+  loadedVersionNumber: controlledLoadedVersionNumber,
   message,
   onApplySeed,
   onArchive,
+  onClearDeepLinkError,
+  onDirtyStateChange,
+  normalizeSnapshotPlan = (plan) => plan as PlanInput,
+  normalizeSnapshotTimeline = (timeline) => timeline as PlanningTimeline,
   onLoadPlan,
   onLoadVersion,
   onNavigateCalculator,
+  onReviewSaved,
   onSave,
   onUndoSeed,
   plans,
@@ -155,8 +191,27 @@ export function PlanningWorkspace({
   const activePlan = plans.find((item) => item.id === activePlanId) ?? null;
   const retirementGoals = goals.filter((goal) => goal.goalType === 'retirement');
   const eligibleAccounts = accounts.filter(
-    (account) => account.isActive && account.category === 'asset'
+    (account) => account.isActive !== false && account.category === 'asset'
   );
+
+  const latestAccountEvidenceDate = useMemo(() => {
+    const dates = accounts
+      .filter((a) => a.isActive !== false && a.latestBalanceDate)
+      .map((a) => a.latestBalanceDate!)
+      .sort()
+      .reverse();
+    return dates[0] ?? null;
+  }, [accounts]);
+
+  const effectiveEvidenceDate = useMemo(() => {
+    if (latestAccountEvidenceDate) {
+      return latestAccountEvidenceDate.slice(0, 10);
+    }
+    const versionDate = activePlan?.createdAt ? activePlan.createdAt.slice(0, 10) : '';
+    const todayStr = new Date().toISOString().slice(0, 10);
+    return versionDate || todayStr;
+  }, [latestAccountEvidenceDate, activePlan?.createdAt]);
+
   const [draft, setDraft] = useState<PlanningSaveDraft>(() => draftFromPlan(activePlan));
   const [portfolioSource, setPortfolioSource] = useState<'accounts' | 'goal' | 'none'>('none');
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
@@ -165,7 +220,15 @@ export function PlanningWorkspace({
   const [versions, setVersions] = useState<PlanVersionSummary[]>([]);
   const [isLoadingVersions, setIsLoadingVersions] = useState(false);
   const [versionMessage, setVersionMessage] = useState('');
-  const [loadedVersionNumber, setLoadedVersionNumber] = useState<number | null>(null);
+  const [internalLoadedVersionNumber, setInternalLoadedVersionNumber] = useState<number | null>(
+    () => controlledLoadedVersionNumber ?? activePlan?.versionNumber ?? null
+  );
+  const loadedVersionNumber =
+    controlledLoadedVersionNumber !== undefined
+      ? controlledLoadedVersionNumber
+      : internalLoadedVersionNumber;
+  const setLoadedVersionNumber = setInternalLoadedVersionNumber;
+
   const [selectedCompareVersions, setSelectedCompareVersions] = useState<number[]>([]);
   const [versionDetails, setVersionDetails] = useState<Record<number, PlanVersionDetail>>({});
   const currentHealth = useMemo(
@@ -173,10 +236,188 @@ export function PlanningWorkspace({
     [currentPlan, currentResult]
   );
 
+  const [baselineSnapshot, setBaselineSnapshot] = useState<PlanningSnapshot | null>(
+    () => activePlan?.snapshot ?? currentSnapshot
+  );
+
   useEffect(() => {
     setDraft(draftFromPlan(activePlan));
-    setLoadedVersionNumber(activePlan?.versionNumber ?? null);
-  }, [activePlanId, activePlan?.goalId, activePlan?.label, activePlan?.name, activePlan?.notes, activePlan?.versionNumber]);
+    if (controlledLoadedVersionNumber === undefined) {
+      setLoadedVersionNumber(activePlan?.versionNumber ?? null);
+    }
+    if (activePlan?.snapshot) {
+      setBaselineSnapshot(activePlan.snapshot);
+    }
+  }, [
+    activePlanId,
+    activePlan?.goalId,
+    activePlan?.label,
+    activePlan?.name,
+    activePlan?.notes,
+    activePlan?.versionNumber,
+    controlledLoadedVersionNumber
+  ]);
+
+  const isDraftDirty = useMemo(() => {
+    if (!activePlan) return false;
+    return (
+      draft.name !== activePlan.name ||
+      draft.label !== (activePlan.label ?? '') ||
+      draft.notes !== (activePlan.notes ?? '') ||
+      draft.goalId !== (activePlan.goalId ?? null)
+    );
+  }, [activePlan, draft]);
+
+  const isPlanDirty = useMemo(() => {
+    if (!baselineSnapshot) return isDraftDirty;
+    const assumptionsDirty = hasUnsavedAssumptions(
+      { plan: currentPlan, timeline: currentTimeline },
+      baselineSnapshot,
+      { normalizePlan: normalizeSnapshotPlan, normalizeTimeline: normalizeSnapshotTimeline }
+    );
+    return assumptionsDirty || isDraftDirty;
+  }, [baselineSnapshot, currentPlan, currentTimeline, isDraftDirty, normalizeSnapshotPlan, normalizeSnapshotTimeline]);
+
+  useEffect(() => {
+    onDirtyStateChange?.(isPlanDirty);
+  }, [isPlanDirty, onDirtyStateChange]);
+
+  const [pendingAction, setPendingAction] = useState<
+    | { type: 'load-plan'; plan: PlanningSavedPlan }
+    | { type: 'load-version'; versionNumber: number }
+    | null
+  >(null);
+
+  const [reviews, setReviews] = useState<StoredPlanReview[]>(() => initialReviews ?? []);
+  const currentVersionNumber = loadedVersionNumber ?? activePlan?.versionNumber ?? 1;
+  const [lastSubmittedReview, setLastSubmittedReview] = useState<StoredPlanReview | null>(null);
+
+  const isRevisionActive = useMemo(() => {
+    if (lastSubmittedReview && lastSubmittedReview.decision === 'revise' && lastSubmittedReview.planVersionNumber === currentVersionNumber) {
+      return true;
+    }
+    const matchingReview = reviews.find((r) => r.planVersionNumber === currentVersionNumber);
+    return matchingReview?.decision === 'revise';
+  }, [lastSubmittedReview, reviews, currentVersionNumber]);
+
+  useEffect(() => {
+    setLastSubmittedReview(null);
+  }, [activePlanId, activePlan?.versionNumber, loadedVersionNumber]);
+
+  const [dueStatus, setDueStatus] = useState<DueStatusResult | null>(
+    () =>
+      initialDueStatus ??
+      (activePlan
+        ? calculatePlanReviewDueStatus({
+            planCreatedAt: activePlan.createdAt,
+            evidenceDate: effectiveEvidenceDate
+          })
+        : null)
+  );
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+  const [reviewMessage, setReviewMessage] = useState('');
+  const [reviewDecision, setReviewDecision] = useState<PlanReviewDecision>('keep');
+  const [reviewNotes, setReviewNotes] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  useEffect(() => {
+    if (initialReviews !== undefined) {
+      setReviews(initialReviews);
+    }
+  }, [initialReviews]);
+
+  useEffect(() => {
+    if (initialDueStatus !== undefined) {
+      setDueStatus(initialDueStatus);
+    }
+  }, [initialDueStatus]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (initialReviews !== undefined) {
+      return;
+    }
+
+    if (!activePlanId || !activePlan) {
+      setReviews([]);
+      setDueStatus(null);
+      setReviewMessage('');
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    setIsLoadingReviews(true);
+    loadPlanReviews(auth, activePlanId)
+      .then((data) => {
+        if (cancelled) return;
+        if (data) {
+          setReviews(data.reviews);
+          setDueStatus(data.dueStatus);
+        } else {
+          setReviews([]);
+          setDueStatus(
+            calculatePlanReviewDueStatus({
+              planCreatedAt: activePlan.createdAt,
+              evidenceDate: effectiveEvidenceDate
+            })
+          );
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setReviews([]);
+        setDueStatus(
+          calculatePlanReviewDueStatus({
+            planCreatedAt: activePlan.createdAt,
+            evidenceDate: effectiveEvidenceDate
+          })
+        );
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingReviews(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activePlanId, activePlan?.createdAt, activePlan?.updatedAt, auth.getToken, auth.user.id, effectiveEvidenceDate, initialReviews]);
+
+  const handleReviewSubmit = async () => {
+    if (!activePlanId || !activePlan) return;
+    const versionNumberToReview = loadedVersionNumber ?? activePlan.versionNumber ?? 1;
+
+    setIsSubmittingReview(true);
+    setReviewMessage('Recording review...');
+
+    try {
+      const result = await submitPlanReview(auth, activePlanId, {
+        decision: reviewDecision,
+        deferDays: reviewDecision === 'defer' ? 14 : undefined,
+        evidenceDate: effectiveEvidenceDate,
+        notes: reviewNotes.trim() || null,
+        planVersionNumber: versionNumberToReview
+      });
+
+      setDueStatus(result.dueStatus);
+      setReviews((current) => [result.review, ...current.filter((r) => r.id !== result.review.id)]);
+      setLastSubmittedReview(result.review);
+      setReviewMessage(
+        reviewDecision === 'keep'
+          ? `Assumptions confirmed for Version ${versionNumberToReview}. Next review due ${result.review.nextReviewDue}.`
+          : reviewDecision === 'revise'
+          ? `Review recorded for Version ${versionNumberToReview}. Save a new version to apply revisions.`
+          : `Review deferred until ${result.review.deferredUntil}.`
+      );
+      setReviewNotes('');
+      onReviewSaved?.();
+    } catch (error) {
+      setReviewMessage(error instanceof Error ? error.message : 'Failed to record review.');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -267,20 +508,63 @@ export function PlanningWorkspace({
     setSeedPreview(preview);
   };
 
-  const loadHistoricalVersion = async (versionNumber: number) => {
+  const performLoadHistoricalVersion = async (versionNumber: number) => {
     if (!activePlanId) return;
 
     setIsLoadingVersions(true);
     try {
-      const version = versionDetails[versionNumber] ?? await loadPlanVersion(auth, activePlanId, versionNumber);
+      const version =
+        versionDetails[versionNumber] ??
+        (await loadPlanVersion(auth, activePlanId, versionNumber));
       setVersionDetails((current) => ({ ...current, [versionNumber]: version }));
       setLoadedVersionNumber(versionNumber);
+      setBaselineSnapshot(version.snapshot);
       onLoadVersion(activePlanId, version);
       setVersionMessage(`Version ${versionNumber} loaded into the calculator workspace.`);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', buildPlanDeepLink(activePlanId, versionNumber));
+      }
     } catch (error) {
       setVersionMessage(error instanceof Error ? error.message : 'Version could not be loaded.');
     } finally {
       setIsLoadingVersions(false);
+    }
+  };
+
+  const handleLoadVersionClick = (versionNumber: number) => {
+    if (isPlanDirty) {
+      setPendingAction({ type: 'load-version', versionNumber });
+    } else {
+      performLoadHistoricalVersion(versionNumber);
+    }
+  };
+
+  const handleOpenPlanClick = (plan: PlanningSavedPlan) => {
+    if (isPlanDirty) {
+      setPendingAction({ type: 'load-plan', plan });
+    } else {
+      setBaselineSnapshot(plan.snapshot);
+      onLoadPlan(plan);
+      setLoadedVersionNumber(plan.versionNumber ?? 1);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', buildPlanDeepLink(plan.id, plan.versionNumber ?? 1));
+      }
+    }
+  };
+
+  const handleConfirmDiscard = () => {
+    if (!pendingAction) return;
+    const action = pendingAction;
+    setPendingAction(null);
+    if (action.type === 'load-plan') {
+      setBaselineSnapshot(action.plan.snapshot);
+      onLoadPlan(action.plan);
+      setLoadedVersionNumber(action.plan.versionNumber ?? 1);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', buildPlanDeepLink(action.plan.id, action.plan.versionNumber ?? 1));
+      }
+    } else if (action.type === 'load-version') {
+      performLoadHistoricalVersion(action.versionNumber);
     }
   };
 
@@ -300,6 +584,37 @@ export function PlanningWorkspace({
 
   return (
     <div className="planning-workspace">
+      {deepLinkError ? (
+        <section className="panel planning-controlled-error" data-testid="planning-error-state" role="alert">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow error-text">Unavailable</p>
+              <h2>Saved decision unavailable</h2>
+              <p>{deepLinkError}</p>
+            </div>
+          </div>
+          <div className="planning-actions">
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={onClearDeepLinkError}
+            >
+              Return to plan library
+            </button>
+          </div>
+        </section>
+      ) : null}
+
+      {loadedVersionNumber ? (
+        <aside className="historical-version-banner" role="status" aria-label={`Version ${loadedVersionNumber} assumptions`}>
+          <div>
+            <strong>Viewing historical Version {loadedVersionNumber}</strong>
+            <p>Assumptions and results from this saved FIRE decision are locked. To make changes, edit values and save a new version.</p>
+          </div>
+          <span className="source-tag">Saved FIRE Decision</span>
+        </aside>
+      ) : null}
+
       <section className="planning-overview" aria-label="Current plan overview">
         <article>
           <span>Plan health</span>
@@ -394,6 +709,235 @@ export function PlanningWorkspace({
           <p className="storage-status" role="status" aria-live="polite">{message}</p>
         </div>
       </section>
+
+      {activePlan ? (
+        <section className="panel planning-review-panel" aria-labelledby="planning-review-title">
+          <div className="panel-heading planning-heading-row">
+            <div>
+              <p className="eyebrow">Cadence & Governance</p>
+              <h2 id="planning-review-title">Monthly plan review</h2>
+            </div>
+            {dueStatus ? (
+              <span className={`review-badge review-badge-${dueStatus.status}`}>
+                {dueStatus.status === 'due'
+                  ? 'Review Due'
+                  : dueStatus.status === 'overdue'
+                  ? 'Review Overdue'
+                  : dueStatus.status === 'deferred'
+                  ? 'Deferred'
+                  : dueStatus.status === 'up-to-date'
+                  ? 'Up to Date'
+                  : 'Baseline Active'}
+              </span>
+            ) : null}
+          </div>
+
+          {dueStatus ? (
+            <div
+              className={`review-status-card review-status-${dueStatus.status}`}
+              role="status"
+              aria-label={`Monthly review status: ${dueStatus.status}`}
+            >
+              <div className="review-status-header">
+                <strong>
+                  {dueStatus.status === 'due'
+                    ? 'Monthly review due'
+                    : dueStatus.status === 'overdue'
+                    ? 'Monthly review overdue'
+                    : dueStatus.status === 'deferred'
+                    ? `Review deferred until ${dueStatus.deferredUntil}`
+                    : dueStatus.status === 'up-to-date'
+                    ? (isRevisionActive ? 'Revision in progress' : 'Assumptions up to date')
+                    : 'Baseline active'}
+                </strong>
+                <span className="review-status-date">
+                  Evidence date: {dueStatus.evidenceDate}
+                </span>
+              </div>
+              <p>
+                {dueStatus.status === 'due'
+                  ? 'Your monthly check-in is due. Confirm current assumptions or record updates.'
+                  : dueStatus.status === 'overdue'
+                  ? 'This plan has not been reviewed within the monthly cadence. Review assumptions and dated evidence.'
+                  : dueStatus.status === 'deferred'
+                  ? `Review is postponed until ${dueStatus.deferredUntil}. You may still confirm or revise earlier.`
+                  : dueStatus.status === 'up-to-date'
+                  ? (isRevisionActive
+                      ? `Revision in progress for Version ${currentVersionNumber}. Adjust financial assumptions in the calculator and save a new version to create Version ${(activePlan?.versionNumber ?? currentVersionNumber) + 1}. Next review due ${dueStatus.nextReviewDue}.`
+                      : `Assumptions were confirmed for Version ${currentVersionNumber}. Next review due ${dueStatus.nextReviewDue}.`)
+                  : `Plan baseline recorded. First returning review available in ${dueStatus.daysUntilEligible} days.`}
+              </p>
+              {dueStatus.isEvidenceStale ? (
+                <div className="stale-evidence-box" role="alert">
+                  <span className="stale-evidence-badge">
+                    Stale evidence ({dueStatus.evidenceAgeDays} days old)
+                  </span>
+                  <small className="stale-evidence-warning">
+                    Financial evidence was recorded over 30 days ago. Check your balances or update inputs before confirming.
+                  </small>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
+          {isRevisionActive ? (
+            <aside
+              className="plan-revision-prompt"
+              data-testid="plan-revision-prompt"
+              role="region"
+              aria-label="Revision next step"
+            >
+              <div className="plan-revision-prompt-header">
+                <AlertCircle size={18} aria-hidden="true" />
+                <strong>Next step: Revise financial assumptions in calculator and save Version {(activePlan?.versionNumber ?? currentVersionNumber) + 1}</strong>
+              </div>
+              <p>
+                A revision was recorded for Version {currentVersionNumber}. Open the FIRE calculator to adjust your financial assumptions (such as annual spending, portfolio balances, or retirement age), then return to save Version {(activePlan?.versionNumber ?? currentVersionNumber) + 1}. Historical Version {currentVersionNumber} will remain permanently locked and preserved.
+              </p>
+              <div className="planning-actions">
+                <button
+                  type="button"
+                  className="secondary-button icon-text-button"
+                  onClick={onNavigateCalculator}
+                >
+                  Open calculator
+                  <ArrowRight size={16} />
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => {
+                    const savePanel = document.querySelector('.planning-save-panel');
+                    if (savePanel) {
+                      const prefersReducedMotion =
+                        typeof window !== 'undefined' &&
+                        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                      savePanel.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+                      (savePanel.querySelector('.planning-notes-field input') as HTMLElement | null)?.focus();
+                    }
+                  }}
+                >
+                  Edit version details
+                </button>
+              </div>
+            </aside>
+          ) : null}
+
+          {dueStatus?.eligibleForReview ? (
+            <div className="review-action-container">
+              <div className="review-decision-group" role="radiogroup" aria-label="Review decision choice">
+                <label className={`review-choice-card ${reviewDecision === 'keep' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="review-decision"
+                    value="keep"
+                    checked={reviewDecision === 'keep'}
+                    onChange={() => setReviewDecision('keep')}
+                    disabled={isSubmittingReview}
+                  />
+                  <div>
+                    <strong>Keep assumptions</strong>
+                    <small>Confirm current Version {loadedVersionNumber ?? activePlan.versionNumber ?? 1} assumptions remain accurate without changes.</small>
+                  </div>
+                </label>
+                <label className={`review-choice-card ${reviewDecision === 'revise' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="review-decision"
+                    value="revise"
+                    checked={reviewDecision === 'revise'}
+                    onChange={() => setReviewDecision('revise')}
+                    disabled={isSubmittingReview}
+                  />
+                  <div>
+                    <strong>Revise assumptions</strong>
+                    <small>Acknowledge updates in spending, savings rate, or timeline to save a new version.</small>
+                  </div>
+                </label>
+                <label className={`review-choice-card ${reviewDecision === 'defer' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="review-decision"
+                    value="defer"
+                    checked={reviewDecision === 'defer'}
+                    onChange={() => setReviewDecision('defer')}
+                    disabled={isSubmittingReview}
+                  />
+                  <div>
+                    <strong>Defer review (14 days)</strong>
+                    <small>Postpone review while waiting for financial statements or account sync.</small>
+                  </div>
+                </label>
+              </div>
+
+              <label className="field review-notes-field">
+                <span>Review notes (optional)</span>
+                <input
+                  maxLength={1000}
+                  placeholder="Notes for this monthly review..."
+                  value={reviewNotes}
+                  onChange={(e) => setReviewNotes(e.target.value)}
+                  disabled={isSubmittingReview}
+                />
+              </label>
+
+              <div className="planning-actions">
+                <button
+                  type="button"
+                  className="primary-button icon-text-button"
+                  disabled={isSubmittingReview || isLoadingReviews}
+                  onClick={handleReviewSubmit}
+                >
+                  <CheckCircle2 size={16} />
+                  {reviewDecision === 'keep'
+                    ? 'Confirm unchanged assumptions'
+                    : reviewDecision === 'revise'
+                    ? 'Record revision review'
+                    : 'Defer review for 14 days'}
+                </button>
+                {reviewMessage ? (
+                  <p className="storage-status" role="status" aria-live="polite">
+                    {reviewMessage}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          ) : dueStatus ? (
+            <p className="empty-inline">
+              First returning review requires at least 7 days from baseline plan creation (eligible in {dueStatus.daysUntilEligible} days).
+            </p>
+          ) : null}
+
+          <div className="review-history-section" aria-label="Review history">
+            <h3>Review history</h3>
+            {isLoadingReviews ? (
+              <p className="empty-inline">Loading reviews...</p>
+            ) : reviews.length === 0 ? (
+              <p className="empty-inline">No monthly reviews recorded for this plan yet.</p>
+            ) : (
+              <div className="planning-list">
+                {reviews.map((rev) => (
+                  <article className="planning-list-row review-history-row" key={rev.id}>
+                    <div>
+                      <span>Version {rev.planVersionNumber} · {formatDate(rev.completedAt ?? rev.createdAt)}</span>
+                      <strong>
+                        Decision: {rev.decision === 'keep' ? 'Keep assumptions' : rev.decision === 'revise' ? 'Revised assumptions' : 'Deferred review'}
+                      </strong>
+                      <small>
+                        {rev.decision === 'defer' ? `Deferred until ${rev.deferredUntil}` : `Next review due ${rev.nextReviewDue}`}
+                        {rev.notes ? ` · "${rev.notes}"` : ''}
+                      </small>
+                    </div>
+                    <span className={`review-badge review-badge-${rev.decision}`}>
+                      {rev.decision.toUpperCase()}
+                    </span>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      ) : null}
 
       <section className="panel planning-seed-panel" aria-labelledby="planning-seed-title">
         <div className="panel-heading">
@@ -508,10 +1052,7 @@ export function PlanningWorkspace({
               <div className="saved-actions">
                 <button
                   className="secondary-button"
-                  onClick={() => {
-                    onLoadPlan(item);
-                    setLoadedVersionNumber(item.versionNumber ?? 1);
-                  }}
+                  onClick={() => handleOpenPlanClick(item)}
                 >
                   Open
                 </button>
@@ -550,7 +1091,7 @@ export function PlanningWorkspace({
                 <strong>{version.label || `Version ${version.versionNumber}`}</strong>
                 <small>{formatDate(version.createdAt)} · {version.notes || 'No notes'}</small>
               </div>
-              <button className="secondary-button" disabled={isLoadingVersions} onClick={() => loadHistoricalVersion(version.versionNumber)}>
+              <button className="secondary-button" disabled={isLoadingVersions} onClick={() => handleLoadVersionClick(version.versionNumber)}>
                 Load
               </button>
             </article>
@@ -580,6 +1121,31 @@ export function PlanningWorkspace({
           </div>
         ) : null}
       </section>
+
+      {pendingAction ? (
+        <div className="modal-scrim" role="dialog" aria-modal="true" aria-labelledby="unsaved-changes-title">
+          <div className="modal-content planning-unsaved-modal">
+            <h3 id="unsaved-changes-title">Unsaved changes</h3>
+            <p>You have unsaved changes in your current planning assumptions. Loading another plan or version will discard these changes.</p>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setPendingAction(null)}
+              >
+                Keep editing
+              </button>
+              <button
+                type="button"
+                className="primary-button"
+                onClick={handleConfirmDiscard}
+              >
+                Discard and load
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -677,4 +1243,49 @@ function isPlanningSnapshot(value: unknown): value is PlanningSnapshot {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+async function loadPlanReviews(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  planId: string
+): Promise<{ dueStatus: DueStatusResult; reviews: StoredPlanReview[] } | null> {
+  const body = await requestJson(auth, `/api/plans/${encodeURIComponent(planId)}/reviews`);
+  if (!isRecord(body) || !Array.isArray(body.reviews) || !isRecord(body.dueStatus)) return null;
+  return {
+    dueStatus: body.dueStatus as unknown as DueStatusResult,
+    reviews: body.reviews as unknown as StoredPlanReview[]
+  };
+}
+
+async function submitPlanReview(
+  auth: Extract<AuthState, { status: 'signed-in' }>,
+  planId: string,
+  payload: PlanReviewPayload
+): Promise<{ dueStatus: DueStatusResult; review: StoredPlanReview }> {
+  const token = await auth.getToken();
+  if (!token) throw new Error('No Clerk session token is available.');
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    authorization: `Bearer ${token}`
+  };
+  if (payload.idempotencyKey) {
+    headers['Idempotency-Key'] = payload.idempotencyKey;
+  }
+
+  const response = await fetch(`/api/plans/${encodeURIComponent(planId)}/reviews`, {
+    body: JSON.stringify(payload),
+    headers,
+    method: 'POST'
+  });
+
+  const body: any = await response.json().catch(() => null);
+  if (!response.ok) {
+    if (response.status === 409 || body?.code === 'IDEMPOTENCY_CONFLICT') {
+      throw new Error('A review for this cycle already exists with different parameters.');
+    }
+    throw new Error(isRecord(body) && typeof body.error === 'string' ? body.error : 'Failed to record review.');
+  }
+
+  return body as { dueStatus: DueStatusResult; review: StoredPlanReview };
 }

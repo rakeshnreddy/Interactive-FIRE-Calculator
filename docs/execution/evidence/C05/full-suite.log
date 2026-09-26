@@ -1,0 +1,76 @@
+✔ fails before running any stage when python3 is missing (15.149083ms)
+✔ fails before running any stage when node is missing (12.522833ms)
+✔ fails before running any stage when npm is missing (14.480416ms)
+✔ runs every verification stage in order (622.267042ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (170.764084ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (331.817125ms)
+✔ stops and preserves failure status from python3 -m pytest -q (346.932167ms)
+✔ stops and preserves failure status from npm run typecheck (528.239375ms)
+✔ stops and preserves failure status from npm test (535.61425ms)
+✔ stops and preserves failure status from npm run build (523.021125ms)
+✔ installs missing dependencies from the lockfile (533.25975ms)
+✔ does not run frontend verification after a failed install (497.039959ms)
+✔ uses the repository virtualenv even without system Python (555.789625ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4750.497667
+................................................... [ 64%]
+............................                                             [100%]
+79 passed, 21 subtests passed in 1.08s
+
+> interactive-fire-calculator@2.0.0 typecheck
+> tsc --noEmit
+
+
+> interactive-fire-calculator@2.0.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+(node:16579) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  39 passed (39)
+      Tests  1551 passed (1551)
+   Start at  15:04:55
+   Duration  7.40s (transform 2.39s, setup 0ms, import 5.86s, tests 5.16s, environment 32.48s)
+
+
+> interactive-fire-calculator@2.0.0 build
+> tsc -b && vite build
+
+vite v8.0.16 building client environment for production...
+[2Ktransforming...✓ 2406 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.85 kB │ gzip:   0.47 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2      11.23 kB
+dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2       18.74 kB
+dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2          18.99 kB
+dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2   25.96 kB
+dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2          48.25 kB
+dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2      85.06 kB
+dist/assets/index-Bq8yRH0L.css                             179.59 kB │ gzip:  29.49 kB
+dist/assets/history-BqMfefoE.js                              0.27 kB │ gzip:   0.22 kB │ map:     0.97 kB
+dist/assets/jsx-runtime-CdvZGgm7.js                          7.80 kB │ gzip:   3.02 kB │ map:    16.70 kB
+dist/assets/BalanceImportPanel-T9tKqmqS.js                   9.47 kB │ gzip:   3.32 kB │ map:    25.18 kB
+dist/assets/TransactionImportPanel-D2e_gWs5.js              10.00 kB │ gzip:   3.40 kB │ map:    26.41 kB
+dist/assets/PlanningWorkspace-CxqbIHkr.js                   14.16 kB │ gzip:   4.17 kB │ map:    42.25 kB
+dist/assets/papaparse.min-Ce5GJhVw.js                       20.09 kB │ gzip:   7.44 kB │ map:    46.10 kB
+dist/assets/CalculatorLibrary-BeFBNzW_.js                  318.54 kB │ gzip:  85.18 kB │ map:   784.15 kB
+dist/assets/ProjectionChart-BN3cREW6.js                    347.89 kB │ gzip: 102.40 kB │ map: 1,758.79 kB
+dist/assets/index-FXZW_ti4.js                              527.73 kB │ gzip: 145.19 kB │ map: 1,621.87 kB
+
+✓ built in 544ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

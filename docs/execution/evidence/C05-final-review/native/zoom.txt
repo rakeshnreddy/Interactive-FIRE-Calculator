@@ -1,0 +1,11 @@
+					11 button Zoom: 200%
+				27 HTML content FIRE Calculator | FinPath, URL: 46714a3f.interactive-fire-calculator.pages.dev/calculators/fire
+		79 container Zoom: 100%
+					82 container Zoom: 200%
+The focused UI element is 27 HTML content FIRE Calculator | FinPath, URL: 46714a3f.interactive-fire-calculator.pages.dev/calculators/fire
+fire light 					11 button Zoom: 200%
+fire dark 					11 button Zoom: 200%
+compound-interest light 					11 button Zoom: 200%
+compound-interest dark 					11 button Zoom: 200%
+savings-goal light 					11 button Zoom: 200%
+savings-goal dark 					11 button Zoom: 200%

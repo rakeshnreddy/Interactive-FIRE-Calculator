@@ -1,0 +1,88 @@
+{
+  "generatedAt": "2026-09-17T08:07:52.668Z",
+  "candidate": "local B25 fixture app",
+  "base": "http://127.0.0.1:4173/fixtures.html",
+  "observations": [
+    {
+      "mode": "light",
+      "url": "http://127.0.0.1:4173/fixtures.html?component=transactions&state=populated&theme=light",
+      "tabs": 26,
+      "reached": true,
+      "focus": {
+        "outline": "color(srgb 0.498039 0.517647 1 / 0.6) solid 3px",
+        "outlineStyle": "solid",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      },
+      "typedValue": "Fresh",
+      "clearEnabled": true,
+      "clearFocused": true,
+      "clearedValue": "",
+      "rowsBefore": 5,
+      "rowsAfter": 5,
+      "fixtureRowsUnchangedExpected": true,
+      "filterChanged": true,
+      "media": {
+        "reducedMotion": true,
+        "reducedTransparency": true,
+        "targets": [
+          {
+            "className": "transaction-filter-panel",
+            "transitionDuration": "1e-05s",
+            "animationDuration": "1e-05s",
+            "backgroundColor": "rgb(251, 253, 255)",
+            "backdropFilter": "none"
+          },
+          {
+            "className": "transaction-row-card",
+            "transitionDuration": "1e-05s",
+            "animationDuration": "1e-05s",
+            "backgroundColor": "rgb(251, 253, 255)",
+            "backdropFilter": "none"
+          }
+        ]
+      },
+      "screenshot": "/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C08//screenshots/primary-local-light-reduced.png"
+    },
+    {
+      "mode": "dark",
+      "url": "http://127.0.0.1:4173/fixtures.html?component=transactions&state=populated&theme=dark",
+      "tabs": 26,
+      "reached": true,
+      "focus": {
+        "outline": "color(srgb 0.498039 0.517647 1 / 0.6) solid 3px",
+        "outlineStyle": "solid",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      },
+      "typedValue": "Fresh",
+      "clearEnabled": true,
+      "clearFocused": true,
+      "clearedValue": "",
+      "rowsBefore": 5,
+      "rowsAfter": 5,
+      "fixtureRowsUnchangedExpected": true,
+      "filterChanged": true,
+      "media": {
+        "reducedMotion": true,
+        "reducedTransparency": true,
+        "targets": [
+          {
+            "className": "transaction-filter-panel",
+            "transitionDuration": "1e-05s",
+            "animationDuration": "1e-05s",
+            "backgroundColor": "rgb(16, 35, 44)",
+            "backdropFilter": "none"
+          },
+          {
+            "className": "transaction-row-card",
+            "transitionDuration": "1e-05s",
+            "animationDuration": "1e-05s",
+            "backgroundColor": "rgb(16, 35, 44)",
+            "backdropFilter": "none"
+          }
+        ]
+      },
+      "screenshot": "/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C08//screenshots/primary-local-dark-reduced.png"
+    }
+  ],
+  "result": "PASS"
+}

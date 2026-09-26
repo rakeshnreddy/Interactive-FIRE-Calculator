@@ -1,0 +1,75 @@
+✔ fails before running any stage when python3 is missing (16.248959ms)
+✔ fails before running any stage when node is missing (13.241542ms)
+✔ fails before running any stage when npm is missing (13.775458ms)
+✔ runs every verification stage in order (529.017292ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (168.374875ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (287.316083ms)
+✔ stops and preserves failure status from python3 -m pytest -q (364.134958ms)
+✔ stops and preserves failure status from npm run typecheck (531.465916ms)
+✔ stops and preserves failure status from npm test (534.614792ms)
+✔ stops and preserves failure status from npm run build (527.7165ms)
+✔ installs missing dependencies from the lockfile (528.847375ms)
+✔ does not run frontend verification after a failed install (510.270875ms)
+✔ uses the repository virtualenv even without system Python (533.406583ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4621.303041
+................................................... [ 64%]
+............................                                             [100%]
+79 passed, 21 subtests passed in 5.47s
+
+> interactive-fire-calculator@2.0.0 typecheck
+> tsc --noEmit
+
+
+> interactive-fire-calculator@2.0.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /private/tmp/finpath-c00r-review-v7vqk7kh
+
+
+ Test Files  26 passed (26)
+      Tests  1269 passed (1269)
+   Start at  03:03:48
+   Duration  5.78s (transform 1.43s, setup 0ms, import 3.32s, tests 2.04s, environment 28.66s)
+
+
+> interactive-fire-calculator@2.0.0 build
+> tsc -b && vite build
+
+vite v8.0.16 building client environment for production...
+[2Ktransforming...✓ 2402 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.85 kB │ gzip:   0.47 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2      11.23 kB
+dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2       18.74 kB
+dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2          18.99 kB
+dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2   25.96 kB
+dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2          48.25 kB
+dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2      85.06 kB
+dist/assets/index-DdqLRnxx.css                             157.13 kB │ gzip:  26.46 kB
+dist/assets/rotate-ccw-SPEiDKFn.js                           0.23 kB │ gzip:   0.21 kB │ map:     0.88 kB
+dist/assets/history-i_8PmbNJ.js                              0.27 kB │ gzip:   0.22 kB │ map:     0.97 kB
+dist/assets/jsx-runtime-CdvZGgm7.js                          7.80 kB │ gzip:   3.02 kB │ map:    16.70 kB
+dist/assets/BalanceImportPanel-CTnxjuzw.js                   9.51 kB │ gzip:   3.33 kB │ map:    25.18 kB
+dist/assets/TransactionImportPanel-ZKIpR-he.js              10.04 kB │ gzip:   3.42 kB │ map:    26.41 kB
+dist/assets/PlanningWorkspace-DtPpNYpq.js                   14.20 kB │ gzip:   4.19 kB │ map:    42.25 kB
+dist/assets/papaparse.min-BPPScW-I.js                       20.09 kB │ gzip:   7.45 kB │ map:    46.10 kB
+dist/assets/CalculatorLibrary-DIMTRPAC.js                  313.23 kB │ gzip:  83.55 kB │ map:   769.37 kB
+dist/assets/ProjectionChart-DgPFAkTF.js                    347.89 kB │ gzip: 102.40 kB │ map: 1,758.79 kB
+dist/assets/index-DQc3OF1X.js                              512.10 kB │ gzip: 140.36 kB │ map: 1,570.42 kB
+
+✓ built in 1.10s
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

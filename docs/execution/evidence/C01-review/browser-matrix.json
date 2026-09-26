@@ -1,0 +1,158 @@
+{
+  "candidate": "ad580088938fc9f2a0e499eb70f0608be0c89aff",
+  "matrix": [
+    {
+      "route": "/",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 1024,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 320,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/calculators/fire",
+      "width": 390,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "FIRE Calculator"
+    },
+    {
+      "route": "/calculators/mortgage",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Mortgage Payment Calculator"
+    },
+    {
+      "route": "/calculators/savings-goal",
+      "width": 390,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Savings Goal Calculator"
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Connect Clerk before opening account routes."
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 1024,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/",
+      "width": 320,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Make the number mean something."
+    },
+    {
+      "route": "/calculators/fire",
+      "width": 390,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "FIRE Calculator"
+    },
+    {
+      "route": "/calculators/mortgage",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Mortgage Payment Calculator"
+    },
+    {
+      "route": "/calculators/savings-goal",
+      "width": 390,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Savings Goal Calculator"
+    },
+    {
+      "route": "/dashboard",
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "smallInputs": [],
+      "h1": "Connect Clerk before opening account routes."
+    }
+  ],
+  "journeys": [
+    "Desktop Workspace Enter/Tab/Escape and focus return PASS",
+    "Mobile disclosure Tab/Escape removes links and returns focus PASS",
+    "Mobile route click closes disclosure and focuses heading PASS",
+    "Mobile-to-desktop disclosure cleanup PASS",
+    "Public SPA/back/forward/reload PASS",
+    "Skip link focuses main PASS"
+  ],
+  "errors": []
+}

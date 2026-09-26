@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-08",
+  "updated": "2026-09-26",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -20,70 +20,70 @@
       "id": "B02",
       "title": "reject incompatible currency conversion into goals",
       "checkpoint": "C02",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B01",
         "B33"
       ],
       "prompt": "prompts/B02.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B02.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "ef2cded6441191a26537adf8ddf1a3e1909cf73b",
+      "review": "reviews/C02.md",
       "blocked_reason": null
     },
     {
       "id": "B03",
       "title": "prevent mixed-currency account totals",
       "checkpoint": "C02",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B02"
       ],
       "prompt": "prompts/B03.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B03.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "ef2cded6441191a26537adf8ddf1a3e1909cf73b",
+      "review": "reviews/C02.md",
       "blocked_reason": null
     },
     {
       "id": "B04",
       "title": "atomic, retry-safe calculator save",
       "checkpoint": "C02",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B02",
         "B03"
       ],
       "prompt": "prompts/B04.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B04.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "ef2cded6441191a26537adf8ddf1a3e1909cf73b",
+      "review": "reviews/C02.md",
       "blocked_reason": null
     },
     {
       "id": "B05",
       "title": "executable tenancy/auth boundary harness",
       "checkpoint": "C06",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B04",
         "B33"
       ],
       "prompt": "prompts/B05.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B05.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
+      "review": "reviews/C06.md",
       "blocked_reason": null
     },
     {
       "id": "B06",
       "title": "working hosted auth and lifecycle",
       "checkpoint": "C07",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B02",
         "B03",
@@ -92,63 +92,63 @@
         "B33"
       ],
       "prompt": "prompts/B06.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B06.md",
+      "owner": "C07 implementation agent",
+      "code_sha": "d81f31187892f636ab9d2b6cb492e90e9b7d166d",
+      "review": "reviews/C07.md",
       "blocked_reason": null
     },
     {
       "id": "B07",
       "title": "deletion and recovery contract",
       "checkpoint": "C06",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B05"
       ],
       "prompt": "prompts/B07.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B07.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
+      "review": "reviews/C06.md",
       "blocked_reason": null
     },
     {
       "id": "B08",
       "title": "mortgage payoff reconciliation regression",
       "checkpoint": "C04",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B08.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B08.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "733e76c217058cafc3e5d418f09cb55ced531f4c",
+      "review": "reviews/C04.md",
       "blocked_reason": null
     },
     {
       "id": "B09",
       "title": "remove internal instructions from calculator copy",
       "checkpoint": "C03",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B01",
         "B17"
       ],
       "prompt": "prompts/B09.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B09.md",
+      "owner": "Codex implementing session 2026-09-11",
+      "code_sha": "285e9eadf2d854951cec75d02afc6cce97d4d6c5",
+      "review": "reviews/C03.md",
       "blocked_reason": null
     },
     {
       "id": "B10",
       "title": "restore the exact saved FIRE decision",
       "checkpoint": "C09",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B02",
         "B03",
@@ -157,17 +157,17 @@
         "B06"
       ],
       "prompt": "prompts/B10.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B10.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
+      "review": "reviews/C09-final-candidate-2026-09-25.md",
       "blocked_reason": null
     },
     {
       "id": "B11",
       "title": "complete one monthly plan review",
       "checkpoint": "C09",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B04",
         "B05",
@@ -176,23 +176,25 @@
         "B10"
       ],
       "prompt": "prompts/B11.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B11.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "c4bf784b106878e7e0c940564216ec44a72ecb38",
+      "review": "reviews/C09-closure-2026-09-26.md",
       "blocked_reason": null
     },
     {
       "id": "B12",
       "title": "consented minimal measurement",
       "checkpoint": "C11",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
-        "B07"
+        "B07",
+        "B41",
+        "B38"
       ],
       "prompt": "prompts/B12.md",
       "submission": null,
-      "owner": null,
+      "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -238,245 +240,246 @@
       "id": "B15",
       "title": "Repair light/dark contrast defects",
       "checkpoint": "C01",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B15.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B15.md",
+      "owner": "Codex implementing session 2026-09-10",
+      "code_sha": "ccebac7d5bcaf645721e2e67ea490a7f447e1db9",
+      "review": "reviews/C01.md",
       "blocked_reason": null
     },
     {
       "id": "B16",
       "title": "Establish authoritative design tokens and primitives",
       "checkpoint": "C01",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B15"
       ],
       "prompt": "prompts/B16.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B16.md",
+      "owner": "Codex implementing session 2026-09-10",
+      "code_sha": "ccebac7d5bcaf645721e2e67ea490a7f447e1db9",
+      "review": "reviews/C01.md",
       "blocked_reason": null
     },
     {
       "id": "B17",
       "title": "Polish public/account navigation and keyboard behavior",
       "checkpoint": "C01",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16"
       ],
       "prompt": "prompts/B17.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B17.md",
+      "owner": "Codex implementing session 2026-09-10",
+      "code_sha": "ccebac7d5bcaf645721e2e67ea490a7f447e1db9",
+      "review": "reviews/C01.md",
       "blocked_reason": null
     },
     {
       "id": "B18",
       "title": "Replace generic homepage hero with authentic product composition",
       "checkpoint": "C03",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16",
         "B17",
         "B32"
       ],
       "prompt": "prompts/B18.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B18.md",
+      "owner": "Codex implementing session 2026-09-11",
+      "code_sha": "285e9eadf2d854951cec75d02afc6cce97d4d6c5",
+      "review": "reviews/C03.md",
       "blocked_reason": null
     },
     {
       "id": "B19",
       "title": "Make calculator discovery concise and distinctive",
       "checkpoint": "C03",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16",
         "B17",
         "B32"
       ],
       "prompt": "prompts/B19.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B19.md",
+      "owner": "Codex implementing session 2026-09-11",
+      "code_sha": "285e9eadf2d854951cec75d02afc6cce97d4d6c5",
+      "review": "reviews/C03.md",
       "blocked_reason": null
     },
     {
       "id": "B20",
       "title": "Reorder generic calculators around inputs and the answer",
       "checkpoint": "C04",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16",
         "B19"
       ],
       "prompt": "prompts/B20.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B20.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "733e76c217058cafc3e5d418f09cb55ced531f4c",
+      "review": "reviews/C04.md",
       "blocked_reason": null
     },
     {
       "id": "B21",
       "title": "Make shared charts numerically honest and accessible",
       "checkpoint": "C04",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B20"
       ],
       "prompt": "prompts/B21.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B21.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "733e76c217058cafc3e5d418f09cb55ced531f4c",
+      "review": "reviews/C04.md",
       "blocked_reason": null
     },
     {
       "id": "B22",
       "title": "Unify compound-interest and savings-goal presentation",
       "checkpoint": "C05",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16",
         "B20",
         "B21"
       ],
       "prompt": "prompts/B22.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B22.md",
+      "owner": "Codex implementing session 2026-09-13",
+      "code_sha": "1c73bffbb4a5d1f179d67f2934c900a8b44711e5",
+      "review": "reviews/C05.md",
       "blocked_reason": null
     },
     {
       "id": "B23",
       "title": "Unify budget, net-worth and emergency-fund presentation",
       "checkpoint": "C05",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16",
         "B20",
         "B21"
       ],
       "prompt": "prompts/B23.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B23.md",
+      "owner": "Codex implementing session 2026-09-13",
+      "code_sha": "1c73bffbb4a5d1f179d67f2934c900a8b44711e5",
+      "review": "reviews/C05.md",
       "blocked_reason": null
     },
     {
       "id": "B24",
       "title": "Refine FIRE calculator into the flagship decision experience",
       "checkpoint": "C05",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16",
         "B20",
         "B21"
       ],
       "prompt": "prompts/B24.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B24.md",
+      "owner": "Codex implementing session 2026-09-13",
+      "code_sha": "1c73bffbb4a5d1f179d67f2934c900a8b44711e5",
+      "review": "reviews/C05.md",
       "blocked_reason": null
     },
     {
       "id": "B25",
       "title": "Build isolated operational UI fixtures for visual verification",
       "checkpoint": "C06",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B05",
         "B07",
         "B16"
       ],
       "prompt": "prompts/B25.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B25.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a",
+      "review": "reviews/C06.md",
       "blocked_reason": null
     },
     {
       "id": "B26",
       "title": "Polish dashboard and account overview",
       "checkpoint": "C08",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B25",
         "B03",
         "B06"
       ],
       "prompt": "prompts/B26.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B26.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "a95053b19108634656aef491e46b9be9fe3ea57d",
+      "review": "reviews/C08.md",
       "blocked_reason": null
     },
     {
       "id": "B27",
       "title": "Polish transactions and import review",
       "checkpoint": "C08",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B25",
         "B06",
         "B05"
       ],
       "prompt": "prompts/B27.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B27.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "a95053b19108634656aef491e46b9be9fe3ea57d",
+      "review": "reviews/C08.md",
       "blocked_reason": null
     },
     {
       "id": "B28",
       "title": "Polish goals and monthly plan-review workflow",
       "checkpoint": "C09",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B10",
         "B11",
         "B25"
       ],
       "prompt": "prompts/B28.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B28.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "c4bf784b106878e7e0c940564216ec44a72ecb38",
+      "review": "reviews/C09-closure-2026-09-26.md",
       "blocked_reason": null
     },
     {
       "id": "B29",
       "title": "Polish reports and readable financial evidence",
       "checkpoint": "C10",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B25",
         "B06",
-        "B21"
+        "B21",
+        "B39"
       ],
       "prompt": "prompts/B29.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B29.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "f1db7db",
       "review": null,
       "blocked_reason": null
     },
@@ -484,16 +487,17 @@
       "id": "B30",
       "title": "Polish settings and privacy lifecycle controls",
       "checkpoint": "C10",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B07",
         "B25",
-        "B06"
+        "B06",
+        "B39"
       ],
       "prompt": "prompts/B30.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B30.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "f1db7db",
       "review": null,
       "blocked_reason": null
     },
@@ -516,7 +520,10 @@
         "B29",
         "B30",
         "B12",
-        "B32"
+        "B32",
+        "B36",
+        "B38",
+        "B41"
       ],
       "prompt": "prompts/B31.md",
       "submission": null,
@@ -529,27 +536,138 @@
       "id": "B32",
       "title": "Implement light/dark glass and gradient material system",
       "checkpoint": "C01T",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B16",
         "B17"
       ],
       "prompt": "prompts/B32.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B32.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "32584da7e47307a35730911e3567f02f9095550b",
+      "review": "reviews/C01T.md",
       "blocked_reason": null
     },
     {
       "id": "B33",
       "title": "Isolate preview infrastructure before backend publication",
       "checkpoint": "C01I",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B01"
       ],
       "prompt": "prompts/B33.md",
+      "submission": "submissions/B33.md",
+      "owner": "FinPath implementation agent",
+      "code_sha": "78df4f850112ee3c1fbc76853b6e071a7c75bf2e",
+      "review": "reviews/C01I.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B34",
+      "title": "Repair newly reported development-tool advisories",
+      "checkpoint": "C00R",
+      "status": "done",
+      "dependencies": [
+        "B01"
+      ],
+      "prompt": "prompts/B34.md",
+      "submission": "submissions/B34.md",
+      "owner": "Codex implementing session 2026-09-08",
+      "code_sha": "b48ac00328f356746bd501921562e727feb7a8e5",
+      "review": "reviews/C00R.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B35",
+      "title": "Make FIRE assumptions explicit, optional and user-controlled; audit calculator defaults",
+      "checkpoint": "C09A",
+      "status": "done",
+      "dependencies": [
+        "B22",
+        "B24"
+      ],
+      "prompt": "prompts/B35.md",
+      "submission": "submissions/B35.md",
+      "owner": "Gemini CLI implementation worker",
+      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
+      "review": "reviews/C09A.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B36",
+      "title": "Make FIRE answer when can I retire with explicit rates",
+      "checkpoint": "C09B",
+      "status": "ready_for_review",
+      "dependencies": [
+        "B35",
+        "B39",
+        "B42"
+      ],
+      "prompt": "prompts/B36.md",
+      "submission": "submissions/B36.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "a8f7422",
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B37",
+      "title": "Retire legacy stack and shrink tracked delivery evidence",
+      "checkpoint": "C09B",
+      "status": "done",
+      "dependencies": [
+        "B11",
+        "B28"
+      ],
+      "prompt": "prompts/B37.md",
+      "submission": "submissions/B37.md",
+      "owner": "Gemini implementation worker",
+      "code_sha": "83bc1a27b54203a3d30e85b85a042c5b308190fe",
+      "review": "reviews/B37-closure-2026-09-26.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B38",
+      "title": "Improve public delivery, route metadata, 404s and headers",
+      "checkpoint": "C11",
+      "status": "ready_for_review",
+      "dependencies": [
+        "B36",
+        "B41"
+      ],
+      "prompt": "prompts/B38.md",
+      "submission": "submissions/B38.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "2292aee",
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B39",
+      "title": "Extract pure API, formatting, warning and UI modules from App",
+      "checkpoint": "C09B",
+      "status": "ready_for_review",
+      "dependencies": [
+        "B37"
+      ],
+      "prompt": "prompts/B39.md",
+      "submission": "submissions/B39.md",
+      "owner": "Gemini implementation worker",
+      "code_sha": "c7c5b31",
+      "review": "reviews/B39-claude-prereview-2026-09-26.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B40",
+      "title": "Consolidate calculator library and user-facing copy",
+      "checkpoint": "C14",
+      "status": "pending",
+      "dependencies": [
+        "B31",
+        "B36"
+      ],
+      "prompt": "prompts/B40.md",
       "submission": null,
       "owner": null,
       "code_sha": null,
@@ -557,19 +675,54 @@
       "blocked_reason": null
     },
     {
-      "id": "B34",
-      "title": "Repair newly reported development-tool advisories",
-      "checkpoint": "C00R",
-      "status": "pending",
+      "id": "B41",
+      "title": "Harden shared API parsing, auth and error boundaries",
+      "checkpoint": "C11",
+      "status": "ready_for_review",
       "dependencies": [
-        "B01"
+        "B30",
+        "B37"
       ],
-      "prompt": "prompts/B34.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "prompt": "prompts/B41.md",
+      "submission": "submissions/B41.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "b4c7919",
       "review": null,
       "blocked_reason": null
+    },
+    {
+      "id": "B42",
+      "title": "Shared hosted smoke runner plus the C09 revise residual",
+      "checkpoint": "C09B",
+      "status": "ready_for_review",
+      "dependencies": [
+        "B37",
+        "B39"
+      ],
+      "prompt": "prompts/B42.md",
+      "submission": "submissions/B42.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "a09ff46",
+      "review": null,
+      "blocked_reason": null
+    }
+  ],
+  "owner_actions": [
+    {
+      "id": "OA-1",
+      "action": "Create the FinPath Clerk production instance and provide production keys through the secure setup path; no keys in chat or Git.",
+      "blocking_task": "B38 production readiness only; preview implementation may proceed",
+      "requested_date": "2026-09-26",
+      "status": "pending"
+    },
+    {
+      "id": "OA-2",
+      "action": "Confirm that B37 removes bulk evidence from the current Git index only, with no Git history rewrite.",
+      "blocking_task": "B37 evidence-untracking step",
+      "requested_date": "2026-09-26",
+      "status": "done",
+      "resolved_date": "2026-09-26",
+      "resolution": "Owner approved untracking bulk evidence from the current Git index only; no history rewrite."
     }
   ]
 }

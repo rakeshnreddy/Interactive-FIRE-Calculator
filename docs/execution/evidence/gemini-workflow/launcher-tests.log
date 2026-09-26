@@ -1,0 +1,29 @@
+=== Running Gemini Launcher Unit Tests ===
+[PASS] test_bad_argc_zero
+[PASS] test_bad_argc_multiple
+[PASS] test_missing_prompt
+[PASS] test_empty_prompt
+[PASS] test_unreadable_prompt
+[PASS] test_outside_git_repo
+[PASS] test_missing_binary
+[PASS] test_binary_preference
+[PASS] test_binary_fallback_to_path
+[PASS] test_relative_path_from_subdirectory_with_spaces
+[PASS] test_proper_root_cwd
+[PASS] test_byte_exact_prompt_preservation
+[PASS] test_exit_code_propagation
+[PASS] test_default_model_args_and_timeout_30m
+[PASS] test_timeout_validation
+[PASS] test_restrictive_models
+[PASS] test_soft_denial_observed_jetski_stderr
+[PASS] test_secret_leak_prevention_and_restrictive_modes
+[PASS] test_python_json_parser_validation
+[PASS] test_machine_readable_completion_records
+[PASS] test_empty_stdout_detection
+[PASS] test_denied_actions_and_error_envelope
+[PASS] test_secret_leak_in_json_status
+
+=== Test Summary ===
+Total:  23
+Passed: 23
+Failed: 0

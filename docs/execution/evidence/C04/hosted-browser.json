@@ -1,0 +1,335 @@
+{
+  "testedAt": "2026-09-13T20:58:56.102Z",
+  "baseUrl": "https://21a762ad.interactive-fire-calculator.pages.dev",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "cases": [
+    {
+      "id": "mortgage-390-light",
+      "calc": "Mortgage",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "firstInputY": 490.578125,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowEndingBalance": "$0",
+      "lastRowNote": "Final payment",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b08_pass": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-mortgage-390-light.png"
+    },
+    {
+      "id": "mortgage-390-dark",
+      "calc": "Mortgage",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "firstInputY": 490.578125,
+      "headlineMonths": 360,
+      "scheduleRowCount": 360,
+      "lastRowEndingBalance": "$0",
+      "lastRowNote": "Final payment",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b08_pass": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-mortgage-390-dark.png"
+    },
+    {
+      "id": "sip-390-light",
+      "calc": "SIP",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "firstInputY": 456.03125,
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-sip-390-light.png"
+    },
+    {
+      "id": "sip-390-dark",
+      "calc": "SIP",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "firstInputY": 456.03125,
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-sip-390-dark.png"
+    },
+    {
+      "id": "income-tax-india-390-light",
+      "calc": "India Tax",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "firstInputY": 516.171875,
+      "hasVisualBars": false,
+      "swatchCount": 1,
+      "hasTable": true,
+      "hasInr": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-income-tax-india-390-light.png"
+    },
+    {
+      "id": "income-tax-india-390-dark",
+      "calc": "India Tax",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "firstInputY": 516.171875,
+      "hasVisualBars": false,
+      "swatchCount": 1,
+      "hasTable": true,
+      "hasInr": true,
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-income-tax-india-390-dark.png"
+    },
+    {
+      "id": "cagr-default-390-light",
+      "calc": "CAGR (Default Units)",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "firstInputY": 430.4375,
+      "headlinePercent": "12.47%",
+      "baseRowText": "Base\nAnnualized return: 12.47%\nBase reference: 12.47%\nUses the inputs exactly as shown in the calculator.",
+      "baseTableText": "Base\t12.47%\t12.47%\tUses the inputs exactly as shown in the calculator.",
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true
+    },
+    {
+      "id": "cagr-default-390-dark",
+      "calc": "CAGR (Default Units)",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "firstInputY": 430.4375,
+      "headlinePercent": "12.47%",
+      "baseRowText": "Base\nAnnualized return: 12.47%\nBase reference: 12.47%\nUses the inputs exactly as shown in the calculator.",
+      "baseTableText": "Base\t12.47%\t12.47%\tUses the inputs exactly as shown in the calculator.",
+      "b20_pass": true,
+      "b21_pass": true,
+      "pass": true
+    },
+    {
+      "id": "cagr-negative-390-light",
+      "calc": "CAGR (Negative Fixture)",
+      "requestedMode": "light",
+      "observedMode": "light",
+      "canvasBg": "rgb(244, 248, 251)",
+      "textColor": "rgb(32, 58, 67)",
+      "hasNegativeRow": true,
+      "hasBaseline": true,
+      "rowText": "BaseAnnualized return: -12.94%Base reference: -12.94%Uses the inputs exactly as shown in the calculator.",
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-cagr-negative-390-light.png"
+    },
+    {
+      "id": "cagr-negative-390-dark",
+      "calc": "CAGR (Negative Fixture)",
+      "requestedMode": "dark",
+      "observedMode": "dark",
+      "canvasBg": "rgb(8, 21, 28)",
+      "textColor": "rgb(216, 231, 234)",
+      "hasNegativeRow": true,
+      "hasBaseline": true,
+      "rowText": "BaseAnnualized return: -12.94%Base reference: -12.94%Uses the inputs exactly as shown in the calculator.",
+      "b21_pass": true,
+      "pass": true,
+      "screenshot": "hosted-cagr-negative-390-dark.png"
+    },
+    {
+      "id": "disclosure-keyboard-focus",
+      "calc": "Metric Help Keyboard Disclosure",
+      "keyboardOpened": true,
+      "keyboardClosed": true,
+      "focusRetained": true,
+      "testedCalculators": [
+        "Mortgage",
+        "SIP"
+      ],
+      "interactions": [
+        {
+          "calc": "Mortgage",
+          "metricButtonAriaLabel": "About Monthly payment",
+          "openedWithKey": "Enter",
+          "closedWithKey": "Space",
+          "helpTextObserved": true,
+          "focusRetained": true,
+          "pass": true
+        },
+        {
+          "calc": "SIP",
+          "metricButtonAriaLabel": "About Projected corpus",
+          "openedWithKey": "Enter",
+          "closedWithKey": "Space",
+          "helpTextObserved": true,
+          "focusRetained": true,
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "native-zoom-200",
+      "calc": "Mortgage Native Zoom 200%",
+      "status": "BLOCKED",
+      "pass": false,
+      "attemptedMethod": "Chrome application CUA zoom control via Command+0 then Command++ to 200% and System Events accessibility probe",
+      "limitation": "Native desktop browser window zoom requires interactive GUI accessibility permissions not available in headless automated CLI environment; Emulation.setPageScaleFactor is prohibited as a substitute by contract",
+      "assistedAction": "Perform interactive desktop verification in Chrome with native 200% zoom (Cmd++)"
+    },
+    {
+      "id": "reduced-motion-transparency",
+      "calc": "Media Reduced Motion / Transparency",
+      "reducedMotion": {
+        "matches": true,
+        "violations": [],
+        "violationsCount": 0,
+        "suppressionVerified": true,
+        "pass": true
+      },
+      "reducedTransparency": {
+        "matches": true,
+        "light": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(11, 36, 33)",
+          "alpha": 1
+        },
+        "dark": {
+          "backdropFilter": "none",
+          "backgroundColor": "rgb(8, 21, 28)",
+          "alpha": 1
+        },
+        "pass": true
+      },
+      "pass": true
+    },
+    {
+      "id": "contrast-check",
+      "calc": "Changed Surface Composed Contrast",
+      "pairs": [
+        {
+          "id": "contrast-light-primary-metric",
+          "mode": "light",
+          "target": "Primary Metric Value",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(251,253,255)",
+          "ratio": 14.365468226750874,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-field-helper",
+          "mode": "light",
+          "target": "Field Helper Text",
+          "foreground": "rgb(82, 104, 115)",
+          "background": "rgb(251,253,255)",
+          "ratio": 5.742707245785331,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-visual-heading",
+          "mode": "light",
+          "target": "Visual Panel Heading",
+          "foreground": "rgb(16, 44, 53)",
+          "background": "rgb(238,244,247)",
+          "ratio": 13.19565545994323,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-light-scope-note",
+          "mode": "light",
+          "target": "Scope Note",
+          "foreground": "rgb(82, 104, 115)",
+          "background": "rgb(244,248,251)",
+          "ratio": 5.483573635475539,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-primary-metric",
+          "mode": "dark",
+          "target": "Primary Metric Value",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(16,35,44)",
+          "ratio": 14.647106546426908,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-field-helper",
+          "mode": "dark",
+          "target": "Field Helper Text",
+          "foreground": "rgb(164, 187, 196)",
+          "background": "rgb(16,35,44)",
+          "ratio": 8.071774651027154,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-visual-heading",
+          "mode": "dark",
+          "target": "Visual Panel Heading",
+          "foreground": "rgb(234, 246, 247)",
+          "background": "rgb(11,27,35)",
+          "ratio": 15.915928706332583,
+          "threshold": 4.5,
+          "pass": true
+        },
+        {
+          "id": "contrast-dark-scope-note",
+          "mode": "dark",
+          "target": "Scope Note",
+          "foreground": "rgb(164, 187, 196)",
+          "background": "rgb(8,21,28)",
+          "ratio": 9.241991774829128,
+          "threshold": 4.5,
+          "pass": true
+        }
+      ],
+      "minRatio": 5.483573635475539,
+      "pass": true
+    }
+  ],
+  "verdict": "BLOCKED",
+  "success": false,
+  "evaluationErrors": [],
+  "blockedCases": [
+    "native-zoom-200"
+  ]
+}

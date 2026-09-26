@@ -1,0 +1,164 @@
+{
+  "status": "PASS",
+  "scenario": "c09-revise",
+  "target": {
+    "deploymentId": "f8fdca36-0e99-46d1-afc9-aae3515990d5",
+    "url": "https://f8fdca36.interactive-fire-calculator.pages.dev",
+    "sha": "f1db7db91edc6d995aae02163a0677f1ec62065d",
+    "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "commitDirty": false
+  },
+  "stages": [
+    {
+      "name": "preflight",
+      "status": "PASS",
+      "detail": {
+        "deploymentId": "f8fdca36-0e99-46d1-afc9-aae3515990d5",
+        "url": "https://f8fdca36.interactive-fire-calculator.pages.dev",
+        "sha": "f1db7db91edc6d995aae02163a0677f1ec62065d",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      }
+    },
+    {
+      "name": "d1-reachable",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sign-in",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "seed-plan-versions",
+      "status": "PASS",
+      "detail": {
+        "versions": 2
+      }
+    },
+    {
+      "name": "dashboard-shows-due-review",
+      "status": "PASS",
+      "detail": {
+        "planId": "[synthetic]",
+        "apiStatus": "due",
+        "cards": 1
+      }
+    },
+    {
+      "name": "version-2-workspace-ready",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "revise-selected-and-recorded",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "calculator-edit-annual-expense",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "version-3-saved",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "d1-version-3-and-immutability",
+      "status": "PASS",
+      "detail": {
+        "v3AnnualExpense": 45000
+      }
+    },
+    {
+      "name": "version-3-reload-matches-d1",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "tenant-b-denied",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "dashboard-review-cleared",
+      "status": "PASS",
+      "detail": {
+        "apiStatus": "up-to-date",
+        "cards": 0
+      }
+    },
+    {
+      "name": "review-panel-layout",
+      "status": "PASS",
+      "detail": {
+        "observations": [
+          "1280/light",
+          "1280/dark",
+          "375/light",
+          "375/dark"
+        ]
+      }
+    }
+  ],
+  "cleanup": [
+    {
+      "tenant": "A",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "tenant": "B",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "error": null,
+  "startedAt": "2026-09-26T18:38:20.864Z",
+  "finishedAt": "2026-09-26T18:39:24.254Z"
+}

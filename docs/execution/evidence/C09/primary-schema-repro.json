@@ -1,0 +1,5 @@
+{
+  "scope": "Local exact migration schema, no remote writes",
+  "same_logical_key_rows": 2,
+  "unique_constraint_enforced": false
+}

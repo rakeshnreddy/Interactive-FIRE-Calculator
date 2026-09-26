@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   parseGoalCreatePayload,
@@ -6,6 +6,8 @@ import {
   summarizeGoals,
   type Goal
 } from '../functions/_lib/goals';
+import * as sessionModule from '../functions/_lib/session';
+import { onRequestPost } from '../functions/api/goals/index';
 
 function goal(overrides: Partial<Goal> = {}): Goal {
   return {
@@ -72,6 +74,68 @@ describe('goal payload validation', () => {
     });
     expect(parseGoalUpdatePayload({ status: 'archived' })).toMatchObject({ ok: false });
   });
+
+  it('rejects explicit non-USD currency in create and update payloads', () => {
+    expect(
+      parseGoalCreatePayload({
+        currency: 'EUR',
+        currentAmountCents: 1_500,
+        goalType: 'travel',
+        name: 'Japan trip',
+        targetAmountCents: 8_000,
+        targetDate: '2027-04-15'
+      })
+    ).toEqual({
+      code: 'INCOMPATIBLE_GOAL_CURRENCY',
+      error: 'Goals currently support USD only. Currency conversion into goals is not supported.',
+      ok: false
+    });
+
+    expect(
+      parseGoalUpdatePayload({
+        currency: 'INR',
+        name: 'Updated trip'
+      })
+    ).toEqual({
+      code: 'INCOMPATIBLE_GOAL_CURRENCY',
+      error: 'Goals currently support USD only. Currency conversion into goals is not supported.',
+      ok: false
+    });
+  });
+
+  it('accepts explicit USD currency in create and update payloads', () => {
+    expect(
+      parseGoalCreatePayload({
+        currency: 'USD',
+        currentAmountCents: 1_500,
+        goalType: 'travel',
+        name: 'Japan trip',
+        targetAmountCents: 8_000,
+        targetDate: '2027-04-15'
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        currentAmountCents: 1_500,
+        goalType: 'travel',
+        name: 'Japan trip',
+        targetAmountCents: 8_000,
+        targetDate: '2027-04-15'
+      }
+    });
+
+    expect(
+      parseGoalUpdatePayload({
+        currency: 'USD',
+        name: 'Updated trip'
+      })
+    ).toEqual({
+      ok: true,
+      value: {
+        name: 'Updated trip'
+      }
+    });
+  });
 });
 
 describe('goal summaries', () => {
@@ -119,5 +183,80 @@ describe('goal summaries', () => {
       totalTargetCents: 40_000
     });
     expect(summary.nextGoal?.id).toBe('paused-overdue');
+  });
+});
+
+describe('goals API endpoint (onRequestPost)', () => {
+  it('enforces auth preflight before body parse', async () => {
+    vi.spyOn(sessionModule, 'requireClerkAuth').mockResolvedValue({
+      ok: false,
+      response: new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+    });
+
+    const request = new Request('https://finpath.app/api/goals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: 'invalid-json'
+    });
+
+    const response = await onRequestPost({
+      data: {},
+      env: { DB: {} as D1Database },
+      functionPath: '/api/goals',
+      next: () => Promise.resolve(new Response()),
+      params: {},
+      request,
+      waitUntil: () => {}
+    } as any);
+
+    expect(response.status).toBe(401);
+  });
+
+  it('rejects forged non-USD goal creation with typed 400 and zero database writes', async () => {
+    vi.spyOn(sessionModule, 'requireClerkAuth').mockResolvedValue({
+      auth: { userId: 'user_test_123' } as any,
+      ok: true
+    });
+
+    const spyDb = {
+      batch: vi.fn(),
+      dump: vi.fn(),
+      exec: vi.fn(),
+      prepare: vi.fn()
+    } as unknown as D1Database;
+
+    const request = new Request('https://finpath.app/api/goals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        currency: 'EUR',
+        currentAmountCents: 1_000,
+        goalType: 'travel',
+        name: 'Europe tour',
+        targetAmountCents: 5_000,
+        targetDate: '2027-06-01'
+      })
+    });
+
+    const response = await onRequestPost({
+      data: {},
+      env: { DB: spyDb },
+      functionPath: '/api/goals',
+      next: () => Promise.resolve(new Response()),
+      params: {},
+      request,
+      waitUntil: () => {}
+    } as any);
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body).toEqual({
+      code: 'INCOMPATIBLE_GOAL_CURRENCY',
+      error: 'Goals currently support USD only. Currency conversion into goals is not supported.'
+    });
+
+    expect(spyDb.prepare).not.toHaveBeenCalled();
+    expect(spyDb.batch).not.toHaveBeenCalled();
+    expect(spyDb.exec).not.toHaveBeenCalled();
   });
 });
