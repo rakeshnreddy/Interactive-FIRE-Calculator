@@ -78,7 +78,7 @@ test('CLI without inputs exits nonzero and reports no PASS', () => {
 
 test('cleanup table contract is derived from migrations and fails on drift', () => {
   assert.deepEqual(deriveUserScopedTables(), [...EXPECTED_USER_TABLES].sort());
-  assert.equal(EXPECTED_USER_TABLES.length, 15);
+  assert.equal(EXPECTED_USER_TABLES.length, 16);
   const dir = mkdtempSync(join(tmpdir(), 'smoke-migrations-'));
   for (const f of readdirSync(join(ROOT, 'migrations'))) copyFileSync(join(ROOT, 'migrations', f), join(dir, f));
   writeFileSync(join(dir, '0099_new.sql'), 'CREATE TABLE new_user_things (\n  id TEXT PRIMARY KEY,\n  user_id TEXT NOT NULL\n);\n');
@@ -146,7 +146,7 @@ test('happy path passes only with observed stages and verified cleanup', async (
   const result = await run(adapters);
   assert.equal(result.status, 'PASS', JSON.stringify(result));
   assert.deepEqual(adapters.calls.deleteUser, ['user_A', 'user_B']);
-  assert.ok(result.cleanup.every((c) => c.ok && Object.keys(c.tableCounts).length === 15));
+  assert.ok(result.cleanup.every((c) => c.ok && Object.keys(c.tableCounts).length === 16));
   assert.equal(adapters.calls.closed, true);
 });
 

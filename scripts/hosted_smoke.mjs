@@ -20,7 +20,7 @@ export const PROJECT_NAME = 'interactive-fire-calculator';
 export const PRODUCTION_DB_ID = 'a5860350-0a50-4ebe-9f5f-1d9916a908e6';
 export const DELETE_CONFIRMATION = 'DELETE MY FINPATH DATA';
 export const EXPECTED_USER_TABLES = [
-  'account_balances', 'assumptions', 'audit_log', 'balance_imports', 'financial_accounts',
+  'account_balances', 'analytics_consent', 'assumptions', 'audit_log', 'balance_imports', 'financial_accounts',
   'fire_plan_inputs', 'fire_plan_results', 'goals', 'plan_reviews', 'plan_versions', 'plans',
   'saved_calculator_results', 'transaction_imports', 'transactions', 'user_profiles'
 ];

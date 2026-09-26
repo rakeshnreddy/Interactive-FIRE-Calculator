@@ -226,6 +226,10 @@ type DeleteTarget = {
 
 const deleteTargets: DeleteTarget[] = [
   { key: 'auditLog', sql: 'DELETE FROM audit_log WHERE user_id = ?' },
+  // B12: pseudonymous analytics for this user, then the consent row that links them.
+  { key: 'analyticsEvents', sql: 'DELETE FROM analytics_events WHERE pseudonym IN (SELECT pseudonym FROM analytics_consent WHERE user_id = ?)' },
+  { key: 'analyticsCohorts', sql: 'DELETE FROM analytics_cohorts WHERE pseudonym IN (SELECT pseudonym FROM analytics_consent WHERE user_id = ?)' },
+  { key: 'analyticsConsent', sql: 'DELETE FROM analytics_consent WHERE user_id = ?' },
   { key: 'assumptions', sql: 'DELETE FROM assumptions WHERE user_id = ?' },
   { key: 'savedCalculatorResults', sql: 'DELETE FROM saved_calculator_results WHERE user_id = ?' },
   { key: 'firePlanResults', sql: 'DELETE FROM fire_plan_results WHERE user_id = ?' },

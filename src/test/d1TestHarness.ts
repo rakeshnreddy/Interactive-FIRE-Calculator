@@ -12,7 +12,8 @@ const MIGRATION_FILES = [
   "0005_saved_calculator_idempotency.sql",
   "0006_user_tombstone_triggers.sql",
   "0007_monthly_plan_reviews.sql",
-  "0008_plan_reviews_idempotency.sql"
+  "0008_plan_reviews_idempotency.sql",
+  "0009_consented_analytics.sql"
 ];
 
 export const ALL_DATABASE_TABLES = [
@@ -31,7 +32,8 @@ export const ALL_DATABASE_TABLES = [
   "audit_log",
   "balance_imports",
   "transaction_imports",
-  "saved_calculator_results"
+  "saved_calculator_results",
+  "analytics_consent"
 ] as const;
 
 export type TableName = (typeof ALL_DATABASE_TABLES)[number];

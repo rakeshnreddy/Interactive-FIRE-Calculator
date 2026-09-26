@@ -10740,3 +10740,18 @@ body {
   padding: 2.5rem 1rem;
   color: var(--heading);
 }
+
+/* Optional product analytics (B12) */
+.analytics-toggle {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+.analytics-toggle input {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--accent);
+}

@@ -13,6 +13,7 @@ import { handleApiError, requireDatabase } from '../../../../_lib/persistence';
 import { requireClerkAuth } from '../../../../_lib/session';
 import type { DatabaseEnv } from '../../../../_lib/persistence';
 import type { ClerkEnv } from '../../../../_lib/session';
+import { recordServerEvent } from '../../../../_lib/analytics';
 
 type ReviewsEnv = ClerkEnv & DatabaseEnv;
 type PlanReviewsParams = 'id';
@@ -59,6 +60,9 @@ export const onRequestPost: PagesFunction<ReviewsEnv, PlanReviewsParams> = async
       return json({ error: 'Plan or version not found.' }, 404);
     }
 
+    if (!result.isDuplicate) {
+      await recordServerEvent(context.database, context.userId, 'review_completed', { decision: result.review.decision });
+    }
     return json(
       { dueStatus: result.dueStatus, review: result.review, isDuplicate: result.isDuplicate },
       result.isDuplicate ? 200 : 201

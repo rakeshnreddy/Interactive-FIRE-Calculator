@@ -14,6 +14,7 @@ import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
+import { recordServerEvent } from '../../_lib/analytics';
 
 type PlanEnv = ClerkEnv & DatabaseEnv;
 type PlanParams = 'id';
@@ -59,6 +60,7 @@ export const onRequestPut: PagesFunction<PlanEnv, PlanParams> = async ({ request
       return json({ error: 'Plan not found.' }, 404);
     }
 
+    await recordServerEvent(context.database, context.userId, 'decision_saved', { family: 'fire' });
     return json({ plan });
   } catch (error) {
     if (error instanceof PlanVersionConflictError) {

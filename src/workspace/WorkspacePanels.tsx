@@ -3,6 +3,8 @@ import { lazy, Suspense, useMemo } from 'react';
 import { ACCOUNT_DATA_DELETE_CONFIRMATION, type AccountDraft, type AccountProfile, type AccountProfileDraft, type AccountSummary, accountTypeLabel, accountTypeOptions, type BalanceDraft, emptyBalanceDraft, type FinancialAccount, formatAccountMetric, formatCurrencyBreakdown, formatGoalPercent, formatTransactionAmount, type Goal, goalDeadlineLabel, type GoalDraft, goalStatusLabel, goalStatusOptions, type GoalSummary, goalToUpdateDraft, goalTypeLabel, goalTypeOptions, type GoalUpdateDraft, isBalanceStale, type SavedCalculatorResult, type Transaction, transactionAmountClass, type TransactionDraft, type TransactionSummary, transactionToDraft, transactionTypeLabel, transactionTypeOptions } from '../lib/api';
 import { Field } from '../components/Field';
 import { PrivacyControlsPanel } from '../settings/PrivacyControlsPanel';
+import { AnalyticsConsentPanel } from '../settings/AnalyticsConsentPanel';
+import { track } from '../lib/analyticsClient';
 import { ReportsPanel } from '../reports/ReportsPanel';
 import { allTransactionAccountFilter, allTransactionCategoryFilter, type TransactionCashflowRollup, transactionCategoryLabel, type TransactionFilters, uncategorizedTransactionCategoryFilter, unlinkedTransactionAccountFilter } from '../lib/transactionAnalytics';
 import { buildCalculatorFollowUp } from '../lib/calculatorFollowUps';
@@ -327,7 +329,10 @@ export function DashboardPanel({
                 className={`dashboard-review-card dashboard-review-card-${review.status}`}
                 key={review.planId}
                 type="button"
-                onClick={() => onNavigate(buildPlanDeepLink(review.planId, review.latestVersionNumber))}
+                onClick={() => {
+                  track('review_due_opened', { source: 'in-app' });
+                  onNavigate(buildPlanDeepLink(review.planId, review.latestVersionNumber));
+                }}
               >
                 <div className="dashboard-review-card-header">
                   <span className={`review-badge review-badge-${review.status}`}>
@@ -1645,8 +1650,16 @@ export function PlatformPage({
   accountDataPrivacyMessage,
   isDeletingAccountData,
   isExportingAccountData,
-  onAccountDataDeleteConfirmationChange
+  onAccountDataDeleteConfirmationChange,
+  analyticsConsent,
+  isSavingAnalyticsConsent,
+  analyticsConsentMessage,
+  onAnalyticsConsentChange
 }: {
+  analyticsConsent: boolean | null;
+  isSavingAnalyticsConsent: boolean;
+  analyticsConsentMessage: string;
+  onAnalyticsConsentChange: (granted: boolean) => void;
   accountDraft: AccountDraft;
   accountMessage: string;
   accountSummary: AccountSummary;
@@ -1829,6 +1842,12 @@ export function PlatformPage({
             profile={profile}
             onChange={onProfileDraftChange}
             onSave={onProfileSave}
+          />
+          <AnalyticsConsentPanel
+            granted={analyticsConsent}
+            isSaving={isSavingAnalyticsConsent}
+            message={analyticsConsentMessage}
+            onChange={onAnalyticsConsentChange}
           />
           <PrivacyControlsPanel
             deleteConfirmation={accountDataDeleteConfirmation}

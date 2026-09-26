@@ -14,6 +14,7 @@ import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
+import { recordServerEvent } from '../../_lib/analytics';
 
 type CalculatorResultsEnv = ClerkEnv & DatabaseEnv;
 
@@ -52,6 +53,7 @@ export const onRequestPost: PagesFunction<CalculatorResultsEnv> = async ({ reque
   try {
     const saved = await createSavedCalculatorResult(context.database, context.userId, parsed.value);
     const status = saved.saveStatus === CALCULATOR_SAVE_STATUS.RETRY ? 200 : 201;
+    if (status === 201) await recordServerEvent(context.database, context.userId, 'decision_saved', { family: 'calculator' });
     return json(saved, status);
   } catch (error) {
     if (error instanceof IncompatibleGoalCurrencyError) {

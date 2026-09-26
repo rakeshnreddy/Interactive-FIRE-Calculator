@@ -88,6 +88,7 @@ import {
 import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
 import { estimateRetirementAge, fitRatePeriods, projectPortfolioAtAge, type AccumulationResult } from './lib/fireAccumulation';
 import { validateFireForm } from './lib/fireValidation';
+import { configureAnalytics, flushAnalytics, track } from './lib/analyticsClient';
 import { formatCompactMoney } from './lib/money';
 import { HERO_FIRE_FIXTURE } from './lib/heroExample';
 import { FireRetirementEstimate } from './components/FireRetirementEstimate';
@@ -1316,6 +1317,7 @@ function App({ auth }: { auth: AuthState }) {
     applyRouteMetadata(route);
   }, [route]);
 
+
   const [plan, setPlan] = useState<PlanInput>(initialPlan);
   const [timeline, setTimeline] = useState<TimelineInput>(initialTimeline);
   const [mode, setMode] = useState<Mode>(readPreferredMode);
@@ -1481,6 +1483,38 @@ function App({ auth }: { auth: AuthState }) {
   const [isDeletingAccountData, setIsDeletingAccountData] = useState(false);
   const [accountDataDeleteConfirmation, setAccountDataDeleteConfirmation] = useState('');
   const [accountDataPrivacyMessage, setAccountDataPrivacyMessage] = useState<PrivacyStatus | null>(null);
+  // B12: optional product analytics, off until the signed-in user turns it on.
+  const [analyticsConsent, setAnalyticsConsent] = useState<boolean | null>(null);
+  const [isSavingAnalyticsConsent, setIsSavingAnalyticsConsent] = useState(false);
+  const [analyticsConsentMessage, setAnalyticsConsentMessage] = useState('');
+
+  useEffect(() => {
+    if (auth.status !== 'signed-in') {
+      setAnalyticsConsent(null);
+      configureAnalytics({ enabled: false, getToken: async () => null });
+      return;
+    }
+    let cancelled = false;
+    authenticatedJsonRequest(auth, '/api/analytics/consent')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((body: unknown) => {
+        if (!cancelled) setAnalyticsConsent((body as { granted?: unknown } | null)?.granted === true);
+      })
+      .catch(() => {
+        if (!cancelled) setAnalyticsConsent(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [auth.status, auth.user?.id]);
+
+  useEffect(() => {
+    configureAnalytics({ enabled: auth.status === 'signed-in' && analyticsConsent === true, getToken: auth.status === 'signed-in' ? auth.getToken : async () => null });
+    if (typeof window === 'undefined') return;
+    const flush = () => void flushAnalytics();
+    window.addEventListener('pagehide', flush);
+    return () => window.removeEventListener('pagehide', flush);
+  }, [analyticsConsent, auth.status]);
   const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>([]);
   const [accountDraft, setAccountDraft] = useState<AccountDraft>(emptyAccountDraft);
   const [balanceDrafts, setBalanceDrafts] = useState<Record<string, BalanceDraft>>({});
@@ -2203,6 +2237,7 @@ function App({ auth }: { auth: AuthState }) {
 
   const calculateNow = () => {
     if (!fireValidation.ok) return;
+    track('calculation_completed', { slug: 'fire', engine: 'fire-ts-v1', outcome: 'valid' });
     setCalculatedSavings(parseSavingsEntry(savingsEntry));
     setDisplayedResult({
       result,
@@ -2411,6 +2446,22 @@ function App({ auth }: { auth: AuthState }) {
       setProfileMessage('Profile could not be saved.');
     } finally {
       setIsSavingProfile(false);
+    }
+  };
+
+  const changeAnalyticsConsent = async (granted: boolean) => {
+    if (auth.status !== 'signed-in') return;
+    setIsSavingAnalyticsConsent(true);
+    setAnalyticsConsentMessage('');
+    try {
+      const response = await authenticatedJsonRequest(auth, '/api/analytics/consent', { method: 'PUT', body: JSON.stringify({ granted }) });
+      if (!response.ok) throw new Error('Could not update the analytics preference.');
+      setAnalyticsConsent(granted);
+      setAnalyticsConsentMessage(granted ? 'Product analytics is on. Thank you.' : 'Product analytics is off and collected records were deleted.');
+    } catch (error) {
+      setAnalyticsConsentMessage(error instanceof Error ? error.message : 'Could not update the analytics preference.');
+    } finally {
+      setIsSavingAnalyticsConsent(false);
     }
   };
 
@@ -3071,6 +3122,7 @@ function App({ auth }: { auth: AuthState }) {
       setPlanStorageMessage('Complete the highlighted FIRE fields before saving.');
       return;
     }
+    track('decision_save_attempted', { family: 'fire', destination: auth.status === 'signed-in' ? 'account' : 'browser' });
     const name = saveName.trim() || 'Retirement plan';
     const snapshot = buildSnapshot();
 
@@ -3135,6 +3187,7 @@ function App({ auth }: { auth: AuthState }) {
       setPlanStorageMessage('Complete the highlighted FIRE fields in the calculator before saving a version.');
       return;
     }
+    track('decision_save_attempted', { family: 'fire', destination: 'account' });
 
     const name = draft.name.trim() || 'Retirement plan';
     const snapshot = buildSnapshot();
@@ -3355,6 +3408,7 @@ function App({ auth }: { auth: AuthState }) {
   };
 
   const navigate = (nextPanel: CalculatorPanel) => {
+    if (nextPanel === 'compare') track('comparison_viewed', { family: 'fire' });
     setCalculatorPanel(nextPanel);
     setIsMenuOpen(false);
   };
@@ -3591,6 +3645,10 @@ function App({ auth }: { auth: AuthState }) {
                   financialAccounts={financialAccounts}
                   financialInsights={financialInsights}
                   reportScope={reportScope}
+                analyticsConsent={analyticsConsent}
+                isSavingAnalyticsConsent={isSavingAnalyticsConsent}
+                analyticsConsentMessage={analyticsConsentMessage}
+                onAnalyticsConsentChange={changeAnalyticsConsent}
                   goalDraft={goalDraft}
                   isLoadingDueReviews={isLoadingDueReviews}
                   onRetryDueReviews={refreshDueReviews}

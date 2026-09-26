@@ -234,11 +234,16 @@ describe('account data deletion', () => {
     );
     expect(deletion.localAccountDataDeleted).toBe(true);
     expect(deletion.identityProvider).toBe('clerk');
+    // The fake reports each statement's position as its change count (B12 added three analytics
+    // statements right after the audit rows).
     expect(deletion.deletedRows).toMatchObject({
       auditLog: 1,
-      savedCalculatorResults: 3,
-      planReviews: 6,
-      userTombstone: 16
+      analyticsEvents: 2,
+      analyticsCohorts: 3,
+      analyticsConsent: 4,
+      savedCalculatorResults: 6,
+      planReviews: 9,
+      userTombstone: 19
     });
   });
 });
