@@ -469,7 +469,7 @@
       "id": "B29",
       "title": "Polish reports and readable financial evidence",
       "checkpoint": "C10",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B25",
         "B06",
@@ -478,7 +478,7 @@
       ],
       "prompt": "prompts/B29.md",
       "submission": null,
-      "owner": null,
+      "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -598,16 +598,16 @@
       "id": "B36",
       "title": "Make FIRE answer when can I retire with explicit rates",
       "checkpoint": "C09B",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B35",
         "B39",
         "B42"
       ],
       "prompt": "prompts/B36.md",
-      "submission": null,
+      "submission": "submissions/B36.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": null,
+      "code_sha": "a8f7422",
       "review": null,
       "blocked_reason": null
     },
