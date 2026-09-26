@@ -12,6 +12,7 @@ done
 
 node --test scripts/test_all.test.mjs
 node --test scripts/build_preview_auth.test.mjs
+node --test scripts/hosted_smoke.test.mjs
 
 if [ ! -d node_modules ]; then
   npm ci

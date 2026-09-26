@@ -41,6 +41,7 @@ if [[ "$stage" == "$FINPATH_FAIL_STAGE" ]]; then exit 23; fi
 const stages = [
   'node --test scripts/test_all.test.mjs',
   'node --test scripts/build_preview_auth.test.mjs',
+  'node --test scripts/hosted_smoke.test.mjs',
   'npm run typecheck',
   'npm test',
   'npm run build'
