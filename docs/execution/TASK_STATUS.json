@@ -179,8 +179,8 @@
       "submission": "submissions/B11.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-collector-schema-review-2026-09-25.md",
-      "blocked_reason": "Uncommitted candidate collector targets a nonexistent FIRE input selector, reads nonexistent flattened D1 fields, permits missing result values, and asserts annual expense in overview text that does not render it. Repair against actual DOM and JSON schema, then obtain exact-code CI and hosted synthetic proof."
+      "review": "reviews/C09-hosted-runner-readiness-2026-09-25.md",
+      "blocked_reason": "Uncommitted runner seeds Version 2 with a fake result lacking requiredPortfolio, then requires that field; its post-conflict query counts three legitimate plan reviews against a one-row expectation. Fix source-backed seed, exact review scope, and fresh deployment inputs before hosted proof."
     },
     {
       "id": "B12",
@@ -460,8 +460,8 @@
       "submission": "submissions/B28.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-collector-schema-review-2026-09-25.md",
-      "blocked_reason": "Local screenshots are simplified fixture images that overwrote a hosted-evidence filename; fixture server accepts arbitrary file paths and listens beyond loopback. Isolate fixture evidence and secure/remove server, then prove real authenticated sticky-header clearance and focus on a new hosted preview."
+      "review": "reviews/C09-hosted-runner-readiness-2026-09-25.md",
+      "blocked_reason": "Fixture isolation/server security are repaired locally, but hosted clearance still forces theme DOM state with a wrong storage key and swallows focus failure on an unfocusable heading. Prove real theme switching and actual keyboard focus on a fresh authenticated preview."
     },
     {
       "id": "B29",
