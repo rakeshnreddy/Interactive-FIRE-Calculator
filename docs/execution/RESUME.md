@@ -19,3 +19,22 @@ Astra is architect, sole publisher and reviewer; Gemini implements. Read `CHECKP
 - No purchase, DNS change, production data write, main merge or production deployment. Production-auth preflight remains fail-closed. Native 200% zoom and actual screen reader are deferred to B31/C11 and have not passed.
 
 Verify live Git/hosted state rather than treating narrative as live state.
+
+
+## Claude takeover progress — 2026-09-26 (paused at usage limit)
+
+All work is on PR #140, branch `codex/finpath-quality-execution`. Claude marks tasks `ready_for_review`; Codex accepts.
+- **ready_for_review:**
+  - B39 `c7c5b31`
+  - B42 `a09ff46`
+  - B36 `a8f7422`
+  - B29 and B30 `f1db7db`
+  - B41 `b4c7919`
+  - B38 `2292aee`
+  - Each has a submission in `submissions/`.
+- **B12 in progress:**
+  - Code is at `e33846a`, and migration 0009 is applied to the preview D1 only.
+  - Hosted `c11-analytics` fails at `events-are-pseudonymous`. A probe shows the client POST returns 202, so check whether it is accepted (dedup or date), then rerun.
+  - Still to do: the B12 submission.
+- **Next:** B31 (final accessibility and performance sweep, including native 200% zoom), then B40. After that, write the Codex verification prompt.
+- **Latest preview:** `https://232d1fd9.interactive-fire-calculator.pages.dev`. `c11-delivery`, `c11-api-boundary`, `c10-reports-settings`, `c09-revise` and the public smoke all pass there.
