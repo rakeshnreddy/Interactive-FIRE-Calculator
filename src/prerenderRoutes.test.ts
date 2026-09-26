@@ -52,7 +52,7 @@ describe('prerendered route HTML (B38)', () => {
 
   it('only plan deep links are rewritten; there is no catch-all that would hide 404s', () => {
     const redirects = readFileSync('public/_redirects', 'utf8').split('\n').filter((l) => l.trim() && !l.startsWith('#'));
-    expect(redirects).toEqual(['/plans/*  /plans/index.html  200']);
+    expect(redirects).toEqual(['/plans/*  /plans  200']);
   });
 
   it('ships security headers with a CSP that forbids inline and eval scripts', () => {

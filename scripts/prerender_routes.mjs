@@ -54,7 +54,9 @@ async function main() {
       const isPublic = meta.robots.startsWith('index');
       const heading = isPublic ? meta.title.replace(/\s*\|\s*FinPath$/, '').replace(/^FinPath\s*\|\s*/, '') : '';
       const html = renderRouteHtml(template, meta, { heading, body: isPublic ? meta.description : '' });
-      const file = route === '/' ? join(DIST, 'index.html') : join(DIST, route, 'index.html');
+      // Flat files (plans.html) are served at the clean path; directory indexes would force a
+      // trailing-slash redirect on Cloudflare Pages and change every URL.
+      const file = route === '/' ? join(DIST, 'index.html') : join(DIST, `${route}.html`);
       mkdirSync(dirname(file), { recursive: true });
       writeFileSync(file, html);
       written += 1;
