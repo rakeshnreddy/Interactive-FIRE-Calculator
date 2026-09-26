@@ -9,7 +9,7 @@ This file defines the execution rules and operating boundaries for Gemini acting
 - **No Tiny-Edit Exception**: Gemini implements all code changes; Astra does not write code fixes.
 - **Execution Completion vs. Task Acceptance**: Model `SUCCESS` indicates execution completion of the worker run only, NOT task acceptance. Astra alone is the authority who accepts a task or closes a checkpoint.
 - **No Model Polling**: Astra does not poll models during worker execution; the launcher synchronously awaits the child process and emits a single machine-readable completion record (`.ai-handoff/*_completion.json`).
-- **Correction Round Limit**: Maximum 3 correction rounds per task. If an issue remains unresolved after 3 rounds, Gemini stops and reports clear findings and blockers to Astra.
+- **Correction Round Limit**: Maximum 3 correction rounds per checkpoint under the 2026-09-26 owner amendment. The current C09 Stage 4 pass is final; report any remaining finding to Astra without starting another C09 repair round.
 
 ## 2. Strict Prohibitions
 
@@ -28,3 +28,10 @@ When responding to Astra at the conclusion of a task:
 3. Provide paths to evidence logs, completion record, and test results under `.ai-handoff/` or `evidence/`.
 4. Detail any identified risks, regressions, or trade-offs.
 5. Explicitly state any blockers or missing scoped permissions.
+
+## Owner amendment — 2026-09-26
+
+- Astra is the active architect/reviewer **role**, whether staffed by Codex or Claude; the authority and quality rules are the same.
+- From C09B onward, use the normal unit/integration suite and add minimal steps to the single shared hosted smoke runner. Do not build a new checkpoint-specific proof harness. Follow PA-1 in `docs/execution/IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md`.
+- Do not commit screenshots or raw output. Store raw files under ignored `docs/execution/evidence/**/raw/` and provide a manifest with path, SHA-256, size, exact commit and preview URL. Astra may select at most three review PNGs per task, each ≤300 KB. Keep old C09 evidence intact.
+- After the checkpoint correction cap, stop and report the observed residual. Never claim an unobserved hosted step passed. PA-2/PA-3 apply to C09 now; PA-4 onward begin C09B.

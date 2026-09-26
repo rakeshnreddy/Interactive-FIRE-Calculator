@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-25",
+  "updated": "2026-09-26",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -188,7 +188,9 @@
       "checkpoint": "C11",
       "status": "pending",
       "dependencies": [
-        "B07"
+        "B07",
+        "B41",
+        "B38"
       ],
       "prompt": "prompts/B12.md",
       "submission": null,
@@ -471,7 +473,8 @@
       "dependencies": [
         "B25",
         "B06",
-        "B21"
+        "B21",
+        "B39"
       ],
       "prompt": "prompts/B29.md",
       "submission": null,
@@ -488,7 +491,8 @@
       "dependencies": [
         "B07",
         "B25",
-        "B06"
+        "B06",
+        "B39"
       ],
       "prompt": "prompts/B30.md",
       "submission": null,
@@ -516,7 +520,10 @@
         "B29",
         "B30",
         "B12",
-        "B32"
+        "B32",
+        "B36",
+        "B38",
+        "B41"
       ],
       "prompt": "prompts/B31.md",
       "submission": null,
@@ -586,6 +593,117 @@
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
       "review": "reviews/C09A.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B36",
+      "title": "Make FIRE answer when can I retire with explicit rates",
+      "checkpoint": "C09B",
+      "status": "pending",
+      "dependencies": [
+        "B35",
+        "B39"
+      ],
+      "prompt": "prompts/B36.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B37",
+      "title": "Retire legacy stack and shrink tracked delivery evidence",
+      "checkpoint": "C09B",
+      "status": "pending",
+      "dependencies": [
+        "B11",
+        "B28"
+      ],
+      "prompt": "prompts/B37.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B38",
+      "title": "Improve public delivery, route metadata, 404s and headers",
+      "checkpoint": "C11",
+      "status": "pending",
+      "dependencies": [
+        "B36",
+        "B41"
+      ],
+      "prompt": "prompts/B38.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B39",
+      "title": "Extract pure API, formatting, warning and UI modules from App",
+      "checkpoint": "C09B",
+      "status": "pending",
+      "dependencies": [
+        "B37"
+      ],
+      "prompt": "prompts/B39.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B40",
+      "title": "Consolidate calculator library and user-facing copy",
+      "checkpoint": "C14",
+      "status": "pending",
+      "dependencies": [
+        "B31",
+        "B36"
+      ],
+      "prompt": "prompts/B40.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B41",
+      "title": "Harden shared API parsing, auth and error boundaries",
+      "checkpoint": "C11",
+      "status": "pending",
+      "dependencies": [
+        "B30",
+        "B37"
+      ],
+      "prompt": "prompts/B41.md",
+      "submission": null,
+      "owner": null,
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    }
+  ],
+  "owner_actions": [
+    {
+      "id": "OA-1",
+      "action": "Create the FinPath Clerk production instance and provide production keys through the secure setup path; no keys in chat or Git.",
+      "blocking_task": "B38 production readiness only; preview implementation may proceed",
+      "requested_date": "2026-09-26",
+      "status": "pending"
+    },
+    {
+      "id": "OA-2",
+      "action": "Confirm that B37 removes bulk evidence from the current Git index only, with no Git history rewrite.",
+      "blocking_task": "B37 evidence-untracking step",
+      "requested_date": "2026-09-26",
+      "status": "pending"
     }
   ]
 }

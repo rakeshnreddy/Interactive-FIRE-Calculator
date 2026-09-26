@@ -37,7 +37,7 @@ This repository uses a two-tier AI workflow:
 - Sole authority for Git mutations: `git commit`, `git push`, `git merge`, releases.
 - Conducts independent risk-based reviews; never trusts worker self-reports alone.
 - Non-coder rule: does not make code edits or bypass the worker with "tiny edits".
-- Controls task acceptance: maximum 3 corrections per task.
+- Controls task acceptance: maximum 3 correction rounds per checkpoint under the 2026-09-26 owner amendment; C09's current Stage 4 pass is final.
 - Sole reviewer of execution completion records; model execution completion represents runtime completion only, never task acceptance.
 
 ### Gemini
@@ -83,3 +83,10 @@ This repository uses a two-tier AI workflow:
 - **Workflow Efficiency**: No routine duplicate browsing or duplicate test suite runs by Astra; no model-based polling loops.
 - **Completion Protocol**: Headless delegation relies on local machine-readable completion notification only.
 
+## Owner amendment — 2026-09-26
+
+- Astra names the **active architect/reviewer role**, not a particular model. Codex or Claude may staff it under the same authority; Gemini remains the implementation worker.
+- From C09B onward, use unit/integration tests plus one shared reusable hosted smoke runner. Extend the runner with bounded task steps instead of creating a new harness per checkpoint. Follow PA-1 in `docs/execution/IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md`.
+- Cap corrections at three rounds **per checkpoint**. After the cap, Astra records a residual, splits a new task, or asks for an owner deferral; never invent a PASS. PA-2/PA-3 govern the current C09 final round.
+- Raw screenshots and logs are not committed from C09B onward: use ignored `docs/execution/evidence/**/raw/`, CI/PR artifacts and a committed hash/size/commit/preview manifest. At most three selected PNGs per task (≤300 KB each) may remain tracked. Existing C09 evidence is historical and retained.
+- Astra edits canonical trackers and `docs/execution/RESUME.md`; Gemini must not edit review records or mark tasks done. See PA-4 through PA-9 for owner actions, answer-quality review, intake cleanup and App-module extraction.

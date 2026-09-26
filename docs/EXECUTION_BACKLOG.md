@@ -436,3 +436,55 @@ C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 c
   - Analytics: no new data collection; existing consent rules.
   - Security/privacy: local synthetic verification; no credentials/hosted financial writes; isolated preview only after verification.
   - Dependencies: existing FIRE presentation B22/B24; primary closure required. Calculator-wide implementation gets separate child contracts after audit review.
+
+## Owner amendment — 2026-09-26: C09B, C11 and calculator-excellence order
+
+OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and required, with an explicit sourced illustrative-value action; an entered 0% is valid. B35's prohibition on silently injected equity, housing, Social Security and healthcare flows remains. OD-2 permits an additive accumulation function with independent goldens, leaving existing drawdown behavior unchanged. These are new B36 work, not a retroactive claim that B35 implemented them. C09B is locked until C09 closes. Complete B37 → B39 → B36, then C10 B29 → B30, then C11 B41 → B38 → B12 → B31. B40 is queued after C11. Only Astra checks boxes.
+
+- [ ] **B37 — Delivery hygiene and stack retirement (C09B, first).**
+  - User problem/evidence: 1,005 tracked evidence files (120,681,806 bytes), 53 tracked `output/` files (19,544,131 bytes) and two `.pyc` files were measured in this checkout; Python remains a test prerequisite for a Pages/TypeScript product.
+  - Expected outcome/scope: port indispensable finance goldens into TypeScript, retire unused Flask/Firebase files and Python CI steps, establish the PA-1 shared hosted smoke runner and PA-4 raw-evidence manifest/ignore rules; Astra alone performs reviewed Git untracking.
+  - Non-goals: no history rewrite, shipped formula or UI change, lost review link or deletion of accepted review records.
+  - Likely files: legacy app/tests/config, `scripts/test_all.sh`, workflows, `scripts/hosted_smoke.mjs`, `.gitignore`, README, evidence manifests.
+  - Acceptance: full suite and CI work without Python; ported goldens detect changed math; exact preview/DB and cleanup negative tests pass; accepted review links resolve; before/after tracked size is measured.
+  - Analytics/tests/security: no analytics; synthetic tenants only, no tokens in artifacts; public smoke and build isolation pass. Dependencies: B11/B28 accepted, C09B released; OA-2 before untracking. Rollback: restore retired paths from task commit, never rewrite history. Human 1–2 days; agent 2–4 h excluding review/provider waits. [Contract](execution/prompts/B37.md).
+
+- [ ] **B39 — Extract pure modules from App.tsx (C09B, second).**
+  - User problem/evidence: `App.tsx` measured 8,841 lines and later feature work touches it; utility/parsing and shared primitives obscure review.
+  - Expected outcome/scope: extract API/DTO parsing, formatting/CSV/JSON, warnings and shared UI primitives into focused modules; add one typed response parser without behavior change.
+  - Non-goals: no stateful panel/route extraction, copy/style/formula/schema change.
+  - Likely files: `src/App.tsx`, `src/lib/api/`, `src/lib/format.ts`, `src/lib/csv.ts`, `src/lib/warnings.ts`, `src/components/`, import-path tests.
+  - Acceptance: `App.tsx` shrinks ≥2,000 lines; parser negative tests and existing behavior pass; public rendered routes remain visually equivalent; full suite/build/CI/smoke pass.
+  - Analytics/tests/security: none added; preserve auth/tenant handling and export values. Dependencies: B37 accepted. Rollback: revert isolated refactor. Human 1 day; agent 2–4 h. [Contract](execution/prompts/B39.md).
+
+- [ ] **B36 — FIRE answers when can I retire (C09B, third).**
+  - User problem/evidence: fresh FIRE rates silently initialize at 0%, no accumulation path or retire-age answer, and invalid/blank inputs can yield misleading results; measured live-audit observations require task-specific repro.
+  - Expected outcome/scope: OD-1 empty required return/inflation with cited hint and explicit example action; OD-2 additive pure accumulation engine and retire-age estimate; input validation, explanatory result/chart, USD/INR formatting and old-plan compatibility. Apply PA-9 to touched App region.
+  - Non-goals: existing drawdown behavior changes, Monte Carlo, tax model, injected cash flows, automatic historical-plan mutation.
+  - Likely files: FIRE UI extraction from `src/App.tsx`, new pure engine near `src/lib/fire.ts`, shared currency formatter, tests and possibly an additive model-version migration.
+  - Acceptance: ≥5 independent accumulation goldens including deliberate 0%, already-FI, never-FI and savings growth; all existing drawdown goldens unchanged; fresh rates blank/no result; invalid cases fail at field level; old saved plan unchanged; headline/chart/table agree; desktop/375px themes/keyboard/reduced-motion and PA-7 walkthrough pass.
+  - Analytics/tests/security: no new tracking; public signed-out use and synthetic saved-plan compatibility; formula references and migration decision required. Dependencies: B35/B39 and released C09B. Rollback: feature revert with safe additive schema. Human 2–4 days; agent 8–14 h plus Astra golden review. [Contract](execution/prompts/B36.md).
+
+- [ ] **B41 — Harden shared API boundaries (C11, first).**
+  - User problem/evidence: repeated auth/body parsers, absent uniform size limits and message-substring deleted-user detection increase tenant and availability risk.
+  - Expected outcome/scope: shared Pages Functions auth/DB/body/error boundary, bounded JSON/CSV import with 413, typed deleted-user 410 and consistent `{code,error}` without changing endpoint semantics.
+  - Non-goals: no tenancy model, production auth or data migration change.
+  - Likely files: `functions/api/`, `functions/_lib/`, backend tests and shared smoke step.
+  - Acceptance: existing tenancy/deletion/idempotency suites pass; oversized/malformed/missing-auth/deleted-user negative tests pass; health remains public, signed-out protected APIs 401; isolated hosted denial/cleanup verified.
+  - Analytics/tests/security: no new collection or leaked bodies; fail closed on missing D1. Dependencies: C10 accepted, B30/B37. Rollback: revert middleware/callers together. Human 1–2 days; agent 4–6 h. [Contract](execution/prompts/B41.md).
+
+- [ ] **B38 — Public delivery, SEO truth, 404 and headers (C11, second).**
+  - User problem/evidence: generic calculator HTML, indexable 200 unknown routes, public Clerk loading and large chunks reduce discoverability, trust and speed.
+  - Expected outcome/scope: route-specific static metadata/minimal content, genuine 404/noindex, lazy Clerk and route chunks, tested CSP/security headers.
+  - Non-goals: no SSR-framework migration, copy rewrite or production launch.
+  - Likely files: route metadata/build scripts, `src/App.tsx`/router, `public/_headers`, Pages Functions routing and tests. PA-9 applies.
+  - Acceptance: five sampled calculator HTML responses correct; unknown routes 404/noindex; public page makes no pre-intent Clerk request; main raw chunk <250 KB with no build warning; public and signed-in preview CSP smoke has no violations.
+  - Analytics/tests/security: no new collection; exact preview/auth isolation and existing public-route smoke. Dependencies: B36/B41 and C10 accepted. OA-1 blocks production readiness only, not preview acceptance. Rollback: revert delivery/routing as a unit. Human 2–3 days; agent 6–10 h. [Contract](execution/prompts/B38.md).
+
+- [ ] **B40 — First calculator-excellence child: library/copy consolidation (queued after C11).**
+  - User problem/evidence: duplicate EMI/debt discovery, templated descriptions, missing tax jurisdiction labels, leaked internal wording and signed-out Workspace links.
+  - Expected outcome/scope: preserve stable aliases while grouping compatible presets, add region badges/filter, plain-language copy and a copy guard. Capture mortgage PITI/scenario and extreme-rate defects as explicit later per-route program gaps.
+  - Non-goals: no mortgage/compound engine rewrite, unsupported tax-law claim or mass calculator completion claim.
+  - Likely files: route inventory, CalculatorLibrary/navigation/copy, tests, calculator-excellence gap inventory.
+  - Acceptance: old routes work; preset identity/filter/empty/keyboard/mobile/theme tests pass; internal phrases absent; signed-out discovery is public-first; follow-on math gaps remain visible.
+  - Analytics/tests/security: no pre-consent tracking, preserve public access. Dependencies: B31/B36 and primary release after C11. Rollback: revert discovery changes, retain URLs. Human 1–2 days; agent estimate after inventory. [Contract](execution/prompts/B40.md).

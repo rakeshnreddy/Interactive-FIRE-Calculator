@@ -4,6 +4,8 @@ Owner: primary reviewing session (the session that prepared this packet). Implem
 
 ## Start here
 
+**Current-state entry point (2026-09-26):** [RESUME.md](RESUME.md), then [CHECKPOINTS.md](CHECKPOINTS.md) and [TASK_STATUS.json](TASK_STATUS.json). Older narrative release statements and the table's “Initial status” column are historical; the JSON ledger is authoritative. C09 remains open, C09B locked. Astra names the active architect/reviewer role, whether staffed by Codex or Claude. The [dated protocol amendment](IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md#owner-amendment--2026-09-26-proof-cost-correction-cap-and-answer-quality) governs PA-1 through PA-9 and C09's final correction round.
+
 1. [MASTER_WORKER_PROMPT.md](MASTER_WORKER_PROMPT.md): paste into the implementing session. It chooses the current released checkpoint and processes its tasks sequentially.
 2. [CHECKPOINTS.md](CHECKPOINTS.md): order, release gates and accepted revisions. Only the primary reviewer edits release/approval fields.
 3. [TASK_STATUS.json](TASK_STATUS.json): machine-readable task IDs, prerequisites, prompt paths and states. Status is not proof; evidence is mandatory.
@@ -11,6 +13,7 @@ Owner: primary reviewing session (the session that prepared this packet). Implem
 5. [SUBMISSION_TEMPLATE.md](SUBMISSION_TEMPLATE.md): implementer evidence per task.
 6. [MASTER_REVIEW_PROMPT.md](MASTER_REVIEW_PROMPT.md): paste back into the primary reviewing session at a checkpoint.
 7. [REVIEW_TEMPLATE.md](REVIEW_TEMPLATE.md): independent acceptance record, written by the reviewer.
+8. [RESUME.md](RESUME.md): single current handoff with exact candidate, preview, blockers, owner actions and next prompt.
 
 Read [the existing backlog](../EXECUTION_BACKLOG.md), [visual audit](../VISUAL_AND_UI_AUDIT.md), [visual contract](../VISUAL_DESIGN_SPEC.md), and the subsequent [color/glass contract](../COLOR_AND_GLASS_SYSTEM.md). A task brief gives implementation detail; the backlog retains stable IDs. If they disagree, stop the affected work and ask the reviewer to amend the contract. Do not invent a new requirement silently.
 
@@ -103,6 +106,12 @@ The exact order is in CHECKPOINTS.md; ID order is retained here for lookup.
 | B31 | [Close visual accessibility and performance acceptance matrix](prompts/B31.md) | C11 | pending |
 | B32 | [Implement light/dark glass and gradient material system](prompts/B32.md) | C01T | pending |
 | B33 | [Isolate preview infrastructure before backend publication](prompts/B33.md) | C01I | pending |
+| B36 | [Make FIRE answer when can I retire](prompts/B36.md) | C09B | pending |
+| B37 | [Delivery hygiene and legacy-stack retirement](prompts/B37.md) | C09B | pending |
+| B38 | [Public delivery, route truth and headers](prompts/B38.md) | C11 | pending |
+| B39 | [Extract pure App modules](prompts/B39.md) | C09B | pending |
+| B40 | [Calculator library/copy consolidation](prompts/B40.md) | C14 | pending |
+| B41 | [Harden shared API boundaries](prompts/B41.md) | C11 | pending |
 
 B33 bootstrap exception: with explicit owner authorization, publish configuration only using unchanged, identified backend code. Verify intended isolated preview binding before publication and effective deployed binding afterward. This is the narrow setup operation needed to prove isolation, not permission to publish changed APIs or perform financial writes. Those remain blocked until B33 is accepted. If the provider cannot establish the intended binding safely before publication, stop and request a separate isolated target.
 
