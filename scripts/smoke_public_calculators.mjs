@@ -42,8 +42,11 @@ for (let index = 0; index < paths.length; index += concurrency) {
   }));
 
   for (const result of results) {
-    if (result.status !== 200 || result.wwwAuthenticate || !result.body.includes('<div id="root"></div>')) {
-      failures.push(`${result.path}: status=${result.status}, auth=${Boolean(result.wwwAuthenticate)}, spa=${result.body.includes('<div id="root"></div>')}`);
+    // Routes are prerendered (B38): the app root may hold a heading, and the app script must load.
+    const spa = result.body.includes('<div id="root">') && /<script type="module"[^>]+src="\/assets\/main-/.test(result.body);
+    const canonical = result.body.includes(`<link rel="canonical" href="https://interactive-fire-calculator.pages.dev${result.path}" />`);
+    if (result.status !== 200 || result.wwwAuthenticate || !spa || !canonical) {
+      failures.push(`${result.path}: status=${result.status}, auth=${Boolean(result.wwwAuthenticate)}, spa=${spa}, canonical=${canonical}`);
     }
   }
 }

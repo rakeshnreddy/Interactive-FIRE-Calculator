@@ -186,7 +186,7 @@
       "id": "B12",
       "title": "consented minimal measurement",
       "checkpoint": "C11",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B07",
         "B41",
@@ -194,7 +194,7 @@
       ],
       "prompt": "prompts/B12.md",
       "submission": null,
-      "owner": null,
+      "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -631,15 +631,15 @@
       "id": "B38",
       "title": "Improve public delivery, route metadata, 404s and headers",
       "checkpoint": "C11",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B36",
         "B41"
       ],
       "prompt": "prompts/B38.md",
-      "submission": null,
+      "submission": "submissions/B38.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": null,
+      "code_sha": "2292aee",
       "review": null,
       "blocked_reason": null
     },

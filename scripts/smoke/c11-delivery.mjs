@@ -1,6 +1,6 @@
 // C11 hosted scenario (B38): route HTML, real 404, security headers, lazy Clerk and CSP.
 let fail;
-const CLERK_HOST = /clerk\.accounts\.dev|clerk\.com/;
+const CLERK_HOST = /(^|\.)accounts\.dev$|(^|\.)clerk\.com$/;
 
 export default {
   name: 'c11-delivery',
@@ -46,7 +46,7 @@ export default {
     await stage('public-page-without-clerk', async () => {
       anon = await browser.newAnonymousPage();
       await anon.page.goto(`${config.url}/calculators/fire`, { waitUntil: 'networkidle' });
-      const clerkRequests = anon.requests.filter((url) => CLERK_HOST.test(url));
+      const clerkRequests = anon.requests.filter((url) => CLERK_HOST.test(new URL(url).host));
       const violations = await anon.page.evaluate(() => window.__cspViolations);
       if (clerkRequests.length) fail(`public page contacted Clerk: ${clerkRequests.slice(0, 2).join(', ')}`);
       if (violations.length) fail(`CSP violations on public page: ${violations.join('; ')}`);
@@ -57,7 +57,7 @@ export default {
     await stage('sign-in-intent-loads-clerk', async () => {
       const button = anon.page.locator('button:has-text("Sign in")').first();
       await button.click();
-      await anon.page.waitForURL((url) => CLERK_HOST.test(url.host), { timeout: 30000 });
+      await anon.page.waitForURL((url) => CLERK_HOST.test(url.host), { timeout: 30000, waitUntil: 'commit' });
       return { redirectedTo: new URL(anon.page.url()).host.replace(/^[^.]+/, '*') };
     });
 
