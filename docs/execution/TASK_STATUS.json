@@ -167,7 +167,7 @@
       "id": "B11",
       "title": "complete one monthly plan review",
       "checkpoint": "C09",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B04",
         "B05",
@@ -178,9 +178,9 @@
       "prompt": "prompts/B11.md",
       "submission": "submissions/B11.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-hosted-attempt-7467116.md",
-      "blocked_reason": "Candidate 7467116 passed full local suite, CI and preview isolation, but hosted runner stopped on a strict review-badge selector before Version 2 revise and Version 3 proof. Synthetic users were fully cleaned. Correct and regress the ambiguous locator, then rerun complete hosted lifecycle on a new candidate."
+      "code_sha": "c4bf784b106878e7e0c940564216ec44a72ecb38",
+      "review": "reviews/C09-closure-2026-09-26.md",
+      "blocked_reason": null
     },
     {
       "id": "B12",
@@ -452,7 +452,7 @@
       "id": "B28",
       "title": "Polish goals and monthly plan-review workflow",
       "checkpoint": "C09",
-      "status": "blocked",
+      "status": "done",
       "dependencies": [
         "B10",
         "B11",
@@ -461,9 +461,9 @@
       "prompt": "prompts/B28.md",
       "submission": "submissions/B28.md",
       "owner": "FinPath implementation agent",
-      "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-hosted-attempt-7467116.md",
-      "blocked_reason": "Candidate 7467116 hosted proof reached the real authenticated review panel but failed before clearance measurement because .review-badge matched status and history badges. Fix exact header badge selection and prove real desktop/mobile light/dark clearance and focus on a fresh preview."
+      "code_sha": "c4bf784b106878e7e0c940564216ec44a72ecb38",
+      "review": "reviews/C09-closure-2026-09-26.md",
+      "blocked_reason": null
     },
     {
       "id": "B29",
@@ -703,7 +703,9 @@
       "action": "Confirm that B37 removes bulk evidence from the current Git index only, with no Git history rewrite.",
       "blocking_task": "B37 evidence-untracking step",
       "requested_date": "2026-09-26",
-      "status": "pending"
+      "status": "done",
+      "resolved_date": "2026-09-26",
+      "resolution": "Owner approved untracking bulk evidence from the current Git index only; no history rewrite."
     }
   ]
 }

@@ -93,7 +93,7 @@
   - Analytics/tests/privacy: consented saved-decision-open only after B12; route parsing, ownership, unsaved-change tests and actual hosted journey; no finance in query string.
   - Rollback/effort: return to list fallback; no data migration. Human 1–2 days; agent 3–6 hours.
 
-- [ ] **B11 — Ready after B10: complete one monthly plan review.**
+- [x] **B11 — Ready after B10: complete one monthly plan review.**
   - Problem/evidence: no persistent review/next-review model; buildCalculatorFollowUp provides static guidance only.
   - Outcome/scope: additive review record linking plan version, source dates and keep/revise/defer; explicit next date; in-app due list; dated inputs and comparison.
   - Non-goals/files: no email, bank automation, implied recommendations or automatic plan mutation; review migration/API, PlanningWorkspace, dashboard, planHealth.
@@ -287,7 +287,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B27.md](execution/prompts/B27.md).
 
-- [ ] **B28 — Planned: Polish goals and monthly plan-review workflow.**
+- [x] **B28 — Planned: Polish goals and monthly plan-review workflow.**
   - User problem/evidence: Goals and saved reviews must show current evidence and a clear decision. Visual audit V15.
   - Expected outcome/scope: Review can be completed without ambiguity; source/version/dates visible; unsaved edits protected; no cosmetic false completion; B11 behavior retained.
   - Non-goals: No new reminder channel, auto-advice, collaboration or additional review schema.
@@ -439,7 +439,7 @@ C06 accepted2026-09-15 at0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a: B05/B07/B25 c
 
 ## Owner amendment — 2026-09-26: C09B, C11 and calculator-excellence order
 
-OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and required, with an explicit sourced illustrative-value action; an entered 0% is valid. B35's prohibition on silently injected equity, housing, Social Security and healthcare flows remains. OD-2 permits an additive accumulation function with independent goldens, leaving existing drawdown behavior unchanged. These are new B36 work, not a retroactive claim that B35 implemented them. C09B is locked until C09 closes. Complete B37 → B39 → B36, then C10 B29 → B30, then C11 B41 → B38 → B12 → B31. B40 is queued after C11. Only Astra checks boxes.
+OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and required, with an explicit sourced illustrative-value action; an entered 0% is valid. B35's prohibition on silently injected equity, housing, Social Security and healthcare flows remains. OD-2 permits an additive accumulation function with independent goldens, leaving existing drawdown behavior unchanged. These are new B36 work, not a retroactive claim that B35 implemented them. C09B is released after C09 residual acceptance. Complete B37 → B39 → B36, then C10 B29 → B30, then C11 B41 → B38 → B12 → B31. B40 is queued after C11. Only Astra checks boxes.
 
 - [ ] **B37 — Delivery hygiene and stack retirement (C09B, first).**
   - User problem/evidence: 1,005 tracked evidence files (120,681,806 bytes), 53 tracked `output/` files (19,544,131 bytes) and two `.pyc` files were measured in this checkout; Python remains a test prerequisite for a Pages/TypeScript product.
