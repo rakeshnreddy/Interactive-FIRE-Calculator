@@ -3,7 +3,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PlanningWorkspace, type PlanningSavedPlan } from './PlanningWorkspace';
-import { DashboardPanel, GoalsPanel } from './App';
+import { DashboardPanel, GoalsPanel } from './workspace/WorkspacePanels';
 import { calculateFirePlan } from './lib/fire';
 import {
   calculatePlanReviewDueStatus,

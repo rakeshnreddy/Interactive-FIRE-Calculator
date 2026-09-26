@@ -1,4 +1,4 @@
-import { SignUpButton } from '@clerk/react';
+import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
   ChevronDown,
@@ -628,9 +628,9 @@ export function CompoundInterestCalculator({
                     {calculator.conversionLabel}
                   </button>
                 ) : (
-                  <SignUpButton mode="modal">
+                  <SignUpIntent mode="modal">
                     <button className="primary-button" type="button" onClick={saveResult}>Create account to save</button>
-                  </SignUpButton>
+                  </SignUpIntent>
                 )}
               </div>
             </>

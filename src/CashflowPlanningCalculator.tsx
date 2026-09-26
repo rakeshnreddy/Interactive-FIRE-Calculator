@@ -1,4 +1,4 @@
-import { SignUpButton } from '@clerk/react';
+import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
   ChevronDown,
@@ -799,7 +799,7 @@ function ActionRow({ auth, disabled = false, isSaving, message, onCopy, onExport
         {auth.status === 'signed-in' ? <button className="primary-button" disabled={disabled || isSaving} type="button" onClick={onSave}>{isSaving ? 'Saving…' : saveLabel}</button> : auth.status === 'not-configured' ? (
           <button className="primary-button" disabled={disabled} type="button" onClick={onSave}>Keep browser draft</button>
         ) : (
-          <SignUpButton mode="modal"><button className="primary-button" type="button" onClick={onSave}>Create account to save</button></SignUpButton>
+          <SignUpIntent mode="modal"><button className="primary-button" type="button" onClick={onSave}>Create account to save</button></SignUpIntent>
         )}
       </div>
       <p className="calculator-live-message" aria-live="polite">{message}</p>

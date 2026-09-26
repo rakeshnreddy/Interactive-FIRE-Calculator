@@ -1,8 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
-  AccountsPanel,
-  DashboardPanel,
   formatCents,
   isBalanceStale,
   SignedInProfileBand,
@@ -12,6 +10,7 @@ import {
   type FinancialAccount,
   type GoalSummary
 } from './App';
+import { AccountsPanel, DashboardPanel } from './workspace/WorkspacePanels';
 import { buildTransactionCashflowRollup } from './lib/transactionAnalytics';
 
 function makeAccount(overrides: Partial<FinancialAccount> = {}): FinancialAccount {

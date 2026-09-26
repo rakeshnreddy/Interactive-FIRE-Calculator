@@ -1,4 +1,4 @@
-import { SignUpButton } from '@clerk/react';
+import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
   ChevronDown,
@@ -385,7 +385,7 @@ export function SavingsGoalCalculator({
                 ) : auth.status === 'not-configured' ? (
                   <button className="primary-button" type="button" onClick={() => onNavigate(calculator.conversionRoute)}>Create savings goal</button>
                 ) : (
-                  <SignUpButton mode="modal"><button className="primary-button" type="button" onClick={saveResult}>Create account to save</button></SignUpButton>
+                  <SignUpIntent mode="modal"><button className="primary-button" type="button" onClick={saveResult}>Create account to save</button></SignUpIntent>
                 )}
               </div>
             </>

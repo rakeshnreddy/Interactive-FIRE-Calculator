@@ -3,7 +3,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlanningWorkspace, type PlanningSaveDraft, type PlanVersionDetail } from './PlanningWorkspace';
-import { DashboardPanel } from './App';
+import { DashboardPanel } from './workspace/WorkspacePanels';
 import { calculateFirePlan } from './lib/fire';
 import { buildPlanDeepLink, parsePlanDeepLink } from './lib/navigation';
 import { emptyAccountSummary, emptyCashflow, emptyGoalSummary } from './fixtures/syntheticData';

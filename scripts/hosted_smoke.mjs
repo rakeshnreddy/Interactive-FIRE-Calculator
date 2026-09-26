@@ -161,6 +161,12 @@ export async function waitForWorkspace(takeSnapshot, expected, {
   throw new SmokeError(`Workspace not ready within ${timeoutMs}ms: ${last.reason}`);
 }
 
+// Records Content-Security-Policy violations so scenarios can assert there are none.
+export const CSP_COLLECTOR_SCRIPT = `window.__cspViolations = [];
+document.addEventListener('securitypolicyviolation', (event) => {
+  window.__cspViolations.push(event.violatedDirective + ' ' + (event.blockedURI || ''));
+});`;
+
 export const WORKSPACE_SNAPSHOT_SCRIPT = `(() => {
   const visible = (el) => Boolean(el && el.getClientRects().length > 0);
   const params = new URLSearchParams(location.search);
@@ -278,7 +284,7 @@ export async function runSmoke({ config, adapters, scenario, tables, log = () =>
     await stage('sign-in', async () => {
       for (const tenant of tenants) await adapters.browser.signIn(tenant, config.url);
     });
-    await scenario.run({ config, tenants, stage, d1: adapters.d1, log, helpers: { SmokeError, waitForWorkspace } });
+    await scenario.run({ config, tenants, stage, d1: adapters.d1, log, browser: adapters.browser, helpers: { SmokeError, waitForWorkspace } });
     const recorded = new Set(result.stages.filter((s) => s.status === 'PASS').map((s) => s.name));
     const missing = scenario.requiredStages.filter((name) => !recorded.has(name));
     if (missing.length) throw new SmokeError(`Scenario ended without observing: ${missing.join(', ')}`);
@@ -387,8 +393,10 @@ async function createLiveAdapters(config) {
           url.searchParams.set('__clerk_testing_token', testingToken);
           await route.fulfill({ response: await route.fetch({ url: url.toString() }) });
         });
+        await context.addInitScript(CSP_COLLECTOR_SCRIPT);
         const page = await context.newPage();
-        await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
+        // A workspace route loads Clerk on start; public pages load it only on sign-in intent (B38).
+        await page.goto(`${baseUrl}/dashboard`, { waitUntil: 'domcontentloaded' });
         await page.waitForFunction(() => Boolean(window.Clerk?.loaded), null, { timeout: 30000 });
         const ticket = await clerkClient.signInTokens.createSignInToken({ userId: tenant.id, expiresInSeconds: 300 });
         await page.evaluate(async (t) => {
@@ -414,6 +422,15 @@ async function createLiveAdapters(config) {
         };
         tenant.snapshot = () => page.evaluate(WORKSPACE_SNAPSHOT_SCRIPT);
         tenant.deleteAppData = async () => (await tenant.api('DELETE', '/api/account-data', { confirmation: DELETE_CONFIRMATION })).status;
+      },
+      // Signed-out visitor page with request logging and CSP-violation collection.
+      async newAnonymousPage() {
+        const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+        await context.addInitScript(CSP_COLLECTOR_SCRIPT);
+        const page = await context.newPage();
+        const requests = [];
+        page.on('request', (request) => requests.push(request.url()));
+        return { page, requests };
       },
       close: () => browser.close()
     }

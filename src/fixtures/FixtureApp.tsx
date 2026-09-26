@@ -1,13 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { buildReportScope } from '../reports/reportScope';
 import {
-  AccountsPanel,
-  DashboardPanel,
-  GoalsPanel,
   InsightsPanel,
   PrivacyControlsPanel,
-  ProfileSettingsPanel,
-  TransactionsPanel,
   type AccountDraft,
   type AccountProfileDraft,
   type BalanceDraft,
@@ -15,6 +10,7 @@ import {
   type GoalUpdateDraft,
   type TransactionDraft
 } from '../App';
+import { AccountsPanel, DashboardPanel, GoalsPanel, ProfileSettingsPanel, TransactionsPanel } from '../workspace/WorkspacePanels';
 import type { TransactionFilters } from '../lib/transactionAnalytics';
 import { PlanningWorkspace, type PlanningSaveDraft, type PlanVersionDetail } from '../PlanningWorkspace';
 import '../styles.css';

@@ -10732,3 +10732,11 @@ body {
     -webkit-backdrop-filter: none;
   }
 }
+
+/* Pre-rendered route shell (B38): visible only until the app mounts. */
+.prerender-shell {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2.5rem 1rem;
+  color: var(--heading);
+}

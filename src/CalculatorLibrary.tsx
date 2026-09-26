@@ -1,4 +1,4 @@
-import { SignUpButton } from '@clerk/react';
+import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
   Banknote,
@@ -768,12 +768,12 @@ function CalculatorDetail({
                 <ArrowRight size={16} />
               </button>
             ) : (
-              <SignUpButton mode="modal">
+              <SignUpIntent mode="modal">
                 <button className="primary-button icon-text-button" type="button" onClick={persistSignedOutDraft}>
                   Create account to save
                   <ArrowRight size={16} />
                 </button>
-              </SignUpButton>
+              </SignUpIntent>
             )}
           </div>
           {saveMessage ? (

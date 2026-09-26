@@ -2,12 +2,12 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
   formatTransactionAmount,
-  TransactionsPanel,
   type FinancialAccount,
   type Transaction,
   type TransactionDraft,
   type TransactionSummary
 } from './App';
+import { TransactionsPanel } from './workspace/WorkspacePanels';
 import { type TransactionFilters } from './lib/transactionAnalytics';
 import { TRANSACTION_CSV_HEADERS } from './lib/transactionCsv';
 import { TransactionImportPanel } from './TransactionImportPanel';

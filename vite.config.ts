@@ -14,6 +14,14 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html')
+      },
+      output: {
+        // Long-lived vendor and catalog chunks cache independently of app releases (B38).
+        manualChunks(id: string) {
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return 'react-vendor';
+          if (/src\/lib\/(seoCalculators|calculatorContent|routeMetadata)\.ts$/.test(id)) return 'calculator-catalog';
+          return undefined;
+        }
       }
     }
   }

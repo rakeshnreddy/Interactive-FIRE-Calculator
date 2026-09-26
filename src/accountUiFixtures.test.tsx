@@ -1,8 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
-  AccountsPanel,
-  DashboardPanel,
   formatAccountMetric,
   formatCurrencyBreakdown,
   initialPlan,
@@ -14,6 +12,7 @@ import {
   type GoalSummary,
   type TimelineInput
 } from './App';
+import { AccountsPanel, DashboardPanel } from './workspace/WorkspacePanels';
 import { buildTransactionCashflowRollup } from './lib/transactionAnalytics';
 import { PLAN_SEED_ERROR_REASONS, previewPlanSeed, type SeedTimeline } from './lib/planWorkspace';
 
