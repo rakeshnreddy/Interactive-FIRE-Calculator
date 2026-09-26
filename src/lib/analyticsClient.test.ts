@@ -30,6 +30,23 @@ describe('analytics client (B12)', () => {
     expect(body.events[0]).toMatchObject({ eventName: 'comparison_viewed', props: { family: 'fire' } });
   });
 
+  it('holds events while consent is loading, then sends or discards them', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 202 }));
+    configureAnalytics({ enabled: 'pending', getToken: async () => 'token' });
+    track('comparison_viewed', { family: 'fire' });
+    await flushAnalytics();
+    expect(fetchSpy).not.toHaveBeenCalled();
+    configureAnalytics({ enabled: true, getToken: async () => 'token' });
+    await flushAnalytics();
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    configureAnalytics({ enabled: 'pending', getToken: async () => 'token' });
+    track('comparison_viewed', { family: 'fire' });
+    configureAnalytics({ enabled: false, getToken: async () => 'token' });
+    await flushAnalytics();
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(pendingAnalyticsCount()).toBe(0);
+  });
+
   it('turning analytics off discards anything queued', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 202 }));
     configureAnalytics({ enabled: true, getToken: async () => 'token' });

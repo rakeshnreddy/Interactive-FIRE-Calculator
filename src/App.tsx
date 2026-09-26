@@ -1509,7 +1509,10 @@ function App({ auth }: { auth: AuthState }) {
   }, [auth.status, auth.user?.id]);
 
   useEffect(() => {
-    configureAnalytics({ enabled: auth.status === 'signed-in' && analyticsConsent === true, getToken: auth.status === 'signed-in' ? auth.getToken : async () => null });
+    configureAnalytics({
+      enabled: auth.status !== 'signed-in' ? false : analyticsConsent === null ? 'pending' : analyticsConsent,
+      getToken: auth.status === 'signed-in' ? auth.getToken : async () => null
+    });
     if (typeof window === 'undefined') return;
     const flush = () => void flushAnalytics();
     window.addEventListener('pagehide', flush);
