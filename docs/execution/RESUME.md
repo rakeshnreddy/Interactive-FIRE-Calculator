@@ -10,7 +10,7 @@ Astra is architect, sole publisher and reviewer; Gemini implements. Read `CHECKP
 
 ## Open work and exact next action
 
-- 30/42 tasks are accepted (71.4% by count, not effort). C09B is released in order **B39 → B42 → B36**; C10 stays locked. [B39 prompt](prompts/B39.md) is now the exact next Gemini task. It extracts pure `App.tsx` helpers and shared primitives without changing behavior. Gemini stops with local evidence; Astra publishes, verifies CI/isolated preview and public-route parity before B39 closure.
+- 30/42 tasks are accepted (71.4% by count, not effort). C09B is released in order **B39 → B42 → B36**; C10 stays locked. B39 is `changes_requested` after its first independent review: the extraction is preserved, but the claimed parity test rewrites its own baseline, normal desktop/375px browser evidence is absent, and two API parse-error paths changed. [B39 focused correction](B39_REWORK_PROMPT.md) is the exact next Gemini task. Astra publishes only after corrected local evidence and review.
 - The two untracked `scripts/hosted_smoke*` files are reserved for B42. Preserve them; they are neither B37 proof nor a permission to run hosted tests. B42 owns the C09 Version 2 revise → Version 3 hosted residual. No result for that journey is claimed yet.
 
 ## Owner actions and guards

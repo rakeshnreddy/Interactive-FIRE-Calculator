@@ -647,16 +647,16 @@
       "id": "B39",
       "title": "Extract pure API, formatting, warning and UI modules from App",
       "checkpoint": "C09B",
-      "status": "pending",
+      "status": "changes_requested",
       "dependencies": [
         "B37"
       ],
       "prompt": "prompts/B39.md",
-      "submission": null,
-      "owner": null,
+      "submission": "submissions/B39.md",
+      "owner": "Gemini implementation worker",
       "code_sha": null,
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/B39-first-review-2026-09-26.md",
+      "blocked_reason": "Parity test overwrites its own baseline and never compares HTML; no desktop/375px browser evidence; malformed successful account/goal JSON error semantics changed. See B39_REWORK_PROMPT.md."
     },
     {
       "id": "B40",
