@@ -20,13 +20,42 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = resolve(__dirname, '../../../..');
 
-export const CANDIDATE_SHA = '5dda3d2be24246e3470a65e7653a0b6e425cbece';
-export const DEPLOYMENT_ID = '51acbf88-db0a-47d1-b399-814dad835a9b';
-export const PREVIEW_URL = 'https://51acbf88.interactive-fire-calculator.pages.dev';
+// Historical proven constants preserved for report provenance checking & test baseline
+export const HISTORICAL_CANDIDATE_SHA = '5dda3d2be24246e3470a65e7653a0b6e425cbece';
+export const HISTORICAL_DEPLOYMENT_ID = '51acbf88-db0a-47d1-b399-814dad835a9b';
+export const HISTORICAL_PREVIEW_URL = 'https://51acbf88.interactive-fire-calculator.pages.dev';
+
+// Default export values for backward-compatibility in existing unit test suites
+export const CANDIDATE_SHA = process.env.C09_CANDIDATE_SHA || HISTORICAL_CANDIDATE_SHA;
+export const DEPLOYMENT_ID = process.env.C09_DEPLOYMENT_ID || HISTORICAL_DEPLOYMENT_ID;
+export const PREVIEW_URL = process.env.C09_PREVIEW_URL || HISTORICAL_PREVIEW_URL;
 export const PREVIEW_DB_ID = '0dbad68e-7493-452f-8504-98d4c61ee5da';
 export const ACCOUNT_ID = '4e1b7f6a7440770a01779a67602ec5e9';
 export const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 export const WRANGLER_CONFIG = join(process.env.HOME || '', 'Library/Preferences/.wrangler/config/default.toml');
+
+export async function loadCalculateFirePlan() {
+  try {
+    const mod = await import('../../../../src/lib/fire.ts');
+    if (typeof mod?.calculateFirePlan === 'function') {
+      return mod.calculateFirePlan;
+    }
+  } catch (err) {
+    // If native TS import fails (e.g. Node < 22.6), fall through to transpiler fallback
+  }
+
+  const ts = (await import('typescript')).default;
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const fireTsPath = path.resolve(REPO_ROOT, 'src/lib/fire.ts');
+  const tsCode = fs.readFileSync(fireTsPath, 'utf8');
+  const transpiled = ts.transpileModule(tsCode, {
+    compilerOptions: { module: ts.ModuleKind.ESNext }
+  }).outputText;
+  const dataUri = `data:text/javascript;base64,${Buffer.from(transpiled).toString('base64')}`;
+  const mod = await import(dataUri);
+  return mod.calculateFirePlan;
+}
 
 export const EVIDENCE_DIR = join(REPO_ROOT, 'docs/execution/evidence/C09');
 export const SCREENSHOTS_DIR = join(EVIDENCE_DIR, 'screenshots');
@@ -106,20 +135,92 @@ export async function queryD1(sql, params = []) {
   return data.result?.[0]?.results || [];
 }
 
-export async function verifyDeployment() {
-  const token = getCloudflareToken();
-  const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/interactive-fire-calculator/deployments/${DEPLOYMENT_ID}`, {
-    headers: { Authorization: `Bearer ${token}` }
+export function validateDeploymentInputs(env = process.env) {
+  const candidateSha = env.C09_CANDIDATE_SHA?.trim();
+  const deploymentId = env.C09_DEPLOYMENT_ID?.trim();
+  const previewUrl = env.C09_PREVIEW_URL?.trim()?.replace(/\/+$/, '');
+
+  const errors = [];
+  if (!candidateSha) {
+    errors.push('Missing required environment variable: C09_CANDIDATE_SHA');
+  } else if (!/^[0-9a-f]{40}$/i.test(candidateSha)) {
+    errors.push(`Invalid C09_CANDIDATE_SHA format: expected 40-character hex SHA, got "${candidateSha}"`);
+  }
+
+  if (!deploymentId) {
+    errors.push('Missing required environment variable: C09_DEPLOYMENT_ID');
+  } else if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(deploymentId)) {
+    errors.push(`Invalid C09_DEPLOYMENT_ID format: expected UUID, got "${deploymentId}"`);
+  }
+
+  if (!previewUrl) {
+    errors.push('Missing required environment variable: C09_PREVIEW_URL');
+  } else if (!/^https:\/\/[a-z0-9-]+\.interactive-fire-calculator\.pages\.dev$/i.test(previewUrl)) {
+    errors.push(`Invalid C09_PREVIEW_URL format: expected https://<subdomain>.interactive-fire-calculator.pages.dev, got "${previewUrl}"`);
+  }
+
+  if (errors.length > 0) {
+    const error = new Error(`Deployment preflight validation failed:\n${errors.join('\n')}`);
+    error.errors = errors;
+    throw error;
+  }
+
+  return {
+    candidateSha,
+    deploymentId,
+    previewUrl,
+    previewDbId: PREVIEW_DB_ID,
+    accountId: ACCOUNT_ID
+  };
+}
+
+export async function verifyDeployment(config = null, fetchFn = fetch, token = getCloudflareToken()) {
+  const deploymentConfig = config || (process.env.C09_CANDIDATE_SHA ? validateDeploymentInputs() : {
+    candidateSha: CANDIDATE_SHA,
+    deploymentId: DEPLOYMENT_ID,
+    previewUrl: PREVIEW_URL,
+    previewDbId: PREVIEW_DB_ID,
+    accountId: ACCOUNT_ID
   });
+  const { candidateSha, deploymentId, previewUrl, previewDbId, accountId } = deploymentConfig;
+
+  if (!token) throw new Error('Cloudflare API token unavailable');
+
+  const response = await fetchFn(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/interactive-fire-calculator/deployments/${deploymentId}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
   const payload = await response.json();
   const deployment = payload.result;
-  if (!response.ok || !payload.success || deployment?.environment !== 'preview' ||
-      deployment?.url !== PREVIEW_URL || deployment?.latest_stage?.status !== 'success' ||
-      deployment?.deployment_trigger?.metadata?.commit_hash !== CANDIDATE_SHA ||
-      deployment?.d1_databases?.DB?.id !== PREVIEW_DB_ID) {
-    throw new Error(`Deployment preflight failed: url=${deployment?.url}, commit=${deployment?.deployment_trigger?.metadata?.commit_hash}, db=${deployment?.d1_databases?.DB?.id}`);
+
+  if (!response.ok || !payload.success) {
+    throw new Error(`Deployment query failed: ${JSON.stringify(payload.errors || response.statusText)}`);
   }
-  return true;
+  if (deployment?.environment !== 'preview') {
+    throw new Error(`Deployment environment must be "preview", got "${deployment?.environment}"`);
+  }
+  if (deployment?.url !== previewUrl) {
+    throw new Error(`Deployment URL mismatch: expected "${previewUrl}", got "${deployment?.url}"`);
+  }
+  if (deployment?.latest_stage?.status !== 'success') {
+    throw new Error(`Deployment latest stage status must be "success", got "${deployment?.latest_stage?.status}"`);
+  }
+  const commitHash = deployment?.deployment_trigger?.metadata?.commit_hash;
+  if (commitHash !== candidateSha) {
+    throw new Error(`Deployment commit hash mismatch: expected "${candidateSha}", got "${commitHash}"`);
+  }
+  const dbId = deployment?.d1_databases?.DB?.id;
+  if (dbId !== previewDbId) {
+    throw new Error(`Deployment D1 database mismatch: expected "${previewDbId}", got "${dbId}"`);
+  }
+
+  return {
+    verified: true,
+    candidateSha,
+    deploymentId,
+    previewUrl,
+    previewDbId
+  };
 }
 
 export function generateDisposablePassword() {
@@ -479,6 +580,350 @@ export async function executeKeyboardActionProof(page, { maxTabs = 120 } = {}) {
 }
 
 // --------------------------------------------------------------------------
+// Collector-Level Verification Logic & Assertions
+// --------------------------------------------------------------------------
+export function verifyClearance(measurements) {
+  if (!Array.isArray(measurements) || measurements.length === 0) {
+    return { passed: false, reason: 'No clearance measurements provided' };
+  }
+  for (const m of measurements) {
+    if (!m.topbarBox || !m.headingBox || !m.badgeBox) {
+      return { passed: false, reason: `Missing element bounding box in ${m.modeLabel}` };
+    }
+    const topbarBottom = m.topbarBox.y + m.topbarBox.height;
+    if (m.headingBox.y < topbarBottom) {
+      return {
+        passed: false,
+        reason: `Sticky topbar occludes review heading in ${m.modeLabel}: topbarBottom=${topbarBottom.toFixed(1)}, headingTop=${m.headingBox.y.toFixed(1)}`
+      };
+    }
+    if (m.badgeBox.y < topbarBottom) {
+      return {
+        passed: false,
+        reason: `Sticky topbar occludes review badge in ${m.modeLabel}: topbarBottom=${topbarBottom.toFixed(1)}, badgeTop=${m.badgeBox.y.toFixed(1)}`
+      };
+    }
+    if (m.controlBox && m.controlBox.y < topbarBottom) {
+      return {
+        passed: false,
+        reason: `Sticky topbar occludes focused review control in ${m.modeLabel}: topbarBottom=${topbarBottom.toFixed(1)}, controlTop=${m.controlBox.y.toFixed(1)}`
+      };
+    }
+  }
+  return { passed: true };
+}
+
+export function verifyReviseUiSelection(isChecked) {
+  if (isChecked !== true) {
+    return { passed: false, reason: 'Revise assumptions radio input is not checked in the DOM' };
+  }
+  return { passed: true };
+}
+
+function resolveRow(container, key, label = '') {
+  if (!container || typeof container !== 'object') return null;
+  const val = container[key] ?? container[`${key}Rows`];
+  if (val === undefined || val === null) return null;
+  const singular = key.endsWith('s') ? key.slice(0, -1) : key;
+  const labelSuffix = label ? ` for ${label}` : '';
+  if (Array.isArray(val)) {
+    if (val.length !== 1) {
+      return { __error: `Expected exactly 1 ${singular} row${labelSuffix}, found ${val.length}` };
+    }
+    return val[0];
+  }
+  return val;
+}
+
+export function verifyFinancialRevisionDiff(v2Data, v3Data) {
+  if (!v2Data || !v3Data) {
+    return { passed: false, reason: 'Missing Version 2 or Version 3 data for diff comparison' };
+  }
+
+  // Version 3 must have exactly one row in version, inputs, and results
+  const v3VersionRow = resolveRow(v3Data, 'version', 'Version 3');
+  if (!v3VersionRow || v3VersionRow.__error) {
+    return { passed: false, reason: v3VersionRow?.__error || 'Expected exactly 1 version row for Version 3' };
+  }
+  const v3InputRow = resolveRow(v3Data, 'inputs', 'Version 3');
+  if (!v3InputRow || v3InputRow.__error) {
+    return { passed: false, reason: v3InputRow?.__error || 'Expected exactly 1 input row for Version 3' };
+  }
+  const v3ResultRow = resolveRow(v3Data, 'results', 'Version 3');
+  if (!v3ResultRow || v3ResultRow.__error) {
+    return { passed: false, reason: v3ResultRow?.__error || 'Expected exactly 1 result row for Version 3' };
+  }
+
+  // Version 2 must have exactly one row in inputs and results (and version if provided)
+  const v2InputRow = resolveRow(v2Data, 'inputs', 'Version 2');
+  if (!v2InputRow || v2InputRow.__error) {
+    return { passed: false, reason: v2InputRow?.__error || 'Expected exactly 1 input row for Version 2' };
+  }
+  const v2ResultRow = resolveRow(v2Data, 'results', 'Version 2');
+  if (!v2ResultRow || v2ResultRow.__error) {
+    return { passed: false, reason: v2ResultRow?.__error || 'Expected exactly 1 result row for Version 2' };
+  }
+  if (v2Data.version !== undefined || v2Data.versionRows !== undefined) {
+    const v2VersionRow = resolveRow(v2Data, 'version', 'Version 2');
+    if (!v2VersionRow || v2VersionRow.__error) {
+      return { passed: false, reason: v2VersionRow?.__error || 'Expected exactly 1 version row for Version 2' };
+    }
+  }
+
+  // Parse input_json strings from raw D1 rows
+  if (typeof v2InputRow.input_json !== 'string') {
+    return { passed: false, reason: 'Version 2 input row missing input_json string' };
+  }
+  let v2Snapshot;
+  try {
+    v2Snapshot = JSON.parse(v2InputRow.input_json);
+  } catch (e) {
+    return { passed: false, reason: `Version 2 input_json is malformed JSON: ${e.message}` };
+  }
+
+  if (typeof v3InputRow.input_json !== 'string') {
+    return { passed: false, reason: 'Version 3 input row missing input_json string' };
+  }
+  let v3Snapshot;
+  try {
+    v3Snapshot = JSON.parse(v3InputRow.input_json);
+  } catch (e) {
+    return { passed: false, reason: `Version 3 input_json is malformed JSON: ${e.message}` };
+  }
+
+  // Parse result_json strings from raw D1 rows
+  if (typeof v2ResultRow.result_json !== 'string') {
+    return { passed: false, reason: 'Version 2 result row missing result_json string' };
+  }
+  let v2Result;
+  try {
+    v2Result = JSON.parse(v2ResultRow.result_json);
+  } catch (e) {
+    return { passed: false, reason: `Version 2 result_json is malformed JSON: ${e.message}` };
+  }
+
+  if (typeof v3ResultRow.result_json !== 'string') {
+    return { passed: false, reason: 'Version 3 result row missing result_json string' };
+  }
+  let v3Result;
+  try {
+    v3Result = JSON.parse(v3ResultRow.result_json);
+  } catch (e) {
+    return { passed: false, reason: `Version 3 result_json is malformed JSON: ${e.message}` };
+  }
+
+  // Validate finite annualExpense numbers
+  const v2Expense = v2Snapshot?.plan?.annualExpense;
+  const v3Expense = v3Snapshot?.plan?.annualExpense;
+
+  if (typeof v2Expense !== 'number' || !Number.isFinite(v2Expense)) {
+    return { passed: false, reason: `Version 2 missing finite snapshot.plan.annualExpense: ${v2Expense}` };
+  }
+  if (typeof v3Expense !== 'number' || !Number.isFinite(v3Expense)) {
+    return { passed: false, reason: `Version 3 missing finite snapshot.plan.annualExpense: ${v3Expense}` };
+  }
+
+  if (v2Expense !== 50000) {
+    return { passed: false, reason: `Expected Version 2 annualExpense to be 50000, got ${v2Expense}` };
+  }
+  if (v3Expense !== 45000) {
+    return { passed: false, reason: `Expected Version 3 annualExpense to be 45000, got ${v3Expense}` };
+  }
+  if (v2Expense === v3Expense) {
+    return {
+      passed: false,
+      reason: `Financial assumption unchanged between v2 and v3: annualExpense remained ${v2Expense}`
+    };
+  }
+
+  // Validate finite requiredPortfolio numbers
+  const v2Required = v2Result?.requiredPortfolio;
+  const v3Required = v3Result?.requiredPortfolio;
+
+  if (typeof v2Required !== 'number' || !Number.isFinite(v2Required)) {
+    return { passed: false, reason: `Version 2 missing finite result.requiredPortfolio: ${v2Required}` };
+  }
+  if (typeof v3Required !== 'number' || !Number.isFinite(v3Required)) {
+    return { passed: false, reason: `Version 3 missing finite result.requiredPortfolio: ${v3Required}` };
+  }
+
+  if (v2Required === v3Required) {
+    return {
+      passed: false,
+      reason: `Calculation result unchanged between v2 and v3 despite assumption edit: requiredPortfolio=${v2Required}`
+    };
+  }
+
+  return {
+    passed: true,
+    v2Expense,
+    v3Expense,
+    v2Required,
+    v3Required
+  };
+}
+
+export function verifyPriorVersionsImmutability(v1Before, v1After, v2Before, v2After) {
+  if (!v1Before || !v1After || !v2Before || !v2After) {
+    return { passed: false, reason: 'Missing prior version snapshot for immutability comparison' };
+  }
+
+  const snapshots = [
+    { label: 'Version 1 before', data: v1Before },
+    { label: 'Version 1 after', data: v1After },
+    { label: 'Version 2 before', data: v2Before },
+    { label: 'Version 2 after', data: v2After }
+  ];
+
+  const tables = ['version', 'inputs', 'results'];
+
+  for (const { label, data } of snapshots) {
+    for (const table of tables) {
+      const rows = data[table];
+      if (!Array.isArray(rows) || rows.length !== 1) {
+        return {
+          passed: false,
+          reason: `Expected exactly 1 row in ${label} for ${table}, found ${Array.isArray(rows) ? rows.length : 'none'}`
+        };
+      }
+    }
+  }
+
+  const v1VersionEqual = JSON.stringify(v1Before.version) === JSON.stringify(v1After.version);
+  const v1InputsEqual = JSON.stringify(v1Before.inputs) === JSON.stringify(v1After.inputs);
+  const v1ResultsEqual = JSON.stringify(v1Before.results) === JSON.stringify(v1After.results);
+
+  if (!v1VersionEqual || !v1InputsEqual || !v1ResultsEqual) {
+    return {
+      passed: false,
+      reason: `Version 1 mutated after Version 3 creation: version=${v1VersionEqual}, inputs=${v1InputsEqual}, results=${v1ResultsEqual}`
+    };
+  }
+
+  const v2VersionEqual = JSON.stringify(v2Before.version) === JSON.stringify(v2After.version);
+  const v2InputsEqual = JSON.stringify(v2Before.inputs) === JSON.stringify(v2After.inputs);
+  const v2ResultsEqual = JSON.stringify(v2Before.results) === JSON.stringify(v2After.results);
+
+  if (!v2VersionEqual || !v2InputsEqual || !v2ResultsEqual) {
+    return {
+      passed: false,
+      reason: `Version 2 mutated after Version 3 creation: version=${v2VersionEqual}, inputs=${v2InputsEqual}, results=${v2ResultsEqual}`
+    };
+  }
+
+  return { passed: true };
+}
+
+export function verifyIdempotentReplay({
+  persistedReview,
+  replayKey,
+  replayDecision,
+  replayStatus,
+  replayBody,
+  reviewCount,
+  scopedReviewCount,
+  totalReviewsBefore,
+  totalReviewsAfter,
+  expectedTotalReviews,
+  postConflictReview
+}) {
+  if (!persistedReview) {
+    return { passed: false, reason: 'No persisted review provided' };
+  }
+  const expectedKey = persistedReview.idempotency_key;
+  if (!expectedKey) {
+    return { passed: false, reason: 'Persisted review has empty idempotency_key' };
+  }
+  if (replayKey !== expectedKey) {
+    return {
+      passed: false,
+      reason: `Mismatched replay key: attempted "${replayKey}" but persisted review key is "${expectedKey}"`
+    };
+  }
+
+  const effectiveScopedCount = scopedReviewCount ?? reviewCount;
+
+  if (replayDecision === persistedReview.decision) {
+    // Exact replay branch
+    if (replayStatus !== 200) {
+      return { passed: false, reason: `Exact replay expected HTTP 200, got ${replayStatus}` };
+    }
+    if (!replayBody || replayBody.isDuplicate !== true) {
+      return {
+        passed: false,
+        reason: `Exact replay expected isDuplicate: true in response body, got ${replayBody?.isDuplicate}`
+      };
+    }
+    if (effectiveScopedCount !== 1) {
+      return { passed: false, reason: `Exact replay expected 1 review row, found ${effectiveScopedCount}` };
+    }
+    if (totalReviewsBefore !== undefined && totalReviewsAfter !== undefined && totalReviewsBefore !== totalReviewsAfter) {
+      return {
+        passed: false,
+        reason: `Total plan reviews changed during exact replay: before=${totalReviewsBefore}, after=${totalReviewsAfter}`
+      };
+    }
+  } else {
+    // Conflicting intent branch
+    if (replayStatus !== 409) {
+      return { passed: false, reason: `Conflicting intent expected HTTP 409, got ${replayStatus}` };
+    }
+    if (!replayBody || replayBody.code !== 'IDEMPOTENCY_CONFLICT') {
+      return {
+        passed: false,
+        reason: `Conflicting intent expected code IDEMPOTENCY_CONFLICT, got ${replayBody?.code}`
+      };
+    }
+    if (effectiveScopedCount !== 1) {
+      return {
+        passed: false,
+        reason: `Conflicting intent expected 1 review row after conflict, found ${effectiveScopedCount}`
+      };
+    }
+    if (!postConflictReview) {
+      return {
+        passed: false,
+        reason: 'Conflicting intent requires postConflictReview to verify row preservation'
+      };
+    }
+    if (postConflictReview.decision !== persistedReview.decision) {
+      return {
+        passed: false,
+        reason: `Conflicting intent mutated original review decision: expected ${persistedReview.decision}, got ${postConflictReview.decision}`
+      };
+    }
+    if (postConflictReview.idempotency_key !== expectedKey) {
+      return {
+        passed: false,
+        reason: `Conflicting intent mutated original idempotency key: expected ${expectedKey}, got ${postConflictReview.idempotency_key}`
+      };
+    }
+    if (persistedReview.id && postConflictReview.id && postConflictReview.id !== persistedReview.id) {
+      return {
+        passed: false,
+        reason: `Conflicting intent mutated original review id: expected ${persistedReview.id}, got ${postConflictReview.id}`
+      };
+    }
+    if (totalReviewsBefore !== undefined && totalReviewsAfter !== undefined) {
+      if (totalReviewsBefore !== totalReviewsAfter) {
+        return {
+          passed: false,
+          reason: `Total plan review count changed after conflicting replay: before=${totalReviewsBefore}, after=${totalReviewsAfter}`
+        };
+      }
+      if (expectedTotalReviews !== undefined && totalReviewsAfter !== expectedTotalReviews) {
+        return {
+          passed: false,
+          reason: `Expected total plan reviews to be ${expectedTotalReviews}, found ${totalReviewsAfter}`
+        };
+      }
+    }
+  }
+
+  return { passed: true };
+}
+
+// --------------------------------------------------------------------------
 // Explicit Evaluator
 // --------------------------------------------------------------------------
 export function persistEvidence(report, cleanup, writer = writeFileSync) {
@@ -493,7 +938,7 @@ export function persistEvidence(report, cleanup, writer = writeFileSync) {
   }
 }
 
-export function evaluateReport(report, cleanup) {
+export function evaluateReport(report, cleanup, expectedConfig = null) {
   const failures = [];
 
   if (!report || typeof report !== 'object') {
@@ -505,17 +950,25 @@ export function evaluateReport(report, cleanup) {
 
   if (report.error) failures.push('Recorded verification error: ' + report.error);
   if (report.status === 'FAILED') failures.push('Report marked FAILED');
-  if (report.preview_url !== PREVIEW_URL) failures.push('Unexpected preview URL');
+
+  const expectedSha = expectedConfig?.candidateSha || expectedConfig?.candidate_sha || process.env.C09_CANDIDATE_SHA || CANDIDATE_SHA;
+  const expectedDepId = expectedConfig?.deploymentId || expectedConfig?.deployment_id || process.env.C09_DEPLOYMENT_ID || DEPLOYMENT_ID;
+  const expectedUrl = expectedConfig?.previewUrl || expectedConfig?.preview_url || process.env.C09_PREVIEW_URL || PREVIEW_URL;
+  const expectedDb = expectedConfig?.previewDbId || expectedConfig?.preview_db_id || PREVIEW_DB_ID;
+
+  if (report.preview_url !== expectedUrl) {
+    failures.push(`Expected preview_url ${expectedUrl}, got ${report.preview_url}`);
+  }
 
   // Preflight metadata
-  if (report.candidate_sha !== CANDIDATE_SHA) {
-    failures.push(`Expected candidate_sha ${CANDIDATE_SHA}, got ${report.candidate_sha}`);
+  if (report.candidate_sha !== expectedSha) {
+    failures.push(`Expected candidate_sha ${expectedSha}, got ${report.candidate_sha}`);
   }
-  if (report.deployment_id !== DEPLOYMENT_ID) {
-    failures.push(`Expected deployment_id ${DEPLOYMENT_ID}, got ${report.deployment_id}`);
+  if (report.deployment_id !== expectedDepId) {
+    failures.push(`Expected deployment_id ${expectedDepId}, got ${report.deployment_id}`);
   }
-  if (report.effective_db !== PREVIEW_DB_ID) {
-    failures.push(`Expected effective_db ${PREVIEW_DB_ID}, got ${report.effective_db}`);
+  if (report.effective_db !== expectedDb) {
+    failures.push(`Expected effective_db ${expectedDb}, got ${report.effective_db}`);
   }
   if (report.d1_migration_0007_verified !== true) {
     failures.push(`d1_migration_0007_verified expected true, got ${report.d1_migration_0007_verified}`);
@@ -556,6 +1009,11 @@ export function evaluateReport(report, cleanup) {
     if (b11.review_next_due_date_computed !== true) failures.push(`B11: review_next_due_date_computed expected true, got ${b11.review_next_due_date_computed}`);
     if (b11.returning_review_rule_enforced_within_7_days !== true) failures.push(`B11: returning_review_rule_enforced_within_7_days expected true, got ${b11.returning_review_rule_enforced_within_7_days}`);
     if (b11.review_defer_choice_persisted !== true) failures.push(`B11: review_defer_choice_persisted expected true, got ${b11.review_defer_choice_persisted}`);
+    if (b11.review_revise_ui_selected !== true) failures.push(`B11: review_revise_ui_selected expected true, got ${b11.review_revise_ui_selected}`);
+    if (b11.review_revise_next_step_displayed !== true) failures.push(`B11: review_revise_next_step_displayed expected true, got ${b11.review_revise_next_step_displayed}`);
+    if (b11.plan_revised_version_3_persisted !== true) failures.push(`B11: plan_revised_version_3_persisted expected true, got ${b11.plan_revised_version_3_persisted}`);
+    if (b11.version_3_reload_verified !== true) failures.push(`B11: version_3_reload_verified expected true, got ${b11.version_3_reload_verified}`);
+    if (b11.prior_versions_immutable_after_v3 !== true) failures.push(`B11: prior_versions_immutable_after_v3 expected true, got ${b11.prior_versions_immutable_after_v3}`);
     if (b11.review_revise_choice_triggers_revision !== true) failures.push(`B11: review_revise_choice_triggers_revision expected true, got ${b11.review_revise_choice_triggers_revision}`);
     if (b11.idempotent_repeat_review_not_duplicated !== true) failures.push(`B11: idempotent_repeat_review_not_duplicated expected true, got ${b11.idempotent_repeat_review_not_duplicated}`);
     if (b11.due_reviews_endpoint_returned_plans !== true) failures.push(`B11: due_reviews_endpoint_returned_plans expected true, got ${b11.due_reviews_endpoint_returned_plans}`);
@@ -571,6 +1029,7 @@ export function evaluateReport(report, cleanup) {
     if (b28.dashboard_reviews_rollup_rendered !== true) failures.push(`B28: dashboard_reviews_rollup_rendered expected true, got ${b28.dashboard_reviews_rollup_rendered}`);
     if (b28.dashboard_due_cards_have_deep_links !== true) failures.push(`B28: dashboard_due_cards_have_deep_links expected true, got ${b28.dashboard_due_cards_have_deep_links}`);
     if (b28.review_status_badges_explicit_text !== true) failures.push(`B28: review_status_badges_explicit_text expected true, got ${b28.review_status_badges_explicit_text}`);
+    if (b28.review_panel_no_topbar_overlap !== true) failures.push(`B28: review_panel_no_topbar_overlap expected true, got ${b28.review_panel_no_topbar_overlap}`);
     if (b28.goals_panel_linked_plan_badge_rendered !== true) failures.push(`B28: goals_panel_linked_plan_badge_rendered expected true, got ${b28.goals_panel_linked_plan_badge_rendered}`);
     if (b28.goals_panel_evidence_date_disclosed !== true) failures.push(`B28: goals_panel_evidence_date_disclosed expected true, got ${b28.goals_panel_evidence_date_disclosed}`);
     if (b28.goals_panel_funding_gap_rendered !== true) failures.push(`B28: goals_panel_funding_gap_rendered expected true, got ${b28.goals_panel_funding_gap_rendered}`);
@@ -742,6 +1201,11 @@ export async function performCleanup({
 // --------------------------------------------------------------------------
 export async function runAllProofs() {
   console.log('=== Starting C09 Comprehensive Hosted Verification (B10, B11 & B28) ===');
+  // Strict validation of fresh runtime deployment inputs - no permissive/stale fallback allowed
+  const deploymentConfig = validateDeploymentInputs(process.env);
+  const { candidateSha, deploymentId, previewUrl } = deploymentConfig;
+  const calculateFirePlan = await loadCalculateFirePlan();
+
   const env = readEnv();
   const secretKey = env.CLERK_SECRET_KEY;
   const publishableKey = env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -752,8 +1216,8 @@ export async function runAllProofs() {
 
   // Preflight 1: Deployment identity and bindings
   console.log('Checking immutable deployment identity and D1 binding...');
-  await verifyDeployment();
-  console.log(`Verified deployment ${DEPLOYMENT_ID} on DB ${PREVIEW_DB_ID}`);
+  await verifyDeployment(deploymentConfig);
+  console.log(`Verified deployment ${deploymentId} on DB ${PREVIEW_DB_ID}`);
 
   // Preflight 2: Test D1 query reachability
   console.log('Testing D1 query reachability...');
@@ -819,9 +1283,9 @@ export async function runAllProofs() {
   console.log(`Created User B: ${userBId.slice(0, 14)}...`);
 
   const report = {
-    candidate_sha: CANDIDATE_SHA,
-    deployment_id: DEPLOYMENT_ID,
-    preview_url: PREVIEW_URL,
+    candidate_sha: candidateSha,
+    deployment_id: deploymentId,
+    preview_url: previewUrl,
     effective_db: PREVIEW_DB_ID,
     timestamp: new Date().toISOString(),
     d1_migration_0007_verified: m7Verified,
@@ -849,7 +1313,7 @@ export async function runAllProofs() {
     contextA = await browser.newContext({ viewport: { width: 1280, height: 800 } });
     await setupClerkInterception(contextA, testingToken, fapi);
     pageA = await contextA.newPage();
-    await pageA.goto(`${PREVIEW_URL}/`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/`, { waitUntil: 'domcontentloaded' });
 
     const ticketA = await clerkClient.signInTokens.createSignInToken({ userId: userAId, expiresInSeconds: 300 });
     await pageA.waitForFunction(() => Boolean(window.Clerk?.loaded));
@@ -869,7 +1333,7 @@ export async function runAllProofs() {
     contextB = await browser.newContext({ viewport: { width: 1280, height: 800 } });
     await setupClerkInterception(contextB, testingToken, fapi);
     pageB = await contextB.newPage();
-    await pageB.goto(`${PREVIEW_URL}/`, { waitUntil: 'domcontentloaded' });
+    await pageB.goto(`${previewUrl}/`, { waitUntil: 'domcontentloaded' });
 
     const ticketB = await clerkClient.signInTokens.createSignInToken({ userId: userBId, expiresInSeconds: 300 });
     await pageB.waitForFunction(() => Boolean(window.Clerk?.loaded));
@@ -925,7 +1389,8 @@ export async function runAllProofs() {
       }
     };
 
-    const createPlanRes = await pageA.evaluate(async ({ goalId, snapshot }) => {
+    const basePlanResult = calculateFirePlan(basePlanSnapshot.plan);
+    const createPlanRes = await pageA.evaluate(async ({ goalId, snapshot, result }) => {
       const res = await fetch('/api/plans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -935,11 +1400,11 @@ export async function runAllProofs() {
           label: 'Baseline 2026',
           notes: 'Conservative 3.5% SWR',
           snapshot,
-          result: { success: true, fireNumber: 1000000, yearsToFire: 20 }
+          result
         })
       });
       return { status: res.status, body: await res.json() };
-    }, { goalId: goalAId, snapshot: basePlanSnapshot });
+    }, { goalId: goalAId, snapshot: basePlanSnapshot, result: basePlanResult });
 
     const planAId = createPlanRes.body.plan.id;
     console.log(`Created Plan for User A: ${planAId}, Version: ${createPlanRes.body.plan.versionNumber}`);
@@ -957,7 +1422,8 @@ export async function runAllProofs() {
       }
     };
 
-    const createV2Res = await pageA.evaluate(async ({ planId, snapshot }) => {
+    const v2Result = calculateFirePlan(v2Snapshot.plan);
+    const createV2Res = await pageA.evaluate(async ({ planId, snapshot, result }) => {
       const res = await fetch(`/api/plans/${planId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -966,18 +1432,18 @@ export async function runAllProofs() {
           label: 'Accelerated FIRE 2026',
           notes: 'Retire earlier at age 52',
           snapshot,
-          result: { success: true, fireNumber: 1250000, yearsToFire: 17 }
+          result
         })
       });
       return { status: res.status, body: await res.json() };
-    }, { planId: planAId, snapshot: v2Snapshot });
+    }, { planId: planAId, snapshot: v2Snapshot, result: v2Result });
 
     console.log(`Created Version 2 for Plan A: status ${createV2Res.status}, versionNumber: ${createV2Res.body?.plan?.versionNumber}`);
     report.b10_saved_decision_navigation.plan_revised_version_2 = createV2Res.status === 200 && createV2Res.body?.plan?.versionNumber === 2;
 
     // Step 3: User A Navigates to Exact Older Version 1 Link
     console.log('\n--- Step 3: Exact Deep Link Navigation to Version 1 ---');
-    const v1Url = `${PREVIEW_URL}/plans?planId=${planAId}&version=1`;
+    const v1Url = `${previewUrl}/plans?planId=${planAId}&version=1`;
     await pageA.goto(v1Url, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
 
@@ -1021,7 +1487,7 @@ export async function runAllProofs() {
     // Step 4: Unsaved changes protection modal
     console.log('\n--- Step 4: Unsaved Changes Protection Modal ---');
     // Ensure we are on the active plan workspace with Version 2 explicitly settled
-    await pageA.goto(`${PREVIEW_URL}/plans?planId=${planAId}&version=2`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=2`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
 
     // Wait until draft form and version state are fully settled with loaded Plan A Version 2
@@ -1089,7 +1555,7 @@ export async function runAllProofs() {
 
     // Step 5: Controlled 404 / Missing Plan and Version
     console.log('\n--- Step 5: Controlled 404 / Missing State ---');
-    await pageA.goto(`${PREVIEW_URL}/plans?planId=nonexistent_plan_999&version=1`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/plans?planId=nonexistent_plan_999&version=1`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-controlled-error, [data-testid="planning-error-state"], .planning-workspace', { timeout: 15000 });
     const errorStateText = await pageA.locator('.planning-controlled-error, [data-testid="planning-error-state"]').innerText().catch(() => '');
     console.log(`Controlled missing plan error text: "${errorStateText}"`);
@@ -1098,7 +1564,7 @@ export async function runAllProofs() {
       errorStateText.toLowerCase().includes('unavailable') ||
       errorStateText.toLowerCase().includes('plan');
 
-    await pageA.goto(`${PREVIEW_URL}/plans?planId=${planAId}&version=99`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=99`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-controlled-error, [data-testid="planning-error-state"], .planning-workspace', { timeout: 15000 });
     const missingVersionText = await pageA.locator('.planning-controlled-error, [data-testid="planning-error-state"]').innerText().catch(() => '');
     console.log(`Controlled missing version error text: "${missingVersionText}"`);
@@ -1170,7 +1636,7 @@ export async function runAllProofs() {
 
     // R5 Stage 1: Observe Dashboard in DUE state
     console.log('\n--- R5 Stage 1: Dashboard in DUE state ---');
-    await pageA.goto(`${PREVIEW_URL}/dashboard`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/dashboard`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.dashboard-summary-grid, .financial-dashboard', { timeout: 15000 });
     // Wait for the due reviews check to settle past the loading placeholder
     await pageA.waitForFunction(
@@ -1257,7 +1723,7 @@ export async function runAllProofs() {
     report.b11_monthly_review_loop.review_next_due_date_computed = Boolean(reviewRecord?.nextReviewDue) && reviewRecord?.nextReviewDue > todayStr;
 
     // Reload page on /plans and review panel: verify status persisted
-    await pageA.goto(`${PREVIEW_URL}/plans?planId=${planAId}&version=1`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=1`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-review-panel', { timeout: 15000 });
 
     const reviewStatusText = await pageA.locator('.review-status-card strong').innerText().catch(() => '');
@@ -1285,8 +1751,135 @@ export async function runAllProofs() {
     }
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '04_b11_review_completed_panel.png'), fullPage: true });
-    await reviewPanelLocator.scrollIntoViewIfNeeded().catch(() => {});
-    await reviewPanelLocator.screenshot({ path: join(SCREENSHOTS_DIR, '04_b11_review_completed_panel_focused.png') });
+
+    // Measure clearance and capture focused screenshots at desktop and mobile in light and dark modes (B28)
+    console.log('Verifying review panel clearance from sticky topbar (B28)...');
+    const clearanceResults = [];
+
+    const measureClearance = async (modeLabel, targetMode, width, height, screenshotFile) => {
+      await pageA.setViewportSize({ width, height });
+      const themeProps = await switchTheme(pageA, targetMode);
+      if (themeProps.dataMode !== targetMode) {
+        throw new Error(`Failed to activate ${targetMode} theme: data-mode is "${themeProps.dataMode}"`);
+      }
+      if (!themeProps.surface || !themeProps.heading) {
+        throw new Error(`Computed theme tokens missing in ${modeLabel}: surface="${themeProps.surface}", heading="${themeProps.heading}"`);
+      }
+
+      await reviewPanelLocator.evaluate((el) => {
+        el.scrollIntoView({ block: 'start', behavior: 'auto' });
+      });
+      await pageA.waitForTimeout(300);
+
+      // Navigate by keyboard (Tab) into review control
+      const precedingElement = pageA.locator('.planning-save-panel button').last();
+      if (await precedingElement.isVisible().catch(() => false)) {
+        await precedingElement.focus();
+        await pageA.keyboard.press('Tab');
+      } else {
+        for (let i = 0; i < 40; i++) {
+          await pageA.keyboard.press('Tab');
+          const inPanel = await pageA.evaluate(() => {
+            const active = document.activeElement;
+            const panel = document.querySelector('.planning-review-panel');
+            return Boolean(panel && panel.contains(active));
+          });
+          if (inPanel) break;
+        }
+      }
+
+      const activeControlInfo = await pageA.evaluate(() => {
+        const el = document.activeElement;
+        if (!el || el === document.body) return null;
+        const panel = document.querySelector('.planning-review-panel');
+        const isInside = Boolean(panel && panel.contains(el));
+        const isInteractive = ['INPUT', 'BUTTON', 'A', 'SELECT', 'TEXTAREA'].includes(el.tagName);
+        const rect = el.getBoundingClientRect();
+        return {
+          isInside,
+          isInteractive,
+          tag: el.tagName,
+          type: el.getAttribute('type'),
+          value: el.getAttribute('value'),
+          name: el.getAttribute('name'),
+          rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height }
+        };
+      });
+
+      if (!activeControlInfo || !activeControlInfo.isInside || !activeControlInfo.isInteractive) {
+        throw new Error(`Keyboard navigation failed to reach interactive control in .planning-review-panel: ${JSON.stringify(activeControlInfo)}`);
+      }
+
+      const topbarEl = pageA.locator('.topbar');
+      const headingEl = reviewPanelLocator.locator('h2');
+      const badgeEl = reviewPanelLocator.locator('.review-badge');
+      const panelEl = reviewPanelLocator;
+
+      const topbarBox = await topbarEl.boundingBox();
+      const headingBox = await headingEl.boundingBox();
+      const badgeBox = await badgeEl.boundingBox();
+      const panelBox = await panelEl.boundingBox();
+      const controlBox = activeControlInfo.rect;
+
+      const topbarBottom = topbarBox ? topbarBox.y + topbarBox.height : 0;
+      const headingTop = headingBox ? headingBox.y : 0;
+      const badgeTop = badgeBox ? badgeBox.y : 0;
+      const controlTop = controlBox ? controlBox.y : 0;
+
+      const headingClearance = headingTop - topbarBottom;
+      const badgeClearance = badgeTop - topbarBottom;
+      const controlClearance = controlTop - topbarBottom;
+
+      const noOverlap = Boolean(
+        topbarBox && headingBox && badgeBox && controlBox &&
+        headingTop >= topbarBottom &&
+        badgeTop >= topbarBottom &&
+        controlTop >= topbarBottom
+      );
+
+      console.log(`[Clearance Check - ${modeLabel}]: topbarBottom=${topbarBottom.toFixed(1)}, headingTop=${headingTop.toFixed(1)}, badgeTop=${badgeTop.toFixed(1)}, controlTop=${controlTop.toFixed(1)}, clearance=${headingClearance.toFixed(1)}px, noOverlap=${noOverlap}`);
+
+      await pageA.screenshot({ path: join(SCREENSHOTS_DIR, screenshotFile) });
+
+      return {
+        modeLabel,
+        targetMode,
+        themeProps,
+        topbarBox,
+        headingBox,
+        badgeBox,
+        controlBox,
+        panelBox,
+        clearance: headingClearance,
+        badgeClearance,
+        controlClearance,
+        noOverlap
+      };
+    };
+
+    // 1. Desktop Light (1280px)
+    const desktopLight = await measureClearance('Desktop Light 1280px', 'light', 1280, 800, '04_b11_review_completed_panel_focused.png');
+    clearanceResults.push(desktopLight);
+
+    // 2. Desktop Dark (1280px)
+    const desktopDark = await measureClearance('Desktop Dark 1280px', 'dark', 1280, 800, '04_b11_review_completed_panel_focused_dark.png');
+    clearanceResults.push(desktopDark);
+
+    // 3. Mobile Light (320px)
+    const mobileLight = await measureClearance('Mobile Light 320px', 'light', 320, 640, '04_b11_review_completed_panel_focused_mobile_320px.png');
+    clearanceResults.push(mobileLight);
+
+    // 4. Mobile Dark (320px)
+    const mobileDark = await measureClearance('Mobile Dark 320px', 'dark', 320, 640, '04_b11_review_completed_panel_focused_mobile_dark.png');
+    clearanceResults.push(mobileDark);
+
+    // Restore desktop viewport and light theme
+    await pageA.setViewportSize({ width: 1280, height: 800 });
+    await switchTheme(pageA, 'light');
+
+    const clearanceVerification = verifyClearance(clearanceResults);
+    console.log(`All clearance checks passed (zero topbar overlap across viewports/themes): ${clearanceVerification.passed}`);
+    report.b28_presentation_and_accessibility.review_panel_no_topbar_overlap = clearanceVerification.passed;
 
     // Idempotent repeat: submitting same evidence date, decision and idempotencyKey
     console.log('Testing idempotent repeat review submission...');
@@ -1312,25 +1905,321 @@ export async function runAllProofs() {
     report.b11_monthly_review_loop.idempotent_repeat_review_not_duplicated =
       idempotencyRes.status === 200 && (reviewCountDb[0]?.cnt ?? 0) === 2;
 
-    // R5 Stage 4: Revise Review Choice
-    console.log('\n--- R5 Stage 4: Revise Review Choice ---');
-    const reviseRes = await pageA.evaluate(async (planId) => {
+    // R5 Stage 4: Revise Review Choice (Full UI Journey -> Version 3 -> Reload -> Immutability)
+    console.log('\n--- R5 Stage 4: Revise Review Choice Full Journey ---');
+    await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=2`, { waitUntil: 'domcontentloaded' });
+    await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
+    const stage4Panel = await assertTargetLocatorVisible(
+      pageA.locator('.planning-review-panel'),
+      '.planning-review-panel on Version 2'
+    );
+
+    // Verify Version 2 review form radio controls
+    const reviseChoiceCard = await assertTargetLocatorVisible(
+      stage4Panel.locator('.review-choice-card:has(input[value="revise"])'),
+      'Revise assumptions choice card'
+    );
+    await reviseChoiceCard.click();
+
+    // Verify radio input is actually checked in the DOM
+    const reviseRadioInput = stage4Panel.locator('input[value="revise"]');
+    const isRadioChecked = await reviseRadioInput.isChecked();
+    const reviseSelectionResult = verifyReviseUiSelection(isRadioChecked);
+    if (!reviseSelectionResult.passed) {
+      throw new Error(`Revise UI selection failed: ${reviseSelectionResult.reason}`);
+    }
+    report.b11_monthly_review_loop.review_revise_ui_selected = true;
+
+    // Fill review notes
+    const reviewNotesInput = stage4Panel.locator('.review-notes-field input');
+    if (await reviewNotesInput.isVisible()) {
+      await reviewNotesInput.fill('Revise assumptions: lower expenses and extended timeline');
+    }
+
+    // Capture D1 state of prior versions BEFORE Version 3 creation across version, inputs, AND results
+    const v1Before = {
+      version: await queryD1('SELECT * FROM plan_versions WHERE plan_id = ? AND version_number = 1;', [planAId]),
+      inputs: await queryD1('SELECT * FROM fire_plan_inputs WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 1);', [planAId]),
+      results: await queryD1('SELECT * FROM fire_plan_results WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 1);', [planAId])
+    };
+    const v2Before = {
+      version: await queryD1('SELECT * FROM plan_versions WHERE plan_id = ? AND version_number = 2;', [planAId]),
+      inputs: await queryD1('SELECT * FROM fire_plan_inputs WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 2);', [planAId]),
+      results: await queryD1('SELECT * FROM fire_plan_results WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 2);', [planAId])
+    };
+
+    // Submit the revision review via UI button
+    const recordReviewBtn = await assertTargetLocatorVisible(
+      stage4Panel.locator('.review-action-container .primary-button'),
+      'Record revision review button'
+    );
+    await recordReviewBtn.click();
+
+    // Verify explicit revision next step prompt is rendered in the UI
+    const revisionPrompt = await assertTargetLocatorVisible(
+      pageA.locator('[data-testid="plan-revision-prompt"]'),
+      'Explicit plan revision prompt banner'
+    );
+    const revisionPromptText = (await revisionPrompt.innerText().catch(() => '')).toLowerCase();
+    const hasNextStepGuidance = revisionPromptText.includes('next step') && revisionPromptText.includes('calculator');
+    report.b11_monthly_review_loop.review_revise_next_step_displayed = hasNextStepGuidance;
+    console.log(`Revision prompt displayed: ${hasNextStepGuidance}`);
+
+    await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '04_b11_review_revise_prompt.png'), fullPage: false });
+
+    // Open calculator from the revision prompt to deliberately modify a real financial assumption
+    console.log('Navigating to FIRE calculator to deliberately edit financial assumptions for Version 3...');
+    const openCalcBtn = await assertTargetLocatorVisible(
+      revisionPrompt.locator('button:has-text("Open calculator")'),
+      'Open calculator button in revision prompt'
+    );
+    await openCalcBtn.click();
+    await pageA.waitForURL('**/calculators/fire', { timeout: 15000 });
+
+    // Verify the loaded plan context bar is displayed on the calculator
+    const calcPlanContext = await assertTargetLocatorVisible(
+      pageA.locator('[data-testid="calculator-plan-context"]'),
+      'Calculator plan context bar'
+    );
+    console.log(`Calculator plan context banner visible on /calculators/fire`);
+
+    // Verify current annual expense input (Version 2 value: 50,000)
+    const annualExpenseInput = await assertTargetLocatorVisible(
+      pageA.locator('input#fire-annual-expense'),
+      'Annual expense input on FIRE calculator'
+    );
+    const initialExpenseVal = await annualExpenseInput.inputValue();
+    console.log(`Loaded Version 2 annual expense: ${initialExpenseVal}`);
+    if (initialExpenseVal !== '50000') {
+      throw new Error(`Expected loaded Version 2 annual expense to be 50000, got "${initialExpenseVal}"`);
+    }
+
+    // Change numeric financial assumption: annualExpense from 50,000 to 45,000
+    await annualExpenseInput.fill('45000');
+    await annualExpenseInput.dispatchEvent('change');
+    await pageA.waitForTimeout(300);
+
+    const editedExpenseVal = await annualExpenseInput.inputValue();
+    console.log(`Edited annual expense control value before saving: ${editedExpenseVal}`);
+    if (editedExpenseVal !== '45000') {
+      throw new Error(`Expected edited annual expense to be 45000, got "${editedExpenseVal}"`);
+    }
+
+    // Return to Planning Workspace using the context bar button
+    const backToPlansBtn = await assertTargetLocatorVisible(
+      calcPlanContext.locator('button:has-text("Back to Planning Workspace")'),
+      'Back to Planning Workspace button'
+    );
+    await backToPlansBtn.click();
+    await pageA.waitForURL('**/plans**', { timeout: 15000 });
+    await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
+
+    // In the planning workspace, provide version notes & label
+    const notesInput = pageA.locator('.planning-notes-field input');
+    await notesInput.fill('Version 3: Lowered annual expenses to $45,000');
+    const labelInput = pageA.locator('.planning-form-grid label:has-text("Version label") input');
+    if (await labelInput.isVisible()) {
+      await labelInput.fill('Revised $45k spend');
+    }
+
+    // Save Version 3 via UI
+    const saveNewVersionBtn = await assertTargetLocatorVisible(
+      pageA.locator('button:has-text("Save new version")'),
+      'Save new version button'
+    );
+    await saveNewVersionBtn.click();
+
+    // Wait for Version 3 to be persisted and displayed
+    await pageA.waitForFunction(() => {
+      const status = document.querySelector('.storage-status')?.innerText || '';
+      const overview = document.querySelector('.planning-overview')?.innerText || '';
+      return status.includes('Version 3 saved') || overview.includes('Version 3 loaded');
+    }, { timeout: 15000 });
+
+    // Verify Version 3 in D1
+    const v3VersionRows = await queryD1('SELECT * FROM plan_versions WHERE plan_id = ? AND version_number = 3;', [planAId]);
+    const v3InputsRows = await queryD1('SELECT * FROM fire_plan_inputs WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 3);', [planAId]);
+    const v3ResultsRows = await queryD1('SELECT * FROM fire_plan_results WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 3);', [planAId]);
+
+    const financialDiff = verifyFinancialRevisionDiff(
+      { version: v2Before.version, inputs: v2Before.inputs, results: v2Before.results },
+      { version: v3VersionRows, inputs: v3InputsRows, results: v3ResultsRows }
+    );
+    console.log(`Financial revision diff: v2 expense=${financialDiff.v2Expense}, v3 expense=${financialDiff.v3Expense}, diffPassed=${financialDiff.passed}`);
+    report.b11_monthly_review_loop.plan_revised_version_3_persisted = v3VersionRows.length === 1 && financialDiff.passed;
+
+    // Verify byte-exact immutability of Versions 1 and 2 across ALL THREE tables
+    const v1After = {
+      version: await queryD1('SELECT * FROM plan_versions WHERE plan_id = ? AND version_number = 1;', [planAId]),
+      inputs: await queryD1('SELECT * FROM fire_plan_inputs WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 1);', [planAId]),
+      results: await queryD1('SELECT * FROM fire_plan_results WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 1);', [planAId])
+    };
+    const v2After = {
+      version: await queryD1('SELECT * FROM plan_versions WHERE plan_id = ? AND version_number = 2;', [planAId]),
+      inputs: await queryD1('SELECT * FROM fire_plan_inputs WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 2);', [planAId]),
+      results: await queryD1('SELECT * FROM fire_plan_results WHERE plan_version_id = (SELECT id FROM plan_versions WHERE plan_id = ? AND version_number = 2);', [planAId])
+    };
+
+    const immutabilityResult = verifyPriorVersionsImmutability(v1Before, v1After, v2Before, v2After);
+    console.log(`Prior versions immutability verified across versions, inputs, and results: ${immutabilityResult.passed}`);
+    report.b11_monthly_review_loop.prior_versions_immutable_after_v3 = immutabilityResult.passed;
+
+    // Reload Version 3 via deep link
+    console.log('Reloading Version 3 via deep link...');
+    await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=3`, { waitUntil: 'domcontentloaded' });
+    await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
+    const overviewV3 = await pageA.locator('.planning-overview').innerText().catch(() => '');
+    if (!overviewV3.includes('Version 3 loaded')) {
+      throw new Error(`Expected planning overview to show Version 3 loaded, got: "${overviewV3}"`);
+    }
+    console.log('Planning overview confirms Version 3 loaded');
+
+    // Navigate to calculator via product route to inspect actual numerical input
+    const openCalcFromOverviewBtn = await assertTargetLocatorVisible(
+      pageA.locator('button:has-text("Open calculator")').first(),
+      'Open calculator button in Plan identity'
+    );
+    await openCalcFromOverviewBtn.click();
+    await pageA.waitForURL('**/calculators/fire', { timeout: 15000 });
+
+    const reloadedCalcExpenseInput = await assertTargetLocatorVisible(
+      pageA.locator('input#fire-annual-expense'),
+      'Reloaded annual expense input on FIRE calculator'
+    );
+    const reloadedExpenseVal = await reloadedCalcExpenseInput.inputValue();
+    console.log(`Annual expense input after Version 3 reload: ${reloadedExpenseVal}`);
+
+    // Cross-check that D1 v3 snapshot and UI agree
+    const v3Snapshot = JSON.parse(v3InputsRows[0].input_json);
+    const v3SnapshotExpense = v3Snapshot?.plan?.annualExpense;
+    const v3Reloaded = reloadedExpenseVal === '45000' && v3SnapshotExpense === 45000 && String(v3SnapshotExpense) === reloadedExpenseVal;
+    console.log(`Version 3 reload verified: UI=${reloadedExpenseVal}, D1=${v3SnapshotExpense}, matched=${v3Reloaded}`);
+    report.b11_monthly_review_loop.version_3_reload_verified = v3Reloaded;
+
+    // Navigate back to planning workspace
+    const backToPlansFromCalcBtn = await assertTargetLocatorVisible(
+      pageA.locator('button:has-text("Back to Planning Workspace")'),
+      'Back to Planning Workspace button'
+    );
+    await backToPlansFromCalcBtn.click();
+    await pageA.waitForURL('**/plans**', { timeout: 15000 });
+    await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
+
+    // Verify review row in D1 is linked to Version 2 with decision=revise and check server-derived key
+    const reviseReviewDb = await queryD1(
+      "SELECT * FROM plan_reviews WHERE plan_id = ? AND decision = 'revise' AND plan_version_number = 2;",
+      [planAId]
+    );
+    const persistedReviseReview = reviseReviewDb[0];
+    const reviseReviewLinked = Boolean(persistedReviseReview && persistedReviseReview.idempotency_key);
+    console.log(`Persisted revise review linked in D1 with key: "${persistedReviseReview?.idempotency_key}"`);
+
+    // Verify idempotent repeat using exact persisted key and fields
+    console.log('Testing exact idempotent replay with persisted review fields...');
+    const exactReplayRes = await pageA.evaluate(async ({ planId, key, evidenceDate, notes }) => {
       const res = await fetch(`/api/plans/${planId}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           planVersionNumber: 2,
-          evidenceDate: new Date().toISOString().slice(0, 10),
+          evidenceDate,
           decision: 'revise',
-          idempotencyKey: 'review-revise-c09',
-          notes: 'Revise assumptions based on market shifts'
+          idempotencyKey: key,
+          notes
         })
       });
       return { status: res.status, body: await res.json() };
-    }, planAId);
-    console.log(`Plan A review (revise) status: ${reviseRes.status}, decision: ${reviseRes.body?.review?.decision}`);
+    }, {
+      planId: planAId,
+      key: persistedReviseReview?.idempotency_key,
+      evidenceDate: persistedReviseReview?.evidence_date,
+      notes: persistedReviseReview?.notes
+    });
+
+    const totalReviewsBeforeReplay = (await queryD1(
+      "SELECT count(*) as cnt FROM plan_reviews WHERE plan_id = ?;",
+      [planAId]
+    ))[0]?.cnt ?? 0;
+
+    const scopedReviseReviewsAfterExact = await queryD1(
+      "SELECT * FROM plan_reviews WHERE plan_id = ? AND plan_version_number = 2 AND idempotency_key = ?;",
+      [planAId, persistedReviseReview?.idempotency_key]
+    );
+    const totalReviewsAfterExact = (await queryD1(
+      "SELECT count(*) as cnt FROM plan_reviews WHERE plan_id = ?;",
+      [planAId]
+    ))[0]?.cnt ?? 0;
+
+    const exactReplayVerification = verifyIdempotentReplay({
+      persistedReview: persistedReviseReview,
+      replayKey: persistedReviseReview?.idempotency_key,
+      replayDecision: 'revise',
+      replayStatus: exactReplayRes.status,
+      replayBody: exactReplayRes.body,
+      reviewCount: scopedReviseReviewsAfterExact.length,
+      scopedReviewCount: scopedReviseReviewsAfterExact.length,
+      totalReviewsBefore: totalReviewsBeforeReplay,
+      totalReviewsAfter: totalReviewsAfterExact,
+      expectedTotalReviews: 3
+    });
+
+    // Test changed-intent replay with the SAME idempotency key (should return 409 IDEMPOTENCY_CONFLICT)
+    console.log('Testing conflicting intent replay with same idempotency key (expecting 409)...');
+    const conflictingReplayRes = await pageA.evaluate(async ({ planId, key, evidenceDate }) => {
+      const res = await fetch(`/api/plans/${planId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planVersionNumber: 2,
+          evidenceDate,
+          decision: 'keep', // Changed intent!
+          idempotencyKey: key,
+          notes: 'Attempting to change decision under same idempotency key'
+        })
+      });
+      return { status: res.status, body: await res.json() };
+    }, {
+      planId: planAId,
+      key: persistedReviseReview?.idempotency_key,
+      evidenceDate: persistedReviseReview?.evidence_date
+    });
+
+    // Query D1 AFTER conflicting request to verify exactly 1 row still exists and original decision is preserved
+    const scopedReviseReviewsAfterConflict = await queryD1(
+      "SELECT * FROM plan_reviews WHERE plan_id = ? AND plan_version_number = 2 AND idempotency_key = ?;",
+      [planAId, persistedReviseReview?.idempotency_key]
+    );
+    const totalReviewsAfterConflict = (await queryD1(
+      "SELECT count(*) as cnt FROM plan_reviews WHERE plan_id = ?;",
+      [planAId]
+    ))[0]?.cnt ?? 0;
+
+    const conflictingReplayVerification = verifyIdempotentReplay({
+      persistedReview: persistedReviseReview,
+      replayKey: persistedReviseReview?.idempotency_key,
+      replayDecision: 'keep',
+      replayStatus: conflictingReplayRes.status,
+      replayBody: conflictingReplayRes.body,
+      reviewCount: scopedReviseReviewsAfterConflict.length,
+      scopedReviewCount: scopedReviseReviewsAfterConflict.length,
+      totalReviewsBefore: totalReviewsBeforeReplay,
+      totalReviewsAfter: totalReviewsAfterConflict,
+      expectedTotalReviews: 3,
+      postConflictReview: scopedReviseReviewsAfterConflict[0]
+    });
+
+    const idempotentRetryPassed = exactReplayVerification.passed && conflictingReplayVerification.passed;
+    console.log(`Idempotent retry (200 replay & 409 conflict): ${idempotentRetryPassed}`);
+    report.b11_monthly_review_loop.idempotent_repeat_review_not_duplicated = idempotentRetryPassed;
+
     report.b11_monthly_review_loop.review_revise_choice_triggers_revision =
-      (reviseRes.status === 200 || reviseRes.status === 201) && reviseRes.body?.review?.decision === 'revise';
+      report.b11_monthly_review_loop.review_revise_ui_selected &&
+      report.b11_monthly_review_loop.review_revise_next_step_displayed &&
+      report.b11_monthly_review_loop.plan_revised_version_3_persisted &&
+      report.b11_monthly_review_loop.version_3_reload_verified &&
+      report.b11_monthly_review_loop.prior_versions_immutable_after_v3 &&
+      reviseReviewLinked &&
+      idempotentRetryPassed;
 
     // Due reviews endpoint verification
     const dueReviewsRes = await pageA.evaluate(async () => {
@@ -1374,7 +2263,7 @@ export async function runAllProofs() {
     // B28: Goals Panel Presentation
     // ==========================================
     console.log('\n--- Step 8: B28 Goals Panel Presentation ---');
-    await pageA.goto(`${PREVIEW_URL}/goals`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/goals`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.goal-card, .goal-badges', { timeout: 15000 });
     await pageA.waitForSelector('.goal-linked-plan', { timeout: 15000 });
 
@@ -1425,7 +2314,7 @@ export async function runAllProofs() {
     await goalCardLocator.screenshot({ path: join(SCREENSHOTS_DIR, '06_b28_goals_panel_linked_plan_focused.png') });
 
     // Navigate to dashboard for theme switching and review badge contrast measurement
-    await pageA.goto(`${PREVIEW_URL}/dashboard`, { waitUntil: 'domcontentloaded' });
+    await pageA.goto(`${previewUrl}/dashboard`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForFunction(
       () => !document.querySelector('.dashboard-reviews-rollup')?.innerText.includes('Checking review cadence'),
       { timeout: 15000 }
@@ -1601,7 +2490,7 @@ export async function runAllProofs() {
 
     persistEvidence(report, cleanupReport);
 
-    const evaluation = evaluateReport(report, cleanupReport);
+    const evaluation = evaluateReport(report, cleanupReport, deploymentConfig);
     console.log('\n=== Explicit Evaluation Result ===');
     console.log(`Status: ${evaluation.passed ? 'PASSED' : 'FAILED'}`);
     if (!evaluation.passed) {

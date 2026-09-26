@@ -7869,6 +7869,25 @@ function App({ auth }: { auth: AuthState }) {
           <span className="pill">{activeCalculator.shortTitle}</span>
         </section>
 
+        {activeSavedPlan ? (
+          <aside className="plan-context-bar" data-testid="calculator-plan-context" role="region" aria-label="Loaded plan context">
+            <div className="plan-context-info">
+              <FolderKanban size={18} aria-hidden="true" />
+              <span>Editing assumptions for plan: <strong>{activeSavedPlan.name}</strong> (Version {activeSavedPlan.versionNumber})</span>
+            </div>
+            <div className="plan-context-actions">
+              <button
+                type="button"
+                className="secondary-button icon-text-button"
+                onClick={() => navigateTo('/plans')}
+              >
+                Back to Planning Workspace
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          </aside>
+        ) : null}
+
         <section className="quick-calculator focused-calculator" aria-labelledby="quick-calculator-title">
           <div className="panel-heading quick-heading">
             <div>

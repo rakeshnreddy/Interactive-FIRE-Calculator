@@ -59,7 +59,10 @@ export const onRequestPost: PagesFunction<ReviewsEnv, PlanReviewsParams> = async
       return json({ error: 'Plan or version not found.' }, 404);
     }
 
-    return json({ dueStatus: result.dueStatus, review: result.review }, result.isDuplicate ? 200 : 201);
+    return json(
+      { dueStatus: result.dueStatus, review: result.review, isDuplicate: result.isDuplicate },
+      result.isDuplicate ? 200 : 201
+    );
   } catch (error) {
     if (error instanceof ReviewTooEarlyError) {
       return json({ code: 'TOO_EARLY_REVIEW', error: error.message }, 400);

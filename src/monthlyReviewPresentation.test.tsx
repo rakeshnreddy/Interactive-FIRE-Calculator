@@ -312,6 +312,125 @@ describe('B11 & B28: Monthly Plan Review & Goals Presentation UI', () => {
       expect(historySection?.textContent).toContain('Vanguard statement');
       expect(container.querySelector('.review-badge-keep')).not.toBeNull();
     });
+
+    it('presents an explicit revision next-step banner and truthful status when Revise assumptions is chosen', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+        if (typeof url === 'string' && url.includes('/reviews') && init?.method === 'POST') {
+          return new Response(
+            JSON.stringify({
+              review: {
+                id: 'rev_revise_01',
+                planId: samplePlan.id,
+                planVersionNumber: 1,
+                decision: 'revise',
+                status: 'completed',
+                evidenceDate: '2026-06-01',
+                nextReviewDue: '2026-07-01',
+                deferredUntil: null,
+                notes: 'Higher expense detected from travel',
+                completedAt: '2026-06-01T15:00:00.000Z',
+                createdAt: '2026-06-01T15:00:00.000Z',
+                updatedAt: '2026-06-01T15:00:00.000Z'
+              },
+              dueStatus: {
+                daysSinceBaseline: 32,
+                daysUntilEligible: 0,
+                deferredUntil: null,
+                eligibleForReview: true,
+                evidenceAgeDays: 32,
+                evidenceDate: '2026-06-01',
+                isEvidenceStale: false,
+                nextReviewDue: '2026-07-01',
+                status: 'up-to-date'
+              }
+            }),
+            { status: 201, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        return new Response(JSON.stringify({}), { status: 200 });
+      });
+
+      const onSaveMock = vi.fn();
+      const onReviewSavedMock = vi.fn();
+
+      const dueStatus: DueStatusResult = {
+        daysSinceBaseline: 32,
+        daysUntilEligible: 0,
+        deferredUntil: null,
+        eligibleForReview: true,
+        evidenceAgeDays: 32,
+        evidenceDate: '2026-06-01',
+        isEvidenceStale: false,
+        nextReviewDue: '2026-07-01',
+        status: 'due'
+      };
+
+      const { container } = renderComponent(
+        <PlanningWorkspace
+          accounts={[]}
+          activePlanId={samplePlan.id}
+          auth={syntheticAuth}
+          canUndoSeed={false}
+          currentPlan={samplePlan.snapshot.plan}
+          currentResult={sampleResult}
+          currentSnapshot={samplePlan.snapshot}
+          currentTimeline={samplePlan.snapshot.timeline}
+          goals={[]}
+          initialDueStatus={dueStatus}
+          initialReviews={[]}
+          isLoading={false}
+          isSaving={false}
+          message=""
+          onApplySeed={() => {}}
+          onArchive={() => {}}
+          onLoadPlan={() => {}}
+          onLoadVersion={() => {}}
+          onNavigateCalculator={() => {}}
+          onReviewSaved={onReviewSavedMock}
+          onSave={onSaveMock}
+          onUndoSeed={() => {}}
+          plans={[samplePlan]}
+          profile={null}
+        />
+      );
+
+      // Select revise radio
+      const reviseRadio = container.querySelector<HTMLInputElement>('input[value="revise"]');
+      expect(reviseRadio).not.toBeNull();
+      act(() => {
+        reviseRadio!.click();
+      });
+
+      // Submit button should now say "Record revision review"
+      const submitBtn = container.querySelector<HTMLButtonElement>('.review-action-container .primary-button');
+      expect(submitBtn?.textContent).toContain('Record revision review');
+
+      // Click submit
+      await act(async () => {
+        submitBtn!.click();
+      });
+
+      expect(fetchSpy).toHaveBeenCalledWith(
+        expect.stringContaining('/reviews'),
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('"decision":"revise"')
+        })
+      );
+      expect(onReviewSavedMock).toHaveBeenCalled();
+
+      // Check explicit revision next-step prompt is rendered
+      const revisionPrompt = container.querySelector('[data-testid="plan-revision-prompt"]');
+      expect(revisionPrompt).not.toBeNull();
+      expect(revisionPrompt?.textContent).toContain('Next step: Revise financial assumptions in calculator and save Version 2');
+      expect(revisionPrompt?.textContent).toContain('save Version 2');
+      expect(revisionPrompt?.textContent).toContain('Historical Version 1 will remain permanently locked and preserved');
+
+      // Check review status does not falsely say assumptions were confirmed
+      const statusCard = container.querySelector('.review-status-card');
+      expect(statusCard?.textContent).not.toContain('Assumptions were confirmed for Version 1');
+      expect(statusCard?.textContent).toContain('Revision in progress for Version 1');
+    });
   });
 
   describe('DashboardPanel Reviews Rollup (B11 / B28)', () => {

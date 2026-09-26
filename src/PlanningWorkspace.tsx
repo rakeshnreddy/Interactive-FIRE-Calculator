@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   ArrowRight,
   Calendar,
   Check,
@@ -279,6 +280,21 @@ export function PlanningWorkspace({
   >(null);
 
   const [reviews, setReviews] = useState<StoredPlanReview[]>(() => initialReviews ?? []);
+  const currentVersionNumber = loadedVersionNumber ?? activePlan?.versionNumber ?? 1;
+  const [lastSubmittedReview, setLastSubmittedReview] = useState<StoredPlanReview | null>(null);
+
+  const isRevisionActive = useMemo(() => {
+    if (lastSubmittedReview && lastSubmittedReview.decision === 'revise' && lastSubmittedReview.planVersionNumber === currentVersionNumber) {
+      return true;
+    }
+    const matchingReview = reviews.find((r) => r.planVersionNumber === currentVersionNumber);
+    return matchingReview?.decision === 'revise';
+  }, [lastSubmittedReview, reviews, currentVersionNumber]);
+
+  useEffect(() => {
+    setLastSubmittedReview(null);
+  }, [activePlanId, activePlan?.versionNumber, loadedVersionNumber]);
+
   const [dueStatus, setDueStatus] = useState<DueStatusResult | null>(
     () =>
       initialDueStatus ??
@@ -377,6 +393,7 @@ export function PlanningWorkspace({
 
       setDueStatus(result.dueStatus);
       setReviews((current) => [result.review, ...current.filter((r) => r.id !== result.review.id)]);
+      setLastSubmittedReview(result.review);
       setReviewMessage(
         reviewDecision === 'keep'
           ? `Assumptions confirmed for Version ${versionNumberToReview}. Next review due ${result.review.nextReviewDue}.`
@@ -721,7 +738,7 @@ export function PlanningWorkspace({
                     : dueStatus.status === 'deferred'
                     ? `Review deferred until ${dueStatus.deferredUntil}`
                     : dueStatus.status === 'up-to-date'
-                    ? 'Assumptions up to date'
+                    ? (isRevisionActive ? 'Revision in progress' : 'Assumptions up to date')
                     : 'Baseline active'}
                 </strong>
                 <span className="review-status-date">
@@ -736,7 +753,9 @@ export function PlanningWorkspace({
                   : dueStatus.status === 'deferred'
                   ? `Review is postponed until ${dueStatus.deferredUntil}. You may still confirm or revise earlier.`
                   : dueStatus.status === 'up-to-date'
-                  ? `Assumptions were confirmed for Version ${loadedVersionNumber ?? activePlan.versionNumber ?? 1}. Next review due ${dueStatus.nextReviewDue}.`
+                  ? (isRevisionActive
+                      ? `Revision in progress for Version ${currentVersionNumber}. Adjust financial assumptions in the calculator and save a new version to create Version ${(activePlan?.versionNumber ?? currentVersionNumber) + 1}. Next review due ${dueStatus.nextReviewDue}.`
+                      : `Assumptions were confirmed for Version ${currentVersionNumber}. Next review due ${dueStatus.nextReviewDue}.`)
                   : `Plan baseline recorded. First returning review available in ${dueStatus.daysUntilEligible} days.`}
               </p>
               {dueStatus.isEvidenceStale ? (
@@ -750,6 +769,49 @@ export function PlanningWorkspace({
                 </div>
               ) : null}
             </div>
+          ) : null}
+
+          {isRevisionActive ? (
+            <aside
+              className="plan-revision-prompt"
+              data-testid="plan-revision-prompt"
+              role="region"
+              aria-label="Revision next step"
+            >
+              <div className="plan-revision-prompt-header">
+                <AlertCircle size={18} aria-hidden="true" />
+                <strong>Next step: Revise financial assumptions in calculator and save Version {(activePlan?.versionNumber ?? currentVersionNumber) + 1}</strong>
+              </div>
+              <p>
+                A revision was recorded for Version {currentVersionNumber}. Open the FIRE calculator to adjust your financial assumptions (such as annual spending, portfolio balances, or retirement age), then return to save Version {(activePlan?.versionNumber ?? currentVersionNumber) + 1}. Historical Version {currentVersionNumber} will remain permanently locked and preserved.
+              </p>
+              <div className="planning-actions">
+                <button
+                  type="button"
+                  className="secondary-button icon-text-button"
+                  onClick={onNavigateCalculator}
+                >
+                  Open calculator
+                  <ArrowRight size={16} />
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => {
+                    const savePanel = document.querySelector('.planning-save-panel');
+                    if (savePanel) {
+                      const prefersReducedMotion =
+                        typeof window !== 'undefined' &&
+                        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                      savePanel.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+                      (savePanel.querySelector('.planning-notes-field input') as HTMLElement | null)?.focus();
+                    }
+                  }}
+                >
+                  Edit version details
+                </button>
+              </div>
+            </aside>
           ) : null}
 
           {dueStatus?.eligibleForReview ? (
