@@ -92,6 +92,9 @@ import { formatCompactMoney } from './lib/money';
 import { HERO_FIRE_FIXTURE } from './lib/heroExample';
 import { FireRetirementEstimate } from './components/FireRetirementEstimate';
 import { ReportsPanel } from './reports/ReportsPanel';
+import { PrivacyControlsPanel } from './settings/PrivacyControlsPanel';
+import { deletionFailure, exportFailure, summarizeDeletion, type PrivacyStatus } from './settings/privacyOutcome';
+export { PrivacyControlsPanel };
 import { buildReportScope, type ReportScope } from './reports/reportScope';
 export { ReportsPanel as InsightsPanel };
 import {
@@ -767,11 +770,11 @@ const platformPages: Record<
     eyebrow: 'Settings',
     title: 'Profile and privacy controls.',
     description:
-      'Manage household planning defaults, download saved data, and remove D1 financial records when needed.',
+      'Manage household planning defaults, download saved data, and delete your saved records when needed.',
     icon: Settings,
     cards: [
       { label: 'Profile', value: 'Ready', detail: 'Household and planning defaults.' },
-      { label: 'Privacy', value: 'Ready', detail: 'Data export and D1 deletion controls.' },
+      { label: 'Privacy', value: 'Ready', detail: 'Download or delete your saved data.' },
       { label: 'Theme', value: 'Ready', detail: 'Light and dark controls remain global.' }
     ]
   }
@@ -930,110 +933,6 @@ export function ProfileSettingsPanel({
           </button>
         </div>
       </form>
-    </section>
-  );
-}
-
-export function PrivacyControlsPanel({
-  deleteConfirmation,
-  isDeleting,
-  isExporting,
-  message,
-  onDelete,
-  onDeleteConfirmationChange,
-  onExport
-}: {
-  deleteConfirmation: string;
-  isDeleting: boolean;
-  isExporting: boolean;
-  message: string;
-  onDelete: () => void;
-  onDeleteConfirmationChange: (value: string) => void;
-  onExport: () => void;
-}) {
-  const canDelete = deleteConfirmation.trim() === ACCOUNT_DATA_DELETE_CONFIRMATION && !isDeleting && !isExporting;
-
-  return (
-    <section className="profile-editor privacy-controls-panel" aria-labelledby="privacy-controls-title">
-      <div className="panel-heading">
-        <div>
-          <p className="eyebrow">Privacy controls</p>
-          <h2 id="privacy-controls-title">Export or delete saved data</h2>
-          <p>
-            These controls apply to FinPath data in D1: profile defaults, accounts, balances, goals, plans,
-            calculator results, versions, import history, and user-scoped audit rows.
-          </p>
-        </div>
-        <span className="feature-icon">
-          <ShieldCheck size={20} />
-        </span>
-      </div>
-
-      <ul className="privacy-scope-list" aria-label="Export and deletion scope">
-        <li>
-          <strong>Included</strong>
-          <span>Saved financial records, planning snapshots, import audit history, and profile defaults.</span>
-        </li>
-        <li>
-          <strong>Not included</strong>
-          <span>Unsigned public calculator drafts in this browser and the Clerk identity provider account.</span>
-        </li>
-        <li>
-          <strong>After deletion</strong>
-          <span>You stay signed in until you sign out, but the local FinPath account data is removed.</span>
-        </li>
-      </ul>
-
-      <div className="privacy-action-row">
-        <div>
-          <strong>Download JSON export</strong>
-          <small>Use this before deleting data or before moving data to another system later.</small>
-        </div>
-        <button
-          className="secondary-button icon-text-button"
-          disabled={isDeleting || isExporting}
-          type="button"
-          onClick={onExport}
-        >
-          <Download size={16} />
-          {isExporting ? 'Preparing export' : 'Export data'}
-        </button>
-      </div>
-
-      <form
-        className="privacy-delete-form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          onDelete();
-        }}
-      >
-        <div>
-          <strong>Delete saved FinPath data</strong>
-          <small id="delete-account-data-help">
-            Type {ACCOUNT_DATA_DELETE_CONFIRMATION} to permanently remove D1 account data for this signed-in user.
-          </small>
-        </div>
-        <Field label="Deletion confirmation">
-          <input
-            aria-describedby="delete-account-data-help"
-            autoComplete="off"
-            disabled={isDeleting || isExporting}
-            type="text"
-            value={deleteConfirmation}
-            onChange={(event) => onDeleteConfirmationChange(event.target.value)}
-          />
-        </Field>
-        <button className="secondary-button danger-button icon-text-button" disabled={!canDelete} type="submit">
-          <Trash2 size={16} />
-          {isDeleting ? 'Deleting data' : 'Delete D1 data'}
-        </button>
-      </form>
-
-      {message ? (
-        <p className="profile-status privacy-status" role="status" aria-live="polite">
-          {message}
-        </p>
-      ) : null}
     </section>
   );
 }
@@ -3011,7 +2910,7 @@ function PlatformPage({
   profileDraft: AccountProfileDraft;
   profileMessage: string;
   accountDataDeleteConfirmation: string;
-  accountDataPrivacyMessage: string;
+  accountDataPrivacyMessage: PrivacyStatus | null;
   isDeletingAccountData: boolean;
   isExportingAccountData: boolean;
   onAccountDataDeleteConfirmationChange: (value: string) => void;
@@ -3131,7 +3030,8 @@ function PlatformPage({
             deleteConfirmation={accountDataDeleteConfirmation}
             isDeleting={isDeletingAccountData}
             isExporting={isExportingAccountData}
-            message={accountDataPrivacyMessage}
+            status={accountDataPrivacyMessage}
+            confirmationPhrase={ACCOUNT_DATA_DELETE_CONFIRMATION}
             onDelete={onAccountDataDelete}
             onDeleteConfirmationChange={onAccountDataDeleteConfirmationChange}
             onExport={onAccountDataExport}
@@ -3457,7 +3357,7 @@ function App({ auth }: { auth: AuthState }) {
   const [isExportingAccountData, setIsExportingAccountData] = useState(false);
   const [isDeletingAccountData, setIsDeletingAccountData] = useState(false);
   const [accountDataDeleteConfirmation, setAccountDataDeleteConfirmation] = useState('');
-  const [accountDataPrivacyMessage, setAccountDataPrivacyMessage] = useState('');
+  const [accountDataPrivacyMessage, setAccountDataPrivacyMessage] = useState<PrivacyStatus | null>(null);
   const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>([]);
   const [accountDraft, setAccountDraft] = useState<AccountDraft>(emptyAccountDraft);
   const [balanceDrafts, setBalanceDrafts] = useState<Record<string, BalanceDraft>>({});
@@ -3646,7 +3546,7 @@ function App({ auth }: { auth: AuthState }) {
     setIsExportingAccountData(false);
     setIsDeletingAccountData(false);
     setAccountDataDeleteConfirmation('');
-    setAccountDataPrivacyMessage('');
+    setAccountDataPrivacyMessage(null);
   }, [auth.status, auth.isSignedIn, auth.user?.id]);
 
   useEffect(() => {
@@ -4397,14 +4297,14 @@ function App({ auth }: { auth: AuthState }) {
     }
 
     setIsExportingAccountData(true);
-    setAccountDataPrivacyMessage('Preparing account data export...');
+    setAccountDataPrivacyMessage({ kind: 'info', text: 'Preparing your download…' });
 
     try {
       const accountExport = await loadAccountDataExport(auth);
       downloadJson(`finpath-account-data-${todayInputDate()}.json`, accountExport);
-      setAccountDataPrivacyMessage('Account data export downloaded.');
+      setAccountDataPrivacyMessage({ kind: 'success', text: `Downloaded finpath-account-data-${todayInputDate()}.json. It contains your saved records, so keep it somewhere private.` });
     } catch (error) {
-      setAccountDataPrivacyMessage(error instanceof Error ? error.message : 'Account data export failed.');
+      setAccountDataPrivacyMessage(exportFailure(error));
     } finally {
       setIsExportingAccountData(false);
     }
@@ -4416,15 +4316,20 @@ function App({ auth }: { auth: AuthState }) {
     }
 
     if (accountDataDeleteConfirmation.trim() !== ACCOUNT_DATA_DELETE_CONFIRMATION) {
-      setAccountDataPrivacyMessage(`Type ${ACCOUNT_DATA_DELETE_CONFIRMATION} before deleting saved data.`);
+      setAccountDataPrivacyMessage({ kind: 'error', text: `Type ${ACCOUNT_DATA_DELETE_CONFIRMATION} to confirm deletion.` });
       return;
     }
 
     setIsDeletingAccountData(true);
-    setAccountDataPrivacyMessage('Deleting saved FinPath data...');
+    setAccountDataPrivacyMessage({ kind: 'info', text: 'Deleting your FinPath data…' });
 
     try {
-      await deleteAccountDataRecord(auth, accountDataDeleteConfirmation.trim());
+      const deletionBody = await deleteAccountDataRecord(auth, accountDataDeleteConfirmation.trim());
+      const outcome = summarizeDeletion(deletionBody);
+      if (outcome.kind !== 'success') {
+        setAccountDataPrivacyMessage(outcome);
+        return;
+      }
       clearLocalDrafts();
       setAccountProfile(null);
       setProfileDraft(emptyProfileDraft());
@@ -4452,11 +4357,9 @@ function App({ auth }: { auth: AuthState }) {
       setSavedCalculatorResults([]);
       setCalculatorResultMessage('Saved calculator results were deleted.');
       setAccountDataDeleteConfirmation('');
-      setAccountDataPrivacyMessage(
-        'Saved FinPath D1 data was deleted. Clerk sign-in remains active until you sign out or delete the identity provider account.'
-      );
+      setAccountDataPrivacyMessage(outcome);
     } catch (error) {
-      setAccountDataPrivacyMessage(error instanceof Error ? error.message : 'Account data deletion failed.');
+      setAccountDataPrivacyMessage(deletionFailure(error));
     } finally {
       setIsDeletingAccountData(false);
     }

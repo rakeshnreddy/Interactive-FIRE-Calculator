@@ -466,7 +466,8 @@ export function FixtureApp() {
                 deleteConfirmation={deleteConfirmation}
                 isDeleting={false}
                 isExporting={false}
-                message={failureMessage}
+                status={failureMessage ? { kind: 'error', text: failureMessage } : null}
+                confirmationPhrase="DELETE MY FINPATH DATA"
                 onDelete={() => logAction('DeleteAccountData')}
                 onDeleteConfirmationChange={(val) => setDeleteConfirmation(val)}
                 onExport={() => logAction('ExportAccountData')}
