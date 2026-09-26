@@ -39,3 +39,7 @@ Thumbs.db
 
 # AI Delegation Handoff
 .ai-handoff/
+
+# PA-4 Evidence and test run outputs
+output/
+docs/execution/evidence/**/raw/

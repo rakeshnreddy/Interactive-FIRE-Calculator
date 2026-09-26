@@ -52,7 +52,7 @@ FIRE remains important, but it is now the first calculator/planning module insid
 - Shared Pages Function helpers in `functions/_lib/`.
 - D1 migrations in `migrations/`.
 - SPA routing supported by `public/_redirects`.
-- Legacy Flask/Jinja app remains in `app.py`, `project/`, `templates/`, and `static/` for reference/parity only.
+- Legacy Flask/Jinja app (formerly in `app.py`, `project/`, `templates/`, and `static/`) and Python test suite have been retired under B37; all platform and calculation features run via the TypeScript/Cloudflare Pages application.
 - `PRODUCT.md` defines the product audience, purpose, voice, and anti-references.
 - `DESIGN.md` defines the neutral precision-led light/dark visual system used by the React app.
 - `docs/CALCULATOR_LIBRARY_REVIEW.md` records formula overlap, route-retention rules, toolkit grouping, and the post-Phase-25 visual review.
@@ -350,9 +350,8 @@ Launch next slice:
 
 ## Working Rules
 
-- Do not deploy Flask to Cloudflare Pages.
-- Do not rewrite the FIRE engine unless the task is explicitly about calculation behavior.
-- Preserve legacy Flask tests unless the user explicitly asks to remove the legacy reference app.
+- The legacy Flask/Firebase stack and Python tests have been retired (under B37). All application and calculation tests run via TypeScript and Vitest (`npm test` and `./scripts/test_all.sh`).
+- Do not rewrite the FIRE engine in `src/lib/fire.ts` unless calculation behavior is explicitly in scope.
 - Use `apply_patch` for manual edits.
 - Run `./scripts/test_all.sh` before pushing.
 - Deploy with `npm run cf:deploy` when ready.
@@ -403,7 +402,7 @@ Loan, EMI, mortgage, amortization, debt-payoff, prepayment, and recast calculato
 Next goal:
 Complete production Clerk setup and hosted signed-in verification for launch readiness.
 
-Do not deploy Flask to Cloudflare Pages. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
+The legacy Flask stack is retired. Keep the FIRE engine in src/lib/fire.ts intact unless calculation behavior is explicitly in scope. Run ./scripts/test_all.sh before pushing. Deploy with npm run cf:deploy when ready.
 ```
 
 ## Detailed Launch Handoff Prompt
@@ -428,7 +427,7 @@ docs/FINANCIAL_PLATFORM_HANDOFF.md
 docs/CALCULATOR_VALUE_ROADMAP.md
 
 Current state:
-Phases 1 and 3 through 25 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, import history, transactions, saved calculator results, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public hub with 82 calculator routes plus public FIRE. The complete calculator program includes durable saves, decision studios, optional schedules, family visualizers, content/metadata hardening, all-route no-auth smoke coverage, scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, input-only share links, and CSV export. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app remains reference-only and must not be deployed to Cloudflare Pages.
+Phases 1 and 3 through 25 are complete for preview/development. Clerk development auth is integrated, but production auth is not launch-ready because the Clerk app has no production instance/domain or production keys. D1 stores profiles, saved FIRE plans, immutable versions, accounts, balances, goals, import history, transactions, saved calculator results, and authenticated account-data export/delete readiness behind user-scoped Pages Functions. `/transactions` is a signed-in manual ledger with reviewed imports, search, filters, category suggestions, and visible-row summary math. `/calculators` is a public hub with 82 calculator routes plus public FIRE. The complete calculator program includes durable saves, decision studios, optional schedules, family visualizers, content/metadata hardening, all-route no-auth smoke coverage, scenario comparison, deterministic outcome drivers, recent saved history, dashboard follow-ups, input-only share links, and CSV export. The FIRE engine in `src/lib/fire.ts` is intact. The legacy Flask/Jinja app and Python test suite have been retired under B37; all financial planning and calculation features run via the React/Pages TypeScript application.
 
 Latest known Cloudflare Pages preview:
 https://8e49bd2f.interactive-fire-calculator.pages.dev
