@@ -57,6 +57,18 @@ export async function loadCalculateFirePlan() {
   return mod.calculateFirePlan;
 }
 
+export async function loadChromium() {
+  try {
+    const mod = await import('playwright');
+    if (mod?.chromium) return mod.chromium;
+  } catch {}
+  try {
+    const mod = await import('/Users/Rakesh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
+    if (mod?.chromium) return mod.chromium;
+  } catch {}
+  throw new Error('Playwright chromium is unavailable');
+}
+
 export const EVIDENCE_DIR = join(REPO_ROOT, 'docs/execution/evidence/C09');
 export const SCREENSHOTS_DIR = join(EVIDENCE_DIR, 'screenshots');
 if (!existsSync(SCREENSHOTS_DIR)) {
@@ -582,6 +594,32 @@ export async function executeKeyboardActionProof(page, { maxTabs = 120 } = {}) {
 // --------------------------------------------------------------------------
 // Collector-Level Verification Logic & Assertions
 // --------------------------------------------------------------------------
+export async function locateReviewPanelHeaderElements(reviewPanelLocator) {
+  if (!reviewPanelLocator) {
+    throw new Error('Review panel locator is missing or undefined');
+  }
+
+  // Heading must be scoped to the direct .panel-heading of the review panel
+  const headingEl = reviewPanelLocator.locator('.panel-heading h2#planning-review-title, .panel-heading h2');
+  const headingCount = await headingEl.count();
+  if (headingCount !== 1) {
+    throw new Error(`Expected exactly 1 review panel heading in .panel-heading, got ${headingCount}`);
+  }
+
+  // Status badge must be scoped to the direct .panel-heading of the review panel
+  // (history badges live under .review-history-section .review-history-row)
+  const badgeEl = reviewPanelLocator.locator('.panel-heading .review-badge');
+  const badgeCount = await badgeEl.count();
+  if (badgeCount !== 1) {
+    throw new Error(`Expected exactly 1 review panel status badge in .panel-heading, got ${badgeCount}`);
+  }
+
+  return {
+    headingEl,
+    badgeEl
+  };
+}
+
 export function verifyClearance(measurements) {
   if (!Array.isArray(measurements) || measurements.length === 0) {
     return { passed: false, reason: 'No clearance measurements provided' };
@@ -1306,7 +1344,7 @@ export async function runAllProofs() {
   let cleanupB = null;
 
   try {
-    const { chromium } = await import('/Users/Rakesh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
+    const chromium = await loadChromium();
     browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
 
     // Session A
@@ -1726,7 +1764,7 @@ export async function runAllProofs() {
     await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=1`, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-review-panel', { timeout: 15000 });
 
-    const reviewStatusText = await pageA.locator('.review-status-card strong').innerText().catch(() => '');
+    const reviewStatusText = await pageA.locator('.planning-review-panel .review-status-card strong').innerText().catch(() => '');
     console.log(`Review status card text after reload: "${reviewStatusText}"`);
     report.b11_monthly_review_loop.review_completed_status_persisted_after_reload =
       reviewStatusText.toLowerCase().includes('up to date') ||
@@ -1811,8 +1849,12 @@ export async function runAllProofs() {
       }
 
       const topbarEl = pageA.locator('.topbar');
-      const headingEl = reviewPanelLocator.locator('h2');
-      const badgeEl = reviewPanelLocator.locator('.review-badge');
+      const topbarCount = await topbarEl.count();
+      if (topbarCount !== 1) {
+        throw new Error(`Expected exactly 1 sticky topbar, got ${topbarCount}`);
+      }
+
+      const { headingEl, badgeEl } = await locateReviewPanelHeaderElements(reviewPanelLocator);
       const panelEl = reviewPanelLocator;
 
       const topbarBox = await topbarEl.boundingBox();
@@ -1923,6 +1965,10 @@ export async function runAllProofs() {
 
     // Verify radio input is actually checked in the DOM
     const reviseRadioInput = stage4Panel.locator('input[value="revise"]');
+    const reviseRadioCount = await reviseRadioInput.count();
+    if (reviseRadioCount !== 1) {
+      throw new Error(`Expected exactly 1 revise radio input in review panel, got ${reviseRadioCount}`);
+    }
     const isRadioChecked = await reviseRadioInput.isChecked();
     const reviseSelectionResult = verifyReviseUiSelection(isRadioChecked);
     if (!reviseSelectionResult.passed) {
@@ -1932,7 +1978,8 @@ export async function runAllProofs() {
 
     // Fill review notes
     const reviewNotesInput = stage4Panel.locator('.review-notes-field input');
-    if (await reviewNotesInput.isVisible()) {
+    const reviewNotesCount = await reviewNotesInput.count();
+    if (reviewNotesCount === 1 && await reviewNotesInput.isVisible()) {
       await reviewNotesInput.fill('Revise assumptions: lower expenses and extended timeline');
     }
 
@@ -2015,16 +2062,21 @@ export async function runAllProofs() {
     await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
 
     // In the planning workspace, provide version notes & label
-    const notesInput = pageA.locator('.planning-notes-field input');
+    const notesInput = pageA.locator('.planning-save-panel .planning-notes-field input');
+    const notesCount = await notesInput.count();
+    if (notesCount !== 1) {
+      throw new Error(`Expected exactly 1 notes input in .planning-save-panel, got ${notesCount}`);
+    }
     await notesInput.fill('Version 3: Lowered annual expenses to $45,000');
-    const labelInput = pageA.locator('.planning-form-grid label:has-text("Version label") input');
-    if (await labelInput.isVisible()) {
+    const labelInput = pageA.locator('.planning-save-panel .planning-form-grid label:has-text("Version label") input');
+    const labelCount = await labelInput.count();
+    if (labelCount === 1 && await labelInput.isVisible()) {
       await labelInput.fill('Revised $45k spend');
     }
 
     // Save Version 3 via UI
     const saveNewVersionBtn = await assertTargetLocatorVisible(
-      pageA.locator('button:has-text("Save new version")'),
+      pageA.locator('.planning-save-panel button:has-text("Save new version")'),
       'Save new version button'
     );
     await saveNewVersionBtn.click();
@@ -2076,7 +2128,7 @@ export async function runAllProofs() {
 
     // Navigate to calculator via product route to inspect actual numerical input
     const openCalcFromOverviewBtn = await assertTargetLocatorVisible(
-      pageA.locator('button:has-text("Open calculator")').first(),
+      pageA.locator('.planning-save-panel .panel-heading button:has-text("Open calculator")'),
       'Open calculator button in Plan identity'
     );
     await openCalcFromOverviewBtn.click();
@@ -2098,7 +2150,7 @@ export async function runAllProofs() {
 
     // Navigate back to planning workspace
     const backToPlansFromCalcBtn = await assertTargetLocatorVisible(
-      pageA.locator('button:has-text("Back to Planning Workspace")'),
+      pageA.locator('[data-testid="calculator-plan-context"] button:has-text("Back to Planning Workspace")'),
       'Back to Planning Workspace button'
     );
     await backToPlansFromCalcBtn.click();
@@ -2319,11 +2371,16 @@ export async function runAllProofs() {
       () => !document.querySelector('.dashboard-reviews-rollup')?.innerText.includes('Checking review cadence'),
       { timeout: 15000 }
     );
-    await pageA.waitForSelector('.review-badge, .dashboard-plan-card', { timeout: 15000 });
+    await pageA.waitForSelector('.dashboard-reviews-rollup .dashboard-review-card', { timeout: 15000 });
 
-    const badgeLocator = pageA.locator('.review-badge').first();
-    if ((await badgeLocator.count()) === 0) {
-      throw new Error('Missing review badge on dashboard for contrast measurement');
+    const dashboardReviewCard = await assertTargetLocatorVisible(
+      pageA.locator('.dashboard-reviews-rollup .dashboard-review-card'),
+      '.dashboard-review-card inside .dashboard-reviews-rollup'
+    );
+    const badgeLocator = dashboardReviewCard.locator('.review-badge, .review-status-badge');
+    const badgeCount = await badgeLocator.count();
+    if (badgeCount !== 1) {
+      throw new Error(`Expected exactly 1 review badge in dashboard review card, got ${badgeCount}`);
     }
 
     const measureBadge = async () => badgeLocator.evaluate((el) => {
@@ -2374,15 +2431,18 @@ export async function runAllProofs() {
       !isNaN(lightBadgeContrast) && lightBadgeContrast >= 4.5;
 
     // Light theme visual capture: verify target locators visible before screenshots
-    await assertTargetLocatorVisible(pageA.locator('.review-badge'), '.review-badge in light theme');
-    const lightReviewContainer = await assertTargetLocatorVisible(
-      pageA.locator('.dashboard-reviews-rollup, .dashboard-review-card, .dashboard-plan-card'),
-      'review container in light theme'
+    const lightReviewCard = await assertTargetLocatorVisible(
+      pageA.locator('.dashboard-reviews-rollup .dashboard-review-card'),
+      'review card in light theme'
+    );
+    await assertTargetLocatorVisible(
+      lightReviewCard.locator('.review-badge, .review-status-badge'),
+      '.review-badge in light theme'
     );
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '07_b28_light_theme_presentation.png'), fullPage: true });
-    await lightReviewContainer.scrollIntoViewIfNeeded().catch(() => {});
-    await lightReviewContainer.screenshot({ path: join(SCREENSHOTS_DIR, '07_b28_light_theme_review_focused.png') });
+    await lightReviewCard.scrollIntoViewIfNeeded().catch(() => {});
+    await lightReviewCard.screenshot({ path: join(SCREENSHOTS_DIR, '07_b28_light_theme_review_focused.png') });
 
     const darkTheme = await switchTheme(pageA, 'dark');
     await pageA.waitForTimeout(300);
@@ -2393,15 +2453,18 @@ export async function runAllProofs() {
       !isNaN(darkBadgeContrast) && darkBadgeContrast >= 4.5;
 
     // Dark theme visual capture: verify target locators visible before screenshots
-    await assertTargetLocatorVisible(pageA.locator('.review-badge'), '.review-badge in dark theme');
-    const darkReviewContainer = await assertTargetLocatorVisible(
-      pageA.locator('.dashboard-reviews-rollup, .dashboard-review-card, .dashboard-plan-card'),
-      'review container in dark theme'
+    const darkReviewCard = await assertTargetLocatorVisible(
+      pageA.locator('.dashboard-reviews-rollup .dashboard-review-card'),
+      'review card in dark theme'
+    );
+    await assertTargetLocatorVisible(
+      darkReviewCard.locator('.review-badge, .review-status-badge'),
+      '.review-badge in dark theme'
     );
 
     await pageA.screenshot({ path: join(SCREENSHOTS_DIR, '08_b28_dark_theme_presentation.png'), fullPage: true });
-    await darkReviewContainer.scrollIntoViewIfNeeded().catch(() => {});
-    await darkReviewContainer.screenshot({ path: join(SCREENSHOTS_DIR, '08_b28_dark_theme_review_focused.png') });
+    await darkReviewCard.scrollIntoViewIfNeeded().catch(() => {});
+    await darkReviewCard.screenshot({ path: join(SCREENSHOTS_DIR, '08_b28_dark_theme_review_focused.png') });
     report.b28_presentation_and_accessibility.theme_switching_verified = lightTheme.dataMode === 'light' && darkTheme.dataMode === 'dark';
 
     // Restore light theme

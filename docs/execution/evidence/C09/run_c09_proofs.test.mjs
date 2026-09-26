@@ -23,7 +23,9 @@ import {
   verifyIdempotentReplay,
   validateDeploymentInputs,
   verifyDeployment,
-  loadCalculateFirePlan
+  loadCalculateFirePlan,
+  locateReviewPanelHeaderElements,
+  loadChromium
 } from './run_c09_proofs.mjs';
 import { createFixtureServer } from '../../../../scripts/measure_local_clearance.mjs';
 
@@ -1644,4 +1646,134 @@ test('Collector Negative 41: verifyClearance fails closed when focused control i
   ];
   const resClear = verifyClearance(clearControl);
   assert.equal(resClear.passed, true);
+});
+
+test('Collector Positive: locateReviewPanelHeaderElements identifies header badge amidst multiple history badges', async () => {
+  const chromium = await loadChromium();
+  const browser = await chromium.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
+  try {
+    const page = await browser.newPage();
+    // Render review panel reflecting real DOM: one header status badge in .panel-heading plus two history badges
+    await page.setContent(`
+      <section class="panel planning-review-panel" aria-labelledby="planning-review-title">
+        <div class="panel-heading planning-heading-row">
+          <div>
+            <p class="eyebrow">Cadence &amp; Governance</p>
+            <h2 id="planning-review-title">Monthly plan review</h2>
+          </div>
+          <span class="review-badge review-badge-up-to-date">Up to Date</span>
+        </div>
+        <div class="review-status-card review-status-up-to-date">
+          <p>Assumptions confirmed for Version 2</p>
+        </div>
+        <div class="review-history-section" aria-label="Review history">
+          <h3>Review history</h3>
+          <div class="planning-list">
+            <article class="planning-list-row review-history-row">
+              <div>Version 1 · Keep</div>
+              <span class="review-badge review-badge-keep">KEEP</span>
+            </article>
+            <article class="planning-list-row review-history-row">
+              <div>Version 1 · Defer</div>
+              <span class="review-badge review-badge-defer">DEFER</span>
+            </article>
+          </div>
+        </div>
+      </section>
+    `);
+
+    const reviewPanel = page.locator('.planning-review-panel');
+
+    // 1. Prove that un-scoped selector fails with Playwright strict mode violation
+    const unscopedBadgeLocator = reviewPanel.locator('.review-badge');
+    const unscopedCount = await unscopedBadgeLocator.count();
+    assert.equal(unscopedCount, 3, 'Un-scoped selector matches header badge and both history badges (3 total)');
+    await assert.rejects(
+      async () => unscopedBadgeLocator.boundingBox(),
+      /strict mode violation/,
+      'Un-scoped locator.boundingBox() must throw strict mode violation when multiple badges exist'
+    );
+
+    // 2. Prove that corrected locator identifies exactly the header status badge and heading
+    const { headingEl, badgeEl } = await locateReviewPanelHeaderElements(reviewPanel);
+
+    assert.equal(await headingEl.count(), 1, 'Header heading must match exactly 1 element');
+    assert.equal(await badgeEl.count(), 1, 'Header status badge must match exactly 1 element');
+
+    assert.equal(await headingEl.innerText(), 'Monthly plan review');
+    assert.equal(await badgeEl.innerText(), 'Up to Date');
+
+    const headingBox = await headingEl.boundingBox();
+    assert.ok(headingBox && headingBox.width > 0 && headingBox.height > 0, 'Heading bounding box must resolve with valid dimensions');
+
+    const badgeBox = await badgeEl.boundingBox();
+    assert.ok(badgeBox && badgeBox.width > 0 && badgeBox.height > 0, 'Badge bounding box must resolve with valid dimensions');
+  } finally {
+    await browser.close();
+  }
+});
+
+test('Collector Negative 42: locateReviewPanelHeaderElements fails closed on duplicate or missing header status badge', async () => {
+  const chromium = await loadChromium();
+  const browser = await chromium.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
+  try {
+    const page = await browser.newPage();
+
+    // Case A: Duplicate status badges inside .panel-heading
+    await page.setContent(`
+      <section class="panel planning-review-panel">
+        <div class="panel-heading">
+          <h2>Monthly plan review</h2>
+          <span class="review-badge">Up to Date</span>
+          <span class="review-badge">Duplicate Badge</span>
+        </div>
+      </section>
+    `);
+    const panelDup = page.locator('.planning-review-panel');
+    await assert.rejects(
+      () => locateReviewPanelHeaderElements(panelDup),
+      /Expected exactly 1 review panel status badge in \.panel-heading, got 2/
+    );
+
+    // Case B: Missing status badge inside .panel-heading (even though history badges exist)
+    await page.setContent(`
+      <section class="panel planning-review-panel">
+        <div class="panel-heading">
+          <h2>Monthly plan review</h2>
+        </div>
+        <div class="review-history-section">
+          <span class="review-badge">KEEP</span>
+        </div>
+      </section>
+    `);
+    const panelMissing = page.locator('.planning-review-panel');
+    await assert.rejects(
+      () => locateReviewPanelHeaderElements(panelMissing),
+      /Expected exactly 1 review panel status badge in \.panel-heading, got 0/
+    );
+
+    // Case C: Duplicate heading in .panel-heading
+    await page.setContent(`
+      <section class="panel planning-review-panel">
+        <div class="panel-heading">
+          <h2>Heading 1</h2>
+          <h2>Heading 2</h2>
+          <span class="review-badge">Up to Date</span>
+        </div>
+      </section>
+    `);
+    const panelDupHeading = page.locator('.planning-review-panel');
+    await assert.rejects(
+      () => locateReviewPanelHeaderElements(panelDupHeading),
+      /Expected exactly 1 review panel heading in \.panel-heading, got 2/
+    );
+
+    // Case D: Missing review panel locator
+    await assert.rejects(
+      () => locateReviewPanelHeaderElements(null),
+      /Review panel locator is missing or undefined/
+    );
+  } finally {
+    await browser.close();
+  }
 });
