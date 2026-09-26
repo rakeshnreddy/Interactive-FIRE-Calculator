@@ -49,10 +49,10 @@ export function computeFileMetadata(filePath, repoRoot = process.cwd()) {
     throw new Error(`Cannot derive first-added Git commit for: ${relPath}`);
   }
 
-  // Derive latest commit that modified this path
+  // Derive latest commit that added or modified content; ignore later deletion commits
   let contentCommit = null;
   try {
-    const gitContentLog = execFileSync('git', ['log', '-1', '--format=%H', '--', relPath], {
+    const gitContentLog = execFileSync('git', ['log', '-1', '--diff-filter=AM', '--format=%H', '--', relPath], {
       cwd: repoRoot,
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore']
@@ -188,9 +188,9 @@ export function verifyManifestFromGitObjects(manifestPath, repoRoot = process.cw
       throw new Error(`Content object size mismatch for ${item.path}: expected ${item.bytes}, got ${contentBytes.length}`);
     }
 
-    // 4. If content_commit differs from added_commit, verify it is indeed the latest modifying commit
+    // 4. If content_commit differs from added_commit, verify it is the latest content commit (not a later deletion)
     if (item.content_commit !== item.added_commit) {
-      const actualLatestCommit = execFileSync('git', ['log', '-1', '--format=%H', '--', item.path], {
+      const actualLatestCommit = execFileSync('git', ['log', '-1', '--diff-filter=AM', '--format=%H', '--', item.path], {
         cwd: repoRoot,
         encoding: 'utf8',
         stdio: ['ignore', 'pipe', 'ignore']

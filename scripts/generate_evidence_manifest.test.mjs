@@ -13,7 +13,7 @@ import {
   resolvePreviewProvenance
 } from './generate_evidence_manifest.mjs';
 
-function setupTempGitRepo() {
+function setupTempGitRepo({ withModification = true } = {}) {
   const root = fs.mkdtempSync(path.join(tmpdir(), 'finpath-manifest-test-'));
   execFileSync('git', ['init'], { cwd: root });
   execFileSync('git', ['config', 'user.name', 'Test Agent'], { cwd: root });
@@ -30,11 +30,15 @@ function setupTempGitRepo() {
   execFileSync('git', ['commit', '-m', 'add test image'], { cwd: root });
   const addedCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 
-  // Commit 2: content modification
-  const modifiedBytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x01, 0x02, 0x03, 0x04]);
-  fs.writeFileSync(fullFilePath, modifiedBytes);
-  execFileSync('git', ['add', fileRelPath], { cwd: root });
-  execFileSync('git', ['commit', '-m', 'update test image'], { cwd: root });
+  // Commit 2: optional content modification
+  const modifiedBytes = withModification
+    ? Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x01, 0x02, 0x03, 0x04])
+    : initialBytes;
+  if (withModification) {
+    fs.writeFileSync(fullFilePath, modifiedBytes);
+    execFileSync('git', ['add', fileRelPath], { cwd: root });
+    execFileSync('git', ['commit', '-m', 'update test image'], { cwd: root });
+  }
   const contentCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 
   return { root, fileRelPath, fullFilePath, addedCommit, contentCommit, initialBytes, modifiedBytes };
@@ -120,4 +124,21 @@ test('resolvePreviewProvenance truthfully separates C01 local from C01 R4 hosted
   // Assert no C09 preview URL is ever assigned to C01 files
   assert.notEqual(localMeta.preview, 'https://18b043da.interactive-fire-calculator.pages.dev');
   assert.notEqual(hostedMeta.preview, 'https://18b043da.interactive-fire-calculator.pages.dev');
+});
+
+
+test('verification survives a later committed deletion of added or modified evidence', () => {
+  for (const withModification of [false, true]) {
+    const { root, fileRelPath } = setupTempGitRepo({ withModification });
+    try {
+      const manifest = generateManifest(['output'], { repoRoot: root });
+      const manifestPath = path.join(root, 'manifest.json');
+      fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+      execFileSync('git', ['rm', fileRelPath], { cwd: root, stdio: 'ignore' });
+      execFileSync('git', ['commit', '-m', 'untrack test image'], { cwd: root, stdio: 'ignore' });
+      assert.equal(verifyManifestFromGitObjects(manifestPath, root), 1);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
 });
