@@ -26,15 +26,14 @@ export default {
       const account = await a.api('POST', '/api/accounts', { name: accountName, accountType: 'checking', currency: 'USD', institutionName: null, balanceCents: 250_000, balanceDate: today });
       const accountId = account.body?.account?.id;
       if (account.status !== 201 || !accountId) fail(`account create returned ${account.status}`);
-      const tx = await a.api('POST', '/api/transactions', { accountId, amountCents: -4_200, category: 'Groceries', description: 'Smoke groceries', notes: null, transactionDate: today, transactionType: 'expense' });
+      const tx = await a.api('POST', '/api/transactions', { accountId, amountCents: 4_200, category: 'Groceries', description: 'Smoke groceries', notes: null, transactionDate: today, transactionType: 'expense' });
       if (tx.status !== 201) fail(`transaction create returned ${tx.status}`);
       return { accounts: 1, transactions: 1 };
     });
 
     const readScope = async (page) => {
       await page.goto(`${config.url}/reports`, { waitUntil: 'domcontentloaded' });
-      await page.waitForSelector('[data-testid="report-scope"]', { timeout: 30000 });
-      await page.waitForFunction(() => !document.body.innerText.includes('Loading'), null, { timeout: 30000 }).catch(() => {});
+      await page.waitForSelector('[data-testid="report-scope"][aria-busy="false"]', { timeout: 30000 });
       return page.evaluate(() => {
         const scope = document.querySelector('[data-testid="report-scope"]');
         const value = (label) => [...scope.querySelectorAll('dt')].find((dt) => dt.textContent === label)?.nextElementSibling?.textContent ?? null;

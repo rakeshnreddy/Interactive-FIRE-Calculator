@@ -13,10 +13,10 @@ function insightIcon(area: InsightArea) {
   return ShieldCheck;
 }
 
-function ReportScopePanel({ scope, insights }: { scope: ReportScope; insights: FinancialInsight[] }) {
+function ReportScopePanel({ scope, insights, isLoading }: { scope: ReportScope; insights: FinancialInsight[]; isLoading: boolean }) {
   const period = scope.transactionPeriod ? `${scope.transactionPeriod.from} to ${scope.transactionPeriod.to}` : 'None recorded';
   return (
-    <section className="account-panel report-scope-panel" aria-labelledby="report-scope-title" data-testid="report-scope">
+    <section className="account-panel report-scope-panel" aria-labelledby="report-scope-title" aria-busy={isLoading} data-testid="report-scope">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">What this report is based on</p>
@@ -42,6 +42,10 @@ function ReportScopePanel({ scope, insights }: { scope: ReportScope; insights: F
           </button>
         </div>
       </div>
+      {isLoading ? (
+        <p className="report-complete" role="status">Loading your saved data… the scope and gaps appear once it has loaded.</p>
+      ) : (
+      <>
       <dl className="report-scope-grid">
         <div><dt>Plan</dt><dd>{scope.planLabel}</dd></div>
         <div>
@@ -62,6 +66,8 @@ function ReportScopePanel({ scope, insights }: { scope: ReportScope; insights: F
       ) : (
         <p className="report-complete">No data gaps detected for this report.</p>
       )}
+      </>
+      )}
     </section>
   );
 }
@@ -69,11 +75,13 @@ function ReportScopePanel({ scope, insights }: { scope: ReportScope; insights: F
 export function ReportsPanel({
   insights,
   onNavigate,
-  scope
+  scope,
+  isLoading = false
 }: {
   insights: FinancialInsight[];
   onNavigate: (route: InsightRouteTarget) => void;
   scope?: ReportScope;
+  isLoading?: boolean;
 }) {
   const recommendationCount = insights.filter((insight) => insight.category === 'recommendation').length;
   const highPriorityCount = insights.filter((insight) => insight.priority === 'high').length;
@@ -83,7 +91,7 @@ export function ReportsPanel({
 
   return (
     <section className="insights-workspace" aria-label="Insights and recommendations">
-      {scope ? <ReportScopePanel scope={scope} insights={insights} /> : null}
+      {scope ? <ReportScopePanel scope={scope} insights={insights} isLoading={isLoading} /> : null}
 
       <div className="insight-summary-strip">
         <article>

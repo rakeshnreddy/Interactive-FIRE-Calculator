@@ -23,11 +23,11 @@ afterEach(() => {
   csv.downloadCsv.mockReset();
 });
 
-function render(scope = buildReportScope({ accounts: [], goals: [], transactions: [], planLabel: null, today: '2026-09-26' })) {
+function render(scope = buildReportScope({ accounts: [], goals: [], transactions: [], planLabel: null, today: '2026-09-26' }), isLoading = false) {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
-  act(() => root.render(<ReportsPanel insights={[insight]} onNavigate={() => {}} scope={scope} />));
+  act(() => root.render(<ReportsPanel insights={[insight]} onNavigate={() => {}} scope={scope} isLoading={isLoading} />));
   return container;
 }
 
@@ -40,6 +40,14 @@ describe('ReportsPanel (B29)', () => {
     expect(scope.textContent).toContain('Report scope · as of 2026-09-26');
     expect(scope.textContent).toContain('cash-flow insights are unavailable, not zero');
     expect(scope.textContent).toContain('None recorded');
+  });
+
+  it('does not present empty-data gaps while saved data is still loading', () => {
+    const container = render(undefined, true);
+    const scope = container.querySelector('[data-testid="report-scope"]')!;
+    expect(scope.getAttribute('aria-busy')).toBe('true');
+    expect(scope.textContent).toContain('Loading your saved data');
+    expect(scope.textContent).not.toContain('unavailable, not zero');
   });
 
   it('labels priority in text, not colour alone', () => {

@@ -3040,7 +3040,7 @@ function PlatformPage({
       ) : null}
 
       {route === '/reports' ? (
-        <ReportsPanel insights={financialInsights} onNavigate={onNavigate} scope={reportScope} />
+        <ReportsPanel insights={financialInsights} onNavigate={onNavigate} scope={reportScope} isLoading={isLoadingAccounts || isLoadingTransactions || isLoadingGoals} />
       ) : null}
 
       {route === '/dashboard' || route === '/accounts' || route === '/transactions' || route === '/goals' || route === '/reports' || route === '/settings' ? null : (

@@ -345,6 +345,8 @@ async function createLiveAdapters(config) {
   const clerkClient = createClerkClient({ secretKey: env.CLERK_SECRET_KEY });
   const fapi = Buffer.from(env.VITE_CLERK_PUBLISHABLE_KEY.replace(/^pk_test_/, ''), 'base64').toString('utf8').replace(/\$$/, '');
   const testingToken = (await clerkClient.testingTokens.createTestingToken()).token;
+  // Distinct Clerk test numbers (555-0100..0199) for the tenants of one run.
+  const phoneBase = crypto.randomInt(100);
 
   const { chromium } = await import('playwright-core');
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
@@ -358,7 +360,7 @@ async function createLiveAdapters(config) {
         // Clerk development test identities: +clerk_test emails and 555-01xx numbers never send messages.
         const user = await clerkClient.users.createUser({
           emailAddress: [`finpath_smoke_${label.toLowerCase()}_${nonce}+clerk_test@example.com`],
-          phoneNumber: [`+1201555${String(100 + crypto.randomInt(100)).padStart(4, '0')}`],
+          phoneNumber: [`+1201555${String(100 + ((phoneBase + label.charCodeAt(0)) % 100)).padStart(4, '0')}`],
           password: `FinPath!${crypto.randomBytes(18).toString('base64url')}#9`
         }).catch((error) => {
           throw new SmokeError(`Clerk createUser failed: ${error?.errors?.[0]?.code || error?.status || 'unknown'}`);
