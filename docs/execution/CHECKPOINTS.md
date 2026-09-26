@@ -16,7 +16,7 @@ C06 is accepted. C07 is released for owner-authorized free preview Clerk setup a
 | C06 | Tenancy, lifecycle and UI fixtures | B05 → B07 → B25 | accepted | 0f3ae8d9cc4d447518e484b8de7a34ee1b54f38a | [approved](reviews/C06.md) |
 | C07 | Owner setup and hosted proof | B06 | accepted | d81f31187892f636ab9d2b6cb492e90e9b7d166d | [record](reviews/C07.md) |
 | C08 | Dashboard and transactions | B26 → B27 | accepted | a95053b19108634656aef491e46b9be9fe3ea57d | [record](reviews/C08.md) |
-| C09 | Saved decision and monthly review | B10 → B11 → B28 | released; B10 accepted, B11/B28 rework | — | [latest review](reviews/C09-uncommitted-rework-2026-09-25.md) · [focused worker prompt](C09_REVISE_FINISH_PROMPT.md) |
+| C09 | Saved decision and monthly review | B10 → B11 → B28 | released; B10 accepted, B11/B28 rework | — | [latest review](reviews/C09-collector-schema-review-2026-09-25.md) · [focused worker prompt](C09_COLLECTOR_SCHEMA_FINISH_PROMPT.md) |
 | C09A | Owner-prioritized FIRE assumption control and calculator audit | B35 | accepted | 5dda3d2be24246e3470a65e7653a0b6e425cbece | [approved](reviews/C09A.md) |
 | C10 | Reports and settings | B29 → B30 | locked | — | — |
 | C11 | Measurement and final quality | B12 → B31 | locked | — | — |
