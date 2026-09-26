@@ -598,7 +598,7 @@
       "id": "B36",
       "title": "Make FIRE answer when can I retire with explicit rates",
       "checkpoint": "C09B",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B35",
         "B39",
@@ -606,7 +606,7 @@
       ],
       "prompt": "prompts/B36.md",
       "submission": null,
-      "owner": null,
+      "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -694,15 +694,15 @@
       "id": "B42",
       "title": "Shared hosted smoke runner plus the C09 revise residual",
       "checkpoint": "C09B",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B37",
         "B39"
       ],
       "prompt": "prompts/B42.md",
-      "submission": null,
+      "submission": "submissions/B42.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": null,
+      "code_sha": "a09ff46",
       "review": null,
       "blocked_reason": null
     }

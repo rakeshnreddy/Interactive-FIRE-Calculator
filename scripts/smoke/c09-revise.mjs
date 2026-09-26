@@ -80,7 +80,8 @@ export default {
       plan: { annualExpense, initialPortfolio, withdrawalTiming: 'start', desiredFinalValue: 0, ratePeriods: [{ duration: 35, r: 0.07, i: 0.025 }], oneOffEvents: [] }
     });
 
-    const planId = await stage('seed-plan-versions', async () => {
+    let planId;
+    await stage('seed-plan-versions', async () => {
       const goal = await a.api('POST', '/api/goals', { name: 'Smoke retirement', goalType: 'retirement', targetAmountCents: 150000000, currentAmountCents: 50000000, targetDate: '2045-06-01' });
       const goalId = goal.body?.goal?.id;
       if (goal.status !== 201 || !goalId) fail(`goal create returned ${goal.status}`);
@@ -96,7 +97,8 @@ export default {
         ["UPDATE plans SET created_at = datetime('now','-35 days'), updated_at = datetime('now','-35 days') WHERE id = ? AND user_id = ?;", [id, a.id]],
         ["UPDATE plan_versions SET created_at = datetime('now','-35 days') WHERE plan_id = ? AND user_id = ?;", [id, a.id]]
       ]) await d1(sql, params);
-      return id;
+      planId = id;
+      return { versions: 2 };
     });
     const detail = { planId: '[synthetic]' };
 
@@ -182,7 +184,7 @@ export default {
 
     await stage('tenant-b-denied', async () => {
       const read = await b.api('GET', `/api/plans/${planId}`);
-      const review = await b.api('POST', `/api/plans/${planId}/reviews`, { planVersionNumber: 3, decision: 'keep', idempotencyKey: `smoke-b-${Date.now()}` });
+      const review = await b.api('POST', `/api/plans/${planId}/reviews`, { planVersionNumber: 3, evidenceDate: new Date().toISOString().slice(0, 10), decision: 'keep', status: 'completed', idempotencyKey: `smoke-b-${Date.now()}` });
       if (read.status !== 404 || review.status !== 404) fail(`tenant B got ${read.status}/${review.status}, expected 404/404`);
     });
 
