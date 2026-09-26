@@ -419,6 +419,170 @@ export async function assertTargetLocatorVisible(locator, name = 'Target locator
 }
 
 // --------------------------------------------------------------------------
+// Planning Workspace Readiness and Hydration Verification Helper
+// --------------------------------------------------------------------------
+export async function waitForPlanningWorkspaceReady(page, {
+  expectedPlanId,
+  expectedVersion,
+  timeout = 15000,
+  contextLabel = 'Planning Workspace Version Ready',
+  screenshotsDir = null
+} = {}) {
+  if (!page) {
+    throw new Error(`[${contextLabel}] Playwright page object is required`);
+  }
+
+  const currentUrl = page.url();
+  let parsedUrl = null;
+  try {
+    parsedUrl = new URL(currentUrl);
+  } catch {
+    throw new Error(`[${contextLabel}] Malformed current URL: "${currentUrl}"`);
+  }
+
+  // Ensure route points to /plans (unless about:blank in isolated tests)
+  if (!parsedUrl.pathname.endsWith('/plans') && currentUrl !== 'about:blank') {
+    throw new Error(`[${contextLabel}] Expected pathname to end with '/plans', got: "${parsedUrl.pathname}"`);
+  }
+
+  // Check expectedPlanId and expectedVersion against search params if not about:blank
+  if (currentUrl !== 'about:blank') {
+    const urlPlanId = parsedUrl.searchParams.get('planId');
+    const urlVersion = parsedUrl.searchParams.get('version');
+    if (expectedPlanId && urlPlanId !== expectedPlanId) {
+      throw new Error(`[${contextLabel}] Route planId mismatch: expected "${expectedPlanId}", got "${urlPlanId}"`);
+    }
+    if (expectedVersion !== undefined && urlVersion !== String(expectedVersion)) {
+      throw new Error(`[${contextLabel}] Route version mismatch: expected "${expectedVersion}", got "${urlVersion}"`);
+    }
+  }
+
+  const targetVersionStr = expectedVersion !== undefined ? `Version ${expectedVersion} loaded` : null;
+
+  try {
+    await page.waitForFunction(
+      ({ targetVersionStr }) => {
+        // 1. Terminal / Error states: stop waiting immediately
+        const controlledError = document.querySelector('.planning-controlled-error, [data-testid="planning-error-state"]');
+        if (controlledError && (controlledError.offsetParent !== null || controlledError.getClientRects().length > 0)) {
+          return true;
+        }
+        const authGate = document.querySelector('.auth-gate-card, .auth-gate');
+        if (authGate && (authGate.offsetParent !== null || authGate.getClientRects().length > 0)) {
+          return true;
+        }
+
+        // 2. Overview version check
+        const overview = document.querySelector('.planning-overview');
+        const overviewText = overview ? (overview.innerText || overview.textContent || '') : '';
+        const isTargetVersionLoaded = targetVersionStr ? overviewText.includes(targetVersionStr) : true;
+
+        // 3. Review panel visibility check
+        const panel = document.querySelector('.planning-review-panel');
+        const isPanelVisible = panel && (panel.offsetParent !== null || panel.getClientRects().length > 0);
+
+        // 4. If wrong version already settled while not loading
+        const isLoading = Boolean(document.querySelector('.planning-loading-panel, [aria-busy="true"]'));
+        if (!isLoading && targetVersionStr && overviewText.includes('Version ') && !isTargetVersionLoaded) {
+          return true;
+        }
+
+        return isTargetVersionLoaded && isPanelVisible;
+      },
+      { targetVersionStr },
+      { timeout }
+    );
+  } catch {
+    // Timeout expired - proceed to extract safe diagnostics and fail explicitly
+  }
+
+  const diagnostics = await page.evaluate(() => {
+    const getCounts = (selector) => {
+      const list = document.querySelectorAll(selector);
+      let visible = 0;
+      for (const el of list) {
+        if (el.offsetParent !== null || el.getClientRects().length > 0) visible++;
+      }
+      return { count: list.length, visibleCount: visible };
+    };
+
+    const overviewEl = document.querySelector('.planning-overview');
+    const errorEl = document.querySelector('.planning-controlled-error, [data-testid="planning-error-state"]');
+
+    return {
+      clerkLoaded: typeof window !== 'undefined' && Boolean(window.Clerk?.loaded),
+      isSignedIn: typeof window !== 'undefined' && Boolean(window.Clerk?.user && window.Clerk?.session),
+      userIdPresent: typeof window !== 'undefined' && Boolean(window.Clerk?.user?.id),
+      workspace: getCounts('.planning-workspace'),
+      reviewPanel: getCounts('.planning-review-panel'),
+      loadingPanel: getCounts('.planning-loading-panel, [aria-busy="true"]'),
+      controlledError: getCounts('.planning-controlled-error, [data-testid="planning-error-state"]'),
+      authGate: getCounts('.auth-gate-card, .auth-gate'),
+      overview: getCounts('.planning-overview'),
+      overviewText: overviewEl ? (overviewEl.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 150) : '',
+      errorText: errorEl ? (errorEl.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 200) : ''
+    };
+  }).catch(() => null);
+
+  const safeSearchParams = {};
+  if (parsedUrl) {
+    for (const [k, v] of parsedUrl.searchParams.entries()) {
+      safeSearchParams[k] = k === 'planId' ? '[REDACTED_PLAN_ID]' : v;
+    }
+  }
+  const safeRouteShape = {
+    pathname: parsedUrl?.pathname || '',
+    params: safeSearchParams
+  };
+
+  // Check controlled error state
+  if (diagnostics?.controlledError?.visibleCount > 0) {
+    const sanitizedErr = diagnostics.errorText || 'Controlled error state active';
+    throw new Error(`[${contextLabel}] Controlled error displayed instead of Plan ${expectedPlanId || ''} Version ${expectedVersion || ''}: "${sanitizedErr}" (Route: ${JSON.stringify(safeRouteShape)})`);
+  }
+
+  // Check auth gate / signed-out
+  if (diagnostics?.authGate?.visibleCount > 0 || (diagnostics?.clerkLoaded && !diagnostics?.isSignedIn)) {
+    throw new Error(`[${contextLabel}] User authentication lost or auth-gate shown (clerkLoaded: ${diagnostics?.clerkLoaded}, isSignedIn: ${diagnostics?.isSignedIn}, Route: ${JSON.stringify(safeRouteShape)})`);
+  }
+
+  // Check wrong version
+  if (targetVersionStr && diagnostics?.overviewText && !diagnostics.overviewText.includes(targetVersionStr)) {
+    throw new Error(`[${contextLabel}] Wrong version loaded in planning workspace: expected "${targetVersionStr}", but overview shows "${diagnostics.overviewText}" (Route: ${JSON.stringify(safeRouteShape)})`);
+  }
+
+  // Check review panel missing or invisible
+  if (!diagnostics || diagnostics.reviewPanel.count === 0 || diagnostics.reviewPanel.visibleCount === 0) {
+    if (screenshotsDir && typeof page.screenshot === 'function') {
+      try {
+        await page.screenshot({ path: join(screenshotsDir, 'diagnostic_planning_panel_failure.png') });
+      } catch {}
+    }
+    throw new Error(`[${contextLabel}] .planning-review-panel not visible within ${timeout}ms. Diagnostics: ${JSON.stringify({
+      route: safeRouteShape,
+      clerk: { loaded: diagnostics?.clerkLoaded, signedIn: diagnostics?.isSignedIn, hasUserId: diagnostics?.userIdPresent },
+      nodes: {
+        workspace: diagnostics?.workspace,
+        reviewPanel: diagnostics?.reviewPanel,
+        loadingPanel: diagnostics?.loadingPanel,
+        controlledError: diagnostics?.controlledError,
+        authGate: diagnostics?.authGate,
+        overview: diagnostics?.overview
+      },
+      overviewText: diagnostics?.overviewText
+    })}`);
+  }
+
+  // Check ambiguous (duplicate) review panel
+  if (diagnostics.reviewPanel.count > 1) {
+    throw new Error(`[${contextLabel}] Ambiguous review panel: expected exactly 1 .planning-review-panel, found ${diagnostics.reviewPanel.count}`);
+  }
+
+  const panelLocator = page.locator('.planning-review-panel');
+  return panelLocator;
+}
+
+// --------------------------------------------------------------------------
 // Keyboard Navigation & Action Accessibility Proofs
 // --------------------------------------------------------------------------
 export function evaluateKeyboardActionProof({
@@ -1484,6 +1648,7 @@ export async function runAllProofs() {
     const v1Url = `${previewUrl}/plans?planId=${planAId}&version=1`;
     await pageA.goto(v1Url, { waitUntil: 'domcontentloaded' });
     await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
+    await pageA.waitForSelector('.historical-version-banner', { timeout: 15000 });
 
     const renderedVersionBanner = await pageA.locator('.historical-version-banner').innerText();
     const renderedOverview = await pageA.locator('.planning-overview').innerText();
@@ -1950,11 +2115,13 @@ export async function runAllProofs() {
     // R5 Stage 4: Revise Review Choice (Full UI Journey -> Version 3 -> Reload -> Immutability)
     console.log('\n--- R5 Stage 4: Revise Review Choice Full Journey ---');
     await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=2`, { waitUntil: 'domcontentloaded' });
-    await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
-    const stage4Panel = await assertTargetLocatorVisible(
-      pageA.locator('.planning-review-panel'),
-      '.planning-review-panel on Version 2'
-    );
+    const stage4Panel = await waitForPlanningWorkspaceReady(pageA, {
+      expectedPlanId: planAId,
+      expectedVersion: 2,
+      timeout: 15000,
+      contextLabel: 'Stage 4 Version 2',
+      screenshotsDir: SCREENSHOTS_DIR
+    });
 
     // Verify Version 2 review form radio controls
     const reviseChoiceCard = await assertTargetLocatorVisible(
@@ -2001,6 +2168,7 @@ export async function runAllProofs() {
       'Record revision review button'
     );
     await recordReviewBtn.click();
+    await pageA.waitForSelector('[data-testid="plan-revision-prompt"]', { timeout: 15000 });
 
     // Verify explicit revision next step prompt is rendered in the UI
     const revisionPrompt = await assertTargetLocatorVisible(
@@ -2060,6 +2228,7 @@ export async function runAllProofs() {
     await backToPlansBtn.click();
     await pageA.waitForURL('**/plans**', { timeout: 15000 });
     await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
+    await pageA.waitForSelector('.planning-save-panel .planning-notes-field input', { timeout: 15000 });
 
     // In the planning workspace, provide version notes & label
     const notesInput = pageA.locator('.planning-save-panel .planning-notes-field input');
@@ -2119,11 +2288,13 @@ export async function runAllProofs() {
     // Reload Version 3 via deep link
     console.log('Reloading Version 3 via deep link...');
     await pageA.goto(`${previewUrl}/plans?planId=${planAId}&version=3`, { waitUntil: 'domcontentloaded' });
-    await pageA.waitForSelector('.planning-workspace', { timeout: 15000 });
-    const overviewV3 = await pageA.locator('.planning-overview').innerText().catch(() => '');
-    if (!overviewV3.includes('Version 3 loaded')) {
-      throw new Error(`Expected planning overview to show Version 3 loaded, got: "${overviewV3}"`);
-    }
+    await waitForPlanningWorkspaceReady(pageA, {
+      expectedPlanId: planAId,
+      expectedVersion: 3,
+      timeout: 15000,
+      contextLabel: 'Version 3 Reload',
+      screenshotsDir: SCREENSHOTS_DIR
+    });
     console.log('Planning overview confirms Version 3 loaded');
 
     // Navigate to calculator via product route to inspect actual numerical input
@@ -2133,6 +2304,7 @@ export async function runAllProofs() {
     );
     await openCalcFromOverviewBtn.click();
     await pageA.waitForURL('**/calculators/fire', { timeout: 15000 });
+    await pageA.waitForSelector('input#fire-annual-expense', { timeout: 15000 });
 
     const reloadedCalcExpenseInput = await assertTargetLocatorVisible(
       pageA.locator('input#fire-annual-expense'),

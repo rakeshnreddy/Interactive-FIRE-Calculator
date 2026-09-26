@@ -25,6 +25,7 @@ import {
   verifyDeployment,
   loadCalculateFirePlan,
   locateReviewPanelHeaderElements,
+  waitForPlanningWorkspaceReady,
   loadChromium
 } from './run_c09_proofs.mjs';
 import { createFixtureServer } from '../../../../scripts/measure_local_clearance.mjs';
@@ -1775,5 +1776,275 @@ test('Collector Negative 42: locateReviewPanelHeaderElements fails closed on dup
     );
   } finally {
     await browser.close();
+  }
+});
+
+test('Collector Positive: waitForPlanningWorkspaceReady waits for asynchronous Version 2 mount and returns review panel', async () => {
+  const chromium = await loadChromium();
+  const browser = await chromium.launch({
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    headless: true
+  });
+
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`<!DOCTYPE html>
+<html>
+<head><title>Plans</title></head>
+<body>
+  <div class="planning-workspace">
+    <section class="planning-overview">
+      <article>
+        <span>Active plan</span>
+        <strong>Unsaved draft</strong>
+        <small>No account version selected</small>
+      </article>
+    </section>
+  </div>
+  <script>
+    // Simulate asynchronous plan hydration after API response
+    setTimeout(() => {
+      const overview = document.querySelector('.planning-overview');
+      if (overview) {
+        overview.innerHTML = '<article><span>Active plan</span><strong>Retirement Roadmap</strong><small>Version 2 loaded</small></article>';
+      }
+      const workspace = document.querySelector('.planning-workspace');
+      if (workspace) {
+        const panel = document.createElement('section');
+        panel.className = 'panel planning-review-panel';
+        panel.setAttribute('aria-labelledby', 'planning-review-title');
+        panel.innerHTML = '<div class="panel-heading"><h2 id="planning-review-title">Monthly plan review</h2><span class="review-badge review-badge-up-to-date">Up to Date</span></div><div class="review-action-container"><div class="review-choice-card"><input type="radio" name="review-decision" value="revise" /><strong>Revise assumptions</strong></div></div>';
+        workspace.appendChild(panel);
+      }
+    }, 100);
+  </script>
+</body>
+</html>`);
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const port = server.address().port;
+
+  try {
+    const page = await browser.newPage();
+    await page.goto(`http://127.0.0.1:${port}/plans?planId=test_plan_v2&version=2`, { waitUntil: 'domcontentloaded' });
+
+    const panel = await waitForPlanningWorkspaceReady(page, {
+      expectedPlanId: 'test_plan_v2',
+      expectedVersion: 2,
+      timeout: 3000,
+      contextLabel: 'Test Async Version 2 Mount'
+    });
+
+    assert.ok(panel, 'Must return a locator for the review panel');
+    assert.equal(await panel.count(), 1, 'Exactly 1 review panel must be resolved');
+    assert.ok(await panel.isVisible(), 'Review panel must be visible');
+    const headingText = await panel.locator('h2').innerText();
+    assert.equal(headingText, 'Monthly plan review');
+    const badgeText = await panel.locator('.review-badge').innerText();
+    assert.equal(badgeText, 'Up to Date');
+  } finally {
+    await browser.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('Collector Negative 43: waitForPlanningWorkspaceReady fails closed with safe diagnostics when review panel never mounts', async () => {
+  const chromium = await loadChromium();
+  const browser = await chromium.launch({
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    headless: true
+  });
+
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`<!DOCTYPE html>
+<html>
+<head><title>Plans</title></head>
+<body>
+  <div class="planning-workspace">
+    <section class="planning-overview">
+      <article>
+        <span>Active plan</span>
+        <strong>Retirement Roadmap</strong>
+        <small>Version 2 loaded</small>
+      </article>
+    </section>
+  </div>
+</body>
+</html>`);
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const port = server.address().port;
+
+  try {
+    const page = await browser.newPage();
+    await page.goto(`http://127.0.0.1:${port}/plans?planId=secret_plan_id_12345&version=2`, { waitUntil: 'domcontentloaded' });
+
+    let caughtErr = null;
+    try {
+      await waitForPlanningWorkspaceReady(page, {
+        expectedPlanId: 'secret_plan_id_12345',
+        expectedVersion: 2,
+        timeout: 250,
+        contextLabel: 'Test Timeout Diagnostics'
+      });
+    } catch (err) {
+      caughtErr = err;
+    }
+
+    assert.ok(caughtErr, 'Must throw when panel fails to appear');
+    assert.ok(caughtErr.message.includes('.planning-review-panel not visible within 250ms'));
+    assert.ok(caughtErr.message.includes('Diagnostics:'));
+    assert.ok(caughtErr.message.includes('[REDACTED_PLAN_ID]'), 'Must redact plan ID in route diagnostics');
+    assert.ok(!caughtErr.message.includes('secret_plan_id_12345'), 'Must never leak raw plan ID in diagnostics');
+    assert.ok(caughtErr.message.includes('"reviewPanel":{"count":0,"visibleCount":0}'));
+  } finally {
+    await browser.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('Collector Negative 44: waitForPlanningWorkspaceReady fails closed when controlled error is displayed', async () => {
+  const chromium = await loadChromium();
+  const browser = await chromium.launch({
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    headless: true
+  });
+
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`<!DOCTYPE html>
+<html>
+<head><title>Plans</title></head>
+<body>
+  <div class="planning-workspace">
+    <section class="panel planning-controlled-error" data-testid="planning-error-state" role="alert">
+      <h2>Saved decision unavailable</h2>
+      <p>This plan or version was not found, has been archived, or you do not have permission to view it.</p>
+    </section>
+  </div>
+</body>
+</html>`);
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const port = server.address().port;
+
+  try {
+    const page = await browser.newPage();
+    await page.goto(`http://127.0.0.1:${port}/plans?planId=missing_plan&version=2`, { waitUntil: 'domcontentloaded' });
+
+    let caughtErr = null;
+    try {
+      await waitForPlanningWorkspaceReady(page, {
+        expectedPlanId: 'missing_plan',
+        expectedVersion: 2,
+        timeout: 1000,
+        contextLabel: 'Test Controlled Error'
+      });
+    } catch (err) {
+      caughtErr = err;
+    }
+
+    assert.ok(caughtErr, 'Must throw when controlled error is present');
+    assert.ok(caughtErr.message.includes('Controlled error displayed instead of Plan missing_plan Version 2'));
+    assert.ok(caughtErr.message.includes('Saved decision unavailable'));
+  } finally {
+    await browser.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('Collector Negative 45: waitForPlanningWorkspaceReady fails closed when wrong version is loaded', async () => {
+  const chromium = await loadChromium();
+  const browser = await chromium.launch({
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    headless: true
+  });
+
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`<!DOCTYPE html>
+<html>
+<head><title>Plans</title></head>
+<body>
+  <div class="planning-workspace">
+    <section class="planning-overview">
+      <article>
+        <span>Active plan</span>
+        <strong>Retirement Roadmap</strong>
+        <small>Version 1 loaded</small>
+      </article>
+    </section>
+    <section class="panel planning-review-panel">
+      <h2>Monthly plan review</h2>
+    </section>
+  </div>
+</body>
+</html>`);
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const port = server.address().port;
+
+  try {
+    const page = await browser.newPage();
+    await page.goto(`http://127.0.0.1:${port}/plans?planId=plan_1&version=2`, { waitUntil: 'domcontentloaded' });
+
+    let caughtErr = null;
+    try {
+      await waitForPlanningWorkspaceReady(page, {
+        expectedPlanId: 'plan_1',
+        expectedVersion: 2,
+        timeout: 500,
+        contextLabel: 'Test Wrong Version'
+      });
+    } catch (err) {
+      caughtErr = err;
+    }
+
+    assert.ok(caughtErr, 'Must throw when wrong version is settled');
+    assert.ok(caughtErr.message.includes('Wrong version loaded in planning workspace'));
+    assert.ok(caughtErr.message.includes('expected "Version 2 loaded"'));
+    assert.ok(caughtErr.message.includes('Version 1 loaded'));
+  } finally {
+    await browser.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('Collector Negative 46: waitForPlanningWorkspaceReady fails closed on route mismatch', async () => {
+  const chromium = await loadChromium();
+  const browser = await chromium.launch({
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    headless: true
+  });
+
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`<!DOCTYPE html><html><body><div class="planning-workspace"></div></body></html>`);
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const port = server.address().port;
+
+  try {
+    const page = await browser.newPage();
+    await page.goto(`http://127.0.0.1:${port}/plans?planId=plan_1&version=1`, { waitUntil: 'domcontentloaded' });
+
+    await assert.rejects(
+      () => waitForPlanningWorkspaceReady(page, {
+        expectedPlanId: 'plan_1',
+        expectedVersion: 2,
+        timeout: 500,
+        contextLabel: 'Test Route Mismatch'
+      }),
+      /Route version mismatch: expected "2", got "1"/
+    );
+  } finally {
+    await browser.close();
+    await new Promise((resolve) => server.close(resolve));
   }
 });
