@@ -469,7 +469,7 @@
       "id": "B29",
       "title": "Polish reports and readable financial evidence",
       "checkpoint": "C10",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B25",
         "B06",
@@ -477,9 +477,9 @@
         "B39"
       ],
       "prompt": "prompts/B29.md",
-      "submission": null,
+      "submission": "submissions/B29.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": null,
+      "code_sha": "f1db7db",
       "review": null,
       "blocked_reason": null
     },
@@ -487,7 +487,7 @@
       "id": "B30",
       "title": "Polish settings and privacy lifecycle controls",
       "checkpoint": "C10",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B07",
         "B25",
@@ -495,9 +495,9 @@
         "B39"
       ],
       "prompt": "prompts/B30.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B30.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "f1db7db",
       "review": null,
       "blocked_reason": null
     },
@@ -678,14 +678,14 @@
       "id": "B41",
       "title": "Harden shared API parsing, auth and error boundaries",
       "checkpoint": "C11",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B30",
         "B37"
       ],
       "prompt": "prompts/B41.md",
       "submission": null,
-      "owner": null,
+      "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": null,
       "review": null,
       "blocked_reason": null

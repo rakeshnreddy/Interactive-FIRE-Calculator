@@ -1,0 +1,129 @@
+{
+  "status": "PASS",
+  "scenario": "c10-reports-settings",
+  "target": {
+    "deploymentId": "f8fdca36-0e99-46d1-afc9-aae3515990d5",
+    "url": "https://f8fdca36.interactive-fire-calculator.pages.dev",
+    "sha": "f1db7db91edc6d995aae02163a0677f1ec62065d",
+    "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "commitDirty": false
+  },
+  "stages": [
+    {
+      "name": "preflight",
+      "status": "PASS",
+      "detail": {
+        "deploymentId": "f8fdca36-0e99-46d1-afc9-aae3515990d5",
+        "url": "https://f8fdca36.interactive-fire-calculator.pages.dev",
+        "sha": "f1db7db91edc6d995aae02163a0677f1ec62065d",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      }
+    },
+    {
+      "name": "d1-reachable",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sign-in",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "seed-report-sources",
+      "status": "PASS",
+      "detail": {
+        "accounts": 1,
+        "transactions": 1
+      }
+    },
+    {
+      "name": "report-scope-shows-sources",
+      "status": "PASS",
+      "detail": {
+        "accounts": "1",
+        "transactions": "1 · 2026-09-26 to 2026-09-26"
+      }
+    },
+    {
+      "name": "tenant-b-report-isolated",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "export-contains-only-own-data",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "ui-delete-confirmed-by-server",
+      "status": "PASS",
+      "detail": {
+        "outcome": "Deleted 5 saved records from your FinPath data on 2026-09-26, and cleared drafts"
+      }
+    },
+    {
+      "name": "d1-empty-after-ui-delete",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "cleanup": [
+    {
+      "tenant": "A",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "tenant": "B",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "error": null,
+  "startedAt": "2026-09-26T18:37:40.348Z",
+  "finishedAt": "2026-09-26T18:38:19.273Z"
+}
