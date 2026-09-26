@@ -624,8 +624,8 @@
       "submission": "submissions/B37.md",
       "owner": "Gemini implementation worker",
       "code_sha": null,
-      "review": "reviews/B37-first-review-2026-09-26.md",
-      "blocked_reason": "Hygiene rework pending: Git-derived manifest provenance, normative docs, truthful baseline clone measurements, Python-free suite. Hosted runner findings moved to B42."
+      "review": "reviews/B37-hygiene-review-2026-09-26.md",
+      "blocked_reason": "Narrowed hygiene review: seven manifest origin commits wrong, two concrete evidence references missing, current docs stale, baseline/log and finance-golden coverage require correction; see B37_HYGIENE_CORRECTION_PROMPT.md. B42 retains hosted residual."
     },
     {
       "id": "B38",
