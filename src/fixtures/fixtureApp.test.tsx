@@ -128,7 +128,7 @@ describe('R3: Real Fixture Behavior and Theme Parity (B25)', () => {
     const { container } = renderComponent(<FixtureApp />);
 
     // Trigger synthetic export action
-    const exportBtn = Array.from(container.querySelectorAll('button')).find((b) => b.textContent?.includes('Export data'));
+    const exportBtn = Array.from(container.querySelectorAll('button')).find((b) => b.textContent?.includes('Download my data'));
     expect(exportBtn).toBeDefined();
     act(() => {
       exportBtn!.click();
@@ -142,7 +142,7 @@ describe('R3: Real Fixture Behavior and Theme Parity (B25)', () => {
     const deleteInput = container.querySelector('input[aria-describedby="delete-account-data-help"]') as HTMLInputElement;
     expect(deleteInput).not.toBeNull();
     act(() => {
-      deleteInput.value = 'DELETE MY FINPATH DATA';
+      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(deleteInput, 'DELETE MY FINPATH DATA');
       deleteInput.dispatchEvent(new Event('input', { bubbles: true }));
       deleteInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
