@@ -398,6 +398,16 @@ export const initialTimeline: TimelineInput = {
   planEndAge: 80
 };
 
+// Loading a saved snapshot fills fields added since it was saved. The planning workspace compares
+// against the same normalization so legacy snapshots do not look like unsaved edits.
+export function normalizeSnapshotPlan(plan: Partial<PlanInput>): PlanInput {
+  return { ...initialPlan, ...plan, recurringCashFlows: plan.recurringCashFlows ?? [] };
+}
+
+export function normalizeSnapshotTimeline(timeline: Partial<TimelineInput>): TimelineInput {
+  return { ...initialTimeline, ...timeline };
+}
+
 const initialScenarios: ScenarioConfig[] = [
   {
     id: 'base',
@@ -3526,7 +3536,7 @@ function App({ auth }: { auth: AuthState }) {
             ...snapshot.plan,
             recurringCashFlows: snapshot.plan.recurringCashFlows ?? []
           });
-          setTimeline({ ...initialTimeline, ...snapshot.timeline });
+          setTimeline(normalizeSnapshotTimeline(snapshot.timeline));
           setCalculatorMode(snapshot.calculatorMode ?? 'fire-number');
           setScenarios(Array.isArray(snapshot.scenarios) ? snapshot.scenarios : initialScenarios);
           setSeedApplications(Array.isArray(snapshot.seedApplications) ? snapshot.seedApplications : []);
@@ -4310,12 +4320,8 @@ function App({ auth }: { auth: AuthState }) {
   });
 
   const applySnapshot = (snapshot: AppSnapshot) => {
-    const nextPlan = {
-      ...initialPlan,
-      ...snapshot.plan,
-      recurringCashFlows: snapshot.plan.recurringCashFlows ?? []
-    };
-    const nextTimeline = { ...initialTimeline, ...snapshot.timeline };
+    const nextPlan = normalizeSnapshotPlan(snapshot.plan);
+    const nextTimeline = normalizeSnapshotTimeline(snapshot.timeline);
     const nextMode = snapshot.calculatorMode ?? 'fire-number';
     const nextResult = calculateFirePlan(nextPlan);
     const nextSimulation = stressTestCurrentPortfolio(nextPlan);
@@ -5506,6 +5512,8 @@ function App({ auth }: { auth: AuthState }) {
                     currentResult={result}
                     currentSnapshot={buildSnapshot()}
                     currentTimeline={timeline}
+                    normalizeSnapshotPlan={normalizeSnapshotPlan}
+                    normalizeSnapshotTimeline={normalizeSnapshotTimeline}
                     deepLinkError={planDeepLinkError}
                     goals={goals}
                     isLoading={isLoadingSavedPlans}

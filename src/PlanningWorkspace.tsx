@@ -25,6 +25,7 @@ import {
   type StoredPlanReview
 } from './lib/planReviews';
 import {
+  hasUnsavedAssumptions,
   previewPlanSeed,
   type PlanSeedPreview,
   type SeedApplication
@@ -140,6 +141,8 @@ type PlanningWorkspaceProps = {
   onArchive: (id: string) => void;
   onClearDeepLinkError?: () => void;
   onDirtyStateChange?: (isDirty: boolean) => void;
+  normalizeSnapshotPlan?: (plan: Partial<PlanInput>) => PlanInput;
+  normalizeSnapshotTimeline?: (timeline: Partial<PlanningTimeline>) => PlanningTimeline;
   onLoadPlan: (plan: PlanningSavedPlan) => void;
   onLoadVersion: (planId: string, version: PlanVersionDetail) => void;
   onNavigateCalculator: () => void;
@@ -171,6 +174,8 @@ export function PlanningWorkspace({
   onArchive,
   onClearDeepLinkError,
   onDirtyStateChange,
+  normalizeSnapshotPlan = (plan) => plan as PlanInput,
+  normalizeSnapshotTimeline = (timeline) => timeline as PlanningTimeline,
   onLoadPlan,
   onLoadVersion,
   onNavigateCalculator,
@@ -262,12 +267,13 @@ export function PlanningWorkspace({
 
   const isPlanDirty = useMemo(() => {
     if (!baselineSnapshot) return isDraftDirty;
-    const assumptionsDirty = (
-      JSON.stringify(currentPlan) !== JSON.stringify(baselineSnapshot.plan) ||
-      JSON.stringify(currentTimeline) !== JSON.stringify(baselineSnapshot.timeline)
+    const assumptionsDirty = hasUnsavedAssumptions(
+      { plan: currentPlan, timeline: currentTimeline },
+      baselineSnapshot,
+      { normalizePlan: normalizeSnapshotPlan, normalizeTimeline: normalizeSnapshotTimeline }
     );
     return assumptionsDirty || isDraftDirty;
-  }, [baselineSnapshot, currentPlan, currentTimeline, isDraftDirty]);
+  }, [baselineSnapshot, currentPlan, currentTimeline, isDraftDirty, normalizeSnapshotPlan, normalizeSnapshotTimeline]);
 
   useEffect(() => {
     onDirtyStateChange?.(isPlanDirty);

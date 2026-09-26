@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { PlanInput } from './fire';
-import { PLAN_SEED_ERROR_REASONS, previewPlanSeed, undoPlanSeed } from './planWorkspace';
+import { PLAN_SEED_ERROR_REASONS, hasUnsavedAssumptions, previewPlanSeed, undoPlanSeed } from './planWorkspace';
 
 const plan: PlanInput = {
   annualExpense: 45_000,
@@ -221,5 +221,28 @@ describe('previewPlanSeed', () => {
 
     expect(preview.nextPlan.initialPortfolio).toBe(plan.initialPortfolio);
     expect(preview.nextTimeline).toMatchObject({ currentAge: 40, retirementAge: 58 });
+  });
+});
+
+describe('hasUnsavedAssumptions', () => {
+  const normalizePlan = (p: Partial<PlanInput>): PlanInput => ({ ...plan, ...p, recurringCashFlows: p.recurringCashFlows ?? [] });
+  const normalizeTimeline = <T extends object>(t: T) => ({ ...timeline, ...t });
+
+  it('treats a legacy snapshot missing newer fields as unchanged once loaded', () => {
+    const { recurringCashFlows: _omitted, ...legacy } = plan;
+    const loaded = normalizePlan(legacy);
+    expect(hasUnsavedAssumptions({ plan: loaded, timeline }, { plan: legacy, timeline }, { normalizePlan, normalizeTimeline })).toBe(false);
+  });
+
+  it('ignores key order differences between saved and loaded state', () => {
+    const reordered = Object.fromEntries(Object.entries(plan).reverse()) as PlanInput;
+    const reorderedTimeline = { retirementAge: 55, planEndAge: 90, currentAge: 35 };
+    expect(hasUnsavedAssumptions({ plan, timeline }, { plan: reordered, timeline: reorderedTimeline }, { normalizePlan, normalizeTimeline })).toBe(false);
+  });
+
+  it('reports a real assumption or timeline change', () => {
+    expect(hasUnsavedAssumptions({ plan: { ...plan, annualExpense: 44_000 }, timeline }, { plan, timeline }, { normalizePlan, normalizeTimeline })).toBe(true);
+    expect(hasUnsavedAssumptions({ plan, timeline: { ...timeline, retirementAge: 50 } }, { plan, timeline }, { normalizePlan, normalizeTimeline })).toBe(true);
+    expect(hasUnsavedAssumptions({ plan: { ...plan, ratePeriods: [{ duration: 35, i: 0.03, r: 0.05 }] }, timeline }, { plan, timeline }, { normalizePlan, normalizeTimeline })).toBe(true);
   });
 });

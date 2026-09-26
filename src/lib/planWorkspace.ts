@@ -256,3 +256,31 @@ function addChange(
     changes.push({ after, before, field });
   }
 }
+
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value as Record<string, unknown>)
+      .filter((key) => (value as Record<string, unknown>)[key] !== undefined)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableStringify((value as Record<string, unknown>)[key])}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+type AssumptionState<TTimeline> = { plan: PlanInput; timeline: TTimeline };
+type SavedAssumptionState<TTimeline> = { plan: Partial<PlanInput>; timeline: Partial<TTimeline> };
+
+// A saved snapshot is compared after the same normalization the app applies when loading it, so
+// legacy snapshots (missing newer fields) or different key order never look like unsaved edits.
+export function hasUnsavedAssumptions<TTimeline extends object>(
+  current: AssumptionState<TTimeline>,
+  saved: SavedAssumptionState<TTimeline>,
+  normalize: { normalizePlan: (plan: Partial<PlanInput>) => PlanInput; normalizeTimeline: (timeline: Partial<TTimeline>) => TTimeline }
+): boolean {
+  return (
+    stableStringify(current.plan) !== stableStringify(normalize.normalizePlan(saved.plan)) ||
+    stableStringify(current.timeline) !== stableStringify(normalize.normalizeTimeline(saved.timeline))
+  );
+}
