@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  resolvePlansRouteAction,
   activeNavigationPath,
   buildPlanDeepLink,
   parsePlanDeepLink,
@@ -168,5 +169,16 @@ describe('plan deep link contract (B10)', () => {
     expect(buildPlanDeepLink('68268415-1b8f-4260-bb93-b39d1fb6c043', 2)).toBe(
       '/plans?planId=68268415-1b8f-4260-bb93-b39d1fb6c043&version=2'
     );
+  });
+});
+
+describe('plans route action', () => {
+  it('keeps the active plan when /plans has no plan link (e.g. returning from the calculator)', () => {
+    expect(resolvePlansRouteAction(parsePlanDeepLink('/plans'))).toBe('keep-active-plan');
+  });
+
+  it('loads an explicit plan link and rejects an invalid version', () => {
+    expect(resolvePlansRouteAction(parsePlanDeepLink('/plans?planId=plan_1&version=2'))).toBe('load-link');
+    expect(resolvePlansRouteAction(parsePlanDeepLink('/plans?planId=plan_1&version=abc'))).toBe('invalid-version');
   });
 });

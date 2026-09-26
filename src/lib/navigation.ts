@@ -198,3 +198,12 @@ export function buildPlanDeepLink(planId: string, versionNumber?: number | null)
   }
   return base;
 }
+
+export type PlansRouteAction = 'invalid-version' | 'load-link' | 'keep-active-plan';
+
+// One decision for every way of arriving at /plans (in-app navigation, back/forward).
+// A bare /plans keeps the plan and any unsaved edits already in the workspace.
+export function resolvePlansRouteAction(deepLink: PlanDeepLink): PlansRouteAction {
+  if (deepLink.isVersionInvalid) return 'invalid-version';
+  return deepLink.planId ? 'load-link' : 'keep-active-plan';
+}

@@ -91,6 +91,7 @@ import {
   activeNavigationPath,
   buildPlanDeepLink,
   parsePlanDeepLink,
+  resolvePlansRouteAction,
   primaryNavigationFor,
   shouldHandleNavigationClick,
   workspaceNavigation,
@@ -3648,16 +3649,11 @@ function App({ auth }: { auth: AuthState }) {
 
       if (nextRoute === '/plans') {
         const deepLink = parsePlanDeepLink(window.location.href);
-        if (deepLink.isVersionInvalid) {
-          setPlanDeepLinkError(
-            'Saved decision unavailable: Invalid version parameter specified in link.'
-          );
-          setActivePlanId(null);
-          setActivePlanVersionNumber(null);
-        } else if (deepLink.planId) {
-          void loadPlanDeepLinkTarget(deepLink.planId, deepLink.versionNumber, false);
-        } else {
+        const action = resolvePlansRouteAction(deepLink);
+        if (action === 'keep-active-plan') {
           setPlanDeepLinkError(null);
+        } else {
+          void loadPlanDeepLinkTarget(deepLink.planId ?? '', deepLink.versionNumber, action === 'invalid-version');
         }
       }
     };
@@ -5314,11 +5310,12 @@ function App({ auth }: { auth: AuthState }) {
 
       if (baseRoute === '/plans') {
         const deepLink = parsePlanDeepLink(nextRoute);
-        void loadPlanDeepLinkTarget(
-          deepLink.planId ?? '',
-          deepLink.versionNumber,
-          deepLink.isVersionInvalid
-        );
+        const action = resolvePlansRouteAction(deepLink);
+        if (action === 'keep-active-plan') {
+          setPlanDeepLinkError(null);
+        } else {
+          void loadPlanDeepLinkTarget(deepLink.planId ?? '', deepLink.versionNumber, action === 'invalid-version');
+        }
       }
     },
     [loadPlanDeepLinkTarget]
