@@ -4,6 +4,7 @@ import { json } from '../_lib/http';
 import { ensureUserProfile, handleApiError, requireDatabase } from '../_lib/persistence';
 import { requireClerkAuth } from '../_lib/session';
 import type { ClerkEnv } from '../_lib/session';
+import { readJsonBody } from '../_lib/http';
 
 type ProfileEnv = ClerkEnv & {
   DB?: D1Database;
@@ -172,13 +173,6 @@ async function readProfile(database: D1Database, userId: string): Promise<Profil
     .first<ProfileRow>();
 }
 
-async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 function parseProfileUpdate(value: unknown):
   | {

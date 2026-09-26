@@ -1,6 +1,8 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { ensureUserProfile } from './persistence';
+import { readJsonBody } from './http';
+export { readJsonBody };
 
 export const goalTypes = [
   'retirement',
@@ -301,13 +303,6 @@ export function summarizeGoals(goals: Goal[]): GoalSummary {
   };
 }
 
-export async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 export const INCOMPATIBLE_GOAL_CURRENCY_CODE = 'INCOMPATIBLE_GOAL_CURRENCY';
 export const INCOMPATIBLE_GOAL_CURRENCY_MESSAGE =

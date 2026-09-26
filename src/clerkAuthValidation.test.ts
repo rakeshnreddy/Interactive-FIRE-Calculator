@@ -51,7 +51,7 @@ describe("requireClerkAuth (B05 real SDK token validation)", () => {
     if (!emptyEnvRes.ok) {
       expect(emptyEnvRes.response.status).toBe(503);
       const data = await emptyEnvRes.response.json();
-      expect(data).toEqual({ authConfigured: false });
+      expect(data).toEqual({ authConfigured: false, code: 'AUTH_NOT_CONFIGURED', error: 'Sign-in is not configured.' });
     }
 
     const partialEnvRes = await requireClerkAuth(req, { CLERK_PUBLISHABLE_KEY: "pk_test_sample" });

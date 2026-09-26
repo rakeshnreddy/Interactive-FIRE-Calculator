@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { json } from './http';
+import { apiError, json } from './http';
 
 export type DatabaseEnv = {
   DB?: D1Database;
@@ -16,7 +16,7 @@ export function requireDatabase(env: DatabaseEnv):
       response: Response;
     } {
   if (!env.DB) {
-    return { ok: false, response: json({ databaseConfigured: false }, 503) };
+    return { ok: false, response: apiError(503, 'DATABASE_NOT_CONFIGURED', 'Account storage is not configured.', { databaseConfigured: false }) };
   }
 
   return { database: env.DB, ok: true };
@@ -29,17 +29,25 @@ export class UserDeletedError extends Error {
   }
 }
 
+// The tombstone triggers (migration 0006) abort with exactly this format. Only that contract is
+// recognised; any other text that merely mentions USER_DELETED stays an ordinary error.
+const DELETED_USER_TRIGGER = /\bUSER_DELETED: Cannot (?:insert|update) [a-z_]+ for deleted user\b/;
+
+export function isDeletedUserTriggerError(error: unknown): boolean {
+  return error instanceof Error && DELETED_USER_TRIGGER.test(error.message);
+}
+
+// Converts a database failure into the typed UserDeletedError when it is a tombstone trigger abort.
+export function toTypedDatabaseError(error: unknown): unknown {
+  return isDeletedUserTriggerError(error) ? new UserDeletedError() : error;
+}
+
 export function handleApiError(error: unknown, fallbackMessage: string): Response {
-  if (
-    error instanceof UserDeletedError ||
-    (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED')))
-  ) {
-    const msg = error instanceof UserDeletedError
-      ? error.message
-      : 'User account has been deleted and cannot accept new data.';
-    return json({ code: 'ACCOUNT_DELETED', error: msg }, 410);
+  const typed = toTypedDatabaseError(error);
+  if (typed instanceof UserDeletedError) {
+    return apiError(410, 'ACCOUNT_DELETED', typed.message);
   }
-  return json({ error: fallbackMessage }, 500);
+  return apiError(500, 'INTERNAL_ERROR', fallbackMessage);
 }
 
 export async function ensureUserProfile(database: D1Database, userId: string): Promise<void> {
@@ -79,9 +87,6 @@ export async function ensureUserProfile(database: D1Database, userId: string): P
       .bind(userId, now, now)
       .run();
   } catch (error) {
-    if (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED'))) {
-      throw new UserDeletedError();
-    }
-    throw error;
+    throw toTypedDatabaseError(error);
   }
 }

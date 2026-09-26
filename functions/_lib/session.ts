@@ -3,7 +3,7 @@
 import { createClerkClient } from '@clerk/backend';
 import type { SessionAuthObject } from '@clerk/backend';
 
-import { json } from './http';
+import { apiError, json } from './http';
 
 export type ClerkEnv = {
   CLERK_AUTHORIZED_PARTIES?: string;
@@ -39,7 +39,7 @@ export async function requireClerkAuth(request: Request, env: ClerkEnv): Promise
   const config = readClerkConfig(env);
 
   if (!config.configured) {
-    return { ok: false, response: json({ authConfigured: false }, 503) };
+    return { ok: false, response: apiError(503, 'AUTH_NOT_CONFIGURED', 'Sign-in is not configured.', { authConfigured: false }) };
   }
 
   const clerkClient = createClerkClient({

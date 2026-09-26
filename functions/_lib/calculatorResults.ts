@@ -3,6 +3,8 @@
 import { readAccount, type AccountCreatePayload, type FinancialAccount } from './accounts';
 import { readGoal, type Goal, type GoalCreatePayload } from './goals';
 import { ensureUserProfile } from './persistence';
+import { readJsonBody } from './http';
+export { readJsonBody };
 
 type JsonRecord = Record<string, unknown>;
 
@@ -534,13 +536,6 @@ export async function readSavedCalculatorResult(
   return row ? toSavedCalculatorResult(row) : null;
 }
 
-export async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 export type CalculatorSaveParseError = {
   code?: string;

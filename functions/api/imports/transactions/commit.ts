@@ -10,6 +10,7 @@ import { handleApiError, requireDatabase } from '../../../_lib/persistence';
 import { requireClerkAuth } from '../../../_lib/session';
 import type { DatabaseEnv } from '../../../_lib/persistence';
 import type { ClerkEnv } from '../../../_lib/session';
+import { readJsonBody } from '../../../_lib/http';
 
 type TransactionImportCommitEnv = ClerkEnv & DatabaseEnv;
 
@@ -46,11 +47,3 @@ export const onRequestPost: PagesFunction<TransactionImportCommitEnv> = async ({
     return handleApiError(error, 'Unable to commit transaction import.');
   }
 };
-
-async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}

@@ -1,6 +1,8 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { ensureUserProfile, UserDeletedError } from './persistence';
+import { ensureUserProfile, toTypedDatabaseError } from './persistence';
+import { readJsonBody } from './http';
+export { readJsonBody };
 
 export const accountTypes = [
   'cash',
@@ -232,10 +234,7 @@ export async function createAccount(
   try {
     await database.batch(statements);
   } catch (error) {
-    if (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED'))) {
-      throw new UserDeletedError();
-    }
-    throw error;
+    throw toTypedDatabaseError(error);
   }
 
   const account = await readAccount(database, userId, accountId);
@@ -373,10 +372,7 @@ export async function addAccountBalance(
         .bind(now, accountId, userId)
     ]);
   } catch (error) {
-    if (error instanceof Error && (error.message.includes('USER_DELETED') || error.message.includes('ACCOUNT_DELETED'))) {
-      throw new UserDeletedError();
-    }
-    throw error;
+    throw toTypedDatabaseError(error);
   }
 
   return readAccount(database, userId, accountId);
@@ -465,13 +461,6 @@ export function summarizeAccounts(accounts: FinancialAccount[]): AccountSummary 
   };
 }
 
-export async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 export function parseAccountCreatePayload(value: unknown):
   | {
