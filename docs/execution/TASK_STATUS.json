@@ -179,8 +179,8 @@
       "submission": "submissions/B11.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-final-candidate-2026-09-25.md",
-      "blocked_reason": "Current hosted proof posts decision=revise directly and reports success without UI selection, deliberate edit, Version 3 save/reload, or immutability verification; matrix B11-11 PASS is unsupported."
+      "review": "reviews/C09-uncommitted-rework-2026-09-25.md",
+      "blocked_reason": "Uncommitted proposed proof changes only version notes/label, not financial assumptions; replay uses a different idempotency key and can create a second row. No exact-code CI or hosted preview for this diff."
     },
     {
       "id": "B12",
@@ -460,8 +460,8 @@
       "submission": "submissions/B28.md",
       "owner": "FinPath implementation agent",
       "code_sha": "5dda3d2be24246e3470a65e7653a0b6e425cbece",
-      "review": "reviews/C09-final-candidate-2026-09-25.md",
-      "blocked_reason": "Focused hosted screenshot shows sticky top navigation covering Monthly plan review heading/badge; fix actual scroll/focus overlap and retest at desktop and mobile in both themes."
+      "review": "reviews/C09-uncommitted-rework-2026-09-25.md",
+      "blocked_reason": "New smooth scroll ignores reduced-motion preference, and zero-overlap claim references screenshots absent from the uncommitted candidate; exact-code hosted desktop/mobile light/dark proof remains required."
     },
     {
       "id": "B29",
