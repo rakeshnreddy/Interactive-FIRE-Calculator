@@ -1496,6 +1496,90 @@ svg {
   min-width: 0;
 }
 
+.report-scope-panel {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.report-scope-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.report-scope-grid div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.report-scope-grid dt {
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.report-scope-grid dd {
+  margin: 0;
+  color: var(--heading);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.report-gaps {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--muted-strong);
+  font-size: 0.88rem;
+}
+
+.report-gaps ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.report-complete {
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+@media print {
+  .topbar,
+  .mobile-nav,
+  .skip-link,
+  .report-actions,
+  .insights-workspace button,
+  .site-footer {
+    display: none !important;
+  }
+
+  .insights-workspace,
+  .insights-workspace .account-panel,
+  .insights-workspace article {
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .insight-card,
+  .report-scope-panel {
+    break-inside: avoid;
+  }
+}
+
 .insight-summary-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

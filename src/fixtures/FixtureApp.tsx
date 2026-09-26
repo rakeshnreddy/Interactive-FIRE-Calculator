@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { buildReportScope } from '../reports/reportScope';
 import {
   AccountsPanel,
   DashboardPanel,
@@ -440,6 +441,13 @@ export function FixtureApp() {
             <InsightsPanel
               insights={insightsData}
               onNavigate={(route) => logAction('NavigateInsight', { route })}
+              scope={buildReportScope({
+                accounts: accountsData,
+                goals: goalsData as never,
+                transactions: transactionsData as never,
+                planLabel: selectedState === 'empty' ? null : 'Synthetic base plan · Version 2',
+                today: '2026-09-26'
+              })}
             />
           )}
 

@@ -66,7 +66,6 @@ import { buildCalculatorFollowUp } from './lib/calculatorFollowUps';
 import {
   buildFinancialInsights,
   type FinancialInsight,
-  type InsightArea,
   type InsightPriority
 } from './lib/insights';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
@@ -92,6 +91,9 @@ import { validateFireForm } from './lib/fireValidation';
 import { formatCompactMoney } from './lib/money';
 import { HERO_FIRE_FIXTURE } from './lib/heroExample';
 import { FireRetirementEstimate } from './components/FireRetirementEstimate';
+import { ReportsPanel } from './reports/ReportsPanel';
+import { buildReportScope, type ReportScope } from './reports/reportScope';
+export { ReportsPanel as InsightsPanel };
 import {
   activeNavigationPath,
   buildPlanDeepLink,
@@ -561,22 +563,6 @@ function priorityLabel(priority: InsightPriority): string {
   if (priority === "high") return "High";
   if (priority === "medium") return "Medium";
   return "Low";
-}
-
-function areaLabel(area: InsightArea): string {
-  if (area === "accounts") return "Accounts";
-  if (area === "goals") return "Goals";
-  if (area === "plan") return "Plan";
-  if (area === "transactions") return "Transactions";
-  return "Method";
-}
-
-function insightIcon(area: InsightArea): typeof Calculator {
-  if (area === "accounts") return TrendingUp;
-  if (area === "goals") return Target;
-  if (area === "plan") return Lightbulb;
-  if (area === "transactions") return ClipboardList;
-  return ShieldCheck;
 }
 
 function updateRatePeriod(
@@ -1935,136 +1921,6 @@ export function TransactionsPanel({
   );
 }
 
-export function InsightsPanel({
-  insights,
-  onNavigate
-}: {
-  insights: FinancialInsight[];
-  onNavigate: (route: AppRoute) => void;
-}) {
-  const recommendationCount = insights.filter((insight) => insight.category === 'recommendation').length;
-  const highPriorityCount = insights.filter((insight) => insight.priority === 'high').length;
-  const evidenceCount = insights.reduce((total, insight) => total + insight.evidence.length, 0);
-  const privacyInsight = insights.find((insight) => insight.area === 'privacy') ?? null;
-  const workingInsights = insights.filter((insight) => insight.area !== 'privacy');
-
-  return (
-    <section className="insights-workspace" aria-label="Insights and recommendations">
-      <div className="insight-summary-strip">
-        <article>
-          <span>High priority</span>
-          <strong>{highPriorityCount}</strong>
-          <small>Items to review before using the plan as current.</small>
-        </article>
-        <article>
-          <span>Recommendations</span>
-          <strong>{recommendationCount}</strong>
-          <small>Rule-based actions with cited inputs.</small>
-        </article>
-        <article>
-          <span>Evidence points</span>
-          <strong>{evidenceCount}</strong>
-          <small>Plan, account, and goal facts behind each card.</small>
-        </article>
-      </div>
-
-      <section className="account-panel insight-list-panel" aria-labelledby="insight-list-title">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">Next actions</p>
-            <h2 id="insight-list-title">Prioritized guidance</h2>
-          </div>
-          <button className="secondary-button icon-text-button" onClick={() => onNavigate('/plans')}>
-            Plans
-            <ChevronRight size={16} />
-          </button>
-        </div>
-
-        <div className="insight-card-list">
-          {workingInsights.map((insight) => {
-            const Icon = insightIcon(insight.area);
-            return (
-              <article className={`insight-card insight-priority-${insight.priority}`} key={insight.id}>
-                <div className="insight-card-heading">
-                  <span className="feature-icon">
-                    <Icon size={18} />
-                  </span>
-                  <div>
-                    <span>{areaLabel(insight.area)} / {priorityLabel(insight.priority)}</span>
-                    <h3>{insight.title}</h3>
-                  </div>
-                  <span className="insight-category">{insight.category}</span>
-                </div>
-
-                <p>{insight.rationale}</p>
-
-                <div className="insight-evidence-grid" aria-label={`${insight.title} evidence`}>
-                  {insight.evidence.map((item) => (
-                    <span key={`${insight.id}-${item.label}`}>
-                      <small>{item.label}</small>
-                      <strong>{item.value}</strong>
-                      {item.detail ? <em>{item.detail}</em> : null}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="insight-action-row">
-                  <div>
-                    <strong>Suggested next step</strong>
-                    <small>{insight.action}</small>
-                  </div>
-                  <button className="secondary-button icon-text-button" onClick={() => onNavigate(insight.route)}>
-                    Open
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
-
-                <details className="insight-detail">
-                  <summary>Assumptions and uncertainty</summary>
-                  <ul>
-                    {insight.assumptions.map((assumption) => (
-                      <li key={`${insight.id}-${assumption}`}>{assumption}</li>
-                    ))}
-                  </ul>
-                  <p>{insight.uncertainty}</p>
-                </details>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      {privacyInsight ? (
-        <section className="account-panel insight-method-panel" aria-labelledby="insight-method-title">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Method</p>
-              <h2 id="insight-method-title">{privacyInsight.title}</h2>
-            </div>
-            <span className="pill">{privacyInsight.evidence[0]?.value ?? 'Rule-based'}</span>
-          </div>
-          <p>{privacyInsight.rationale}</p>
-          <div className="insight-action-row">
-            <div>
-              <strong>Boundary</strong>
-              <small>{privacyInsight.action}</small>
-            </div>
-          </div>
-          <details className="insight-detail">
-            <summary>Assumptions and uncertainty</summary>
-            <ul>
-              {privacyInsight.assumptions.map((assumption) => (
-                <li key={assumption}>{assumption}</li>
-              ))}
-            </ul>
-            <p>{privacyInsight.uncertainty}</p>
-          </details>
-        </section>
-      ) : null}
-    </section>
-  );
-}
-
 export function GoalsPanel({
   draft,
   goals,
@@ -3035,6 +2891,7 @@ function PlatformPage({
   dueReviewsError,
   financialAccounts,
   financialInsights,
+  reportScope,
   goalDraft,
   isLoadingDueReviews,
   onRetryDueReviews,
@@ -3104,6 +2961,7 @@ function PlatformPage({
   auth: Extract<AuthState, { status: 'signed-in' }>;
   financialAccounts: FinancialAccount[];
   financialInsights: FinancialInsight[];
+  reportScope?: ReportScope;
   goalDraft: GoalDraft;
   goalMessage: string;
   goals: Goal[];
@@ -3282,7 +3140,7 @@ function PlatformPage({
       ) : null}
 
       {route === '/reports' ? (
-        <InsightsPanel insights={financialInsights} onNavigate={onNavigate} />
+        <ReportsPanel insights={financialInsights} onNavigate={onNavigate} scope={reportScope} />
       ) : null}
 
       {route === '/dashboard' || route === '/accounts' || route === '/transactions' || route === '/goals' || route === '/reports' || route === '/settings' ? null : (
@@ -4055,6 +3913,22 @@ function App({ auth }: { auth: AuthState }) {
   const activeSavedPlan = useMemo(
     () => savedPlans.find((item) => item.id === activePlanId) ?? null,
     [activePlanId, savedPlans]
+  );
+  const reportScope = useMemo(
+    () =>
+      buildReportScope({
+        accounts: financialAccounts,
+        goals,
+        transactions,
+        planLabel:
+          auth.status === 'signed-in'
+            ? activeSavedPlan
+              ? `${activeSavedPlan.name}${activeSavedPlan.versionNumber ? ` · Version ${activeSavedPlan.versionNumber}` : ''}`
+              : 'Current FIRE calculator draft (unsaved)'
+            : null,
+        today: todayInputDate()
+      }),
+    [activeSavedPlan, auth.status, financialAccounts, goals, transactions]
   );
   const financialInsights = useMemo(
     () =>
@@ -5683,6 +5557,7 @@ function App({ auth }: { auth: AuthState }) {
                 dueReviewsError={dueReviewsError}
                 financialAccounts={financialAccounts}
                 financialInsights={financialInsights}
+                reportScope={reportScope}
                 goalDraft={goalDraft}
                 isLoadingDueReviews={isLoadingDueReviews}
                 onRetryDueReviews={refreshDueReviews}
