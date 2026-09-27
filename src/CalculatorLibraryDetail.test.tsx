@@ -207,4 +207,28 @@ describe('B20: Generic calculator reordering, hierarchy, and accessible disclosu
     });
     expect(scenarioButtons[2].getAttribute('aria-selected')).toBe('true');
   });
+
+  it('lists exactly which inputs a scenario changes, with before and after values', () => {
+    window.history.replaceState({}, '', '/calculators/mortgage');
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+    const { container } = renderComponent(
+      <CalculatorLibrary
+        auth={mockAuth}
+        route="/calculators/mortgage"
+        onNavigate={() => {}}
+        onSaveResult={mockSaveResult}
+        savedResults={[]}
+      />
+    );
+
+    expect(container.querySelector('.calculator-scenario-changes')).toBeNull();
+    act(() => {
+      container.querySelectorAll<HTMLButtonElement>('.calculator-scenario-tab')[0].click();
+    });
+    const changes = Array.from(container.querySelectorAll('.calculator-scenario-changes li')).map((item) => item.textContent ?? '');
+    expect(changes.length).toBeGreaterThan(0);
+    expect(changes.some((text) => /Interest rate.*%.*→.*%/.test(text))).toBe(true);
+    for (const text of changes) expect(text).toMatch(/→/);
+  });
 });

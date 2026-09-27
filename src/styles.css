@@ -8280,6 +8280,35 @@ h2 {
   line-height: 1.45;
 }
 
+.calculator-scenario-changes {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.calculator-scenario-changes li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.calculator-scenario-changes li strong {
+  color: var(--heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.calculator-scenario-changes li span:last-child {
+  white-space: nowrap;
+}
+
 .calculator-scenario-tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

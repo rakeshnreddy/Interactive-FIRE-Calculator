@@ -35,7 +35,8 @@ describe('calculator registry audit', () => {
           expect(Number.isFinite(input.defaultValue), `${input.key} default`).toBe(true);
           expect(input.label.trim().length).toBeGreaterThan(0);
         }
-        expect(calculator.description).not.toMatch(/SEO|traffic|ranking|phase \d/i);
+        const publicCopy = [calculator.description, calculator.explanation, ...calculator.assumptions, ...calculator.faq.flatMap((item) => [item.question, item.answer])].join(' ');
+        expect(publicCopy).not.toMatch(/\bSEO\b|traffic|ranking|phase \d|Model v\d|planning shell|display precision|conversion funnel/i);
         expect(calculator.faq.length).toBeGreaterThan(0);
       });
 

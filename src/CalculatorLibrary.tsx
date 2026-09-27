@@ -64,6 +64,7 @@ import {
   calculatorPath,
   findSeoCalculator,
   seoCalculators,
+  type CalculatorInput,
   type CalculatorMetric,
   type CalculatorResult,
   type SeoCalculator
@@ -1134,6 +1135,8 @@ function CalculatorScenarioPanel({
   scenarios: CalculatorScenario[];
   selectedScenarioId: CalculatorScenarioId;
 }) {
+  const selected = scenarios.find((scenario) => scenario.id === selectedScenarioId);
+  const base = scenarios.find((scenario) => scenario.id === 'base');
   return (
     <section className="calculator-scenario-panel" aria-label={`${calculator.title} scenarios`}>
       <div>
@@ -1155,9 +1158,39 @@ function CalculatorScenarioPanel({
           </button>
         ))}
       </div>
-      <p>{scenarios.find((scenario) => scenario.id === selectedScenarioId)?.description}</p>
+      <p>{selected?.description}</p>
+      {selected && selected.id !== 'base' && (
+        <ul className="calculator-scenario-changes" aria-label={`Inputs changed in the ${selected.label} scenario`}>
+          {scenarioChanges(calculator, base, selected).map((change) => (
+            <li key={change.key}>
+              <span>{change.label}</span>
+              <span>
+                {change.from} → <strong>{change.to}</strong>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
+}
+
+// Every input a scenario moves, with before and after values, so the label is never a mystery.
+function scenarioChanges(calculator: SeoCalculator, base: CalculatorScenario | undefined, scenario: CalculatorScenario) {
+  return calculator.inputs
+    .filter((input) => Math.abs((scenario.values[input.key] ?? 0) - (base?.values[input.key] ?? 0)) > 1e-9)
+    .map((input) => ({
+      from: formatInputValue(input, base?.values[input.key] ?? 0, calculator),
+      key: input.key,
+      label: input.label,
+      to: formatInputValue(input, scenario.values[input.key] ?? 0, calculator)
+    }));
+}
+
+function formatInputValue(input: CalculatorInput, value: number, calculator: SeoCalculator): string {
+  if (input.type === 'currency') return formatMetric({ label: input.label, value, valueType: 'currency' }, calculator);
+  if (input.type === 'percent') return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+  return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}${input.suffix ? ` ${input.suffix}` : ''}`;
 }
 
 function CalculatorEngagementPanel({

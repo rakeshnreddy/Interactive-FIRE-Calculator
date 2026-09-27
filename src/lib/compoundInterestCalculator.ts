@@ -192,6 +192,10 @@ export function validateCompoundInterestInputs(
     errors.targetBasis = 'Choose future money or today’s purchasing power.';
   }
 
+  if (!errors.annualRatePercent && (inputs.annualRatePercent < -100 || inputs.annualRatePercent > 100)) {
+    errors.annualRatePercent = 'Annual rate must be between -100% and 100%. Check whether you meant a percentage or a decimal.';
+  }
+
   if (!errors.annualRatePercent) {
     const rate = inputs.annualRatePercent / 100;
     const validRate = inputs.rateBasis === 'apy'

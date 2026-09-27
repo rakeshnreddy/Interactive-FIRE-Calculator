@@ -367,6 +367,8 @@ describe('compound interest calculator v2', () => {
     [{ principal: -1 }, 'principal'],
     [{ targetAmount: -1 }, 'targetAmount'],
     [{ annualRatePercent: -100, rateBasis: 'apy' as const }, 'annualRatePercent'],
+    [{ annualRatePercent: 500 }, 'annualRatePercent'],
+    [{ annualRatePercent: -150 }, 'annualRatePercent'],
     [{ futureDepositAmount: 1, futureDepositYear: 11 }, 'futureDepositYear']
   ])('identifies invalid input %j', (overrides, key) => {
     const validation = validateCompoundInterestInputs({ ...defaultCompoundInterestInputs, ...overrides });
@@ -380,23 +382,27 @@ describe('compound interest calculator v2', () => {
     expect(project({ annualRatePercent: Number.POSITIVE_INFINITY }).validation.errors.annualRatePercent).toContain('finite');
   });
 
-  it('rejects overflowed results without exposing infinity', () => {
-    const result = project({
+  it('rejects absurd rates at the input boundary and keeps the largest allowed inputs finite', () => {
+    const rejected = project({ annualRatePercent: 10_000 });
+    expect(rejected.validation.isValid).toBe(false);
+    expect(rejected.validation.errors.annualRatePercent).toContain('between -100% and 100%');
+    expect(rejected.endingValue).toBe(0);
+
+    // With every input bounded, the biggest permitted projection stays finite and displayable.
+    const extreme = project({
       annualContributionIncreasePercent: 1_000,
-      annualRatePercent: 10_000,
+      annualRatePercent: 100,
       principal: 1e15,
       recurringContribution: 1e15,
       years: 100
     });
-
-    expect(result.validation.isValid).toBe(false);
-    expect(result.validation.errors.result).toContain('too large');
-    expect(result.endingValue).toBe(0);
+    expect(extreme.validation.isValid).toBe(true);
+    expect(Number.isFinite(extreme.endingValue)).toBe(true);
   });
 
   it.each([
     { inflationPercent: -99.999999999999, years: 100 },
-    { annualFeePercent: 99.999999999999, annualRatePercent: 10_000, years: 100 }
+    { annualFeePercent: 99.999999999999, annualRatePercent: 100, inflationPercent: -99.999999999999, principal: 1e15, years: 100 }
   ])('rejects non-finite derived outputs for extreme valid-domain inputs', (overrides) => {
     const result = project(overrides);
 

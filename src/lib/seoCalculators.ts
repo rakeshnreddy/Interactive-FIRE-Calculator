@@ -146,6 +146,7 @@ const percent = (key: string, label: string, defaultValue: number, helper?: stri
   helper,
   key,
   label,
+  max: 100,
   min: 0,
   type: 'percent'
 });

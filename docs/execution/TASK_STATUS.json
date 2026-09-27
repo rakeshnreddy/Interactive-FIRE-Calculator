@@ -186,16 +186,16 @@
       "id": "B12",
       "title": "consented minimal measurement",
       "checkpoint": "C11",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B07",
         "B41",
         "B38"
       ],
       "prompt": "prompts/B12.md",
-      "submission": null,
+      "submission": "submissions/B12.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": null,
+      "code_sha": "f994eca",
       "review": null,
       "blocked_reason": null
     },
@@ -723,6 +723,13 @@
       "status": "done",
       "resolved_date": "2026-09-26",
       "resolution": "Owner approved untracking bulk evidence from the current Git index only; no history rewrite."
+    },
+    {
+      "id": "OA-3",
+      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350…) before any production release; it is applied to the preview D1 only.",
+      "blocking_task": "Production readiness of B12 only",
+      "requested_date": "2026-09-27",
+      "status": "pending"
     }
   ]
 }

@@ -955,6 +955,8 @@ function DesktopNavigation({
   const activePrimaryPath = activeNavigationPath(route, primaryItems);
   const activeWorkspacePath = activeNavigationPath(route, workspaceNavigation);
   const workspaceIsActive = activeWorkspacePath !== null;
+  // Signed-out visitors see only public links; the workspace menu would lead them to sign-in gates.
+  const showWorkspace = authStatus === 'signed-in' || authStatus === 'loading';
 
   useEffect(() => {
     setIsWorkspaceOpen(false);
@@ -997,6 +999,7 @@ function DesktopNavigation({
           </a>
         );
       })}
+      {showWorkspace && (
       <div className="desktop-nav-menu" ref={menuRef}>
         <button
           ref={triggerRef}
@@ -1037,6 +1040,7 @@ function DesktopNavigation({
           </div>
         )}
       </div>
+      )}
     </nav>
   );
 }
@@ -3530,6 +3534,7 @@ function App({ auth }: { auth: AuthState }) {
                 </a>
               );
             })}
+          {(auth.status === 'signed-in' || auth.status === 'loading') && (
           <details className="mobile-nav-group">
             <summary>
               <FolderKanban size={17} />
@@ -3555,6 +3560,7 @@ function App({ auth }: { auth: AuthState }) {
               })}
             </div>
           </details>
+          )}
           {auth.isSignedIn ? (
             <>
               <SignOutControl redirectUrl="/">
