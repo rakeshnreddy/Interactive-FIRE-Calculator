@@ -9,7 +9,8 @@
 // - Every stage records PASS/FAIL from an observation; skipped stages are never PASS.
 // - Cleanup always runs, requires an exact zero count from every user-scoped table derived from
 //   migrations/, and deletes the Clerk user only after application data is verified gone.
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import crypto from 'node:crypto';
@@ -49,7 +50,9 @@ export function parseArgs(argv) {
     dbId: values['db-id']?.trim().toLowerCase(),
     accountId: values['account-id']?.trim(),
     scenario: values.scenario?.trim(),
-    out: values.out?.trim()
+    out: values.out?.trim(),
+    // Optional native browser zoom (percent) for the B31 visual sweep; see createLiveAdapters.
+    zoom: values.zoom === undefined ? null : Number(values.zoom)
   };
   const errors = [];
   if (!config.sha || !SHA_RE.test(config.sha)) errors.push('--sha must be the full 40-character candidate SHA');
@@ -61,6 +64,9 @@ export function parseArgs(argv) {
   if (config.dbId === PRODUCTION_DB_ID) errors.push('--db-id is the production database; refusing');
   if (!config.accountId || !/^[0-9a-f]{32}$/.test(config.accountId)) errors.push('--account-id must be the 32-character Cloudflare account ID');
   if (!config.scenario || !/^[a-z0-9-]+$/.test(config.scenario)) errors.push('--scenario must name a module in scripts/smoke/');
+  if (config.zoom !== null && (!Number.isInteger(config.zoom) || config.zoom < 100 || config.zoom > 400)) {
+    errors.push('--zoom must be an integer percent between 100 and 400');
+  }
   if (errors.length) throw new SmokeError(`Invalid inputs:\n- ${errors.join('\n- ')}`);
   return config;
 }
@@ -257,6 +263,7 @@ export async function cleanupTenant({ tenant, tables, d1, clerk }) {
 export async function runSmoke({ config, adapters, scenario, tables, log = () => {} }) {
   const result = { status: 'FAIL', scenario: scenario?.name, target: null, stages: [], cleanup: [], error: null, startedAt: new Date().toISOString() };
   const tenants = [];
+  const expectedTenants = scenario?.tenants === 1 ? 1 : 2;
   const stage = async (name, fn) => {
     log(`[stage] ${name}`);
     try {
@@ -277,7 +284,8 @@ export async function runSmoke({ config, adapters, scenario, tables, log = () =>
       const rows = await adapters.d1('SELECT 1 AS ping;');
       if (rows?.[0]?.ping !== 1) throw new SmokeError('D1 ping failed');
     });
-    for (const label of ['A', 'B']) {
+    // Scenarios that run in one shared browser profile (--zoom) declare tenants: 1.
+    for (const label of ['A', 'B'].slice(0, expectedTenants)) {
       const tenant = await adapters.clerk.createTenant(label);
       tenants.push(tenant);
     }
@@ -300,7 +308,7 @@ export async function runSmoke({ config, adapters, scenario, tables, log = () =>
   }
   const cleanupOk = result.cleanup.length === tenants.length && result.cleanup.every((c) => c.ok);
   const stagesOk = result.stages.length > 0 && result.stages.every((s) => s.status === 'PASS');
-  result.status = !result.error && stagesOk && cleanupOk && tenants.length === 2 ? 'PASS' : 'FAIL';
+  result.status = !result.error && stagesOk && cleanupOk && tenants.length === expectedTenants ? 'PASS' : 'FAIL';
   result.finishedAt = new Date().toISOString();
   return result;
 }
@@ -355,7 +363,23 @@ async function createLiveAdapters(config) {
   const phoneBase = crypto.randomInt(100);
 
   const { chromium } = await import('playwright-core');
-  const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
+  const executablePath = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  // Native browser zoom is a per-host Chrome profile preference, so --zoom launches one persistent
+  // profile seeded for the preview host and every "context" is that single profile (one cookie jar:
+  // scenarios using it must declare tenants: 1). Windows are unemulated so zoom reflows the page.
+  let browser = null;
+  let zoomedContext = null;
+  if (config.zoom) {
+    const profileDir = mkdtempSync(join(tmpdir(), 'finpath-smoke-zoom-'));
+    mkdirSync(join(profileDir, 'Default'), { recursive: true });
+    const level = Math.log(config.zoom / 100) / Math.log(1.2);
+    writeFileSync(join(profileDir, 'Default', 'Preferences'), JSON.stringify({ partition: { per_host_zoom_levels: { x: { [new URL(config.url).host]: level } } } }));
+    zoomedContext = await chromium.launchPersistentContext(profileDir, { executablePath, headless: true, viewport: null, args: ['--window-size=1280,900'] });
+  } else {
+    browser = await chromium.launch({ executablePath, headless: true });
+  }
+  const newContext = (options) => (zoomedContext ? Promise.resolve(zoomedContext) : browser.newContext(options));
+  const browserVersion = () => (zoomedContext ? zoomedContext.browser()?.version() : browser.version());
 
   return {
     d1,
@@ -385,8 +409,10 @@ async function createLiveAdapters(config) {
       }
     },
     browser: {
+      version: browserVersion,
+      zoom: config.zoom,
       async signIn(tenant, baseUrl) {
-        const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+        const context = await newContext({ viewport: { width: 1280, height: 800 } });
         const escaped = fapi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         await context.route(new RegExp(`^https://${escaped}/v1/`), async (route) => {
           const url = new URL(route.request().url());
@@ -424,15 +450,15 @@ async function createLiveAdapters(config) {
         tenant.deleteAppData = async () => (await tenant.api('DELETE', '/api/account-data', { confirmation: DELETE_CONFIRMATION })).status;
       },
       // Signed-out visitor page with request logging and CSP-violation collection.
-      async newAnonymousPage() {
-        const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+      async newAnonymousPage(options = {}) {
+        const context = await newContext({ viewport: { width: 1280, height: 800 }, ...options });
         await context.addInitScript(CSP_COLLECTOR_SCRIPT);
         const page = await context.newPage();
         const requests = [];
         page.on('request', (request) => requests.push(request.url()));
         return { page, requests };
       },
-      close: () => browser.close()
+      close: () => (zoomedContext ? zoomedContext.close() : browser.close())
     }
   };
 }

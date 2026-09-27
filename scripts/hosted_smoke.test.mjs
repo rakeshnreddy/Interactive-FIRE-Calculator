@@ -68,6 +68,20 @@ test('inputs: every value is required and production DB is refused', () => {
   const prod = [...ARGS];
   prod[prod.indexOf('--db-id') + 1] = PRODUCTION_DB_ID;
   assert.throws(() => parseArgs(prod), /production/);
+  assert.equal(parseArgs(ARGS).zoom, null);
+  assert.equal(parseArgs([...ARGS, '--zoom', '200']).zoom, 200);
+  for (const bad of ['99', '401', '150.5', 'big', '']) assert.throws(() => parseArgs([...ARGS, '--zoom', bad]), /zoom/, `zoom ${bad}`);
+});
+
+test('a scenario declaring tenants: 1 gets a single synthetic user and a single cleanup', async () => {
+  const adapters = fakeAdapters();
+  const result = await run(adapters, { ...passingScenario, tenants: 1 });
+  assert.equal(result.status, 'PASS');
+  assert.equal(adapters.calls.createTenant, 1);
+  assert.equal(result.cleanup.length, 1);
+  const two = fakeAdapters();
+  await run(two, passingScenario);
+  assert.equal(two.calls.createTenant, 2);
 });
 
 test('CLI without inputs exits nonzero and reports no PASS', () => {

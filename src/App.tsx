@@ -4801,6 +4801,7 @@ function App({ auth }: { auth: AuthState }) {
                   className="visually-hidden"
                   type="file"
                   accept="application/json"
+                  aria-label="Choose a plan JSON file to import"
                   tabIndex={-1}
                   onChange={importPlanJson}
                 />
