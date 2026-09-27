@@ -42,7 +42,10 @@
   --color-nav-fg-strong: #0f1e2e;
   --color-nav-hover-bg: rgba(11, 124, 108, 0.1);
   --color-nav-border: rgba(15, 30, 46, 0.12);
-  --color-nav-accent: #0b7c6c;
+  --color-nav-accent: #075f52;
+  /* Text-on-tint tokens: the primary teal reads 4.2:1 on soft tinted chips, so text uses a darker ink. */
+  --color-primary-ink: #075f52;
+  --text-gradient: linear-gradient(115deg, #086a5c 0%, #1f4fc0 100%);
   --shadow-overlay: 0 18px 44px rgba(28, 54, 92, 0.14);
   --shadow-rest: 0 1px 2px rgba(28, 54, 92, 0.08);
   --glass: rgba(255, 255, 255, 0.72);
@@ -155,6 +158,8 @@
   --color-nav-hover-bg: rgba(255, 255, 255, 0.08);
   --color-nav-border: rgba(255, 255, 255, 0.12);
   --color-nav-accent: #5fe6c8;
+  --color-primary-ink: #5fe6c8;
+  --text-gradient: linear-gradient(115deg, #5fe6c8 0%, #8fb7ff 100%);
   --shadow-overlay: 0 18px 44px rgba(0, 0, 0, 0.32);
   --shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.3);
   --glass: rgba(15, 26, 41, 0.72);
@@ -517,7 +522,7 @@ body,
   gap: 0.35rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-primary-bg);
+  color: var(--color-primary-ink);
   background: var(--accent-soft);
   border: 1px solid var(--color-border);
   padding: 0.25rem 0.65rem;
@@ -908,7 +913,7 @@ body,
 .starting-path-badge {
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--color-primary-bg);
+  color: var(--color-primary-ink);
   background: var(--accent-soft);
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
@@ -1173,7 +1178,7 @@ body {
 }
 
 .app .eyebrow {
-  background: var(--action-gradient);
+  background: var(--text-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1755,6 +1760,16 @@ body {
 .app .landing-footer {
   width: min(1200px, calc(100% - 3rem));
   margin-inline: auto;
+}
+
+/* B31 sweep fixes: text on soft tints uses the ink token (measured 3.8-4.2:1 with the primary) */
+.app .pill,
+.app .calculator-toolkit-backlink,
+.app .calculator-region-badge,
+.app .review-badge,
+.app .insight-category,
+.app .calculator-featured-tag {
+  color: var(--color-primary-ink);
 }
 
 /* B31 sweep fixes: layouts that squeezed text at tablet and phone widths */

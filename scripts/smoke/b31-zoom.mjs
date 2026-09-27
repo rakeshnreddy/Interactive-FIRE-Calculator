@@ -68,6 +68,9 @@ export default {
       // Essential navigation stays reachable: the menu that is rendered at this width opens and lists Settings.
       const menuButton = tenant.page.locator('.mobile-menu-button:visible, .desktop-nav-menu > button:visible').first();
       await menuButton.click();
+      // In the phone-width menu the workspace links sit inside a collapsed "Workspace" group.
+      const group = tenant.page.locator('details.mobile-nav-group:visible > summary');
+      if (await group.count()) await group.first().click();
       const settingsLink = tenant.page.locator('a[href="/settings"]:visible').first();
       await settingsLink.waitFor({ state: 'visible', timeout: 5000 });
       const settingsBox = await settingsLink.boundingBox();

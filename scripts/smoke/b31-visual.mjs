@@ -66,6 +66,8 @@ export default {
       const stops = [];
       for (let i = 0; i < 40; i += 1) {
         await anon.page.keyboard.press('Tab');
+        // Focus scrolling is smooth (scroll-behavior), so let it finish before judging visibility.
+        await anon.page.waitForTimeout(250);
         const focus = await anon.page.evaluate(FOCUS_SCRIPT);
         if (focus.tag === 'body') break;
         stops.push(focus);
@@ -153,6 +155,7 @@ export default {
         }
       }
       const failures = pages.flatMap((p) => p.failures.map((f) => ({ theme: p.theme, route: p.route, ...f })));
+      writeRaw('b31-visual-contrast', pages);
       if (failures.length) fail(`contrast below threshold: ${failures.slice(0, 5).map((f) => `${f.theme} ${f.route} ${f.element} "${f.text}" ${f.ratio}:1 (needs ${f.required})`).join(' | ')}`);
       return { pages: pages.map((p) => ({ theme: p.theme, route: p.route, sampled: p.sampled, minimum: p.minimum, lowest: p.lowest.slice(0, 4) })) };
     });

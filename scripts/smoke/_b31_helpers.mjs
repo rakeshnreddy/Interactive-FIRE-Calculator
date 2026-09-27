@@ -109,11 +109,14 @@ export const TEXT_SAMPLE_SCRIPT = `(() => {
     if (r.width < 8 || r.height < 8 || r.bottom < 0 || r.top > window.innerHeight || r.right < 0 || r.left > window.innerWidth) continue;
     const cs = getComputedStyle(el);
     if (cs.visibility === 'hidden' || Number(cs.opacity) === 0) continue;
+    // Gradient text (background-clip: text) has a transparent colour; judge its worst gradient stop.
+    const clipText = (cs.webkitBackgroundClip === 'text' || cs.backgroundClip === 'text') && /gradient/.test(cs.backgroundImage);
+    const gradientStops = clipText ? (cs.backgroundImage.match(/rgba?\\([^)]+\\)/g) || []) : [];
     const key = Math.round(r.top) + ':' + Math.round(r.left) + ':' + el.tagName;
     if (seen.has(key)) continue;
     seen.add(key);
     const isDisabled = el.matches(':disabled, [aria-disabled="true"]');
-    out.push({ tag: el.tagName.toLowerCase(), cls: String(el.className || '').split(' ')[0], text: el.textContent.trim().slice(0, 40), color: cs.color, fontSize: parseFloat(cs.fontSize), fontWeight: Number(cs.fontWeight) || 400, disabled: isDisabled, rect: { x: Math.max(0, r.left), y: Math.max(0, r.top), w: Math.min(r.width, window.innerWidth - Math.max(0, r.left)), h: Math.min(r.height, window.innerHeight - Math.max(0, r.top)) } });
+    out.push({ tag: el.tagName.toLowerCase(), cls: String(el.className || '').split(' ')[0], text: el.textContent.trim().slice(0, 40), color: cs.color, gradientStops, fontSize: parseFloat(cs.fontSize), fontWeight: Number(cs.fontWeight) || 400, disabled: isDisabled, rect: { x: Math.max(0, r.left), y: Math.max(0, r.top), w: Math.min(r.width, window.innerWidth - Math.max(0, r.left)), h: Math.min(r.height, window.innerHeight - Math.max(0, r.top)) } });
   }
   return out;
 })()`;
@@ -121,9 +124,14 @@ export const TEXT_SAMPLE_SCRIPT = `(() => {
 export async function contrastReport(context, page) {
   const samples = await page.evaluate(TEXT_SAMPLE_SCRIPT);
   const png = (await page.screenshot({ scale: 'css' })).toString('base64');
+  // Sample inside the box (inset 20% / 25%) so rounded corners and neighbours are not counted.
   const points = samples.map((s) => {
     const list = [];
-    for (let i = 0; i < 7; i += 1) for (let j = 0; j < 5; j += 1) list.push([Math.floor(s.rect.x + 1 + (s.rect.w - 2) * (i / 6)), Math.floor(s.rect.y + 1 + (s.rect.h - 2) * (j / 4))]);
+    const x0 = s.rect.x + Math.max(1, s.rect.w * 0.2);
+    const y0 = s.rect.y + Math.max(1, s.rect.h * 0.25);
+    const w = Math.max(1, s.rect.w - 2 * Math.max(1, s.rect.w * 0.2));
+    const h = Math.max(1, s.rect.h - 2 * Math.max(1, s.rect.h * 0.25));
+    for (let i = 0; i < 7; i += 1) for (let j = 0; j < 5; j += 1) list.push([Math.floor(x0 + w * (i / 6)), Math.floor(y0 + h * (j / 4))]);
     return list;
   });
   const decoder = await context.newPage();
@@ -142,14 +150,21 @@ export async function contrastReport(context, page) {
   await decoder.close();
   const rows = samples.map((s, index) => {
     const counts = new Map();
-    for (const px of pixels[index]) { const k = px.map((v) => v >> 3).join(','); counts.set(k, { n: (counts.get(k)?.n ?? 0) + 1, px }); }
+    for (const px of pixels[index]) { const k = px.map((v) => v >> 4).join(','); counts.set(k, { n: (counts.get(k)?.n ?? 0) + 1, px }); }
     const background = [...counts.values()].sort((a, b) => b.n - a.n)[0].px;
+    const large = s.fontSize >= 24 || (s.fontSize >= 18.66 && s.fontWeight >= 700);
+    const required = s.disabled ? 0 : large ? 3 : 4.5;
+    const stops = s.gradientStops.map(parseColor).filter(Boolean).map((c) => c.rgb);
+    if (stops.length) {
+      const ratios = stops.map((rgb) => contrastRatio(rgb, background));
+      const worst = Math.min(...ratios);
+      return { element: `${s.tag}${s.cls ? '.' + s.cls : ''}`, text: s.text, fontSize: s.fontSize, ratio: Number(worst.toFixed(2)), required, background: `rgb(${background.join(',')})`, color: `gradient worst stop rgb(${stops[ratios.indexOf(worst)].join(',')})` };
+    }
     const fg = parseColor(s.color);
     if (!fg) return null;
     const text = fg.alpha < 1 ? fg.rgb.map((v, i) => Math.round(v * fg.alpha + background[i] * (1 - fg.alpha))) : fg.rgb;
-    const large = s.fontSize >= 24 || (s.fontSize >= 18.66 && s.fontWeight >= 700);
     const ratio = contrastRatio(text, background);
-    return { element: `${s.tag}${s.cls ? '.' + s.cls : ''}`, text: s.text, fontSize: s.fontSize, ratio: Number(ratio.toFixed(2)), required: s.disabled ? 0 : large ? 3 : 4.5, background: `rgb(${background.join(',')})`, color: `rgb(${text.join(',')})` };
+    return { element: `${s.tag}${s.cls ? '.' + s.cls : ''}`, text: s.text, fontSize: s.fontSize, ratio: Number(ratio.toFixed(2)), required, background: `rgb(${background.join(',')})`, color: `rgb(${text.join(',')})` };
   }).filter(Boolean);
   const failures = rows.filter((r) => r.ratio < r.required);
   return { sampled: rows.length, minimum: Math.min(...rows.map((r) => r.ratio)), failures, lowest: [...rows].sort((a, b) => a.ratio - b.ratio).slice(0, 8) };
