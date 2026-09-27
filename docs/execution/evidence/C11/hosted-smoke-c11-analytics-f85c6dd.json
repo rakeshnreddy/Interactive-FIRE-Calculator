@@ -1,10 +1,10 @@
 {
   "status": "PASS",
-  "scenario": "c11-delivery",
+  "scenario": "c11-analytics",
   "target": {
-    "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-    "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-    "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+    "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+    "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+    "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
     "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
     "commitDirty": false
   },
@@ -13,9 +13,9 @@
       "name": "preflight",
       "status": "PASS",
       "detail": {
-        "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-        "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-        "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
         "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
         "commitDirty": false
       }
@@ -31,39 +31,36 @@
       "detail": null
     },
     {
-      "name": "route-html-and-404",
-      "status": "PASS",
-      "detail": {
-        "titles": [
-          "FIRE Calculator | FinPath",
-          "Mortgage Payment Calculator | FinPath",
-          "Compound Interest Calculator | FinPath",
-          "EMI Calculator | FinPath",
-          "SIP Calculator | FinPath"
-        ]
-      }
-    },
-    {
-      "name": "security-headers",
+      "name": "signed-out-sends-nothing",
       "status": "PASS",
       "detail": null
     },
     {
-      "name": "public-page-without-clerk",
+      "name": "off-by-default",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "opt-in-through-settings",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "events-are-pseudonymous",
       "status": "PASS",
       "detail": {
-        "requests": 10
+        "props": [
+          "{\"slug\":\"fire\",\"engine\":\"fire-ts-v1\",\"outcome\":\"valid\"}"
+        ]
       }
     },
     {
-      "name": "sign-in-intent-loads-clerk",
+      "name": "activation-starts-cohort",
       "status": "PASS",
-      "detail": {
-        "redirectedTo": "*.accounts.dev"
-      }
+      "detail": null
     },
     {
-      "name": "signed-in-without-csp-violations",
+      "name": "opt-out-purges",
       "status": "PASS",
       "detail": null
     }
@@ -125,6 +122,6 @@
     }
   ],
   "error": null,
-  "startedAt": "2026-09-27T02:59:30.875Z",
-  "finishedAt": "2026-09-27T03:00:29.449Z"
+  "startedAt": "2026-09-27T05:55:35.706Z",
+  "finishedAt": "2026-09-27T05:56:11.406Z"
 }

@@ -1,10 +1,10 @@
 {
   "status": "PASS",
-  "scenario": "c09-revise",
+  "scenario": "c11-api-boundary",
   "target": {
-    "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-    "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-    "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+    "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+    "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+    "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
     "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
     "commitDirty": false
   },
@@ -13,9 +13,9 @@
       "name": "preflight",
       "status": "PASS",
       "detail": {
-        "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-        "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-        "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
         "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
         "commitDirty": false
       }
@@ -31,76 +31,35 @@
       "detail": null
     },
     {
-      "name": "seed-plan-versions",
+      "name": "public-and-signed-out",
       "status": "PASS",
       "detail": {
-        "versions": 2
+        "health": 200,
+        "me": 401,
+        "code": "UNAUTHORIZED"
       }
     },
     {
-      "name": "dashboard-shows-due-review",
+      "name": "oversized-body-rejected",
       "status": "PASS",
       "detail": {
-        "planId": "[synthetic]",
-        "apiStatus": "due",
-        "cards": 1
+        "status": 413
       }
     },
     {
-      "name": "version-2-workspace-ready",
-      "status": "PASS",
-      "detail": null
-    },
-    {
-      "name": "revise-selected-and-recorded",
-      "status": "PASS",
-      "detail": null
-    },
-    {
-      "name": "calculator-edit-annual-expense",
-      "status": "PASS",
-      "detail": null
-    },
-    {
-      "name": "version-3-saved",
-      "status": "PASS",
-      "detail": null
-    },
-    {
-      "name": "d1-version-3-and-immutability",
+      "name": "malformed-json-rejected",
       "status": "PASS",
       "detail": {
-        "v3AnnualExpense": 45000
+        "status": 400,
+        "code": "BAD_REQUEST"
       }
     },
     {
-      "name": "version-3-reload-matches-d1",
-      "status": "PASS",
-      "detail": null
-    },
-    {
-      "name": "tenant-b-denied",
-      "status": "PASS",
-      "detail": null
-    },
-    {
-      "name": "dashboard-review-cleared",
+      "name": "tenant-denial-has-code",
       "status": "PASS",
       "detail": {
-        "apiStatus": "up-to-date",
-        "cards": 0
-      }
-    },
-    {
-      "name": "review-panel-layout",
-      "status": "PASS",
-      "detail": {
-        "observations": [
-          "1280/light",
-          "1280/dark",
-          "375/light",
-          "375/dark"
-        ]
+        "status": 404,
+        "code": "NOT_FOUND"
       }
     }
   ],
@@ -161,6 +120,6 @@
     }
   ],
   "error": null,
-  "startedAt": "2026-09-27T02:57:04.555Z",
-  "finishedAt": "2026-09-27T02:58:18.075Z"
+  "startedAt": "2026-09-27T05:54:36.941Z",
+  "finishedAt": "2026-09-27T05:55:00.219Z"
 }

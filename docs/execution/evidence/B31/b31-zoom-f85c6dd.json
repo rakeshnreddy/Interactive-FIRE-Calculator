@@ -2,9 +2,9 @@
   "status": "PASS",
   "scenario": "b31-zoom",
   "target": {
-    "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-    "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-    "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+    "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+    "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+    "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
     "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
     "commitDirty": false
   },
@@ -13,9 +13,9 @@
       "name": "preflight",
       "status": "PASS",
       "detail": {
-        "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-        "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-        "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
         "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
         "commitDirty": false
       }
@@ -38,7 +38,8 @@
         "zoomPercent": 200,
         "cssViewportWidth": 640,
         "windowWidth": 1280,
-        "devicePixelRatio": 2
+        "devicePixelRatio": 2,
+        "anonymousSignedOut": true
       }
     },
     {
@@ -348,6 +349,6 @@
     }
   ],
   "error": null,
-  "startedAt": "2026-09-27T03:01:25.741Z",
-  "finishedAt": "2026-09-27T03:04:41.607Z"
+  "startedAt": "2026-09-27T05:56:12.552Z",
+  "finishedAt": "2026-09-27T05:57:54.193Z"
 }

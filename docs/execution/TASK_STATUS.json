@@ -528,7 +528,7 @@
       "prompt": "prompts/B31.md",
       "submission": "submissions/B31.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "7f67cfa",
+      "code_sha": "f85c6dd",
       "review": null,
       "blocked_reason": null
     },
@@ -670,7 +670,7 @@
       "prompt": "prompts/B40.md",
       "submission": "submissions/B40.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "a9e4a0a",
+      "code_sha": "f85c6dd",
       "review": null,
       "blocked_reason": null
     },

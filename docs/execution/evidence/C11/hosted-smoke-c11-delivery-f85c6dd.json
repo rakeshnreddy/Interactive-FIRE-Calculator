@@ -1,10 +1,10 @@
 {
   "status": "PASS",
-  "scenario": "c11-api-boundary",
+  "scenario": "c11-delivery",
   "target": {
-    "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-    "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-    "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+    "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+    "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+    "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
     "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
     "commitDirty": false
   },
@@ -13,9 +13,9 @@
       "name": "preflight",
       "status": "PASS",
       "detail": {
-        "deploymentId": "4c6ff32c-a241-4623-9c0d-95348c3070a6",
-        "url": "https://4c6ff32c.interactive-fire-calculator.pages.dev",
-        "sha": "7f67cfacdaf32c361ea1631478f60af0b9e278d0",
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
         "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
         "commitDirty": false
       }
@@ -31,36 +31,41 @@
       "detail": null
     },
     {
-      "name": "public-and-signed-out",
+      "name": "route-html-and-404",
       "status": "PASS",
       "detail": {
-        "health": 200,
-        "me": 401,
-        "code": "UNAUTHORIZED"
+        "titles": [
+          "FIRE Calculator | FinPath",
+          "Mortgage Payment Calculator | FinPath",
+          "Compound Interest Calculator | FinPath",
+          "EMI Calculator | FinPath",
+          "SIP Calculator | FinPath"
+        ]
       }
     },
     {
-      "name": "oversized-body-rejected",
+      "name": "security-headers",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "public-page-without-clerk",
       "status": "PASS",
       "detail": {
-        "status": 413
+        "requests": 10
       }
     },
     {
-      "name": "malformed-json-rejected",
+      "name": "sign-in-intent-loads-clerk",
       "status": "PASS",
       "detail": {
-        "status": 400,
-        "code": "BAD_REQUEST"
+        "redirectedTo": "*.accounts.dev"
       }
     },
     {
-      "name": "tenant-denial-has-code",
+      "name": "signed-in-without-csp-violations",
       "status": "PASS",
-      "detail": {
-        "status": 404,
-        "code": "NOT_FOUND"
-      }
+      "detail": null
     }
   ],
   "cleanup": [
@@ -120,6 +125,6 @@
     }
   ],
   "error": null,
-  "startedAt": "2026-09-27T02:59:02.465Z",
-  "finishedAt": "2026-09-27T02:59:30.046Z"
+  "startedAt": "2026-09-27T05:55:01.079Z",
+  "finishedAt": "2026-09-27T05:55:34.721Z"
 }
