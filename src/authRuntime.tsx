@@ -1,16 +1,19 @@
-import { cloneElement, createContext, useContext, type MouseEvent, type ReactElement, type ReactNode } from 'react';
+import { cloneElement, createContext, useContext, useEffect, useRef, type MouseEvent, type ReactElement } from 'react';
 
-// Clerk is loaded on demand (B38) so public pages never download it. Until it has loaded, auth
-// controls render as plain buttons that request it; afterwards they are Clerk's own components.
+// Clerk is loaded on demand (B38) so public pages never download it, and the app tree is never
+// wrapped by ClerkProvider, so loading Clerk later never remounts the app or loses a visitor's
+// inputs. Auth controls call the Clerk instance directly; until it exists they request it.
 export type ClerkModule = typeof import('@clerk/react');
+export type ClerkInstance = ReturnType<ClerkModule['useClerk']>;
 export type AuthIntent = 'sign-in' | 'sign-up';
 
 export type AuthRuntime = {
   clerk: ClerkModule | null;
+  instance: ClerkInstance | null;
   requestAuth: (intent: AuthIntent) => void;
 };
 
-export const AuthRuntimeContext = createContext<AuthRuntime>({ clerk: null, requestAuth: () => {} });
+export const AuthRuntimeContext = createContext<AuthRuntime>({ clerk: null, instance: null, requestAuth: () => {} });
 
 export const useAuthRuntime = () => useContext(AuthRuntimeContext);
 
@@ -24,22 +27,26 @@ export function shouldLoadClerkOnStart(location: { pathname: string; search: str
   return 'on-intent';
 }
 
+export function startAuthIntent(instance: ClerkInstance, intent: AuthIntent, mode: 'modal' | 'redirect'): void {
+  if (intent === 'sign-in') {
+    if (mode === 'modal') instance.openSignIn({ fallbackRedirectUrl: '/dashboard' });
+    else void instance.redirectToSignIn({ signInFallbackRedirectUrl: '/dashboard' });
+    return;
+  }
+  if (mode === 'modal') instance.openSignUp({ fallbackRedirectUrl: '/dashboard' });
+  else void instance.redirectToSignUp({ signUpFallbackRedirectUrl: '/dashboard' });
+}
+
 type ChildButton = ReactElement<{ onClick?: (event: MouseEvent<HTMLElement>) => void }>;
 
 function IntentWrapper({ intent, mode, children }: { intent: AuthIntent; mode: 'modal' | 'redirect'; children: ChildButton }) {
-  const { clerk, requestAuth } = useAuthRuntime();
-  if (clerk) {
-    const Component = intent === 'sign-in' ? clerk.SignInButton : clerk.SignUpButton;
-    return (
-      <Component mode={mode} {...(mode === 'redirect' ? { fallbackRedirectUrl: '/dashboard' } : {})}>
-        {children}
-      </Component>
-    );
-  }
+  const { instance, requestAuth } = useAuthRuntime();
   return cloneElement(children, {
     onClick: (event: MouseEvent<HTMLElement>) => {
       children.props.onClick?.(event);
-      requestAuth(intent);
+      if (event.defaultPrevented) return;
+      if (instance) startAuthIntent(instance, intent, mode);
+      else requestAuth(intent);
     }
   });
 }
@@ -53,11 +60,23 @@ export function SignUpIntent({ children, mode = 'modal' }: { children: ChildButt
 }
 
 export function AccountUserButton() {
-  const { clerk } = useAuthRuntime();
-  return clerk ? <clerk.UserButton userProfileMode="modal" /> : null;
+  const { instance } = useAuthRuntime();
+  const node = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const target = node.current;
+    if (!instance || !target) return;
+    instance.mountUserButton(target, { userProfileMode: 'modal' });
+    return () => instance.unmountUserButton(target);
+  }, [instance]);
+  return <div ref={node} className="account-user-button" aria-live="off" />;
 }
 
-export function SignOutControl({ children, redirectUrl = '/' }: { children: ReactNode; redirectUrl?: string }) {
-  const { clerk } = useAuthRuntime();
-  return clerk ? <clerk.SignOutButton redirectUrl={redirectUrl}>{children}</clerk.SignOutButton> : <>{children}</>;
+export function SignOutControl({ children, redirectUrl = '/' }: { children: ChildButton; redirectUrl?: string }) {
+  const { instance } = useAuthRuntime();
+  return cloneElement(children, {
+    onClick: (event: MouseEvent<HTMLElement>) => {
+      children.props.onClick?.(event);
+      if (instance) void instance.signOut({ redirectUrl });
+    }
+  });
 }

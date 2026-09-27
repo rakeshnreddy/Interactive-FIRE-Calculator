@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { AuthRuntimeContext, shouldLoadClerkOnStart, type AuthIntent, type ClerkModule } from './authRuntime';
+import { AuthRuntimeContext, shouldLoadClerkOnStart, startAuthIntent, type AuthIntent, type ClerkInstance, type ClerkModule } from './authRuntime';
 
 export type AuthUserProfile = {
   id: string;
@@ -47,70 +47,59 @@ const signedOutWithoutClerk: Extract<AuthState, { isConfigured: true; isSignedIn
   user: null
 };
 
+// Rendered inside ClerkProvider with no children: it reports the session to the boundary, which
+// renders the app outside the provider so the app tree is stable while Clerk loads.
 function ClerkSessionBridge({
   clerk,
   pendingIntent,
   onIntentHandled,
-  children
+  onAuth,
+  onInstance
 }: {
   clerk: ClerkModule;
   pendingIntent: AuthIntent | null;
   onIntentHandled: () => void;
-  children: (auth: AuthState) => ReactNode;
+  onAuth: (auth: AuthState) => void;
+  onInstance: (instance: ClerkInstance) => void;
 }) {
   const { getToken } = clerk.useAuth();
   const { isLoaded, isSignedIn, user } = clerk.useUser();
   const clerkInstance = clerk.useClerk();
+  const userId = user?.id;
+  const email = user?.primaryEmailAddress?.emailAddress;
+  const displayName = user?.fullName ?? user?.firstName ?? email ?? 'Signed-in user';
+  const imageUrl = user?.imageUrl;
+  // Report upward only when something observable changed; hook return values may be fresh objects.
+  const getTokenRef = useRef(getToken);
+  getTokenRef.current = getToken;
+  const stableGetToken = useCallback(() => getTokenRef.current(), []);
+  const reportedInstance = useRef<ClerkInstance | null>(null);
+
+  useEffect(() => {
+    if (clerkInstance.loaded && reportedInstance.current !== clerkInstance) {
+      reportedInstance.current = clerkInstance;
+      onInstance(clerkInstance);
+    }
+  }, [clerkInstance, clerkInstance.loaded, onInstance]);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      onAuth({ provider: 'clerk', status: 'loading', isConfigured: true, isSignedIn: false, getToken: stableGetToken, user: null });
+    } else if (!isSignedIn || !userId) {
+      onAuth({ provider: 'clerk', status: 'signed-out', isConfigured: true, isSignedIn: false, getToken: stableGetToken, user: null });
+    } else {
+      onAuth({ provider: 'clerk', status: 'signed-in', isConfigured: true, isSignedIn: true, getToken: stableGetToken, user: { id: userId, displayName, email, imageUrl } });
+    }
+  }, [displayName, email, imageUrl, isLoaded, isSignedIn, onAuth, stableGetToken, userId]);
 
   // Complete the sign-in/sign-up click that triggered loading Clerk.
   useEffect(() => {
     if (!pendingIntent || !clerkInstance.loaded) return;
     onIntentHandled();
-    if (pendingIntent === 'sign-in') {
-      void clerkInstance.redirectToSignIn({ signInFallbackRedirectUrl: '/dashboard' });
-    } else {
-      clerkInstance.openSignUp({ fallbackRedirectUrl: '/dashboard' });
-    }
+    startAuthIntent(clerkInstance, pendingIntent, pendingIntent === 'sign-in' ? 'redirect' : 'modal');
   }, [clerkInstance, clerkInstance.loaded, onIntentHandled, pendingIntent]);
 
-  if (!isLoaded) {
-    return children({
-      provider: 'clerk',
-      status: 'loading',
-      isConfigured: true,
-      isSignedIn: false,
-      getToken,
-      user: null
-    });
-  }
-
-  if (!isSignedIn || !user) {
-    return children({
-      provider: 'clerk',
-      status: 'signed-out',
-      isConfigured: true,
-      isSignedIn: false,
-      getToken,
-      user: null
-    });
-  }
-
-  const email = user.primaryEmailAddress?.emailAddress;
-  const displayName = user.fullName ?? user.firstName ?? email ?? 'Signed-in user';
-
-  return children({
-    provider: 'clerk',
-    status: 'signed-in',
-    isConfigured: true,
-    isSignedIn: true,
-    getToken,
-    user: {
-      id: user.id,
-      displayName,
-      email,
-      imageUrl: user.imageUrl
-    }
-  });
+  return null;
 }
 
 export function AuthProviderBoundary({ children }: { children: (auth: AuthState) => ReactNode }) {
@@ -120,6 +109,8 @@ export function AuthProviderBoundary({ children }: { children: (auth: AuthState)
       : shouldLoadClerkOnStart(window.location, typeof document === 'undefined' ? '' : document.cookie)
   ).current;
   const [clerk, setClerk] = useState<ClerkModule | null>(null);
+  const [instance, setInstance] = useState<ClerkInstance | null>(null);
+  const [clerkAuth, setClerkAuth] = useState<AuthState | null>(null);
   const [requested, setRequested] = useState(startMode !== 'on-intent');
   const [pendingIntent, setPendingIntent] = useState<AuthIntent | null>(null);
 
@@ -139,7 +130,7 @@ export function AuthProviderBoundary({ children }: { children: (auth: AuthState)
     setRequested(true);
   }, []);
   const clearIntent = useCallback(() => setPendingIntent(null), []);
-  const runtime = useMemo(() => ({ clerk, requestAuth }), [clerk, requestAuth]);
+  const runtime = useMemo(() => ({ clerk, instance, requestAuth }), [clerk, instance, requestAuth]);
 
   if (!clerkPublishableKey) {
     return children({
@@ -152,25 +143,22 @@ export function AuthProviderBoundary({ children }: { children: (auth: AuthState)
     });
   }
 
-  if (!clerk) {
-    // A signed-in hint or a workspace route shows "loading" rather than a false signed-out state.
-    const auth: AuthState = requested ? { ...signedOutWithoutClerk, status: 'loading' as const } : signedOutWithoutClerk;
-    return <AuthRuntimeContext.Provider value={runtime}>{children(auth)}</AuthRuntimeContext.Provider>;
-  }
-
-  const { ClerkProvider } = clerk;
+  // Before Clerk reports, a signed-in hint or a workspace route shows "loading" rather than a
+  // false signed-out state. The app element keeps the same tree position throughout.
+  const auth: AuthState = clerkAuth ?? (requested ? { ...signedOutWithoutClerk, status: 'loading' as const } : signedOutWithoutClerk);
   return (
     <AuthRuntimeContext.Provider value={runtime}>
-      <ClerkProvider
-        publishableKey={clerkPublishableKey}
-        signInFallbackRedirectUrl="/dashboard"
-        signUpFallbackRedirectUrl="/dashboard"
-        afterSignOutUrl="/"
-      >
-        <ClerkSessionBridge clerk={clerk} pendingIntent={pendingIntent} onIntentHandled={clearIntent}>
-          {children}
-        </ClerkSessionBridge>
-      </ClerkProvider>
+      {clerk ? (
+        <clerk.ClerkProvider
+          publishableKey={clerkPublishableKey}
+          signInFallbackRedirectUrl="/dashboard"
+          signUpFallbackRedirectUrl="/dashboard"
+          afterSignOutUrl="/"
+        >
+          <ClerkSessionBridge clerk={clerk} pendingIntent={pendingIntent} onIntentHandled={clearIntent} onAuth={setClerkAuth} onInstance={setInstance} />
+        </clerk.ClerkProvider>
+      ) : null}
+      {children(auth)}
     </AuthRuntimeContext.Provider>
   );
 }

@@ -26,7 +26,7 @@ describe('lazy Clerk loading (B38)', () => {
     document.body.appendChild(container);
     act(() =>
       createRoot(container).render(
-        <AuthRuntimeContext.Provider value={{ clerk: null, requestAuth }}>
+        <AuthRuntimeContext.Provider value={{ clerk: null, instance: null, requestAuth }}>
           <SignUpIntent><button type="button" onClick={onClick}>Create account to save</button></SignUpIntent>
         </AuthRuntimeContext.Provider>
       )
