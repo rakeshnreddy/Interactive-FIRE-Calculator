@@ -417,7 +417,12 @@ async function createLiveAdapters(config) {
         await context.route(new RegExp(`^https://${escaped}/v1/`), async (route) => {
           const url = new URL(route.request().url());
           url.searchParams.set('__clerk_testing_token', testingToken);
-          await route.fulfill({ response: await route.fetch({ url: url.toString() }) });
+          try {
+            await route.fulfill({ response: await route.fetch({ url: url.toString() }) });
+          } catch {
+            // A navigation or reload can cancel an in-flight token refresh; Clerk retries it.
+            await route.abort().catch(() => {});
+          }
         });
         await context.addInitScript(CSP_COLLECTOR_SCRIPT);
         const page = await context.newPage();

@@ -1757,6 +1757,63 @@ body {
   margin-inline: auto;
 }
 
+/* B31 sweep fixes: layouts that squeezed text at tablet and phone widths */
+
+/* Input controls have an optional prefix and suffix; a fixed three-column grid squeezed the
+   suffix into the leftover column when there was no prefix. */
+.app .calculator-input-control {
+  display: flex;
+  align-items: center;
+}
+
+.app .calculator-input-control input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.app .calculator-input-control small {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* The privacy band's sign-in action sits under the text, not under the icon. */
+.app .privacy-band > .secondary-button {
+  grid-column: 2;
+  justify-self: start;
+}
+
+@media (max-width: 560px) {
+  .app .privacy-band {
+    grid-template-columns: 1fr;
+  }
+
+  .app .privacy-band > .secondary-button {
+    grid-column: auto;
+  }
+}
+
+/* Footer: below desktop the link list takes its own row so the tagline keeps its width. */
+@media (max-width: 1024px) {
+  .app .landing-footer {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 1.25rem;
+  }
+
+  .app .landing-footer p {
+    text-align: left;
+  }
+
+  .app .landing-footer-links {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .app .landing-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Calculator library: region filter, badges, variant chips */
 .calculator-region-filter {
   display: flex;
