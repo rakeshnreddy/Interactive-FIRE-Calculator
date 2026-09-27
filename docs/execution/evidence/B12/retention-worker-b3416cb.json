@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "task": "B12",
+  "codeSha": "b3416cb1cb8d162a11a72601c549bf460eef36c8",
+  "recordedAt": "2026-09-27T09:01:59.306779Z",
+  "worker": {
+    "name": "finpath-analytics-retention-preview",
+    "versionId": "296634b2-7d96-40a0-accb-c598b55166fa",
+    "deployedAt": "2026-09-27T08:59:54.710Z",
+    "schedule": "17 3 * * *",
+    "binding": "env.DB -> finpath-preview (0dbad68e-7493-452f-8504-98d4c61ee5da)",
+    "workersDev": false,
+    "httpSurface": "GET / -> 404"
+  },
+  "commands": [
+    "npx wrangler deploy --config workers/analytics-retention/wrangler.toml",
+    "npx wrangler dev --config workers/analytics-retention/wrangler.toml --remote --test-scheduled --port 8787",
+    "curl \"http://localhost:8787/__scheduled?cron=17+3+*+*+*\"",
+    "npx wrangler d1 execute finpath-preview --env preview --remote (synthetic fixture insert, counts, cleanup)"
+  ],
+  "fixture": "Synthetic pseudonyms smoke-ret-<nonce>; one event 200 days old, one event today, one cohort activated 130 days ago, one 10 days ago. No consent row, no user record.",
+  "countsBefore": {
+    "ev": 2,
+    "co": 2,
+    "all_ev": 2,
+    "all_co": 2,
+    "users": 245,
+    "plans": 0,
+    "tx": 0,
+    "consent": 0
+  },
+  "scheduledEventResponse": "Ran scheduled event",
+  "countsAfter": {
+    "old_ev": 0,
+    "new_ev": 1,
+    "old_co": 0,
+    "new_co": 1,
+    "all_ev": 1,
+    "all_co": 1,
+    "users": 245,
+    "plans": 0,
+    "tx": 0,
+    "consent": 0
+  },
+  "cleanup": {
+    "leftover_ev": 0,
+    "leftover_co": 0,
+    "users": 245
+  },
+  "observations": [
+    "Aged event and aged cohort removed; the recent event and recent cohort kept.",
+    "users, plans, transactions and analytics_consent counts unchanged across the run.",
+    "Synthetic rows removed afterwards; zero smoke-ret-* rows remain.",
+    "No identifiers or props in the Worker log; counts only."
+  ]
+}

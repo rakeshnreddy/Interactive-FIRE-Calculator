@@ -186,7 +186,7 @@
       "id": "B12",
       "title": "consented minimal measurement",
       "checkpoint": "C11",
-      "status": "blocked",
+      "status": "ready_for_review",
       "dependencies": [
         "B07",
         "B41",
@@ -197,7 +197,7 @@
       "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": "b3416cb",
       "review": "reviews/C11.md",
-      "blocked_reason": "Retention Worker code and tests are complete; deploying the preview Worker (wrangler deploy) needs the owner to run or authorise it (OA-4)."
+      "blocked_reason": null
     },
     {
       "id": "B13",
@@ -736,7 +736,9 @@
       "action": "Deploy the preview analytics-retention Worker: npx wrangler deploy --config workers/analytics-retention/wrangler.toml (preview D1 only), then record the deployment ID and one observed scheduled run in submissions/B12.md.",
       "blocking_task": "B12",
       "requested_date": "2026-09-27",
-      "status": "pending"
+      "status": "done",
+      "resolved_date": "2026-09-27",
+      "resolution": "Owner authorised the deploy; Claude deployed finpath-analytics-retention-preview (version 296634b2) and recorded one observed scheduled run in submissions/B12.md."
     }
   ]
 }
