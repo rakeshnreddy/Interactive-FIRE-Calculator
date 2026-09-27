@@ -14,7 +14,7 @@
   --color-field-surface: #f6f8fd;
   --color-heading: #0f1e2e;
   --color-body: #24384a;
-  --color-muted: #55697c;
+  --color-muted: #465a6e; /* 5.6:1 on the light panel surface; the previous #55697c measured 4.44:1 */
   --color-muted-strong: #3b5063;
   --color-border: #d6dfeb;
   --color-control-border: #7c8fa3;

@@ -106,9 +106,13 @@ export const TEXT_SAMPLE_SCRIPT = `(() => {
     const hasText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim().length > 1);
     if (!hasText) continue;
     const r = el.getBoundingClientRect();
-    if (r.width < 8 || r.height < 8 || r.bottom < 0 || r.top > window.innerHeight || r.right < 0 || r.left > window.innerWidth) continue;
+    // Only elements fully inside the viewport (with a margin) can be sampled reliably.
+    if (r.width < 8 || r.height < 8 || r.top < 4 || r.bottom > window.innerHeight - 4 || r.left < 4 || r.right > window.innerWidth - 4) continue;
     const cs = getComputedStyle(el);
     if (cs.visibility === 'hidden' || Number(cs.opacity) === 0) continue;
+    // Skip text hidden behind an overlay (for example the sticky action bar) at the sample time.
+    const topmost = document.elementFromPoint(r.left + Math.min(6, r.width / 2), r.top + r.height / 2);
+    if (!topmost || !(topmost === el || el.contains(topmost) || topmost.contains(el))) continue;
     // Gradient text (background-clip: text) has a transparent colour; judge its worst gradient stop.
     const clipText = (cs.webkitBackgroundClip === 'text' || cs.backgroundClip === 'text') && /gradient/.test(cs.backgroundImage);
     const gradientStops = clipText ? (cs.backgroundImage.match(/rgba?\\([^)]+\\)/g) || []) : [];
@@ -116,7 +120,9 @@ export const TEXT_SAMPLE_SCRIPT = `(() => {
     if (seen.has(key)) continue;
     seen.add(key);
     const isDisabled = el.matches(':disabled, [aria-disabled="true"]');
-    out.push({ tag: el.tagName.toLowerCase(), cls: String(el.className || '').split(' ')[0], text: el.textContent.trim().slice(0, 40), color: cs.color, gradientStops, fontSize: parseFloat(cs.fontSize), fontWeight: Number(cs.fontWeight) || 400, disabled: isDisabled, rect: { x: Math.max(0, r.left), y: Math.max(0, r.top), w: Math.min(r.width, window.innerWidth - Math.max(0, r.left)), h: Math.min(r.height, window.innerHeight - Math.max(0, r.top)) } });
+    const bgAlpha = cs.backgroundColor.match(/rgba?\\(([^)]+)\\)/) ? Number(cs.backgroundColor.match(/rgba?\\(([^)]+)\\)/)[1].split(/[\\s,\\/]+/)[3] ?? 1) : 0;
+    const ownBackground = (cs.backgroundImage !== 'none' && !clipText) || bgAlpha > 0;
+    out.push({ tag: el.tagName.toLowerCase(), cls: String(el.className || '').split(' ')[0], text: el.textContent.trim().slice(0, 40), color: cs.color, gradientStops, ownBackground, fontSize: parseFloat(cs.fontSize), fontWeight: Number(cs.fontWeight) || 400, disabled: isDisabled, rect: { x: Math.max(0, r.left), y: Math.max(0, r.top), w: Math.min(r.width, window.innerWidth - Math.max(0, r.left)), h: Math.min(r.height, window.innerHeight - Math.max(0, r.top)) } });
   }
   return out;
 })()`;
@@ -124,7 +130,9 @@ export const TEXT_SAMPLE_SCRIPT = `(() => {
 export async function contrastReport(context, page) {
   const samples = await page.evaluate(TEXT_SAMPLE_SCRIPT);
   const png = (await page.screenshot({ scale: 'css' })).toString('base64');
-  // Sample inside the box (inset 20% / 25%) so rounded corners and neighbours are not counted.
+  // 35 samples inside the box (inset so rounded corners are skipped) plus a ring 3px outside it:
+  // a padded chip is judged on its own fill, a bare text run on what surrounds the glyphs.
+  const INNER = 35;
   const points = samples.map((s) => {
     const list = [];
     const x0 = s.rect.x + Math.max(1, s.rect.w * 0.2);
@@ -132,6 +140,15 @@ export async function contrastReport(context, page) {
     const w = Math.max(1, s.rect.w - 2 * Math.max(1, s.rect.w * 0.2));
     const h = Math.max(1, s.rect.h - 2 * Math.max(1, s.rect.h * 0.25));
     for (let i = 0; i < 7; i += 1) for (let j = 0; j < 5; j += 1) list.push([Math.floor(x0 + w * (i / 6)), Math.floor(y0 + h * (j / 4))]);
+    const { x, y } = s.rect;
+    const right = x + s.rect.w;
+    const bottom = y + s.rect.h;
+    // Ring above and below only: the sides of a text run often touch neighbouring chips or borders.
+    for (let i = 0; i < 6; i += 1) {
+      const fx = Math.floor(x + s.rect.w * ((i + 0.5) / 6));
+      list.push([fx, Math.max(0, Math.floor(y) - 3)], [fx, Math.floor(bottom) + 3]);
+    }
+    void right;
     return list;
   });
   const decoder = await context.newPage();
@@ -145,26 +162,34 @@ export async function contrastReport(context, page) {
     canvas.height = img.height;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
-    return points.map((list) => list.map(([x, y]) => [...ctx.getImageData(Math.min(x, img.width - 1), Math.min(y, img.height - 1), 1, 1).data.slice(0, 3)]));
+    return points.map((list) => list.map(([x, y]) => [...ctx.getImageData(Math.min(Math.max(0, x), img.width - 1), Math.min(Math.max(0, y), img.height - 1), 1, 1).data.slice(0, 3)]));
   }, { png, points });
   await decoder.close();
+  const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   const rows = samples.map((s, index) => {
-    const counts = new Map();
-    for (const px of pixels[index]) { const k = px.map((v) => v >> 4).join(','); counts.set(k, { n: (counts.get(k)?.n ?? 0) + 1, px }); }
-    const background = [...counts.values()].sort((a, b) => b.n - a.n)[0].px;
+    const stops = s.gradientStops.map(parseColor).filter(Boolean).map((c) => c.rgb);
+    const fg = parseColor(s.color);
+    const inkColors = stops.length ? stops : fg ? [fg.rgb] : [];
+    // Background = the median-luminance sample that is neither text nor its anti-aliased edge.
+    const notInk = (px) => inkColors.every((ink) => distance(px, ink) > 60);
+    const inner = pixels[index].slice(0, INNER).filter(notInk);
+    const ring = pixels[index].slice(INNER).filter(notInk);
+    // A bare text run is judged on what surrounds it; an element with its own fill on that fill.
+    const preferred = s.ownBackground ? [inner, ring] : [ring, inner];
+    const pool = preferred[0].length >= 5 ? preferred[0] : preferred[1].length >= 5 ? preferred[1] : pixels[index];
+    const background = [...pool].sort((a, b) => luminance(a) - luminance(b))[Math.floor(pool.length / 2)];
     const large = s.fontSize >= 24 || (s.fontSize >= 18.66 && s.fontWeight >= 700);
     const required = s.disabled ? 0 : large ? 3 : 4.5;
-    const stops = s.gradientStops.map(parseColor).filter(Boolean).map((c) => c.rgb);
+    const element = `${s.tag}${s.cls ? '.' + s.cls : ''}`;
     if (stops.length) {
       const ratios = stops.map((rgb) => contrastRatio(rgb, background));
       const worst = Math.min(...ratios);
-      return { element: `${s.tag}${s.cls ? '.' + s.cls : ''}`, text: s.text, fontSize: s.fontSize, ratio: Number(worst.toFixed(2)), required, background: `rgb(${background.join(',')})`, color: `gradient worst stop rgb(${stops[ratios.indexOf(worst)].join(',')})` };
+      return { element, text: s.text, fontSize: s.fontSize, ratio: Number(worst.toFixed(2)), required, background: `rgb(${background.join(',')})`, color: `gradient worst stop rgb(${stops[ratios.indexOf(worst)].join(',')})` };
     }
-    const fg = parseColor(s.color);
     if (!fg) return null;
     const text = fg.alpha < 1 ? fg.rgb.map((v, i) => Math.round(v * fg.alpha + background[i] * (1 - fg.alpha))) : fg.rgb;
     const ratio = contrastRatio(text, background);
-    return { element: `${s.tag}${s.cls ? '.' + s.cls : ''}`, text: s.text, fontSize: s.fontSize, ratio: Number(ratio.toFixed(2)), required, background: `rgb(${background.join(',')})`, color: `rgb(${text.join(',')})` };
+    return { element, text: s.text, fontSize: s.fontSize, ratio: Number(ratio.toFixed(2)), required, background: `rgb(${background.join(',')})`, color: `rgb(${text.join(',')})` };
   }).filter(Boolean);
   const failures = rows.filter((r) => r.ratio < r.required);
   return { sampled: rows.length, minimum: Math.min(...rows.map((r) => r.ratio)), failures, lowest: [...rows].sort((a, b) => a.ratio - b.ratio).slice(0, 8) };

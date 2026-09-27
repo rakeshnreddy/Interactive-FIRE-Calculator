@@ -195,6 +195,7 @@ export function TransactionImportPanel({ accounts, auth, onImportComplete }: Tra
             className="visually-hidden"
             type="file"
             accept=".csv,text/csv"
+            aria-label="Choose a transactions CSV file to import"
             tabIndex={-1}
             onChange={(event) => {
               const file = event.target.files?.[0];

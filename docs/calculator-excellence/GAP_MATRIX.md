@@ -1,0 +1,32 @@
+# Calculator gap matrix (per-route inventory of open work)
+
+Started by B40 on 2026-09-26 (owner takeover). Rows record what a real visitor would notice, the evidence, and the status. "Fixed" rows point at the commit and its tests; every fix went through the registry audit (`src/lib/calculatorRegistryAudit.test.ts`, defaults / zeros / zero rate-and-term / very large / tiny inputs for all 83 registry calculators) and the pinned goldens in `src/lib/seoCalculators.test.ts`. Nothing here claims a calculator is "complete"; open rows stay open until a reviewed per-route task closes them with formula sources.
+
+## Route inventory summary
+
+- 83 registry calculators (`src/lib/seoCalculators.ts`) plus the dedicated FIRE, compound-interest, savings-goal and cash-flow calculators. All 84 public routes are prerendered and pass `scripts/smoke_public_calculators.mjs`.
+- Shared engines, shown as one row with preset chips in the library and a "same calculation" switcher on detail pages (`calculatorVariants()`): `loan` (emi, home-loan-emi, car-loan-emi, personal-loan-emi, auto-loan, personal-loan, student-loan-payoff, amortization, home-equity-loan, fha-loan, va-loan …), `debt-payoff` (credit-card-payoff, debt-snowball-avalanche), `sip` family, `fd`/`rd`/`cd`. Every old URL still resolves to its own page; only discovery was consolidated.
+- Region: every calculator carries `US` or `India`; the library filter (`?region=`) and badges make jurisdiction explicit. Tax calculators are titled by country and date their assumptions (US 2026 single filer; India AY 2026-27).
+
+## Rows
+
+| Route(s) | Gap observed | Status | Evidence / task |
+|---|---|---|---|
+| `/calculators/mortgage` | Payment ignored property tax, insurance and HOA, so "monthly payment" understated the real housing cost. | **Fixed** (owner-directed functional pass, `7d087d5`): optional annual taxes, insurance and monthly HOA inputs; "Total monthly housing payment" metric; grouped as "Additional payments and housing costs". PMI is still not modeled here (see `/calculators/pmi` row). | `seoCalculators.test.ts` mortgage goldens; registry audit |
+| `/calculators/mortgage-affordability` | Asked for a loan amount and returned its payment; did not answer "what can I afford?". | **Fixed** (`7d087d5`): income, debts, down payment and a 28% front-end ratio produce an estimated home price (`loan-eligibility` engine). Ratio is an assumption shown in copy, not a lender rule. | golden 265,187.33 |
+| `/calculators/arm-mortgage` | Modeled as a fixed loan. | **Fixed** (`7d087d5`): fixed period then re-amortised at the assumed adjusted rate; schedule shows the reset. Caps/margins are not modeled. | golden 2,042.50 |
+| `/calculators/mortgage-points` | Points treated as a rate discount without a cost. | **Fixed** (`7d087d5`): closing cost, break-even months and lifetime saving. | golden 88.18 |
+| `/calculators/rent-vs-buy`, `/calculators/lease-vs-buy` | Ownership cost ignored taxes, insurance, upkeep and equity; loan amortised over the stay instead of its term. | **Fixed** (`7d087d5`): full-term amortisation, ownership costs and equity credit over the stay; chart and schedule use the financed amount. Appreciation and selling costs remain out of scope. | goldens 2,897.45 / 594.04 |
+| `/calculators/balance-transfer` | Promo rate applied forever. | **Fixed** (`7d087d5`): two-phase payoff, promo months and leftover balance at reversion. | golden 1,542.72 |
+| `/calculators/xirr` | Approximation, not an IRR. | **Fixed** (`7d087d5`): bisection on monthly cash flows. | golden 0.072468 |
+| `/calculators/roth-vs-traditional-ira` | Unequal out-of-pocket comparison favoured one side. | **Fixed** (`7d087d5`): equal out-of-pocket; equal outcomes at equal tax rates (test). | golden 29,633.78 |
+| `/calculators/biweekly-mortgage-payment` | "Time saved 0" without a unit. | **Fixed** (`7d087d5`): real months and interest saved from 13 payments a year; "Months saved" labels. | audit + goldens |
+| `/calculators/gratuity`, `/calculators/nps` | Statutory cap missing; NPS gave a corpus with no pension figure. | **Fixed** (`7d087d5`): ₹20,00,000 cap; estimated monthly pension from the annuity share and rate. Annuity rate is a user assumption. | audit |
+| All registry calculators | Scenario tabs ("Conservative / Optimistic") did not say which inputs moved. | **Fixed** (`a9e4a0a`): the panel lists every changed input with before → after values. | `CalculatorLibraryDetail.test.tsx` |
+| All registry calculators, compound interest | Percent inputs accepted any value (500% and beyond) and produced meaningless numbers. | **Fixed** (`a9e4a0a`): registry percent inputs cap at 100; compound interest refuses rates outside −100%..100% with a message. FIRE already bounds rates (B36). | `compoundInterestCalculator.test.ts` |
+| Tax calculators (`income-tax-us`, `income-tax-india`, `salary-india`, `paycheck`, `capital-gains-tax`, `gst`, `tds`, `hra-exemption`) | Simplified statutory models; no state tax, surcharge/cess detail, filing statuses or deductions beyond the standard ones. | **Open.** Assumptions are dated and stated in copy; no unsupported coverage is claimed. Needs a sourced per-route task with the effective year's statutes and goldens. | — |
+| `/calculators/pmi`, `/calculators/fha-loan`, `/calculators/va-loan`, `/calculators/fha-vs-conventional` | Mortgage insurance premiums and funding fees use flat assumptions rather than the current schedules. | **Open.** Needs sourced rate tables and a written assumptions block. | — |
+| `/calculators/social-security-break-even`, `/calculators/rmd` | Simplified benefit adjustment and life-expectancy factors. | **Open.** Needs current SSA factors and the IRS Uniform Lifetime Table with a stated year. | — |
+| `/calculators/loan-eligibility-india`, `/calculators/stamp-duty-registration` | State-specific stamp duty and lender FOIR rules vary. | **Open.** Copy says the estimate is generic; a per-state table would be a new data contract. | — |
+| Dedicated FIRE calculator | Accumulation uses period 1's rates (stated in UI). Multi-period accumulation and cash-flow events remain out of scope. | **Open**, deliberately (B35/B36 decisions). | `submissions/B36.md` |
+| Charts (all) | Comparison charts show three scenarios of the headline metric only; no principal/interest split for the loan family outside the schedule table. | **Open.** Candidate visual improvement per `CALCULATOR_EXCELLENCE_PROGRAM.md` Stage 3; the schedule table is the accessible equivalent today. | — |

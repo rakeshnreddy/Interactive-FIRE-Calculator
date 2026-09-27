@@ -662,15 +662,15 @@
       "id": "B40",
       "title": "Consolidate calculator library and user-facing copy",
       "checkpoint": "C14",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B31",
         "B36"
       ],
       "prompt": "prompts/B40.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B40.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "a9e4a0a",
       "review": null,
       "blocked_reason": null
     },
