@@ -375,7 +375,7 @@ function CalculatorToolkitPanel({
   const remaining = toolkit.calculators.filter((calculator) => !toolkit.featuredSlugs.includes(calculator.slug));
 
   return (
-    <article className={`calculator-toolkit toolkit-${toolkit.id}`}>
+    <article className={`calculator-toolkit toolkit-${toolkit.id}`} id={`toolkit-${toolkit.id}`}>
       <header>
         <span className="calculator-toolkit-icon"><Icon size={20} /></span>
         <div>

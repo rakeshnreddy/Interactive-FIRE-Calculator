@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { AuthState } from './auth';
+import { landingFaq } from './lib/landingContent';
 import { LandingPage } from './App';
 
 vi.mock('@clerk/react', () => ({
@@ -48,11 +49,9 @@ describe('LandingPage (B18)', () => {
     );
 
     // Exact B18 copy contract
-    expect(html).toContain('Plan your financial future');
-    expect(html).toContain('See when you could retire.');
-    expect(html).toContain(
-      'See how saving more or spending less could change your retirement timeline. Try it free, without an account.'
-    );
+    expect(html).toContain('Free financial calculators for the US and India');
+    expect(html).toContain('Clear answers to your money questions.');
+    expect(html).toContain('No account needed, no ads.');
 
     // Obsolete copy must be absent
     expect(html).not.toContain('Make the number mean something');
@@ -72,17 +71,31 @@ describe('LandingPage (B18)', () => {
 
     // Primary action
     expect(html).toContain('href="/calculators/fire"');
-    expect(html).toContain('Explore my retirement timeline');
+    expect(html).toContain('See when you could retire');
 
     // Secondary link
     expect(html).toContain('href="/calculators"');
-    expect(html).toContain('Explore all calculators');
+    expect(html).toContain('Browse all calculators');
 
     // Popular starts links
     expect(html).toContain('Popular starts');
     expect(html).toContain('href="/calculators/mortgage"');
     expect(html).toContain('href="/calculators/debt-payoff"');
     expect(html).toContain('href="/calculators/compound-interest"');
+    expect(html).toContain('href="/calculators/emi"');
+    expect(html).toContain('href="/calculators/sip"');
+  });
+
+  it('renders toolkit, trust and FAQ sections that match the structured data copy', () => {
+    const html = renderToStaticMarkup(<LandingPage auth={unconfiguredAuth} onNavigate={() => {}} />);
+    expect(html).toContain('What are you trying to work out?');
+    expect(html).toContain('href="/calculators#toolkit-home"');
+    expect(html).toContain('Built for the US and India');
+    for (const item of landingFaq) {
+      expect(html).toContain(item.question);
+      expect(html).toContain(item.answer.replace(/'/g, '&#x27;').replace(/\u2019/g, '\u2019'));
+    }
+    expect(html).not.toMatch(/SEO|search ranking|traffic|conversion/i);
   });
 
   it('renders the three-step sequence and three useful calculator paths', () => {

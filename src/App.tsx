@@ -1,6 +1,7 @@
 import { AccountUserButton, SignInIntent, SignOutControl, SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
+  Banknote,
   BarChart3,
   Calculator,
   ChevronDown,
@@ -10,16 +11,19 @@ import {
   ClipboardList,
   Download,
   FolderKanban,
+  Home,
   Info,
+  Landmark,
   LayoutDashboard,
+  Lightbulb,
+  LineChart as LineChartIcon,
   LockKeyhole,
   LogIn,
   LogOut,
-  LineChart as LineChartIcon,
-  Lightbulb,
   Menu,
   Moon,
   PiggyBank,
+  Receipt,
   RotateCcw,
   Save,
   Settings,
@@ -31,6 +35,7 @@ import {
   TrendingUp,
   Upload,
   UserCircle,
+  Wallet,
   X
 } from 'lucide-react';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -91,6 +96,8 @@ import { validateFireForm } from './lib/fireValidation';
 import { configureAnalytics, flushAnalytics, track } from './lib/analyticsClient';
 import { formatCompactMoney } from './lib/money';
 import { HERO_FIRE_FIXTURE } from './lib/heroExample';
+import { landingFaq, landingHero, landingTrustPoints } from './lib/landingContent';
+import { calculatorToolkits, type CalculatorToolkitIcon } from './lib/calculatorToolkits';
 import { FireRetirementEstimate } from './components/FireRetirementEstimate';
 import { ReportsPanel } from './reports/ReportsPanel';
 import { PrivacyControlsPanel } from './settings/PrivacyControlsPanel';
@@ -352,6 +359,8 @@ const navigationIconByPath: Record<string, typeof Calculator> = {
 
 const popularCalculatorLinks: Array<{ label: string; path: AppRoute }> = [
   { label: 'Mortgage', path: '/calculators/mortgage' },
+  { label: 'EMI', path: '/calculators/emi' },
+  { label: 'SIP', path: '/calculators/sip' },
   { label: 'Debt payoff', path: '/calculators/debt-payoff' },
   { label: 'Compound interest', path: '/calculators/compound-interest' },
   { label: 'FIRE', path: '/calculators/fire' }
@@ -1032,43 +1041,41 @@ function DesktopNavigation({
   );
 }
 
+const landingToolkitIcons: Record<CalculatorToolkitIcon, typeof Calculator> = {
+  banknote: Banknote,
+  chart: BarChart3,
+  home: Home,
+  landmark: Landmark,
+  receipt: Receipt,
+  shield: ShieldCheck,
+  target: Target,
+  wallet: Wallet
+};
+
 export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
+  const link = (route: AppRoute | string) => (event: ReactMouseEvent<HTMLAnchorElement>) => handleNavigationAnchorClick(event, route as AppRoute, onNavigate);
   return (
     <>
       <section className="landing-hero" aria-labelledby="landing-title">
         <div className="landing-hero-inner">
           <div className="landing-hero-copy">
-            <p className="eyebrow">Plan your financial future</p>
-            <h1 id="landing-title">See when you could retire.</h1>
-            <p>
-              See how saving more or spending less could change your retirement timeline. Try it free, without an account.
-            </p>
+            <p className="eyebrow">{landingHero.eyebrow}</p>
+            <h1 id="landing-title">{landingHero.title}</h1>
+            <p>{landingHero.body}</p>
             <div className="landing-actions">
-              <a
-                href="/calculators/fire"
-                className="primary-button icon-text-button"
-                onClick={(event) => handleNavigationAnchorClick(event, '/calculators/fire', onNavigate)}
-              >
+              <a href="/calculators/fire" className="primary-button icon-text-button" onClick={link('/calculators/fire')}>
                 <Target size={16} />
-                Explore my retirement timeline
+                {landingHero.primaryAction}
               </a>
-              <a
-                href="/calculators"
-                className="secondary-button icon-text-button"
-                onClick={(event) => handleNavigationAnchorClick(event, '/calculators', onNavigate)}
-              >
+              <a href="/calculators" className="secondary-button icon-text-button" onClick={link('/calculators')}>
                 <Calculator size={16} />
-                Explore all calculators
+                {landingHero.secondaryAction}
               </a>
             </div>
             <nav className="landing-popular-paths" aria-label="Popular calculators">
               <span>Popular starts</span>
               {popularCalculatorLinks.map(({ path, label }) => (
-                <a
-                  key={path}
-                  href={path}
-                  onClick={(event) => handleNavigationAnchorClick(event, path, onNavigate)}
-                >
+                <a key={path} href={path} onClick={link(path)}>
                   {label}
                   <ChevronRight size={14} />
                 </a>
@@ -1084,11 +1091,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
         {usefulCalculatorPaths.map((pathItem) => {
           const Icon = pathItem.icon;
           return (
-            <a
-              key={pathItem.route}
-              href={pathItem.route}
-              onClick={(event) => handleNavigationAnchorClick(event, pathItem.route, onNavigate)}
-            >
+            <a key={pathItem.route} href={pathItem.route} onClick={link(pathItem.route)}>
               <Icon size={22} />
               <span>
                 <small>{pathItem.title}</small>
@@ -1098,6 +1101,33 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
             </a>
           );
         })}
+      </section>
+
+      <section className="landing-toolkits" aria-labelledby="toolkits-title">
+        <header>
+          <p className="eyebrow">Find a calculator by question</p>
+          <h2 id="toolkits-title">What are you trying to work out?</h2>
+          <p>{seoCalculators.length + 1} calculators, grouped by the decision you are making.</p>
+        </header>
+        <div className="landing-toolkit-grid">
+          {calculatorToolkits.map((toolkit) => {
+            const Icon = landingToolkitIcons[toolkit.icon];
+            const route = `/calculators#toolkit-${toolkit.id}`;
+            return (
+              <a key={toolkit.id} className="landing-toolkit-card" href={route} onClick={link(route)}>
+                <span className="feature-icon">
+                  <Icon size={20} />
+                </span>
+                <span className="landing-toolkit-text">
+                  <small>{toolkit.prompt}</small>
+                  <strong>{toolkit.title}</strong>
+                  <em>{toolkit.calculators.length} calculators</em>
+                </span>
+                <ArrowRight size={16} />
+              </a>
+            );
+          })}
+        </div>
       </section>
 
       <section className="landing-capabilities" aria-labelledby="capabilities-title">
@@ -1125,6 +1155,36 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
         </div>
       </section>
 
+      <section className="landing-trust" aria-labelledby="trust-title">
+        <header>
+          <p className="eyebrow">Why FinPath</p>
+          <h2 id="trust-title">Honest math, in your currency.</h2>
+        </header>
+        <div className="landing-trust-grid">
+          {landingTrustPoints.map((point) => (
+            <article key={point.title}>
+              <strong>{point.title}</strong>
+              <p>{point.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-faq" id="faq" aria-labelledby="faq-title">
+        <header>
+          <p className="eyebrow">Common questions</p>
+          <h2 id="faq-title">Questions people ask before they start</h2>
+        </header>
+        <div className="landing-faq-list">
+          {landingFaq.map((item, index) => (
+            <details key={item.question} open={index === 0}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       <section className="privacy-band" aria-labelledby="privacy-title">
         <ShieldCheck size={24} />
         <div>
@@ -1135,11 +1195,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
         </div>
         {auth.isConfigured && (
           auth.isSignedIn ? (
-            <a
-              href="/dashboard"
-              className="secondary-button icon-text-button"
-              onClick={(event) => handleNavigationAnchorClick(event, '/dashboard', onNavigate)}
-            >
+            <a href="/dashboard" className="secondary-button icon-text-button" onClick={link('/dashboard')}>
               Open dashboard
               <ArrowRight size={17} />
             </a>
@@ -1158,23 +1214,18 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
       </section>
 
       <footer className="landing-footer">
-        <a
-          href="/"
-          onClick={(event) => handleNavigationAnchorClick(event, '/', onNavigate)}
-          aria-label="FinPath home"
-        >
+        <a href="/" onClick={link('/')} aria-label="FinPath home">
           <PiggyBank size={22} />
           <strong>FinPath</strong>
         </a>
-        <p>Track today. Test tomorrow. Keep the assumptions yours.</p>
-        <a
-          className="landing-footer-action"
-          href="/calculators"
-          onClick={(event) => handleNavigationAnchorClick(event, '/calculators', onNavigate)}
-        >
-          Browse calculators
-          <ArrowRight size={16} />
-        </a>
+        <p>Free financial calculators for the US and India. Estimates, not advice.</p>
+        <nav className="landing-footer-links" aria-label="Footer">
+          <a href="/calculators" onClick={link('/calculators')}>All calculators</a>
+          <a href="/calculators/fire" onClick={link('/calculators/fire')}>FIRE calculator</a>
+          <a href="/calculators#toolkit-home" onClick={link('/calculators#toolkit-home')}>Mortgage &amp; home</a>
+          <a href="/calculators#toolkit-income-tax" onClick={link('/calculators#toolkit-income-tax')}>Income &amp; tax</a>
+          <a href="/#faq">FAQ</a>
+        </nav>
       </footer>
     </>
   );

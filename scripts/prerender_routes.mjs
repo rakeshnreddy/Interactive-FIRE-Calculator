@@ -18,7 +18,10 @@ export function renderRouteHtml(template, meta, { heading, body }) {
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(meta.title)}</title>`)
     .replace(/<meta\s+name="description"[\s\S]*?\/>/, `<meta name="description" content="${escapeHtml(meta.description)}" />`)
     .replace(/<meta name="robots" content="[^"]*" \/>/, `<meta name="robots" content="${meta.robots}" />`)
-    .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${escapeHtml(meta.canonicalUrl)}" />`);
+    .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${escapeHtml(meta.canonicalUrl)}" />`)
+    .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${escapeHtml(meta.title)}" />`)
+    .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${escapeHtml(meta.description)}" />`)
+    .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${escapeHtml(meta.canonicalUrl)}" />`);
   if (meta.jsonLd) {
     html = html.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(meta.jsonLd).replace(/</g, '\\u003c')}</script>\n  </head>`);
   }
@@ -41,8 +44,32 @@ export function renderNotFoundHtml(template) {
   );
 }
 
+// llms.txt: a plain-text guide for AI assistants (https://llmstxt.org) listing what each page answers.
+export function renderLlmsTxt(calculators, metadataFor) {
+  const site = 'https://interactive-fire-calculator.pages.dev';
+  const byCategory = {};
+  for (const c of calculators) (byCategory[c.category] ??= []).push(c);
+  const lines = [
+    '# FinPath',
+    '',
+    '> Free financial calculators for the United States and India: retirement (FIRE), mortgages and EMIs, loans, savings and investing, and income tax. Every result shows its assumptions and explains what moves the answer. No account or payment is needed; estimates are for planning and are not financial advice.',
+    '',
+    `- [FIRE calculator](${site}/calculators/fire): ${metadataFor('/calculators/fire').description}`,
+    `- [All calculators](${site}/calculators): search or browse by decision.`,
+    `- [FAQ](${site}/#faq): what FinPath is, countries and currencies, privacy.`,
+    ''
+  ];
+  for (const [category, items] of Object.entries(byCategory)) {
+    lines.push(`## ${category}`, '');
+    for (const c of items) lines.push(`- [${c.title}](${site}/calculators/${c.slug}) (${c.region}): ${c.description}`);
+    lines.push('');
+  }
+  return lines.join('\n');
+}
+
 async function main() {
-  const server = await createServer({ root: ROOT, logLevel: 'error', server: { middlewareMode: true }, appType: 'custom' });
+  // No dependency discovery: this server only loads two pure modules, and closing it mid-scan logs a spurious error.
+  const server = await createServer({ root: ROOT, logLevel: 'error', server: { middlewareMode: true }, appType: 'custom', optimizeDeps: { noDiscovery: true, include: [] } });
   try {
     const { buildRouteMetadata } = await server.ssrLoadModule('/src/lib/routeMetadata.ts');
     const { seoCalculators } = await server.ssrLoadModule('/src/lib/seoCalculators.ts');
@@ -62,6 +89,7 @@ async function main() {
       written += 1;
     }
     writeFileSync(join(DIST, '404.html'), renderNotFoundHtml(template));
+    writeFileSync(join(DIST, 'llms.txt'), renderLlmsTxt(seoCalculators, buildRouteMetadata));
     console.log(`[prerender_routes] Wrote ${written} route pages (${publicRoutes.length} public, ${WORKSPACE_ROUTES.length} workspace) and 404.html.`);
   } finally {
     await server.close();
