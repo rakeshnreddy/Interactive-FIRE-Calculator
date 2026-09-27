@@ -101,7 +101,7 @@
   - Analytics/tests/privacy: `review_completed` consented contract after B12; time-zone/duplicate/foreign-user/archived/empty/error cases, D1 transaction proof and hosted synthetic flow.
   - Dependencies/rollback/effort: B04–B07, B10; additive schema with feature flag off on error. Human 3–5 days; agent 8–16 hours.
 
-- [ ] **B12 — Owner-policy dependent: consented minimal measurement.**
+- [x] **B12 — Owner-policy dependent: consented minimal measurement.**
   - Problem/evidence: no activation/retention baseline.
   - Outcome/scope: implement allowlisted event contract, consent/revocation, 90-day raw TTL and aggregate report as specified in measurement plan.
   - Non-goals/files: no replay/vendor SDK/raw URL/financial fields; first-party endpoint, consent UI, bounded event migration and deletion hook.

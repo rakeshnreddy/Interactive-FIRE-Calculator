@@ -42,3 +42,7 @@ Final code `f85c6dd9c092720b0b0a1070cab657458be57cb6`; immutable preview `https:
 - **B12** corrected at `b3416cb` and back to `ready_for_review`: shared retention statements plus the scheduled Worker `finpath-analytics-retention-preview` (version `296634b2`, cron `17 3 * * *`, preview D1 only), deployed with owner authorisation and observed removing exactly the aged synthetic rows (`evidence/B12/retention-worker-b3416cb.json`). OA-4 done.
 - **B31** stays blocked on a real VoiceOver/NVDA pass ([B31_READER_PROMPT.md](B31_READER_PROMPT.md)); a person must run it.
 - Full gate at `b3416cb`: 79 files, 2,463 tests. No main merge, no production deploy, production D1 untouched.
+
+## Astra correction review — 2026-09-27
+
+B12 accepted at `b3416cb1cb8d162a11a72601c549bf460eef36c8`: independent full suite (2,463 tests), 84 public routes, deployed Worker version/cron/preview-only D1 verified through Cloudflare, and an independent synthetic scheduled test removed old event/cohort rows while retaining recent ones; cleanup zero. B40 NPS/XIRR implementation correction independently passes source, goldens, Chrome mobile/desktop and route smoke, but stays `ready_for_review` because C14 depends on B31. C11 remains released; B31 actual VoiceOver/NVDA is the next gate. C14, C12 and C13 remain locked. PR #140 unmerged; production D1 untouched. [C11 review](reviews/C11.md), [C14 review](reviews/C14.md), [sanitized record](evidence/reviewer-2026-09-27/b12-b40-correction-review.json).

@@ -186,7 +186,7 @@
       "id": "B12",
       "title": "consented minimal measurement",
       "checkpoint": "C11",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B07",
         "B41",
@@ -195,7 +195,7 @@
       "prompt": "prompts/B12.md",
       "submission": "submissions/B12.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "b3416cb",
+      "code_sha": "b3416cb1cb8d162a11a72601c549bf460eef36c8",
       "review": "reviews/C11.md",
       "blocked_reason": null
     },
@@ -670,7 +670,7 @@
       "prompt": "prompts/B40.md",
       "submission": "submissions/B40.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "b3416cb",
+      "code_sha": "b3416cb1cb8d162a11a72601c549bf460eef36c8",
       "review": "reviews/C14.md",
       "blocked_reason": null
     },
@@ -726,7 +726,7 @@
     },
     {
       "id": "OA-3",
-      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350…) before any production release; it is applied to the preview D1 only.",
+      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350\u2026) before any production release; it is applied to the preview D1 only.",
       "blocking_task": "Production readiness of B12 only",
       "requested_date": "2026-09-27",
       "status": "pending"
