@@ -202,7 +202,7 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
       )}
       result={(
         <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
-          <PanelHeading eyebrow="Current position" title={projection.netWorth < 0 ? 'Estimated net deficit' : 'Estimated net worth'} badges={['Snapshot', 'Model v2']} />
+          <PanelHeading eyebrow="Current position" title={projection.netWorth < 0 ? 'Estimated net deficit' : 'Estimated net worth'} badges={['Snapshot']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
               <Headline label={projection.netWorth < 0 ? 'Net deficit (liabilities exceed assets)' : 'Net assets (assets minus liabilities)'} value={money(projection.netWorth)} detail={`${money(projection.totalAssets)} assets − ${money(projection.totalLiabilities)} liabilities`} tone={projection.netWorth < 0 ? 'warning' : 'positive'} />
@@ -381,7 +381,7 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
       )}
       result={(
         <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
-          <PanelHeading eyebrow="Cashflow result" title={projection.monthlySurplus < 0 ? 'Monthly deficit' : 'Monthly surplus'} badges={['Before savings allocation', 'Model v2']} />
+          <PanelHeading eyebrow="Cashflow result" title={projection.monthlySurplus < 0 ? 'Monthly deficit' : 'Monthly surplus'} badges={['Before savings allocation']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
               <Headline label={projection.monthlySurplus < 0 ? 'Monthly deficit (spending exceeds income)' : 'Monthly surplus (income minus entered spending)'} value={money(projection.monthlySurplus)} detail={`${money(projection.totalIncome)} income − ${money(projection.totalSpending)} spending`} tone={projection.monthlySurplus < 0 ? 'warning' : 'positive'} />

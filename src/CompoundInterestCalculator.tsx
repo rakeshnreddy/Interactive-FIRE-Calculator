@@ -537,7 +537,6 @@ export function CompoundInterestCalculator({
             </div>
             <div className="compound-model-badges">
               <span className="compound-version">{scenarioLabel(scenarioId)} case</span>
-              <span className="compound-version">Model v2</span>
             </div>
           </div>
 
@@ -553,7 +552,7 @@ export function CompoundInterestCalculator({
               <div className="compound-headline" aria-live="polite" aria-atomic="true">
                 <strong>{money(projection.endingValue)}</strong>
                 <span>after {formatDuration(scenarioInputs.years)}</span>
-                <small>{money(projection.endingValue, currencyFractionDigits(currency))} at standard {currency} display precision; calculations retain full precision</small>
+                <small>{money(projection.endingValue, currencyFractionDigits(currency))} to the cent; calculations keep full precision.</small>
               </div>
 
               <div className="calculator-result-metrics">

@@ -333,7 +333,7 @@ export function SavingsGoalCalculator({
         <section className="calculator-result-panel compound-result-panel" aria-labelledby="savings-result-title">
           <div className="panel-heading">
             <div><p className="eyebrow">Saving pace</p><h2 id="savings-result-title">Required contribution</h2></div>
-            <div className="compound-model-badges"><span className="compound-version">{scenarioLabel(scenarioId)} case</span><span className="compound-version">Model v2</span></div>
+            <div className="compound-model-badges"><span className="compound-version">{scenarioLabel(scenarioId)} case</span></div>
           </div>
 
           {!projection.validation.isValid ? (

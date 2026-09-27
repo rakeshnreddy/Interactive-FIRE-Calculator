@@ -247,6 +247,10 @@ export function buildCalculatorDetailSchedule(
       return loanAmortizationSchedule(calculator, normalized);
     case 'apr':
       return aprBreakdownSchedule(calculator, normalized);
+    case 'arm':
+      return armPaymentSchedule(calculator, normalized);
+    case 'points':
+      return pointsBreakEvenSchedule(calculator, normalized);
     case 'balloon-loan':
       return balloonLoanSchedule(calculator, normalized);
     case 'balance-transfer':
@@ -580,8 +584,12 @@ function amortizationChart(
   metadata: CalculatorStudioMetadata
 ): CalculatorStudioChart {
   const currency = calculatorCurrency(calculator);
-  const principal = Math.max(0, firstFinite(values, ['principal', 'balance', 'homePrice']) ?? 0);
-  const years = Math.max(1, firstFinite(values, ['years']) ?? 5);
+  // Purchase-style inputs finance the price minus the down payment; the loan's own term wins over a comparison horizon.
+  const financedFromPrice = firstFinite(values, ['principal', 'balance']) === undefined && Number.isFinite(values.homePrice);
+  const principal = Math.max(0, financedFromPrice
+    ? (values.homePrice ?? 0) - Math.max(0, values.downPayment ?? 0)
+    : firstFinite(values, ['principal', 'balance', 'homePrice']) ?? 0);
+  const years = Math.max(1, firstFinite(values, ['loanYears', 'years']) ?? 5);
   const rate = Math.max(0, firstFinite(values, ['rate', 'currentRate', 'newRate']) ?? 0) / 100;
   const months = Math.max(1, Math.round(years * 12));
   const payment = loanPayment(principal, rate, years);
@@ -1531,6 +1539,90 @@ function salaryTakeHomeSchedule(_calculator: SeoCalculator, values: Record<strin
   };
 }
 
+function armPaymentSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const principal = Math.max(0, values.principal ?? 0);
+  const years = Math.max(1, values.years ?? 1);
+  const months = Math.round(years * 12);
+  const fixedMonths = Math.max(0, Math.min(Math.round((values.fixedYears ?? 0) * 12), months));
+  const initialRate = Math.max(0, values.rate ?? 0) / 100;
+  const adjustedRate = Math.max(0, values.adjustedRate ?? 0) / 100;
+  const initialPayment = loanPayment(principal, initialRate, years);
+  let balance = principal;
+  let payment = initialPayment;
+  let rate = initialRate;
+  let cumulativeInterest = 0;
+  const rows: CalculatorDetailScheduleRow[] = [];
+  let yearInterest = 0;
+  let yearPayment = 0;
+
+  for (let month = 1; month <= months && balance > 0.005; month += 1) {
+    if (month === fixedMonths + 1 && fixedMonths < months) {
+      rate = adjustedRate;
+      payment = loanPayment(balance, adjustedRate, Math.max(1 / 12, (months - fixedMonths) / 12));
+    }
+    const interest = balance * rate / 12;
+    const principalPaid = Math.min(balance, payment - interest);
+    balance = Math.max(0, balance - principalPaid);
+    yearInterest += interest;
+    yearPayment = payment;
+    cumulativeInterest += interest;
+    if (month % 12 === 0 || month === months || balance <= 0.005) {
+      const year = Math.ceil(month / 12);
+      rows.push({
+        id: `arm-${year}`,
+        note: fixedMonths > 0 && month > fixedMonths && month - 12 < fixedMonths + 1 && month - 12 >= 0 && year === Math.ceil((fixedMonths + 1) / 12) ? 'First adjustment' : undefined,
+        values: { cumulativeInterest, endingBalance: balance, payment: yearPayment, rate, year, yearInterest }
+      });
+      yearInterest = 0;
+    }
+  }
+
+  return {
+    columns: [
+      numberColumn('year', 'Year'),
+      percentColumn('rate', 'Rate in effect'),
+      moneyColumn('payment', 'Monthly payment'),
+      moneyColumn('yearInterest', 'Interest that year'),
+      moneyColumn('cumulativeInterest', 'Cumulative interest'),
+      moneyColumn('endingBalance', 'Ending balance')
+    ],
+    description: 'Year-by-year payment and balance at the initial rate, then at the assumed rate after the first adjustment.',
+    rows,
+    summary: 'The adjusted payment re-amortises the remaining balance over the remaining term; real resets follow the index, margin and caps in the note.',
+    title: 'ARM payment schedule'
+  };
+}
+
+function pointsBreakEvenSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+  const principal = Math.max(0, values.principal ?? 0);
+  const cost = Math.max(0, values.closingCosts ?? 0);
+  const years = Math.max(1, values.years ?? 1);
+  const months = Math.round(years * 12);
+  const paymentWithout = loanPayment(principal, Math.max(0, values.currentRate ?? 0) / 100, years);
+  const paymentWith = loanPayment(principal, Math.max(0, values.newRate ?? 0) / 100, years);
+  const monthlySavings = paymentWithout - paymentWith;
+
+  return {
+    columns: [
+      numberColumn('month', 'Month'),
+      moneyColumn('monthlySavings', 'Monthly saving'),
+      moneyColumn('cumulativeSavings', 'Cumulative saving'),
+      moneyColumn('netAfterCost', 'Net after paying for points')
+    ],
+    description: 'Month-by-month path to recovering the cost of the points from the lower payment.',
+    rows: Array.from({ length: months }, (_, index) => {
+      const cumulativeSavings = monthlySavings * (index + 1);
+      return {
+        id: `points-${index + 1}`,
+        note: cumulativeSavings >= cost && cumulativeSavings - monthlySavings < cost ? 'Break-even month' : undefined,
+        values: { cumulativeSavings, month: index + 1, monthlySavings, netAfterCost: cumulativeSavings - cost }
+      };
+    }),
+    summary: 'The points are paid at closing, so the net column starts negative and turns positive at the break-even month.',
+    title: 'Points break-even schedule'
+  };
+}
+
 function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const closingCosts = Math.max(0, values.closingCosts ?? 0);
@@ -1582,31 +1674,36 @@ function rentBuySchedule(_calculator: SeoCalculator, values: Record<string, numb
   const downPayment = Math.max(0, values.downPayment ?? 0);
   const principal = Math.max(0, homePrice - downPayment);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const payment = loanPayment(principal, rate, Math.max(1, years));
-  const rows = amortizationRows(principal, rate, Math.max(1, years), payment);
+  const loanYears = Math.max(1, values.loanYears ?? years);
+  const ownershipMonthly = homePrice * Math.max(0, values.ownershipRate ?? 0) / 100 / 12;
+  const payment = loanPayment(principal, rate, loanYears);
+  const rows = amortizationRows(principal, rate, loanYears, payment);
 
   return {
     columns: [
       textColumn('year', 'Year'),
       moneyColumn('rentPaid', 'Rent paid'),
-      moneyColumn('buyPayments', 'Mortgage paid'),
-      moneyColumn('ownerEquity', 'Owner equity'),
-      moneyColumn('netDifference', 'Equity minus rent paid')
+      moneyColumn('buyPayments', 'Paid to own (loan plus upkeep)'),
+      moneyColumn('ownerEquity', 'Equity from paying down the loan'),
+      moneyColumn('netDifference', 'Buying minus renting')
     ],
-    description: 'Annual rent-versus-buy view showing rent paid, mortgage payments, and estimated equity from principal paydown.',
+    description: 'Cumulative view over the years you would stay: rent paid, cost of owning, equity built by paying down the loan, and the running difference.',
     rows: Array.from({ length: years }, (_, index) => {
       const year = index + 1;
-      const last = rows[Math.min(rows.length - 1, year * 12 - 1)];
+      const monthsSoFar = Math.min(year * 12, rows.length);
+      const last = rows[monthsSoFar - 1];
       const balance = Number(last?.values.endingBalance) || 0;
-      const ownerEquity = Math.max(0, homePrice - balance);
+      const ownerEquity = Math.max(0, principal - balance);
+      const buyPayments = (payment + ownershipMonthly) * monthsSoFar;
+      const rentPaid = rent * 12 * year;
 
       return {
         id: `rent-buy-year-${year}`,
         values: {
-          buyPayments: payment * Math.min(year * 12, rows.length),
-          netDifference: ownerEquity - rent * 12 * year,
+          buyPayments,
+          netDifference: buyPayments - ownerEquity - rentPaid,
           ownerEquity,
-          rentPaid: rent * 12 * year,
+          rentPaid,
           year
         }
       };

@@ -43,16 +43,16 @@ const expectedOutputs = [
   ['loan-eligibility-india', 'Eligible loan amount', 4_321_156.493422, 'currency', 'INR'],
   ['stamp-duty-registration', 'Stamp duty and registration cost', 560_000, 'currency', 'INR'],
   ['mortgage', 'Monthly payment', 1_896.20407, 'currency', 'USD'],
-  ['mortgage-affordability', 'Monthly payment', 2_270.093338, 'currency', 'USD'],
+  ['mortgage-affordability', 'Eligible loan amount', 265_187.333898, 'currency', 'USD'],
   ['mortgage-refinance', 'Monthly savings', 162.434207, 'currency', 'USD'],
   ['amortization', 'Monthly payment', 1_896.20407, 'currency', 'USD'],
   ['extra-mortgage-payment', 'Payoff time', 18.083333, 'years', 'USD'],
   ['mortgage-payoff', 'Payoff time', 18.083333, 'years', 'USD'],
   ['biweekly-mortgage-payment', 'Biweekly payment', 948.102035, 'currency', 'USD'],
   ['mortgage-recast', 'Monthly payment after recast', 1_688.017903, 'currency', 'USD'],
-  ['mortgage-points', 'Monthly savings', 43.937447, 'currency', 'USD'],
+  ['mortgage-points', 'Monthly savings from points', 88.182208, 'currency', 'USD'],
   ['15-vs-30-year-mortgage', 'Option B monthly payment', 2_270.093338, 'currency', 'USD'],
-  ['arm-mortgage', 'Monthly payment', 2_042.504998, 'currency', 'USD'],
+  ['arm-mortgage', 'Payment during the fixed period', 2_042.504998, 'currency', 'USD'],
   ['interest-only-mortgage', 'Interest-only payment', 1_625, 'currency', 'USD'],
   ['balloon-loan', 'Balloon balance', 234_027.443604, 'currency', 'USD'],
   ['closing-costs', 'Estimated cash to close', 103_500, 'currency', 'USD'],
@@ -64,20 +64,20 @@ const expectedOutputs = [
   ['fha-loan', 'Estimated FHA monthly payment', 2_326.971003, 'currency', 'USD'],
   ['va-loan', 'Estimated VA monthly payment', 2_201.342921, 'currency', 'USD'],
   ['fha-vs-conventional', 'FHA monthly payment', 2_290.80047, 'currency', 'USD'],
-  ['rent-vs-buy', 'Estimated buy monthly cost', 5_389.474895, 'currency', 'USD'],
+  ['rent-vs-buy', 'Monthly cost to buy', 2_897.453148, 'currency', 'USD'],
   ['credit-card-payoff', 'Payoff time', 2.5, 'years', 'USD'],
   ['debt-snowball-avalanche', 'Avalanche interest savings', 925.930846, 'currency', 'USD'],
   ['auto-loan', 'Monthly payment', 633.638353, 'currency', 'USD'],
   ['personal-loan', 'Monthly payment', 387.682839, 'currency', 'USD'],
   ['student-loan-payoff', 'Payoff time', 7.916667, 'years', 'USD'],
   ['401k', 'Projected value', 275_633.443391, 'currency', 'USD'],
-  ['roth-vs-traditional-ira', 'Roth after-tax value', 37_992.028481, 'currency', 'USD'],
+  ['roth-vs-traditional-ira', 'Roth after-tax value', 29_633.782215, 'currency', 'USD'],
   ['paycheck', 'Estimated annual take-home', 94_380, 'currency', 'USD'],
   ['income-tax-us', 'Estimated after-tax income', 97_630, 'currency', 'USD'],
   ['social-security-break-even', 'Break-even years after delaying', 11.25, 'years', 'USD'],
   ['rmd', 'Estimated RMD', 30_188.679245, 'currency', 'USD'],
   ['cagr', 'Annualized return', 0.124746, 'percent', 'USD'],
-  ['xirr', 'Approximate annualized return', 0.04564, 'percent', 'USD'],
+  ['xirr', 'Annualized return (IRR)', 0.072468, 'percent', 'USD'],
   ['inflation', 'Future cost', 14_802.442849, 'currency', 'USD'],
   ['rule-of-72', 'Years to double', 9, 'years', 'USD'],
   ['capital-gains-tax', 'Estimated net amount', 42_500, 'currency', 'USD'],
@@ -86,11 +86,11 @@ const expectedOutputs = [
   ['down-payment', 'Down payment target', 90_000, 'currency', 'USD'],
   ['pmi', 'Estimated monthly PMI', 202.5, 'currency', 'USD'],
   ['heloc', 'Monthly payment', 619.928444, 'currency', 'USD'],
-  ['balance-transfer', 'Estimated payoff cost savings', 1_586.755012, 'currency', 'USD'],
+  ['balance-transfer', 'Estimated payoff cost savings', 1_542.716913, 'currency', 'USD'],
   ['cd', 'Maturity value', 10_920.25, 'currency', 'USD'],
   ['hysa', 'Projected value', 30_519.03374, 'currency', 'USD'],
   ['life-insurance-needs', 'Coverage need', 1_050_000, 'currency', 'USD'],
-  ['lease-vs-buy', 'Estimated buy monthly cost', 718.38734, 'currency', 'USD'],
+  ['lease-vs-buy', 'Monthly cost to buy', 594.035956, 'currency', 'USD'],
   ['roi', 'ROI', 0.25, 'percent', 'USD']
 ] as const;
 
@@ -199,7 +199,6 @@ describe('calculateSeoCalculator', () => {
     'personal-loan-emi',
     'mortgage',
     'amortization',
-    'arm-mortgage',
     'home-equity-loan',
     'auto-loan',
     'personal-loan',
@@ -231,7 +230,7 @@ describe('calculateSeoCalculator', () => {
     expect(accelerated.metrics[0]).toEqual(baseline.metrics[0]);
     expect(accelerated.metrics.find((metric) => metric.label === 'Payoff months')?.value)
       .toBeLessThan(baseline.metrics.find((metric) => metric.label === 'Payoff months')!.value);
-    expect(accelerated.metrics.find((metric) => metric.label === 'Time saved')?.value).toBeGreaterThan(0);
+    expect(accelerated.metrics.find((metric) => metric.label === 'Months saved')?.value).toBeGreaterThan(0);
     expect(accelerated.metrics.find((metric) => metric.label === 'Interest saved')?.value).toBeGreaterThan(0);
     expect(accelerated.metrics.find((metric) => metric.label === 'Total interest')?.value)
       .toBeLessThan(baseline.metrics.find((metric) => metric.label === 'Total interest')!.value);

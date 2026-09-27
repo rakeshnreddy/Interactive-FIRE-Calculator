@@ -385,7 +385,7 @@ const calculatorModeCopy: Record<
   }
 > = {
   'fire-number': {
-    eyebrow: 'Need to number',
+    eyebrow: 'Retirement target',
     title: 'Find my FIRE number',
     shortTitle: 'FIRE number',
     primaryLabel: 'Annual withdrawal need',
@@ -870,7 +870,7 @@ export function AuthGate({
       ? 'Saved plans, accounts, and cross-device sync require account services that are not active in this preview. You can use all interactive financial calculators without an account.'
       : auth.status === 'loading'
         ? 'FinPath is confirming whether there is an active session for this browser.'
-        : `${page.eyebrow} is part of the account-backed planning shell. You can still use the public calculator library without signing in.`;
+        : `${page.eyebrow} is part of your signed-in workspace. You can still use every public calculator without signing in.`;
 
   return (
     <section className="route-shell auth-gate" aria-labelledby={`${route.slice(1)}-auth-title`}>
@@ -3770,10 +3770,10 @@ function App({ auth }: { auth: AuthState }) {
 
         <section className="calculator-intro" aria-labelledby="fire-title">
           <div>
-            <p className="eyebrow">Calculator module</p>
+            <p className="eyebrow">Retirement Planning</p>
             <h1 id="fire-title">FIRE Calculator</h1>
             <p className="calculator-scope-note">
-              Answer one retirement planning question at a time. Plan retirement portfolio targets or test sustainable annual withdrawals across customizable inflation and market regimes.
+              Find the portfolio you need to retire, see when your savings could reach it, or test how much a portfolio can pay out each year. Every assumption is yours to change.
             </p>
           </div>
           <span className="pill">{activeCalculator.shortTitle}</span>

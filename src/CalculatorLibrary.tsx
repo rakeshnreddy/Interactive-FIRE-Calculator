@@ -60,6 +60,7 @@ import {
 import {
   calculateSeoCalculator,
   calculatorCurrency,
+  calculatorVariants,
   calculatorPath,
   findSeoCalculator,
   seoCalculators,
@@ -69,7 +70,52 @@ import {
 } from './lib/seoCalculators';
 import { resolveMoneyLocale } from './lib/money';
 
-const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment']);
+const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment', 'annualTaxes', 'annualInsurance', 'monthlyHoa']);
+
+type RegionFilter = 'all' | 'US' | 'India';
+
+const regionFilterOptions: Array<{ id: RegionFilter; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'US', label: 'United States' },
+  { id: 'India', label: 'India' }
+];
+
+function matchesRegion(calculator: SeoCalculator, region: RegionFilter): boolean {
+  return region === 'all' || calculator.region === 'Global' || calculator.region === region;
+}
+
+function regionLabel(calculator: SeoCalculator): string {
+  return calculator.region === 'Global' ? 'US & India' : calculator.region === 'US' ? 'United States' : 'India';
+}
+
+function RegionBadge({ calculator }: { calculator: SeoCalculator }) {
+  return <span className={`calculator-region-badge region-${calculator.region.toLowerCase()}`}>{regionLabel(calculator)}</span>;
+}
+
+// A short name for a variant chip: "Car Loan EMI Calculator" -> "Car loan".
+function variantLabel(calculator: SeoCalculator): string {
+  const short = calculator.title.replace(/ Calculator.*$/i, '').replace(/ EMI$/i, '').replace(/^Mortgage /i, '').trim();
+  return short.length > 1 ? short.charAt(0) + short.slice(1).replace(/\b([A-Z])(?=[a-z])/g, (m) => m.toLowerCase()) : short;
+}
+
+function VariantChips({ calculator, onNavigate }: { calculator: SeoCalculator; onNavigate: (route: string) => void }) {
+  const siblings = calculatorVariants(calculator).filter((other) => other.slug !== calculator.slug);
+  if (siblings.length === 0) return null;
+  return (
+    <nav className="calculator-variants" aria-label="Same calculation with other presets">
+      <span>Same calculation, other presets:</span>
+      {siblings.map((sibling) => (
+        <a
+          key={sibling.slug}
+          href={calculatorPath(sibling.slug)}
+          onClick={(event) => navigateInternalLink(event, calculatorPath(sibling.slug), onNavigate)}
+        >
+          {variantLabel(sibling)}
+        </a>
+      ))}
+    </nav>
+  );
+}
 
 export type CalculatorSaveRequest = {
   calculator: SeoCalculator;
@@ -215,6 +261,10 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
   const [query, setQuery] = useState(() => (
     typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('q') ?? ''
   ));
+  const [region, setRegion] = useState<RegionFilter>(() => {
+    const value = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('region');
+    return value === 'US' || value === 'India' ? value : 'all';
+  });
   const normalizedQuery = query.trim().toLowerCase();
 
   const fireMatches = useMemo(() => {
@@ -230,15 +280,17 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
   const visibleCalculators = useMemo(
     () =>
       seoCalculators.filter((calculator) =>
-        !normalizedQuery ||
-        [
-          calculator.title,
-          calculator.description,
-          calculator.category,
-          ...calculator.keywords
-        ].join(' ').toLowerCase().includes(normalizedQuery)
+        matchesRegion(calculator, region) && (
+          !normalizedQuery ||
+          [
+            calculator.title,
+            calculator.description,
+            calculator.category,
+            ...calculator.keywords
+          ].join(' ').toLowerCase().includes(normalizedQuery)
+        )
       ),
-    [normalizedQuery]
+    [normalizedQuery, region]
   );
 
   const totalMatches = visibleCalculators.length + (fireMatches ? 1 : 0);
@@ -249,8 +301,10 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
     const url = new URL(window.location.href);
     if (query.trim()) url.searchParams.set('q', query.trim());
     else url.searchParams.delete('q');
+    if (region !== 'all') url.searchParams.set('region', region);
+    else url.searchParams.delete('region');
     window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-  }, [query]);
+  }, [query, region]);
 
   return (
     <section className="calculator-library route-shell" aria-labelledby="calculators-title">
@@ -281,6 +335,21 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
             Clear
           </button>
         ) : null}
+      </div>
+
+      <div className="calculator-region-filter" role="group" aria-label="Show calculators for">
+        <span>Show calculators for</span>
+        {regionFilterOptions.map((option) => (
+          <button
+            key={option.id}
+            type="button"
+            className={region === option.id ? 'active' : ''}
+            aria-pressed={region === option.id}
+            onClick={() => setRegion(option.id)}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
 
       {normalizedQuery ? (
@@ -336,7 +405,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
 
           <div className="calculator-toolkit-grid">
             {calculatorToolkits.map((toolkit) => (
-              <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} toolkit={toolkit} />
+              <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} region={region} toolkit={toolkit} />
             ))}
           </div>
         </>
@@ -365,14 +434,29 @@ function FireSearchCard({ onNavigate }: { onNavigate: (route: string) => void })
 
 function CalculatorToolkitPanel({
   onNavigate,
+  region = 'all',
   toolkit
 }: {
   onNavigate: (route: string) => void;
+  region?: RegionFilter;
   toolkit: CalculatorToolkit;
 }) {
   const Icon = toolkitIcon(toolkit.icon);
-  const featured = featuredToolkitCalculators(toolkit);
-  const remaining = toolkit.calculators.filter((calculator) => !toolkit.featuredSlugs.includes(calculator.slug));
+  const inRegion = toolkit.calculators.filter((calculator) => matchesRegion(calculator, region));
+  if (inRegion.length === 0) return null;
+  const featured = featuredToolkitCalculators(toolkit).filter((calculator) => matchesRegion(calculator, region));
+  const remaining = inRegion.filter((calculator) => !toolkit.featuredSlugs.includes(calculator.slug));
+  // Calculators that share a formula and region are one row with preset chips, not separate rows.
+  const sameEngine = (a: SeoCalculator, b: SeoCalculator) => a.formula === b.formula && a.region === b.region;
+  const remainingGroups: Array<{ lead: SeoCalculator; presets: SeoCalculator[] }> = [];
+  for (const calculator of remaining) {
+    const featuredLead = featured.find((other) => sameEngine(other, calculator));
+    const group = remainingGroups.find((entry) => sameEngine(entry.lead, calculator));
+    if (group) group.presets.push(calculator);
+    else if (featuredLead) remainingGroups.push({ lead: featuredLead, presets: [calculator] });
+    else remainingGroups.push({ lead: calculator, presets: [] });
+  }
+  const listedCount = inRegion.length;
 
   return (
     <article className={`calculator-toolkit toolkit-${toolkit.id}`} id={`toolkit-${toolkit.id}`}>
@@ -382,7 +466,7 @@ function CalculatorToolkitPanel({
           <span>{toolkit.prompt}</span>
           <h2>{toolkit.title}</h2>
         </div>
-        <span className="calculator-toolkit-count">{toolkit.calculators.length}</span>
+        <span className="calculator-toolkit-count">{listedCount}</span>
       </header>
       <p>{toolkit.description}</p>
       <nav className="calculator-toolkit-featured" aria-label={`${toolkit.title} starting points`}>
@@ -401,18 +485,37 @@ function CalculatorToolkitPanel({
       {remaining.length > 0 ? (
         <details className="calculator-toolkit-more">
           <summary>
-            View all {toolkit.calculators.length} calculators
+            View all {listedCount} calculators
             <ChevronDown size={16} />
           </summary>
           <div>
-            {remaining.map((calculator) => (
-              <a
-                href={calculatorPath(calculator.slug)}
-                key={calculator.slug}
-                onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
-              >
-                {calculator.title}
-              </a>
+            {remainingGroups.map((group) => (
+              <div className="calculator-toolkit-row" key={group.lead.slug}>
+                {featured.includes(group.lead) ? (
+                  <span className="calculator-toolkit-row-lead">{group.lead.title} presets</span>
+                ) : (
+                  <a
+                    href={calculatorPath(group.lead.slug)}
+                    onClick={(event) => navigateInternalLink(event, calculatorPath(group.lead.slug), onNavigate)}
+                  >
+                    {group.lead.title}
+                    <RegionBadge calculator={group.lead} />
+                  </a>
+                )}
+                {group.presets.length > 0 ? (
+                  <span className="calculator-toolkit-presets">
+                    {group.presets.map((preset) => (
+                      <a
+                        key={preset.slug}
+                        href={calculatorPath(preset.slug)}
+                        onClick={(event) => navigateInternalLink(event, calculatorPath(preset.slug), onNavigate)}
+                      >
+                        {variantLabel(preset)}
+                      </a>
+                    ))}
+                  </span>
+                ) : null}
+              </div>
             ))}
           </div>
         </details>
@@ -436,7 +539,7 @@ function CalculatorSearchCard({
       href={calculatorPath(calculator.slug)}
       onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
     >
-      <span className="calculator-card-meta">{toolkit.title}</span>
+      <span className="calculator-card-meta">{toolkit.title} · {regionLabel(calculator)}</span>
       <strong>{calculator.title}</strong>
       <small>{calculator.description}</small>
       <em>
@@ -653,9 +756,10 @@ function CalculatorDetail({
   return (
     <section className="calculator-library calculator-detail route-shell" aria-labelledby="calculator-detail-title">
       <div className="route-heading calculator-library-heading">
-        <p className="eyebrow">{toolkit.title}</p>
+        <p className="eyebrow">{toolkit.title} <RegionBadge calculator={calculator} /></p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
         <p className="calculator-scope-note">{calculator.description}</p>
+        <VariantChips calculator={calculator} onNavigate={onNavigate} />
         <a
           className="calculator-toolkit-backlink"
           href="/calculators"
@@ -681,8 +785,14 @@ function CalculatorDetail({
             <details className="calculator-options-shell">
               <summary>
                 <span>
-                  <strong>{optionalInputs.some((input) => input.key.startsWith('extra')) ? 'Additional payments' : 'Additional contributions'}</strong>
-                  <small>Optional. Defaults to zero.</small>
+                  <strong>
+                    {optionalInputs.some((input) => /Taxes|Insurance|Hoa/.test(input.key))
+                      ? 'Additional payments and housing costs'
+                      : optionalInputs.some((input) => input.key.startsWith('extra'))
+                        ? 'Additional payments'
+                        : 'Additional contributions'}
+                  </strong>
+                  <small>Optional. Leave at zero to skip.</small>
                 </span>
                 <ChevronDown size={17} />
               </summary>
