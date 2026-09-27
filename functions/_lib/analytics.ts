@@ -2,11 +2,8 @@
 import {
   ANALYTICS_CONSENT_VERSION,
   ANALYTICS_EVENT_VERSION,
-  COHORT_RETENTION_DAYS,
   MAX_EVENTS_PER_PSEUDONYM_PER_DAY,
   MAX_EVENTS_PER_REQUEST,
-  RAW_EVENT_RETENTION_DAYS,
-  addDays,
   applyReview,
   validateClientEvent,
   validateProps,
@@ -14,6 +11,7 @@ import {
   type AnalyticsEventName
 } from '../../src/lib/analytics';
 import { ensureUserProfile } from './persistence';
+import { retentionStatements } from '../../src/lib/analyticsRetention';
 
 // Server side of B12. Collection only exists for users with a consent row; everything is keyed by a
 // random pseudonym, never the Clerk ID.
@@ -50,12 +48,11 @@ export async function revokeConsent(db: D1Database, userId: string): Promise<voi
   await db.batch(analyticsDeletionStatements(db, userId));
 }
 
-// Bounded retention: raw events 90 days, cohort membership 120 days after activation.
+// Bounded retention: raw events 90 days, cohort membership 120 days after activation. Runs on
+// ingest and, independently of any client traffic, from the scheduled Worker in
+// workers/analytics-retention using the same statements.
 export async function purgeExpiredAnalytics(db: D1Database, day = today()): Promise<void> {
-  await db.batch([
-    db.prepare('DELETE FROM analytics_events WHERE occurred_day < ?').bind(addDays(day, -RAW_EVENT_RETENTION_DAYS)),
-    db.prepare('DELETE FROM analytics_cohorts WHERE activation_day < ?').bind(addDays(day, -COHORT_RETENTION_DAYS))
-  ]);
+  await db.batch(retentionStatements(db, day));
 }
 
 export type IngestResult = { status: 202; accepted: number; duplicates: number } | { status: 400 | 403 | 429; code: string; error: string };

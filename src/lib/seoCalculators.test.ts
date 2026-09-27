@@ -77,7 +77,7 @@ const expectedOutputs = [
   ['social-security-break-even', 'Break-even years after delaying', 11.25, 'years', 'USD'],
   ['rmd', 'Estimated RMD', 30_188.679245, 'currency', 'USD'],
   ['cagr', 'Annualized return', 0.124746, 'percent', 'USD'],
-  ['xirr', 'Annualized return (IRR)', 0.072468, 'percent', 'USD'],
+  ['xirr', 'Modeled annualised return (periodic monthly IRR)', 0.072468, 'percent', 'USD'],
   ['inflation', 'Future cost', 14_802.442849, 'currency', 'USD'],
   ['rule-of-72', 'Years to double', 9, 'years', 'USD'],
   ['capital-gains-tax', 'Estimated net amount', 42_500, 'currency', 'USD'],

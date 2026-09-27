@@ -406,7 +406,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['rd', 'RD Calculator', 'rd', [money('monthly', 'Monthly deposit', 10000), annualTopUpInput, ...termInputs]],
     ['ppf', 'PPF Calculator', 'ppf', [money('annual', 'Annual contribution', 150000), percent('rate', 'Annual return', 7.1), number('years', 'Years', 15, 'yrs')]],
     ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, ...termInputs]],
-    ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), annualTopUpInput, ...termInputs, percent('annuityPercent', 'Annuity allocation', 40), percent('annuityRate', 'Annuity rate', 6, 'The yearly payout rate the annuity provider offers on the annuitised portion.')]],
+    ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), annualTopUpInput, ...termInputs, percent('annuityPercent', 'Annuity allocation', 40, 'Share of the corpus used to buy an annuity. 40% is an editable example, not a rule: the minimum depends on your NPS sector, exit type and corpus size.'), percent('annuityRate', 'Annuity rate', 6, 'The yearly payout rate the annuity provider offers on the annuitised portion.')]],
     ['gratuity', 'Gratuity Calculator', 'gratuity', [money('salary', 'Last drawn basic + DA', 120000), number('years', 'Completed service', 8, 'yrs')]],
     ['home-loan-prepayment', 'Home Loan Prepayment Calculator', 'loan-prepayment', [money('principal', 'Current loan balance', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Remaining tenure', 15, 'yrs'), money('prepayment', 'One-time prepayment', 500000), ...additionalPaymentInputs]],
     ['home-loan-foreclosure', 'Home Loan Foreclosure Calculator', 'loan-prepayment', [money('principal', 'Current loan balance', 3500000), percent('rate', 'Interest rate', 8.5), number('years', 'Remaining tenure', 8, 'yrs'), money('prepayment', 'Foreclosure payment', 3500000), ...additionalPaymentInputs]],
@@ -486,7 +486,7 @@ export const seoCalculators: SeoCalculator[] = [
   })),
   ...([
     ['cagr', 'CAGR Calculator', 'investment-return', [money('initial', 'Initial value', 10000), money('final', 'Final value', 18000), number('years', 'Years', 5, 'yrs')]],
-    ['xirr', 'XIRR Calculator', 'xirr', [money('initial', 'Initial investment', 10000), money('monthly', 'Monthly contribution', 500), money('final', 'Ending value', 50000), number('years', 'Years', 5, 'yrs')]],
+    ['xirr', 'Monthly IRR Calculator (XIRR-style)', 'xirr', [money('initial', 'Initial investment', 10000), money('monthly', 'Monthly contribution', 500), money('final', 'Ending value', 50000), number('years', 'Years', 5, 'yrs')]],
     ['inflation', 'Inflation Calculator', 'inflation', [money('principal', 'Today cost', 10000), percent('rate', 'Inflation rate', 4), number('years', 'Years', 10, 'yrs')]],
     ['rule-of-72', 'Rule of 72 Calculator', 'rule-72', [percent('rate', 'Annual return', 8)]],
     ['capital-gains-tax', 'Capital Gains Tax Calculator', 'capital-gains', [money('gain', 'Capital gain', 50000), percent('effectiveRate', 'Estimated tax rate', 15)]],
@@ -930,8 +930,8 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'xirr': {
       const contributions = get('initial') + get('monthly') * months;
       const annualized = monthlyCashFlowIrr(get('initial'), get('monthly'), get('final'), months);
-      return result('Annualized return (IRR)', annualized, 'The yearly rate at which the initial investment and each monthly contribution would have to grow to reach the ending value.', [
-        'Contributions are assumed at the end of each month; use exact dates for a formal XIRR.',
+      return result('Modeled annualised return (periodic monthly IRR)', annualized, 'The yearly rate at which the initial investment and equal end-of-month contributions would grow to the ending value. This is a periodic IRR, not a dated XIRR.', [
+        'Contributions are modeled as equal amounts at the end of each month with no dates. Spreadsheet XIRR needs the date of every cash flow; irregular dated cash flows are not yet supported here, so treat this as a screening estimate.',
         'Fees and taxes are not deducted.'
       ], [
         metric('Total contributed', contributions, 'currency'),
@@ -1102,8 +1102,9 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'nps': {
       const corpus = projectRecurringBalance(0, get('monthly'), get('annualTopUp'), monthlyRate, months).balance;
       const annuityPortion = corpus * get('annuityPercent') / 100;
-      return result('Estimated NPS corpus', corpus, 'Monthly contribution compounded at the assumed annual rate.', [
-        'At least 40% of the corpus must buy an annuity under current rules; the rest can be withdrawn as a lump sum.'
+      return result('Estimated NPS corpus', corpus, 'Monthly contribution compounded at the assumed annual rate, split by the annuity share you entered.', [
+        'The annuity share is your entry, shown at 40% as an example. PFRDA exit rules (All Citizen model, March 2026 guidance) set different minimum annuity shares by sector, exit type and corpus size, including lower shares and a full lump sum for small corpora; this calculator does not determine your withdrawal eligibility.',
+        'The pension figure is the annuity portion times the annuity rate you entered, before tax and before any provider terms.'
       ], [
         metric('Lump sum portion', corpus - annuityPortion, 'currency'),
         metric('Annuity portion', annuityPortion, 'currency'),

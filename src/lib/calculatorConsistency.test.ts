@@ -10,7 +10,7 @@ const calculator = (slug: string) => {
   if (!found) throw new Error(`missing calculator ${slug}`);
   return found;
 };
-const defaults = (slug: string) => Object.fromEntries(calculator(slug).inputs.map((input) => [input.key, input.defaultValue]));
+const defaults = (slug: string): Record<string, number> => Object.fromEntries(calculator(slug).inputs.map((input) => [input.key, input.defaultValue]));
 const metric = (result: ReturnType<typeof calculateSeoCalculator>, label: string) => result.metrics.find((entry) => entry.label.startsWith(label))?.value;
 const lastRow = (slug: string, values: Record<string, number>) => {
   const schedule = buildCalculatorDetailSchedule(calculator(slug), values);
@@ -44,6 +44,40 @@ describe('XIRR (monthly cash-flow IRR)', () => {
         if (/year|term|tenure/i.test(input.key)) expect(input.max, `${entry.slug}.${input.key}`).toBe(MAX_YEARS);
       }
     }
+  });
+});
+
+describe('XIRR-style route is labelled as a modeled periodic IRR', () => {
+  it('says what it is and what it is not', () => {
+    const entry = calculator('xirr');
+    const result = calculateSeoCalculator(entry, defaults('xirr'));
+    expect(result.metrics[0].label).toMatch(/periodic monthly IRR/i);
+    expect(result.metrics[0].label).not.toMatch(/^Annualized return \(IRR\)$/);
+    expect([entry.title, result.narrative, ...result.assumptions].join(' ')).toMatch(/not yet supported/i);
+    expect(entry.keywords.join(' ')).toMatch(/xirr/i);
+  });
+});
+
+describe('NPS annuity share', () => {
+  it('is an editable example, not a stated legal minimum', () => {
+    const entry = calculator('nps');
+    const result = calculateSeoCalculator(entry, defaults('nps'));
+    const copy = [result.narrative, ...result.assumptions, entry.inputs.find((input) => input.key === 'annuityPercent')?.helper ?? ''].join(' ');
+    expect(copy).not.toMatch(/at least 40%|must buy an annuity/i);
+    expect(copy).toMatch(/example/i);
+    expect(copy).toMatch(/does not determine/i);
+  });
+
+  it.each([0, 20, 40])('keeps headline, split, pension and schedule consistent at %d%%', (annuityPercent) => {
+    const values: Record<string, number> = { ...defaults('nps'), annuityPercent };
+    const result = calculateSeoCalculator(calculator('nps'), values);
+    const corpus = result.metrics[0].value;
+    expect(metric(result, 'Annuity portion')).toBeCloseTo(corpus * annuityPercent / 100, 6);
+    expect(metric(result, 'Lump sum portion')).toBeCloseTo(corpus * (1 - annuityPercent / 100), 6);
+    expect(metric(result, 'Estimated monthly pension')).toBeCloseTo(corpus * annuityPercent / 100 * values.annuityRate / 100 / 12, 6);
+    const row = lastRow('nps', values);
+    expect(Number(row.annuity)).toBeCloseTo(corpus * annuityPercent / 100, 0);
+    expect(Number(row.lumpSum)).toBeCloseTo(corpus * (1 - annuityPercent / 100), 0);
   });
 });
 

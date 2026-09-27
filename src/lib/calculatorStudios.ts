@@ -2579,10 +2579,10 @@ function xirrApproximationSchedule(
       moneyColumn('endingValue', 'Ending value'),
       moneyColumn('gain', 'Gain / loss')
     ],
-    description: 'Cashflow-style annual table for the simplified XIRR estimate until exact dated cashflows are implemented.',
+    description: 'Annual cash-flow table for the modeled periodic monthly IRR; a dated XIRR for irregular cash flows is not yet supported.',
     rows,
-    summary: scheduleCapSummary(values.years ?? years, 'Shows why the current XIRR result is approximate: contribution timing is averaged by year.'),
-    title: 'Approximate cashflow table'
+    summary: scheduleCapSummary(values.years ?? years, 'Contributions are modeled as equal monthly amounts, so the table shows the implied value path rather than dated transactions.'),
+    title: 'Modeled cash-flow table'
   };
 }
 
