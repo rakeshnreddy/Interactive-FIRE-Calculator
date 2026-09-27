@@ -268,6 +268,11 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
   });
   const normalizedQuery = query.trim().toLowerCase();
 
+  useEffect(() => {
+    const id = typeof window === 'undefined' ? '' : window.location.hash.slice(1);
+    if (id) document.getElementById(id)?.scrollIntoView({ block: 'start' });
+  }, []);
+
   const fireMatches = useMemo(() => {
     if (!normalizedQuery) return false;
     return [
@@ -645,13 +650,15 @@ function CalculatorDetail({
 
   const [openMetricHelp, setOpenMetricHelp] = useState<Record<string, boolean>>({});
 
-  const setValue = (key: string, value: string) => {
+  // The field shows the same value the calculation uses: out-of-range entries are clamped to the input's bounds.
+  const setValue = (input: CalculatorInput, value: string) => {
     const parsed = Number(value);
+    const clamped = Number.isFinite(parsed) ? Math.min(input.max ?? Number.POSITIVE_INFINITY, Math.max(input.min ?? 0, parsed)) : 0;
     setLastSavedRoute(null);
     setSaveMessage('');
     setValues((current) => ({
       ...current,
-      [key]: Number.isFinite(parsed) ? parsed : 0
+      [input.key]: clamped
     }));
   };
 
@@ -675,7 +682,7 @@ function CalculatorDetail({
             max={input.max}
             step={input.type === 'percent' ? '0.01' : '1'}
             value={values[input.key] ?? 0}
-            onChange={(event) => setValue(input.key, event.target.value)}
+            onChange={(event) => setValue(input, event.target.value)}
             aria-describedby={helperId}
           />
           {input.type === 'percent' ? <small>%</small> : null}

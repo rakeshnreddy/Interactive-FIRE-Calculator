@@ -122,6 +122,8 @@ const commonFaq = [
   }
 ];
 
+export const MAX_YEARS = 100;
+
 const money = (key: string, label: string, defaultValue: number, helper?: string): CalculatorInput => ({
   defaultValue,
   helper,
@@ -131,11 +133,13 @@ const money = (key: string, label: string, defaultValue: number, helper?: string
   type: 'currency'
 });
 
+// Durations are capped (100 years / 1,200 months) so a crafted share link cannot request unbounded work.
 const number = (key: string, label: string, defaultValue: number, suffix?: string, helper?: string): CalculatorInput => ({
   defaultValue,
   helper,
   key,
   label,
+  max: /year|term|tenure/i.test(key) ? MAX_YEARS : /month/i.test(key) ? MAX_YEARS * 12 : undefined,
   min: 0,
   suffix,
   type: 'number'
@@ -857,11 +861,18 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'loan-eligibility': {
-      const maxPayment = Math.max(0, get('income') * get('maxDti') / 100 - get('debts'));
-      const eligibleLoan = presentValueFromPayment(maxPayment, get('rate') / 100, years);
       const hasDownPayment = calculator.inputs.some((input) => input.key === 'downPayment');
+      // US affordability: the housing payment is limited by its own share of income AND by the total-debt
+      // share (housing plus other debts). Other lenders' eligibility (FOIR) treats the share as total obligations.
+      const housingAllowance = get('income') * get('maxDti') / 100;
+      const maxPayment = hasDownPayment
+        ? Math.max(0, Math.min(housingAllowance, get('income') * BACK_END_DEBT_SHARE - get('debts')))
+        : Math.max(0, housingAllowance - get('debts'));
+      const eligibleLoan = presentValueFromPayment(maxPayment, get('rate') / 100, years);
       return result('Eligible loan amount', eligibleLoan, 'Estimated loan principal supported by the monthly payment capacity.', [
-        'Eligibility is estimated from income, existing obligations, target payment share, rate, and term.',
+        hasDownPayment
+          ? `The housing payment is capped at your chosen share of income and at ${Math.round(BACK_END_DEBT_SHARE * 100)}% of income for all debts combined (housing plus the other payments you entered).`
+          : 'Eligibility is estimated from income, existing obligations, target payment share, rate, and term.',
         'Actual approvals can include credit score, employer, property, and lender policy checks.'
       ], [
         ...(hasDownPayment ? [metric('Estimated home price', eligibleLoan + get('downPayment'), 'currency', 'positive')] : []),
@@ -1124,12 +1135,14 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const payment = loanPayment(loanAmount, get('rate') / 100, loanYears);
       const ownershipMonthly = get('homePrice') * get('ownershipRate') / 100 / 12;
       const buyMonthly = payment + ownershipMonthly;
-      const balanceAfterStay = remainingLoanBalance(loanAmount, get('rate') / 100, loanYears, Math.min(stayMonths, Math.round(loanYears * 12)));
+      const loanMonthsInStay = Math.min(stayMonths, Math.round(loanYears * 12));
+      const balanceAfterStay = remainingLoanBalance(loanAmount, get('rate') / 100, loanYears, loanMonthsInStay);
       const equityBuilt = loanAmount - balanceAfterStay;
       const rentTotal = get('rent') * stayMonths;
-      const buyNetCost = buyMonthly * stayMonths - equityBuilt;
+      // Loan payments stop at payoff; ownership costs continue for the whole stay.
+      const buyNetCost = payment * loanMonthsInStay + ownershipMonthly * stayMonths - equityBuilt;
       return result('Monthly cost to buy', buyMonthly, 'Loan payment over the full loan term plus the ownership costs you entered, compared with the rent or lease you pay now.', [
-        'The loan is amortised over its own term, not the years you stay.',
+        'The loan is amortised over its own term, not the years you stay; if you stay past payoff only the ownership costs continue.',
         'Equity built by paying down principal is credited back when comparing total cost over your stay; price changes, selling costs and deposits are not modelled.'
       ], [
         metric('Current rent or lease', get('rent'), 'currency'),
@@ -1466,7 +1479,8 @@ function payoffOverPeriod(balance: number, annualRate: number, payment: number, 
     interest += monthlyInterest;
     current = Math.max(0, due - paid);
     months += 1;
-    if (paid <= monthlyInterest) break;
+    // A payment that does not cover interest never clears the balance; stop only when the period is open-ended.
+    if (paid <= monthlyInterest && !Number.isFinite(limitMonths)) break;
   }
   return { balance: current, interest, months };
 }
@@ -1474,16 +1488,21 @@ function payoffOverPeriod(balance: number, annualRate: number, payment: number, 
 // Annualised internal rate of return for an initial outflow, level end-of-month contributions and a
 // final value, solved by bisection on the monthly rate.
 export function monthlyCashFlowIrr(initial: number, monthly: number, finalValue: number, months: number): number {
-  if (months <= 0 || (initial <= 0 && monthly <= 0) || finalValue <= 0) return 0;
+  const periods = Math.min(Math.max(0, Math.round(months)), MAX_YEARS * 12);
+  if (periods <= 0 || (initial <= 0 && monthly <= 0)) return 0;
+  // Nothing left at the end is a total loss, not a zero return.
+  if (finalValue <= 0) return -1;
   const valueAt = (r: number) => {
     let balance = initial;
-    for (let month = 1; month <= months; month += 1) balance = balance * (1 + r) + monthly;
+    for (let month = 1; month <= periods; month += 1) balance = balance * (1 + r) + monthly;
     return balance;
   };
-  let low = -0.99 / 12;
+  // Monthly rate between -99% (near-total loss) and +100%; results outside are clamped to the bound.
+  let low = -0.99;
   let high = 1;
-  if (valueAt(low) > finalValue || valueAt(high) < finalValue) return 0;
-  for (let iteration = 0; iteration < 80; iteration += 1) {
+  if (valueAt(low) >= finalValue) return -1;
+  if (valueAt(high) <= finalValue) return (1 + high) ** 12 - 1;
+  for (let iteration = 0; iteration < 100; iteration += 1) {
     const mid = (low + high) / 2;
     if (valueAt(mid) < finalValue) low = mid;
     else high = mid;
@@ -1492,6 +1511,8 @@ export function monthlyCashFlowIrr(initial: number, monthly: number, finalValue:
 }
 
 export const LOAN_RESIDUAL_TOLERANCE = 0.005;
+// Conventional back-end ratio: all monthly debt payments within 36% of gross income.
+export const BACK_END_DEBT_SHARE = 0.36;
 
 function payoffDebt(
   balance: number,

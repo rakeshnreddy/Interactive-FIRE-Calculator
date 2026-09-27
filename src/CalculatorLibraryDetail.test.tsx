@@ -208,6 +208,28 @@ describe('B20: Generic calculator reordering, hierarchy, and accessible disclosu
     expect(scenarioButtons[2].getAttribute('aria-selected')).toBe('true');
   });
 
+  it('keeps the field and the calculation on the same clamped value for out-of-range percents', () => {
+    window.history.replaceState({}, '', '/calculators/mortgage');
+    window.localStorage.clear();
+    const { container } = renderComponent(
+      <CalculatorLibrary
+        auth={mockAuth}
+        route="/calculators/mortgage"
+        onNavigate={() => {}}
+        onSaveResult={mockSaveResult}
+        savedResults={[]}
+      />
+    );
+    const rate = container.querySelector<HTMLInputElement>('#input-mortgage-rate');
+    expect(rate).not.toBeNull();
+    act(() => {
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+      setter.call(rate, '500');
+      rate!.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    expect(rate!.value).toBe('100');
+  });
+
   it('lists exactly which inputs a scenario changes, with before and after values', () => {
     window.history.replaceState({}, '', '/calculators/mortgage');
     window.localStorage.clear();

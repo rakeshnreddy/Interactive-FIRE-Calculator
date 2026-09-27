@@ -23,10 +23,12 @@ export default {
       anon = await browser.newAnonymousPage();
       anon.errors = attachConsole(anon.page);
       await anon.page.goto(`${config.url}/calculators/fire`, { waitUntil: 'networkidle' });
-      const facts = await anon.page.evaluate(() => ({ inner: window.innerWidth, outer: window.outerWidth, dpr: window.devicePixelRatio }));
+      const facts = await anon.page.evaluate(() => ({ inner: window.innerWidth, outer: window.outerWidth, dpr: window.devicePixelRatio, signedIn: Boolean(window.Clerk?.user), clerkLoaded: Boolean(window.Clerk) }));
       // At 200% the CSS viewport is half the window and the pixel ratio doubles: real browser zoom.
       if (facts.inner > facts.outer / 2 + 2 || facts.dpr < 2) fail(`page is not at 200% zoom: ${JSON.stringify(facts)}`);
-      return { browser: `Google Chrome ${await browser.version()}`, zoomPercent: 200, cssViewportWidth: facts.inner, windowWidth: facts.outer, devicePixelRatio: facts.dpr };
+      // The anonymous page must be its own profile: no session and, on a public page, no Clerk at all.
+      if (facts.signedIn || facts.clerkLoaded) fail(`anonymous zoomed page is not signed out: ${JSON.stringify(facts)}`);
+      return { browser: `Google Chrome ${await browser.version()}`, zoomPercent: 200, cssViewportWidth: facts.inner, windowWidth: facts.outer, devicePixelRatio: facts.dpr, anonymousSignedOut: true };
     });
 
     await stage('public-routes-200-zoom', async () => {

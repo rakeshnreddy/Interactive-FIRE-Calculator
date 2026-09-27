@@ -218,7 +218,7 @@ export function buildCalculatorStudioChart(
   const metadata = getCalculatorStudioMetadata(calculator);
 
   if (metadata.chartType === 'amortization') {
-    return amortizationChart(calculator, values, metadata);
+    return amortizationChart(calculator, values, metadata, result);
   }
 
   if (metadata.chartType === 'timeline') {
@@ -581,18 +581,25 @@ function timelineChart(
 function amortizationChart(
   calculator: SeoCalculator,
   values: Record<string, number>,
-  metadata: CalculatorStudioMetadata
+  metadata: CalculatorStudioMetadata,
+  result?: CalculatorResult
 ): CalculatorStudioChart {
   const currency = calculatorCurrency(calculator);
   // Purchase-style inputs finance the price minus the down payment; the loan's own term wins over a comparison horizon.
   const financedFromPrice = firstFinite(values, ['principal', 'balance']) === undefined && Number.isFinite(values.homePrice);
-  const principal = Math.max(0, financedFromPrice
+  // Affordability derives the loan amount, so the chart amortises the eligible principal from the result.
+  const derivedPrincipal = calculator.formula === 'loan-eligibility' ? result?.metrics[0]?.value : undefined;
+  const principal = Math.max(0, derivedPrincipal ?? (financedFromPrice
     ? (values.homePrice ?? 0) - Math.max(0, values.downPayment ?? 0)
-    : firstFinite(values, ['principal', 'balance', 'homePrice']) ?? 0);
+    : firstFinite(values, ['principal', 'balance', 'homePrice']) ?? 0));
   const years = Math.max(1, firstFinite(values, ['loanYears', 'years']) ?? 5);
-  const rate = Math.max(0, firstFinite(values, ['rate', 'currentRate', 'newRate']) ?? 0) / 100;
+  const initialRate = Math.max(0, firstFinite(values, ['rate', 'currentRate', 'newRate']) ?? 0) / 100;
   const months = Math.max(1, Math.round(years * 12));
-  const payment = loanPayment(principal, rate, years);
+  // ARM: the same reset the schedule uses (initial rate for the fixed period, then re-amortised at the adjusted rate).
+  const fixedMonths = calculator.formula === 'arm' ? Math.max(0, Math.min(Math.round((values.fixedYears ?? 0) * 12), months)) : months;
+  const adjustedRate = calculator.formula === 'arm' ? Math.max(0, values.adjustedRate ?? 0) / 100 : initialRate;
+  let rate = initialRate;
+  let payment = loanPayment(principal, rate, years);
   const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
   const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
   const selectedMonths = Array.from(new Set([0, Math.round(months * 0.25), Math.round(months * 0.5), Math.round(months * 0.75), months]));
@@ -601,6 +608,10 @@ function amortizationChart(
   const monthRows = new Map<number, { balance: number; interest: number }>([[0, { balance, interest: 0 }]]);
 
   for (let month = 1; month <= months; month += 1) {
+    if (month === fixedMonths + 1 && fixedMonths < months) {
+      rate = adjustedRate;
+      payment = loanPayment(balance, adjustedRate, Math.max(1 / 12, (months - fixedMonths) / 12));
+    }
     const monthlyInterest = balance * rate / 12;
     const paymentThisMonth = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
     cumulativeInterest += monthlyInterest;
@@ -794,18 +805,23 @@ function balloonLoanSchedule(_calculator: SeoCalculator, values: Record<string, 
 function balanceTransferSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const payment = Math.max(0, values.payment ?? 0);
   const fee = Math.max(0, values.balance ?? 0) * Math.max(0, values.feeRate ?? 0) / 100;
-  const current = createDebtState(Math.max(0, values.balance ?? 0), Math.max(0, values.currentRate ?? 0) / 100);
+  const currentRate = Math.max(0, values.currentRate ?? 0) / 100;
+  const current = createDebtState(Math.max(0, values.balance ?? 0), currentRate);
   const transfer = createDebtState(Math.max(0, values.balance ?? 0) + fee, Math.max(0, values.newRate ?? 0) / 100);
+  // Same two-phase model as the headline: the promo APR for promoMonths, then the current APR.
+  const promoMonths = Number.isFinite(values.promoMonths) ? Math.max(0, Math.round(values.promoMonths)) : Number.POSITIVE_INFINITY;
   const rows: CalculatorDetailScheduleRow[] = [];
 
   if (payment <= 0) return null;
 
   for (let month = 1; month <= maxMonthlyScheduleMonths && (current.balance > 0 || transfer.balance > 0); month += 1) {
+    if (month === promoMonths + 1) transfer.rate = currentRate;
     stepDebtState(current, payment);
     stepDebtState(transfer, payment);
 
     rows.push({
       id: `transfer-month-${month}`,
+      note: month === promoMonths + 1 ? 'Promo ends; current APR applies' : undefined,
       values: {
         costSavings: current.interest - (transfer.interest + fee),
         currentBalance: current.balance,
@@ -1610,7 +1626,7 @@ function pointsBreakEvenSchedule(_calculator: SeoCalculator, values: Record<stri
       moneyColumn('netAfterCost', 'Net after paying for points')
     ],
     description: 'Month-by-month path to recovering the cost of the points from the lower payment.',
-    rows: Array.from({ length: months }, (_, index) => {
+    rows: Array.from({ length: Math.min(months, maxMonthlyScheduleMonths) }, (_, index) => {
       const cumulativeSavings = monthlySavings * (index + 1);
       return {
         id: `points-${index + 1}`,
@@ -1690,11 +1706,12 @@ function rentBuySchedule(_calculator: SeoCalculator, values: Record<string, numb
     description: 'Cumulative view over the years you would stay: rent paid, cost of owning, equity built by paying down the loan, and the running difference.',
     rows: Array.from({ length: years }, (_, index) => {
       const year = index + 1;
-      const monthsSoFar = Math.min(year * 12, rows.length);
-      const last = rows[monthsSoFar - 1];
-      const balance = Number(last?.values.endingBalance) || 0;
+      const loanMonthsSoFar = Math.min(year * 12, rows.length);
+      const last = rows[loanMonthsSoFar - 1];
+      const balance = loanMonthsSoFar > 0 ? Number(last?.values.endingBalance) || 0 : principal;
       const ownerEquity = Math.max(0, principal - balance);
-      const buyPayments = (payment + ownershipMonthly) * monthsSoFar;
+      // Loan payments stop at payoff; ownership costs continue every month of the stay.
+      const buyPayments = payment * loanMonthsSoFar + ownershipMonthly * year * 12;
       const rentPaid = rent * 12 * year;
 
       return {
@@ -1904,6 +1921,8 @@ function rothTraditionalSchedule(_calculator: SeoCalculator, values: Record<stri
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const futureTaxRate = Math.max(0, values.futureTaxRate ?? 0) / 100;
   const currentTaxSavings = contribution * Math.max(0, values.currentTaxRate ?? 0) / 100;
+  // Same out-of-pocket money as the headline: the Roth contribution is what is left after today's tax.
+  const rothContribution = Math.max(0, contribution - currentTaxSavings);
   const years = scheduleYears(values.years ?? 0);
 
   return {
@@ -1914,11 +1933,11 @@ function rothTraditionalSchedule(_calculator: SeoCalculator, values: Record<stri
       moneyColumn('rothAdvantage', 'Roth advantage'),
       moneyColumn('currentTaxSavings', 'Current tax savings')
     ],
-    description: 'Annual Roth versus traditional value path using the same contribution, return, and retirement tax-rate assumptions.',
+    description: 'Annual Roth versus traditional value path for the same money out of pocket today: the pre-tax traditional contribution against the smaller after-tax Roth contribution it allows.',
     rows: Array.from({ length: years }, (_, index) => {
       const year = index + 1;
-      const rothValue = contribution * (1 + rate) ** year;
-      const traditionalAfterTax = rothValue * (1 - futureTaxRate);
+      const rothValue = rothContribution * (1 + rate) ** year;
+      const traditionalAfterTax = contribution * (1 + rate) ** year * (1 - futureTaxRate);
       return {
         id: `roth-traditional-${year}`,
         values: {
@@ -2454,12 +2473,14 @@ function gratuitySchedule(_calculator: SeoCalculator, values: Record<string, num
   const years = scheduleYears(values.years ?? 0);
   const rows: CalculatorDetailScheduleRow[] = [];
 
+  const statutoryCap = 2_000_000;
   for (let year = 1; year <= years; year += 1) {
+    const formulaAmount = salary * 15 / 26 * year;
     rows.push({
       id: `gratuity-year-${year}`,
-      note: year < 5 ? 'Often below common vesting threshold' : undefined,
+      note: year < 5 ? 'Often below common vesting threshold' : formulaAmount > statutoryCap ? 'Statutory ceiling reached' : undefined,
       values: {
-        benefit: salary * 15 / 26 * year,
+        benefit: Math.min(formulaAmount, statutoryCap),
         year
       }
     });

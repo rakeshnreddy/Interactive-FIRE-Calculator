@@ -526,6 +526,16 @@ function readPreferredMode(): Mode {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+// Lazy routes mount after navigation, so retry briefly before giving up on the anchor.
+function scrollToFragmentWhenReady(id: string, attemptsLeft = 40): void {
+  const target = document.getElementById(id);
+  if (target) {
+    target.scrollIntoView({ block: 'start' });
+    return;
+  }
+  if (attemptsLeft > 0) window.setTimeout(() => scrollToFragmentWhenReady(id, attemptsLeft - 1), 50);
+}
+
 function handleNavigationAnchorClick(
   event: ReactMouseEvent<HTMLAnchorElement>,
   route: AppRoute,
@@ -3442,9 +3452,12 @@ function App({ auth }: { auth: AuthState }) {
         window.scrollTo({ top: 0, left: 0 });
       }
 
-      const baseRoute = normalizeRoute(nextRoute.split('?')[0]);
+      const baseRoute = normalizeRoute(nextRoute.split(/[?#]/)[0]);
       setRoute(baseRoute);
       setIsMenuOpen(false);
+      // In-page anchors (for example /calculators#toolkit-home): scroll once the target exists.
+      const fragment = nextRoute.split('#')[1];
+      if (fragment && typeof window !== 'undefined') scrollToFragmentWhenReady(fragment);
 
       if (baseRoute === '/plans') {
         const deepLink = parsePlanDeepLink(nextRoute);

@@ -9,7 +9,7 @@
 // - Every stage records PASS/FAIL from an observation; skipped stages are never PASS.
 // - Cleanup always runs, requires an exact zero count from every user-scoped table derived from
 //   migrations/, and deletes the Clerk user only after application data is verified gone.
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, mkdtempSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -279,6 +279,8 @@ export async function runSmoke({ config, adapters, scenario, tables, log = () =>
     if (!scenario || typeof scenario.run !== 'function' || !Array.isArray(scenario.requiredStages)) {
       throw new SmokeError('Scenario module must export name, requiredStages and run()');
     }
+    // One zoomed profile is one cookie jar: two tenants would share a session.
+    if (config.zoom && scenario.tenants !== 1) throw new SmokeError('--zoom requires a scenario that declares tenants: 1');
     result.target = await stage('preflight', () => verifyPreflight(config, adapters.cloudflare));
     await stage('d1-reachable', async () => {
       const rows = await adapters.d1('SELECT 1 AS ping;');
@@ -369,17 +371,35 @@ async function createLiveAdapters(config) {
   // scenarios using it must declare tenants: 1). Windows are unemulated so zoom reflows the page.
   let browser = null;
   let zoomedContext = null;
-  if (config.zoom) {
+  // Every zoomed profile is tracked so it is closed and its directory removed at the end of the run.
+  const zoomProfiles = [];
+  const launchZoomedContext = async () => {
     const profileDir = mkdtempSync(join(tmpdir(), 'finpath-smoke-zoom-'));
     mkdirSync(join(profileDir, 'Default'), { recursive: true });
     const level = Math.log(config.zoom / 100) / Math.log(1.2);
     writeFileSync(join(profileDir, 'Default', 'Preferences'), JSON.stringify({ partition: { per_host_zoom_levels: { x: { [new URL(config.url).host]: level } } } }));
-    zoomedContext = await chromium.launchPersistentContext(profileDir, { executablePath, headless: true, viewport: null, args: ['--window-size=1280,900'] });
-  } else {
-    browser = await chromium.launch({ executablePath, headless: true });
-  }
-  const newContext = (options) => (zoomedContext ? Promise.resolve(zoomedContext) : browser.newContext(options));
+    try {
+      const context = await chromium.launchPersistentContext(profileDir, { executablePath, headless: true, viewport: null, args: ['--window-size=1280,900'] });
+      zoomProfiles.push({ context, profileDir });
+      return context;
+    } catch (error) {
+      rmSync(profileDir, { recursive: true, force: true });
+      throw error;
+    }
+  };
+  if (config.zoom) zoomedContext = await launchZoomedContext();
+  else browser = await chromium.launch({ executablePath, headless: true });
+  // Signed-in pages share the tenant's zoomed profile; anonymous pages get a fresh zoomed profile of their own.
+  const newContext = (options, { isolated = false } = {}) => {
+    if (!config.zoom) return browser.newContext(options);
+    return isolated ? launchZoomedContext() : Promise.resolve(zoomedContext);
+  };
   const browserVersion = () => (zoomedContext ? zoomedContext.browser()?.version() : browser.version());
+  const closeBrowser = async () => {
+    if (!config.zoom) return browser.close();
+    for (const { context } of zoomProfiles) await context.close().catch(() => {});
+    for (const { profileDir } of zoomProfiles) rmSync(profileDir, { recursive: true, force: true });
+  };
 
   return {
     d1,
@@ -456,14 +476,14 @@ async function createLiveAdapters(config) {
       },
       // Signed-out visitor page with request logging and CSP-violation collection.
       async newAnonymousPage(options = {}) {
-        const context = await newContext({ viewport: { width: 1280, height: 800 }, ...options });
+        const context = await newContext({ viewport: { width: 1280, height: 800 }, ...options }, { isolated: true });
         await context.addInitScript(CSP_COLLECTOR_SCRIPT);
         const page = await context.newPage();
         const requests = [];
         page.on('request', (request) => requests.push(request.url()));
         return { page, requests };
       },
-      close: () => (zoomedContext ? zoomedContext.close() : browser.close())
+      close: closeBrowser
     }
   };
 }

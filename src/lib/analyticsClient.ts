@@ -40,23 +40,35 @@ export function track(eventName: AnalyticsEventName, props: Record<string, strin
   else if (!timer) timer = setTimeout(() => void flushAnalytics(), 2000);
 }
 
-export async function flushAnalytics(): Promise<void> {
+let flushing: Promise<void> | null = null;
+
+// Sends the queue in batches of 20 (the API limit) until it is empty; one flush at a time.
+export function flushAnalytics(): Promise<void> {
   if (timer) clearTimeout(timer);
   timer = null;
-  if (config.enabled !== true || queue.length === 0) return;
-  const events = queue.splice(0, 20);
-  try {
-    const token = await config.getToken();
-    if (!token) return;
-    await fetch('/api/analytics/events', {
-      method: 'POST',
-      keepalive: true,
-      headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ events })
-    });
-  } catch {
-    // Measurement never interrupts the product.
-  }
+  if (flushing) return flushing;
+  const run = (async () => {
+    try {
+      while (config.enabled === true && queue.length > 0) {
+        const events = queue.splice(0, 20);
+        const token = await config.getToken();
+        if (!token) return;
+        await fetch('/api/analytics/events', {
+          method: 'POST',
+          keepalive: true,
+          headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+          body: JSON.stringify({ events })
+        });
+      }
+    } catch {
+      // Measurement never interrupts the product.
+    }
+  })();
+  flushing = run;
+  void run.then(() => {
+    if (flushing === run) flushing = null;
+  });
+  return run;
 }
 
 export function pendingAnalyticsCount(): number {

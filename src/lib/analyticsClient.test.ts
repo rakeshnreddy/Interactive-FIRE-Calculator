@@ -47,6 +47,19 @@ describe('analytics client (B12)', () => {
     expect(pendingAnalyticsCount()).toBe(0);
   });
 
+  it('drains a backlog larger than one batch once consent resolves', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 202 }));
+    configureAnalytics({ enabled: 'pending', getToken: async () => 'token' });
+    for (let index = 0; index < 45; index += 1) track('comparison_viewed', { family: 'fire' });
+    expect(pendingAnalyticsCount()).toBe(45);
+    configureAnalytics({ enabled: true, getToken: async () => 'token' });
+    await flushAnalytics();
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
+    expect(pendingAnalyticsCount()).toBe(0);
+    const sizes = fetchSpy.mock.calls.map((call) => JSON.parse(String((call[1] as RequestInit).body)).events.length);
+    expect(sizes).toEqual([20, 20, 5]);
+  });
+
   it('turning analytics off discards anything queued', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 202 }));
     configureAnalytics({ enabled: true, getToken: async () => 'token' });

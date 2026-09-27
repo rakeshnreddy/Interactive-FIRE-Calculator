@@ -73,6 +73,16 @@ test('inputs: every value is required and production DB is refused', () => {
   for (const bad of ['99', '401', '150.5', 'big', '']) assert.throws(() => parseArgs([...ARGS, '--zoom', bad]), /zoom/, `zoom ${bad}`);
 });
 
+test('--zoom refuses a two-tenant scenario before any synthetic user exists', async () => {
+  const adapters = fakeAdapters();
+  const result = await runSmoke({ config: parseArgs([...ARGS, '--zoom', '200']), adapters, scenario: passingScenario, tables: EXPECTED_USER_TABLES });
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.error, /tenants: 1/);
+  assert.equal(adapters.calls.createTenant, 0);
+  const single = fakeAdapters();
+  assert.equal((await runSmoke({ config: parseArgs([...ARGS, '--zoom', '200']), adapters: single, scenario: { ...passingScenario, tenants: 1 }, tables: EXPECTED_USER_TABLES })).status, 'PASS');
+});
+
 test('a scenario declaring tenants: 1 gets a single synthetic user and a single cleanup', async () => {
   const adapters = fakeAdapters();
   const result = await run(adapters, { ...passingScenario, tenants: 1 });

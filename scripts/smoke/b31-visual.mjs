@@ -11,7 +11,7 @@ const median = (list) => { const s = [...list].sort((a, b) => a - b); return s.l
 
 export default {
   name: 'b31-visual',
-  requiredStages: ['viewport-matrix-both-themes', 'keyboard-and-focus', 'reduced-motion-transparency-forced-colors', 'contrast-effective-pairs', 'states-empty-error-long', 'lab-performance-three-runs'],
+  requiredStages: ['viewport-matrix-both-themes', 'keyboard-and-focus', 'reduced-motion-transparency-forced-colors', 'contrast-effective-pairs', 'states-empty-error-long', 'landing-anchor-links', 'lab-performance-three-runs'],
 
   async run({ config, tenants, stage, browser, helpers }) {
     fail = (message) => {
@@ -190,6 +190,24 @@ export default {
       // Workspace loading state is the lazy panel fallback; a signed-in first paint shows it.
       const loading = await a.page.evaluate(() => Boolean(document.querySelector('.panel-loading, [aria-busy="true"], .loading-state')) || null);
       return { emptyState: empty.trim().slice(0, 100), calculateBlockedReason: blocker.trim().slice(0, 120), invalidValueErrors: errors, longValueControls: longReport.controls, loadingStateObserved: loading, screenshots: [emptyShot, errorShot, longShot] };
+    });
+
+    await stage('landing-anchor-links', async () => {
+      // Toolkit cards and footer links point at /calculators#toolkit-<id>; an in-app click must land on
+      // the library with that toolkit in view (independent review found it stayed on the homepage).
+      await anon.page.setViewportSize({ width: 1280, height: 800 });
+      await gotoTheme(anon.page, `${config.url}/`, 'light');
+      await anon.page.locator('.landing-toolkit-card').first().click();
+      await anon.page.waitForFunction(() => location.pathname === '/calculators' && document.querySelector('h1')?.textContent !== null, null, { timeout: 15000 });
+      await anon.page.waitForTimeout(1500);
+      const state = await anon.page.evaluate(() => {
+        const id = location.hash.slice(1);
+        const el = id ? document.getElementById(id) : null;
+        const rect = el?.getBoundingClientRect();
+        return { pathname: location.pathname, hash: location.hash, targetExists: Boolean(el), inView: Boolean(rect && rect.top >= -4 && rect.top < window.innerHeight), h1: document.querySelector('h1')?.textContent ?? '' };
+      });
+      if (state.pathname !== '/calculators' || !state.hash.startsWith('#toolkit-') || !state.targetExists || !state.inView) fail(`toolkit link did not land on its toolkit: ${JSON.stringify(state)}`);
+      return state;
     });
 
     await stage('lab-performance-three-runs', async () => {
