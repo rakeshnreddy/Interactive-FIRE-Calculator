@@ -299,7 +299,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 4–8 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B28.md](execution/prompts/B28.md).
 
-- [ ] **B29 — Planned: Polish reports and readable financial evidence.**
+- [x] **B29 — Planned: Polish reports and readable financial evidence.**
   - User problem/evidence: Reports need honest scope, readable charts and usable exports. Visual audit V15.
   - Expected outcome/scope: Report scope and gaps clear; exported values agree; no color-only interpretation or misleading missing-data chart.
   - Non-goals: No AI financial advice, invented projections, new paid report product or new PDF service.
@@ -311,7 +311,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B29.md](execution/prompts/B29.md).
 
-- [ ] **B30 — Planned: Polish settings and privacy lifecycle controls.**
+- [x] **B30 — Planned: Polish settings and privacy lifecycle controls.**
   - User problem/evidence: Privacy settings must be as understandable as the calculator. Visual audit V15.
   - Expected outcome/scope: Privacy actions visible, accurate and recoverable on failure; no premature deletion success; actual erasure boundary reflected in copy.
   - Non-goals: No new retention policy, live-user deletion, hidden export paywall or auth-provider lifecycle expansion.
@@ -449,7 +449,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Acceptance: finance goldens detect deliberate perturbation; full suite/CI work without Python and propagate failures; manifest Git-add commit and SHA-256 verified via `git show` or clean clone; normative docs do not point to removed runtime paths; baseline tracked size measured and post-commit clone sizes measured by Astra. Historic preview attribution must be truthful.
   - Analytics/tests/security: no analytics or secrets; no hosted writes. Dependencies: B11/B28 accepted, C09B released, OA-2 done. Rollback: restore retired paths/index from reviewed commit; no history rewrite. Human 1–2 days; agent 2–4 h. [Contract](execution/prompts/B37.md); [focused rework](execution/B37_REWORK_PROMPT.md).
 
-- [ ] **B39 — Extract pure modules from App.tsx (C09B, second).**
+- [x] **B39 — Extract pure modules from App.tsx (C09B, second).**
   - User problem/evidence: `App.tsx` measured 8,841 lines and later feature work touches it; utility/parsing and shared primitives obscure review.
   - Expected outcome/scope: extract API/DTO parsing, formatting/CSV/JSON, warnings and shared UI primitives into focused modules; add one typed response parser without behavior change.
   - Non-goals: no stateful panel/route extraction, copy/style/formula/schema change.
@@ -457,7 +457,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Acceptance: `App.tsx` shrinks ≥2,000 lines; parser negative tests and existing behavior pass; public rendered routes remain visually equivalent; full suite/build/CI/smoke pass.
   - Analytics/tests/security: none added; preserve auth/tenant handling and export values. Dependencies: B37 accepted. Rollback: revert isolated refactor. Human 1 day; agent 2–4 h. [Contract](execution/prompts/B39.md).
 
-- [ ] **B42 — Shared hosted smoke runner plus C09 revise residual (C09B, third).**
+- [x] **B42 — Shared hosted smoke runner plus C09 revise residual (C09B, third).**
   - User problem/evidence: C09 Version 2 Revise → Version 3 remains unobserved hosted; the B37 worker stub returned a false preflight success without network or credentials. The worker lacks live deployment/write authority.
   - Expected outcome/scope: reusable runner with injectable Cloudflare, Clerk, browser and D1 adapters; exact-code/isolated preview preflight; two synthetic tenants; real revise/Version 3 and downstream B28 observations; independent scoped cleanup. Gemini implements local tests; Astra alone runs and records hosted results.
   - Non-goals: no worker-authored hosted PASS, production data, real-user accounts, migration, paid service or new calculator behavior.
@@ -465,7 +465,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Acceptance: absent credentials/metadata exit nonzero; exact deployment SHA/ID/preview D1 verified before writes; plan ID/version readiness enforced; 15 cleanup tables derived from migrations with retained users tombstone; all reviewed negative cases fail closed locally; Astra-observed hosted journey and cleanup pass on one exact candidate, or a real defect is registered. Any worker-authored hosted PASS is rejected.
   - Analytics/tests/security: no analytics; synthetic disposable users only; no secret output; full suite/CI and reviewer-run hosted proof. Dependencies: B37 and B39 accepted. Rollback: revert runner only, no data/schema change. Human 0.5–1 day; Gemini 4–8 h plus Astra hosted/review. [Contract](execution/prompts/B42.md).
 
-- [ ] **B36 — FIRE answers when can I retire (C09B, fourth).**
+- [x] **B36 — FIRE answers when can I retire (C09B, fourth).**
   - User problem/evidence: fresh FIRE rates silently initialize at 0%, no accumulation path or retire-age answer, and invalid/blank inputs can yield misleading results; measured live-audit observations require task-specific repro.
   - Expected outcome/scope: OD-1 empty required return/inflation with cited hint and explicit example action; OD-2 additive pure accumulation engine and retire-age estimate; input validation, explanatory result/chart, USD/INR formatting and old-plan compatibility. Apply PA-9 to touched App region.
   - Non-goals: existing drawdown behavior changes, Monte Carlo, tax model, injected cash flows, automatic historical-plan mutation.
@@ -473,7 +473,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Acceptance: ≥5 independent accumulation goldens including deliberate 0%, already-FI, never-FI and savings growth; all existing drawdown goldens unchanged; fresh rates blank/no result; invalid cases fail at field level; old saved plan unchanged; headline/chart/table agree; desktop/375px themes/keyboard/reduced-motion and PA-7 walkthrough pass.
   - Analytics/tests/security: no new tracking; public signed-out use and synthetic saved-plan compatibility; formula references and migration decision required. Dependencies: B35/B39/B42 and released C09B. Rollback: feature revert with safe additive schema. Human 2–4 days; agent 8–14 h plus Astra golden review. [Contract](execution/prompts/B36.md).
 
-- [ ] **B41 — Harden shared API boundaries (C11, first).**
+- [x] **B41 — Harden shared API boundaries (C11, first).**
   - User problem/evidence: repeated auth/body parsers, absent uniform size limits and message-substring deleted-user detection increase tenant and availability risk.
   - Expected outcome/scope: shared Pages Functions auth/DB/body/error boundary, bounded JSON/CSV import with 413, typed deleted-user 410 and consistent `{code,error}` without changing endpoint semantics.
   - Non-goals: no tenancy model, production auth or data migration change.
@@ -481,7 +481,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Acceptance: existing tenancy/deletion/idempotency suites pass; oversized/malformed/missing-auth/deleted-user negative tests pass; health remains public, signed-out protected APIs 401; isolated hosted denial/cleanup verified.
   - Analytics/tests/security: no new collection or leaked bodies; fail closed on missing D1. Dependencies: C10 accepted, B30/B37. Rollback: revert middleware/callers together. Human 1–2 days; agent 4–6 h. [Contract](execution/prompts/B41.md).
 
-- [ ] **B38 — Public delivery, SEO truth, 404 and headers (C11, second).**
+- [x] **B38 — Public delivery, SEO truth, 404 and headers (C11, second).**
   - User problem/evidence: generic calculator HTML, indexable 200 unknown routes, public Clerk loading and large chunks reduce discoverability, trust and speed.
   - Expected outcome/scope: route-specific static metadata/minimal content, genuine 404/noindex, lazy Clerk and route chunks, tested CSP/security headers.
   - Non-goals: no SSR-framework migration, copy rewrite or production launch.

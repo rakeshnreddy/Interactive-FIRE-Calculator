@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-26",
+  "updated": "2026-09-27",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -186,7 +186,7 @@
       "id": "B12",
       "title": "consented minimal measurement",
       "checkpoint": "C11",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B07",
         "B41",
@@ -196,8 +196,8 @@
       "submission": "submissions/B12.md",
       "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": "f994eca",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C11.md",
+      "blocked_reason": "90/120-day analytics retention has no time-driven purge; old rows persist without another client event."
     },
     {
       "id": "B13",
@@ -469,7 +469,7 @@
       "id": "B29",
       "title": "Polish reports and readable financial evidence",
       "checkpoint": "C10",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B25",
         "B06",
@@ -479,15 +479,15 @@
       "prompt": "prompts/B29.md",
       "submission": "submissions/B29.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "f1db7db",
-      "review": null,
+      "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+      "review": "reviews/C10.md",
       "blocked_reason": null
     },
     {
       "id": "B30",
       "title": "Polish settings and privacy lifecycle controls",
       "checkpoint": "C10",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B07",
         "B25",
@@ -497,15 +497,15 @@
       "prompt": "prompts/B30.md",
       "submission": "submissions/B30.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "f1db7db",
-      "review": null,
+      "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+      "review": "reviews/C10.md",
       "blocked_reason": null
     },
     {
       "id": "B31",
       "title": "Close visual accessibility and performance acceptance matrix",
       "checkpoint": "C11",
-      "status": "ready_for_review",
+      "status": "blocked",
       "dependencies": [
         "B18",
         "B19",
@@ -529,8 +529,8 @@
       "submission": "submissions/B31.md",
       "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": "f85c6dd",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C11.md",
+      "blocked_reason": "Actual VoiceOver/NVDA announcements and navigation on final candidate remain unobserved at B31/C11."
     },
     {
       "id": "B32",
@@ -598,7 +598,7 @@
       "id": "B36",
       "title": "Make FIRE answer when can I retire with explicit rates",
       "checkpoint": "C09B",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B35",
         "B39",
@@ -607,8 +607,8 @@
       "prompt": "prompts/B36.md",
       "submission": "submissions/B36.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "a8f7422",
-      "review": null,
+      "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+      "review": "reviews/C09B.md",
       "blocked_reason": null
     },
     {
@@ -631,7 +631,7 @@
       "id": "B38",
       "title": "Improve public delivery, route metadata, 404s and headers",
       "checkpoint": "C11",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B36",
         "B41"
@@ -639,30 +639,30 @@
       "prompt": "prompts/B38.md",
       "submission": "submissions/B38.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "2292aee",
-      "review": null,
+      "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+      "review": "reviews/C11.md",
       "blocked_reason": null
     },
     {
       "id": "B39",
       "title": "Extract pure API, formatting, warning and UI modules from App",
       "checkpoint": "C09B",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B37"
       ],
       "prompt": "prompts/B39.md",
       "submission": "submissions/B39.md",
       "owner": "Gemini implementation worker",
-      "code_sha": "c7c5b31",
-      "review": "reviews/B39-claude-prereview-2026-09-26.md",
+      "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+      "review": "reviews/C09B.md",
       "blocked_reason": null
     },
     {
       "id": "B40",
       "title": "Consolidate calculator library and user-facing copy",
       "checkpoint": "C14",
-      "status": "ready_for_review",
+      "status": "changes_requested",
       "dependencies": [
         "B31",
         "B36"
@@ -671,14 +671,14 @@
       "submission": "submissions/B40.md",
       "owner": "Claude (owner takeover 2026-09-26)",
       "code_sha": "f85c6dd",
-      "review": null,
-      "blocked_reason": null
+      "review": "reviews/C14.md",
+      "blocked_reason": "Universal NPS 40% annuity claim contradicts 2026 PFRDA All Citizen guidance; XIRR route models monthly periodic IRR without dates."
     },
     {
       "id": "B41",
       "title": "Harden shared API parsing, auth and error boundaries",
       "checkpoint": "C11",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B30",
         "B37"
@@ -686,15 +686,15 @@
       "prompt": "prompts/B41.md",
       "submission": "submissions/B41.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "b4c7919",
-      "review": null,
+      "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+      "review": "reviews/C11.md",
       "blocked_reason": null
     },
     {
       "id": "B42",
       "title": "Shared hosted smoke runner plus the C09 revise residual",
       "checkpoint": "C09B",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B37",
         "B39"
@@ -702,8 +702,8 @@
       "prompt": "prompts/B42.md",
       "submission": "submissions/B42.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "a09ff46",
-      "review": null,
+      "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+      "review": "reviews/C09B.md",
       "blocked_reason": null
     }
   ],

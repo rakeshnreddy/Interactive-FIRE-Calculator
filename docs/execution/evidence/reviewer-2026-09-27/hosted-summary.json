@@ -1,0 +1,187 @@
+{
+  "codeSha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+  "reviewerRuns": {
+    "c09-revise": {
+      "status": "PASS",
+      "target": {
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      },
+      "stages": [
+        "preflight",
+        "d1-reachable",
+        "sign-in",
+        "seed-plan-versions",
+        "dashboard-shows-due-review",
+        "version-2-workspace-ready",
+        "revise-selected-and-recorded",
+        "calculator-edit-annual-expense",
+        "version-3-saved",
+        "d1-version-3-and-immutability",
+        "version-3-reload-matches-d1",
+        "tenant-b-denied",
+        "dashboard-review-cleared",
+        "review-panel-layout"
+      ],
+      "cleanup": [
+        {
+          "tenant": "A",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        },
+        {
+          "tenant": "B",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        }
+      ],
+      "rawSha256": "69727fecdc1109e0c71434096966b5b6181589a885baf71575705a1fb0645f40"
+    },
+    "c10-reports-settings": {
+      "status": "PASS",
+      "target": {
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      },
+      "stages": [
+        "preflight",
+        "d1-reachable",
+        "sign-in",
+        "seed-report-sources",
+        "report-scope-shows-sources",
+        "tenant-b-report-isolated",
+        "export-contains-only-own-data",
+        "ui-delete-confirmed-by-server",
+        "d1-empty-after-ui-delete"
+      ],
+      "cleanup": [
+        {
+          "tenant": "A",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        },
+        {
+          "tenant": "B",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        }
+      ],
+      "rawSha256": "83f0c25ec178b8acd80084d162ce3d49532b7d911a78f7d362796833981eb29b"
+    },
+    "c11-api-boundary": {
+      "status": "PASS",
+      "target": {
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      },
+      "stages": [
+        "preflight",
+        "d1-reachable",
+        "sign-in",
+        "public-and-signed-out",
+        "oversized-body-rejected",
+        "malformed-json-rejected",
+        "tenant-denial-has-code"
+      ],
+      "cleanup": [
+        {
+          "tenant": "A",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        },
+        {
+          "tenant": "B",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        }
+      ],
+      "rawSha256": "2bb05aed56ae27bde9d082678004492328db27acb45533dd39fd51573d99090e"
+    },
+    "c11-delivery": {
+      "status": "PASS",
+      "target": {
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      },
+      "stages": [
+        "preflight",
+        "d1-reachable",
+        "sign-in",
+        "route-html-and-404",
+        "security-headers",
+        "public-page-without-clerk",
+        "sign-in-intent-loads-clerk",
+        "signed-in-without-csp-violations"
+      ],
+      "cleanup": [
+        {
+          "tenant": "A",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        },
+        {
+          "tenant": "B",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        }
+      ],
+      "rawSha256": "bcb14759eb63e943aa9ca01581666b6a9c0f40c7540a3847efd428e06b94b0fe"
+    },
+    "c11-analytics": {
+      "status": "PASS",
+      "target": {
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      },
+      "stages": [
+        "preflight",
+        "d1-reachable",
+        "sign-in",
+        "signed-out-sends-nothing",
+        "off-by-default",
+        "opt-in-through-settings",
+        "events-are-pseudonymous",
+        "activation-starts-cohort",
+        "opt-out-purges"
+      ],
+      "cleanup": [
+        {
+          "tenant": "A",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        },
+        {
+          "tenant": "B",
+          "all16TablesZero": true,
+          "tombstone": "present",
+          "providerAbsent": true
+        }
+      ],
+      "rawSha256": "11aa354c5ef22fcfbfd5fc6e5fdc5a04541b76da103cbc9a51b1756a82f58452"
+    }
+  }
+}
