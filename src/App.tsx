@@ -1560,8 +1560,10 @@ function App({ auth }: { auth: AuthState }) {
   }, [auth.status, auth.user?.id]);
 
   useEffect(() => {
+    // While sign-in is still resolving, hold events rather than dropping them: the consent answer
+    // decides whether they are sent or discarded. Signed-out visitors never queue anything.
     configureAnalytics({
-      enabled: auth.status !== 'signed-in' ? false : analyticsConsent === null ? 'pending' : analyticsConsent,
+      enabled: auth.status === 'loading' ? 'pending' : auth.status !== 'signed-in' ? false : analyticsConsent === null ? 'pending' : analyticsConsent,
       getToken: auth.status === 'signed-in' ? auth.getToken : async () => null
     });
     if (typeof window === 'undefined') return;
