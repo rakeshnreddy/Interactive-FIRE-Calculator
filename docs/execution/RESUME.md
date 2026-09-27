@@ -21,20 +21,12 @@ Astra is architect, sole publisher and reviewer; Gemini implements. Read `CHECKP
 Verify live Git/hosted state rather than treating narrative as live state.
 
 
-## Claude takeover progress — 2026-09-26 (paused at usage limit)
+## Claude takeover — completed delivery, 2026-09-26/27 (handoff to Codex verification)
 
-All work is on PR #140, branch `codex/finpath-quality-execution`. Claude marks tasks `ready_for_review`; Codex accepts.
-- **ready_for_review:**
-  - B39 `c7c5b31`
-  - B42 `a09ff46`
-  - B36 `a8f7422`
-  - B29 and B30 `f1db7db`
-  - B41 `b4c7919`
-  - B38 `2292aee`
-  - Each has a submission in `submissions/`.
-- **B12 in progress:**
-  - Code is at `e33846a`, and migration 0009 is applied to the preview D1 only.
-  - Hosted `c11-analytics` fails at `events-are-pseudonymous`. A probe shows the client POST returns 202, so check whether it is accepted (dedup or date), then rerun.
-  - Still to do: the B12 submission.
-- **Next:** B31 (final accessibility and performance sweep, including native 200% zoom), then B40. After that, write the Codex verification prompt.
-- **Latest preview:** `https://232d1fd9.interactive-fire-calculator.pages.dev`. `c11-delivery`, `c11-api-boundary`, `c10-reports-settings`, `c09-revise` and the public smoke all pass there.
+All work is on PR #140, branch `codex/finpath-quality-execution`, unmerged. Claude implemented, tested and hosted-verified; **no task is accepted**. Codex verifies with [CODEX_VERIFICATION_PROMPT.md](CODEX_VERIFICATION_PROMPT.md).
+
+- **Final candidate:** `7f67cfacdaf32c361ea1631478f60af0b9e278d0`. Immutable preview `https://4c6ff32c.interactive-fire-calculator.pages.dev` (deployment `4c6ff32c-a241-4623-9c0d-95348c3070a6`, preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`, migration 0009 applied there only). On it: public smoke 84/84 and hosted `c09-revise`, `c10-reports-settings`, `c11-api-boundary`, `c11-delivery`, `c11-analytics`, `b31-visual`, `b31-zoom --zoom 200` all PASS with verified cleanup. Full suite: 78 files, 2,443 tests.
+- **ready_for_review (submission in `submissions/`):** B39 `c7c5b31`, B42 `a09ff46`, B36 `a8f7422`, B29/B30 `f1db7db`, B41 `b4c7919`, B38 `2292aee` (+ `f994eca`), B12 `f994eca`, B40 `a9e4a0a`, B31 `7f67cfa`.
+- **Owner-directed work outside the original task list** (2026-09-26 requests): liquid-glass theme, new light/dark palettes and landing page for discoverability (`d8991ed`); functional pass over all 83 calculators with engine corrections and goldens, library grouping and region filter (`7d087d5`). Reviewed under B40 and B31; see `docs/calculator-excellence/GAP_MATRIX.md` for what stays open.
+- **Not done, stated plainly:** native screen-reader check (B31 blocker, needs a person with VoiceOver); production readiness needs OA-1 (Clerk production keys) and OA-3 (migration 0009 on production D1). B13/B14 stay gated on retention evidence.
+- **Next action for Codex:** run the verification prompt; record acceptance or `changes_requested` per task; release/close checkpoints C09B, C10, C11, C14 as the evidence supports. Keep PR #140 unmerged until the owner decides on production.

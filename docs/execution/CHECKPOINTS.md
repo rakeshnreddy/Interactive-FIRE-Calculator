@@ -140,4 +140,4 @@ The owner assigned all remaining delivery to Claude: design, planning, architect
 - **End state:** PR #140 with CI green and a verified isolated preview. No `main` merge and no production deploy. B12 is built to MEASUREMENT_AND_EXPERIMENT_PLAN.md with collection off by default. B13 and B14 stay gated on retention evidence.
 - **Verification handoff:** a verification prompt for Codex will be recorded in RESUME.md.
 
-B39: `ready_for_review` at `c7c5b31`; see [pre-review](reviews/B39-claude-prereview-2026-09-26.md). B42 is in progress.
+Delivery complete on 2026-09-27: B39 `c7c5b31`, B42 `a09ff46`, B36 `a8f7422`, B29/B30 `f1db7db`, B41 `b4c7919`, B38 `2292aee`, B12 `f994eca`, B40 `a9e4a0a` and B31 `7f67cfa` are `ready_for_review` with submissions; final candidate `7f67cfa` has all hosted scenarios green (see RESUME.md). Codex verification: [CODEX_VERIFICATION_PROMPT.md](CODEX_VERIFICATION_PROMPT.md). C14/B40 was executed under owner direction after the C11 work; its checkpoint release remains Codex's decision.

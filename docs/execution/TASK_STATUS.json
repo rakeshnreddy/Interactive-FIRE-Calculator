@@ -505,7 +505,7 @@
       "id": "B31",
       "title": "Close visual accessibility and performance acceptance matrix",
       "checkpoint": "C11",
-      "status": "pending",
+      "status": "ready_for_review",
       "dependencies": [
         "B18",
         "B19",
@@ -526,9 +526,9 @@
         "B41"
       ],
       "prompt": "prompts/B31.md",
-      "submission": null,
-      "owner": null,
-      "code_sha": null,
+      "submission": "submissions/B31.md",
+      "owner": "Claude (owner takeover 2026-09-26)",
+      "code_sha": "7f67cfa",
       "review": null,
       "blocked_reason": null
     },
