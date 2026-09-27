@@ -37,7 +37,7 @@ export async function gotoTheme(page, url, mode) {
 export function attachConsole(page) {
   const errors = [];
   page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text().slice(0, 200));
+    if (message.type() === 'error') errors.push(`${message.text().slice(0, 160)} @ ${message.location()?.url?.slice(0, 160) ?? '?'}`);
   });
   page.on('pageerror', (error) => errors.push(`pageerror: ${String(error?.message || error).slice(0, 200)}`));
   return errors;
@@ -49,7 +49,8 @@ export const LAYOUT_SCRIPT = `(() => {
   const doc = document.documentElement;
   const visible = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; };
   const name = (el) => (el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || el.getAttribute('placeholder') || '').trim().slice(0, 40);
-  const controls = [...document.querySelectorAll('a[href], button, input, select, textarea, summary, [role="tab"]')].filter(visible);
+  // Programmatic-only controls (hidden file inputs opened by a button) are not pointer targets.
+  const controls = [...document.querySelectorAll('a[href], button, input, select, textarea, summary, [role="tab"]')].filter((el) => visible(el) && !(el.tagName === 'INPUT' && el.getAttribute('tabindex') === '-1'));
   const clipped = controls.filter((el) => { const r = el.getBoundingClientRect(); return r.right + window.scrollX > doc.scrollWidth + 1 || r.left + window.scrollX < -1; }).map((el) => el.tagName.toLowerCase() + ':' + name(el));
   const small = controls.filter((el) => !(el.tagName === 'A' && el.closest('p, li, small, td')) && el.type !== 'checkbox' && el.type !== 'radio').filter((el) => { const r = el.getBoundingClientRect(); return r.height < 24 || r.width < 24; }).map((el) => el.tagName.toLowerCase() + ':' + name(el));
   // Leaf text elements only, so tooltips and other hidden descendants do not count as overflow.

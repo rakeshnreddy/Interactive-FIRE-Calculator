@@ -88,13 +88,17 @@ export default {
       await gotoTheme(anon.page, `${config.url}/calculators/fire`, 'light');
       await anon.page.fill('#fire-initial-portfolio', '999999999999');
       await anon.page.fill('#fire-annual-expense', '9999999');
-      await anon.page.locator('.quick-actions .primary-button').click();
-      await anon.page.waitForTimeout(600);
-      // Blank required rates must be reported next to their fields, not silently defaulted.
+      // Blank required rates: Calculate stays disabled with a written reason (B36), never a silent default.
+      const calculate = anon.page.locator('.quick-actions .primary-button');
+      const blocker = await anon.page.locator('#fire-calc-blocker').textContent().catch(() => '');
+      if (!(await calculate.isDisabled()) || !blocker?.trim()) fail(`blank rates did not block Calculate: disabled=${await calculate.isDisabled()} blocker="${blocker}"`);
+      // An invalid rate is an error associated with its field and visible at 200%.
+      await anon.page.fill('#fire-return', '99');
+      await anon.page.waitForTimeout(400);
       const alerts = await anon.page.locator('[role="alert"]:visible').count();
       const invalid = await anon.page.evaluate(() => [...document.querySelectorAll('[aria-invalid="true"]')].map((el) => ({ id: el.id, describedBy: el.getAttribute('aria-describedby'), described: Boolean(el.getAttribute('aria-describedby') && document.getElementById(el.getAttribute('aria-describedby').split(' ').find((id) => document.getElementById(id)))) })));
-      if (!alerts || !invalid.length || invalid.some((i) => !i.described)) fail(`blank rates not reported accessibly: alerts=${alerts} invalid=${JSON.stringify(invalid)}`);
-      const errorShot = await shot(anon.page, 'zoom200-light-fire-blank-rates-error');
+      if (!alerts || !invalid.length || invalid.some((i) => !i.described)) fail(`invalid rate not reported accessibly: alerts=${alerts} invalid=${JSON.stringify(invalid)}`);
+      const errorShot = await shot(anon.page, 'zoom200-light-fire-invalid-rate-error');
       await anon.page.locator('button:has-text("Use example values")').click();
       await anon.page.locator('.quick-actions .primary-button').click();
       await anon.page.waitForTimeout(800);
@@ -110,7 +114,7 @@ export default {
       const rateMessage = await anon.page.locator('[role="alert"]:visible, .field-issue:visible').first().textContent().catch(() => '');
       const rateShot = await shot(anon.page, 'zoom200-dark-compound-rate-500');
       if (!/100%/.test(rateMessage || '')) fail(`500% rate not refused: ${rateMessage}`);
-      return { blankRateAlerts: alerts, invalidFields: invalid.map((i) => i.id), screenshots: [errorShot, longShot, rateShot], rateMessage: rateMessage.slice(0, 120) };
+      return { calculateBlockedReason: blocker.trim().slice(0, 120), invalidRateAlerts: alerts, invalidFields: invalid.map((i) => i.id), screenshots: [errorShot, longShot, rateShot], rateMessage: rateMessage.slice(0, 120) };
     });
   }
 };

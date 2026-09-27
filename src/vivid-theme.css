@@ -1772,6 +1772,25 @@ body {
   color: var(--color-primary-ink);
 }
 
+/* B31 sweep fixes: pointer targets at least 24px (WCAG 2.5.8) for small inline controls */
+.app .info-dot,
+.app .calculator-help-btn {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.app .breadcrumbs button,
+.app .landing-footer-links a,
+.app .calculator-toolkit-backlink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.app summary {
+  min-height: 24px;
+}
+
 /* B31 sweep fixes: layouts that squeezed text at tablet and phone widths */
 
 /* Input controls have an optional prefix and suffix; a fixed three-column grid squeezed the
