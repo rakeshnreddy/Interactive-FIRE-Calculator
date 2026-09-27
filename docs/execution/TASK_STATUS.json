@@ -186,7 +186,7 @@
       "id": "B12",
       "title": "consented minimal measurement",
       "checkpoint": "C11",
-      "status": "changes_requested",
+      "status": "blocked",
       "dependencies": [
         "B07",
         "B41",
@@ -195,9 +195,9 @@
       "prompt": "prompts/B12.md",
       "submission": "submissions/B12.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "f994eca",
+      "code_sha": "b3416cb",
       "review": "reviews/C11.md",
-      "blocked_reason": "90/120-day analytics retention has no time-driven purge; old rows persist without another client event."
+      "blocked_reason": "Retention Worker code and tests are complete; deploying the preview Worker (wrangler deploy) needs the owner to run or authorise it (OA-4)."
     },
     {
       "id": "B13",
@@ -662,7 +662,7 @@
       "id": "B40",
       "title": "Consolidate calculator library and user-facing copy",
       "checkpoint": "C14",
-      "status": "changes_requested",
+      "status": "ready_for_review",
       "dependencies": [
         "B31",
         "B36"
@@ -670,9 +670,9 @@
       "prompt": "prompts/B40.md",
       "submission": "submissions/B40.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "f85c6dd",
+      "code_sha": "b3416cb",
       "review": "reviews/C14.md",
-      "blocked_reason": "Universal NPS 40% annuity claim contradicts 2026 PFRDA All Citizen guidance; XIRR route models monthly periodic IRR without dates."
+      "blocked_reason": null
     },
     {
       "id": "B41",
@@ -728,6 +728,13 @@
       "id": "OA-3",
       "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350…) before any production release; it is applied to the preview D1 only.",
       "blocking_task": "Production readiness of B12 only",
+      "requested_date": "2026-09-27",
+      "status": "pending"
+    },
+    {
+      "id": "OA-4",
+      "action": "Deploy the preview analytics-retention Worker: npx wrangler deploy --config workers/analytics-retention/wrangler.toml (preview D1 only), then record the deployment ID and one observed scheduled run in submissions/B12.md.",
+      "blocking_task": "B12",
       "requested_date": "2026-09-27",
       "status": "pending"
     }
