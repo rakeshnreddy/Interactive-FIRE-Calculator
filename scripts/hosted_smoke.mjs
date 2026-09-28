@@ -41,6 +41,10 @@ export function parseArgs(argv) {
     const arg = argv[i];
     if (!arg.startsWith('--')) throw new SmokeError(`Unexpected argument: ${arg}`);
     const [key, inline] = arg.slice(2).split('=', 2);
+    if (key === 'headed' && inline === undefined) {
+      values[key] = 'true';
+      continue;
+    }
     values[key] = inline ?? argv[++i];
   }
   const config = {
@@ -52,7 +56,9 @@ export function parseArgs(argv) {
     scenario: values.scenario?.trim(),
     out: values.out?.trim(),
     // Optional native browser zoom (percent) for the B31 visual sweep; see createLiveAdapters.
-    zoom: values.zoom === undefined ? null : Number(values.zoom)
+    zoom: values.zoom === undefined ? null : Number(values.zoom),
+    // Headed Chrome (visible window) for scenarios a screen reader must observe (b31-reader).
+    headed: values.headed !== undefined
   };
   const errors = [];
   if (!config.sha || !SHA_RE.test(config.sha)) errors.push('--sha must be the full 40-character candidate SHA');
@@ -379,7 +385,7 @@ async function createLiveAdapters(config) {
     const level = Math.log(config.zoom / 100) / Math.log(1.2);
     writeFileSync(join(profileDir, 'Default', 'Preferences'), JSON.stringify({ partition: { per_host_zoom_levels: { x: { [new URL(config.url).host]: level } } } }));
     try {
-      const context = await chromium.launchPersistentContext(profileDir, { executablePath, headless: true, viewport: null, args: ['--window-size=1280,900'] });
+      const context = await chromium.launchPersistentContext(profileDir, { executablePath, headless: !config.headed, viewport: null, args: ['--window-size=1280,900'] });
       zoomProfiles.push({ context, profileDir });
       return context;
     } catch (error) {
@@ -388,7 +394,7 @@ async function createLiveAdapters(config) {
     }
   };
   if (config.zoom) zoomedContext = await launchZoomedContext();
-  else browser = await chromium.launch({ executablePath, headless: true });
+  else browser = await chromium.launch({ executablePath, headless: !config.headed, args: config.headed ? ['--window-size=1280,900'] : [] });
   // Signed-in pages share the tenant's zoomed profile; anonymous pages get a fresh zoomed profile of their own.
   const newContext = (options, { isolated = false } = {}) => {
     if (!config.zoom) return browser.newContext(options);
@@ -431,6 +437,7 @@ async function createLiveAdapters(config) {
     browser: {
       version: browserVersion,
       zoom: config.zoom,
+      headed: config.headed,
       async signIn(tenant, baseUrl) {
         const context = await newContext({ viewport: { width: 1280, height: 800 } });
         const escaped = fapi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

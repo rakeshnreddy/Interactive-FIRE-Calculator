@@ -68,6 +68,9 @@ test('inputs: every value is required and production DB is refused', () => {
   const prod = [...ARGS];
   prod[prod.indexOf('--db-id') + 1] = PRODUCTION_DB_ID;
   assert.throws(() => parseArgs(prod), /production/);
+  assert.equal(parseArgs(ARGS).headed, false);
+  assert.equal(parseArgs([...ARGS, '--headed']).headed, true);
+  assert.equal(parseArgs(['--headed', ...ARGS]).scenario, 'fake');
   assert.equal(parseArgs(ARGS).zoom, null);
   assert.equal(parseArgs([...ARGS, '--zoom', '200']).zoom, 200);
   for (const bad of ['99', '401', '150.5', 'big', '']) assert.throws(() => parseArgs([...ARGS, '--zoom', bad]), /zoom/, `zoom ${bad}`);
