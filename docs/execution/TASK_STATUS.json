@@ -713,7 +713,9 @@
       "action": "Create the FinPath Clerk production instance and provide production keys through the secure setup path; no keys in chat or Git.",
       "blocking_task": "B38 production readiness only; preview implementation may proceed",
       "requested_date": "2026-09-26",
-      "status": "pending"
+      "status": "pending",
+      "last_verified_date": "2026-09-29",
+      "resolution": "Not complete: merged-main production preflight 0/6. Owned HTTPS origin, completed Clerk production instance, frontend live key and three Pages production secret names are absent. See reviews/RELEASE-2026-09-29.md."
     },
     {
       "id": "OA-2",
@@ -726,11 +728,12 @@
     },
     {
       "id": "OA-3",
-      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350\u2026) before any production release; it is applied to the preview D1 only.",
+      "action": "Apply pending production D1 migrations only after OA-1 passes, capturing a restore bookmark before changes; owner authorization is already granted.",
       "blocking_task": "Production readiness of B12 only",
       "requested_date": "2026-09-27",
       "status": "pending",
-      "authorization": "Owner final handoff authorizes production migrations after OA-1 passes; not yet executed."
+      "authorization": "Owner final handoff authorizes production migrations after OA-1 passes; do not request duplicate authorization.",
+      "execution": "Not executed: OA-1 preflight failed 0/6 on 2026-09-29. No production D1 changes or restore bookmark."
     },
     {
       "id": "OA-4",
