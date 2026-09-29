@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronRight,
   CircleDollarSign,
-  CircleGauge,
   ClipboardList,
   Download,
   FolderKanban,
@@ -15,7 +14,6 @@ import {
   Info,
   Landmark,
   LayoutDashboard,
-  Lightbulb,
   LineChart as LineChartIcon,
   LockKeyhole,
   LogIn,
@@ -53,42 +51,32 @@ import type {
   PlanningSnapshot
 } from './PlanningWorkspace';
 import {
-  annualSimulation,
   calculateFirePlan,
   formatMoney,
   formatPercent,
   totalDuration,
   type FirePlanResult,
   type PlanInput,
-  type PlanWarningCode,
   type RatePeriod,
   type RecurringCashFlow,
   type SimulationResult,
   type WithdrawalTiming,
   type YearResult
 } from './lib/fire';
-import { buildCalculatorFollowUp } from './lib/calculatorFollowUps';
+
 import {
   buildFinancialInsights,
-  type FinancialInsight,
   type InsightPriority
 } from './lib/insights';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
 import { applyRouteMetadata } from './lib/routeMetadata';
 import {
-  allTransactionAccountFilter,
-  allTransactionCategoryFilter,
   buildTransactionCashflowRollup,
   emptyTransactionFilters,
   filterTransactions,
   getTransactionCategoryOptions,
-  normalizeTransactionCategoryInput,
-  transactionCategoryLabel,
-  uncategorizedTransactionCategoryFilter,
-  unlinkedTransactionAccountFilter,
   type TransactionCashflowRollup,
-  type TransactionFilters,
-  type TransactionType
+  type TransactionFilters
 } from './lib/transactionAnalytics';
 import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
 import { estimateRetirementAge, fitRatePeriods, projectPortfolioAtAge, type AccumulationResult } from './lib/fireAccumulation';
@@ -103,11 +91,10 @@ import { ReportsPanel } from './reports/ReportsPanel';
 import { PrivacyControlsPanel } from './settings/PrivacyControlsPanel';
 import { deletionFailure, exportFailure, summarizeDeletion, type PrivacyStatus } from './settings/privacyOutcome';
 export { PrivacyControlsPanel };
-import { buildReportScope, type ReportScope } from './reports/reportScope';
+import { buildReportScope } from './reports/reportScope';
 export { ReportsPanel as InsightsPanel };
 import {
   activeNavigationPath,
-  buildPlanDeepLink,
   parsePlanDeepLink,
   resolvePlansRouteAction,
   primaryNavigationFor,
@@ -116,11 +103,9 @@ import {
   type AppRoute
 } from './lib/navigation';
 import type { AuthState } from './auth';
-import { calculatePlanReviewDueStatus, loadDuePlanReviews, type DueReviewItem } from './lib/planReviews';
+import { loadDuePlanReviews, type DueReviewItem } from './lib/planReviews';
 import {
   ACCOUNT_DATA_DELETE_CONFIRMATION,
-  accountTypeLabel,
-  accountTypeOptions,
   addFinancialAccountBalanceRecord,
   archiveFinancialAccountRecord,
   archiveGoalRecord,
@@ -129,7 +114,6 @@ import {
   buildBalanceDraftMap,
   buildGoalUpdateDraftMap,
   buildTransactionDraftMap,
-  calculatorDestinationLabel,
   calculatorSaveMessage,
   clearLocalDrafts,
   createAccountPlan,
@@ -148,26 +132,14 @@ import {
   emptyTransactionSummary,
   formatAccountMetric,
   formatCurrencyBreakdown,
-  formatGoalPercent,
   formatTransactionAmount,
-  goalDeadlineLabel,
-  goalStatusLabel,
-  goalStatusOptions,
   goalToUpdateDraft,
-  goalTypeLabel,
-  goalTypeOptions,
-  isAccountCategory,
   isAppSnapshot,
   isBalanceStale,
-  isCalculatorConversionRoute,
   isFinancialAccountType,
   isGoalStatus,
   isGoalType,
-  isNumberRecord,
   isRecord,
-  isSavedCalculatorCreatedEntityType,
-  isSavedCalculatorDestinationType,
-  isSavedMetricValueType,
   isTransactionType,
   loadAccountDataExport,
   loadAccountPlans,
@@ -176,76 +148,42 @@ import {
   loadGoals,
   loadSavedCalculatorResults,
   loadTransactions,
-  pickString,
   PlanRequestError,
   planErrorMessage,
   profileToDraft,
-  readFinancialAccountResponse,
-  readGoalResponse,
-  readProfileResponse,
-  readSavedPlanResponse,
   readSavedPlans,
-  readTransactionResponse,
-  SAVED_PLANS_KEY,
   summarizeAccountList,
   summarizeGoalList,
   summarizeTransactionList,
-  toAccountBalance,
-  toAccountProfile,
-  toAccountSummary,
-  toCalculatorCreatedEntity,
   toFinancialAccount,
   toGoal,
-  toGoalSummary,
-  toSavedCalculatorMetric,
-  toSavedCalculatorResult,
-  toSavedCalculatorResultSnapshot,
-  toSavedPlan,
-  toTransaction,
-  toTransactionAccount,
-  toTransactionSummary,
-  transactionAmountClass,
   transactionToDraft,
-  transactionTypeLabel,
-  transactionTypeOptions,
   updateAccountPlan,
   updateAccountProfile,
   updateGoalRecord,
   updateTransactionRecord,
   writeSavedPlans,
-  type AccountCategory,
   type AccountDraft,
   type AccountProfile,
   type AccountProfileDraft,
-  type AccountProfileUpdate,
   type AccountSummary,
   type BalanceDraft,
   type CalculatorSaveApiResponse,
-  type CurrencyAccountSummary,
   type FinancialAccount,
-  type FinancialAccountType,
   type Goal,
   type GoalDraft,
   type GoalStatus,
   type GoalSummary,
   type GoalType,
   type GoalUpdateDraft,
-  type SavedCalculatorCreatedEntityType,
-  type SavedCalculatorDestinationType,
-  type SavedCalculatorMetric,
   type SavedCalculatorResult,
-  type SavedCalculatorResultSnapshot,
   type Transaction,
   type TransactionDraft,
   type TransactionSummary
 } from './lib/api';
 import {
   formatCents,
-  formatMonthLabel,
-  formatSavedCalculatorMetric,
-  formatSignedCents,
   formatSignedPercent,
-  formatStoredCurrency,
   moneyInputToCents,
   numericValue,
   todayInputDate
@@ -253,32 +191,19 @@ import {
 import {
   buildProjectionCsv,
   downloadCsv,
-  downloadJson,
-  escapeCsvCell
+  downloadJson
 } from './lib/csv';
 import {
-  averageRate,
-  engineWarnings,
-  ENGINE_WARNING_TITLES,
   firstNegativeYear,
-  humanizeWarningTitle,
-  normalizeWarning,
   planWarnings,
-  shouldSuppressHorizonDepletion,
   stressTestCurrentPortfolio,
   type WarningNotice
 } from './lib/warnings';
-import { Metric } from './components/Metric';
+
 import { InfoTip } from './components/InfoTip';
-import { Field, fieldSlugify } from './components/Field';
+import { Field } from './components/Field';
 import { YearByYearTable } from './components/YearByYearTable';
 
-const BalanceImportPanel = lazy(() =>
-  import('./BalanceImportPanel').then((module) => ({ default: module.BalanceImportPanel }))
-);
-const TransactionImportPanel = lazy(() =>
-  import('./TransactionImportPanel').then((module) => ({ default: module.TransactionImportPanel }))
-);
 const PlatformPage = lazy(() =>
   import('./workspace/WorkspacePanels').then((module) => ({ default: module.PlatformPage }))
 );
@@ -675,34 +600,6 @@ export const usefulCalculatorPaths = [
     action: 'Explore financial independence',
     body: 'Model portfolio needs and sustainable retirement withdrawals.',
     route: '/calculators/fire' as AppRoute,
-    icon: Target
-  }
-];
-
-const calculatorModules = [
-  {
-    title: 'FIRE Calculator',
-    body: 'Estimate a retirement portfolio target or annual withdrawal from a portfolio.',
-    status: 'Ready',
-    route: '/calculators/fire' as AppRoute,
-    icon: Calculator
-  },
-  {
-    title: 'Emergency Fund',
-    body: 'Size cash reserves from monthly spending, income stability, and dependents.',
-    status: 'Planned',
-    icon: ShieldCheck
-  },
-  {
-    title: 'Debt Payoff',
-    body: 'Compare avalanche and snowball payoff schedules across balances and APRs.',
-    status: 'Planned',
-    icon: ClipboardList
-  },
-  {
-    title: 'Savings Goal',
-    body: 'Back into monthly savings for a home, education, travel, or family milestone.',
-    status: 'Planned',
     icon: Target
   }
 ];
@@ -1242,50 +1139,6 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
         </nav>
       </footer>
     </>
-  );
-}
-
-function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
-  return (
-    <section className="route-shell" aria-labelledby="calculators-title">
-      <div className="route-heading">
-        <p className="eyebrow">Calculators</p>
-        <h1 id="calculators-title">Financial calculators</h1>
-        <p>
-          Explore task-focused financial calculators designed to help you plan savings, debt payoff,
-          home purchases, and retirement.
-        </p>
-      </div>
-
-      <div className="module-grid">
-        {calculatorModules.map((module) => {
-          const Icon = module.icon;
-          return (
-            <article className="module-card" key={module.title}>
-              <span className="feature-icon">
-                <Icon size={20} />
-              </span>
-              <div>
-                <span className="pill">{module.status}</span>
-                <strong>{module.title}</strong>
-                <small>{module.body}</small>
-              </div>
-              {module.route ? (
-                <button
-                  className="secondary-button icon-text-button"
-                  onClick={() => onNavigate(module.route)}
-                >
-                  Open
-                  <ChevronRight size={16} />
-                </button>
-              ) : (
-                <span className="module-soon">Future module</span>
-              )}
-            </article>
-          );
-        })}
-      </div>
-    </section>
   );
 }
 

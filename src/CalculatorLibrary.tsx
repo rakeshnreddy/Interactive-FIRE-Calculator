@@ -1747,11 +1747,6 @@ function metricDescription(metric: CalculatorMetric): string {
   return 'A supporting value used to explain the main estimate.';
 }
 
-function visualMetricValue(metric: CalculatorMetric): number {
-  if (metric.valueType === 'percent') return Math.abs(metric.value * 100);
-  return Math.abs(metric.value);
-}
-
 export function formatChartValue(
   value: number,
   calculator: SeoCalculator,

@@ -732,35 +732,6 @@ function accountPayloadFromCalculator(payload: CalculatorSavePayload): AccountCr
   };
 }
 
-async function createPlanDraft(
-  database: D1Database,
-  userId: string,
-  payload: CalculatorSavePayload
-): Promise<SavedCalculatorPlanDraft> {
-  const planId = crypto.randomUUID();
-  const now = new Date().toISOString();
-  const planType = planTypeForCalculator(payload.calculatorSlug, payload.calculatorTitle);
-
-  await database
-    .prepare(
-      `
-        INSERT INTO plans (id, user_id, goal_id, name, plan_type, status, created_at, updated_at)
-        VALUES (?, ?, NULL, ?, ?, 'draft', ?, ?)
-      `
-    )
-    .bind(planId, userId, truncateText(`${payload.calculatorTitle} draft`, 120), planType, now, now)
-    .run();
-
-  return {
-    createdAt: now,
-    id: planId,
-    name: truncateText(`${payload.calculatorTitle} draft`, 120),
-    planType,
-    status: 'draft',
-    updatedAt: now
-  };
-}
-
 function targetAmountCentsForGoal(payload: CalculatorSavePayload): number | null {
   if (payload.calculatorSlug === 'down-payment') {
     const homePrice = inputNumber(payload, 'homePrice');

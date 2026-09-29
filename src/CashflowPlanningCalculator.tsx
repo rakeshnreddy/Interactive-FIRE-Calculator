@@ -34,11 +34,9 @@ import {
   type BudgetInputKey,
   type BudgetInputs,
   type BudgetProjection,
-  type EmergencyFundInputKey,
   type EmergencyFundInputs,
   type EmergencyFundProjection,
   type IncomeStability,
-  type NetWorthInputKey,
   type NetWorthInputs,
   type NetWorthProjection,
   type PlanningValidation
