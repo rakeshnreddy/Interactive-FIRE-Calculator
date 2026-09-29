@@ -1,0 +1,188 @@
+{
+  "checkedAt": "2026-09-11T02:50:24.590Z",
+  "project": {
+    "production": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    },
+    "preview": {
+      "DB": {
+        "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+      }
+    },
+    "source": {
+      "owner_id": "19764864",
+      "repo_id": "952152234",
+      "production_branch": "main",
+      "pr_comments_enabled": true,
+      "deployments_enabled": true,
+      "production_deployments_enabled": false,
+      "preview_deployment_setting": "custom",
+      "preview_branch_includes": [
+        "codex/cloudflare-pages-theme-plan"
+      ],
+      "preview_branch_excludes": [],
+      "path_includes": [],
+      "path_excludes": []
+    }
+  },
+  "deployments": [
+    {
+      "id": "5a79ca12-51d6-45c4-8808-cf9e081f9777",
+      "url": "https://5a79ca12.interactive-fire-calculator.pages.dev",
+      "environment": "preview",
+      "trigger": {
+        "type": "github:push",
+        "metadata": {
+          "branch": "codex/finpath-quality-execution",
+          "commit_hash": "2e2b55d110e243a8e12d22c66d6c0e5d1f1f0271",
+          "commit_message": "docs(B33): record successful CI run 34555982628 in B33 submission",
+          "commit_dirty": false
+        }
+      },
+      "stage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "d1": {
+        "DB": {
+          "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+        }
+      },
+      "uses_functions": null
+    },
+    {
+      "id": "379dfaf0-9135-43f4-a842-3aafa37cfed0",
+      "url": "https://379dfaf0.interactive-fire-calculator.pages.dev",
+      "environment": "preview",
+      "trigger": {
+        "type": "github:push",
+        "metadata": {
+          "branch": "codex/finpath-quality-execution",
+          "commit_hash": "e8a53ace4ad23546b84c19fb93d3faa4aa96290c",
+          "commit_message": "docs(B33): submit B33 blocked on owner preview binding authorization",
+          "commit_dirty": false
+        }
+      },
+      "stage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "d1": {
+        "DB": {
+          "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+        }
+      },
+      "uses_functions": null
+    },
+    {
+      "id": "03cba125-3c1c-4a68-954b-bfb947636525",
+      "url": "https://03cba125.interactive-fire-calculator.pages.dev",
+      "environment": "preview",
+      "trigger": {
+        "type": "ad_hoc",
+        "metadata": {
+          "branch": "codex/finpath-quality-execution",
+          "commit_hash": "452fbdca849c28233ba6474a38f36b732949c4a0",
+          "commit_message": "Accepted C01T static development preview",
+          "commit_dirty": false
+        }
+      },
+      "stage": {
+        "name": "deploy",
+        "started_on": null,
+        "ended_on": "2026-09-11T02:42:38.709809Z",
+        "status": "success"
+      },
+      "d1": {
+        "DB": {
+          "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+        }
+      },
+      "uses_functions": false
+    },
+    {
+      "id": "82ab8e35-d0e3-4386-9195-e15a8843aa53",
+      "url": "https://82ab8e35.interactive-fire-calculator.pages.dev",
+      "environment": "preview",
+      "trigger": {
+        "type": "github:push",
+        "metadata": {
+          "branch": "codex/finpath-quality-execution",
+          "commit_hash": "452fbdca849c28233ba6474a38f36b732949c4a0",
+          "commit_message": "docs: accept C01T with owner reader deferral and release isolation checkpoint",
+          "commit_dirty": false
+        }
+      },
+      "stage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "d1": {
+        "DB": {
+          "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+        }
+      },
+      "uses_functions": null
+    },
+    {
+      "id": "7fc7a9f8-890c-402f-96d4-ad06a0f91a5c",
+      "url": "https://7fc7a9f8.interactive-fire-calculator.pages.dev",
+      "environment": "preview",
+      "trigger": {
+        "type": "github:push",
+        "metadata": {
+          "branch": "codex/finpath-quality-execution",
+          "commit_hash": "47f9ec6eae3178883e180102d5e56206d16fa335",
+          "commit_message": "docs(B32): record successful CI run 34552756182 in submission",
+          "commit_dirty": false
+        }
+      },
+      "stage": {
+        "name": "queued",
+        "started_on": null,
+        "ended_on": null,
+        "status": "idle"
+      },
+      "d1": {
+        "DB": {
+          "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+        }
+      },
+      "uses_functions": null
+    }
+  ],
+  "probes": [
+    {
+      "host": "757f65cd",
+      "path": "/api/health",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "host": "757f65cd",
+      "path": "/api/me",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "host": "03cba125",
+      "path": "/api/health",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "host": "03cba125",
+      "path": "/api/me",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    }
+  ]
+}

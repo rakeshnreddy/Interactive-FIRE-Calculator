@@ -1,0 +1,26 @@
+{
+  "id": "07fd7bef-1590-4483-a4c5-edbd743a1c21",
+  "url": "https://07fd7bef.interactive-fire-calculator.pages.dev",
+  "environment": "preview",
+  "trigger": {
+    "type": "ad_hoc",
+    "metadata": {
+      "branch": "codex/finpath-quality-execution",
+      "commit_hash": "3100b70ad5e7646133d3181abfb1bcfd2d44d92e",
+      "commit_message": "fix(b18): align hero retirement trajectory with expenseMode and expose chart accessibly",
+      "commit_dirty": true
+    }
+  },
+  "stage": {
+    "name": "deploy",
+    "started_on": null,
+    "ended_on": "2026-09-12T02:37:15.956028Z",
+    "status": "success"
+  },
+  "uses_functions": true,
+  "d1": {
+    "DB": {
+      "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 import { exportAccountData } from '../../_lib/accountData';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
@@ -24,7 +24,7 @@ export const onRequestGet: PagesFunction<AccountDataEnv> = async ({ request, env
 
   try {
     return json({ export: await exportAccountData(db.database, session.auth.userId) });
-  } catch {
-    return json({ error: 'Unable to export account data.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to export account data.');
   }
 };

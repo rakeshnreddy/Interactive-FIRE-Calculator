@@ -1,3 +1,5 @@
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { AuthState } from './auth';
@@ -231,5 +233,113 @@ describe('Compound Interest engagement and presentation contract', () => {
     expect(document.querySelector('#compound-compoundingFrequency')?.closest('details')).toBeNull();
     expect(document.querySelector('.compound-chart-plot')?.getAttribute('tabindex')).toBe('0');
     expect(document.querySelector('.compound-sensitivity-wrap td.is-base')?.textContent).toContain('Base');
+  });
+
+  it('adopts unified scope note and removes duplicate trust-banner emphasis (B22)', () => {
+    const calculator = findSeoCalculator('/calculators/compound-interest');
+    const auth: AuthState = {
+      provider: 'clerk',
+      status: 'not-configured',
+      isConfigured: false,
+      isSignedIn: false,
+      missingEnv: ['VITE_CLERK_PUBLISHABLE_KEY'],
+      user: null
+    };
+    const html = renderToStaticMarkup(
+      <CompoundInterestCalculator
+        auth={auth}
+        calculator={calculator!}
+        onNavigate={() => undefined}
+        onSaveResult={async () => ({ destinationRoute: '/goals', message: 'Saved', savedResultId: 'saved-1' })}
+        savedResults={[]}
+      />
+    );
+    document.body.innerHTML = html;
+
+    const scopeNote = document.querySelector('.calculator-scope-note');
+    expect(scopeNote).not.toBeNull();
+    expect(scopeNote?.textContent).toContain('Project recurring growth');
+
+    // Duplicate trust-banner strip removed to reduce excessive framing (V10)
+    expect(document.querySelector('.compound-trust-strip')).toBeNull();
+  });
+
+  it('handles edge cases: zero-rate, fractional horizon, target already met, and large currency', () => {
+    // 1. Zero-rate: principal + deposits without growth
+    const zeroRate = calculateCompoundInterest({
+      ...defaultCompoundInterestInputs,
+      annualRatePercent: 0,
+      principal: 10_000,
+      recurringContribution: 500,
+      years: 5
+    });
+    expect(zeroRate.endingValue).toBe(10_000 + 500 * 60);
+    expect(zeroRate.netGrowth).toBe(0);
+
+    // 2. Fractional horizon: 2.5 years
+    const fractional = calculateCompoundInterest({
+      ...defaultCompoundInterestInputs,
+      years: 2.5
+    });
+    expect(fractional.validation.isValid).toBe(true);
+    expect(fractional.annualSchedule.length).toBe(3); // Years 1, 2, and partial 2.5
+
+    // 3. Target already met
+    const targetMet = calculateCompoundInterest({
+      ...defaultCompoundInterestInputs,
+      principal: 200_000,
+      targetAmount: 100_000
+    });
+    expect(targetMet.targetDifference).toBeGreaterThan(0);
+
+    // 4. Large currency formatting
+    const largeFormatted = formatCurrency(150_000_000, 'USD', 'en-US');
+    expect(largeFormatted).toContain('$150,000,000');
+  });
+
+  it('displays error message when saving fails', async () => {
+    const calculator = findSeoCalculator('/calculators/compound-interest');
+    const auth: AuthState = {
+      provider: 'clerk',
+      status: 'signed-in',
+      isConfigured: true,
+      isSignedIn: true,
+      getToken: async () => 'test-token',
+      user: { id: 'usr_test', displayName: 'Test User', email: 'test@example.com' }
+    };
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+
+    await act(async () => {
+      root.render(
+        <CompoundInterestCalculator
+          auth={auth}
+          calculator={calculator!}
+          onNavigate={() => undefined}
+          onSaveResult={async () => {
+            throw new Error('Database write rejected: rate limit exceeded');
+          }}
+          savedResults={[]}
+        />
+      );
+    });
+
+    const saveButton = Array.from(container.querySelectorAll('button')).find(
+      (btn) => btn.textContent?.includes('Save result')
+    );
+    expect(saveButton).toBeDefined();
+
+    await act(async () => {
+      saveButton?.click();
+    });
+
+    const message = container.querySelector('.calculator-save-message');
+    expect(message?.textContent).toContain('Database write rejected: rate limit exceeded');
+
+    await act(async () => {
+      root.unmount();
+    });
+    container.remove();
   });
 });

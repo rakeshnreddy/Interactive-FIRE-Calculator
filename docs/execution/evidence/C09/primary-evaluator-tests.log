@@ -1,0 +1,115 @@
+TAP version 13
+# Subtest: Baseline: evaluateReport accepts a completely compliant report and cleanup
+ok 1 - Baseline: evaluateReport accepts a completely compliant report and cleanup
+  ---
+  duration_ms: 4.799625
+  ...
+# Subtest: Negative Test 1: false b10 observation fails closed
+ok 2 - Negative Test 1: false b10 observation fails closed
+  ---
+  duration_ms: 0.106208
+  ...
+# Subtest: Negative Test 2: false b11 observation fails closed
+ok 3 - Negative Test 2: false b11 observation fails closed
+  ---
+  duration_ms: 0.162041
+  ...
+# Subtest: Negative Test 3: false b28 observation fails closed
+ok 4 - Negative Test 3: false b28 observation fails closed
+  ---
+  duration_ms: 0.066125
+  ...
+# Subtest: Negative Test 4: nonzero plan_reviews table in cleanup fails closed
+ok 5 - Negative Test 4: nonzero plan_reviews table in cleanup fails closed
+  ---
+  duration_ms: 0.08975
+  ...
+# Subtest: Negative Test 5: missing tombstone fails closed
+ok 6 - Negative Test 5: missing tombstone fails closed
+  ---
+  duration_ms: 0.056833
+  ...
+# Subtest: Negative Test 6: Clerk deletion withheld/failed fails closed
+ok 7 - Negative Test 6: Clerk deletion withheld/failed fails closed
+  ---
+  duration_ms: 0.061042
+  ...
+# Subtest: Negative Test 7: wrong candidate_sha fails closed
+ok 8 - Negative Test 7: wrong candidate_sha fails closed
+  ---
+  duration_ms: 0.129667
+  ...
+# Subtest: Negative Test 7b: unverified d1_migration_0008 fails closed
+ok 9 - Negative Test 7b: unverified d1_migration_0008 fails closed
+  ---
+  duration_ms: 0.070416
+  ...
+# Subtest: Contrast Utilities: WCAG 2.1 calculation logic
+ok 10 - Contrast Utilities: WCAG 2.1 calculation logic
+  ---
+  duration_ms: 0.475917
+  ...
+# Subtest: Collector Negative 8: missing modal marks cancel and confirm false, failing closed
+ok 11 - Collector Negative 8: missing modal marks cancel and confirm false, failing closed
+  ---
+  duration_ms: 0.083583
+  ...
+# Subtest: Collector Negative 9: draft lost on cancel fails closed
+ok 12 - Collector Negative 9: draft lost on cancel fails closed
+  ---
+  duration_ms: 0.05525
+  ...
+# Subtest: Collector Negative 10: unchanged destination after confirm fails closed
+ok 13 - Collector Negative 10: unchanged destination after confirm fails closed
+  ---
+  duration_ms: 0.043375
+  ...
+# Subtest: Collector Negative 11: unexecuted revise action fails closed
+ok 14 - Collector Negative 11: unexecuted revise action fails closed
+  ---
+  duration_ms: 0.102041
+  ...
+# Subtest: Collector Negative 12: stale warning absent when over 30 days fails closed
+ok 15 - Collector Negative 12: stale warning absent when over 30 days fails closed
+  ---
+  duration_ms: 0.046084
+  ...
+# Subtest: Collector Negative 13: keyboard action not reaching target fails closed
+ok 16 - Collector Negative 13: keyboard action not reaching target fails closed
+  ---
+  duration_ms: 0.046083
+  ...
+# Subtest: Collector Negative 14: 3.1:1 small text contrast fails 4.5 requirement
+ok 17 - Collector Negative 14: 3.1:1 small text contrast fails 4.5 requirement
+  ---
+  duration_ms: 0.135708
+  ...
+# Subtest: Collector Negative 15: transparent or unsupported colors return NaN and fail closed
+ok 18 - Collector Negative 15: transparent or unsupported colors return NaN and fail closed
+  ---
+  duration_ms: 0.079917
+  ...
+# Subtest: Collector Negative 16: thrown step records failure and fails evaluation
+ok 19 - Collector Negative 16: thrown step records failure and fails evaluation
+  ---
+  duration_ms: 0.192834
+  ...
+# Subtest: Collector Negative 17: report-write failure invalidates success and preserves error
+ok 20 - Collector Negative 17: report-write failure invalidates success and preserves error
+  ---
+  duration_ms: 0.391042
+  ...
+# Subtest: Collector Negative 18: cleanup gate withholds Clerk deletion when app delete fails
+ok 21 - Collector Negative 18: cleanup gate withholds Clerk deletion when app delete fails
+  ---
+  duration_ms: 0.261458
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 133.860333

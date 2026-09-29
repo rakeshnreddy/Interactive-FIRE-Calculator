@@ -1,0 +1,110 @@
+{
+  "inspected_at": "2026-09-11T02:46:13.409Z",
+  "databases": {
+    "finpath-preview": {
+      "name": "finpath-preview",
+      "uuid": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+      "num_tables": 16,
+      "database_size_bytes": 241664,
+      "tables": [
+        "_cf_KV",
+        "d1_migrations",
+        "sqlite_sequence",
+        "users",
+        "user_profiles",
+        "financial_accounts",
+        "account_balances",
+        "transactions",
+        "goals",
+        "plans",
+        "plan_versions",
+        "fire_plan_inputs",
+        "fire_plan_results",
+        "assumptions",
+        "audit_log",
+        "balance_imports",
+        "transaction_imports",
+        "saved_calculator_results"
+      ],
+      "applied_migrations": [
+        {
+          "id": 1,
+          "name": "0001_initial_financial_platform_schema.sql",
+          "applied_at": "2026-06-11 15:37:16"
+        },
+        {
+          "id": 2,
+          "name": "0002_balance_import_history.sql",
+          "applied_at": "2026-06-22 18:37:06"
+        },
+        {
+          "id": 3,
+          "name": "0003_transaction_import_history.sql",
+          "applied_at": "2026-07-05 20:06:03"
+        },
+        {
+          "id": 4,
+          "name": "0004_saved_calculator_results.sql",
+          "applied_at": "2026-07-10 17:04:22"
+        }
+      ],
+      "migration_status": "CURRENT (all 4 repository migrations applied)"
+    },
+    "finpath-production": {
+      "name": "finpath-production",
+      "uuid": "a5860350-0a50-4ebe-9f5f-1d9916a908e6",
+      "num_tables": 16,
+      "database_size_bytes": 241664,
+      "tables": [
+        "_cf_KV",
+        "d1_migrations",
+        "sqlite_sequence",
+        "users",
+        "user_profiles",
+        "financial_accounts",
+        "account_balances",
+        "transactions",
+        "goals",
+        "plans",
+        "plan_versions",
+        "fire_plan_inputs",
+        "fire_plan_results",
+        "assumptions",
+        "audit_log",
+        "balance_imports",
+        "transaction_imports",
+        "saved_calculator_results"
+      ],
+      "applied_migrations": [
+        {
+          "id": 1,
+          "name": "0001_initial_financial_platform_schema.sql",
+          "applied_at": "2026-06-11 15:37:19"
+        },
+        {
+          "id": 2,
+          "name": "0002_balance_import_history.sql",
+          "applied_at": "2026-06-22 18:37:09"
+        },
+        {
+          "id": 3,
+          "name": "0003_transaction_import_history.sql",
+          "applied_at": "2026-07-05 20:05:46"
+        },
+        {
+          "id": 4,
+          "name": "0004_saved_calculator_results.sql",
+          "applied_at": "2026-07-10 17:04:29"
+        }
+      ],
+      "migration_status": "CURRENT (all 4 repository migrations applied)"
+    }
+  },
+  "wrangler_toml_configuration": {
+    "binding": "DB",
+    "database_name": "finpath-production",
+    "database_id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6",
+    "preview_database_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "note": "wrangler.toml defines preview_database_id for local/dev, but remote Cloudflare Pages project deployment configs control hosted preview binding"
+  }
+}

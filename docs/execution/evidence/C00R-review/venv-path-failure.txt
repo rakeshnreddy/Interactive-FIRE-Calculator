@@ -1,0 +1,22 @@
+✔ fails before running any stage when python3 is missing (14.429292ms)
+✔ fails before running any stage when node is missing (13.813667ms)
+✔ fails before running any stage when npm is missing (14.124458ms)
+✔ runs every verification stage in order (603.977583ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (151.216541ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (351.301916ms)
+✔ stops and preserves failure status from python3 -m pytest -q (289.863916ms)
+✔ stops and preserves failure status from npm run typecheck (519.325ms)
+✔ stops and preserves failure status from npm test (529.716875ms)
+✔ stops and preserves failure status from npm run build (522.791042ms)
+✔ installs missing dependencies from the lockfile (553.360292ms)
+✔ does not run frontend verification after a failed install (502.446875ms)
+✔ uses the repository virtualenv even without system Python (571.033417ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4696.564708
+/opt/homebrew/opt/python@3.13/bin/python3.13: No module named pytest

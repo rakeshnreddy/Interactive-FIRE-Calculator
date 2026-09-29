@@ -1,0 +1,57 @@
+{
+  "candidate": "a95053b19108634656aef491e46b9be9fe3ea57d",
+  "theme_pairs": [
+    {
+      "light": "accounts-1280-light.png",
+      "dark": "accounts-1280-dark.png",
+      "identical": true
+    },
+    {
+      "light": "accounts-320-light.png",
+      "dark": "accounts-320-dark.png",
+      "identical": true
+    },
+    {
+      "light": "accounts-390-light.png",
+      "dark": "accounts-390-dark.png",
+      "identical": true
+    },
+    {
+      "light": "accounts-768-light.png",
+      "dark": "accounts-768-dark.png",
+      "identical": true
+    },
+    {
+      "light": "dashboard-1280-light.png",
+      "dark": "dashboard-1280-dark.png",
+      "identical": true
+    },
+    {
+      "light": "dashboard-390-light.png",
+      "dark": "dashboard-390-dark.png",
+      "identical": true
+    },
+    {
+      "light": "transactions-1280-light.png",
+      "dark": "transactions-1280-dark.png",
+      "identical": true
+    },
+    {
+      "light": "transactions-320-light.png",
+      "dark": "transactions-320-dark.png",
+      "identical": true
+    },
+    {
+      "light": "transactions-390-light.png",
+      "dark": "transactions-390-dark.png",
+      "identical": true
+    },
+    {
+      "light": "transactions-768-light.png",
+      "dark": "transactions-768-dark.png",
+      "identical": true
+    }
+  ],
+  "reported_status": "SUCCESS",
+  "dashboard_renders_accounts": false
+}

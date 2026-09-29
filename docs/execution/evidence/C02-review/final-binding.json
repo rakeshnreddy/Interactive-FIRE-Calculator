@@ -1,0 +1,26 @@
+{
+  "id": "51c5e746-1224-489c-b96f-1fee865ac654",
+  "url": "https://51c5e746.interactive-fire-calculator.pages.dev",
+  "environment": "preview",
+  "trigger": {
+    "type": "ad_hoc",
+    "metadata": {
+      "branch": "codex/finpath-quality-execution",
+      "commit_hash": "ef2cded6441191a26537adf8ddf1a3e1909cf73b",
+      "commit_message": "docs: preserve C02 browser evidence and prepare C03 instructions",
+      "commit_dirty": false
+    }
+  },
+  "stage": {
+    "name": "deploy",
+    "started_on": null,
+    "ended_on": "2026-09-11T12:55:59.850671Z",
+    "status": "success"
+  },
+  "uses_functions": true,
+  "d1": {
+    "DB": {
+      "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+    }
+  }
+}

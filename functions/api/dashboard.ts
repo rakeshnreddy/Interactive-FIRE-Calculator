@@ -4,7 +4,7 @@ import { listAccounts, summarizeAccounts } from '../_lib/accounts';
 import { listSavedCalculatorResults } from '../_lib/calculatorResults';
 import { listGoals, summarizeGoals } from '../_lib/goals';
 import { json } from '../_lib/http';
-import { requireDatabase } from '../_lib/persistence';
+import { handleApiError, requireDatabase } from '../_lib/persistence';
 import { requireClerkAuth } from '../_lib/session';
 import type { DatabaseEnv } from '../_lib/persistence';
 import type { ClerkEnv } from '../_lib/session';
@@ -39,7 +39,7 @@ export const onRequestGet: PagesFunction<DashboardEnv> = async ({ request, env }
         goalSummary: summarizeGoals(goals)
       }
     });
-  } catch {
-    return json({ error: 'Unable to load dashboard.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load dashboard.');
   }
 };

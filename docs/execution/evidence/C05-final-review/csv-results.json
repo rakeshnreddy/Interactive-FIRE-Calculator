@@ -1,0 +1,16 @@
+[
+  {
+    "mode": "FIRE number",
+    "staleCsvIdentical": true,
+    "recalculatedCsvChanged": true,
+    "timingLabelsMatch": true,
+    "rows": 30
+  },
+  {
+    "mode": "Withdrawal",
+    "staleCsvIdentical": true,
+    "recalculatedCsvChanged": true,
+    "timingLabelsMatch": true,
+    "rows": 30
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "panel": "accounts",
+    "mode": "light",
+    "reducedMotion": true,
+    "reducedTransparency": true,
+    "color": "rgb(82, 104, 115)",
+    "surface": "rgb(251, 253, 255)",
+    "backdrop": "none",
+    "focus": "INPUT",
+    "outline": "rgba(127, 132, 255, 0.6) solid 3px",
+    "overflow": false
+  },
+  {
+    "panel": "dashboard",
+    "mode": "light",
+    "reducedMotion": true,
+    "reducedTransparency": true,
+    "color": "rgb(82, 104, 115)",
+    "surface": "rgb(251, 253, 255)",
+    "backdrop": "none",
+    "focus": "BUTTON",
+    "outline": "rgb(36, 85, 166) solid 3px",
+    "overflow": false
+  },
+  {
+    "panel": "accounts",
+    "mode": "dark",
+    "reducedMotion": true,
+    "reducedTransparency": true,
+    "color": "rgb(164, 187, 196)",
+    "surface": "rgb(16, 35, 44)",
+    "backdrop": "none",
+    "focus": "INPUT",
+    "outline": "rgba(127, 132, 255, 0.6) solid 3px",
+    "overflow": false
+  },
+  {
+    "panel": "dashboard",
+    "mode": "dark",
+    "reducedMotion": true,
+    "reducedTransparency": true,
+    "color": "rgb(164, 187, 196)",
+    "surface": "rgb(16, 35, 44)",
+    "backdrop": "none",
+    "focus": "BUTTON",
+    "outline": "rgb(138, 186, 255) solid 3px",
+    "overflow": false
+  }
+]

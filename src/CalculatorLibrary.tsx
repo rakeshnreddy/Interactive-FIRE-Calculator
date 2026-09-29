@@ -1,4 +1,4 @@
-import { SignUpButton } from '@clerk/react';
+import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
   Banknote,
@@ -60,15 +60,63 @@ import {
 import {
   calculateSeoCalculator,
   calculatorCurrency,
+  calculatorVariants,
   calculatorPath,
   findSeoCalculator,
   seoCalculators,
+  type CalculatorInput,
   type CalculatorMetric,
   type CalculatorResult,
   type SeoCalculator
 } from './lib/seoCalculators';
+import { resolveMoneyLocale } from './lib/money';
 
-const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment']);
+const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment', 'annualTaxes', 'annualInsurance', 'monthlyHoa']);
+
+type RegionFilter = 'all' | 'US' | 'India';
+
+const regionFilterOptions: Array<{ id: RegionFilter; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'US', label: 'United States' },
+  { id: 'India', label: 'India' }
+];
+
+function matchesRegion(calculator: SeoCalculator, region: RegionFilter): boolean {
+  return region === 'all' || calculator.region === 'Global' || calculator.region === region;
+}
+
+function regionLabel(calculator: SeoCalculator): string {
+  return calculator.region === 'Global' ? 'US & India' : calculator.region === 'US' ? 'United States' : 'India';
+}
+
+function RegionBadge({ calculator }: { calculator: SeoCalculator }) {
+  return <span className={`calculator-region-badge region-${calculator.region.toLowerCase()}`}>{regionLabel(calculator)}</span>;
+}
+
+// A short name for a variant chip: "Car Loan EMI Calculator" -> "Car loan".
+function variantLabel(calculator: SeoCalculator): string {
+  const short = calculator.title.replace(/ Calculator.*$/i, '').replace(/ EMI$/i, '').replace(/^Mortgage /i, '').trim();
+  return short.length > 1 ? short.charAt(0) + short.slice(1).replace(/\b([A-Z])(?=[a-z])/g, (m) => m.toLowerCase()) : short;
+}
+
+function VariantChips({ calculator, onNavigate }: { calculator: SeoCalculator; onNavigate: (route: string) => void }) {
+  const siblings = calculatorVariants(calculator).filter((other) => other.slug !== calculator.slug);
+  if (siblings.length === 0) return null;
+  return (
+    <nav className="calculator-variants" aria-label="Same calculation with other presets">
+      <span>Same calculation, other presets:</span>
+      {siblings.map((sibling) => (
+        <a
+          key={sibling.slug}
+          href={calculatorPath(sibling.slug)}
+          onClick={(event) => navigateInternalLink(event, calculatorPath(sibling.slug), onNavigate)}
+        >
+          {variantLabel(sibling)}
+        </a>
+      ))}
+    </nav>
+  );
+}
 
 export type CalculatorSaveRequest = {
   calculator: SeoCalculator;
@@ -164,24 +212,94 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
   return <CalculatorHub onNavigate={onNavigate} />;
 }
 
+const libraryStartingPaths = [
+  {
+    question: 'Planning for retirement?',
+    title: 'Interactive FIRE Calculator',
+    description: 'Model required nest egg, target retirement age, and sustainable withdrawals.',
+    path: '/calculators/fire',
+    badge: 'Retirement'
+  },
+  {
+    question: 'Buying a home?',
+    title: 'Mortgage Payment Calculator',
+    description: 'Estimate monthly principal and interest, amortized interest, and total cost.',
+    path: '/calculators/mortgage',
+    badge: 'Home & Loans'
+  },
+  {
+    question: 'Growing your savings?',
+    title: 'Compound Interest Calculator',
+    description: 'Project regular contributions, compound growth schedules, and return scenarios.',
+    path: '/calculators/compound-interest',
+    badge: 'Savings & Growth'
+  },
+  {
+    question: 'Paying off debt?',
+    title: 'Debt Payoff Calculator',
+    description: 'Compare avalanche and snowball strategies to eliminate high-interest debt faster.',
+    path: '/calculators/debt-payoff',
+    badge: 'Debt Payoff'
+  }
+];
+
+const fireSearchKeywords = [
+  'fire',
+  'financial independence',
+  'retire early',
+  'retirement',
+  'retirement timeline',
+  'nest egg',
+  'sustainable withdrawal',
+  'swr',
+  'safe withdrawal rate',
+  '4% rule',
+  'pension',
+  'portfolio target'
+];
+
 function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) {
   const [query, setQuery] = useState(() => (
     typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('q') ?? ''
   ));
+  const [region, setRegion] = useState<RegionFilter>(() => {
+    const value = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('region');
+    return value === 'US' || value === 'India' ? value : 'all';
+  });
   const normalizedQuery = query.trim().toLowerCase();
+
+  useEffect(() => {
+    const id = typeof window === 'undefined' ? '' : window.location.hash.slice(1);
+    if (id) document.getElementById(id)?.scrollIntoView({ block: 'start' });
+  }, []);
+
+  const fireMatches = useMemo(() => {
+    if (!normalizedQuery) return false;
+    return [
+      'Interactive FIRE Calculator',
+      'Model retirement timelines, required nest egg, and sustainable withdrawal rates.',
+      'Retirement Planning',
+      ...fireSearchKeywords
+    ].join(' ').toLowerCase().includes(normalizedQuery);
+  }, [normalizedQuery]);
+
   const visibleCalculators = useMemo(
     () =>
       seoCalculators.filter((calculator) =>
-        !normalizedQuery ||
-        [
-          calculator.title,
-          calculator.description,
-          calculator.category,
-          ...calculator.keywords
-        ].join(' ').toLowerCase().includes(normalizedQuery)
+        matchesRegion(calculator, region) && (
+          !normalizedQuery ||
+          [
+            calculator.title,
+            calculator.description,
+            calculator.category,
+            ...calculator.keywords
+          ].join(' ').toLowerCase().includes(normalizedQuery)
+        )
       ),
-    [normalizedQuery]
+    [normalizedQuery, region]
   );
+
+  const totalMatches = visibleCalculators.length + (fireMatches ? 1 : 0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -189,8 +307,10 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
     const url = new URL(window.location.href);
     if (query.trim()) url.searchParams.set('q', query.trim());
     else url.searchParams.delete('q');
+    if (region !== 'all') url.searchParams.set('region', region);
+    else url.searchParams.delete('region');
     window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-  }, [query]);
+  }, [query, region]);
 
   return (
     <section className="calculator-library route-shell" aria-labelledby="calculators-title">
@@ -200,7 +320,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
         <p>Choose a planning toolkit or search for an exact calculator. Every estimate includes explanations, scenarios, visual context, and detailed schedules where they add value.</p>
         <div className="calculator-library-stats" aria-label="Calculator library summary">
           <span><strong>{calculatorToolkits.length}</strong> planning toolkits</span>
-          <span><strong>{seoCalculators.length}</strong> focused calculators</span>
+          <span><strong>{seoCalculators.length + 1}</strong> public calculators</span>
           <span><strong>0</strong> account required</span>
         </div>
       </div>
@@ -212,7 +332,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           autoComplete="off"
           name="calculator-search"
           type="search"
-          placeholder="Search mortgage, SIP, tax, debt payoff, retirement"
+          placeholder="Search mortgage, SIP, tax, debt payoff, retirement, FIRE"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -223,15 +343,30 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
         ) : null}
       </div>
 
+      <div className="calculator-region-filter" role="group" aria-label="Show calculators for">
+        <span>Show calculators for</span>
+        {regionFilterOptions.map((option) => (
+          <button
+            key={option.id}
+            type="button"
+            className={region === option.id ? 'active' : ''}
+            aria-pressed={region === option.id}
+            onClick={() => setRegion(option.id)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
       {normalizedQuery ? (
         <section className="calculator-search-results" aria-live="polite" aria-label="Calculator search results">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Search results</p>
-              <h2>{visibleCalculators.length} {visibleCalculators.length === 1 ? 'match' : 'matches'}</h2>
+              <h2>{totalMatches} {totalMatches === 1 ? 'match' : 'matches'}</h2>
             </div>
           </div>
-          {visibleCalculators.length === 0 ? (
+          {totalMatches === 0 ? (
             <div className="calculator-empty-state">
               <CircleHelp size={22} />
               <strong>No calculator matches that phrase.</strong>
@@ -239,6 +374,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
             </div>
           ) : (
             <div className="calculator-card-grid">
+              {fireMatches && <FireSearchCard onNavigate={onNavigate} />}
               {visibleCalculators.map((calculator) => (
                 <CalculatorSearchCard calculator={calculator} key={calculator.slug} onNavigate={onNavigate} />
               ))}
@@ -246,36 +382,97 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           )}
         </section>
       ) : (
-        <div className="calculator-toolkit-grid">
-          {calculatorToolkits.map((toolkit) => (
-            <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} toolkit={toolkit} />
-          ))}
-        </div>
+        <>
+          <section className="calculator-starting-paths" aria-labelledby="starting-paths-title">
+            <div className="starting-paths-header">
+              <p className="eyebrow">Starting paths</p>
+              <h2 id="starting-paths-title">Popular decisions to start with</h2>
+              <p>Explore high-impact planning questions before diving into specialized toolkits.</p>
+            </div>
+            <div className="starting-paths-grid">
+              {libraryStartingPaths.map((item) => (
+                <a
+                  key={item.path}
+                  href={item.path}
+                  className="starting-path-card"
+                  onClick={(event) => navigateInternalLink(event, item.path, onNavigate)}
+                >
+                  <div className="starting-path-head">
+                    <span className="starting-path-badge">{item.badge}</span>
+                    <ArrowRight size={16} />
+                  </div>
+                  <span className="starting-path-question">{item.question}</span>
+                  <strong className="starting-path-title">{item.title}</strong>
+                  <p className="starting-path-description">{item.description}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <div className="calculator-toolkit-grid">
+            {calculatorToolkits.map((toolkit) => (
+              <CalculatorToolkitPanel key={toolkit.id} onNavigate={onNavigate} region={region} toolkit={toolkit} />
+            ))}
+          </div>
+        </>
       )}
     </section>
   );
 }
 
+function FireSearchCard({ onNavigate }: { onNavigate: (route: string) => void }) {
+  return (
+    <a
+      className="calculator-card calculator-card-fire"
+      href="/calculators/fire"
+      onClick={(event) => navigateInternalLink(event, '/calculators/fire', onNavigate)}
+    >
+      <span className="calculator-card-meta">Retirement Planning</span>
+      <strong>Interactive FIRE Calculator</strong>
+      <small>Model required nest egg, target retirement age, sustainable withdrawal rates, and inflation-adjusted cash flows.</small>
+      <em>
+        Open calculator
+        <ArrowRight size={14} />
+      </em>
+    </a>
+  );
+}
+
 function CalculatorToolkitPanel({
   onNavigate,
+  region = 'all',
   toolkit
 }: {
   onNavigate: (route: string) => void;
+  region?: RegionFilter;
   toolkit: CalculatorToolkit;
 }) {
   const Icon = toolkitIcon(toolkit.icon);
-  const featured = featuredToolkitCalculators(toolkit);
-  const remaining = toolkit.calculators.filter((calculator) => !toolkit.featuredSlugs.includes(calculator.slug));
+  const inRegion = toolkit.calculators.filter((calculator) => matchesRegion(calculator, region));
+  if (inRegion.length === 0) return null;
+  const featured = featuredToolkitCalculators(toolkit).filter((calculator) => matchesRegion(calculator, region));
+  const remaining = inRegion.filter((calculator) => !toolkit.featuredSlugs.includes(calculator.slug));
+  // Calculators that share a formula and region are one row with preset chips, not separate rows.
+  const sameEngine = (a: SeoCalculator, b: SeoCalculator) => a.formula === b.formula && a.region === b.region;
+  const remainingGroups: Array<{ lead: SeoCalculator; presets: SeoCalculator[] }> = [];
+  for (const calculator of remaining) {
+    const featuredLead = featured.find((other) => sameEngine(other, calculator));
+    const group = remainingGroups.find((entry) => sameEngine(entry.lead, calculator));
+    if (group) group.presets.push(calculator);
+    else if (featuredLead) remainingGroups.push({ lead: featuredLead, presets: [calculator] });
+    else remainingGroups.push({ lead: calculator, presets: [] });
+  }
+  const listedCount = inRegion.length;
 
   return (
-    <article className={`calculator-toolkit toolkit-${toolkit.id}`}>
+    <article className={`calculator-toolkit toolkit-${toolkit.id}`} id={`toolkit-${toolkit.id}`}>
       <header>
         <span className="calculator-toolkit-icon"><Icon size={20} /></span>
         <div>
           <span>{toolkit.prompt}</span>
           <h2>{toolkit.title}</h2>
         </div>
-        <strong>{toolkit.calculators.length}</strong>
+        <span className="calculator-toolkit-count">{listedCount}</span>
       </header>
       <p>{toolkit.description}</p>
       <nav className="calculator-toolkit-featured" aria-label={`${toolkit.title} starting points`}>
@@ -285,7 +482,7 @@ function CalculatorToolkitPanel({
             key={calculator.slug}
             onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
           >
-            <span>{index === 0 ? 'Start here' : 'Also useful'}</span>
+            {index === 0 ? <span className="calculator-featured-tag">Start here</span> : null}
             <strong>{calculator.title}</strong>
             <ArrowRight size={15} />
           </a>
@@ -294,18 +491,37 @@ function CalculatorToolkitPanel({
       {remaining.length > 0 ? (
         <details className="calculator-toolkit-more">
           <summary>
-            View all {toolkit.calculators.length} calculators
+            View all {listedCount} calculators
             <ChevronDown size={16} />
           </summary>
           <div>
-            {remaining.map((calculator) => (
-              <a
-                href={calculatorPath(calculator.slug)}
-                key={calculator.slug}
-                onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
-              >
-                {calculator.title}
-              </a>
+            {remainingGroups.map((group) => (
+              <div className="calculator-toolkit-row" key={group.lead.slug}>
+                {featured.includes(group.lead) ? (
+                  <span className="calculator-toolkit-row-lead">{group.lead.title} presets</span>
+                ) : (
+                  <a
+                    href={calculatorPath(group.lead.slug)}
+                    onClick={(event) => navigateInternalLink(event, calculatorPath(group.lead.slug), onNavigate)}
+                  >
+                    {group.lead.title}
+                    <RegionBadge calculator={group.lead} />
+                  </a>
+                )}
+                {group.presets.length > 0 ? (
+                  <span className="calculator-toolkit-presets">
+                    {group.presets.map((preset) => (
+                      <a
+                        key={preset.slug}
+                        href={calculatorPath(preset.slug)}
+                        onClick={(event) => navigateInternalLink(event, calculatorPath(preset.slug), onNavigate)}
+                      >
+                        {variantLabel(preset)}
+                      </a>
+                    ))}
+                  </span>
+                ) : null}
+              </div>
             ))}
           </div>
         </details>
@@ -329,7 +545,7 @@ function CalculatorSearchCard({
       href={calculatorPath(calculator.slug)}
       onClick={(event) => navigateInternalLink(event, calculatorPath(calculator.slug), onNavigate)}
     >
-      <span className="calculator-card-meta">{toolkit.title}</span>
+      <span className="calculator-card-meta">{toolkit.title} · {regionLabel(calculator)}</span>
       <strong>{calculator.title}</strong>
       <small>{calculator.description}</small>
       <em>
@@ -432,47 +648,54 @@ function CalculatorDetail({
     });
   }, [auth.status, calculator.slug, result, selectedScenarioId, values]);
 
-  const setValue = (key: string, value: string) => {
+  const [openMetricHelp, setOpenMetricHelp] = useState<Record<string, boolean>>({});
+
+  // The field shows the same value the calculation uses: out-of-range entries are clamped to the input's bounds.
+  const setValue = (input: CalculatorInput, value: string) => {
     const parsed = Number(value);
+    const clamped = Number.isFinite(parsed) ? Math.min(input.max ?? Number.POSITIVE_INFINITY, Math.max(input.min ?? 0, parsed)) : 0;
     setLastSavedRoute(null);
     setSaveMessage('');
     setValues((current) => ({
       ...current,
-      [key]: Number.isFinite(parsed) ? parsed : 0
+      [input.key]: clamped
     }));
   };
 
   const standardInputs = calculator.inputs.filter((input) => !optionalCalculatorInputKeys.has(input.key));
   const optionalInputs = calculator.inputs.filter((input) => optionalCalculatorInputKeys.has(input.key));
-  const renderInput = (input: SeoCalculator['inputs'][number]) => (
-    <label className="field" key={input.key}>
-      <span className="calculator-field-label">
-        <span>{input.label}</span>
-        <span
-          className="calculator-help-dot"
-          title={input.helper}
-          aria-label={`${input.label}: ${input.helper}`}
-          tabIndex={0}
-        >
-          <CircleHelp size={14} />
+  const renderInput = (input: SeoCalculator['inputs'][number]) => {
+    const inputId = `input-${calculator.slug}-${input.key}`;
+    const helperId = input.helper ? `helper-${calculator.slug}-${input.key}` : undefined;
+    return (
+      <label className="field" key={input.key} htmlFor={inputId}>
+        <span className="calculator-field-label">
+          <span>{input.label}</span>
         </span>
-      </span>
-      <div className="calculator-input-control">
-        {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
-        <input
-          type="number"
-          min={input.min}
-          max={input.max}
-          step={input.type === 'percent' ? '0.01' : '1'}
-          value={values[input.key] ?? 0}
-          onChange={(event) => setValue(input.key, event.target.value)}
-        />
-        {input.type === 'percent' ? <small>%</small> : null}
-        {input.suffix ? <small>{input.suffix}</small> : null}
-      </div>
-      {input.helper ? <small>{input.helper}</small> : null}
-    </label>
-  );
+        <div className="calculator-input-control">
+          {input.type === 'currency' ? <small>{calculatorCurrency(calculator)}</small> : null}
+          <input
+            id={inputId}
+            name={input.key}
+            type="number"
+            min={input.min}
+            max={input.max}
+            step={input.type === 'percent' ? '0.01' : '1'}
+            value={values[input.key] ?? 0}
+            onChange={(event) => setValue(input, event.target.value)}
+            aria-describedby={helperId}
+          />
+          {input.type === 'percent' ? <small>%</small> : null}
+          {input.suffix ? <small>{input.suffix}</small> : null}
+        </div>
+        {input.helper ? (
+          <small className="calculator-field-helper" id={helperId}>
+            {input.helper}
+          </small>
+        ) : null}
+      </label>
+    );
+  };
 
   const persistSignedOutDraft = () => {
     writeCalculatorDraft({
@@ -541,9 +764,10 @@ function CalculatorDetail({
   return (
     <section className="calculator-library calculator-detail route-shell" aria-labelledby="calculator-detail-title">
       <div className="route-heading calculator-library-heading">
-        <p className="eyebrow">{toolkit.title}</p>
+        <p className="eyebrow">{toolkit.title} <RegionBadge calculator={calculator} /></p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
-        <p>{calculator.description}</p>
+        <p className="calculator-scope-note">{calculator.description}</p>
+        <VariantChips calculator={calculator} onNavigate={onNavigate} />
         <a
           className="calculator-toolkit-backlink"
           href="/calculators"
@@ -553,25 +777,6 @@ function CalculatorDetail({
           Explore the {toolkit.title} toolkit
         </a>
       </div>
-
-      <section className="calculator-context-panel" aria-label={`${calculator.title} overview`}>
-        <article>
-          <p className="eyebrow">What it answers</p>
-          <p>{calculator.explanation}</p>
-        </article>
-        <article>
-          <p className="eyebrow">Why it matters</p>
-          <p>{qualitySpec.decisionUsefulness}</p>
-        </article>
-        <article>
-          <p className="eyebrow">How it fits</p>
-          <p>{toolkit.description}</p>
-        </article>
-        <article>
-          <p className="eyebrow">How to read it</p>
-          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
-        </article>
-      </section>
 
       <div className="calculator-detail-grid">
         <section className="calculator-input-panel" aria-label={`${calculator.title} inputs`}>
@@ -588,8 +793,14 @@ function CalculatorDetail({
             <details className="calculator-options-shell">
               <summary>
                 <span>
-                  <strong>{optionalInputs.some((input) => input.key.startsWith('extra')) ? 'Additional payments' : 'Additional contributions'}</strong>
-                  <small>Optional. Defaults to zero.</small>
+                  <strong>
+                    {optionalInputs.some((input) => /Taxes|Insurance|Hoa/.test(input.key))
+                      ? 'Additional payments and housing costs'
+                      : optionalInputs.some((input) => input.key.startsWith('extra'))
+                        ? 'Additional payments'
+                        : 'Additional contributions'}
+                  </strong>
+                  <small>Optional. Leave at zero to skip.</small>
                 </span>
                 <ChevronDown size={17} />
               </summary>
@@ -615,22 +826,42 @@ function CalculatorDetail({
             </div>
           </div>
           <div className="calculator-result-metrics">
-            {result.metrics.map((metric) => (
-              <article className={`calculator-result-metric metric-${metric.tone ?? 'neutral'}`} key={metric.label}>
-                <span className="calculator-metric-label">
-                  <span>{metric.label}</span>
-                  <span
-                    className="calculator-help-dot"
-                    title={metricDescription(metric)}
-                    aria-label={`${metric.label}: ${metricDescription(metric)}`}
-                    tabIndex={0}
-                  >
-                    <CircleHelp size={14} />
+            {result.metrics.map((metric, index) => {
+              const isPrimary = index === 0;
+              const helpId = `metric-help-${calculator.slug}-${index}`;
+              const isHelpOpen = Boolean(openMetricHelp[metric.label]);
+              return (
+                <article
+                  className={`calculator-result-metric metric-${metric.tone ?? 'neutral'}${isPrimary ? ' calculator-result-metric-primary' : ''}`}
+                  key={metric.label}
+                >
+                  <span className="calculator-metric-label">
+                    <span>{metric.label}</span>
+                    <button
+                      type="button"
+                      className="calculator-help-btn"
+                      aria-expanded={isHelpOpen}
+                      aria-controls={helpId}
+                      aria-label={`About ${metric.label}`}
+                      onClick={() =>
+                        setOpenMetricHelp((prev) => ({
+                          ...prev,
+                          [metric.label]: !prev[metric.label]
+                        }))
+                      }
+                    >
+                      <CircleHelp size={14} />
+                    </button>
                   </span>
-                </span>
-                <strong>{formatMetric(metric, calculator)}</strong>
-              </article>
-            ))}
+                  <strong>{formatMetric(metric, calculator)}</strong>
+                  {isHelpOpen ? (
+                    <p id={helpId} className="calculator-metric-help-text" role="region">
+                      {metricDescription(metric)}
+                    </p>
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
           <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} />
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} />
@@ -655,12 +886,12 @@ function CalculatorDetail({
                 <ArrowRight size={16} />
               </button>
             ) : (
-              <SignUpButton mode="modal">
+              <SignUpIntent mode="modal">
                 <button className="primary-button icon-text-button" type="button" onClick={persistSignedOutDraft}>
                   Create account to save
                   <ArrowRight size={16} />
                 </button>
-              </SignUpButton>
+              </SignUpIntent>
             )}
           </div>
           {saveMessage ? (
@@ -675,6 +906,25 @@ function CalculatorDetail({
           ) : null}
         </section>
       </div>
+
+      <section className="calculator-methodology-panel" aria-label={`${calculator.title} methodology and context`}>
+        <article>
+          <p className="eyebrow">What it answers</p>
+          <p>{calculator.explanation}</p>
+        </article>
+        <article>
+          <p className="eyebrow">Why it matters</p>
+          <p>{qualitySpec.decisionUsefulness}</p>
+        </article>
+        <article>
+          <p className="eyebrow">How it fits</p>
+          <p>{toolkit.description}</p>
+        </article>
+        <article>
+          <p className="eyebrow">How to read it</p>
+          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
+        </article>
+      </section>
 
       <CalculatorEngagementPanel
         auth={auth}
@@ -892,6 +1142,8 @@ function CalculatorScenarioPanel({
   scenarios: CalculatorScenario[];
   selectedScenarioId: CalculatorScenarioId;
 }) {
+  const selected = scenarios.find((scenario) => scenario.id === selectedScenarioId);
+  const base = scenarios.find((scenario) => scenario.id === 'base');
   return (
     <section className="calculator-scenario-panel" aria-label={`${calculator.title} scenarios`}>
       <div>
@@ -902,7 +1154,7 @@ function CalculatorScenarioPanel({
         {scenarios.map((scenario) => (
           <button
             aria-selected={scenario.id === selectedScenarioId}
-            className={scenario.id === selectedScenarioId ? 'is-active' : ''}
+            className={`calculator-scenario-tab${scenario.id === selectedScenarioId ? ' is-active' : ''}`}
             key={scenario.id}
             role="tab"
             type="button"
@@ -913,9 +1165,39 @@ function CalculatorScenarioPanel({
           </button>
         ))}
       </div>
-      <p>{scenarios.find((scenario) => scenario.id === selectedScenarioId)?.description}</p>
+      <p>{selected?.description}</p>
+      {selected && selected.id !== 'base' && (
+        <ul className="calculator-scenario-changes" aria-label={`Inputs changed in the ${selected.label} scenario`}>
+          {scenarioChanges(calculator, base, selected).map((change) => (
+            <li key={change.key}>
+              <span>{change.label}</span>
+              <span>
+                {change.from} → <strong>{change.to}</strong>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
+}
+
+// Every input a scenario moves, with before and after values, so the label is never a mystery.
+function scenarioChanges(calculator: SeoCalculator, base: CalculatorScenario | undefined, scenario: CalculatorScenario) {
+  return calculator.inputs
+    .filter((input) => Math.abs((scenario.values[input.key] ?? 0) - (base?.values[input.key] ?? 0)) > 1e-9)
+    .map((input) => ({
+      from: formatInputValue(input, base?.values[input.key] ?? 0, calculator),
+      key: input.key,
+      label: input.label,
+      to: formatInputValue(input, scenario.values[input.key] ?? 0, calculator)
+    }));
+}
+
+function formatInputValue(input: CalculatorInput, value: number, calculator: SeoCalculator): string {
+  if (input.type === 'currency') return formatMetric({ label: input.label, value, valueType: 'currency' }, calculator);
+  if (input.type === 'percent') return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+  return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}${input.suffix ? ` ${input.suffix}` : ''}`;
 }
 
 function CalculatorEngagementPanel({
@@ -1075,21 +1357,53 @@ function CalculatorEngagementPanel({
   );
 }
 
-function CalculatorStudioVisual({
+export function CalculatorStudioVisual({
   calculator,
-  chart,
-  metrics
+  chart
 }: {
   calculator: SeoCalculator;
   chart: CalculatorStudioChart;
-  metrics: CalculatorMetric[];
+  metrics?: CalculatorMetric[];
 }) {
-  const visibleMetrics = metrics.slice(0, 4);
-  const maxVisualValue = Math.max(1, ...visibleMetrics.map((metric) => visualMetricValue(metric)));
-  const maxChartValue = Math.max(
-    1,
-    ...chart.entries.flatMap((entry) => [Math.abs(entry.primary), Math.abs(entry.secondary ?? 0)])
-  );
+  const allValues = chart.entries.flatMap((entry) => [
+    entry.primary,
+    ...(entry.secondary !== undefined ? [entry.secondary] : [])
+  ]);
+
+  const minVal = Math.min(0, ...allValues);
+  const maxVal = Math.max(0, ...allValues);
+  const span = maxVal - minVal === 0 ? 1 : maxVal - minVal;
+  const hasNegative = minVal < 0;
+  const zeroBaselinePct = hasNegative ? (-minVal / span) * 100 : 0;
+
+  const computeBarStyle = (value: number) => {
+    if (value === 0) {
+      return { width: '0%', left: `${zeroBaselinePct}%` };
+    }
+
+    if (value > 0) {
+      if (hasNegative) {
+        const widthPct = Math.min(100 - zeroBaselinePct, (value / span) * 100);
+        return {
+          width: `${widthPct}%`,
+          left: `${zeroBaselinePct}%`
+        };
+      }
+      const widthPct = Math.min(100, (value / (maxVal || 1)) * 100);
+      return {
+        width: `${widthPct}%`,
+        left: '0%'
+      };
+    }
+
+    // value < 0
+    const widthPct = Math.min(zeroBaselinePct, (Math.abs(value) / span) * 100);
+    const leftPct = zeroBaselinePct - widthPct;
+    return {
+      width: `${widthPct}%`,
+      left: `${leftPct}%`
+    };
+  };
 
   return (
     <div className={`calculator-visual-panel visual-${chart.type}`} aria-label={`${calculator.title} visual summary`}>
@@ -1098,59 +1412,117 @@ function CalculatorStudioVisual({
         <strong>{chart.title}</strong>
         <small>{chart.description}</small>
       </div>
+
       <div className="calculator-studio-chart" aria-label={chart.summary}>
         {chart.entries.map((entry, entryIndex) => {
-          const primaryWidth = Math.max(8, Math.min(100, Math.abs(entry.primary) / maxChartValue * 100));
-          const secondaryWidth = entry.secondary === undefined
-            ? 0
-            : Math.max(8, Math.min(100, Math.abs(entry.secondary) / maxChartValue * 100));
+          const entryValueType = entry.valueType ?? chart.valueType;
+          const entryCurrency = entry.currency ?? chart.currency;
+          const primaryStyle = computeBarStyle(entry.primary);
+          const secondaryStyle = entry.secondary !== undefined ? computeBarStyle(entry.secondary) : null;
+          const isNegative = entry.primary < 0 || (entry.secondary !== undefined && entry.secondary < 0);
 
           return (
-            <div className="calculator-studio-chart-row" key={`${entry.label}-${entryIndex}`}>
-              <div>
-                <span>{entry.label}</span>
-                <strong>{formatChartValue(entry.primary, calculator)}</strong>
+            <div
+              className={`calculator-studio-chart-row${isNegative ? ' is-negative' : ''}`}
+              key={`${entry.label}-${entryIndex}`}
+            >
+              <div className="calculator-chart-row-header">
+                <span className="calculator-chart-row-label">{entry.label}</span>
+                <div className="calculator-chart-values-group">
+                  <span className="calculator-chart-val primary-val">
+                    {chart.legend.secondary ? <span className="sr-only">{chart.legend.primary}: </span> : null}
+                    <strong>{formatChartValue(entry.primary, calculator, entryValueType, entryCurrency)}</strong>
+                  </span>
+                  {entry.secondary !== undefined ? (
+                    <span className="calculator-chart-val secondary-val">
+                      <span className="sr-only">{chart.legend.secondary}: </span>
+                      <strong>{formatChartValue(entry.secondary, calculator, entryValueType, entryCurrency)}</strong>
+                    </span>
+                  ) : null}
+                </div>
               </div>
-              <span className="calculator-visual-track" aria-hidden="true">
-                <span
-                  className={`calculator-visual-fill metric-${entry.tone ?? 'neutral'}`}
-                  style={{ width: `${primaryWidth}%` }}
-                />
-              </span>
-              {entry.secondary !== undefined ? (
-                <span className="calculator-visual-track secondary-track" aria-hidden="true">
-                  <span className="calculator-visual-fill metric-neutral" style={{ width: `${secondaryWidth}%` }} />
-                </span>
-              ) : null}
+
+              <div className="calculator-chart-tracks">
+                <div className="calculator-visual-track" aria-hidden="true">
+                  {hasNegative ? (
+                    <span className="calculator-chart-baseline" style={{ left: `${zeroBaselinePct}%` }} />
+                  ) : null}
+                  {entry.primary === 0 ? (
+                    <span className="calculator-zero-marker" style={{ left: `${zeroBaselinePct}%` }} />
+                  ) : null}
+                  <span
+                    className={`calculator-visual-fill metric-${entry.tone ?? 'neutral'}${entry.primary < 0 ? ' is-negative' : ''}`}
+                    style={primaryStyle}
+                  />
+                </div>
+                {entry.secondary !== undefined && secondaryStyle ? (
+                  <div className="calculator-visual-track secondary-track" aria-hidden="true">
+                    {hasNegative ? (
+                      <span className="calculator-chart-baseline" style={{ left: `${zeroBaselinePct}%` }} />
+                    ) : null}
+                    {entry.secondary === 0 ? (
+                      <span className="calculator-zero-marker" style={{ left: `${zeroBaselinePct}%` }} />
+                    ) : null}
+                    <span
+                      className={`calculator-visual-fill metric-neutral${entry.secondary < 0 ? ' is-negative' : ''}`}
+                      style={secondaryStyle}
+                    />
+                  </div>
+                ) : null}
+              </div>
               {entry.note ? <small>{entry.note}</small> : null}
             </div>
           );
         })}
       </div>
-      <div className="calculator-chart-legend">
-        <span>{chart.legend.primary}</span>
-        {chart.legend.secondary ? <span>{chart.legend.secondary}</span> : null}
-      </div>
-      <div className="calculator-visual-bars">
-        {visibleMetrics.map((metric) => {
-          const width = Math.max(8, Math.min(100, (visualMetricValue(metric) / maxVisualValue) * 100));
 
-          return (
-            <div className="calculator-visual-row" key={metric.label}>
-              <div>
-                <span>{metric.label}</span>
-                <strong>{formatMetric(metric, calculator)}</strong>
-              </div>
-              <span className="calculator-visual-track" aria-hidden="true">
-                <span
-                  className={`calculator-visual-fill metric-${metric.tone ?? 'neutral'}`}
-                  style={{ width: `${width}%` }}
-                />
-              </span>
-            </div>
-          );
-        })}
+      <div className="calculator-chart-legend" role="list" aria-label="Chart series legend">
+        <span className="calculator-legend-item" role="listitem">
+          <span className="calculator-legend-swatch swatch-primary" aria-hidden="true" />
+          <span>{chart.legend.primary}</span>
+        </span>
+        {chart.legend.secondary ? (
+          <span className="calculator-legend-item" role="listitem">
+            <span className="calculator-legend-swatch swatch-secondary" aria-hidden="true" />
+            <span>{chart.legend.secondary}</span>
+          </span>
+        ) : null}
       </div>
+
+      <details className="calculator-chart-table-details">
+        <summary>
+          <span>View chart data as table</span>
+        </summary>
+        <div className="calculator-chart-table-wrap">
+          <table className="calculator-chart-table">
+            <caption className="sr-only">{chart.title} data table</caption>
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                <th scope="col">{chart.legend.primary}</th>
+                {chart.legend.secondary ? <th scope="col">{chart.legend.secondary}</th> : null}
+                {chart.entries.some((e) => e.note) ? <th scope="col">Note</th> : null}
+              </tr>
+            </thead>
+            <tbody>
+              {chart.entries.map((entry, idx) => {
+                const entryValueType = entry.valueType ?? chart.valueType;
+                const entryCurrency = entry.currency ?? chart.currency;
+                return (
+                  <tr key={`tbl-${entry.label}-${idx}`}>
+                    <th scope="row">{entry.label}</th>
+                    <td>{formatChartValue(entry.primary, calculator, entryValueType, entryCurrency)}</td>
+                    {chart.legend.secondary ? (
+                      <td>{entry.secondary !== undefined ? formatChartValue(entry.secondary, calculator, entryValueType, entryCurrency) : '—'}</td>
+                    ) : null}
+                    {chart.entries.some((e) => e.note) ? <td>{entry.note ?? ''}</td> : null}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   );
 }
@@ -1380,13 +1752,29 @@ function visualMetricValue(metric: CalculatorMetric): number {
   return Math.abs(metric.value);
 }
 
-function formatChartValue(value: number, calculator: SeoCalculator): string {
-  if (Math.abs(value) >= 1000) {
-    return new Intl.NumberFormat(undefined, {
-      currency: calculatorCurrency(calculator),
+export function formatChartValue(
+  value: number,
+  calculator: SeoCalculator,
+  valueType?: CalculatorMetric['valueType'],
+  currency?: string
+): string {
+  const effectiveType = valueType ?? (calculator.slug === 'cagr' ? 'percent' : 'currency');
+  const effectiveCurrency = currency ?? calculatorCurrency(calculator);
+
+  if (effectiveType === 'currency') {
+    return new Intl.NumberFormat(resolveMoneyLocale(effectiveCurrency), {
+      currency: effectiveCurrency,
       maximumFractionDigits: 0,
       style: 'currency'
     }).format(value);
+  }
+
+  if (effectiveType === 'percent') {
+    return `${(value * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+  }
+
+  if (effectiveType === 'years') {
+    return `${value.toLocaleString(undefined, { maximumFractionDigits: 1 })} years`;
   }
 
   return value.toLocaleString(undefined, { maximumFractionDigits: 1 });
@@ -1394,7 +1782,7 @@ function formatChartValue(value: number, calculator: SeoCalculator): string {
 
 function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): string {
   if (metric.valueType === 'currency') {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
       currency: calculatorCurrency(calculator),
       maximumFractionDigits: 0,
       style: 'currency'
@@ -1432,7 +1820,7 @@ function formatScheduleCell(
   }
 
   if (valueType === 'currency') {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
       currency: calculatorCurrency(calculator),
       maximumFractionDigits: 0,
       style: 'currency'

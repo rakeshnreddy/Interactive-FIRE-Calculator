@@ -1,0 +1,20 @@
+{
+  "index.html": {
+    "status": 200,
+    "remote": "f454579872c6339a715dad5b7934a727969ce1ad4b9fdb6a92d0a0b564fdd356",
+    "local": "f454579872c6339a715dad5b7934a727969ce1ad4b9fdb6a92d0a0b564fdd356",
+    "match": true
+  },
+  "assets/index-D43Xm0d1.js": {
+    "status": 200,
+    "remote": "fdc1178ce435465540d140ca7cfdc4b5b7e8d2e15b2cc20a34e83b5f3d2dfc23",
+    "local": "fdc1178ce435465540d140ca7cfdc4b5b7e8d2e15b2cc20a34e83b5f3d2dfc23",
+    "match": true
+  },
+  "assets/index-FOuMMIUu.css": {
+    "status": 200,
+    "remote": "6cbfe011971158e0a2fab00ae03acd2ecd7c6429c653a64a20048dfc33ff4658",
+    "local": "6cbfe011971158e0a2fab00ae03acd2ecd7c6429c653a64a20048dfc33ff4658",
+    "match": true
+  }
+}

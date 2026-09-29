@@ -193,6 +193,7 @@ export function BalanceImportPanel({ accounts, auth, onImportComplete }: Balance
             className="visually-hidden"
             type="file"
             accept=".csv,text/csv"
+            aria-label="Choose a balances CSV file to import"
             tabIndex={-1}
             onChange={(event) => {
               const file = event.target.files?.[0];
@@ -390,6 +391,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function formatImportCents(cents: number, currency: string): string {
   return new Intl.NumberFormat(undefined, {
     currency: /^[A-Z]{3}$/.test(currency) ? currency : 'USD',
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
     style: 'currency'
   }).format(cents / 100);

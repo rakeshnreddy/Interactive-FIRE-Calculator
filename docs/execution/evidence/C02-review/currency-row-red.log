@@ -1,0 +1,47 @@
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+ ❯ src/accountUiFixtures.test.tsx (8 tests | 2 failed) 41ms
+       × renders single-currency INR accounts with rupee symbol and no USD contamination 11ms
+       × shows Unavailable for aggregated metrics and renders per-currency breakdowns without false sums 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/accountUiFixtures.test.tsx > B03 Rendered Local UI Fixtures (R5 Verification) > 3. INR-only state > renders single-currency INR accounts with rupee symbol and no USD contamination
+AssertionError: expected '<section class="account-workspace" ar…' not to contain '$5,000,000'
+
+Expected: "$5,000,000"
+Received: "<section class="account-workspace" aria-labelledby="accounts-workspace-title"><div class="account-overview-strip"><article><span>Net worth</span><strong>₹4,000,000</strong></article><article><span>Assets</span><strong>₹5,000,000</strong></article><article><span>Liabilities</span><strong>₹1,000,000</strong></article></div><section class="account-panel" aria-labelledby="accounts-workspace-title"><div class="panel-heading"><div><p class="eyebrow">Manual tracker</p><h2 id="accounts-workspace-title">Accounts and balances</h2></div></div><form class="account-form-grid"><label class="field"><span class="field-label">Account name</span><input maxLength="120" type="text" value=""/></label><label class="field"><span class="field-label">Type</span><select><option value="cash">Cash</option><option value="checking">Checking</option><option value="savings">Savings</option><option value="investment" selected="">Investment</option><option value="retirement">Retirement</option><option value="real_estate">Real estate</option><option value="other_asset">Other asset</option><option value="credit">Credit card</option><option value="loan">Loan</option><option value="mortgage">Mortgage</option><option value="other_liability">Other liability</option></select></label><label class="field"><span class="field-label">Institution</span><input maxLength="120" type="text" value=""/></label><label class="field"><span class="field-label">Currency</span><input maxLength="3" type="text" value="INR"/></label><label class="field"><span class="field-label">Balance / debt</span><input inputMode="decimal" type="text" value=""/></label><label class="field"><span class="field-label">Balance date</span><input type="date" value=""/></label><button class="primary-button icon-text-button" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save" aria-hidden="true"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path><path d="M7 3v4a1 1 0 0 0 1 1h7"></path></svg>Add account</button></form></section><section class="account-panel"><p class="empty-inline">Loading CSV import...</p></section><section class="account-panel" aria-label="Saved accounts"><div class="account-card-list"><article class="account-card"><div class="account-card-main"><div><span class="account-category account-category-asset">asset</span><strong>Nifty 50 Index</strong><small>Investment - Vanguard</small></div><div class="account-balance"><span>2026-09-01</span><strong>$5,000,000</strong></div></div><form class="balance-form"><label class="field"><span class="field-label">New balance</span><input inputMode="decimal" type="text" value=""/></label><label class="field"><span class="field-label">Date</span><input type="date" value="2026-09-11"/></label><button class="secondary-button icon-text-button" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save" aria-hidden="true"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path><path d="M7 3v4a1 1 0 0 0 1 1h7"></path></svg>Record</button><button class="icon-button row-action" type="button" aria-label="Archive Nifty 50 Index"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2" aria-hidden="true"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></form></article><article class="account-card"><div class="account-card-main"><div><span class="account-category account-category-liability">liability</span><strong>Home Loan India</strong><small>Investment - Vanguard</small></div><div class="account-balance"><span>2026-09-01</span><strong>$1,000,000</strong></div></div><form class="balance-form"><label class="field"><span class="field-label">New balance</span><input inputMode="decimal" type="text" value=""/></label><label class="field"><span class="field-label">Date</span><input type="date" value="2026-09-11"/></label><button class="secondary-button icon-text-button" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save" aria-hidden="true"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path><path d="M7 3v4a1 1 0 0 0 1 1h7"></path></svg>Record</button><button class="icon-button row-action" type="button" aria-label="Archive Home Loan India"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2" aria-hidden="true"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></form></article></div></section></section>"
+
+ ❯ src/accountUiFixtures.test.tsx:207:32
+    205|       expect(overviewStrip).not.toContain('$');
+    206|       expect(overviewStrip).not.toContain('Unavailable');
+    207|       expect(accountsHtml).not.toContain('$5,000,000');
+       |                                ^
+    208|       expect(accountsHtml).not.toContain('$1,000,000');
+    209|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/accountUiFixtures.test.tsx > B03 Rendered Local UI Fixtures (R5 Verification) > 4. Mixed USD/INR state (No Cross-Currency Addition) > shows Unavailable for aggregated metrics and renders per-currency breakdowns without false sums
+AssertionError: expected 'dashboard-account-list"><article clas…' to contain '₹8,000,000'
+
+Expected: "₹8,000,000"
+Received: "dashboard-account-list"><article class="dashboard-account-row"><div><strong>US Savings</strong><small>Investment - 2026-09-01</small></div><span class="amount-positive">$50,000</span></article><article class="dashboard-account-row"><div><strong>India Mutual Fund</strong><small>Investment - 2026-09-01</small></div><span class="amount-positive">$8,000,000</span></article><article class="dashboard-account-row"><div><strong>US Credit Card</strong><small>Investment - 2026-09-01</small></div><span class="amount-negative">-$5,000</span></article></div></section></section>"
+
+ ❯ src/accountUiFixtures.test.tsx:281:24
+    279|       expect(dashHtml).not.toContain('₹8,045,000');
+    280|       const snapshot = dashHtml.slice(dashHtml.indexOf('dashboard-acco…
+    281|       expect(snapshot).toContain('₹8,000,000');
+       |                        ^
+    282|       expect(snapshot).not.toContain('$8,000,000');
+    283|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  05:43:55
+   Duration  1.41s (transform 282ms, setup 0ms, import 477ms, tests 41ms, environment 768ms)
+

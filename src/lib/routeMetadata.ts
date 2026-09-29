@@ -1,4 +1,5 @@
 import { calculatorCurrency, findSeoCalculator, seoCalculators } from './seoCalculators';
+import { landingFaq } from './landingContent';
 
 export const siteOrigin = 'https://interactive-fire-calculator.pages.dev';
 
@@ -153,9 +154,38 @@ function fireCalculatorJsonLd(url: string): Record<string, unknown> {
 function websiteJsonLd(): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'FinPath',
-    url: siteOrigin
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${siteOrigin}/#organization`,
+        name: 'FinPath',
+        url: siteOrigin,
+        description: 'Free financial calculators for the US and India: retirement, mortgages, loans, savings and tax, with every assumption visible.',
+        areaServed: ['US', 'IN']
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${siteOrigin}/#website`,
+        name: 'FinPath',
+        url: siteOrigin,
+        inLanguage: 'en',
+        publisher: { '@id': `${siteOrigin}/#organization` },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: { '@type': 'EntryPoint', urlTemplate: `${siteOrigin}/calculators?q={search_term_string}` },
+          'query-input': 'required name=search_term_string'
+        }
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${siteOrigin}/#faq`,
+        mainEntity: landingFaq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: { '@type': 'Answer', text: item.answer }
+        }))
+      }
+    ]
   };
 }
 

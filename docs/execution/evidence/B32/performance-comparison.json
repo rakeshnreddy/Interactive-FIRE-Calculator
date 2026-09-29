@@ -1,0 +1,106 @@
+{
+  "baseline": {
+    "target": "Baseline 1c870e2",
+    "runs": [
+      {
+        "run": 1,
+        "fcp": 84,
+        "dcl": 26,
+        "load": 26,
+        "encodedBytes": 0,
+        "fps": 61,
+        "totalDuration": 1012,
+        "droppedFrames": 0
+      },
+      {
+        "run": 2,
+        "fcp": 92,
+        "dcl": 24,
+        "load": 24,
+        "encodedBytes": 0,
+        "fps": 62,
+        "totalDuration": 1008,
+        "droppedFrames": 0
+      },
+      {
+        "run": 3,
+        "fcp": 84,
+        "dcl": 23,
+        "load": 23,
+        "encodedBytes": 0,
+        "fps": 61,
+        "totalDuration": 1006,
+        "droppedFrames": 0
+      }
+    ],
+    "median": {
+      "fcp": 84,
+      "dcl": 24,
+      "load": 24,
+      "encodedBytes": 0,
+      "fps": 61,
+      "totalDuration": 1008,
+      "droppedFrames": 0
+    }
+  },
+  "candidate": {
+    "target": "Candidate (B32 Rework)",
+    "runs": [
+      {
+        "run": 1,
+        "fcp": 96,
+        "dcl": 25,
+        "load": 25,
+        "encodedBytes": 0,
+        "fps": 61,
+        "totalDuration": 1006,
+        "droppedFrames": 0
+      },
+      {
+        "run": 2,
+        "fcp": 88,
+        "dcl": 30,
+        "load": 31,
+        "encodedBytes": 0,
+        "fps": 61,
+        "totalDuration": 1005,
+        "droppedFrames": 0
+      },
+      {
+        "run": 3,
+        "fcp": 104,
+        "dcl": 29,
+        "load": 30,
+        "encodedBytes": 0,
+        "fps": 61,
+        "totalDuration": 1007,
+        "droppedFrames": 0
+      }
+    ],
+    "median": {
+      "fcp": 96,
+      "dcl": 29,
+      "load": 30,
+      "encodedBytes": 0,
+      "fps": 61,
+      "totalDuration": 1006,
+      "droppedFrames": 0
+    }
+  },
+  "deltas": {
+    "fcpDeltaMs": 12,
+    "dclDeltaMs": 5,
+    "loadDeltaMs": 6,
+    "encodedBytesDelta": 0,
+    "fpsDelta": 0,
+    "scrollDurationDeltaMs": -2,
+    "droppedFramesDelta": 0
+  },
+  "verdict": {
+    "fcpRegressed": false,
+    "loadRegressed": false,
+    "fpsRegressed": false,
+    "acceptable": true
+  },
+  "notes": "Frame observations measure rAF interval distribution over a 1000ms scroll sequence; long intervals reflect scheduling variance, not GPU pipeline drops."
+}

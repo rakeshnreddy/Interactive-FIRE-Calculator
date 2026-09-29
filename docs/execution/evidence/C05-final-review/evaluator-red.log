@@ -1,0 +1,68 @@
+Running test_evaluator_c05 comprehensive negative regression suite...
+  ✓ PASSING: valid complete synthetic packet with native-zoom PASS exits 0 with verdict PASS
+  ✓ BLOCKED: valid complete synthetic packet with native-zoom BLOCKED exits 2 with verdict BLOCKED
+  ✓ DEFECT: missing consoleErrors telemetry exits 1 with verdict FAIL
+  ✓ DEFECT: present consoleErrors telemetry exits 1 with verdict FAIL
+  ✓ DEFECT: missing pageExceptions telemetry exits 1 with verdict FAIL
+  ✓ DEFECT: present pageExceptions telemetry exits 1 with verdict FAIL
+  ✓ DEFECT: missing cases array exits 1 with verdict FAIL
+  ✓ DEFECT: missing required case (fire-r1-unique-ids) exits 1 with verdict FAIL
+  ✓ DEFECT: duplicate case id exits 1 with verdict FAIL
+  ✓ DEFECT: theme mismatch (requested light, observed dark) exits 1 with verdict FAIL
+  ✓ DEFECT: identical canvas background colors between light and dark exits 1 with verdict FAIL
+  ✓ DEFECT: identical screenshot SHA1 between light and dark exits 1 with verdict FAIL
+  ✓ DEFECT: deficit check accepts default non-deficit exits 1 with verdict FAIL
+  ✓ DEFECT: deficit check with positive value exits 1 with verdict FAIL
+  ✓ DEFECT: R1 duplicate ID count > 0 exits 1 with verdict FAIL
+  ✓ DEFECT: R1 second Years label fails to focus second input exits 1 with verdict FAIL
+  ✓ DEFECT: R2 InfoTip popover visible while closed exits 1 with verdict FAIL
+  ✓ DEFECT: R2 InfoTip Escape key lost trigger focus exits 1 with verdict FAIL
+  ✓ DEFECT: R3 stale timing pill premature update exits 1 with verdict FAIL
+  ✓ DEFECT: R3 stale badge not cleared after recalculation exits 1 with verdict FAIL
+  ✓ DEFECT: sticky topbar overlaps focused control exits 1 with verdict FAIL
+  ✓ DEFECT: contrast normal text below 4.5 exits 1 with verdict FAIL
+  ✓ DEFECT: B22 trust strip present exits 1 with verdict FAIL
+  ✓ DEFECT: B22 input font not 16px exits 1 with verdict FAIL
+  ✓ DEFECT: B23 FAQ details missing exits 1 with verdict FAIL
+  ✓ DEFECT: native-zoom-200 PASS without observations array exits 1 with verdict FAIL
+  ✓ DEFECT: native-zoom-200 PASS with empty observations array exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check missing pairs array exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check empty pairs array exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check missing required target exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check pair with NaN/null ratio exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check pair with low ratio below threshold exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check pair with invalid threshold exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check pair falsely claiming 3.0 large text threshold exits 1 with verdict FAIL
+  ✓ DEFECT: contrast-check pair with invalid color exits 1 with verdict FAIL
+  ✓ DEFECT: native-zoom-200 observation reports clipping or overflow exits 1 with verdict FAIL
+  ✓ DEFECT: native-zoom-200 observation missing proofReference exits 1 with verdict FAIL
+  ✗ PRIMARY: absent observed native zoom percent must fail: Expected values to be strictly equal:
+
+0 !== 1
+
+/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C05/test_evaluator_c05.cjs:392
+      throw err;
+      ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+0 !== 1
+
+    at /Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C05/test_evaluator_c05.cjs:802:12
+    at test (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C05/test_evaluator_c05.cjs:387:7)
+    at runTests (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C05/test_evaluator_c05.cjs:798:3)
+    at Object.<anonymous> (/Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C05/test_evaluator_c05.cjs:816:1)
+    at Module._compile (node:internal/modules/cjs/loader:1734:14)
+    at Object..js (node:internal/modules/cjs/loader:1899:10)
+    at Module.load (node:internal/modules/cjs/loader:1469:32)
+    at Module._load (node:internal/modules/cjs/loader:1286:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: 1,
+  operator: 'strictEqual'
+}
+
+Node.js v24.2.0

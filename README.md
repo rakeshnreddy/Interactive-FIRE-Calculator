@@ -8,14 +8,14 @@ The product scope has expanded beyond a standalone FIRE calculator. The current 
 
 For a clean coding-session handoff, read [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md) first.
 
-## Current Direction
+## Architecture
 
-This repository is moving from a legacy Flask/Jinja app to a TypeScript, React, and Vite app designed for Cloudflare Pages.
+This repository is a modern TypeScript, React, and Vite single-page application deployed to Cloudflare Pages with Cloudflare Functions and D1.
 
 - Production target: `src/` TypeScript app built to `dist/`
+- Backend / API target: `functions/` Cloudflare Pages Functions with Cloudflare D1
 - Deployment target: Cloudflare Pages
-- Legacy reference: `app.py`, `project/`, `templates/`, and `static/`
-- Calculation parity: Python tests plus TypeScript Vitest tests
+- Test suite: TypeScript Vitest unit/integration tests and Node.js test runners
 
 ## Run Locally
 
@@ -24,19 +24,13 @@ This repository is moving from a legacy Flask/Jinja app to a TypeScript, React, 
 ./scripts/run_local.sh
 ```
 
-The new app runs with Vite. To run the legacy Flask app:
-
-```bash
-APP_TARGET=legacy ./scripts/run_local.sh
-```
-
 ## Test
 
 ```bash
 ./scripts/test_all.sh
 ```
 
-This requires Python, Node.js, and npm and fails if any are missing. It verifies the test runner's failure paths, then runs Python parity tests, TypeScript checks, Vitest, and the production build. Missing Node dependencies are installed with `npm ci` from the lockfile. Install Python dependencies from `requirements.txt` and `requirements-dev.txt` first. The GitHub `Full suite` PR check runs the same command without application or deployment secrets; production-auth verification remains a separate mandatory release gate.
+This requires Node.js and npm (Python is no longer required following legacy-stack retirement). It verifies the test runner's failure paths, runs TypeScript checks, Vitest, and the production build. Missing Node dependencies are installed with `npm ci` from the lockfile. The GitHub `Full suite` PR check runs the same command without application or deployment secrets; production-auth verification remains a separate mandatory release gate.
 
 ## Cloudflare Pages
 

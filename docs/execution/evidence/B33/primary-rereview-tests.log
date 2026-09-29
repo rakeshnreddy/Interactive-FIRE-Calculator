@@ -1,0 +1,17 @@
+✓ Test 1: Fully evidenced correct target passes with exit 0
+✓ Test 2: Identical DB IDs fails with exit 1
+✓ Test 3: Different but unapproved target fails with exit 1
+✓ Test 4: Missing project or deployment binding blocks with exit 2
+✓ Test 5: Deployment binding differing from project target fails with exit 1
+✓ Test 6: Endpoint failure fails with exit 1
+✓ Test 7: HTML 200 health fails with exit 1
+✓ Test 8: Missing migration evidence blocks with exit 2
+✓ Test 9: Pending migration fails with exit 1
+✓ Test 10: Unknown build policy blocks with exit 2
+✓ Test 11: Git deployment policy variants and wildcard matching evaluated cleanly
+✓ Test 12: Crashed or missing preflight blocks with exit 2
+✓ Test 13: Preserves known FAIL when target is unapproved
+✓ Test 14: Subprocess CLI execution cleanly asserts exit codes 0, 1, and 2
+
+=== ALL 14/14 EVALUATOR TESTS PASSED ===
+

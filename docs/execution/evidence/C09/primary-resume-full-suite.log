@@ -1,0 +1,107 @@
+✔ fails before running any stage when python3 is missing (16.318917ms)
+✔ fails before running any stage when node is missing (14.44175ms)
+✔ fails before running any stage when npm is missing (14.771417ms)
+✔ runs every verification stage in order (804.71075ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (149.936417ms)
+✔ stops and preserves failure status from node --test scripts/build_preview_auth.test.mjs (161.67225ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (293.01325ms)
+✔ stops and preserves failure status from python3 -m pytest -q (361.420292ms)
+✔ stops and preserves failure status from npm run typecheck (522.758791ms)
+✔ stops and preserves failure status from npm test (531.160875ms)
+✔ stops and preserves failure status from npm run build (532.466333ms)
+✔ installs missing dependencies from the lockfile (537.730791ms)
+✔ does not run frontend verification after a failed install (493.6235ms)
+✔ uses the repository virtualenv even without system Python (534.603708ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5032.846833
+✔ requires a development publishable key (1.146375ms)
+✔ reads the client-visible key from a private ignored env file (4.84125ms)
+✔ rejects a key file readable by other users (0.629667ms)
+✔ rejects server credentials exposed through Vite client variables (0.266958ms)
+✔ rejects server credentials loaded by Vite from production env files (2.014833ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.570375
+................................................... [ 64%]
+............................                                             [100%]
+79 passed, 21 subtests passed in 8.77s
+
+> interactive-fire-calculator@2.0.0 typecheck
+> tsc --noEmit
+
+
+> interactive-fire-calculator@2.0.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+(node:24864) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24868) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24870) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24872) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24874) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24875) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24878) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24889) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  54 passed (54)
+      Tests  1675 passed (1675)
+   Start at  20:47:23
+   Duration  12.81s (transform 3.95s, setup 0ms, import 9.97s, tests 13.95s, environment 54.87s)
+
+
+> interactive-fire-calculator@2.0.0 build
+> tsc -b && vite build && node scripts/verify_build_isolation.mjs
+
+vite v8.0.16 building client environment for production...
+[2Ktransforming...✓ 2407 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.85 kB │ gzip:   0.47 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2      11.23 kB
+dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2       18.74 kB
+dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2          18.99 kB
+dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2   25.96 kB
+dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2          48.25 kB
+dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2      85.06 kB
+dist/assets/main-DUQkqalD.css                              188.46 kB │ gzip:  30.88 kB
+dist/assets/circle-check-BlCxiqU1.js                         0.21 kB │ gzip:   0.19 kB │ map:     0.90 kB
+dist/assets/history-D3qwlhIw.js                              0.27 kB │ gzip:   0.22 kB │ map:     0.97 kB
+dist/assets/jsx-runtime-CdvZGgm7.js                          7.80 kB │ gzip:   3.02 kB │ map:    16.70 kB
+dist/assets/BalanceImportPanel-B-gNqk6i.js                   9.53 kB │ gzip:   3.35 kB │ map:    25.23 kB
+dist/assets/TransactionImportPanel-q5_FnGUs.js              10.06 kB │ gzip:   3.43 kB │ map:    26.46 kB
+dist/assets/papaparse.min-CusFC36f.js                       19.96 kB │ gzip:   7.41 kB │ map:    45.31 kB
+dist/assets/PlanningWorkspace-CPSpJnMn.js                   25.01 kB │ gzip:   7.00 kB │ map:    72.59 kB
+dist/assets/CalculatorLibrary-BwUB_A2X.js                  318.54 kB │ gzip:  85.18 kB │ map:   784.15 kB
+dist/assets/ProjectionChart-Bmjq74HE.js                    347.89 kB │ gzip: 102.40 kB │ map: 1,758.79 kB
+dist/assets/main-B4E0_Mzm.js                               542.81 kB │ gzip: 149.26 kB │ map: 1,675.25 kB
+
+✓ built in 490ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[verify_build_isolation] Inspecting production build in: /Users/Rakesh/Projects/Interactive-FIRE-Calculator/dist
+[PASS] Verified build isolation: 21 production asset files (JS, CSS, Source Maps) clean. 0 fixture leaks.

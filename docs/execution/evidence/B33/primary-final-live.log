@@ -1,0 +1,53 @@
+=== FinPath B33 Preview Isolation Audit Suite ===
+
+--- Step 1: Inspecting Cloudflare Pages Project Metadata ---
+Project Name: interactive-fire-calculator
+Production Branch: main
+Project Preview DB ID: 0dbad68e-7493-452f-8504-98d4c61ee5da
+Project Production DB ID: a5860350-0a50-4ebe-9f5f-1d9916a908e6
+
+--- Step 2: Inspecting Git Integration and Branch Triggers ---
+Preview Deployment Setting: custom
+Preview Branch Includes: ["codex/cloudflare-pages-theme-plan"]
+Preview Branch Excludes: []
+Target Branch: codex/finpath-quality-execution
+
+--- Step 3: Inspecting Active Preview Deployments ---
+Active Deployment ID: b8f9d6ec-99d3-4cdc-acb4-a6b2f71be5b3 (b8f9d6ec)
+Active Deployment URL: https://b8f9d6ec.interactive-fire-calculator.pages.dev
+Active Deployment Created On: 2026-09-11T03:05:02.734526Z
+Active Deployment Uses Functions: true
+Active Deployment Effective D1 ID: 0dbad68e-7493-452f-8504-98d4c61ee5da
+
+--- Step 4: Collecting Read-only D1 Schema & Migrations (0dbad68e-7493-452f-8504-98d4c61ee5da) ---
+D1 finpath-preview Schema: 18 total tables (15 user tables, 1 migration table, 2 system tables)
+Applied Migrations (4/4): 0001_initial_financial_platform_schema.sql, 0002_balance_import_history.sql, 0003_transaction_import_history.sql, 0004_saved_calculator_results.sql
+
+--- Step 5: Probing Deployed Preview Endpoints (https://b8f9d6ec.interactive-fire-calculator.pages.dev) ---
+Endpoint /api/health: status 200, content-type: application/json; charset=utf-8
+Endpoint /api/me: status 401 (expected 401 fail-closed)
+Endpoint /api/profile: status 401 (expected 401 fail-closed)
+Endpoint /api/plans: status 401 (expected 401 fail-closed)
+Endpoint /api/accounts: status 401 (expected 401 fail-closed)
+
+--- Step 6: Documenting Static Preview Distinction (https://03cba125.interactive-fire-calculator.pages.dev) ---
+Static preview /api/health returned 200 with content-type: text/html; charset=utf-8 (HTML fallback confirmed)
+
+--- Step 7: Running Production Auth Preflight Diagnostic ---
+Auth preflight exited with code 1: 0/6 passed (fail-closed verified)
+
+--- Step 8: Evaluating B33 Evidence with Pure Evaluator ---
+
+======================================================
+B33 VERIFICATION OUTCOME: PASS (Exit Code: 0)
+Summary: All required B33 isolation and infrastructure checks passed cleanly.
+Branch Auto-Deploying: false
+======================================================
+[PASS] project_preview_binding: Project preview D1 binding matches approved target (0dbad68e-7493-452f-8504-98d4c61ee5da) and differs from production
+[PASS] effective_deployment_binding: Effective deployment D1 binding matches approved target (0dbad68e-7493-452f-8504-98d4c61ee5da)
+[PASS] git_deployment_policy: Branch codex/finpath-quality-execution does not match preview_branch_includes (["codex/cloudflare-pages-theme-plan"]); automatic deployment safely excluded
+[PASS] migration_readiness: All 4 repository migrations applied cleanly (15 user tables, 2 system tables)
+[PASS] endpoint_probes: Public health returns JSON 200 with matching schema; all canonical private endpoints return 401 fail-closed
+[PASS] production_auth_guard: Auth preflight executed cleanly (0/6 checks passed; fail-closed guard active)
+
+Persisted complete B33 verification evidence to: /tmp/b33-final-live.json

@@ -1,0 +1,151 @@
+[B35 Verifier] Starting verification run at 2026-09-25T08:27:36.409Z
+[B35 Verifier] Target URL: https://51acbf88.interactive-fire-calculator.pages.dev/calculators/fire
+
+--- Verifying Condition: 1440x900-light (1440x900, light) ---
+[Theme] Current app data-mode: light, Desired: light
+[ASSERTION] PASS: [1440x900-light] App data-mode is set to light via accessible controls
+[1440x900-light] Computed scroll behavior: smooth
+[ASSERTION] PASS: [1440x900-light] Advanced summary precedes Calculate in DOM and screen order
+[1440x900-light] Advanced summary text: "Advanced assumptions0.0% return, 0.0% inflation • End-year timing • $0 estate • 0 events • 0 income streams • 0 expense phases"
+[ASSERTION] PASS: [1440x900-light] Advanced summary explicitly discloses BOTH "0.0% return" AND "0.0% inflation"
+[ASSERTION] PASS: [1440x900-light] Advanced summary explicitly discloses ALL THREE: "0 events", "0 income streams", and "0 expense phases"
+[ASSERTION] PASS: [1440x900-light] Result card is absent from DOM or hidden before Calculate (irrespective of text content)
+[1440x900-light] Opening details.advanced-shell via user click
+[ASSERTION] PASS: [1440x900-light] details.advanced-shell is successfully opened via user click
+[ASSERTION] PASS: [1440x900-light] Exactly one rate period row in DOM before Calculate
+[ASSERTION] PASS: [1440x900-light] Rate period duration is 30 years in DOM control
+[ASSERTION] PASS: [1440x900-light] Rate period annual return is 0.0% in DOM control
+[ASSERTION] PASS: [1440x900-light] Rate period inflation is 0.0% in DOM control
+[ASSERTION] PASS: [1440x900-light] No horizontal window overflow detected with advanced details open
+[ASSERTION] PASS: [1440x900-light] Zero mutual overlaps among visible controls with advanced details open
+[ASSERTION] PASS: [1440x900-light] Calculate produces base $2,400,000 result
+[Screenshot] Saved top-aligned /private/tmp/finpath-b35-hosted/screenshot-1440x900-light.png
+
+--- Verifying Condition: 1440x900-dark (1440x900, dark) ---
+[Theme] Current app data-mode: light, Desired: dark
+[Theme] Clicking theme switch button: "Switch to dark mode"
+[ASSERTION] PASS: [1440x900-dark] App data-mode is set to dark via accessible controls
+[1440x900-dark] Computed scroll behavior: auto
+[ASSERTION] PASS: [1440x900-dark] Advanced summary precedes Calculate in DOM and screen order
+[1440x900-dark] Advanced summary text: "Advanced assumptions0.0% return, 0.0% inflation • End-year timing • $0 estate • 0 events • 0 income streams • 0 expense phases"
+[ASSERTION] PASS: [1440x900-dark] Advanced summary explicitly discloses BOTH "0.0% return" AND "0.0% inflation"
+[ASSERTION] PASS: [1440x900-dark] Advanced summary explicitly discloses ALL THREE: "0 events", "0 income streams", and "0 expense phases"
+[ASSERTION] PASS: [1440x900-dark] Result card is absent from DOM or hidden before Calculate (irrespective of text content)
+[1440x900-dark] Opening details.advanced-shell via user click
+[ASSERTION] PASS: [1440x900-dark] details.advanced-shell is successfully opened via user click
+[ASSERTION] PASS: [1440x900-dark] Exactly one rate period row in DOM before Calculate
+[ASSERTION] PASS: [1440x900-dark] Rate period duration is 30 years in DOM control
+[ASSERTION] PASS: [1440x900-dark] Rate period annual return is 0.0% in DOM control
+[ASSERTION] PASS: [1440x900-dark] Rate period inflation is 0.0% in DOM control
+[ASSERTION] PASS: [1440x900-dark] No horizontal window overflow detected with advanced details open
+[ASSERTION] PASS: [1440x900-dark] Zero mutual overlaps among visible controls with advanced details open
+[ASSERTION] PASS: [1440x900-dark] Calculate produces base $2,400,000 result
+[Screenshot] Saved top-aligned /private/tmp/finpath-b35-hosted/screenshot-1440x900-dark.png
+
+--- Verifying Condition: 390x844-light (390x844, light) ---
+[Theme] Current app data-mode: light, Desired: light
+[ASSERTION] PASS: [390x844-light] App data-mode is set to light via accessible controls
+[390x844-light] Computed scroll behavior: smooth
+[ASSERTION] PASS: [390x844-light] Advanced summary precedes Calculate in DOM and screen order
+[390x844-light] Advanced summary text: "Advanced assumptions0.0% return, 0.0% inflation • End-year timing • $0 estate • 0 events • 0 income streams • 0 expense phases"
+[ASSERTION] PASS: [390x844-light] Advanced summary explicitly discloses BOTH "0.0% return" AND "0.0% inflation"
+[ASSERTION] PASS: [390x844-light] Advanced summary explicitly discloses ALL THREE: "0 events", "0 income streams", and "0 expense phases"
+[ASSERTION] PASS: [390x844-light] Result card is absent from DOM or hidden before Calculate (irrespective of text content)
+[390x844-light] Opening details.advanced-shell via user click
+[ASSERTION] PASS: [390x844-light] details.advanced-shell is successfully opened via user click
+[ASSERTION] PASS: [390x844-light] Exactly one rate period row in DOM before Calculate
+[ASSERTION] PASS: [390x844-light] Rate period duration is 30 years in DOM control
+[ASSERTION] PASS: [390x844-light] Rate period annual return is 0.0% in DOM control
+[ASSERTION] PASS: [390x844-light] Rate period inflation is 0.0% in DOM control
+[ASSERTION] PASS: [390x844-light] No horizontal window overflow detected with advanced details open
+[ASSERTION] PASS: [390x844-light] Zero mutual overlaps among visible controls with advanced details open
+[Screenshot] Saved mobile open screenshot: /private/tmp/finpath-b35-hosted/screenshot-390x844-advanced-open.png
+[ASSERTION] PASS: [390x844-light] Calculate produces base $2,400,000 result
+[Screenshot] Saved top-aligned /private/tmp/finpath-b35-hosted/screenshot-390x844-light.png
+
+--- Verifying Condition: 390x844-dark (390x844, dark) ---
+[Theme] Current app data-mode: light, Desired: dark
+[Theme] Clicking theme switch button: "Switch to dark mode"
+[ASSERTION] PASS: [390x844-dark] App data-mode is set to dark via accessible controls
+[390x844-dark] Computed scroll behavior: smooth
+[ASSERTION] PASS: [390x844-dark] Advanced summary precedes Calculate in DOM and screen order
+[390x844-dark] Advanced summary text: "Advanced assumptions0.0% return, 0.0% inflation • End-year timing • $0 estate • 0 events • 0 income streams • 0 expense phases"
+[ASSERTION] PASS: [390x844-dark] Advanced summary explicitly discloses BOTH "0.0% return" AND "0.0% inflation"
+[ASSERTION] PASS: [390x844-dark] Advanced summary explicitly discloses ALL THREE: "0 events", "0 income streams", and "0 expense phases"
+[ASSERTION] PASS: [390x844-dark] Result card is absent from DOM or hidden before Calculate (irrespective of text content)
+[390x844-dark] Opening details.advanced-shell via user click
+[ASSERTION] PASS: [390x844-dark] details.advanced-shell is successfully opened via user click
+[ASSERTION] PASS: [390x844-dark] Exactly one rate period row in DOM before Calculate
+[ASSERTION] PASS: [390x844-dark] Rate period duration is 30 years in DOM control
+[ASSERTION] PASS: [390x844-dark] Rate period annual return is 0.0% in DOM control
+[ASSERTION] PASS: [390x844-dark] Rate period inflation is 0.0% in DOM control
+[ASSERTION] PASS: [390x844-dark] No horizontal window overflow detected with advanced details open
+[ASSERTION] PASS: [390x844-dark] Zero mutual overlaps among visible controls with advanced details open
+[ASSERTION] PASS: [390x844-dark] Calculate produces base $2,400,000 result
+[Screenshot] Saved top-aligned /private/tmp/finpath-b35-hosted/screenshot-390x844-dark.png
+
+--- Starting Detailed Interactive & Rate Flow Tests ---
+[ASSERTION] PASS: Base initial calculation produces $2,400,000 before assumption edits
+[Flow] Testing keyboard expand of details.advanced-shell
+[ASSERTION] PASS: Keyboard focus lands directly on advanced details summary
+[ASSERTION] PASS: details.advanced-shell opens successfully via keyboard Enter
+[Screenshot] Saved desktop advanced open screenshot: /private/tmp/finpath-b35-hosted/screenshot-advanced-open.png
+[Flow] Inspecting rate inputs in assumptions panel
+[Flow] Discovered rate inputs: {
+  "panelFound": true,
+  "rowCount": 1,
+  "inputs": [
+    {
+      "row": 0,
+      "inputIndex": 0,
+      "id": "field-years-_r5_",
+      "name": "",
+      "value": "30",
+      "placeholder": "",
+      "ariaLabel": "",
+      "labelText": "Years"
+    },
+    {
+      "row": 0,
+      "inputIndex": 1,
+      "id": "field-return-_r6_",
+      "name": "",
+      "value": "0.0",
+      "placeholder": "",
+      "ariaLabel": "",
+      "labelText": "Return"
+    },
+    {
+      "row": 0,
+      "inputIndex": 2,
+      "id": "field-inflation-_r7_",
+      "name": "",
+      "value": "0.0",
+      "placeholder": "",
+      "ariaLabel": "",
+      "labelText": "Inflation"
+    }
+  ]
+}
+[Flow] Using return input selector: #field-return-_r6_
+[Flow] Updated summary text after entering 5% return: "Advanced assumptions5.0% return, 0.0% inflation • End-year timing • $0 estate • 0 events • 0 income streams • 0 expense phases"
+[ASSERTION] PASS: Summary updates to reflect deliberate nonzero return (5.0%)
+[ASSERTION] PASS: Hero result is flagged stale (.is-stale) after rate modification prior to recalculation
+[ASSERTION] PASS: Original result ($2,400,000) is preserved while stale before Recalculate is clicked
+[ASSERTION] PASS: Recalculation with 5% return produces updated FIRE number (different from $2,400,000)
+[ASSERTION] PASS: Stale flag (.is-stale) is removed upon Recalculate
+[Flow] Testing close and reopen details to verify rate persistence
+[ASSERTION] PASS: details.advanced-shell closes successfully
+[ASSERTION] PASS: details.advanced-shell reopens successfully
+[ASSERTION] PASS: Entered return rate (5 or 5.0) survives details close/reopen cycle
+[Flow] Testing reset with New plan then switching to Withdrawal mode
+[Flow] Switching to Withdrawal income mode
+[ASSERTION] PASS: Withdrawal mode 0% baseline yields $25,000 ($750,000 / 30 years)
+[ASSERTION] PASS: Zero phantom income or events present in UI
+[ASSERTION] PASS: Zero critical first-party application asset or API network failures (only exact optional favicon.ico/manifest allowed)
+
+[B35 Verifier] Report written to: /private/tmp/finpath-b35-hosted/verify_b35_report.json
+[B35 Verifier] Network Audit: PASSED (Critical: 0, Nonblocking: 0)
+[B35 Verifier] Total assertions evaluated: 66
+[B35 Verifier] Overall Status: ALL ASSERTIONS PASSED
+[B35 Verifier] Exiting with code 0 (SUCCESS).

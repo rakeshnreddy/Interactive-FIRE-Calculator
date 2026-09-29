@@ -1,0 +1,93 @@
+[
+  {
+    "mode": "light",
+    "values": {
+      ".topbar": {
+        "color": "rgb(41, 52, 49)",
+        "bg": "rgb(11, 36, 33)",
+        "outline": "rgb(41, 52, 49) none 3px",
+        "blur": "none"
+      },
+      ".desktop-nav-menu": {
+        "color": "rgb(41, 52, 49)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(41, 52, 49) none 3px",
+        "blur": "none"
+      },
+      ".desktop-nav-menu > button": {
+        "color": "rgba(255, 255, 255, 0.8)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(50, 103, 200) solid 3px",
+        "blur": "none"
+      },
+      ".desktop-nav-dropdown": {
+        "color": "rgb(41, 52, 49)",
+        "bg": "rgb(255, 255, 255)",
+        "outline": "rgb(41, 52, 49) none 3px",
+        "blur": "none"
+      },
+      ".topbar-link": {
+        "color": "rgb(237, 247, 244)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(237, 247, 244) none 3px",
+        "blur": "none"
+      },
+      ".landing-continuity-band h2": {
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "blur": "none"
+      }
+    }
+  },
+  {
+    "mode": "dark",
+    "values": {
+      ".topbar": {
+        "color": "rgb(220, 229, 226)",
+        "bg": "rgb(11, 36, 33)",
+        "outline": "rgb(220, 229, 226) none 3px",
+        "blur": "none"
+      },
+      ".desktop-nav-menu": {
+        "color": "rgb(220, 229, 226)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(220, 229, 226) none 3px",
+        "blur": "none"
+      },
+      ".desktop-nav-menu > button": {
+        "color": "rgba(255, 255, 255, 0.8)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(131, 169, 244) solid 3px",
+        "blur": "none"
+      },
+      ".desktop-nav-dropdown": {
+        "color": "rgb(220, 229, 226)",
+        "bg": "rgb(28, 37, 34)",
+        "outline": "rgb(220, 229, 226) none 3px",
+        "blur": "none"
+      },
+      ".topbar-link": {
+        "color": "rgb(237, 247, 244)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(237, 247, 244) none 3px",
+        "blur": "none"
+      },
+      ".landing-continuity-band h2": {
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "blur": "none"
+      }
+    }
+  },
+  {
+    "validation": {
+      "invalid": "true",
+      "describedby": "savings-targetAmount-help savings-targetAmount-error",
+      "alert": [
+        "Check the highlighted assumptionsGoal amount must be greater than 0 and no more than 999,999,999,999.99."
+      ]
+    }
+  }
+]

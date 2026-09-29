@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+ ❯ src/calculatorResults.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/calculatorResults.test.ts [ src/calculatorResults.test.ts ]
+Error: Cannot bundle Node.js built-in "node:sqlite" imported from "src/calculatorResults.test.ts". Consider disabling environments.client.noExternal or remove the built-in dependency.
+  Plugin: builtin:vite-resolve
+ ❯ EnvironmentPluginContainer.resolveId node_modules/vite/dist/node/chunks/node.js:30303:19
+ ❯ TransformPluginContext.resolve node_modules/vite/dist/node/chunks/node.js:30532:13
+ ❯ normalizeUrl node_modules/vite/dist/node/chunks/node.js:27834:22
+ ❯ node_modules/vite/dist/node/chunks/node.js:27905:30
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:27873:4
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30387:14
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:24646:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  05:51:50
+   Duration  1.30s (transform 0ms, setup 0ms, import 0ms, tests 0ms, environment 1.14s)
+

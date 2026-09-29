@@ -1,0 +1,26 @@
+{
+  "id": "4bc02589-7346-4bc5-90a4-fcddea09c389",
+  "url": "https://4bc02589.interactive-fire-calculator.pages.dev",
+  "environment": "preview",
+  "trigger": {
+    "type": "ad_hoc",
+    "metadata": {
+      "branch": "codex/finpath-quality-execution",
+      "commit_hash": "ea2614f71e7a0a615793a972967346b63657d815",
+      "commit_message": "fix(accounts): preserve currency labels and reflow balance form",
+      "commit_dirty": false
+    }
+  },
+  "stage": {
+    "name": "deploy",
+    "started_on": null,
+    "ended_on": "2026-09-11T12:48:46.547209Z",
+    "status": "success"
+  },
+  "uses_functions": true,
+  "d1": {
+    "DB": {
+      "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+    }
+  }
+}

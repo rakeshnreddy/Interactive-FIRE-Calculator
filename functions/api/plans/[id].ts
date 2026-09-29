@@ -10,10 +10,11 @@ import {
   updateFirePlan
 } from '../../_lib/firePlans';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
+import { recordServerEvent } from '../../_lib/analytics';
 
 type PlanEnv = ClerkEnv & DatabaseEnv;
 type PlanParams = 'id';
@@ -33,8 +34,8 @@ export const onRequestGet: PagesFunction<PlanEnv, PlanParams> = async ({ request
     }
 
     return json({ plan });
-  } catch {
-    return json({ error: 'Unable to load plan.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load plan.');
   }
 };
 
@@ -59,6 +60,7 @@ export const onRequestPut: PagesFunction<PlanEnv, PlanParams> = async ({ request
       return json({ error: 'Plan not found.' }, 404);
     }
 
+    await recordServerEvent(context.database, context.userId, 'decision_saved', { family: 'fire' });
     return json({ plan });
   } catch (error) {
     if (error instanceof PlanVersionConflictError) {
@@ -69,7 +71,7 @@ export const onRequestPut: PagesFunction<PlanEnv, PlanParams> = async ({ request
       return json({ error: error.message }, 400);
     }
 
-    return json({ error: 'Unable to update plan.' }, 500);
+    return handleApiError(error, 'Unable to update plan.');
   }
 };
 
@@ -88,8 +90,8 @@ export const onRequestDelete: PagesFunction<PlanEnv, PlanParams> = async ({ requ
     }
 
     return json({ ok: true });
-  } catch {
-    return json({ error: 'Unable to delete plan.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to delete plan.');
   }
 };
 

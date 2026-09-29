@@ -1,0 +1,125 @@
+{
+  "cases": 100,
+  "failures": [
+    {
+      "panel": "accounts",
+      "state": "empty",
+      "mode": "light",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(244, 248, 251)"
+    },
+    {
+      "panel": "accounts",
+      "state": "empty",
+      "mode": "dark",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(8, 21, 28)"
+    },
+    {
+      "panel": "accounts",
+      "state": "usd",
+      "mode": "light",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(244, 248, 251)"
+    },
+    {
+      "panel": "accounts",
+      "state": "usd",
+      "mode": "dark",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(8, 21, 28)"
+    },
+    {
+      "panel": "accounts",
+      "state": "inr",
+      "mode": "light",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(244, 248, 251)"
+    },
+    {
+      "panel": "accounts",
+      "state": "inr",
+      "mode": "dark",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(8, 21, 28)"
+    },
+    {
+      "panel": "accounts",
+      "state": "mixed",
+      "mode": "light",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(244, 248, 251)"
+    },
+    {
+      "panel": "accounts",
+      "state": "mixed",
+      "mode": "dark",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(8, 21, 28)"
+    },
+    {
+      "panel": "accounts",
+      "state": "long",
+      "mode": "light",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(244, 248, 251)"
+    },
+    {
+      "panel": "accounts",
+      "state": "long",
+      "mode": "dark",
+      "width": 768,
+      "overflow": false,
+      "clipped": [
+        "",
+        "Add account"
+      ],
+      "background": "rgb(8, 21, 28)"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "route": "/calculators/mortgage",
+    "slug": "mortgage",
+    "firstInputDocumentY": 1133.421875,
+    "boundingBox": {
+      "x": 77.515625,
+      "y": 1133.421875,
+      "width": 261.296875,
+      "height": 44
+    },
+    "screenshot": "mortgage-baseline-390.png"
+  },
+  {
+    "route": "/calculators/sip",
+    "slug": "sip",
+    "firstInputDocumentY": 1146.875,
+    "boundingBox": {
+      "x": 72.484375,
+      "y": 1146.875,
+      "width": 266.328125,
+      "height": 44
+    },
+    "screenshot": "sip-baseline-390.png"
+  },
+  {
+    "route": "/calculators/income-tax-india",
+    "slug": "income-tax-india",
+    "firstInputDocumentY": 1207.015625,
+    "boundingBox": {
+      "x": 72.484375,
+      "y": 1207.015625,
+      "width": 266.328125,
+      "height": 44
+    },
+    "screenshot": "income-tax-india-baseline-390.png"
+  }
+]

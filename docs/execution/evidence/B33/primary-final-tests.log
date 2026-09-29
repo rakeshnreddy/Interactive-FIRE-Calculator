@@ -1,0 +1,73 @@
+=== FinPath B33 Contract Validation Test Suite ===
+
+--- Section 1: Reviewer Reproduction Cases ---
+✓ Repro 1: missing_private_probes returns BLOCKED (exit 2)
+✓ Repro 2: missing_production_id returns BLOCKED (exit 2)
+✓ Repro 3: wrong_migration_database returns FAIL (exit 1)
+✓ Repro 4: wrong_health_runtime returns FAIL (exit 1)
+✓ Repro 5: codex/finpath-* pattern correctly matches with auto_deploying=true
+
+--- Section 2: V01 Project Preview Binding ---
+✓ V01-1: Distinct valid IDs pass
+✓ V01-2: Missing preview_d1_id blocks
+✓ V01-3: Empty string production_d1_id blocks
+✓ V01-4: Same preview and production IDs fails
+✓ V01-5: Unapproved preview UUID fails
+
+--- Section 3: V02 Effective Deployment Binding ---
+✓ V02-1: Valid deployment metadata passes
+✓ V02-2: Missing deployment environment blocks
+✓ V02-3: Missing uses_functions blocks
+✓ V02-4: Production deployment environment fails
+✓ V02-5: Deployed uses_functions=false fails
+✓ V02-6: Failed stage status fails
+✓ V02-7: Effective DB bound to production fails
+✓ V02-8: Probe URL mismatch with deployment URL fails
+
+--- Section 4: V03 Canonical Private Probe Set ---
+✓ V03-1: All 4 canonical private probes returning 401 pass
+✓ V03-2: Empty private endpoints map blocks
+✓ V03-3: Missing /api/accounts probe blocks
+✓ V03-4: Extra endpoints do not substitute for missing canonical endpoint
+✓ V03-5: Private probe returning 200 fails
+
+--- Section 5: V04 Health Schema Validation ---
+✓ V04-1: Missing health probe blocks
+✓ V04-2: Health HTTP 500 fails
+✓ V04-3: Health HTML 200 fails
+✓ V04-4: Wrong app name in health body fails
+✓ V04-5: ok=false in health body fails
+
+--- Section 6: V05 Migration Readiness ---
+✓ V05-1: Missing database_id in migration evidence blocks
+✓ V05-2: Failed migration query blocks
+✓ V05-3: Null row in applied_migrations blocks
+✓ V05-4: Empty applied migrations fails
+✓ V05-5: Pending repository migration fails
+✓ V05-6: Empty tables array fails
+
+--- Section 7: V06 Git Deployment Policy ---
+✓ V06-1: Missing preview_deployment_setting blocks
+✓ V06-2: Setting none passes with auto_deploying=false
+✓ V06-3: Setting all without excludes passes with auto_deploying=true
+✓ V06-4: Setting all with wildcard exclude passes with auto_deploying=false
+✓ V06-5: Wildcard pattern matching unit functions work as specified
+
+--- Section 8: V07 Production Auth Preflight Parser ---
+✓ V07-1: Six FAIL + 0/6 + exit 1 correctly recognized
+✓ V07-2: Six PASS + 6/6 + exit 0 correctly recognized
+✓ V07-3: Empty output with exit 0 is not recognized
+✓ V07-4: Duplicate check names rejected
+✓ V07-5: Missing check name rejected
+✓ V07-6: Substring-only CLERK error rejected as unrecognized
+✓ V07-7: Inconsistent exit code (0/6 with exit 0) rejected
+✓ V07-8: Inconsistent exit code (6/6 with exit 1) rejected
+
+--- Section 9: V08 Real CLI Execution & Persistence ---
+✓ V08-1: Importing verify_b33.cjs performs zero live calls
+✓ V08-2: Real CLI exercises fixtures and persists outcomes with exit codes 0, 1, and 2
+
+======================================================
+ALL 55 CONTRACT TESTS PASSED CLEANLY!
+======================================================
+

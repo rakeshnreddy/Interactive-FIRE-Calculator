@@ -1,0 +1,456 @@
+{
+  "matrix": [
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 320,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 768,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 768,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "/",
+      "errors": [],
+      "overflow": false,
+      "title": "Make the number mean something."
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "/calculators",
+      "errors": [],
+      "overflow": false,
+      "title": "Start with the question, not the formula."
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "/calculators/fire",
+      "errors": [],
+      "overflow": false,
+      "title": "FIRE Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "/calculators/mortgage",
+      "errors": [],
+      "overflow": false,
+      "title": "Mortgage Payment Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "/calculators/savings-goal",
+      "errors": [],
+      "overflow": false,
+      "title": "Savings Goal Calculator"
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "route": "/dashboard",
+      "errors": [],
+      "overflow": false,
+      "title": "Connect Clerk before opening account routes."
+    }
+  ],
+  "keyboard": [
+    {
+      "mode": "light",
+      "width": 320,
+      "link": "/calculators",
+      "focusReturned": true
+    },
+    {
+      "mode": "light",
+      "width": 390,
+      "link": "/calculators",
+      "focusReturned": true
+    },
+    {
+      "mode": "light",
+      "width": 1440,
+      "link": "/accounts",
+      "focusReturned": true
+    },
+    {
+      "mode": "dark",
+      "width": 320,
+      "link": "/calculators",
+      "focusReturned": true
+    },
+    {
+      "mode": "dark",
+      "width": 390,
+      "link": "/calculators",
+      "focusReturned": true
+    },
+    {
+      "mode": "dark",
+      "width": 1440,
+      "link": "/accounts",
+      "focusReturned": true
+    }
+  ],
+  "assets": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "match": true,
+      "local": "8bfd171571051d9c048b6f7f514fb9f7264b8af68ae7f92ac49f068c4823a1d3",
+      "remote": "8bfd171571051d9c048b6f7f514fb9f7264b8af68ae7f92ac49f068c4823a1d3"
+    },
+    {
+      "file": "assets/index-r5hqYYMq.js",
+      "status": 200,
+      "match": true,
+      "local": "6de1ca23db3e39a68f1ddb76b7efc4e47a04faf3d1117534f7c46f37d7cd5672",
+      "remote": "6de1ca23db3e39a68f1ddb76b7efc4e47a04faf3d1117534f7c46f37d7cd5672"
+    },
+    {
+      "file": "assets/jsx-runtime-CdvZGgm7.js",
+      "status": 200,
+      "match": true,
+      "local": "85fda29e5f27f78829bbd2472a04a8dcfa541c74c936d77fe4479bf749d7da6a",
+      "remote": "85fda29e5f27f78829bbd2472a04a8dcfa541c74c936d77fe4479bf749d7da6a"
+    },
+    {
+      "file": "assets/index-B1zU0TSC.css",
+      "status": 200,
+      "match": true,
+      "local": "f53df31ec9ee084d4d4c35248966fc2b6f4bc236b9b424fecf91379c04c33b20",
+      "remote": "f53df31ec9ee084d4d4c35248966fc2b6f4bc236b9b424fecf91379c04c33b20"
+    }
+  ]
+}

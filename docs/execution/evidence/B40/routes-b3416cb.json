@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "url": "https://ba7c620f.interactive-fire-calculator.pages.dev",
+  "consoleErrors": [],
+  "results": [
+    {
+      "route": "/calculators/nps",
+      "width": 1280,
+      "theme": "light",
+      "h1": "NPS Calculator",
+      "problems": [],
+      "copy": {
+        "noUniversalRule": true,
+        "example": true,
+        "pfrda": true,
+        "eligibility": true
+      },
+      "screenshot": "raw/b40-1280-light-calculators-nps.png"
+    },
+    {
+      "route": "/calculators/xirr",
+      "width": 1280,
+      "theme": "light",
+      "h1": "Monthly IRR Calculator (XIRR-style)",
+      "problems": [],
+      "copy": {
+        "periodicLabel": true,
+        "notSupported": true,
+        "title": true
+      },
+      "screenshot": "raw/b40-1280-light-calculators-xirr.png"
+    },
+    {
+      "route": "/calculators/nps",
+      "width": 1280,
+      "theme": "dark",
+      "h1": "NPS Calculator",
+      "problems": [],
+      "copy": {
+        "noUniversalRule": true,
+        "example": true,
+        "pfrda": true,
+        "eligibility": true
+      },
+      "screenshot": "raw/b40-1280-dark-calculators-nps.png"
+    },
+    {
+      "route": "/calculators/xirr",
+      "width": 1280,
+      "theme": "dark",
+      "h1": "Monthly IRR Calculator (XIRR-style)",
+      "problems": [],
+      "copy": {
+        "periodicLabel": true,
+        "notSupported": true,
+        "title": true
+      },
+      "screenshot": "raw/b40-1280-dark-calculators-xirr.png"
+    },
+    {
+      "route": "/calculators/nps",
+      "width": 390,
+      "theme": "light",
+      "h1": "NPS Calculator",
+      "problems": [],
+      "copy": {
+        "noUniversalRule": true,
+        "example": true,
+        "pfrda": true,
+        "eligibility": true
+      },
+      "screenshot": "raw/b40-390-light-calculators-nps.png"
+    },
+    {
+      "route": "/calculators/xirr",
+      "width": 390,
+      "theme": "light",
+      "h1": "Monthly IRR Calculator (XIRR-style)",
+      "problems": [],
+      "copy": {
+        "periodicLabel": true,
+        "notSupported": true,
+        "title": true
+      },
+      "screenshot": "raw/b40-390-light-calculators-xirr.png"
+    },
+    {
+      "route": "/calculators/nps",
+      "width": 390,
+      "theme": "dark",
+      "h1": "NPS Calculator",
+      "problems": [],
+      "copy": {
+        "noUniversalRule": true,
+        "example": true,
+        "pfrda": true,
+        "eligibility": true
+      },
+      "screenshot": "raw/b40-390-dark-calculators-nps.png"
+    },
+    {
+      "route": "/calculators/xirr",
+      "width": 390,
+      "theme": "dark",
+      "h1": "Monthly IRR Calculator (XIRR-style)",
+      "problems": [],
+      "copy": {
+        "periodicLabel": true,
+        "notSupported": true,
+        "title": true
+      },
+      "screenshot": "raw/b40-390-dark-calculators-xirr.png"
+    }
+  ]
+}

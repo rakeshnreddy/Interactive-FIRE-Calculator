@@ -1,0 +1,17 @@
+# Scheduled analytics retention for the FinPath PREVIEW environment only (B12).
+# Deploy: npx wrangler deploy --config workers/analytics-retention/wrangler.toml
+# The production database is deliberately absent from this file; a production retention Worker
+# needs owner authorisation (OA-3) and its own reviewed configuration.
+"$schema" = "../../node_modules/wrangler/config-schema.json"
+name = "finpath-analytics-retention-preview"
+main = "src/index.ts"
+compatibility_date = "2026-06-06"
+workers_dev = false
+
+[triggers]
+crons = ["17 3 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "finpath-preview"
+database_id = "0dbad68e-7493-452f-8504-98d4c61ee5da"

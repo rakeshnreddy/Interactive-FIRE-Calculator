@@ -1,0 +1,636 @@
+{
+  "metadata": {
+    "generatedAt": "2026-09-26T17:06:01.363Z",
+    "baselineCommit": "42780b4c5a46004e3d008bd1b6dafee6ba5bc501",
+    "candidateWorkingTree": "B39 extracted refactor (codex/finpath-quality-execution)",
+    "browser": "Google Chrome Headless (CDP)",
+    "reproducibleCommand": "node scripts/run_local_browser_checks.mjs",
+    "ports": {
+      "baseline": 4174,
+      "candidate": 4173,
+      "cdp": 9222
+    }
+  },
+  "routes": {
+    "/": {
+      "desktop": {
+        "baseline": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "FinPath | FIRE Calculator and Financial Planning",
+            "h1": "See when you could retire.",
+            "headings": [
+              "See when you could retire.",
+              "Start with a question. Leave with a clearer plan.",
+              "Start without an account."
+            ],
+            "buttonCount": 5,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "FinPath | FIRE Calculator and Financial Planning",
+            "h1": "See when you could retire.",
+            "headings": [
+              "See when you could retire.",
+              "Start with a question. Leave with a clearer plan.",
+              "Start without an account."
+            ],
+            "buttonCount": 5,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "1440x900",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      },
+      "mobile": {
+        "baseline": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "FinPath | FIRE Calculator and Financial Planning",
+            "h1": "See when you could retire.",
+            "headings": [
+              "See when you could retire.",
+              "Start with a question. Leave with a clearer plan.",
+              "Start without an account."
+            ],
+            "buttonCount": 5,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "FinPath | FIRE Calculator and Financial Planning",
+            "h1": "See when you could retire.",
+            "headings": [
+              "See when you could retire.",
+              "Start with a question. Leave with a clearer plan.",
+              "Start without an account."
+            ],
+            "buttonCount": 5,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "375x812",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      }
+    },
+    "/calculators/fire": {
+      "desktop": {
+        "baseline": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "FIRE Calculator | FinPath",
+            "h1": "FIRE Calculator",
+            "headings": [
+              "FIRE Calculator",
+              "Find my FIRE number",
+              "Market periods",
+              "Retirement model options",
+              "One-off events",
+              "Recurring income streams",
+              "Recurring spending phases",
+              "Save and move plans"
+            ],
+            "buttonCount": 29,
+            "inputCount": 11,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "FIRE Calculator | FinPath",
+            "h1": "FIRE Calculator",
+            "headings": [
+              "FIRE Calculator",
+              "Find my FIRE number",
+              "Market periods",
+              "Retirement model options",
+              "One-off events",
+              "Recurring income streams",
+              "Recurring spending phases",
+              "Save and move plans"
+            ],
+            "buttonCount": 29,
+            "inputCount": 11,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "1440x900",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      },
+      "mobile": {
+        "baseline": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "FIRE Calculator | FinPath",
+            "h1": "FIRE Calculator",
+            "headings": [
+              "FIRE Calculator",
+              "Find my FIRE number",
+              "Market periods",
+              "Retirement model options",
+              "One-off events",
+              "Recurring income streams",
+              "Recurring spending phases",
+              "Save and move plans"
+            ],
+            "buttonCount": 29,
+            "inputCount": 11,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "FIRE Calculator | FinPath",
+            "h1": "FIRE Calculator",
+            "headings": [
+              "FIRE Calculator",
+              "Find my FIRE number",
+              "Market periods",
+              "Retirement model options",
+              "One-off events",
+              "Recurring income streams",
+              "Recurring spending phases",
+              "Save and move plans"
+            ],
+            "buttonCount": 29,
+            "inputCount": 11,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "375x812",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      }
+    },
+    "/calculators/mortgage": {
+      "desktop": {
+        "baseline": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "Mortgage Payment Calculator | FinPath",
+            "h1": "Mortgage Payment Calculator",
+            "headings": [
+              "Mortgage Payment Calculator",
+              "Run the estimate",
+              "Monthly payment",
+              "See what changes the answer",
+              "Mortgage Payment Calculator formula notes",
+              "Mortgage Payment Calculator example",
+              "Use the number with context",
+              "Continue the same decision"
+            ],
+            "buttonCount": 20,
+            "inputCount": 5,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1425,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "Mortgage Payment Calculator | FinPath",
+            "h1": "Mortgage Payment Calculator",
+            "headings": [
+              "Mortgage Payment Calculator",
+              "Run the estimate",
+              "Monthly payment",
+              "See what changes the answer",
+              "Mortgage Payment Calculator formula notes",
+              "Mortgage Payment Calculator example",
+              "Use the number with context",
+              "Continue the same decision"
+            ],
+            "buttonCount": 20,
+            "inputCount": 5,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "1440x900",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      },
+      "mobile": {
+        "baseline": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "Mortgage Payment Calculator | FinPath",
+            "h1": "Mortgage Payment Calculator",
+            "headings": [
+              "Mortgage Payment Calculator",
+              "Run the estimate",
+              "Monthly payment",
+              "See what changes the answer",
+              "Mortgage Payment Calculator formula notes",
+              "Mortgage Payment Calculator example",
+              "Use the number with context",
+              "Continue the same decision"
+            ],
+            "buttonCount": 20,
+            "inputCount": 5,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "Mortgage Payment Calculator | FinPath",
+            "h1": "Mortgage Payment Calculator",
+            "headings": [
+              "Mortgage Payment Calculator",
+              "Run the estimate",
+              "Monthly payment",
+              "See what changes the answer",
+              "Mortgage Payment Calculator formula notes",
+              "Mortgage Payment Calculator example",
+              "Use the number with context",
+              "Continue the same decision"
+            ],
+            "buttonCount": 20,
+            "inputCount": 5,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "375x812",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      }
+    },
+    "/dashboard": {
+      "desktop": {
+        "baseline": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1440,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "Dashboard | FinPath",
+            "h1": "Account features are currently unavailable.",
+            "headings": [
+              "Account features are currently unavailable."
+            ],
+            "buttonCount": 7,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "1440x900",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 1440,
+            "clientWidth": 1440
+          },
+          "page": {
+            "title": "Dashboard | FinPath",
+            "h1": "Account features are currently unavailable.",
+            "headings": [
+              "Account features are currently unavailable."
+            ],
+            "buttonCount": 7,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "1440x900",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      },
+      "mobile": {
+        "baseline": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "Dashboard | FinPath",
+            "h1": "Account features are currently unavailable.",
+            "headings": [
+              "Account features are currently unavailable."
+            ],
+            "buttonCount": 7,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "candidate": {
+          "viewport": "375x812",
+          "overflow": {
+            "hasHorizontalOverflow": false,
+            "scrollWidth": 375,
+            "clientWidth": 375
+          },
+          "page": {
+            "title": "Dashboard | FinPath",
+            "h1": "Account features are currently unavailable.",
+            "headings": [
+              "Account features are currently unavailable."
+            ],
+            "buttonCount": 7,
+            "inputCount": 0,
+            "brandText": "FinPath"
+          },
+          "keyboardFocus": {
+            "tagName": "a",
+            "id": null,
+            "className": "skip-link",
+            "text": "Skip to content",
+            "href": "#main-content"
+          },
+          "consoleErrors": [],
+          "pageErrors": []
+        },
+        "comparison": {
+          "viewport": "375x812",
+          "horizontalOverflowMatches": true,
+          "candidateHasHorizontalOverflow": false,
+          "headingsMatch": true,
+          "brandMatches": true,
+          "keyboardFocusMatches": true,
+          "consoleErrorsMatch": true,
+          "candidateConsoleErrors": [],
+          "visibleDifferences": []
+        }
+      }
+    }
+  },
+  "errorUiState": {
+    "testedRoute": "/dashboard",
+    "inspection": {
+      "h1": "Account features are currently unavailable.",
+      "hasExpectedErrorSnippet": true,
+      "snippetFound": "Account features are currently unavailable.",
+      "hasCalculatorExploreAction": true,
+      "actionButtonText": "Explore public calculators",
+      "activeRoute": "/dashboard"
+    },
+    "verdict": "PASS"
+  }
+}

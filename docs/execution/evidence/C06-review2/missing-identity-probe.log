@@ -1,0 +1,37 @@
+
+ RUN  v4.1.11 /Users/Rakesh/Projects/Interactive-FIRE-Calculator
+
+(node:84533) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/c06MissingIdentityProbe.test.ts (1 test | 1 failed) 10ms
+   × successful deletion before first profile initialization must block delayed initialization 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/c06MissingIdentityProbe.test.ts > successful deletion before first profile initialization must block delayed initialization
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ src/c06MissingIdentityProbe.test.ts:10:69
+      8|  const result = await deleteAccountData(h.db, 'synthetic_never_initial…
+      9|  expect(result.localAccountDataDeleted).toBe(true);
+     10|  await expect(ensureUserProfile(h.db, 'synthetic_never_initialized')).…
+       |                                                                     ^
+     11| });
+     12|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  21:40:07
+   Duration  194ms (transform 49ms, setup 0ms, import 74ms, tests 10ms, environment 0ms)
+

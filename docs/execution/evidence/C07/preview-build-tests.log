@@ -1,0 +1,27 @@
+✔ requires a development publishable key (1.213083ms)
+✔ reads the client-visible key from a private ignored env file (3.504917ms)
+✔ rejects a key file readable by other users (0.798833ms)
+✔ rejects server credentials exposed through Vite client variables (0.27825ms)
+✔ rejects server credentials loaded by Vite from production env files (6.601333ms)
+✔ fails before running any stage when python3 is missing (18.699541ms)
+✔ fails before running any stage when node is missing (23.537583ms)
+✔ fails before running any stage when npm is missing (17.607208ms)
+✔ runs every verification stage in order (841.767166ms)
+✔ stops and preserves failure status from node --test scripts/test_all.test.mjs (178.994166ms)
+✔ stops and preserves failure status from node --test scripts/build_preview_auth.test.mjs (179.5025ms)
+✔ stops and preserves failure status from python3 -m compileall -q app.py project tests (357.153708ms)
+✔ stops and preserves failure status from python3 -m pytest -q (340.783334ms)
+✔ stops and preserves failure status from npm run typecheck (489.661375ms)
+✔ stops and preserves failure status from npm test (545.4695ms)
+✔ stops and preserves failure status from npm run build (509.148834ms)
+✔ installs missing dependencies from the lockfile (531.070417ms)
+✔ does not run frontend verification after a failed install (522.797542ms)
+✔ uses the repository virtualenv even without system Python (600.777291ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5221.887792

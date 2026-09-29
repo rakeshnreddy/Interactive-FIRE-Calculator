@@ -1,0 +1,142 @@
+{
+  "candidate": "a95053b19108634656aef491e46b9be9fe3ea57d",
+  "scope": "Local guarded fixture only; simulated commit503/retry, no hosted requests",
+  "contrasts": [
+    {
+      "theme": "light",
+      "foreground": "rgb(136, 81, 0)",
+      "background": "rgb(248,242,218)",
+      "layers": [
+        {
+          "background": "rgb(244, 248, 251)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(244, 247, 247)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(244, 248, 251)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(244, 248, 251)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(251, 253, 255)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(251, 253, 255)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(234, 179, 8, 0.15)",
+          "image": "none"
+        }
+      ],
+      "ratio": 5.8
+    },
+    {
+      "theme": "dark",
+      "foreground": "rgb(240, 191, 114)",
+      "background": "rgb(49,57,39)",
+      "layers": [
+        {
+          "background": "rgb(8, 21, 28)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(244, 247, 247)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(8, 21, 28)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(8, 21, 28)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(16, 35, 44)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgb(16, 35, 44)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "image": "none"
+        },
+        {
+          "background": "rgba(234, 179, 8, 0.15)",
+          "image": "none"
+        }
+      ],
+      "ratio": 7.11
+    }
+  ],
+  "no_auto_commit": true,
+  "failure_retains_confirmation": true,
+  "failure_attempts": 1,
+  "retry_tab_steps": 98,
+  "retry_attempts": 2,
+  "keyboard_file_selection": true,
+  "keyboard_confirmation": true,
+  "passed": true
+}

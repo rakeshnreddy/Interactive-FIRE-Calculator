@@ -1,0 +1,110 @@
+Window: "FinPath synthetic UI review", App: Google Chrome.
+0 standard window FinPath synthetic UI review - Google Chrome - Rakesh, URL: 127.0.0.1:8771/accounts-long-dark.html, Secondary Actions: Raise
+	1 container FinPath synthetic UI review - Google Chrome - Rakesh, URL: 127.0.0.1:8771/accounts-long-dark.html
+		2 container
+			3 toolbar
+				4 button Back
+				5 button (disabled) Forward
+				6 button Reload
+				7 button Home
+				8 container
+					9 pop up button View site information
+					10 text field (settable) Description: Address and search bar, Value: 127.0.0.1:8771/accounts-long-dark.html, Placeholder: Ask Google or type a URL
+					11 button Zoom: 200%
+					12 button Bookmark this tab
+				13 container
+					14 pop up button Google Dictionary
+Has access to this site
+					15 pop up button iCloud Bookmarks
+					16 pop up button Table Capture
+Has access to this site
+					17 pop up button Cisco Webex Extension
+					18 pop up button AdGuard Browser Assistant
+Wants access to this site
+					19 pop up button AdGuard AdBlocker
+Protection enabled
+Has access to this site
+					20 pop up button Sign in to websites with accounts on Windows and macOS
+					21 pop up button Check US Visa Slots - USVisaScheduling
+Wants access to this site
+					22 pop up button Extensions
+				23 button Energy Saver is on
+				24 button Rakesh
+				25 pop up button Chrome
+			26 container
+				27 HTML content FinPath synthetic UI review, URL: 127.0.0.1:8771/accounts-long-dark.html
+					28 container Accounts and balances
+						29 container
+							30 text Net worth $12,345,678,901
+						31 container
+							32 text Assets $12,345,678,901
+						33 container
+							34 text Liabilities $0
+						35 container Accounts and balances
+							36 text Manual tracker
+							37 heading Accounts and balances, Value: 2
+								38 text Accounts and balances
+							39 container
+								40 text Account name
+								41 text field (settable) Account name
+								42 text Type
+								43 pop up button Type, Value: Investment
+									44 (selected) Investment
+								45 text Institution
+								46 text field (settable) Institution
+								47 text Currency
+								48 text field (settable) Currency, Value: INR
+								49 text Balance / debt
+								50 text field (settable) Balance / debt
+								51 text Balance date
+								52 date picker Balance date
+									53 container
+										54 stepper (settable, float) Month Balance date, Value: 0, Placeholder: mm
+										55 text /
+										56 stepper (settable, float) Day Balance date, Value: 0, Placeholder: dd
+										57 text /
+										58 stepper (settable, float) Year Balance date, Value: 0, Placeholder: yyyy
+									59 pop up button Show date picker
+								60 button Add account
+						61 text Loading CSV import...
+						62 container Saved accounts
+							63 container
+								64 text ASSET Brokerage Investment - Vanguard 2026-09-01 $12,345,678,901
+								65 container
+									66 text New balance
+									67 text field (settable) New balance
+								68 container
+									69 text Date
+									70 date picker Date, Value: 2026-09-11
+										71 container
+											72 stepper (settable, float) Month Date, Value: 9, Details: 09, Placeholder: mm
+											73 text /
+											74 stepper (settable, float) Day Date, Value: 11, Placeholder: dd
+											75 text /
+											76 stepper (settable, float) Year Date, Value: 2026, Placeholder: yyyy
+										77 pop up button Show date picker
+								78 button Record
+								79 button Archive Brokerage
+			80 pop up button Tab Search
+			81 container
+				82 tab group
+					83 tab (selected, settable, boolean) Description: FinPath synthetic UI review - Memory usage - 108 MB, Value: on
+						84 button Close
+			85 button New Tab
+			86 button Open Gemini in Chrome
+	87 close button
+	88 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	89 minimize button
+90 menu bar
+	91 Chrome
+	92 File
+	93 Edit
+	94 View
+	95 History
+	96 Bookmarks
+	97 Profiles
+	98 Tab
+	99 Window
+	100 Help
+
+The focused UI element is 46 text field (settable) Institution

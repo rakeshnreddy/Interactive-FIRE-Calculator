@@ -1,0 +1,10 @@
+
+> interactive-fire-calculator@2.0.0 smoke:calculators
+> node scripts/smoke_public_calculators.mjs https://a26c412b.interactive-fire-calculator.pages.dev
+
+Verified 84 public calculator routes without authentication at https://a26c412b.interactive-fire-calculator.pages.dev.
+npm notice
+npm notice New minor version of npm available! 11.3.0 -> 11.19.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+npm notice To update run: npm install -g npm@11.19.1
+npm notice

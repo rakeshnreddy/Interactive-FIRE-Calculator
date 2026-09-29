@@ -9,6 +9,7 @@ import { requireDatabase } from '../../../_lib/persistence';
 import { requireClerkAuth } from '../../../_lib/session';
 import type { DatabaseEnv } from '../../../_lib/persistence';
 import type { ClerkEnv } from '../../../_lib/session';
+import { readJsonBody } from '../../../_lib/http';
 
 type TransactionImportPreviewEnv = ClerkEnv & DatabaseEnv;
 
@@ -37,11 +38,3 @@ export const onRequestPost: PagesFunction<TransactionImportPreviewEnv> = async (
     return json({ error: 'Unable to preview transaction import.' }, 500);
   }
 };
-
-async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
