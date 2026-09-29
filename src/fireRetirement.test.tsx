@@ -75,7 +75,7 @@ describe('B36: FIRE answers "when can I retire?"', () => {
     await renderFire();
     expect($<HTMLInputElement>('#fire-return')!.value).toBe('');
     expect($<HTMLInputElement>('#fire-inflation')!.value).toBe('');
-    expect(calcButton().disabled).toBe(true);
+    expect(calcButton().getAttribute('aria-disabled')).toBe('true');
     expect($('#fire-calc-blocker')?.textContent).toMatch(/Enter expected return and inflation/);
     expect($('.hero-result')).toBeNull();
     expect(document.body.textContent).not.toMatch(/No growth or inflation assumed/);
@@ -90,7 +90,7 @@ describe('B36: FIRE answers "when can I retire?"', () => {
     expect(Number($<HTMLInputElement>('#fire-return')!.value) / 100).toBeCloseTo(heroRates.r, 10);
     expect(Number($<HTMLInputElement>('#fire-inflation')!.value) / 100).toBeCloseTo(heroRates.i, 10);
     expect($('.rate-example-note')?.textContent).toMatch(/illustrative assumptions, not forecasts or historical averages/);
-    expect(calcButton().disabled).toBe(false);
+    expect(calcButton().getAttribute('aria-disabled')).toBeNull();
   });
 
   it('shows "Retire at about age X" with the chosen rates next to the answer', async () => {
@@ -104,6 +104,33 @@ describe('B36: FIRE answers "when can I retire?"', () => {
     expect(estimate?.textContent).toMatch(/At your chosen retirement age \(50\)/);
   });
 
+  it('a blocked Calculate stays focusable, is described by the reason, and does nothing when pressed', async () => {
+    await renderFire();
+    const button = calcButton();
+    expect(button.disabled).toBe(false);
+    expect(button.getAttribute('aria-disabled')).toBe('true');
+    expect(button.getAttribute('aria-describedby')).toBe('fire-calc-blocker');
+    act(() => button.focus());
+    expect(document.activeElement).toBe(button);
+    await click(button);
+    expect($('[data-testid="fire-retirement-estimate"]')).toBeNull();
+    expect($('[data-testid="fire-result-announcement"]')?.textContent).toBe('');
+  });
+
+  it('announces the answer to screen readers after Calculate (polite live region)', async () => {
+    await renderFire();
+    const region = $('[data-testid="fire-result-announcement"]')!;
+    expect(region.getAttribute('role')).toBe('status');
+    expect(region.getAttribute('aria-live')).toBe('polite');
+    await click(buttonByText('Use example values'));
+    await type('#fire-annual-savings', '40000');
+    await click(calcButton());
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    });
+    expect(region.textContent).toMatch(/^Result updated\. FIRE number .+\. Retire at about age \d+\.$/);
+  });
+
   it('without savings, prompts for them instead of inventing an age', async () => {
     await renderFire();
     await click(buttonByText('Use example values'));
@@ -115,13 +142,13 @@ describe('B36: FIRE answers "when can I retire?"', () => {
     await renderFire();
     await click(buttonByText('Use example values'));
     await type('#fire-annual-expense', '');
-    expect(calcButton().disabled).toBe(true);
+    expect(calcButton().getAttribute('aria-disabled')).toBe('true');
     expect(issueFor('fire-annual-expense')).toMatch(/Enter your annual spending/);
     await type('#fire-annual-expense', '-64000');
     expect(issueFor('fire-annual-expense')).toMatch(/Spending cannot be negative/);
     await type('#fire-annual-expense', '80000');
     await type('#fire-retirement-age', '30');
-    expect(calcButton().disabled).toBe(true);
+    expect(calcButton().getAttribute('aria-disabled')).toBe('true');
     expect(issueFor('fire-retirement-age')).toMatch(/after your current age/);
     expect($('#fire-calc-blocker')?.textContent).toMatch(/Fix the highlighted fields/);
   });
@@ -130,7 +157,7 @@ describe('B36: FIRE answers "when can I retire?"', () => {
     await renderFire();
     await type('#fire-return', '0');
     await type('#fire-inflation', '0');
-    expect(calcButton().disabled).toBe(false);
+    expect(calcButton().getAttribute('aria-disabled')).toBeNull();
     await click(calcButton());
     expect($('.hero-result strong')?.textContent).toBe('$2,400,000');
   });
@@ -159,6 +186,6 @@ describe('B36: FIRE answers "when can I retire?"', () => {
     expect($<HTMLInputElement>('#fire-return')!.value).toBe('6');
     expect($<HTMLInputElement>('#fire-inflation')!.value).toBe('3');
     expect($<HTMLInputElement>('#fire-annual-savings')!.value).toBe('');
-    expect(calcButton().disabled).toBe(false);
+    expect(calcButton().getAttribute('aria-disabled')).toBeNull();
   });
 });

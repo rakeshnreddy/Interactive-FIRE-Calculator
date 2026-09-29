@@ -14,6 +14,14 @@ export type FireRetirementEstimateProps = {
 
 const pct = (value: number) => `${(Math.round(value * 1000) / 10).toString()}%`;
 
+// The one-line answer, shared by the visible headline and the screen-reader announcement.
+export function fireEstimateHeadline(estimate: AccumulationResult | null, planEndAge: number): string {
+  if (!estimate) return 'Add annual savings to estimate when you could retire';
+  if (estimate.status === 'already-fi') return `Your portfolio already covers this plan at age ${estimate.retireAge}`;
+  if (estimate.status === 'reaches') return `Retire at about age ${estimate.retireAge}`;
+  return `Not reached before age ${planEndAge}`;
+}
+
 // Headline answer for "when could I retire?" plus a text alternative of the savings path.
 export function FireRetirementEstimate({
   estimate, currency, chosenRetirementAge, planEndAge, projectedAtChosenAge, neededAtChosenAge, returnRate, inflationRate
@@ -22,19 +30,15 @@ export function FireRetirementEstimate({
   const real = (1 + returnRate) / (1 + inflationRate) - 1;
   const reached = estimate?.path.at(-1);
 
-  let headline: string;
+  const headline = fireEstimateHeadline(estimate, planEndAge);
   let explanation: string;
   if (!estimate) {
-    headline = 'Add annual savings to estimate when you could retire';
     explanation = 'The FIRE number above is what you need at your chosen retirement age. Enter how much you save each year to see the earliest age this plan could support.';
   } else if (estimate.status === 'already-fi') {
-    headline = `Your portfolio already covers this plan at age ${estimate.retireAge}`;
     explanation = `${money(reached?.portfolio ?? 0)} meets the ${money(reached?.target ?? 0)} needed to fund your spending until age ${planEndAge}.`;
   } else if (estimate.status === 'reaches') {
-    headline = `Retire at about age ${estimate.retireAge}`;
     explanation = `By then your savings grow to about ${money(reached?.portfolio ?? 0)}, which meets the ${money(reached?.target ?? 0)} needed to fund your spending from age ${estimate.retireAge} until ${planEndAge}.`;
   } else {
-    headline = `Not reached before age ${planEndAge}`;
     explanation = 'At these savings and rates the portfolio never catches up with what retirement would need. Try higher savings, lower spending or a later plan end age.';
   }
 

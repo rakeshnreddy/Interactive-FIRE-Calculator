@@ -170,7 +170,7 @@ export default {
       // Blank required rates: Calculate is disabled and the reason is written next to it (B36).
       const calculate = anon.page.locator('.quick-actions .primary-button');
       const blocker = await anon.page.locator('#fire-calc-blocker').textContent().catch(() => '');
-      if (!(await calculate.isDisabled()) || !blocker?.trim()) fail(`blank rates did not block Calculate with a reason: disabled=${await calculate.isDisabled()} blocker="${blocker}"`);
+      if ((await calculate.getAttribute('aria-disabled')) !== 'true' || !blocker?.trim()) fail(`blank rates did not block Calculate with a reason: aria-disabled=${await calculate.getAttribute('aria-disabled')} blocker="${blocker}"`);
       // An invalid value is an error associated with its field.
       await anon.page.fill('#fire-return', '99');
       await anon.page.waitForTimeout(400);

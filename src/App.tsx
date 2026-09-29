@@ -98,7 +98,7 @@ import { formatCompactMoney } from './lib/money';
 import { HERO_FIRE_FIXTURE } from './lib/heroExample';
 import { landingFaq, landingHero, landingTrustPoints } from './lib/landingContent';
 import { calculatorToolkits, type CalculatorToolkitIcon } from './lib/calculatorToolkits';
-import { FireRetirementEstimate } from './components/FireRetirementEstimate';
+import { FireRetirementEstimate, fireEstimateHeadline } from './components/FireRetirementEstimate';
 import { ReportsPanel } from './reports/ReportsPanel';
 import { PrivacyControlsPanel } from './settings/PrivacyControlsPanel';
 import { deletionFailure, exportFailure, summarizeDeletion, type PrivacyStatus } from './settings/privacyOutcome';
@@ -1389,6 +1389,9 @@ function App({ auth }: { auth: AuthState }) {
   const [calculatorPanel, setCalculatorPanel] = useState<CalculatorPanel>('planner');
   const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
   const [hasCalculated, setHasCalculated] = useState(false);
+  // Screen readers hear the answer after each Calculate through a polite live region.
+  const [calculationCount, setCalculationCount] = useState(0);
+  const [fireAnnouncement, setFireAnnouncement] = useState('');
   const [isStale, setIsStale] = useState(false);
   const [displayedResult, setDisplayedResult] = useState<{
     result: FirePlanResult;
@@ -2167,6 +2170,20 @@ function App({ auth }: { auth: AuthState }) {
     };
   }, [calculatedSavings, displayedResult, hasCalculated]);
 
+  // After each Calculate, announce the answer once (cleared first so a repeated answer is re-read).
+  const announcedCalculation = useRef(0);
+  useEffect(() => {
+    if (calculationCount === 0 || calculationCount === announcedCalculation.current || !displayedResult) return;
+    announcedCalculation.current = calculationCount;
+    const money = (value: number) => formatCompactMoney(value, fireCurrency);
+    const message = displayedResult.mode === 'fire-number'
+      ? `Result updated. FIRE number ${money(displayedResult.result.requiredPortfolio)}. ${fireEstimateHeadline(retirementEstimate?.estimate ?? null, displayedResult.timeline.planEndAge)}.`
+      : `Result updated. Sustainable yearly withdrawal ${money(displayedResult.result.maxAnnualExpense)}.`;
+    setFireAnnouncement('');
+    const timer = window.setTimeout(() => setFireAnnouncement(message), 150);
+    return () => window.clearTimeout(timer);
+  }, [calculationCount, displayedResult, fireCurrency, retirementEstimate]);
+
   const withdrawalCoverage = activeResultForDisplay.maxAnnualExpense - activePlanForDisplay.annualExpense;
   const requiredWithdrawalRate =
     activeResultForDisplay.requiredPortfolio > 0 && Number.isFinite(activeResultForDisplay.requiredPortfolio)
@@ -2307,6 +2324,7 @@ function App({ auth }: { auth: AuthState }) {
 
   const calculateNow = () => {
     if (!fireValidation.ok) return;
+    setCalculationCount((count) => count + 1);
     track('calculation_completed', { slug: 'fire', engine: 'fire-ts-v1', outcome: 'valid' });
     setCalculatedSavings(parseSavingsEntry(savingsEntry));
     setDisplayedResult({
@@ -4488,15 +4506,20 @@ function App({ auth }: { auth: AuthState }) {
           </details>
 
           <div className="quick-actions">
+            {/* aria-disabled, not disabled: the button stays focusable so a screen reader can reach it
+                and hear why it is unavailable (the blocker text is its description). */}
             <button
               className="primary-button icon-text-button"
               onClick={calculateNow}
-              disabled={!fireValidation.ok}
+              aria-disabled={fireValidation.ok ? undefined : true}
               aria-describedby={fireValidation.ok ? undefined : 'fire-calc-blocker'}
             >
               {isStale ? <RotateCcw size={17} /> : <Calculator size={17} />}
               {isStale ? 'Recalculate' : 'Calculate'}
             </button>
+            <p className="visually-hidden" role="status" aria-live="polite" aria-atomic="true" data-testid="fire-result-announcement">
+              {fireAnnouncement}
+            </p>
             {!fireValidation.ok ? (
               <p className="calc-blocker" id="fire-calc-blocker" role="status">
                 {fireValidation.ratesMissing

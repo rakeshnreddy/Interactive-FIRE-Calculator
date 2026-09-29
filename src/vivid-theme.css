@@ -241,7 +241,8 @@
   background-image: var(--action-gradient-pressed);
 }
 
-.app .primary-button:disabled {
+.app .primary-button:disabled,
+.app .primary-button[aria-disabled="true"] {
   background: var(--color-primary-bg);
   background-image: none;
   opacity: 0.6;

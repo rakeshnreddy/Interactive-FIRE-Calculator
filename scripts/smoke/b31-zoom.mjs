@@ -93,7 +93,7 @@ export default {
       // Blank required rates: Calculate stays disabled with a written reason (B36), never a silent default.
       const calculate = anon.page.locator('.quick-actions .primary-button');
       const blocker = await anon.page.locator('#fire-calc-blocker').textContent().catch(() => '');
-      if (!(await calculate.isDisabled()) || !blocker?.trim()) fail(`blank rates did not block Calculate: disabled=${await calculate.isDisabled()} blocker="${blocker}"`);
+      if ((await calculate.getAttribute('aria-disabled')) !== 'true' || !blocker?.trim()) fail(`blank rates did not block Calculate: aria-disabled=${await calculate.getAttribute('aria-disabled')} blocker="${blocker}"`);
       // An invalid rate is an error associated with its field and visible at 200%.
       await anon.page.fill('#fire-return', '99');
       await anon.page.waitForTimeout(400);
