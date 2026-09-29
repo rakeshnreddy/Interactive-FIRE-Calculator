@@ -157,7 +157,10 @@ export default {
       await resetFocus(anon.page);
       await focusStep(anon.page, '/', 'skip link', [/skip to content/i, /link/i]);
       await anon.page.keyboard.press('Enter');
-      await hear({ route: '/', action: 'Enter on skip link → main content', expect: [/main|content|heading|Clear answers/i] });
+      // VoiceOver describes the <main id="main-content"> target as a region; focus must actually be there.
+      const skipped = await hear({ route: '/', action: 'Enter on skip link → main content', expect: [/main|content|region|heading|Clear answers/i] });
+      const onMain = await anon.page.evaluate(() => document.activeElement?.id === 'main-content' || Boolean(document.activeElement?.closest('#main-content')));
+      if (!onMain) RECORD.push({ route: '/', action: 'skip link moved focus into #main-content', method: 'dom', expected: ['focus inside #main-content'], heard: skipped.heard, ok: false });
       await anon.page.keyboard.press('Tab');
       await hear({ route: '/', action: 'Tab after skip → first main control', expect: [/link|button/i] });
       // Heading structure through VoiceOver's own navigation, not the DOM.
@@ -224,11 +227,13 @@ export default {
       await hear({ route: '/calculators/mortgage', action: 'focus a metric help button', expect: [/about|help/i, /button/i] });
       await anon.page.keyboard.press('Enter');
       await hear({ route: '/calculators/mortgage', action: 'Enter on help → explanation', expect: [/payment|principal|interest|month/i], settle: 1200 });
+      // Scenario tabs are read before the 361-row schedule is expanded, which keeps VoiceOver busy.
+      const tabs = anon.page.locator('.calculator-scenario-tab').first();
+      await tabs.scrollIntoViewIfNeeded();
+      await tabs.focus();
+      await hear({ route: '/calculators/mortgage', action: 'focus scenario tab', expect: [/tab/i, /conservative|base|optimistic/i], settle: 1200 });
       await openDisclosure(anon.page, '/calculators/mortgage', 'Monthly amortization schedule');
       await focusAndHear(anon.page, 'details[open] table th', 0, { route: '/calculators/mortgage', action: 'focus first schedule column header', expect: [/Payment #/i, /column|header|table|row/i] });
-      const tabs = anon.page.locator('.calculator-scenario-tab').first();
-      await tabs.focus();
-      await hear({ route: '/calculators/mortgage', action: 'focus scenario tab', expect: [/tab/i, /conservative|base|optimistic/i] });
     });
 
     await stage('signed-in-workspace', async () => {
@@ -238,7 +243,9 @@ export default {
         await page.bringToFront();
         await page.waitForFunction(() => Boolean(window.Clerk?.user) && !document.querySelector('.auth-gate-panel'), null, { timeout: 30000 });
         await sleep(1200);
-        await focusAndHear(page, 'main h1', 0, { route, action: 'focus the page heading', expect: [/heading level 1/i, expectHeading] });
+        await page.locator('main h1').first().waitFor({ state: 'visible', timeout: 20000 });
+        await sleep(800);
+        await focusAndHear(page, 'main h1', 0, { route, action: 'focus the page heading', expect: [/heading level 1/i, expectHeading], settle: 1400 });
       }
       // Workspace menu: open, first item, Escape returns focus.
       const trigger = page.locator('.desktop-nav-menu > button');

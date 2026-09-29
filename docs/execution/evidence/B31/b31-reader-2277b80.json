@@ -1,0 +1,593 @@
+{
+  "status": "PASS",
+  "scenario": "b31-reader",
+  "target": {
+    "deploymentId": "d0d235df-3d54-4d7d-9f88-745ff9f6f71b",
+    "url": "https://d0d235df.interactive-fire-calculator.pages.dev",
+    "sha": "2277b80ce089d0ddf0caf22a21c0c809ae6a31f5",
+    "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "commitDirty": false
+  },
+  "stages": [
+    {
+      "name": "preflight",
+      "status": "PASS",
+      "detail": {
+        "deploymentId": "d0d235df-3d54-4d7d-9f88-745ff9f6f71b",
+        "url": "https://d0d235df.interactive-fire-calculator.pages.dev",
+        "sha": "2277b80ce089d0ddf0caf22a21c0c809ae6a31f5",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      }
+    },
+    {
+      "name": "d1-reachable",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sign-in",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "voiceover-ready",
+      "status": "PASS",
+      "detail": {
+        "navigation": "keyboard focus (Tab / programmatic focus); VO key chords not permitted in this session",
+        "macOS": "26.6.2",
+        "voiceOver": "VoiceOver (macOS 26.6.2)",
+        "browser": "Google Chrome 154.0.8037.58"
+      }
+    },
+    {
+      "name": "homepage-and-discovery",
+      "status": "PASS",
+      "detail": {
+        "firstHeading": "heading level 1 Clear answers to your money questions."
+      }
+    },
+    {
+      "name": "fire-inputs-errors-result",
+      "status": "PASS",
+      "detail": {
+        "tableHeader": "Age"
+      }
+    },
+    {
+      "name": "mortgage-result-schedule-help",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "signed-in-workspace",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "mobile-width-and-theme",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "announcement-matrix",
+      "status": "PASS",
+      "detail": {
+        "versions": {
+          "navigation": "keyboard focus (Tab / programmatic focus); VO key chords not permitted in this session",
+          "macOS": "26.6.2",
+          "voiceOver": "VoiceOver (macOS 26.6.2)",
+          "browser": "Google Chrome 154.0.8037.58"
+        },
+        "steps": 41,
+        "matrix": [
+          {
+            "route": "/",
+            "action": "Tab → skip link",
+            "method": "keyboard",
+            "expected": [
+              "/skip to content/i",
+              "/link/i"
+            ],
+            "heard": "link Skip to content",
+            "ok": true
+          },
+          {
+            "route": "/",
+            "action": "Enter on skip link → main content",
+            "method": "keyboard",
+            "expected": [
+              "/main|content|region|heading|Clear answers/i"
+            ],
+            "heard": "You are currently on a region.",
+            "ok": true
+          },
+          {
+            "route": "/",
+            "action": "Tab after skip → first main control",
+            "method": "keyboard",
+            "expected": [
+              "/link|button/i"
+            ],
+            "heard": "link See when you could retire Clear answers to your money questions. region",
+            "ok": true
+          },
+          {
+            "route": "/",
+            "action": "focus heading #1",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/Clear answers to your money questions/i"
+            ],
+            "heard": "heading level 1 Clear answers to your money questions.",
+            "ok": true
+          },
+          {
+            "route": "/",
+            "action": "focus heading #2",
+            "method": "focus",
+            "expected": [
+              "/heading level 2/i"
+            ],
+            "heard": "heading level 2 What are you trying to work out? What are you trying to work out? region",
+            "ok": true
+          },
+          {
+            "route": "/calculators",
+            "action": "focus search field",
+            "method": "keyboard",
+            "expected": [
+              "/search|edit text|text field/i"
+            ],
+            "heard": "Find calculators Search mortgage, SIP, tax, debt payoff, retirement, FIRE search text field Start with the question, not the formula. region",
+            "ok": true
+          },
+          {
+            "route": "/calculators",
+            "action": "type a phrase with no matches",
+            "method": "keyboard",
+            "expected": [
+              "/no calculator matches|zzzzqqq|search results|calculator/i"
+            ],
+            "heard": "zzzzqqq",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "focus heading #1",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/FIRE Calculator/i"
+            ],
+            "heard": "heading level 1 FIRE Calculator FIRE Calculator region",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "focus Current age",
+            "method": "keyboard",
+            "expected": [
+              "/current age/i",
+              "/edit text|text field|stepper|incrementable/i"
+            ],
+            "heard": "40 Current age Your age today. It is used to check that the retirement timeline makes sense. stepper Find my FIRE number region",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "focus Expected return (blank, required)",
+            "method": "keyboard",
+            "expected": [
+              "/return/i",
+              "/required|edit text|text field/i"
+            ],
+            "heard": "Expected return Your assumed average yearly investment return before inflation. Required; 0 is allowed. stepper",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "focus Calculate while rates are blank",
+            "method": "keyboard",
+            "expected": [
+              "/calculate/i",
+              "/dimmed|unavailable|disabled/i",
+              "/enter expected return/i"
+            ],
+            "heard": "Calculate Enter expected return and inflation (or use the example values) to see your answer. dimmed button",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "re-focus Expected return with 99 (invalid)",
+            "method": "keyboard",
+            "expected": [
+              "/return/i",
+              "/invalid|between -50% and 50%/i"
+            ],
+            "heard": "99 Expected return Your assumed average yearly investment return before inflation. Required; 0 is allowed. Use a return between -50% and 50% a year. invalid data stepper",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "focus Use example values",
+            "method": "keyboard",
+            "expected": [
+              "/use example values/i",
+              "/button/i"
+            ],
+            "heard": "Use example values button",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "Enter on Calculate → result is announced",
+            "method": "keyboard",
+            "expected": [
+              "/Result updated/i",
+              "/FIRE number/i",
+              "/retire at about age \\d+/i"
+            ],
+            "heard": "Result updated. FIRE number $1.3M. Retire at about age 48.",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "focus disclosure \"Savings path by age\"",
+            "method": "keyboard",
+            "expected": [
+              "/Savings path by age/i",
+              "/collapsed|disclosure|summary/i"
+            ],
+            "heard": "Savings path by age collapsed disclosure triangle, group",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "Enter expands \"Savings path by age\"",
+            "method": "keyboard",
+            "expected": [
+              "/expanded/i"
+            ],
+            "heard": "Savings path by age expanded disclosure triangle, group",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire",
+            "action": "focus first table header",
+            "method": "focus",
+            "expected": [
+              "/\\bAge\\b/",
+              "/column|header|table|row/i"
+            ],
+            "heard": "Age Projected savings compared with the amount needed, by age table 3 columns, 4 rows",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "focus heading #1",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/Mortgage Payment/i"
+            ],
+            "heard": "heading level 1 Mortgage Payment Calculator Mortgage Payment Calculator region",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "focus Interest rate",
+            "method": "keyboard",
+            "expected": [
+              "/interest rate/i",
+              "/edit text|text field|stepper|incrementable/i"
+            ],
+            "heard": "6.5% Interest rate % Enter the interest rate as an annual percentage unless the label says otherwise. Enter the interest rate as an annual percentage unless the label says otherwise. stepper Mortgage Payment Calculator inputs region",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "focus a metric help button",
+            "method": "keyboard",
+            "expected": [
+              "/about|help/i",
+              "/button/i"
+            ],
+            "heard": "About Monthly payment collapsed button About Monthly payment article",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "Enter on help → explanation",
+            "method": "keyboard",
+            "expected": [
+              "/payment|principal|interest|month/i"
+            ],
+            "heard": "About Monthly payment expanded button",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "focus scenario tab",
+            "method": "keyboard",
+            "expected": [
+              "/tab/i",
+              "/conservative|base|optimistic/i"
+            ],
+            "heard": "Conservative $1,985 tab, 1 of 3 Scenario results tab group",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "focus disclosure \"Monthly amortization schedule\"",
+            "method": "keyboard",
+            "expected": [
+              "/Monthly amortization schedule/i",
+              "/collapsed|disclosure|summary/i"
+            ],
+            "heard": "Monthly amortization schedule Expandable month-by-month payment schedule with required and additional payments, principal, interest, ending balance, and cumulative interest. collapsed disclosure triangle, group Mortgage Payment Calculator result region",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "Enter expands \"Monthly amortization schedule\"",
+            "method": "keyboard",
+            "expected": [
+              "/expanded/i"
+            ],
+            "heard": "Monthly amortization schedule Expandable month-by-month payment schedule with required and additional payments, principal, interest, ending balance, and cumulative interest. expanded disclosure triangle, group",
+            "ok": true
+          },
+          {
+            "route": "/calculators/mortgage",
+            "action": "focus first schedule column header",
+            "method": "focus",
+            "expected": [
+              "/Payment #/i",
+              "/column|header|table|row/i"
+            ],
+            "heard": "Payment # Mortgage Payment Calculator Monthly amortization schedule table 8 columns, 361 rows",
+            "ok": true
+          },
+          {
+            "route": "/dashboard",
+            "action": "focus the page heading",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/financial snapshot/i"
+            ],
+            "heard": "heading level 1 Your financial snapshot starts here. Your financial snapshot starts here. region",
+            "ok": true
+          },
+          {
+            "route": "/plans",
+            "action": "focus the page heading",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/plan you can revisit/i"
+            ],
+            "heard": "heading level 1 Build a plan you can revisit. Build a plan you can revisit. region",
+            "ok": true
+          },
+          {
+            "route": "/reports",
+            "action": "focus the page heading",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/evidence attached/i"
+            ],
+            "heard": "heading level 1 Insights with the evidence attached. Insights with the evidence attached. region",
+            "ok": true
+          },
+          {
+            "route": "/transactions",
+            "action": "focus the page heading",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/manual ledger/i"
+            ],
+            "heard": "heading level 1 Manual ledger for cash flow. Manual ledger for cash flow. region",
+            "ok": true
+          },
+          {
+            "route": "/settings",
+            "action": "focus the page heading",
+            "method": "focus",
+            "expected": [
+              "/heading level 1/i",
+              "/profile and privacy/i"
+            ],
+            "heard": "heading level 1 Profile and privacy controls. Profile and privacy controls. region",
+            "ok": true
+          },
+          {
+            "route": "/settings",
+            "action": "focus Workspace menu button",
+            "method": "keyboard",
+            "expected": [
+              "/workspace/i",
+              "/button/i",
+              "/collapsed|expanded|menu/i"
+            ],
+            "heard": "Workspace collapsed current page button Primary navigation",
+            "ok": true
+          },
+          {
+            "route": "/settings",
+            "action": "Enter opens the Workspace menu",
+            "method": "keyboard",
+            "expected": [
+              "/expanded|menu|workspace/i"
+            ],
+            "heard": "Workspace expanded current page button",
+            "ok": true
+          },
+          {
+            "route": "/settings",
+            "action": "Tab into the menu",
+            "method": "keyboard",
+            "expected": [
+              "/link/i",
+              "/accounts|plans|reports|settings/i"
+            ],
+            "heard": "link Accounts Balances and net worth",
+            "ok": true
+          },
+          {
+            "route": "/settings",
+            "action": "Escape closes the menu and returns focus",
+            "method": "keyboard",
+            "expected": [
+              "/workspace/i",
+              "/collapsed|button/i"
+            ],
+            "heard": "Workspace collapsed current page button",
+            "ok": true
+          },
+          {
+            "route": "/settings",
+            "action": "focus analytics consent toggle",
+            "method": "keyboard",
+            "expected": [
+              "/improve|analytics|consent/i",
+              "/checkbox|switch|toggle/i",
+              "/unchecked|off|not checked/i"
+            ],
+            "heard": "Product analytics is off unchecked checkbox Help improve FinPath region",
+            "ok": true
+          },
+          {
+            "route": "/settings",
+            "action": "focus the deletion confirmation field",
+            "method": "keyboard",
+            "expected": [
+              "/confirmation/i",
+              "/edit text|text field/i",
+              "/cannot be undone|type/i"
+            ],
+            "heard": "Confirmation This cannot be undone. Type DELETE MY FINPATH DATA to confirm. edit text Export or delete your saved data region",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire@390",
+            "action": "focus mobile menu button",
+            "method": "keyboard",
+            "expected": [
+              "/menu|navigation/i",
+              "/button/i",
+              "/collapsed|expanded/i"
+            ],
+            "heard": "Open navigation collapsed button banner",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire@390",
+            "action": "Enter opens the mobile menu",
+            "method": "keyboard",
+            "expected": [
+              "/expanded|menu|navigation/i"
+            ],
+            "heard": "Close navigation expanded button",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire@390",
+            "action": "Escape closes the mobile menu",
+            "method": "keyboard",
+            "expected": [
+              "/collapsed|button|menu/i"
+            ],
+            "heard": "Open navigation collapsed button",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire@390",
+            "action": "focus theme switch",
+            "method": "keyboard",
+            "expected": [
+              "/switch to (dark|light) mode/i",
+              "/button/i"
+            ],
+            "heard": "Switch to dark mode toggle button",
+            "ok": true
+          },
+          {
+            "route": "/calculators/fire@390",
+            "action": "Enter toggles the theme",
+            "method": "keyboard",
+            "expected": [
+              "/switch to (dark|light) mode/i"
+            ],
+            "heard": "Switch to light mode",
+            "ok": true
+          }
+        ],
+        "file": "raw/b31-reader-announcements.json"
+      }
+    }
+  ],
+  "cleanup": [
+    {
+      "tenant": "A",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "analytics_consent": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "tenant": "B",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "analytics_consent": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "error": null,
+  "startedAt": "2026-09-29T03:50:23.311Z",
+  "finishedAt": "2026-09-29T03:52:10.238Z"
+}

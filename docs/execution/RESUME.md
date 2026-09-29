@@ -46,3 +46,7 @@ Final code `f85c6dd9c092720b0b0a1070cab657458be57cb6`; immutable preview `https:
 ## Astra correction review — 2026-09-27
 
 B12 accepted at `b3416cb1cb8d162a11a72601c549bf460eef36c8`: independent full suite (2,463 tests), 84 public routes, deployed Worker version/cron/preview-only D1 verified through Cloudflare, and an independent synthetic scheduled test removed old event/cohort rows while retaining recent ones; cleanup zero. B40 NPS/XIRR implementation correction independently passes source, goldens, Chrome mobile/desktop and route smoke, but stays `ready_for_review` because C14 depends on B31. C11 remains released; B31 actual VoiceOver/NVDA is the next gate. C14, C12 and C13 remain locked. PR #140 unmerged; production D1 untouched. [C11 review](reviews/C11.md), [C14 review](reviews/C14.md), [sanitized record](evidence/reviewer-2026-09-27/b12-b40-correction-review.json).
+
+## B31 reader gate — 2026-09-28
+
+Actual VoiceOver pass run by Claude with the owner enabling VoiceOver scripting: `scripts/smoke/b31-reader.mjs` (`--headed`), 41/41 steps on preview `https://d0d235df.interactive-fire-calculator.pages.dev` (code `2277b80`). It found and we fixed two defects (FIRE answer not announced; disabled Calculate unreachable). B31 is `ready_for_review`; B12 is accepted; B40 waits only on C11. Limitations and full matrix in `submissions/B31.md`. Final-candidate hosted scenarios on `2277b80` are recorded in `evidence/`.

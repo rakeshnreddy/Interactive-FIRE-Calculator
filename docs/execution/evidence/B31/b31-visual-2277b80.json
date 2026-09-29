@@ -1,0 +1,1373 @@
+{
+  "status": "PASS",
+  "scenario": "b31-visual",
+  "target": {
+    "deploymentId": "d0d235df-3d54-4d7d-9f88-745ff9f6f71b",
+    "url": "https://d0d235df.interactive-fire-calculator.pages.dev",
+    "sha": "2277b80ce089d0ddf0caf22a21c0c809ae6a31f5",
+    "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "commitDirty": false
+  },
+  "stages": [
+    {
+      "name": "preflight",
+      "status": "PASS",
+      "detail": {
+        "deploymentId": "d0d235df-3d54-4d7d-9f88-745ff9f6f71b",
+        "url": "https://d0d235df.interactive-fire-calculator.pages.dev",
+        "sha": "2277b80ce089d0ddf0caf22a21c0c809ae6a31f5",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      }
+    },
+    {
+      "name": "d1-reachable",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sign-in",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "viewport-matrix-both-themes",
+      "status": "PASS",
+      "detail": {
+        "cases": 44,
+        "detailFile": "raw/b31-visual-viewport-matrix.json",
+        "results": [
+          {
+            "width": 1440,
+            "theme": "light",
+            "route": "/",
+            "controls": 39,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-light-home.png"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "route": "/calculators",
+            "controls": 104,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-light-calculators.png"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "route": "/calculators/fire",
+            "controls": 53,
+            "smallTargets": [
+              "button:Calculators",
+              "button:FIRE Calculator"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-light-calculators-fire.png"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "route": "/calculators/mortgage",
+            "controls": 43,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-light-calculators-mortgage.png"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "route": "/",
+            "controls": 39,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-dark-home.png"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "route": "/calculators",
+            "controls": 104,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-dark-calculators.png"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "route": "/calculators/fire",
+            "controls": 53,
+            "smallTargets": [
+              "button:Calculators",
+              "button:FIRE Calculator"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-dark-calculators-fire.png"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "route": "/calculators/mortgage",
+            "controls": 43,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-dark-calculators-mortgage.png"
+          },
+          {
+            "width": 1024,
+            "theme": "light",
+            "route": "/",
+            "controls": 37,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-light-home.png"
+          },
+          {
+            "width": 1024,
+            "theme": "light",
+            "route": "/calculators",
+            "controls": 102,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-light-calculators.png"
+          },
+          {
+            "width": 1024,
+            "theme": "light",
+            "route": "/calculators/fire",
+            "controls": 51,
+            "smallTargets": [
+              "button:Calculators",
+              "button:FIRE Calculator"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-light-calculators-fire.png"
+          },
+          {
+            "width": 1024,
+            "theme": "light",
+            "route": "/calculators/mortgage",
+            "controls": 41,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-light-calculators-mortgage.png"
+          },
+          {
+            "width": 1024,
+            "theme": "dark",
+            "route": "/",
+            "controls": 37,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-dark-home.png"
+          },
+          {
+            "width": 1024,
+            "theme": "dark",
+            "route": "/calculators",
+            "controls": 102,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-dark-calculators.png"
+          },
+          {
+            "width": 1024,
+            "theme": "dark",
+            "route": "/calculators/fire",
+            "controls": 51,
+            "smallTargets": [
+              "button:Calculators",
+              "button:FIRE Calculator"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-dark-calculators-fire.png"
+          },
+          {
+            "width": 1024,
+            "theme": "dark",
+            "route": "/calculators/mortgage",
+            "controls": 41,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1024-dark-calculators-mortgage.png"
+          },
+          {
+            "width": 768,
+            "theme": "light",
+            "route": "/",
+            "controls": 37,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-768-light-home.png"
+          },
+          {
+            "width": 768,
+            "theme": "light",
+            "route": "/calculators",
+            "controls": 102,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-768-light-calculators.png"
+          },
+          {
+            "width": 768,
+            "theme": "light",
+            "route": "/calculators/fire",
+            "controls": 51,
+            "smallTargets": [
+              "button:Calculators",
+              "button:FIRE Calculator"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-768-light-calculators-fire.png"
+          },
+          {
+            "width": 768,
+            "theme": "light",
+            "route": "/calculators/mortgage",
+            "controls": 41,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-768-light-calculators-mortgage.png"
+          },
+          {
+            "width": 768,
+            "theme": "dark",
+            "route": "/",
+            "controls": 37,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-768-dark-home.png"
+          },
+          {
+            "width": 768,
+            "theme": "dark",
+            "route": "/calculators",
+            "controls": 102,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-768-dark-calculators.png"
+          },
+          {
+            "width": 768,
+            "theme": "dark",
+            "route": "/calculators/fire",
+            "controls": 51,
+            "smallTargets": [
+              "button:Calculators",
+              "button:FIRE Calculator"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-768-dark-calculators-fire.png"
+          },
+          {
+            "width": 768,
+            "theme": "dark",
+            "route": "/calculators/mortgage",
+            "controls": 41,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-768-dark-calculators-mortgage.png"
+          },
+          {
+            "width": 390,
+            "theme": "light",
+            "route": "/",
+            "controls": 36,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-light-home.png"
+          },
+          {
+            "width": 390,
+            "theme": "light",
+            "route": "/calculators",
+            "controls": 101,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-light-calculators.png"
+          },
+          {
+            "width": 390,
+            "theme": "light",
+            "route": "/calculators/fire",
+            "controls": 48,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-light-calculators-fire.png"
+          },
+          {
+            "width": 390,
+            "theme": "light",
+            "route": "/calculators/mortgage",
+            "controls": 40,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-light-calculators-mortgage.png"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "route": "/",
+            "controls": 36,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-dark-home.png"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "route": "/calculators",
+            "controls": 101,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-dark-calculators.png"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "route": "/calculators/fire",
+            "controls": 48,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-dark-calculators-fire.png"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "route": "/calculators/mortgage",
+            "controls": 40,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-390-dark-calculators-mortgage.png"
+          },
+          {
+            "width": 320,
+            "theme": "light",
+            "route": "/",
+            "controls": 36,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-light-home.png"
+          },
+          {
+            "width": 320,
+            "theme": "light",
+            "route": "/calculators",
+            "controls": 101,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-light-calculators.png"
+          },
+          {
+            "width": 320,
+            "theme": "light",
+            "route": "/calculators/fire",
+            "controls": 48,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-light-calculators-fire.png"
+          },
+          {
+            "width": 320,
+            "theme": "light",
+            "route": "/calculators/mortgage",
+            "controls": 40,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-light-calculators-mortgage.png"
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "route": "/",
+            "controls": 36,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-dark-home.png"
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "route": "/calculators",
+            "controls": 101,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-dark-calculators.png"
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "route": "/calculators/fire",
+            "controls": 48,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-dark-calculators-fire.png"
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "route": "/calculators/mortgage",
+            "controls": 40,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-dark-calculators-mortgage.png"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "route": "/dashboard",
+            "controls": 19,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-signed-in-dashboard.png"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "route": "/settings",
+            "controls": 21,
+            "smallTargets": [],
+            "problems": [],
+            "screenshot": "raw/matrix-1440-signed-in-settings.png"
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "route": "/dashboard",
+            "controls": 13,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-signed-in-dashboard.png"
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "route": "/settings",
+            "controls": 15,
+            "smallTargets": [
+              "a:FinPath"
+            ],
+            "problems": [],
+            "screenshot": "raw/matrix-320-signed-in-settings.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard-and-focus",
+      "status": "PASS",
+      "detail": {
+        "skipLink": "Skip to content",
+        "afterSkip": {
+          "hash": "#main-content",
+          "active": "main-content"
+        },
+        "tabStops": 33,
+        "order": [
+          "button:Calculators",
+          "button:FIRE Calculator",
+          "button:Help for Planning question",
+          "button:FIRE number",
+          "button:Withdrawal",
+          "button:Help for Current age",
+          "input:Current age",
+          "button:Help for Retirement age",
+          "input:Retirement age",
+          "button:Help for Plan end age",
+          "input:Plan end age",
+          "button:Help for Annual withdrawal need"
+        ],
+        "screenshots": [
+          "raw/keyboard-fire-focus-ring.png",
+          "raw/keyboard-mobile-menu-open-390.png"
+        ]
+      }
+    },
+    {
+      "name": "reduced-motion-transparency-forced-colors",
+      "status": "PASS",
+      "detail": {
+        "motionSamples": 12,
+        "surfaces": [
+          {
+            "el": "topbar",
+            "backdrop": "none",
+            "alpha": 1
+          },
+          {
+            "el": "quick-calculator",
+            "backdrop": "none",
+            "alpha": 1
+          },
+          {
+            "el": "panel",
+            "backdrop": "none",
+            "alpha": 1
+          },
+          {
+            "el": "panel",
+            "backdrop": "none",
+            "alpha": 1
+          },
+          {
+            "el": "panel",
+            "backdrop": "none",
+            "alpha": 1
+          },
+          {
+            "el": "panel",
+            "backdrop": "none",
+            "alpha": 1
+          },
+          {
+            "el": "panel",
+            "backdrop": "none",
+            "alpha": 1
+          },
+          {
+            "el": "panel",
+            "backdrop": "none",
+            "alpha": 1
+          }
+        ],
+        "screenshots": [
+          "raw/reduced-transparency-light-fire.png",
+          "raw/forced-colors-fire.png"
+        ]
+      }
+    },
+    {
+      "name": "contrast-effective-pairs",
+      "status": "PASS",
+      "detail": {
+        "pages": [
+          {
+            "theme": "light",
+            "route": "/",
+            "sampled": 34,
+            "minimum": 4.98,
+            "lowest": [
+              {
+                "element": "a.primary-button",
+                "text": "See when you could retire",
+                "fontSize": 14.08,
+                "ratio": 4.98,
+                "required": 4.5,
+                "background": "rgb(32,116,180)",
+                "color": "rgb(255,255,255)"
+              },
+              {
+                "element": "p.eyebrow",
+                "text": "Free financial calculators for the US an",
+                "fontSize": 12.8,
+                "ratio": 5.79,
+                "required": 4.5,
+                "background": "rgb(231,244,248)",
+                "color": "gradient worst stop rgb(8,106,92)"
+              },
+              {
+                "element": "span",
+                "text": "Popular starts",
+                "fontSize": 12.48,
+                "ratio": 6.23,
+                "required": 4.5,
+                "background": "rgb(231,241,251)",
+                "color": "rgb(70,90,110)"
+              },
+              {
+                "element": "span.hero-example-badge",
+                "text": "Illustrative example · USD",
+                "fontSize": 12.8,
+                "ratio": 6.24,
+                "required": 4.5,
+                "background": "rgb(220,236,237)",
+                "color": "rgb(7,95,82)"
+              }
+            ]
+          },
+          {
+            "theme": "light",
+            "route": "/calculators",
+            "sampled": 32,
+            "minimum": 5.03,
+            "lowest": [
+              {
+                "element": "button.active",
+                "text": "All",
+                "fontSize": 13.76,
+                "ratio": 5.03,
+                "required": 4.5,
+                "background": "rgb(29,117,170)",
+                "color": "rgb(255,255,255)"
+              },
+              {
+                "element": "p.eyebrow",
+                "text": "Decision toolkits",
+                "fontSize": 16,
+                "ratio": 5.84,
+                "required": 4.5,
+                "background": "rgb(238,243,250)",
+                "color": "gradient worst stop rgb(8,106,92)"
+              },
+              {
+                "element": "p.eyebrow",
+                "text": "Starting paths",
+                "fontSize": 12.48,
+                "ratio": 5.84,
+                "required": 4.5,
+                "background": "rgb(238,243,250)",
+                "color": "gradient worst stop rgb(8,106,92)"
+              },
+              {
+                "element": "a.nav-button",
+                "text": "Calculators",
+                "fontSize": 13.44,
+                "ratio": 6.12,
+                "required": 4.5,
+                "background": "rgb(218,234,234)",
+                "color": "rgb(7,95,82)"
+              }
+            ]
+          },
+          {
+            "theme": "light",
+            "route": "/calculators/fire",
+            "sampled": 26,
+            "minimum": 5.1,
+            "lowest": [
+              {
+                "element": "button.active",
+                "text": "US dollar ($)",
+                "fontSize": 16,
+                "ratio": 5.1,
+                "required": 4.5,
+                "background": "rgb(11,124,108)",
+                "color": "rgb(255,255,255)"
+              },
+              {
+                "element": "a.nav-button",
+                "text": "FIRE",
+                "fontSize": 13.44,
+                "ratio": 6.3,
+                "required": 4.5,
+                "background": "rgb(222,237,236)",
+                "color": "rgb(7,95,82)"
+              },
+              {
+                "element": "button.primary-button",
+                "text": "Calculate",
+                "fontSize": 14.08,
+                "ratio": 6.3,
+                "required": 4.5,
+                "background": "rgb(27,99,159)",
+                "color": "rgb(255,255,255)"
+              },
+              {
+                "element": "button",
+                "text": "Indian rupee (₹)",
+                "fontSize": 16,
+                "ratio": 6.51,
+                "required": 4.5,
+                "background": "rgb(241,245,251)",
+                "color": "rgb(70,90,110)"
+              }
+            ]
+          },
+          {
+            "theme": "light",
+            "route": "/calculators/mortgage",
+            "sampled": 34,
+            "minimum": 5.84,
+            "lowest": [
+              {
+                "element": "p.eyebrow",
+                "text": "Home Buying & Mortgage United States",
+                "fontSize": 16,
+                "ratio": 5.84,
+                "required": 4.5,
+                "background": "rgb(238,243,250)",
+                "color": "gradient worst stop rgb(8,106,92)"
+              },
+              {
+                "element": "a.nav-button",
+                "text": "Calculators",
+                "fontSize": 13.44,
+                "ratio": 6.12,
+                "required": 4.5,
+                "background": "rgb(218,234,234)",
+                "color": "rgb(7,95,82)"
+              },
+              {
+                "element": "p.calculator-scope-note",
+                "text": "Estimate a fixed payment and lifetime bo",
+                "fontSize": 16,
+                "ratio": 6.39,
+                "required": 4.5,
+                "background": "rgb(238,243,250)",
+                "color": "rgb(70,90,110)"
+              },
+              {
+                "element": "span",
+                "text": "Same calculation, other presets:",
+                "fontSize": 13.76,
+                "ratio": 6.39,
+                "required": 4.5,
+                "background": "rgb(238,243,250)",
+                "color": "rgb(70,90,110)"
+              }
+            ]
+          },
+          {
+            "theme": "light",
+            "route": "/dashboard",
+            "sampled": 41,
+            "minimum": 5.54,
+            "lowest": [
+              {
+                "element": "span",
+                "text": "Medium",
+                "fontSize": 11.2,
+                "ratio": 5.54,
+                "required": 4.5,
+                "background": "rgb(231,226,221)",
+                "color": "rgb(70,90,110)"
+              },
+              {
+                "element": "p.eyebrow",
+                "text": "Dashboard",
+                "fontSize": 16,
+                "ratio": 5.84,
+                "required": 4.5,
+                "background": "rgb(238,243,250)",
+                "color": "gradient worst stop rgb(8,106,92)"
+              },
+              {
+                "element": "span",
+                "text": "High",
+                "fontSize": 11.2,
+                "ratio": 5.93,
+                "required": 4.5,
+                "background": "rgb(244,231,236)",
+                "color": "rgb(70,90,110)"
+              },
+              {
+                "element": "span",
+                "text": "High",
+                "fontSize": 11.2,
+                "ratio": 5.93,
+                "required": 4.5,
+                "background": "rgb(244,231,236)",
+                "color": "rgb(70,90,110)"
+              }
+            ]
+          },
+          {
+            "theme": "light",
+            "route": "/settings",
+            "sampled": 25,
+            "minimum": 4.97,
+            "lowest": [
+              {
+                "element": "button.primary-button",
+                "text": "Save profile",
+                "fontSize": 14.08,
+                "ratio": 4.97,
+                "required": 4.5,
+                "background": "rgb(29,118,170)",
+                "color": "rgb(255,255,255)"
+              },
+              {
+                "element": "p.eyebrow",
+                "text": "Settings",
+                "fontSize": 16,
+                "ratio": 5.84,
+                "required": 4.5,
+                "background": "rgb(238,243,250)",
+                "color": "gradient worst stop rgb(8,106,92)"
+              },
+              {
+                "element": "p.eyebrow",
+                "text": "Optional",
+                "fontSize": 12.48,
+                "ratio": 6.23,
+                "required": 4.5,
+                "background": "rgb(249,250,252)",
+                "color": "gradient worst stop rgb(8,106,92)"
+              },
+              {
+                "element": "button.nav-button",
+                "text": "Workspace",
+                "fontSize": 13.44,
+                "ratio": 6.24,
+                "required": 4.5,
+                "background": "rgb(221,236,236)",
+                "color": "rgb(7,95,82)"
+              }
+            ]
+          },
+          {
+            "theme": "dark",
+            "route": "/",
+            "sampled": 34,
+            "minimum": 7.18,
+            "lowest": [
+              {
+                "element": "p",
+                "text": "Retirement, mortgages, loans, savings an",
+                "fontSize": 17.28,
+                "ratio": 7.18,
+                "required": 4.5,
+                "background": "rgb(17,37,60)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span",
+                "text": "Popular starts",
+                "fontSize": 12.48,
+                "ratio": 7.2,
+                "required": 4.5,
+                "background": "rgb(16,37,59)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span.hero-example-horizon",
+                "text": "30-year horizon",
+                "fontSize": 12.8,
+                "ratio": 7.23,
+                "required": 4.5,
+                "background": "rgb(26,35,57)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span.hero-example-badge",
+                "text": "Illustrative example · USD",
+                "fontSize": 12.8,
+                "ratio": 7.25,
+                "required": 4.5,
+                "background": "rgb(33,63,76)",
+                "color": "rgb(95,230,200)"
+              }
+            ]
+          },
+          {
+            "theme": "dark",
+            "route": "/calculators",
+            "sampled": 32,
+            "minimum": 7.97,
+            "lowest": [
+              {
+                "element": "span.starting-path-badge",
+                "text": "Savings & Growth",
+                "fontSize": 11.52,
+                "ratio": 7.97,
+                "required": 4.5,
+                "background": "rgb(30,57,63)",
+                "color": "rgb(95,230,200)"
+              },
+              {
+                "element": "span.starting-path-badge",
+                "text": "Home & Loans",
+                "fontSize": 11.52,
+                "ratio": 8.08,
+                "required": 4.5,
+                "background": "rgb(29,56,62)",
+                "color": "rgb(95,230,200)"
+              },
+              {
+                "element": "span.starting-path-question",
+                "text": "Buying a home?",
+                "fontSize": 12.48,
+                "ratio": 8.17,
+                "required": 4.5,
+                "background": "rgb(16,25,38)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span.starting-path-question",
+                "text": "Growing your savings?",
+                "fontSize": 12.48,
+                "ratio": 8.17,
+                "required": 4.5,
+                "background": "rgb(16,25,38)",
+                "color": "rgb(159,179,196)"
+              }
+            ]
+          },
+          {
+            "theme": "dark",
+            "route": "/calculators/fire",
+            "sampled": 26,
+            "minimum": 8.05,
+            "lowest": [
+              {
+                "element": "label",
+                "text": "Annual withdrawal need",
+                "fontSize": 12.16,
+                "ratio": 8.05,
+                "required": 4.5,
+                "background": "rgb(16,27,39)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "small",
+                "text": "7.0% return, 2.5% inflation • End-year t",
+                "fontSize": 12.48,
+                "ratio": 8.1,
+                "required": 4.5,
+                "background": "rgb(15,26,41)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "label",
+                "text": "Current portfolio",
+                "fontSize": 12.16,
+                "ratio": 8.25,
+                "required": 4.5,
+                "background": "rgb(15,24,37)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "label",
+                "text": "Expected return",
+                "fontSize": 12.16,
+                "ratio": 8.25,
+                "required": 4.5,
+                "background": "rgb(15,24,37)",
+                "color": "rgb(159,179,196)"
+              }
+            ]
+          },
+          {
+            "theme": "dark",
+            "route": "/calculators/mortgage",
+            "sampled": 34,
+            "minimum": 8.1,
+            "lowest": [
+              {
+                "element": "span",
+                "text": "Loan amount",
+                "fontSize": 12.16,
+                "ratio": 8.1,
+                "required": 4.5,
+                "background": "rgb(15,26,41)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "small.calculator-field-helper",
+                "text": "Enter the loan amount in the calculator ",
+                "fontSize": 12.48,
+                "ratio": 8.1,
+                "required": 4.5,
+                "background": "rgb(15,26,41)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span",
+                "text": "Interest rate",
+                "fontSize": 12.16,
+                "ratio": 8.1,
+                "required": 4.5,
+                "background": "rgb(15,26,41)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "small.calculator-field-helper",
+                "text": "Enter the interest rate as an annual per",
+                "fontSize": 12.48,
+                "ratio": 8.1,
+                "required": 4.5,
+                "background": "rgb(15,26,41)",
+                "color": "rgb(159,179,196)"
+              }
+            ]
+          },
+          {
+            "theme": "dark",
+            "route": "/dashboard",
+            "sampled": 41,
+            "minimum": 6.78,
+            "lowest": [
+              {
+                "element": "span",
+                "text": "High",
+                "fontSize": 11.2,
+                "ratio": 6.78,
+                "required": 4.5,
+                "background": "rgb(44,38,52)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span",
+                "text": "High",
+                "fontSize": 11.2,
+                "ratio": 6.8,
+                "required": 4.5,
+                "background": "rgb(43,38,52)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span",
+                "text": "Medium",
+                "fontSize": 11.2,
+                "ratio": 6.85,
+                "required": 4.5,
+                "background": "rgb(38,40,41)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span",
+                "text": "Net worth",
+                "fontSize": 12.16,
+                "ratio": 7.94,
+                "required": 4.5,
+                "background": "rgb(19,28,40)",
+                "color": "rgb(159,179,196)"
+              }
+            ]
+          },
+          {
+            "theme": "dark",
+            "route": "/settings",
+            "sampled": 25,
+            "minimum": 7.94,
+            "lowest": [
+              {
+                "element": "span.profile-updated",
+                "text": "Updated 9/28/2026",
+                "fontSize": 12.16,
+                "ratio": 7.94,
+                "required": 4.5,
+                "background": "rgb(19,28,40)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "span",
+                "text": "Signed in as",
+                "fontSize": 12.48,
+                "ratio": 8.1,
+                "required": 4.5,
+                "background": "rgb(15,26,41)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "small.profile-private-label",
+                "text": "Private workspace",
+                "fontSize": 12.48,
+                "ratio": 8.1,
+                "required": 4.5,
+                "background": "rgb(15,26,41)",
+                "color": "rgb(159,179,196)"
+              },
+              {
+                "element": "label",
+                "text": "Display name",
+                "fontSize": 12.16,
+                "ratio": 8.33,
+                "required": 4.5,
+                "background": "rgb(14,23,36)",
+                "color": "rgb(159,179,196)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "states-empty-error-long",
+      "status": "PASS",
+      "detail": {
+        "emptyState": "No calculator matches that phrase.Try a decision such as buying a home, paying off debt, saving for ",
+        "calculateBlockedReason": "Enter expected return and inflation (or use the example values) to see your answer.",
+        "invalidValueErrors": [
+          "Use a return between -50% and 50% a year.",
+          "Return assumption of 99.0% is high for period 1.",
+          "Return assumption of 99.0% is high for period 1."
+        ],
+        "longValueControls": 55,
+        "loadingStateObserved": null,
+        "screenshots": [
+          "raw/state-search-empty.png",
+          "raw/state-fire-required-errors-dark.png",
+          "raw/state-fire-long-values-dark.png"
+        ]
+      }
+    },
+    {
+      "name": "landing-anchor-links",
+      "status": "PASS",
+      "detail": {
+        "pathname": "/calculators",
+        "hash": "#toolkit-checkup",
+        "targetExists": true,
+        "inView": true,
+        "h1": "Start with the question, not the formula."
+      }
+    },
+    {
+      "name": "lab-performance-three-runs",
+      "status": "PASS",
+      "detail": {
+        "summary": [
+          {
+            "route": "/",
+            "medianTtfbMs": 308,
+            "medianDomContentLoadedMs": 446,
+            "medianLoadMs": 522,
+            "medianLcpMs": 512,
+            "jsBytes": 139164,
+            "cssBytes": 35996,
+            "requests": 9,
+            "clerkLoaded": false
+          },
+          {
+            "route": "/calculators/fire",
+            "medianTtfbMs": 198,
+            "medianDomContentLoadedMs": 397,
+            "medianLoadMs": 531,
+            "medianLcpMs": 460,
+            "jsBytes": 139170,
+            "cssBytes": 35989,
+            "requests": 10,
+            "clerkLoaded": false
+          },
+          {
+            "route": "/calculators/mortgage",
+            "medianTtfbMs": 286,
+            "medianDomContentLoadedMs": 423,
+            "medianLoadMs": 500,
+            "medianLcpMs": 616,
+            "jsBytes": 212246,
+            "cssBytes": 35996,
+            "requests": 11,
+            "clerkLoaded": false
+          }
+        ],
+        "runs": [
+          {
+            "route": "/",
+            "run": 1,
+            "ttfb": 308,
+            "domContentLoaded": 446,
+            "load": 522,
+            "lcp": 512,
+            "htmlBytes": 2058,
+            "jsBytes": 139164,
+            "cssBytes": 35996,
+            "requests": 9,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/",
+            "run": 2,
+            "ttfb": 199,
+            "domContentLoaded": 395,
+            "load": 454,
+            "lcp": 460,
+            "htmlBytes": 2058,
+            "jsBytes": 139139,
+            "cssBytes": 35996,
+            "requests": 9,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/",
+            "run": 3,
+            "ttfb": 343,
+            "domContentLoaded": 513,
+            "load": 594,
+            "lcp": 576,
+            "htmlBytes": 2058,
+            "jsBytes": 139219,
+            "cssBytes": 35996,
+            "requests": 9,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/calculators/fire",
+            "run": 1,
+            "ttfb": 196,
+            "domContentLoaded": 385,
+            "load": 487,
+            "lcp": 448,
+            "htmlBytes": 1112,
+            "jsBytes": 139170,
+            "cssBytes": 35927,
+            "requests": 10,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/calculators/fire",
+            "run": 2,
+            "ttfb": 305,
+            "domContentLoaded": 427,
+            "load": 531,
+            "lcp": 508,
+            "htmlBytes": 1112,
+            "jsBytes": 139273,
+            "cssBytes": 35989,
+            "requests": 10,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/calculators/fire",
+            "run": 3,
+            "ttfb": 198,
+            "domContentLoaded": 397,
+            "load": 532,
+            "lcp": 460,
+            "htmlBytes": 1112,
+            "jsBytes": 139136,
+            "cssBytes": 35989,
+            "requests": 10,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/calculators/mortgage",
+            "run": 1,
+            "ttfb": 302,
+            "domContentLoaded": 426,
+            "load": 510,
+            "lcp": 628,
+            "htmlBytes": 1731,
+            "jsBytes": 212246,
+            "cssBytes": 36038,
+            "requests": 11,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/calculators/mortgage",
+            "run": 2,
+            "ttfb": 180,
+            "domContentLoaded": 383,
+            "load": 453,
+            "lcp": 564,
+            "htmlBytes": 1731,
+            "jsBytes": 212215,
+            "cssBytes": 35996,
+            "requests": 11,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          },
+          {
+            "route": "/calculators/mortgage",
+            "run": 3,
+            "ttfb": 286,
+            "domContentLoaded": 423,
+            "load": 500,
+            "lcp": 616,
+            "htmlBytes": 1731,
+            "jsBytes": 212365,
+            "cssBytes": 35996,
+            "requests": 11,
+            "clerkLoaded": false,
+            "consoleErrors": 0
+          }
+        ],
+        "note": "Lab measurements from one machine over the network; field metrics are unavailable (no analytics collection)."
+      }
+    }
+  ],
+  "cleanup": [
+    {
+      "tenant": "A",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "analytics_consent": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "tenant": "B",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "analytics_consent": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "error": null,
+  "startedAt": "2026-09-29T03:52:36.984Z",
+  "finishedAt": "2026-09-29T03:55:11.476Z"
+}

@@ -505,7 +505,7 @@
       "id": "B31",
       "title": "Close visual accessibility and performance acceptance matrix",
       "checkpoint": "C11",
-      "status": "blocked",
+      "status": "ready_for_review",
       "dependencies": [
         "B18",
         "B19",
@@ -528,9 +528,9 @@
       "prompt": "prompts/B31.md",
       "submission": "submissions/B31.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "f85c6dd",
+      "code_sha": "2277b80",
       "review": "reviews/C11.md",
-      "blocked_reason": "Actual VoiceOver/NVDA announcements and navigation on final candidate remain unobserved at B31/C11."
+      "blocked_reason": null
     },
     {
       "id": "B32",
@@ -726,7 +726,7 @@
     },
     {
       "id": "OA-3",
-      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350\u2026) before any production release; it is applied to the preview D1 only.",
+      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350…) before any production release; it is applied to the preview D1 only.",
       "blocking_task": "Production readiness of B12 only",
       "requested_date": "2026-09-27",
       "status": "pending"
