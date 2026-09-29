@@ -1,0 +1,6 @@
+{
+  "status": "BLOCKED",
+  "details": "Interactive screen reader (VoiceOver/NVDA) audio smoke requires reviewer assistance",
+  "limitation": "Headless/automated CLI environment lacks system audio output device and interactive assistive technology audio driver",
+  "assistedAction": "Perform manual interactive VoiceOver or screen-reader verification on macOS Safari/Chrome"
+}

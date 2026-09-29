@@ -1,0 +1,13 @@
+{
+  "pdfs": [
+    "print-light-bg.pdf",
+    "print-light-nobg.pdf",
+    "print-dark-bg.pdf",
+    "print-dark-nobg.pdf"
+  ],
+  "mediaOmitted": true,
+  "navOmitted": true,
+  "readableText": true,
+  "noClipping": true,
+  "pass": true
+}

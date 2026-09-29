@@ -1,0 +1,12 @@
+✔ loading requires actual content (0.58525ms)
+✔ unknown combination cannot pass (0.074958ms)
+✔ populated name alone cannot prove stale (0.0785ms)
+✔ observed loading content accepted (0.199541ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.791209

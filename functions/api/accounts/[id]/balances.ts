@@ -7,7 +7,7 @@ import {
   readJsonBody
 } from '../../../_lib/accounts';
 import { json } from '../../../_lib/http';
-import { requireDatabase } from '../../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../../_lib/persistence';
 import { requireClerkAuth } from '../../../_lib/session';
 import type { DatabaseEnv } from '../../../_lib/persistence';
 import type { ClerkEnv } from '../../../_lib/session';
@@ -30,8 +30,8 @@ export const onRequestGet: PagesFunction<BalanceEnv, BalanceParams> = async ({ r
     }
 
     return json({ balances });
-  } catch {
-    return json({ error: 'Unable to load balances.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load balances.');
   }
 };
 
@@ -57,8 +57,8 @@ export const onRequestPost: PagesFunction<BalanceEnv, BalanceParams> = async ({ 
     }
 
     return json({ account }, 201);
-  } catch {
-    return json({ error: 'Unable to save balance.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to save balance.');
   }
 };
 

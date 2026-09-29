@@ -1,0 +1,25 @@
+{
+  "id": "46714a3f-4559-40eb-97b9-cdc43d0e8808",
+  "short_id": "46714a3f",
+  "project_id": "1bcc1c6f-c8fd-4477-8276-5326be0172be",
+  "project_name": "interactive-fire-calculator",
+  "environment": "preview",
+  "url": "https://46714a3f.interactive-fire-calculator.pages.dev",
+  "deployment_trigger": {
+    "type": "ad_hoc",
+    "metadata": {
+      "branch": "codex/finpath-quality-execution",
+      "commit_hash": "1c73bffbb4a5d1f179d67f2934c900a8b44711e5",
+      "commit_dirty": false
+    }
+  },
+  "aliases": [
+    "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev"
+  ],
+  "d1_databases": {
+    "DB": {
+      "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+    }
+  },
+  "status": "success"
+}

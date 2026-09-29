@@ -1,6 +1,8 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { ensureUserProfile } from './persistence';
+import { readJsonBody } from './http';
+export { readJsonBody };
 
 export const transactionTypes = ['income', 'expense', 'transfer', 'adjustment'] as const;
 
@@ -305,13 +307,6 @@ export function summarizeTransactions(transactions: Transaction[]): TransactionS
   );
 }
 
-export async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 export function parseTransactionCreatePayload(value: unknown):
   | { ok: true; value: TransactionCreatePayload }

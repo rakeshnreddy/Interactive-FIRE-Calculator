@@ -1,0 +1,145 @@
+{
+  "testedAt": "2026-09-13T08:01:53.438Z",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "cases": [
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "390x844",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "colHeaderCount": 4,
+      "rowHeaderCount": 5,
+      "zeroCheckPassed": true,
+      "status": "PASS",
+      "screenshot": "mortgage-chart-390-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "dark",
+      "viewport": "390x844",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "colHeaderCount": 4,
+      "rowHeaderCount": 5,
+      "zeroCheckPassed": true,
+      "status": "PASS",
+      "screenshot": "mortgage-chart-390-dark.png"
+    },
+    {
+      "calc": "SIP",
+      "theme": "light",
+      "viewport": "390x844",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "colHeaderCount": 4,
+      "rowHeaderCount": 5,
+      "zeroCheckPassed": true,
+      "status": "PASS",
+      "screenshot": "sip-chart-390-light.png"
+    },
+    {
+      "calc": "SIP",
+      "theme": "dark",
+      "viewport": "390x844",
+      "hasVisualBars": false,
+      "swatchCount": 2,
+      "hasTable": true,
+      "colHeaderCount": 4,
+      "rowHeaderCount": 5,
+      "zeroCheckPassed": true,
+      "status": "PASS",
+      "screenshot": "sip-chart-390-dark.png"
+    },
+    {
+      "calc": "India Tax",
+      "theme": "light",
+      "viewport": "390x844",
+      "hasVisualBars": false,
+      "swatchCount": 1,
+      "hasTable": true,
+      "colHeaderCount": 3,
+      "rowHeaderCount": 4,
+      "zeroCheckPassed": true,
+      "status": "PASS",
+      "screenshot": "income-tax-india-chart-390-light.png"
+    },
+    {
+      "calc": "India Tax",
+      "theme": "dark",
+      "viewport": "390x844",
+      "hasVisualBars": false,
+      "swatchCount": 1,
+      "hasTable": true,
+      "colHeaderCount": 3,
+      "rowHeaderCount": 4,
+      "zeroCheckPassed": true,
+      "status": "PASS",
+      "screenshot": "income-tax-india-chart-390-dark.png"
+    },
+    {
+      "calc": "CAGR (Negative Fixture)",
+      "theme": "light",
+      "viewport": "390x844",
+      "hasNegativeRow": true,
+      "hasBaseline": true,
+      "containsMinus": true,
+      "status": "PASS",
+      "screenshot": "cagr-negative-390-light.png"
+    },
+    {
+      "calc": "CAGR (Negative Fixture)",
+      "theme": "dark",
+      "viewport": "390x844",
+      "hasNegativeRow": true,
+      "hasBaseline": true,
+      "containsMinus": true,
+      "status": "PASS",
+      "screenshot": "cagr-negative-390-dark.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "320x600",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-chart-320-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "dark",
+      "viewport": "320x600",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-chart-320-dark.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "768x1024",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-chart-768-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "light",
+      "viewport": "1440x900",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-chart-1440-light.png"
+    },
+    {
+      "calc": "Mortgage",
+      "theme": "dark",
+      "viewport": "1440x900",
+      "hasHorizontalOverflow": false,
+      "status": "PASS",
+      "screenshot": "mortgage-chart-1440-dark.png"
+    }
+  ]
+}

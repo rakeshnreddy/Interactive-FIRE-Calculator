@@ -16,6 +16,7 @@ export type CalculatorPublicContent = {
 
 const blueprints: Record<CalculatorFormula, CalculatorContentBlueprint> = {
   amortization: blueprint('see every scheduled payment and the balance decline', 'splits each fixed payment between principal and interest across the full term', 'the rate and scheduled payment pattern do not change during the term', 'compare total interest, principal progress, and the payoff timeline'),
+  arm: blueprint('see how an adjustable-rate payment could change after the fixed period', 'amortises the loan at the initial rate, then re-amortises the balance at the assumed adjusted rate', 'the adjusted rate is a planning assumption within the note\'s caps and the term is unchanged', 'judge whether you could still afford the payment after the first reset'),
   apr: blueprint('compare a loan rate after finance charges are included', 'converts the amount financed, payment stream, and upfront charges into an annualized borrowing cost', 'all entered finance charges are paid at origination and the payment schedule is completed as entered', 'compare offers on cost rather than note rate alone'),
   'balloon-loan': blueprint('estimate payments before a large balance becomes due', 'amortizes the loan over the stated term but stops the schedule at the balloon date', 'the note rate remains fixed and the remaining balance is due at the balloon date', 'judge whether the low initial payment justifies the later refinance or payoff risk'),
   'balance-transfer': blueprint('compare keeping a balance with moving it to a promotional offer', 'simulates both payoff paths using the same payment and includes the transfer fee', 'the promotional APR lasts until payoff and no new purchases are added', 'check whether interest savings exceed the fee and whether payoff fits the offer window'),
@@ -52,6 +53,7 @@ const blueprints: Record<CalculatorFormula, CalculatorContentBlueprint> = {
   'net-worth': blueprint('combine assets and liabilities into a household balance-sheet total', 'subtracts all entered liabilities from all entered assets', 'balances are measured on the same date and ownership is counted consistently', 'identify which accounts should be tracked to keep the number current'),
   nps: blueprint('project an NPS corpus and its annuity and lump-sum split', 'compounds recurring contributions and applies the selected annuity allocation at the end', 'contributions and returns follow the entered assumptions and rules may change before retirement', 'connect contributions to the retirement income mix you may need'),
   paycheck: blueprint('estimate take-home pay per period and across a year', 'annualizes gross pay, subtracts pre-tax deductions, estimates withholding, and removes post-tax deductions', 'the supplied withholding rate approximates payroll withholding for each period', 'map gross compensation into spendable monthly cashflow'),
+  points: blueprint('decide whether paying discount points is worth it', 'compares the payment at both rates on the same loan and divides the cost of the points by the monthly saving', 'the points are paid at closing and you keep the loan long enough for the comparison to matter', 'compare the break-even month with how long you expect to keep the loan'),
   pmi: blueprint('estimate private mortgage insurance and the equity path toward removal', 'applies an annual PMI rate to the financed amount and tracks loan-to-value assumptions', 'the quoted PMI rate remains applicable until lender removal rules are met', 'see how down payment and principal reduction affect insurance cost'),
   ppf: blueprint('project PPF contributions, interest, and maturity value', 'compounds annual contributions at the entered rate across the selected term', 'contributions are made at the modeled annual timing and the crediting rate is an assumption', 'compare deposits with estimated interest toward a long-term goal'),
   rd: blueprint('project recurring-deposit maturity value', 'compounds equal monthly deposits over the selected term', 'each deposit is made on schedule and the annual rate remains unchanged', 'see how contribution pace and term shape maturity proceeds'),
@@ -71,7 +73,7 @@ const blueprints: Record<CalculatorFormula, CalculatorContentBlueprint> = {
   'tax-rate': blueprint('estimate withholding or tax from an entered effective rate', 'subtracts exemptions from the payment base and applies the selected percentage', 'the chosen rate and exempt amount match the transaction for planning purposes', 'estimate the gross-to-net cash impact before filing or reconciliation'),
   'us-tax': blueprint('estimate US federal single-filer tax and an optional state placeholder', 'applies the modeled standard deduction and progressive federal brackets before adding the entered state rate', 'the filer is single and credits, payroll tax, AMT, itemization, and state-specific rules are excluded', 'understand bracketed federal tax separately from the state planning allowance'),
   'va-loan': blueprint('estimate a VA-style payment with the funding fee included', 'adds the entered funding fee to the financed amount and amortizes principal and interest', 'the borrower and property qualify and the entered funding-fee treatment is correct', 'see how the fee changes financed balance and monthly payment'),
-  xirr: blueprint('approximate an annualized return when recurring cashflows are present', 'compares ending value with the opening outflow and average monthly contributions', 'cashflows are evenly timed; exact dated XIRR requires transaction-level dates', 'use the approximation as a screen before calculating a true dated return')
+  xirr: blueprint('estimate a modeled annualised return for an investment with equal monthly contributions', 'solves the periodic monthly IRR that grows the opening amount and equal end-of-month contributions to the ending value', 'cash flows are equal and monthly with no dates; a dated XIRR for irregular cash flows is not yet supported', 'use the estimate as a screen before calculating a dated XIRR from your actual transaction dates')
 };
 
 export function buildCalculatorPublicContent(options: {
@@ -82,9 +84,10 @@ export function buildCalculatorPublicContent(options: {
 }): CalculatorPublicContent {
   const { formula, inputs, slug, title } = options;
   const content = blueprints[formula];
-  const inputNames = humanList(inputs.slice(0, 4).map((input) => input.label.toLowerCase()));
+  const inputNames = humanList(inputs.slice(0, 4).map((input) => softLower(input.label)));
   const changingInputs = humanList(inputs.slice(0, 3).map((input) => input.label));
-  const description = `${title} helps you ${content.purpose} using ${inputNames}.`;
+  const keyInputs = humanList(inputs.slice(0, 3).map((input) => softLower(input.label)));
+  const description = `${capitalize(content.purpose)} with the ${title}: enter your ${keyInputs}.`;
   const explanation = `${title} ${content.method}. ${routeAngles[slug] ?? ''} Use the result to ${content.decision}.`
     .replace(/\s+/g, ' ');
 
@@ -162,4 +165,12 @@ function humanList(values: string[]): string {
   if (values.length <= 1) return values[0] ?? 'the values you enter';
   if (values.length === 2) return `${values[0]} and ${values[1]}`;
   return `${values.slice(0, -1).join(', ')}, and ${values.at(-1)}`;
+}
+
+// Lowercases a label for use mid-sentence while keeping acronyms such as APR, EMI, DA or HRA.
+function softLower(label: string): string {
+  return label
+    .split(' ')
+    .map((word) => (/[A-Z]{2,}|\(k\)|\d/.test(word) ? word : word.toLowerCase()))
+    .join(' ');
 }

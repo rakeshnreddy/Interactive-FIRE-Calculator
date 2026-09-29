@@ -8,7 +8,7 @@ import {
   updateAccount
 } from '../../_lib/accounts';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
@@ -31,8 +31,8 @@ export const onRequestGet: PagesFunction<AccountEnv, AccountParams> = async ({ r
     }
 
     return json({ account });
-  } catch {
-    return json({ error: 'Unable to load account.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load account.');
   }
 };
 
@@ -58,8 +58,8 @@ export const onRequestPut: PagesFunction<AccountEnv, AccountParams> = async ({ r
     }
 
     return json({ account });
-  } catch {
-    return json({ error: 'Unable to update account.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to update account.');
   }
 };
 
@@ -78,8 +78,8 @@ export const onRequestDelete: PagesFunction<AccountEnv, AccountParams> = async (
     }
 
     return json({ ok: true });
-  } catch {
-    return json({ error: 'Unable to archive account.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to archive account.');
   }
 };
 

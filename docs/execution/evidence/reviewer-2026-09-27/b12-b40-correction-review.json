@@ -1,0 +1,49 @@
+{
+  "reviewedAt": "2026-09-27T09:18:59.494530+00:00",
+  "codeSha": "b3416cb1cb8d162a11a72601c549bf460eef36c8",
+  "preview": {
+    "url": "https://ba7c620f.interactive-fire-calculator.pages.dev",
+    "deploymentId": "ba7c620f-26d6-47e2-8699-30b2054b3ad5",
+    "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "ci": {
+    "run": 36308077118,
+    "conclusion": "success",
+    "head": "d8dbcb9528f6f67c1a0a83699b33a68160053462"
+  },
+  "tests": {
+    "fullSuite": "PASS",
+    "vitestFiles": 79,
+    "vitestTests": 2463,
+    "publicCalculatorRoutes": 84,
+    "packetValidator": "PASS"
+  },
+  "retention": {
+    "deployedWorkerVersion": "296634b2-7d96-40a0-accb-c598b55166fa",
+    "cloudflareApiSchedule": "17 3 * * *",
+    "cloudflareApiBinding": "preview D1 only",
+    "independentScheduledTest": "wrangler dev --remote --test-scheduled on candidate source",
+    "expiredEventRemoved": true,
+    "recentEventRetained": true,
+    "expiredCohortRemoved": true,
+    "recentCohortRetained": true,
+    "syntheticRowsRemaining": 0,
+    "note": "Test-mode scheduled event observed; first unattended cron remains an operational monitor."
+  },
+  "calculator": {
+    "routes": [
+      "/calculators/nps",
+      "/calculators/xirr"
+    ],
+    "viewportWidths": [
+      390,
+      1280
+    ],
+    "http200": true,
+    "horizontalOverflow": false,
+    "pageErrors": 0,
+    "correctedCopyPresent": true,
+    "datedXirrGapRemainsOpen": true
+  },
+  "secretsOrUserRecordsIncluded": false
+}

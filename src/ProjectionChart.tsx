@@ -9,6 +9,7 @@ import {
   YAxis
 } from 'recharts';
 import { formatMoney } from './lib/fire';
+import { formatCompactMoney } from './lib/money';
 
 type ProjectionChartRow = {
   balance: number;
@@ -23,16 +24,29 @@ type TooltipPayload = {
   value?: number;
 };
 
-export function ProjectionChart({ label, rows }: { label: string; rows: ProjectionChartRow[] }) {
+export function ProjectionChart({
+  label,
+  rows,
+  startAge,
+  currency = 'USD'
+}: {
+  label: string;
+  rows: ProjectionChartRow[];
+  startAge?: number;
+  currency?: string;
+}) {
+  // Year 1 of the drawdown is the retirement age, so the axis can show ages the user recognises.
+  const data = rows.map((row) => ({ ...row, age: startAge === undefined ? row.year : startAge + row.year - 1 }));
+  const axisLabel = startAge === undefined ? 'Year' : 'Age';
   return (
-    <div className="chart-frame" role="img" aria-label={`${label} chart showing ending balance and withdrawal by year`}>
+    <div className="chart-frame" role="img" aria-label={`${label} chart showing ending balance and withdrawal by ${axisLabel.toLowerCase()}`}>
       <ResponsiveContainer width="100%" height={360}>
-        <LineChart data={rows} margin={{ top: 10, right: 22, left: 8, bottom: 10 }}>
+        <LineChart data={data} margin={{ top: 10, right: 22, left: 8, bottom: 18 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" />
-          <YAxis tickFormatter={(value) => `$${Math.round(Number(value) / 1000)}k`} width={72} />
-          <Tooltip content={<MoneyTooltip />} />
-          <Legend />
+          <XAxis dataKey="age" label={{ value: axisLabel, position: 'insideBottom', offset: -8 }} />
+          <YAxis tickFormatter={(value) => formatCompactMoney(Number(value), currency)} width={72} />
+          <Tooltip content={<MoneyTooltip axisLabel={axisLabel} currency={currency} />} />
+          <Legend verticalAlign="top" height={30} />
           <Line
             type="monotone"
             dataKey="balance"
@@ -58,11 +72,15 @@ export function ProjectionChart({ label, rows }: { label: string; rows: Projecti
 function MoneyTooltip({
   active,
   label,
-  payload
+  payload,
+  axisLabel = 'Year',
+  currency = 'USD'
 }: {
   active?: boolean;
   label?: number | string;
   payload?: TooltipPayload[];
+  axisLabel?: string;
+  currency?: string;
 }) {
   if (!active || !payload?.length) {
     return null;
@@ -70,10 +88,10 @@ function MoneyTooltip({
 
   return (
     <div className="chart-tooltip">
-      <strong>Year {label}</strong>
+      <strong>{axisLabel} {label}</strong>
       {payload.map((entry) => (
         <span key={entry.dataKey} style={{ color: entry.color }}>
-          {entry.name}: {formatMoney(Number(entry.value))}
+          {entry.name}: {formatMoney(Number(entry.value), { currency })}
         </span>
       ))}
     </div>

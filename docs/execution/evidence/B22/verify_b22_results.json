@@ -1,0 +1,229 @@
+{
+  "testedAt": "2026-09-13T21:30:57.021Z",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "fontChecks": [
+    {
+      "target": "Compound Interest",
+      "totalInputs": 13,
+      "allInputs16px": true,
+      "totalSelects": 8,
+      "allSelects16px": true,
+      "sampleInputs": [
+        {
+          "id": "compound-principal",
+          "fontSize": "16px"
+        },
+        {
+          "id": "compound-years",
+          "fontSize": "16px"
+        },
+        {
+          "id": "compound-recurringContribution",
+          "fontSize": "16px"
+        },
+        {
+          "id": "compound-annualRatePercent",
+          "fontSize": "16px"
+        },
+        {
+          "id": "compound-annualTopUp",
+          "fontSize": "16px"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "totalInputs": 9,
+      "allInputs16px": true,
+      "totalSelects": 8,
+      "allSelects16px": true,
+      "sampleInputs": [
+        {
+          "id": "savings-targetAmount",
+          "fontSize": "16px"
+        },
+        {
+          "id": "savings-currentSavings",
+          "fontSize": "16px"
+        },
+        {
+          "id": "savings-years",
+          "fontSize": "16px"
+        },
+        {
+          "id": "savings-annualRatePercent",
+          "fontSize": "16px"
+        },
+        {
+          "id": "savings-currentContribution",
+          "fontSize": "16px"
+        }
+      ],
+      "status": "PASS"
+    }
+  ],
+  "scopeChecks": [
+    {
+      "target": "Compound Interest",
+      "hasScopeNote": true,
+      "scopeNoteText": "Project recurring growth with timing, fees, inflation, future cash flows, and a fully reconciling schedule.",
+      "hasDuplicateTrustStrip": false,
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "hasScopeNote": true,
+      "scopeNoteText": "Turn a target and deadline into a practical saving pace, then test whether your current plan is on track.",
+      "hasDuplicateTrustStrip": false,
+      "status": "PASS"
+    }
+  ],
+  "disclosureChecks": [
+    {
+      "target": "Compound Interest",
+      "totalDisclosures": 6,
+      "hasTimingDisclosure": true,
+      "hasSchedule": true,
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "totalDisclosures": 6,
+      "hasTimingDisclosure": true,
+      "hasSchedule": true,
+      "status": "PASS"
+    }
+  ],
+  "cases": [
+    {
+      "target": "Compound Interest",
+      "viewport": "1440x900 (desktop)",
+      "theme": "light",
+      "firstViewportScreenshot": "compound-interest-desktop-light-viewport.png",
+      "fullPageScreenshot": "compound-interest-desktop-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Compound Interest",
+      "viewport": "1440x900 (desktop)",
+      "theme": "dark",
+      "firstViewportScreenshot": "compound-interest-desktop-dark-viewport.png",
+      "fullPageScreenshot": "compound-interest-desktop-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "1440x900 (desktop)",
+      "theme": "light",
+      "firstViewportScreenshot": "savings-goal-desktop-light-viewport.png",
+      "fullPageScreenshot": "savings-goal-desktop-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "1440x900 (desktop)",
+      "theme": "dark",
+      "firstViewportScreenshot": "savings-goal-desktop-dark-viewport.png",
+      "fullPageScreenshot": "savings-goal-desktop-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Compound Interest",
+      "viewport": "768x1024 (tablet)",
+      "theme": "light",
+      "firstViewportScreenshot": "compound-interest-tablet-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Compound Interest",
+      "viewport": "768x1024 (tablet)",
+      "theme": "dark",
+      "firstViewportScreenshot": "compound-interest-tablet-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "768x1024 (tablet)",
+      "theme": "light",
+      "firstViewportScreenshot": "savings-goal-tablet-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "768x1024 (tablet)",
+      "theme": "dark",
+      "firstViewportScreenshot": "savings-goal-tablet-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Compound Interest",
+      "viewport": "390x844 (mobile)",
+      "theme": "light",
+      "firstViewportScreenshot": "compound-interest-mobile-light-viewport.png",
+      "fullPageScreenshot": "compound-interest-mobile-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Compound Interest",
+      "viewport": "390x844 (mobile)",
+      "theme": "dark",
+      "firstViewportScreenshot": "compound-interest-mobile-dark-viewport.png",
+      "fullPageScreenshot": "compound-interest-mobile-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "390x844 (mobile)",
+      "theme": "light",
+      "firstViewportScreenshot": "savings-goal-mobile-light-viewport.png",
+      "fullPageScreenshot": "savings-goal-mobile-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "390x844 (mobile)",
+      "theme": "dark",
+      "firstViewportScreenshot": "savings-goal-mobile-dark-viewport.png",
+      "fullPageScreenshot": "savings-goal-mobile-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Compound Interest",
+      "viewport": "320x568 (narrow)",
+      "theme": "light",
+      "firstViewportScreenshot": "compound-interest-narrow-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Compound Interest",
+      "viewport": "320x568 (narrow)",
+      "theme": "dark",
+      "firstViewportScreenshot": "compound-interest-narrow-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "320x568 (narrow)",
+      "theme": "light",
+      "firstViewportScreenshot": "savings-goal-narrow-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Savings Goal",
+      "viewport": "320x568 (narrow)",
+      "theme": "dark",
+      "firstViewportScreenshot": "savings-goal-narrow-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    }
+  ]
+}

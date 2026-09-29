@@ -1,0 +1,356 @@
+{
+  "testedAt": "2026-09-13T21:31:15.164Z",
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "fontChecks": [
+    {
+      "target": "Net Worth",
+      "totalInputs": 11,
+      "allInputs16px": true,
+      "totalSelects": 2,
+      "allSelects16px": true,
+      "sampleInputs": [
+        {
+          "id": "planning-cashAndBank",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-taxableInvestments",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-retirementAccounts",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-realEstate",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-vehiclesAndValuables",
+          "fontSize": "16px"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "totalInputs": 16,
+      "allInputs16px": true,
+      "totalSelects": 2,
+      "allSelects16px": true,
+      "sampleInputs": [
+        {
+          "id": "planning-takeHomePay",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-otherIncome",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-housing",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-utilities",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-groceries",
+          "fontSize": "16px"
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "totalInputs": 9,
+      "allInputs16px": true,
+      "totalSelects": 4,
+      "allSelects16px": true,
+      "sampleInputs": [
+        {
+          "id": "planning-monthlyEssentials",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-targetMonths",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-monthlyContribution",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-cashOnHand",
+          "fontSize": "16px"
+        },
+        {
+          "id": "planning-bankSavings",
+          "fontSize": "16px"
+        }
+      ],
+      "status": "PASS"
+    }
+  ],
+  "scopeChecks": [
+    {
+      "target": "Net Worth",
+      "hasScopeNote": true,
+      "scopeNoteText": "Build a dated household balance sheet, see what is liquid, and test how asset-value changes affect the snapshot.",
+      "hasDuplicateTrustStrip": false,
+      "hasFaqDisclosure": true,
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "hasScopeNote": true,
+      "scopeNoteText": "Turn take-home income into an auditable monthly plan, separate spending from saving, and stress-test the cash left over.",
+      "hasDuplicateTrustStrip": false,
+      "hasFaqDisclosure": true,
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "hasScopeNote": true,
+      "scopeNoteText": "Size a liquid reserve from essential spending, see current runway, and build a transparent month-by-month funding path.",
+      "hasDuplicateTrustStrip": false,
+      "hasFaqDisclosure": true,
+      "status": "PASS"
+    }
+  ],
+  "disclosureChecks": [
+    {
+      "target": "Net Worth",
+      "totalDisclosures": 5,
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "totalDisclosures": 6,
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "totalDisclosures": 6,
+      "status": "PASS"
+    }
+  ],
+  "negativeChecks": [
+    {
+      "case": "Net worth deficit (k mortgage)",
+      "titleExpected": "Estimated net deficit",
+      "titleObserved": "Estimated net deficit",
+      "hasDeficitLabel": true,
+      "status": "PASS"
+    },
+    {
+      "case": "Budget deficit (k housing expense)",
+      "titleExpected": "Monthly deficit",
+      "titleObserved": "Monthly deficit",
+      "hasDeficitLabel": true,
+      "status": "PASS"
+    },
+    {
+      "case": "Emergency fund fully funded (default 6 months reserve)",
+      "expectedHeadlineSubstring": "Reserve target fully covered",
+      "observedHeadline": "Reserve target fully covered$27,000$4,500 × 6 months",
+      "status": "PASS"
+    }
+  ],
+  "cases": [
+    {
+      "target": "Net Worth",
+      "viewport": "1440x900 (desktop)",
+      "theme": "light",
+      "firstViewportScreenshot": "net-worth-desktop-light-viewport.png",
+      "fullPageScreenshot": "net-worth-desktop-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Net Worth",
+      "viewport": "1440x900 (desktop)",
+      "theme": "dark",
+      "firstViewportScreenshot": "net-worth-desktop-dark-viewport.png",
+      "fullPageScreenshot": "net-worth-desktop-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "1440x900 (desktop)",
+      "theme": "light",
+      "firstViewportScreenshot": "budget-desktop-light-viewport.png",
+      "fullPageScreenshot": "budget-desktop-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "1440x900 (desktop)",
+      "theme": "dark",
+      "firstViewportScreenshot": "budget-desktop-dark-viewport.png",
+      "fullPageScreenshot": "budget-desktop-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "1440x900 (desktop)",
+      "theme": "light",
+      "firstViewportScreenshot": "emergency-fund-desktop-light-viewport.png",
+      "fullPageScreenshot": "emergency-fund-desktop-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "1440x900 (desktop)",
+      "theme": "dark",
+      "firstViewportScreenshot": "emergency-fund-desktop-dark-viewport.png",
+      "fullPageScreenshot": "emergency-fund-desktop-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Net Worth",
+      "viewport": "768x1024 (tablet)",
+      "theme": "light",
+      "firstViewportScreenshot": "net-worth-tablet-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Net Worth",
+      "viewport": "768x1024 (tablet)",
+      "theme": "dark",
+      "firstViewportScreenshot": "net-worth-tablet-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "768x1024 (tablet)",
+      "theme": "light",
+      "firstViewportScreenshot": "budget-tablet-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "768x1024 (tablet)",
+      "theme": "dark",
+      "firstViewportScreenshot": "budget-tablet-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "768x1024 (tablet)",
+      "theme": "light",
+      "firstViewportScreenshot": "emergency-fund-tablet-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "768x1024 (tablet)",
+      "theme": "dark",
+      "firstViewportScreenshot": "emergency-fund-tablet-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Net Worth",
+      "viewport": "390x844 (mobile)",
+      "theme": "light",
+      "firstViewportScreenshot": "net-worth-mobile-light-viewport.png",
+      "fullPageScreenshot": "net-worth-mobile-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Net Worth",
+      "viewport": "390x844 (mobile)",
+      "theme": "dark",
+      "firstViewportScreenshot": "net-worth-mobile-dark-viewport.png",
+      "fullPageScreenshot": "net-worth-mobile-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "390x844 (mobile)",
+      "theme": "light",
+      "firstViewportScreenshot": "budget-mobile-light-viewport.png",
+      "fullPageScreenshot": "budget-mobile-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "390x844 (mobile)",
+      "theme": "dark",
+      "firstViewportScreenshot": "budget-mobile-dark-viewport.png",
+      "fullPageScreenshot": "budget-mobile-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "390x844 (mobile)",
+      "theme": "light",
+      "firstViewportScreenshot": "emergency-fund-mobile-light-viewport.png",
+      "fullPageScreenshot": "emergency-fund-mobile-light-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "390x844 (mobile)",
+      "theme": "dark",
+      "firstViewportScreenshot": "emergency-fund-mobile-dark-viewport.png",
+      "fullPageScreenshot": "emergency-fund-mobile-dark-full.png",
+      "status": "PASS"
+    },
+    {
+      "target": "Net Worth",
+      "viewport": "320x568 (narrow)",
+      "theme": "light",
+      "firstViewportScreenshot": "net-worth-narrow-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Net Worth",
+      "viewport": "320x568 (narrow)",
+      "theme": "dark",
+      "firstViewportScreenshot": "net-worth-narrow-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "320x568 (narrow)",
+      "theme": "light",
+      "firstViewportScreenshot": "budget-narrow-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Budget",
+      "viewport": "320x568 (narrow)",
+      "theme": "dark",
+      "firstViewportScreenshot": "budget-narrow-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "320x568 (narrow)",
+      "theme": "light",
+      "firstViewportScreenshot": "emergency-fund-narrow-light-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    },
+    {
+      "target": "Emergency Fund",
+      "viewport": "320x568 (narrow)",
+      "theme": "dark",
+      "firstViewportScreenshot": "emergency-fund-narrow-dark-viewport.png",
+      "fullPageScreenshot": null,
+      "status": "PASS"
+    }
+  ]
+}

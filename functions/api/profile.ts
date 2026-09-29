@@ -1,9 +1,10 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { json } from '../_lib/http';
-import { ensureUserProfile, requireDatabase } from '../_lib/persistence';
+import { ensureUserProfile, handleApiError, requireDatabase } from '../_lib/persistence';
 import { requireClerkAuth } from '../_lib/session';
 import type { ClerkEnv } from '../_lib/session';
+import { readJsonBody } from '../_lib/http';
 
 type ProfileEnv = ClerkEnv & {
   DB?: D1Database;
@@ -50,9 +51,13 @@ export const onRequestGet: PagesFunction<ProfileEnv> = async ({ request, env }) 
     return db.response;
   }
 
-  const profile = await ensureProfile(db.database, session.auth.userId);
+  try {
+    const profile = await ensureProfile(db.database, session.auth.userId);
 
-  return json({ profile: toProfilePayload(profile) });
+    return json({ profile: toProfilePayload(profile) });
+  } catch (error) {
+    return handleApiError(error, 'Unable to load profile.');
+  }
 };
 
 export const onRequestPut: PagesFunction<ProfileEnv> = async ({ request, env }) => {
@@ -75,10 +80,14 @@ export const onRequestPut: PagesFunction<ProfileEnv> = async ({ request, env }) 
     return json({ error: parsed.error }, 400);
   }
 
-  await ensureProfile(db.database, session.auth.userId);
-  const updated = await updateProfile(db.database, session.auth.userId, parsed.value);
+  try {
+    await ensureProfile(db.database, session.auth.userId);
+    const updated = await updateProfile(db.database, session.auth.userId, parsed.value);
 
-  return json({ profile: toProfilePayload(updated) });
+    return json({ profile: toProfilePayload(updated) });
+  } catch (error) {
+    return handleApiError(error, 'Unable to update profile.');
+  }
 };
 
 async function ensureProfile(database: D1Database, userId: string): Promise<ProfileRow> {
@@ -164,13 +173,6 @@ async function readProfile(database: D1Database, userId: string): Promise<Profil
     .first<ProfileRow>();
 }
 
-async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 function parseProfileUpdate(value: unknown):
   | {

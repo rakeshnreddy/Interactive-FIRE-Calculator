@@ -35,3 +35,14 @@ npm-debug.log*
 # OS specific
 .DS_Store
 Thumbs.db
+.gstack/
+
+# AI Delegation Handoff
+.ai-handoff/
+
+# PA-4 Evidence and test run outputs
+output/
+docs/execution/evidence/**/raw/
+
+# Local agent preview launcher
+.claude/launch.json

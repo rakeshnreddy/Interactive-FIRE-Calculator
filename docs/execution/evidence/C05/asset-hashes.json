@@ -1,0 +1,23 @@
+{
+  "referencesMatch": true,
+  "assets": [
+    {
+      "path": "/assets/index-FXZW_ti4.js",
+      "local": "2c4e96f2965e189d31a322e7d544028e83d55d5f954e9afdf78ea5f56145168d",
+      "remote": "2c4e96f2965e189d31a322e7d544028e83d55d5f954e9afdf78ea5f56145168d",
+      "match": true
+    },
+    {
+      "path": "/assets/index-Bq8yRH0L.css",
+      "local": "493d5aeead8e1cd8aaab06f4dcf868052a3c69adcd184ece0b3b6923302adb8f",
+      "remote": "493d5aeead8e1cd8aaab06f4dcf868052a3c69adcd184ece0b3b6923302adb8f",
+      "match": true
+    },
+    {
+      "path": "/assets/jsx-runtime-CdvZGgm7.js",
+      "local": "85fda29e5f27f78829bbd2472a04a8dcfa541c74c936d77fe4479bf749d7da6a",
+      "remote": "85fda29e5f27f78829bbd2472a04a8dcfa541c74c936d77fe4479bf749d7da6a",
+      "match": true
+    }
+  ]
+}

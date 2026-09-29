@@ -6,11 +6,14 @@
   "description": "A modern TypeScript FIRE planning calculator designed for Cloudflare Pages.",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc -b && vite build",
+    "dev:fixtures": "vite --host 127.0.0.1 --open /fixtures.html",
+    "build": "tsc -b && vite build && node scripts/prerender_routes.mjs && node scripts/verify_build_isolation.mjs",
+    "build:preview-auth": "node scripts/build_preview_auth.mjs",
     "auth:preflight": "node scripts/check_production_auth.mjs --check-cloudflare",
     "preview": "vite preview --host 127.0.0.1",
     "smoke:calculators": "node scripts/smoke_public_calculators.mjs",
     "test": "vitest run",
+    "test:tenancy": "node scripts/run_tenancy_harness.mjs",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "check:local": "./scripts/check_local.sh",
@@ -29,19 +32,23 @@
     "recharts": "^3.8.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260606.1",
+    "@cloudflare/workers-types": "^5.20260906.1",
     "@types/papaparse": "^5.5.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^6.0.2",
     "jsdom": "^29.1.1",
+    "playwright-core": "^1.63.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.16",
-    "vitest": "^4.1.8",
-    "wrangler": "^4.103.0"
+    "vitest": "^4.1.11",
+    "wrangler": "^4.130.0"
+  },
+  "overrides": {
+    "sharp": "0.35.4"
   },
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=22.0.0",
     "npm": ">=10.0.0"
   }
 }

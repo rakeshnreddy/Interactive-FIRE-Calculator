@@ -1,0 +1,391 @@
+{
+  "verified_at": "2026-09-16T18:56:15.782Z",
+  "read_only": true,
+  "passed": true,
+  "outcomes": [
+    {
+      "synthetic_user_id": "user_3JOGiP2nXKPm7UiZTBk27WNy2SF",
+      "provider_status": 404,
+      "tombstone_preserved": true,
+      "counts": [
+        {
+          "table_name": "user_profiles",
+          "count": 0
+        },
+        {
+          "table_name": "financial_accounts",
+          "count": 0
+        },
+        {
+          "table_name": "account_balances",
+          "count": 0
+        },
+        {
+          "table_name": "transactions",
+          "count": 0
+        },
+        {
+          "table_name": "goals",
+          "count": 0
+        },
+        {
+          "table_name": "plans",
+          "count": 0
+        },
+        {
+          "table_name": "plan_versions",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_inputs",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_results",
+          "count": 0
+        },
+        {
+          "table_name": "assumptions",
+          "count": 0
+        },
+        {
+          "table_name": "balance_imports",
+          "count": 0
+        },
+        {
+          "table_name": "transaction_imports",
+          "count": 0
+        },
+        {
+          "table_name": "saved_calculator_results",
+          "count": 0
+        },
+        {
+          "table_name": "audit_log",
+          "count": 0
+        }
+      ],
+      "passed": true
+    },
+    {
+      "synthetic_user_id": "user_3JOH4WytkmA7wx1Xq7BoaRl3sW5",
+      "provider_status": 404,
+      "tombstone_preserved": true,
+      "counts": [
+        {
+          "table_name": "user_profiles",
+          "count": 0
+        },
+        {
+          "table_name": "financial_accounts",
+          "count": 0
+        },
+        {
+          "table_name": "account_balances",
+          "count": 0
+        },
+        {
+          "table_name": "transactions",
+          "count": 0
+        },
+        {
+          "table_name": "goals",
+          "count": 0
+        },
+        {
+          "table_name": "plans",
+          "count": 0
+        },
+        {
+          "table_name": "plan_versions",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_inputs",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_results",
+          "count": 0
+        },
+        {
+          "table_name": "assumptions",
+          "count": 0
+        },
+        {
+          "table_name": "balance_imports",
+          "count": 0
+        },
+        {
+          "table_name": "transaction_imports",
+          "count": 0
+        },
+        {
+          "table_name": "saved_calculator_results",
+          "count": 0
+        },
+        {
+          "table_name": "audit_log",
+          "count": 0
+        }
+      ],
+      "passed": true
+    },
+    {
+      "synthetic_user_id": "user_3JQE7TmfagKNB6DvuP6ngbWiwIN",
+      "provider_status": 404,
+      "tombstone_preserved": true,
+      "counts": [
+        {
+          "table_name": "user_profiles",
+          "count": 0
+        },
+        {
+          "table_name": "financial_accounts",
+          "count": 0
+        },
+        {
+          "table_name": "account_balances",
+          "count": 0
+        },
+        {
+          "table_name": "transactions",
+          "count": 0
+        },
+        {
+          "table_name": "goals",
+          "count": 0
+        },
+        {
+          "table_name": "plans",
+          "count": 0
+        },
+        {
+          "table_name": "plan_versions",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_inputs",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_results",
+          "count": 0
+        },
+        {
+          "table_name": "assumptions",
+          "count": 0
+        },
+        {
+          "table_name": "balance_imports",
+          "count": 0
+        },
+        {
+          "table_name": "transaction_imports",
+          "count": 0
+        },
+        {
+          "table_name": "saved_calculator_results",
+          "count": 0
+        },
+        {
+          "table_name": "audit_log",
+          "count": 0
+        }
+      ],
+      "passed": true
+    },
+    {
+      "synthetic_user_id": "user_3JQE7UK9UNMY1h4vP4clLEIBO3L",
+      "provider_status": 404,
+      "tombstone_preserved": true,
+      "counts": [
+        {
+          "table_name": "user_profiles",
+          "count": 0
+        },
+        {
+          "table_name": "financial_accounts",
+          "count": 0
+        },
+        {
+          "table_name": "account_balances",
+          "count": 0
+        },
+        {
+          "table_name": "transactions",
+          "count": 0
+        },
+        {
+          "table_name": "goals",
+          "count": 0
+        },
+        {
+          "table_name": "plans",
+          "count": 0
+        },
+        {
+          "table_name": "plan_versions",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_inputs",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_results",
+          "count": 0
+        },
+        {
+          "table_name": "assumptions",
+          "count": 0
+        },
+        {
+          "table_name": "balance_imports",
+          "count": 0
+        },
+        {
+          "table_name": "transaction_imports",
+          "count": 0
+        },
+        {
+          "table_name": "saved_calculator_results",
+          "count": 0
+        },
+        {
+          "table_name": "audit_log",
+          "count": 0
+        }
+      ],
+      "passed": true
+    },
+    {
+      "synthetic_user_id": "user_3JQEKgM4sIyWhIYvDMb1fgEm9L2",
+      "provider_status": 404,
+      "tombstone_preserved": true,
+      "counts": [
+        {
+          "table_name": "user_profiles",
+          "count": 0
+        },
+        {
+          "table_name": "financial_accounts",
+          "count": 0
+        },
+        {
+          "table_name": "account_balances",
+          "count": 0
+        },
+        {
+          "table_name": "transactions",
+          "count": 0
+        },
+        {
+          "table_name": "goals",
+          "count": 0
+        },
+        {
+          "table_name": "plans",
+          "count": 0
+        },
+        {
+          "table_name": "plan_versions",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_inputs",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_results",
+          "count": 0
+        },
+        {
+          "table_name": "assumptions",
+          "count": 0
+        },
+        {
+          "table_name": "balance_imports",
+          "count": 0
+        },
+        {
+          "table_name": "transaction_imports",
+          "count": 0
+        },
+        {
+          "table_name": "saved_calculator_results",
+          "count": 0
+        },
+        {
+          "table_name": "audit_log",
+          "count": 0
+        }
+      ],
+      "passed": true
+    },
+    {
+      "synthetic_user_id": "user_3JQEKhcUeLopjSQH6xbMh6u57WN",
+      "provider_status": 404,
+      "tombstone_preserved": true,
+      "counts": [
+        {
+          "table_name": "user_profiles",
+          "count": 0
+        },
+        {
+          "table_name": "financial_accounts",
+          "count": 0
+        },
+        {
+          "table_name": "account_balances",
+          "count": 0
+        },
+        {
+          "table_name": "transactions",
+          "count": 0
+        },
+        {
+          "table_name": "goals",
+          "count": 0
+        },
+        {
+          "table_name": "plans",
+          "count": 0
+        },
+        {
+          "table_name": "plan_versions",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_inputs",
+          "count": 0
+        },
+        {
+          "table_name": "fire_plan_results",
+          "count": 0
+        },
+        {
+          "table_name": "assumptions",
+          "count": 0
+        },
+        {
+          "table_name": "balance_imports",
+          "count": 0
+        },
+        {
+          "table_name": "transaction_imports",
+          "count": 0
+        },
+        {
+          "table_name": "saved_calculator_results",
+          "count": 0
+        },
+        {
+          "table_name": "audit_log",
+          "count": 0
+        }
+      ],
+      "passed": true
+    }
+  ]
+}

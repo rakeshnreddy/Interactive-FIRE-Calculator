@@ -8,7 +8,7 @@ import {
   summarizeAccounts
 } from '../../_lib/accounts';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
@@ -26,8 +26,8 @@ export const onRequestGet: PagesFunction<AccountsEnv> = async ({ request, env })
     const accounts = await listAccounts(context.database, context.userId);
 
     return json({ accounts, summary: summarizeAccounts(accounts) });
-  } catch {
-    return json({ error: 'Unable to load accounts.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load accounts.');
   }
 };
 
@@ -47,8 +47,8 @@ export const onRequestPost: PagesFunction<AccountsEnv> = async ({ request, env }
 
   try {
     return json({ account: await createAccount(context.database, context.userId, parsed.value) }, 201);
-  } catch {
-    return json({ error: 'Unable to create account.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to create account.');
   }
 };
 

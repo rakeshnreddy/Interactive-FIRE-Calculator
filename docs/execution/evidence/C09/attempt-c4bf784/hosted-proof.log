@@ -1,0 +1,162 @@
+=== Starting C09 Comprehensive Hosted Verification (B10, B11 & B28) ===
+Checking immutable deployment identity and D1 binding...
+(node:12580) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Verified deployment 18b043da-e736-4f8f-83b0-3a0642ff6685 on DB 0dbad68e-7493-452f-8504-98d4c61ee5da
+Testing D1 query reachability...
+D1 database query verified.
+D1 migration 0007 verified: true
+D1 migration 0008 verified: true
+sqlite_master plan_reviews table verified: true
+Clerk Frontend API host: tender-filly-71.clerk.accounts.dev
+Created Clerk development testing token.
+Creating Synthetic User A: finpath_c09_a_583517+clerk_test@example.com...
+Created User A: user_3JrE2vrKX...
+Creating Synthetic User B: finpath_c09_b_584061+clerk_test@example.com...
+Created User B: user_3JrE35FdB...
+User A authenticated.
+User B authenticated.
+
+--- Step 1: User A Creates Plan and Version 1 ---
+Created Goal for User A: 54e59781-36c5-4672-9e09-59ac66d61aa8, status: 201
+Created Plan for User A: 08ef6ca6-f60a-4b72-9c42-c3e786eca965, Version: 1
+
+--- Step 2: User A Creates Plan Version 2 (Revision) ---
+Created Version 2 for Plan A: status 200, versionNumber: 2
+
+--- Step 3: Exact Deep Link Navigation to Version 1 ---
+Rendered on v1 deep link: Banner="Viewing historical Version 1
+
+Assumptions and results from this saved FIRE decision are locked. To make changes, edit values and save a new version.
+
+SAVED FIRE DECISION", Overview="PLAN HEALTH
+At risk
+2 of 4 checks positive
+ACTIVE PLAN
+Retirement Independence Roadmap
+Version 1 loaded
+PORTFOLIO
+$500,000
+$739,697 modeled target
+SCENARIOS
+0
+Stored with each version"
+Current URL before reload: https://18b043da.interactive-fire-calculator.pages.dev/plans?planId=08ef6ca6-f60a-4b72-9c42-c3e786eca965&version=1
+Current URL after reload: https://18b043da.interactive-fire-calculator.pages.dev/plans?planId=08ef6ca6-f60a-4b72-9c42-c3e786eca965&version=1
+DOM state after reload: {"url":"https://18b043da.interactive-fire-calculator.pages.dev/plans?planId=08ef6ca6-f60a-4b72-9c42-c3e786eca965&version=1","clerkLoaded":true,"clerkUser":true,"workspacePresent":true,"bannerPresent":false,"errorPresent":false,"authGate":false}
+Reload on v1: Banner="Viewing historical Version 1
+
+Assumptions and results from this saved FIRE decision are locked. To make changes, edit values and save a new version.
+
+SAVED FIRE DECISION", Overview="PLAN HEALTH
+At risk
+2 of 4 checks positive
+ACTIVE PLAN
+Retirement Independence Roadmap
+Version 1 loaded
+PORTFOLIO
+$500,000
+$739,697 modeled target
+SCENARIOS
+0
+Stored with each version"
+
+--- Step 4: Unsaved Changes Protection Modal ---
+Draft value immediately after fill: "Retirement Base (Unsaved Assumptions)"
+Unsaved changes modal appeared: true
+Unsaved cancel check: modalClosed=true, preservedName="Retirement Base (Unsaved Assumptions)"
+Unsaved discard check: modalClosedAfterDiscard=true, v1BannerLoaded=true
+
+--- Step 5: Controlled 404 / Missing State ---
+Controlled missing plan error text: "Unavailable
+
+Saved decision unavailable
+
+Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.
+
+Return to plan library"
+Controlled missing version error text: "Unavailable
+
+Saved decision unavailable
+
+Saved decision unavailable: This plan or version was not found, has been archived, or you do not have permission to view it.
+
+Return to plan library"
+
+--- Step 6: Tenant B Isolation Verification ---
+Tenant B fetch Tenant A plan status: 404 (expected 404)
+Tenant B fetch Tenant A version 1 status: 404 (expected 404)
+
+--- Step 7: B11 Monthly Review Loop & R5 Single Plan Lifecycle ---
+Testing >=7-day returning review rule on newly created plan...
+Immediate repeat review response: status=400, code=TOO_EARLY_REVIEW
+Backdating Plan A and Goal A in D1 to 35 days ago (establishing single aged plan for R5)...
+
+--- R5 Stage 1: Dashboard in DUE state ---
+Dashboard reviews rollup visible (Due state): true
+Dashboard due cards count: 2
+Review status badges on dashboard: 2
+
+--- R5 Stage 2: Defer Plan A Review (7 days) ---
+Defer review response: status=201, decision=defer
+
+--- R5 Stage 3: Keep Plan A Review ---
+Submit review response: status=201
+Review status card text after reload: "Assumptions up to date"
+Verifying review panel clearance from sticky topbar (B28)...
+[Clearance Check - Desktop Light 1280px]: topbarBottom=64.6, headingTop=187.1, badgeTop=165.1, controlTop=424.1, clearance=122.5px, noOverlap=true
+[Clearance Check - Desktop Dark 1280px]: topbarBottom=64.6, headingTop=141.1, badgeTop=129.1, controlTop=378.1, clearance=76.5px, noOverlap=true
+[Clearance Check - Mobile Light 320px]: topbarBottom=64.0, headingTop=250.7, badgeTop=268.9, controlTop=602.8, clearance=186.7px, noOverlap=true
+[Clearance Check - Mobile Dark 320px]: topbarBottom=64.0, headingTop=133.7, badgeTop=171.9, controlTop=483.8, clearance=69.7px, noOverlap=true
+All clearance checks passed (zero topbar overlap across viewports/themes): true
+Testing idempotent repeat review submission...
+Idempotent repeat status: 200
+Total reviews in DB for plan A: 2
+
+--- R5 Stage 4: Revise Review Choice Full Journey ---
+Execution error occurred: Error: [Stage 4 Version 2] User authentication lost or auth-gate shown (clerkLoaded: false, isSignedIn: false, Route: {"pathname":"/plans","params":{"planId":"[REDACTED_PLAN_ID]","version":"2"}})
+    at waitForPlanningWorkspaceReady (file:///Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C09/run_c09_proofs.mjs:546:11)
+    at async runAllProofs (file:///Users/Rakesh/Projects/Interactive-FIRE-Calculator/docs/execution/evidence/C09/run_c09_proofs.mjs:2118:25)
+
+=== Executing Fail-Closed Cleanup Protocol for Both Synthetic Users ===
+
+--- Executing Scoped Fail-Closed Cleanup for user_3JrE2vrKXITA3f6Qj2O211P9Djl ---
+Application data deletion response: ok=true, status=200
+All 15 tables scoped to user clean (0 rows): true
+User tombstone present: true
+Clerk provider user deleted successfully.
+Clerk user 404 absence verified: true
+
+--- Executing Scoped Fail-Closed Cleanup for user_3JrE35FdBcoYBuXiunwQJ5hwnQX ---
+Application data deletion response: ok=true, status=200
+All 15 tables scoped to user clean (0 rows): true
+User tombstone present: true
+Clerk provider user deleted successfully.
+Clerk user 404 absence verified: true
+
+=== Explicit Evaluation Result ===
+Status: FAILED
+Evaluation failures:
+ - Recorded verification error: [Stage 4 Version 2] User authentication lost or auth-gate shown (clerkLoaded: false, isSignedIn: false, Route: {"pathname":"/plans","params":{"planId":"[REDACTED_PLAN_ID]","version":"2"}})
+ - Report marked FAILED
+ - B11: review_revise_ui_selected expected true, got undefined
+ - B11: review_revise_next_step_displayed expected true, got undefined
+ - B11: plan_revised_version_3_persisted expected true, got undefined
+ - B11: version_3_reload_verified expected true, got undefined
+ - B11: prior_versions_immutable_after_v3 expected true, got undefined
+ - B11: review_revise_choice_triggers_revision expected true, got undefined
+ - B11: due_reviews_endpoint_returned_plans expected true, got undefined
+ - B11: tenant_b_cannot_review_tenant_a_plan expected true, got undefined
+ - B11: plan_reviews_participate_in_data_export expected true, got undefined
+ - B28: goals_panel_linked_plan_badge_rendered expected true, got undefined
+ - B28: goals_panel_evidence_date_disclosed expected true, got undefined
+ - B28: goals_panel_funding_gap_rendered expected true, got undefined
+ - B28: goals_panel_explicit_text_status expected true, got undefined
+ - B28: stale_evidence_warning_displayed_when_over_30_days expected true, got undefined
+ - B28: theme_switching_verified expected true, got undefined
+ - B28: contrast_review_badges_light_pass expected true, got undefined
+ - B28: contrast_review_badges_dark_pass expected true, got undefined
+ - B28: viewport_containment_mobile_320px_verified expected true, got undefined
+ - B28: viewport_containment_tablet_768px_verified expected true, got undefined
+ - B28: viewport_containment_desktop_1280px_verified expected true, got undefined
+ - B28: keyboard_navigation_accessible expected true, got undefined

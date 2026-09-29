@@ -1,0 +1,60 @@
+{
+  "url": "https://5e68409d.interactive-fire-calculator.pages.dev",
+  "time": "2026-09-15T11:06:53.196378+00:00",
+  "checks": [
+    {
+      "route": "/api/health",
+      "status": 403,
+      "expected": 200,
+      "passed": false
+    },
+    {
+      "route": "/api/me",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    },
+    {
+      "route": "/api/accounts",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    },
+    {
+      "route": "/api/dashboard",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    },
+    {
+      "route": "/api/transactions",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    },
+    {
+      "route": "/api/goals",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    },
+    {
+      "route": "/api/plans",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    },
+    {
+      "route": "/api/account-data/export",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 403,
+      "expected": 401,
+      "passed": false
+    }
+  ]
+}

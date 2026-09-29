@@ -1,6 +1,8 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { ensureUserProfile } from './persistence';
+import { readJsonBody } from './http';
+export { readJsonBody };
 
 type JsonRecord = Record<string, unknown>;
 
@@ -392,13 +394,6 @@ export async function archiveFirePlan(database: D1Database, userId: string, plan
   return result.meta.changes > 0;
 }
 
-export async function readJsonBody(request: Request): Promise<unknown> {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-}
 
 export function parseFirePlanPayload(value: unknown):
   | { ok: true; value: FirePlanPayload }

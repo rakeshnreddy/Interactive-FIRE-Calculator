@@ -1,0 +1,31 @@
+{
+  "name": "interactive-fire-calculator",
+  "production_branch": "main",
+  "source_config": {
+    "owner": "rakeshnreddy",
+    "owner_id": "19764864",
+    "repo_name": "Interactive-FIRE-Calculator",
+    "repo_id": "952152234",
+    "production_branch": "main",
+    "pr_comments_enabled": true,
+    "deployments_enabled": true,
+    "production_deployments_enabled": false,
+    "preview_deployment_setting": "custom",
+    "preview_branch_includes": [
+      "codex/cloudflare-pages-theme-plan"
+    ],
+    "preview_branch_excludes": [],
+    "path_includes": [],
+    "path_excludes": []
+  },
+  "preview_d1": {
+    "DB": {
+      "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+    }
+  },
+  "production_d1": {
+    "DB": {
+      "id": "a5860350-0a50-4ebe-9f5f-1d9916a908e6"
+    }
+  }
+}

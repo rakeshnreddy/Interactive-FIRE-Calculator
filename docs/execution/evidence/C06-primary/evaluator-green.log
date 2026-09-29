@@ -1,0 +1,23 @@
+✔ missing contrast (1.291459ms)
+✔ NaN contrast (0.174292ms)
+✔ missing rendered state (0.962834ms)
+✔ missing geometry widths (0.1375ms)
+✔ missing screenshot size (0.166542ms)
+✔ low debug contrast (0.086125ms)
+✔ native flag without level or proof (0.091ms)
+✔ missing keyboard observation (0.058834ms)
+✔ missing media observation (0.084667ms)
+✔ missing theme colors (0.111458ms)
+✔ empty suite rejected (0.095167ms)
+✔ duplicate cases rejected (0.0885ms)
+✔ transparent color cannot be treated as opaque black (0.074166ms)
+✔ unknown color rejected (0.050417ms)
+✔ complete ordinary observation still passes (0.039333ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.252125

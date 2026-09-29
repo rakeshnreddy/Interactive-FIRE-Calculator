@@ -1,5 +1,7 @@
 # Financial Platform Handoff
 
+> Current-state correction (2026-09-07): see [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) and [EXECUTION_BACKLOG.md](EXECUTION_BACKLOG.md). Older paths, PRs, previews, counts and percentages below are historical checkpoints. The shared 82-route roadmap and the 5-of-82 excellence pass use different completion criteria. Neither proves hosted authenticated readiness or production launch readiness.
+
 ## Phase 26 active handoff — Cashflow and Balance Sheet excellence pass
 
 - Date: August 9, 2026.
@@ -112,10 +114,12 @@ Production target:
 - `wrangler.toml` configures the Cloudflare Pages project.
 - `dist/` is generated output.
 
-Legacy reference:
+Legacy reference (Historical — Retired under B37):
 
-- `app.py`, `project/`, `templates/`, `static/`, and Python tests remain as the old Flask/Jinja app and parity/reference harness.
-- The legacy Flask app should not be deployed to Cloudflare Pages.
+> **Historical Note**: The legacy Flask/Jinja reference application and `APP_TARGET=legacy` mode were retired under task B37. All calculations and features run via the TypeScript/React application. The notes below are preserved as dated historical documentation.
+
+- `app.py`, `project/`, `templates/`, `static/`, and Python tests were retained in earlier phases as the old Flask/Jinja app and parity/reference harness (retired under B37).
+- The legacy Flask app was never deployed to Cloudflare Pages.
 
 Local scripts:
 
@@ -126,9 +130,10 @@ Local scripts:
 npm run cf:deploy
 ```
 
-Run legacy Flask app:
+Historical legacy run command (retired):
 
 ```bash
+# Historical only: retired under B37
 APP_TARGET=legacy ./scripts/run_local.sh
 ```
 

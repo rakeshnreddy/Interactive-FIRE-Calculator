@@ -1,0 +1,955 @@
+Full suite	Run every test suite and build	﻿2026-09-15T01:28:09.7017897Z ##[group]Run ./scripts/test_all.sh
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7018194Z [36;1m./scripts/test_all.sh[0m
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7051511Z shell: /usr/bin/bash -e {0}
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7051876Z env:
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7052114Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7052488Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib/pkgconfig
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7052994Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7053309Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7053616Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.15/x64
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7053917Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.15/x64/lib
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7054186Z ##[endgroup]
+Full suite	Run every test suite and build	2026-09-15T01:28:09.7458207Z TAP version 13
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0743054Z # Subtest: fails before running any stage when python3 is missing
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0772995Z ok 1 - fails before running any stage when python3 is missing
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0792545Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0812639Z   duration_ms: 211.167448
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0814753Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0815030Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0815474Z # Subtest: fails before running any stage when node is missing
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0816075Z ok 2 - fails before running any stage when node is missing
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0816459Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0816731Z   duration_ms: 3.775982
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0817017Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0817262Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0817709Z # Subtest: fails before running any stage when npm is missing
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0818273Z ok 3 - fails before running any stage when npm is missing
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0818668Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0818915Z   duration_ms: 3.22962
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0819195Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0819439Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0819788Z # Subtest: runs every verification stage in order
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0820269Z ok 4 - runs every verification stage in order
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0820640Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0820894Z   duration_ms: 9.025324
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0821146Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0821373Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0822081Z # Subtest: stops and preserves failure status from node --test scripts/test_all.test.mjs
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0822954Z ok 5 - stops and preserves failure status from node --test scripts/test_all.test.mjs
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0823532Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0823767Z   duration_ms: 5.533484
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0824063Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0824297Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0824891Z # Subtest: stops and preserves failure status from python3 -m compileall -q app.py project tests
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0825816Z ok 6 - stops and preserves failure status from python3 -m compileall -q app.py project tests
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0826384Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0826637Z   duration_ms: 5.850656
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0826933Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0827196Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0827700Z # Subtest: stops and preserves failure status from python3 -m pytest -q
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0828430Z ok 7 - stops and preserves failure status from python3 -m pytest -q
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0828882Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0829140Z   duration_ms: 6.485579
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0829426Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0829687Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0830163Z # Subtest: stops and preserves failure status from npm run typecheck
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0830853Z ok 8 - stops and preserves failure status from npm run typecheck
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0831303Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0831568Z   duration_ms: 8.176883
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0832083Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0832345Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0832774Z # Subtest: stops and preserves failure status from npm test
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0833354Z ok 9 - stops and preserves failure status from npm test
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0833761Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0834013Z   duration_ms: 8.75044
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0834314Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0834564Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0835026Z # Subtest: stops and preserves failure status from npm run build
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0835916Z ok 10 - stops and preserves failure status from npm run build
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0836182Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0836350Z   duration_ms: 9.104271
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0836535Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0836712Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0836979Z # Subtest: installs missing dependencies from the lockfile
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0837481Z ok 11 - installs missing dependencies from the lockfile
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0837727Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0837901Z   duration_ms: 10.466666
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0838091Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0838283Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0838624Z # Subtest: does not run frontend verification after a failed install
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0839037Z ok 12 - does not run frontend verification after a failed install
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0839303Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0839474Z   duration_ms: 6.90384
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0839665Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0839835Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0840131Z # Subtest: uses the repository virtualenv even without system Python
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0840521Z ok 13 - uses the repository virtualenv even without system Python
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0840789Z   ---
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0840955Z   duration_ms: 9.088208
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0841148Z   type: 'test'
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0841307Z   ...
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0852611Z 1..13
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0852857Z # tests 13
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0862416Z # suites 0
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0873305Z # pass 13
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0873582Z # fail 0
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0873822Z # cancelled 0
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0874130Z # skipped 0
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0874368Z # todo 0
+Full suite	Run every test suite and build	2026-09-15T01:28:10.0874658Z # duration_ms 348.323589
+Full suite	Run every test suite and build	2026-09-15T01:28:11.3090509Z ................................................... [ 64%]
+Full suite	Run every test suite and build	2026-09-15T01:28:11.5233099Z ............................                                             [100%]
+Full suite	Run every test suite and build	2026-09-15T01:28:11.5233554Z 79 passed, 21 subtests passed in 0.97s
+Full suite	Run every test suite and build	2026-09-15T01:28:11.7117010Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:11.7117578Z > interactive-fire-calculator@2.0.0 typecheck
+Full suite	Run every test suite and build	2026-09-15T01:28:11.7118060Z > tsc --noEmit
+Full suite	Run every test suite and build	2026-09-15T01:28:11.7118230Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:19.3077790Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:19.3078512Z > interactive-fire-calculator@2.0.0 test
+Full suite	Run every test suite and build	2026-09-15T01:28:19.3079010Z > vitest run
+Full suite	Run every test suite and build	2026-09-15T01:28:19.3079183Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:19.5696133Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:19.5699311Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:19.5700029Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:19.7990647Z (node:2410) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+Full suite	Run every test suite and build	2026-09-15T01:28:19.7991633Z (Use `node --trace-warnings ...` to show where the warning was created)
+Full suite	Run every test suite and build	2026-09-15T01:28:20.0274066Z  [32m✓[39m src/calculatorResults.test.ts [2m([22m[2m25 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:20.6898086Z  [31m❯[39m src/tenancyAuthHarness.test.ts [2m([22m[2m0 test[22m[2m)[22m
+Full suite	Run every test suite and build	2026-09-15T01:28:20.8588054Z  [31m❯[39m src/deletionAndRecovery.test.ts [2m([22m[2m0 test[22m[2m)[22m
+Full suite	Run every test suite and build	2026-09-15T01:28:22.0663743Z  [32m✓[39m src/lib/calculatorStudios.test.ts [2m([22m[2m354 tests[22m[2m)[22m[33m 820[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:22.1474900Z  [32m✓[39m src/lib/seoCalculators.test.ts [2m([22m[2m287 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:22.3214168Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mrenders a concise scope note in the header (V10)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.3232761Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.3261983Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4713651Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mrenders a concise scope note in the header (V10)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4743010Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4812912Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4833421Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4837549Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4855558Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4856671Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4857784Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4858784Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4859782Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4860739Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4862007Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4863066Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4864138Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4865152Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4866150Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4867120Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4868113Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4869062Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4870099Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4892659Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4905313Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4906364Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4907465Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4908534Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4909639Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4910684Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4911918Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4915582Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4917005Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4918108Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4919242Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4920315Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4921421Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4922652Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4924084Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4925125Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4926224Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4927277Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4928570Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4929619Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4930709Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4931860Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4933045Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4934098Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4935185Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4936244Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4937345Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4938423Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4939515Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4940580Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4941668Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4943015Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4944126Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4945198Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4946321Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4947360Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4948433Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4949469Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4950550Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4951567Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4952825Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4953869Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4954949Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4956100Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4957210Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4958263Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4959372Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4960408Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4961696Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4962922Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4963610Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4965066Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mrenders a concise scope note in the header (V10)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4966699Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4967292Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4968871Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mprovides concise accessible input labels, aria-describedby help, and accessible info buttons (V12)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4971953Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.4972595Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5654595Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mprovides concise accessible input labels, aria-describedby help, and accessible info buttons (V12)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5656597Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5657777Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5658857Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5659830Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5660859Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5662023Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5663120Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5664117Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5665185Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5666216Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5667285Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5668269Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5669294Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5670303Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5671338Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5672505Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5673524Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5674496Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5675519Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5676452Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5677484Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5678480Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5679535Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5681132Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5692623Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5693764Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5695152Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5696147Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5697231Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5698149Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5699237Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5700353Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5701452Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5702761Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5703848Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5704899Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5705968Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5706967Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5708032Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5709109Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5710166Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5746668Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5747840Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5748919Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5750014Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5751041Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5752199Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5753309Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5754400Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5755417Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5756477Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5757484Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5758536Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5759593Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5760623Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5761634Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5763095Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5764102Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5765161Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5766166Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5767379Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5768459Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5769503Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5770511Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5771565Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5772787Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5773838Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5774838Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5775890Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5776899Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5777560Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5912831Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mprovides concise accessible input labels, aria-describedby help, and accessible info buttons (V12)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5930478Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5931602Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5933587Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mmanages stale result display after input changes so prior results are never mistaken for current inputs (B24)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5935522Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.5936210Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6534512Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mmanages stale result display after input changes so prior results are never mistaken for current inputs (B24)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6583096Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6612757Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6672643Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6712722Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6772594Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6822625Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6832577Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6872685Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6902518Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6903736Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6932961Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.6984130Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7012754Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7053045Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7082607Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7112685Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7142523Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7152804Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7172535Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7204882Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7230424Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7252588Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7272576Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7300983Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7320663Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7322054Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7352807Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7353934Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7355073Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7356100Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7357164Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7358273Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7359337Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7360406Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7361469Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7362691Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7363819Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7364885Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7365960Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7367038Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7368126Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7369275Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7370313Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7371337Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7372838Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7373830Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7374825Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7375793Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7376966Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7377924Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7378929Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7379894Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7393649Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7394763Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7395815Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7396802Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7397808Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7398811Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7399866Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7400835Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7402009Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7403109Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7404218Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7405297Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7406360Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7407347Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7408358Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7409413Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7410494Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7411505Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7412469Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7414312Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mmanages stale result display after input changes so prior results are never mistaken for current inputs (B24)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7416198Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7417197Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7418151Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7419116Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7419670Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7421308Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mmanages stale result display after input changes so prior results are never mistaken for current inputs (B24)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7423459Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7424411Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7424977Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7426728Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mmanages stale result display after input changes so prior results are never mistaken for current inputs (B24)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7428511Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7429441Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7430427Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7431336Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7432057Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7443718Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mmanages stale result display after input changes so prior results are never mistaken for current inputs (B24)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7445443Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7445916Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7447167Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mpreserves both FIRE number and Withdrawal modes with accurate outputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7448629Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.7449083Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8097558Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mpreserves both FIRE number and Withdrawal modes with accurate outputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8173208Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8178052Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8202611Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8203649Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8204640Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8205582Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8206619Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8207544Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8208497Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8209377Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8210203Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8211054Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8212085Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8212979Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8213858Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8214719Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8216104Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8217013Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8217947Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8218752Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8219871Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8220762Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8221688Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8222795Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8223766Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8224692Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8225635Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8226548Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8227496Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8228408Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8229390Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8230497Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8231617Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8263158Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8264351Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8265418Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8266547Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8267612Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8268632Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8269659Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8308307Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8309395Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8310411Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8311378Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8313369Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8314316Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8315270Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8316114Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8316918Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8317693Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8318801Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8319618Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8320465Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8321505Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8322590Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8323471Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8324363Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8325255Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8326181Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8327054Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8327972Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8328850Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8329760Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8330678Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8331572Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8362808Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8363790Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8364715Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8365621Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8366488Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8367015Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8368455Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mpreserves both FIRE number and Withdrawal modes with accurate outputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8369891Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8370752Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8371576Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8372630Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8373049Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8374309Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mpreserves both FIRE number and Withdrawal modes with accurate outputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8375740Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8376614Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8377432Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8378245Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8378657Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8573960Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mpreserves both FIRE number and Withdrawal modes with accurate outputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8633049Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8633985Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8634407Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8645650Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mpreserves both FIRE number and Withdrawal modes with accurate outputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8646916Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8647453Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8647938Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8648406Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8648645Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8786871Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mpreserves both FIRE number and Withdrawal modes with accurate outputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8788365Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8788806Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8814059Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR1 regression: ensures all field IDs in advanced and repeated sections are unique and labels focus their own inputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8815790Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.8816266Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9134529Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR1 regression: ensures all field IDs in advanced and repeated sections are unique and labels focus their own inputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9183231Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9184614Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9195120Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9196407Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9197582Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9198713Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9199853Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9200969Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9202289Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9203400Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9204541Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9205618Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9232637Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9252939Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9253988Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9262552Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9276124Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9277564Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9278615Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9279636Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9280956Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9282171Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9283261Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9284246Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9285228Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9286237Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9287311Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9288365Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9289447Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9290485Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9291561Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9292842Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9293955Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9295000Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9296128Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9297210Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9298333Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9299450Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9300575Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9301643Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9302883Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9304026Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9305212Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9306298Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9307459Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9308590Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9309740Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9310808Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9312142Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9313295Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9314717Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9315811Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9316934Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9318035Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9319641Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9320723Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9322024Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9323157Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9324239Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9325291Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9326443Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9327560Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9328695Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9329779Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9330951Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9332206Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9333341Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9334447Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9335597Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9336719Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9337452Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9339312Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR1 regression: ensures all field IDs in advanced and repeated sections are unique and labels focus their own inputs
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9341260Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9342066Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9343876Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9345825Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9349608Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9577606Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9579645Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9580861Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9582183Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9583298Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9584801Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9585861Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9586955Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9588228Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9589323Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9590347Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9591459Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9592715Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9593858Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9594960Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9596112Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9597170Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9598310Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9599396Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9600502Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9601573Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9602933Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9604092Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9605260Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9606383Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9607559Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9608666Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9609758Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9610818Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9612099Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9613225Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9614300Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9615287Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9616374Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9617406Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9618535Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9619583Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9620729Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9622028Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9623465Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9624582Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9625725Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9627152Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9628308Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9629432Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9630537Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9631614Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9632954Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9634041Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9635198Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9636330Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9637484Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9638598Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9639761Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9640849Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9642277Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9643412Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9644600Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9645700Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9646943Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9648018Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9649174Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9650276Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9651428Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9652765Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9653969Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9655077Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9656388Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9657537Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9658702Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9659788Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9660526Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9662506Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9664663Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9665271Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9667211Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9669404Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9669996Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9671655Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9673636Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9674266Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9676023Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9677949Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9678556Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9687494Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR2 regression: ensures InfoTip open/close visual state is coherent with aria-expanded and handles Escape without losing trigger focus
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9689430Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9690126Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9717651Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9742711Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:22.9762262Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0035700Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0074062Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0102961Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0112280Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0113357Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0114337Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0115312Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0116320Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0119961Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0121333Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0122502Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0123490Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0124852Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0125856Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0126821Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0128022Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0128980Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0129988Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0130944Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0132095Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0133093Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0134083Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0135039Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0136038Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0136983Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0137955Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0138896Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0139855Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0140809Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0141878Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0142960Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0143925Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0144914Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0145884Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0146988Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0202583Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0203599Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0206752Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0207949Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0209107Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0210228Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0211343Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0212715Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0213820Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0214881Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0216310Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0217359Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0218466Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0219980Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0221090Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0222274Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0223397Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0224444Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0225522Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0226976Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0228087Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0229146Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0230284Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0231330Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0232553Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0233639Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0234749Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0235814Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0270562Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0276319Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0277510Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0278602Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0335081Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0336348Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0337521Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0338701Z     at App (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/App.tsx:7080:16)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0339433Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0341414Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0343657Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0344643Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0345557Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0346503Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0347099Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0348906Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0351230Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0357708Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0358576Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0413636Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0442696Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0468646Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0472193Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0552418Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0554452Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0555978Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0556673Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0723465Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0725558Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0726710Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.0727369Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.2267593Z  [32m✓[39m src/lib/compoundInterestCalculator.test.ts [2m([22m[2m50 tests[22m[2m)[22m[32m 109[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3288550Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3290807Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3291582Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3303009Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3305732Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3306843Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3307480Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3576500Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3602818Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3632650Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3662121Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3994750Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.3996973Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4082184Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4144157Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4154196Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4155640Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4156229Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4226214Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4228137Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4228976Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4272751Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4280862Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4281413Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4346137Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4357828Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4358895Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4359492Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4574417Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4576544Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4602544Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4622719Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4769811Z [90mstderr[2m | src/FireCalculator.test.tsx[2m > [22m[2mFIRE Calculator Flagship Refinement (B24 / V10 / V12)[2m > [22m[2mR3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4771706Z  [32m✓[39m src/FireCalculator.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 1172[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4824267Z      [33m[2m✓[22m[39m R3 regression: ensures stale calculation snapshot consistently governs projection timing pill, rows, and compare values [33m 506[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4825303Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:23.4832084Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:23.5453758Z  [32m✓[39m src/calculatorSaveManager.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 289[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:24.5513628Z  [32m✓[39m src/accountUiFixtures.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 55[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:25.0562155Z  [32m✓[39m src/lib/calculatorChartTruth.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[32m 158[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:25.8073651Z  [32m✓[39m src/CashflowPlanningCalculator.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 882[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:26.1900045Z [90mstderr[2m | src/CompoundInterestCalculator.test.tsx[2m > [22m[2mCompound Interest engagement and presentation contract[2m > [22m[2mdisplays error message when saving fails
+Full suite	Run every test suite and build	2026-09-15T01:28:26.1963298Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:26.1972023Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3044115Z [90mstderr[2m | src/CompoundInterestCalculator.test.tsx[2m > [22m[2mCompound Interest engagement and presentation contract[2m > [22m[2mdisplays error message when saving fails
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3072671Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3102611Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3112187Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3124322Z [90mstderr[2m | src/CompoundInterestCalculator.test.tsx[2m > [22m[2mCompound Interest engagement and presentation contract[2m > [22m[2mdisplays error message when saving fails
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3168040Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3176599Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3213411Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3391947Z [90mstderr[2m | src/CompoundInterestCalculator.test.tsx[2m > [22m[2mCompound Interest engagement and presentation contract[2m > [22m[2mdisplays error message when saving fails
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3403011Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3433214Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:26.3451066Z  [32m✓[39m src/CompoundInterestCalculator.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 557[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:26.8568062Z  [32m✓[39m src/lib/mortgageReconciliation.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:27.1724110Z [90mstderr[2m | src/SavingsGoalCalculator.test.tsx[2m > [22m[2mSavings Goal engagement and presentation contract[2m > [22m[2mdisplays error message when savings goal save fails
+Full suite	Run every test suite and build	2026-09-15T01:28:27.1727281Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.1728002Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:27.2654310Z  [32m✓[39m src/lib/cashflowPlanningCalculators.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3546819Z [90mstderr[2m | src/SavingsGoalCalculator.test.tsx[2m > [22m[2mSavings Goal engagement and presentation contract[2m > [22m[2mdisplays error message when savings goal save fails
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3549926Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3551430Z     at SavingsGoalCalculator (/home/runner/work/Interactive-FIRE-Calculator/Interactive-FIRE-Calculator/src/SavingsGoalCalculator.tsx:92:34)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3552675Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3706224Z [90mstderr[2m | src/SavingsGoalCalculator.test.tsx[2m > [22m[2mSavings Goal engagement and presentation contract[2m > [22m[2mdisplays error message when savings goal save fails
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3721095Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3722510Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3723197Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3724537Z [90mstderr[2m | src/SavingsGoalCalculator.test.tsx[2m > [22m[2mSavings Goal engagement and presentation contract[2m > [22m[2mdisplays error message when savings goal save fails
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3726181Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3727232Z Warning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.3727834Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:27.4092740Z [90mstderr[2m | src/SavingsGoalCalculator.test.tsx[2m > [22m[2mSavings Goal engagement and presentation contract[2m > [22m[2mdisplays error message when savings goal save fails
+Full suite	Run every test suite and build	2026-09-15T01:28:27.4105520Z [22m[39mWarning: The current testing environment is not configured to support act(...)
+Full suite	Run every test suite and build	2026-09-15T01:28:27.4106290Z  [32m✓[39m src/SavingsGoalCalculator.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 1084[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:27.4112405Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:28.0093457Z  [32m✓[39m src/accounts.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:28.3614052Z  [32m✓[39m src/lib/insights.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:28.7390694Z  [32m✓[39m src/lib/savingsGoalCalculator.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 294[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:29.2233377Z  [32m✓[39m src/clerkAuthValidation.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:29.5402324Z  [32m✓[39m src/lib/fire.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:30.3302352Z  [32m✓[39m src/goals.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:30.6123687Z  [32m✓[39m src/accountData.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:31.5393680Z  [32m✓[39m src/authGateCopy.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:31.6253578Z  [32m✓[39m src/lib/planWorkspace.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6383959Z  [31m❯[39m src/fixtures/fixtureSeparation.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 19[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6434180Z [31m     [31m×[31m proves fixtures.html is strictly excluded from production dist output[39m[32m 9[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6445303Z [31m     [31m×[31m proves production JS and CSS bundles contain zero synthetic fixture IDs or markers[39m[32m 1[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6446808Z      [32m✓[39m verifies network mutation lock rejects any outgoing fetch in fixture environment[32m 4[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6448047Z      [32m✓[39m provides all 6 named states with typed, truthful datasets[32m 2[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6449225Z      [32m✓[39m supports deterministic URL state selection for all component domains[32m 2[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6497144Z  [32m✓[39m src/CalculatorLibraryDetail.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 2704[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6559335Z      [33m[2m✓[22m[39m renders exact H1 and concise scope note, and moves methodology below calculator grid [33m 684[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6632950Z      [33m[2m✓[22m[39m renders visible associated helper text for input fields with aria-describedby [33m 404[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6653508Z      [33m[2m✓[22m[39m renders visually dominant primary metric card [33m 335[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6662819Z      [33m[2m✓[22m[39m provides accessible native disclosure buttons for metric descriptions with preserved focus [33m 595[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.6692642Z      [33m[2m✓[22m[39m preserves scenario selection and reactive input changes [33m 683[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:32.9583656Z  [32m✓[39m src/CalculatorLibrary.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 80[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:33.6726860Z  [32m✓[39m src/lib/transactionAnalytics.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:33.8923583Z  [32m✓[39m src/balanceImports.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:33.9796365Z  [32m✓[39m src/landingPage.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 88[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:34.8998499Z  [32m✓[39m src/transactionImports.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:34.9074149Z  [32m✓[39m src/HeroFireExample.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:35.1213694Z  [32m✓[39m src/lib/calculatorEngagement.test.ts [2m([22m[2m167 tests[22m[2m)[22m[32m 110[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:35.9821663Z  [32m✓[39m src/lib/routeMetadata.test.ts [2m([22m[2m86 tests[22m[2m)[22m[32m 122[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:36.0002253Z  [32m✓[39m src/transactions.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:36.1873900Z  [32m✓[39m src/lib/calculatorQualityCopy.test.ts [2m([22m[2m165 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:37.1263536Z  [31m❯[39m src/test/d1TestHarness.test.ts [2m([22m[2m0 test[22m[2m)[22m
+Full suite	Run every test suite and build	2026-09-15T01:28:37.1903446Z  [32m✓[39m src/lib/planHealth.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:37.2158586Z  [32m✓[39m src/lib/calculatorContent.test.ts [2m([22m[2m84 tests[22m[2m)[22m[32m 258[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:38.1343483Z  [32m✓[39m src/lib/navigation.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:38.1915173Z  [32m✓[39m src/firePlans.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:38.3182012Z  [32m✓[39m src/lib/transactionCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:38.9267632Z  [32m✓[39m src/lib/balanceCsv.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0207158Z  [32m✓[39m src/lib/calculatorToolkits.test.ts [2m([22m[2m92 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0237697Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0243108Z [31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0243648Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0244495Z [41m[1m FAIL [22m[49m src/deletionAndRecovery.test.ts[2m [ src/deletionAndRecovery.test.ts ][22m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0245842Z [41m[1m FAIL [22m[49m src/test/d1TestHarness.test.ts[2m [ src/test/d1TestHarness.test.ts ][22m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0247820Z [31m[1mError[22m: Cannot bundle Node.js built-in "node:sqlite" imported from "src/test/d1TestHarness.ts". Consider disabling environments.client.noExternal or remove the built-in dependency.[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0249100Z   Plugin: [35mbuiltin:vite-resolve[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0250324Z [90m [2m❯[22m EnvironmentPluginContainer.resolveId node_modules/vite/dist/node/chunks/node.js:[2m30303:19[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0251901Z [90m [2m❯[22m TransformPluginContext.resolve node_modules/vite/dist/node/chunks/node.js:[2m30532:13[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0253181Z [90m [2m❯[22m normalizeUrl node_modules/vite/dist/node/chunks/node.js:[2m27834:22[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0254243Z [90m [2m❯[22m node_modules/vite/dist/node/chunks/node.js:[2m27905:30[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0255515Z [90m [2m❯[22m TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:[2m27873:4[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0257286Z [90m [2m❯[22m EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:[2m30387:14[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0258651Z [90m [2m❯[22m loadAndTransform node_modules/vite/dist/node/chunks/node.js:[2m24646:26[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0259672Z [90m [2m❯[22m fetchModule node_modules/vite/dist/node/chunks/node.js:[2m23234:15[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0260132Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0260468Z [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0260764Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0261358Z [41m[1m FAIL [22m[49m src/tenancyAuthHarness.test.ts[2m [ src/tenancyAuthHarness.test.ts ][22m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0263295Z [31m[1mError[22m: Cannot bundle Node.js built-in "node:sqlite" imported from "src/test/d1TestHarness.ts". Consider disabling environments.client.noExternal or remove the built-in dependency.[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0264551Z   Plugin: [35mbuiltin:vite-resolve[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0265606Z [90m [2m❯[22m EnvironmentPluginContainer.resolveId node_modules/vite/dist/node/chunks/node.js:[2m30303:19[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0266927Z [90m [2m❯[22m TransformPluginContext.resolve node_modules/vite/dist/node/chunks/node.js:[2m30532:13[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0268068Z [90m [2m❯[22m normalizeUrl node_modules/vite/dist/node/chunks/node.js:[2m27834:22[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0269032Z [90m [2m❯[22m node_modules/vite/dist/node/chunks/node.js:[2m27905:30[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0270160Z [90m [2m❯[22m TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:[2m27873:4[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0271981Z [90m [2m❯[22m EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:[2m30387:14[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0273253Z [90m [2m❯[22m loadAndTransform node_modules/vite/dist/node/chunks/node.js:[2m24646:26[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0273965Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0274289Z [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0274550Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0274559Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0274966Z [31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0275302Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0276687Z [41m[1m FAIL [22m[49m src/fixtures/fixtureSeparation.test.ts[2m > [22mB25: Real-Component Synthetic UI Fixtures and Build Separation[2m > [22mproves fixtures.html is strictly excluded from production dist output
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0278151Z [31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0278595Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0278776Z [32m- Expected[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0279121Z [31m+ Received[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0279300Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0279449Z [32m- true[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0279759Z [31m+ false[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0279920Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0280390Z [36m [2m❯[22m src/fixtures/fixtureSeparation.test.ts:[2m43:37[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0292247Z     [90m 41|[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0292942Z     [90m 42|[39m   it('proves fixtures.html is strictly excluded from production dist o…
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0294103Z     [90m 43|[39m     [34mexpect[39m(fs[33m.[39m[34mexistsSync[39m(distPath))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0294981Z     [90m   |[39m                                     [31m^[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0295424Z     [90m 44|[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0296397Z     [90m 45|[39m     [35mconst[39m fixturesHtmlPath [33m=[39m path[33m.[39m[34mjoin[39m(distPath[33m,[39m [32m'fixtures.html'[39m)[33m;[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0297040Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0297376Z [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0297645Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0299104Z [41m[1m FAIL [22m[49m src/fixtures/fixtureSeparation.test.ts[2m > [22mB25: Real-Component Synthetic UI Fixtures and Build Separation[2m > [22mproves production JS and CSS bundles contain zero synthetic fixture IDs or markers
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0300652Z [31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0301065Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0301246Z [32m- Expected[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0301553Z [31m+ Received[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0301881Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0302107Z [32m- true[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0302422Z [31m+ false[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0302592Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0303053Z [36m [2m❯[22m src/fixtures/fixtureSeparation.test.ts:[2m59:38[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0303911Z     [90m 57|[39m   it('proves production JS and CSS bundles contain zero synthetic fixt…
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0305045Z     [90m 58|[39m     [35mconst[39m assetsDir [33m=[39m path[33m.[39m[34mjoin[39m(distPath[33m,[39m [32m'assets'[39m)[33m;[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0306547Z     [90m 59|[39m     [34mexpect[39m(fs[33m.[39m[34mexistsSync[39m(assetsDir))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0307495Z     [90m   |[39m                                      [31m^[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0307913Z     [90m 60|[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0308570Z     [90m 61|[39m     [35mconst[39m assetFiles [33m=[39m fs[33m.[39m[34mreaddirSync[39m(assetsDir)[33m;[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0309049Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0309337Z [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0309574Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0309608Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0310322Z [2m Test Files [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m40 passed[39m[22m[90m (44)[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0317310Z [2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1562 passed[39m[22m[90m (1564)[39m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0318300Z [2m   Start at [22m 01:28:19
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0319180Z [2m   Duration [22m 19.44s[2m (transform 2.37s, setup 0ms, import 5.94s, tests 9.40s, environment 34.32s)[22m
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0319689Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0338292Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0361142Z ##[error]AssertionError: expected false to be true // Object.is equality
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	- Expected
+Full suite	Run every test suite and build	+ Received
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	- true
+Full suite	Run every test suite and build	+ false
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	 ❯ src/fixtures/fixtureSeparation.test.ts:43:37
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0369713Z 
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0372041Z ##[error]AssertionError: expected false to be true // Object.is equality
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	- Expected
+Full suite	Run every test suite and build	+ Received
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	- true
+Full suite	Run every test suite and build	+ false
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	 ❯ src/fixtures/fixtureSeparation.test.ts:59:38
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	
+Full suite	Run every test suite and build	2026-09-15T01:28:39.0831128Z ##[error]Process completed with exit code 1.

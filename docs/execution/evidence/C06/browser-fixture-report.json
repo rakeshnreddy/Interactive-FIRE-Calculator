@@ -1,0 +1,2209 @@
+{
+  "timestamp": "2026-09-15T04:54:39.224Z",
+  "evaluatorVersion": "C06-Rework2-FailClosed",
+  "summary": {
+    "total": 50,
+    "passed": 49,
+    "failed": 0,
+    "blocked": 1,
+    "allPassed": false
+  },
+  "cases": [
+    {
+      "id": "dashboard-desktop-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "dashboard-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 156407,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2246,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-desktop-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "dashboard-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 154591,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2246,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-desktop-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "accounts-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 121579,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2923,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-desktop-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "accounts-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 119661,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2923,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-desktop-light",
+      "domain": "transactions",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "transactions-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 129289,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2234,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated transactions"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-desktop-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "transactions-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 126647,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2234,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated transactions"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "goals-desktop-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "goals-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 126634,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1310,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated goals"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "goals-desktop-dark",
+      "domain": "goals",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "goals-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 124605,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1310,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated goals"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "plans-desktop-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "plans-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 121946,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1649,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found planning workspace (Age 55 Lean/Chubby FIRE Roadmap)"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "plans-desktop-dark",
+      "domain": "plans",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "plans-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 120381,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1649,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found planning workspace (Age 55 Lean/Chubby FIRE Roadmap)"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "reports-desktop-light",
+      "domain": "reports",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "reports-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 125305,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1462,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found insights report"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "reports-desktop-dark",
+      "domain": "reports",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "reports-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 123789,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1462,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found insights report"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "settings-desktop-light",
+      "domain": "settings",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "settings-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 137273,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1120,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found settings panels"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "settings-desktop-dark",
+      "domain": "settings",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "settings-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 133139,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1120,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found settings panels"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-empty-desktop-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "accounts-empty-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 106418,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1120,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found empty accounts message (\"No accounts yet\")"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-stale-desktop-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "stale",
+      "screenshot": "accounts-stale-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 119110,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2923,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found stale account fixtures"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-long-value-desktop-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "accounts-long-value-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 125232,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1555,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found long-value strings"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-empty-desktop-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "transactions-empty-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 119851,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1346,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found empty transactions message"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-stale-desktop-light",
+      "domain": "transactions",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "stale",
+      "screenshot": "transactions-stale-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 128266,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2234,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found stale transactions"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-long-value-desktop-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "transactions-long-value-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 126384,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1692,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found long-value strings"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "goals-empty-desktop-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "goals-empty-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 79111,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1120,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found empty goals message"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "goals-stale-desktop-dark",
+      "domain": "goals",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "stale",
+      "screenshot": "goals-stale-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 124883,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1310,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found stale goals"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "goals-long-value-desktop-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "goals-long-value-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 117093,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1120,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found long-value strings"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "plans-empty-desktop-dark",
+      "domain": "plans",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "empty",
+      "screenshot": "plans-empty-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 100261,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1389,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found plans workspace empty state (Unsaved draft)"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "plans-long-value-desktop-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "long-value",
+      "screenshot": "plans-long-value-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 131139,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1734,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found long-value strings"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-loading-desktop-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "loading",
+      "screenshot": "dashboard-loading-desktop-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 150268,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1688,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Loading state verified"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-failure-desktop-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "failure",
+      "screenshot": "dashboard-failure-desktop-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 155152,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2378,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found synthetic timeout error message"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-768-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "state": "populated",
+      "screenshot": "dashboard-768-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 125575,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 768,
+        "viewportHeight": 1024,
+        "documentScrollWidth": 768,
+        "documentScrollHeight": 2637,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-768-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "state": "populated",
+      "screenshot": "accounts-768-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 114312,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 768,
+        "viewportHeight": 1024,
+        "documentScrollWidth": 768,
+        "documentScrollHeight": 3045,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "plans-768-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "state": "populated",
+      "screenshot": "plans-768-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 104323,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 768,
+        "viewportHeight": 1024,
+        "documentScrollWidth": 768,
+        "documentScrollHeight": 1931,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found planning workspace (Age 55 Lean/Chubby FIRE Roadmap)"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-390-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "dashboard-390-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 54477,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "documentScrollWidth": 390,
+        "documentScrollHeight": 4286,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-390-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "dashboard-390-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 53747,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "documentScrollWidth": 390,
+        "documentScrollHeight": 4286,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-390-dark",
+      "domain": "accounts",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "accounts-390-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 54090,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "documentScrollWidth": 390,
+        "documentScrollHeight": 5770,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-390-light",
+      "domain": "transactions",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "transactions-390-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 53727,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "documentScrollWidth": 390,
+        "documentScrollHeight": 6612,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated transactions"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "goals-390-dark",
+      "domain": "goals",
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "goals-390-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 52362,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "documentScrollWidth": 390,
+        "documentScrollHeight": 3282,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated goals"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "plans-390-light",
+      "domain": "plans",
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "state": "populated",
+      "screenshot": "plans-390-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 54219,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "documentScrollWidth": 390,
+        "documentScrollHeight": 2775,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found planning workspace (Age 55 Lean/Chubby FIRE Roadmap)"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-320-light",
+      "domain": "dashboard",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "dashboard-320-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 41924,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 4526,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "dashboard-320-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "dashboard-320-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 41397,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 4526,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found dashboard metrics"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-320-light",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "accounts-320-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 39644,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 5971,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-320-light-fullpage",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "accounts-320-light-fullpage.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 298117,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 5971,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "accounts-320-light-controls",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "accounts-320-light-controls.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 31953,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 5971,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated accounts"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "transactions-320-dark",
+      "domain": "transactions",
+      "theme": "dark",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "transactions-320-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 41504,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 6909,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated transactions"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "goals-320-light",
+      "domain": "goals",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "goals-320-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 39156,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 3336,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found populated goals"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "plans-320-dark",
+      "domain": "plans",
+      "theme": "dark",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "plans-320-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 42056,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 2873,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 14.57938271113666,
+        "fgColor": "rgb(216, 231, 234)",
+        "bgColor": "rgb(8, 21, 28)",
+        "minRequired": 4.5,
+        "codeRatio": 15.915928706332583
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found planning workspace (Age 55 Lean/Chubby FIRE Roadmap)"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "settings-320-light",
+      "domain": "settings",
+      "theme": "light",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "state": "populated",
+      "screenshot": "settings-320-light.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 40450,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 320,
+        "viewportHeight": 640,
+        "documentScrollWidth": 320,
+        "documentScrollHeight": 2207,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "contrast": {
+        "tested": true,
+        "ratio": 11.25292165498205,
+        "fgColor": "rgb(32, 58, 67)",
+        "bgColor": "rgb(244, 248, 251)",
+        "minRequired": 4.5,
+        "codeRatio": 13.19565545994323
+      },
+      "renderedContent": {
+        "matchedStateExpectation": true,
+        "detail": "Found settings panels"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "native-zoom-200-accounts",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "native-zoom-200-accounts.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 121750,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2923,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "zoomCheck": {
+        "requestedLevel": 2,
+        "appliedViaAppChrome": false,
+        "deviceScaleFactorUsed": false,
+        "reason": "Native desktop browser UI application zoom (200%) is unavailable in headless CLI automation; deviceScaleFactor / CDP pageScaleFactor / CSS zoom rejected per C06 protocol"
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "BLOCKED",
+      "evaluationReasons": [
+        "Native desktop browser UI application zoom (200%) is unavailable in headless CLI automation"
+      ],
+      "passed": false
+    },
+    {
+      "id": "reduced-motion-dashboard-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "reduced-motion-dashboard-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 154639,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2246,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "mediaCheck": {
+        "type": "reduced-motion",
+        "requested": true,
+        "matched": true,
+        "active": true
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "reduced-transparency-dashboard-dark",
+      "domain": "dashboard",
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "reduced-transparency-dashboard-dark.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 154591,
+      "themeInfo": {
+        "rootDataMode": "dark",
+        "shellDataMode": "dark",
+        "bgColor": "rgb(8, 21, 28)",
+        "textColor": "rgb(216, 231, 234)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2246,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "mediaCheck": {
+        "type": "reduced-transparency",
+        "requested": true,
+        "matched": true,
+        "active": true
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "keyboard-focus-accounts",
+      "domain": "accounts",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "keyboard-focus-accounts.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 123705,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 2923,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "keyboardFocus": {
+        "attempted": true,
+        "focusedTag": "INPUT",
+        "focusedRole": "input",
+        "focusedText": "New Checking Account",
+        "hasVisibleFocusRing": true,
+        "isBodyFocus": false,
+        "occluded": false
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    },
+    {
+      "id": "network-mutation-lock",
+      "domain": "settings",
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "state": "populated",
+      "screenshot": "network-mutation-lock.png",
+      "screenshotExists": true,
+      "screenshotSizeBytes": 139978,
+      "themeInfo": {
+        "rootDataMode": "light",
+        "shellDataMode": "light",
+        "bgColor": "rgb(244, 248, 251)",
+        "textColor": "rgb(32, 58, 67)"
+      },
+      "geometry": {
+        "viewportWidth": 1440,
+        "viewportHeight": 900,
+        "documentScrollWidth": 1440,
+        "documentScrollHeight": 1120,
+        "hasHorizontalOverflow": false,
+        "overflowDelta": 0
+      },
+      "networkLock": {
+        "tested": true,
+        "outgoingMutationsCount": 0,
+        "trapVerified": true,
+        "importResult": {
+          "status": 200,
+          "data": {
+            "importRecord": {
+              "createdAt": "2026-09-02T14:30:00Z",
+              "duplicateRows": 0,
+              "errorRows": 0,
+              "fileName": "chase_checking_transactions_aug2026.csv",
+              "id": "imp_tx_01",
+              "importedRows": 5,
+              "totalRows": 5
+            }
+          }
+        },
+        "blockedResult": {
+          "blocked": true,
+          "message": "[SYNTHETIC FIXTURE SECURITY VIOLATION] Outgoing network mutation blocked in fixture harness: POST /api/accounts"
+        },
+        "settingsAction": {
+          "clicked": true,
+          "log": "[04:54:38] Synthetic action: \"CommitTransactionImport\" handled in-memory. Zero network mutation."
+        }
+      },
+      "consoleErrors": [],
+      "pageErrors": [],
+      "status": "PASS",
+      "evaluationReasons": [],
+      "passed": true
+    }
+  ]
+}

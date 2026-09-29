@@ -1,0 +1,354 @@
+{
+  "status": "PASS",
+  "scenario": "b31-zoom",
+  "target": {
+    "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+    "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+    "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+    "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "commitDirty": false
+  },
+  "stages": [
+    {
+      "name": "preflight",
+      "status": "PASS",
+      "detail": {
+        "deploymentId": "d120fe09-d666-4bf5-9a12-508650dd05f1",
+        "url": "https://d120fe09.interactive-fire-calculator.pages.dev",
+        "sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      }
+    },
+    {
+      "name": "d1-reachable",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sign-in",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "native-zoom-verified",
+      "status": "PASS",
+      "detail": {
+        "browser": "Google Chrome 153.0.8010.53",
+        "zoomPercent": 200,
+        "cssViewportWidth": 640,
+        "windowWidth": 1280,
+        "devicePixelRatio": 2,
+        "anonymousSignedOut": true
+      }
+    },
+    {
+      "name": "public-routes-200-zoom",
+      "status": "PASS",
+      "detail": {
+        "routes": [
+          {
+            "route": "/",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 36,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-home.png"
+          },
+          {
+            "route": "/calculators",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 101,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-calculators.png"
+          },
+          {
+            "route": "/calculators/fire",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 51,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-calculators-fire.png"
+          },
+          {
+            "route": "/calculators/mortgage",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 40,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-calculators-mortgage.png"
+          },
+          {
+            "route": "/calculators/sip",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 29,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-calculators-sip.png"
+          },
+          {
+            "route": "/calculators/income-tax-india",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 26,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-calculators-income-tax-india.png"
+          },
+          {
+            "route": "/calculators/compound-interest",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 47,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-calculators-compound-interest.png"
+          },
+          {
+            "route": "/calculators/emi",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 37,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-calculators-emi.png"
+          },
+          {
+            "route": "/",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 36,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-home.png"
+          },
+          {
+            "route": "/calculators",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 101,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-calculators.png"
+          },
+          {
+            "route": "/calculators/fire",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 51,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-calculators-fire.png"
+          },
+          {
+            "route": "/calculators/mortgage",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 40,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-calculators-mortgage.png"
+          },
+          {
+            "route": "/calculators/sip",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 29,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-calculators-sip.png"
+          },
+          {
+            "route": "/calculators/income-tax-india",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 26,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-calculators-income-tax-india.png"
+          },
+          {
+            "route": "/calculators/compound-interest",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 47,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-calculators-compound-interest.png"
+          },
+          {
+            "route": "/calculators/emi",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 37,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-calculators-emi.png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "signed-in-routes-200-zoom",
+      "status": "PASS",
+      "detail": {
+        "routes": [
+          {
+            "route": "/dashboard",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 13,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-signed-in-dashboard.png"
+          },
+          {
+            "route": "/accounts",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 14,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-signed-in-accounts.png"
+          },
+          {
+            "route": "/transactions",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 22,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-signed-in-transactions.png"
+          },
+          {
+            "route": "/goals",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 11,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-signed-in-goals.png"
+          },
+          {
+            "route": "/plans",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 16,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-signed-in-plans.png"
+          },
+          {
+            "route": "/reports",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 21,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-signed-in-reports.png"
+          },
+          {
+            "route": "/settings",
+            "theme": "light",
+            "cssViewportWidth": 640,
+            "controls": 15,
+            "problems": [],
+            "screenshot": "raw/zoom200-light-signed-in-settings.png"
+          },
+          {
+            "route": "/dashboard",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 13,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-signed-in-dashboard.png"
+          },
+          {
+            "route": "/accounts",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 14,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-signed-in-accounts.png"
+          },
+          {
+            "route": "/transactions",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 22,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-signed-in-transactions.png"
+          },
+          {
+            "route": "/goals",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 11,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-signed-in-goals.png"
+          },
+          {
+            "route": "/plans",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 16,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-signed-in-plans.png"
+          },
+          {
+            "route": "/reports",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 21,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-signed-in-reports.png"
+          },
+          {
+            "route": "/settings",
+            "theme": "dark",
+            "cssViewportWidth": 640,
+            "controls": 15,
+            "problems": [],
+            "screenshot": "raw/zoom200-dark-signed-in-settings.png"
+          }
+        ],
+        "settingsLinkVisibleFromMenu": true
+      }
+    },
+    {
+      "name": "long-values-and-errors-200-zoom",
+      "status": "PASS",
+      "detail": {
+        "calculateBlockedReason": "Enter expected return and inflation (or use the example values) to see your answer.",
+        "invalidRateAlerts": 1,
+        "invalidFields": [
+          "fire-return",
+          "field-years-_r9_",
+          "field-return-_ra_"
+        ],
+        "screenshots": [
+          "raw/zoom200-light-fire-invalid-rate-error.png",
+          "raw/zoom200-light-fire-long-values.png",
+          "raw/zoom200-dark-compound-rate-500.png"
+        ],
+        "rateMessage": "Check the highlighted assumptionsAnnual rate must be between -100% and 100%. Check whether you meant a percentage or a d"
+      }
+    }
+  ],
+  "cleanup": [
+    {
+      "tenant": "A",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "analytics_consent": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "error": null,
+  "startedAt": "2026-09-27T05:56:12.552Z",
+  "finishedAt": "2026-09-27T05:57:54.193Z"
+}

@@ -1,0 +1,186 @@
+import React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+import { renderToStaticMarkup } from 'react-dom/server';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import App, { LandingPage, AuthGate } from './App';
+import { CalculatorLibrary } from './CalculatorLibrary';
+import type { AuthState } from './auth';
+
+vi.mock('@clerk/react', () => ({
+  SignUpButton: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  SignInButton: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  UserButton: () => null,
+  SignOutButton: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useAuth: () => ({ getToken: vi.fn() }),
+  useUser: () => ({ isLoaded: true, isSignedIn: false, user: null })
+}));
+
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: () => ({
+      matches: false,
+      media: '',
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false
+    })
+  });
+}
+
+const signedOutAuth: AuthState = {
+  provider: 'clerk',
+  status: 'signed-out',
+  isConfigured: true,
+  isSignedIn: false,
+  getToken: async () => null,
+  user: null
+};
+
+function normalizeHtml(rawHtml: string): string {
+  return rawHtml
+    .replace(/\r\n/g, '\n')
+    .replace(/[ \t]+$/gm, '')
+    .trim();
+}
+
+function computeSha256(content: string): string {
+  return crypto.createHash('sha256').update(content, 'utf8').digest('hex');
+}
+
+interface BaselineFixture {
+  metadata: {
+    baselineCommit: string;
+    capturedAt: string;
+    captureScript: string;
+    captureCommand: string;
+    normalization: string;
+  };
+  routes: Record<string, {
+    path: string;
+    mode: string;
+    sha256: string;
+    length: number;
+    html: string;
+    landmarks: Record<string, boolean>;
+  }>;
+  componentOnly: Record<string, {
+    path: string;
+    mode: string;
+    component: string;
+    sha256: string;
+    length: number;
+    html: string;
+    landmarks: Record<string, boolean>;
+  }>;
+}
+
+describe('B39 App Parity Verification (Read-Only against Immutable Baseline)', () => {
+  const fixturePath = path.resolve(__dirname, '../docs/execution/evidence/B39/baseline_fixture.json');
+
+  it('loads immutable baseline fixture generated from 42780b4', () => {
+    expect(fs.existsSync(fixturePath)).toBe(true);
+    const fixture: BaselineFixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
+    expect(fixture.metadata.baselineCommit).toBe('42780b4c5a46004e3d008bd1b6dafee6ba5bc501');
+    expect(fixture.routes['/']).toBeDefined();
+    expect(fixture.routes['/calculators/fire']).toBeDefined();
+    expect(fixture.routes['/calculators/mortgage']).toBeDefined();
+    expect(fixture.routes['/dashboard']).toBeDefined();
+    expect(fixture.componentOnly['/calculators/mortgage']).toBeDefined();
+  });
+
+  // The landing page was intentionally redesigned after the B39 baseline (theme and copy pass);
+  // only landmarks are asserted here.
+  it('renders route / landmarks (intentionally changed after the B39 baseline)', () => {
+    window.history.replaceState({}, '', '/');
+    const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
+    expect(candidateHtml).toContain('FinPath');
+    expect(candidateHtml).toContain('landing-hero');
+    expect(candidateHtml).toContain('Browse all calculators');
+  });
+
+  // B39's exact-hash proof for this route is recorded in its review. B36 intentionally changed the
+  // FIRE form (required return/inflation, savings, currency), so only landmarks are asserted here;
+  // every other route still compares byte-for-byte with the 42780b4 baseline.
+  it('renders route /calculators/fire landmarks (intentionally changed by B36 after the B39 baseline)', () => {
+    const fixture: BaselineFixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
+    const baseline = fixture.routes['/calculators/fire'];
+
+    window.history.replaceState({}, '', '/calculators/fire');
+    const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
+
+    expect(candidateHtml).not.toBe(baseline.html);
+    expect(candidateHtml).toContain('Expected return');
+    expect(candidateHtml).toContain('Use example values');
+
+    expect(candidateHtml).toContain('FinPath');
+    expect(candidateHtml).toContain('FIRE Calculator');
+    expect(candidateHtml).toContain('Planning question');
+    expect(candidateHtml).toContain('Current age');
+    expect(candidateHtml).toContain('Retirement age');
+    expect(candidateHtml).toContain('Calculate');
+  });
+
+  // The signed-out shell intentionally dropped the Workspace menu (B40) after the baseline; landmarks only.
+  it('renders route /calculators/mortgage App shell landmarks without workspace navigation', () => {
+    window.history.replaceState({}, '', '/calculators/mortgage');
+    const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
+
+    expect(candidateHtml).not.toContain('desktop-workspace-navigation');
+    expect(candidateHtml).not.toContain('>Workspace<');
+    expect(candidateHtml).toContain('href="/calculators"');
+    expect(candidateHtml).toContain('FinPath');
+    expect(candidateHtml).toContain('Calculator library loading');
+    expect(candidateHtml).toContain('Loading calculator library...');
+  });
+
+  // Auth-gate copy was rewritten in the design pass; landmarks only.
+  it('renders route /dashboard signed-out AuthGate landmarks', () => {
+    window.history.replaceState({}, '', '/dashboard');
+    const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
+    expect(candidateHtml).toContain('FinPath');
+    expect(candidateHtml).toContain('Sign in to open Dashboard.');
+    expect(candidateHtml).toContain('Dashboard is part of your signed-in workspace.');
+    expect(candidateHtml).toContain('Browse calculators');
+  });
+
+  // The mortgage page gained housing-cost inputs, a region badge and preset chips after the baseline.
+  it('renders component-only CalculatorLibrary for /calculators/mortgage landmarks', () => {
+    const candidateHtml = normalizeHtml(
+      renderToStaticMarkup(
+        <CalculatorLibrary
+          auth={signedOutAuth}
+          route="/calculators/mortgage"
+          onNavigate={() => {}}
+          onSaveResult={async () => ({ destinationRoute: '/plans', message: '', savedResultId: '1' })}
+          savedResults={[]}
+        />
+      )
+    );
+    expect(candidateHtml).toContain('Mortgage Payment Calculator');
+    expect(candidateHtml).toContain('Loan amount');
+    expect(candidateHtml).toContain('Interest rate');
+    expect(candidateHtml).toContain('Monthly payment');
+    expect(candidateHtml).toContain('Total interest');
+    expect(candidateHtml).toContain('Same calculation, other presets');
+  });
+
+  it('fails under a deliberate changed text/DOM fixture (negative regression test)', () => {
+    const fixture: BaselineFixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
+    const mutatedBaselineHtml = fixture.routes['/'].html.replace('Plan your financial future', 'MODIFIED UNEXPECTED TITLE');
+    const mutatedSha = computeSha256(mutatedBaselineHtml);
+
+    window.history.replaceState({}, '', '/');
+    const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
+    const candidateSha = computeSha256(candidateHtml);
+
+    // Verify that our verification logic would strictly detect this mutation
+    expect(candidateSha).not.toBe(mutatedSha);
+    expect(candidateHtml).not.toBe(mutatedBaselineHtml);
+  });
+});

@@ -8,7 +8,7 @@ import {
   summarizeTransactions
 } from '../../_lib/transactions';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
@@ -26,8 +26,8 @@ export const onRequestGet: PagesFunction<TransactionsEnv> = async ({ request, en
     const transactions = await listTransactions(context.database, context.userId);
 
     return json({ summary: summarizeTransactions(transactions), transactions });
-  } catch {
-    return json({ error: 'Unable to load transactions.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load transactions.');
   }
 };
 
@@ -53,8 +53,8 @@ export const onRequestPost: PagesFunction<TransactionsEnv> = async ({ request, e
     }
 
     return json({ transaction }, 201);
-  } catch {
-    return json({ error: 'Unable to create transaction.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to create transaction.');
   }
 };
 

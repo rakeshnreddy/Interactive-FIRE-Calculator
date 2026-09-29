@@ -8,7 +8,7 @@ import {
   updateTransaction
 } from '../../_lib/transactions';
 import { json } from '../../_lib/http';
-import { requireDatabase } from '../../_lib/persistence';
+import { handleApiError, requireDatabase } from '../../_lib/persistence';
 import { requireClerkAuth } from '../../_lib/session';
 import type { DatabaseEnv } from '../../_lib/persistence';
 import type { ClerkEnv } from '../../_lib/session';
@@ -31,8 +31,8 @@ export const onRequestGet: PagesFunction<TransactionEnv, TransactionParams> = as
     }
 
     return json({ transaction });
-  } catch {
-    return json({ error: 'Unable to load transaction.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to load transaction.');
   }
 };
 
@@ -58,8 +58,8 @@ export const onRequestPut: PagesFunction<TransactionEnv, TransactionParams> = as
     }
 
     return json({ transaction });
-  } catch {
-    return json({ error: 'Unable to update transaction.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to update transaction.');
   }
 };
 
@@ -78,8 +78,8 @@ export const onRequestDelete: PagesFunction<TransactionEnv, TransactionParams> =
     }
 
     return json({ ok: true });
-  } catch {
-    return json({ error: 'Unable to remove transaction.' }, 500);
+  } catch (error) {
+    return handleApiError(error, 'Unable to remove transaction.');
   }
 };
 

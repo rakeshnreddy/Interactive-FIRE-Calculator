@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "candidateWorkingTree": "B39 pure module extraction (codex/finpath-quality-execution)",
+    "verifiedAgainstBaselineCommit": "42780b4c5a46004e3d008bd1b6dafee6ba5bc501",
+    "verificationTest": "src/appParity.test.tsx",
+    "verificationCommand": "npx vitest run src/appParity.test.tsx",
+    "verificationOutcome": "ALL 7 TESTS PASSED"
+  },
+  "routes": {
+    "landing": {
+      "path": "/",
+      "mode": "app-routed",
+      "candidateSha256": "5627a74c48e373b0ece1e3950f84bf508b110f1cf8de99bce6618b0c68cb9eba",
+      "baselineSha256": "5627a74c48e373b0ece1e3950f84bf508b110f1cf8de99bce6618b0c68cb9eba",
+      "exactHashMatch": true,
+      "candidateLength": 19403,
+      "baselineLength": 19403,
+      "exactByteMatch": true,
+      "landmarks": {
+        "hasBrand": true,
+        "hasTitle": true,
+        "hasRetireSubtitle": true,
+        "hasHero": true,
+        "hasWorkspaceNav": true
+      }
+    },
+    "fireCalculator": {
+      "path": "/calculators/fire",
+      "mode": "app-routed",
+      "candidateSha256": "2b48d30ae639cf963001c54126e4ed43ca8b7dbf8d7e7b1c8a6ddaeb317e703d",
+      "baselineSha256": "2b48d30ae639cf963001c54126e4ed43ca8b7dbf8d7e7b1c8a6ddaeb317e703d",
+      "exactHashMatch": true,
+      "candidateLength": 18676,
+      "baselineLength": 18676,
+      "exactByteMatch": true,
+      "landmarks": {
+        "hasBrand": true,
+        "hasFireTitle": true,
+        "hasPlanningQuestion": true,
+        "hasCurrentAge": true,
+        "hasRetirementAge": true,
+        "hasCalculateButton": true
+      }
+    },
+    "mortgageCalculatorShell": {
+      "path": "/calculators/mortgage",
+      "mode": "app-routed",
+      "candidateSha256": "2197d05f882e648ad3520e25581c0a1d2b5e428b75996d8e0785145425786804",
+      "baselineSha256": "2197d05f882e648ad3520e25581c0a1d2b5e428b75996d8e0785145425786804",
+      "exactHashMatch": true,
+      "candidateLength": 4424,
+      "baselineLength": 4424,
+      "exactByteMatch": true,
+      "landmarks": {
+        "hasBrand": true,
+        "hasSuspenseShell": true,
+        "hasLoadingText": true
+      }
+    },
+    "signedOutDashboard": {
+      "path": "/dashboard",
+      "mode": "app-routed",
+      "candidateSha256": "e74982b5210eedd110ab783e1bfb171e128e0c3d20d7af10ab29e8a41e019633",
+      "baselineSha256": "e74982b5210eedd110ab783e1bfb171e128e0c3d20d7af10ab29e8a41e019633",
+      "exactHashMatch": true,
+      "candidateLength": 6592,
+      "baselineLength": 6592,
+      "exactByteMatch": true,
+      "landmarks": {
+        "hasBrand": true,
+        "hasSignInPrompt": true,
+        "hasShellDescription": true,
+        "hasBrowseCalculators": true
+      }
+    },
+    "mortgageCalculatorComponent": {
+      "path": "/calculators/mortgage",
+      "mode": "component-only",
+      "component": "CalculatorLibrary",
+      "candidateSha256": "0f22b134cf314b9cd2718a910b5556b9151e7aa324ff14e7833320e87d732a53",
+      "baselineSha256": "0f22b134cf314b9cd2718a910b5556b9151e7aa324ff14e7833320e87d732a53",
+      "exactHashMatch": true,
+      "candidateLength": 86106,
+      "baselineLength": 86106,
+      "exactByteMatch": true,
+      "landmarks": {
+        "hasMortgageTitle": true,
+        "hasLoanAmount": true,
+        "hasInterestRate": true,
+        "hasMonthlyPayment": true,
+        "hasTotalInterest": true
+      }
+    }
+  },
+  "overallVerdict": "100% byte-for-byte HTML and SHA-256 hash match across all routes and components against baseline 42780b4"
+}

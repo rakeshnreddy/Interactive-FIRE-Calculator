@@ -1,0 +1,103 @@
+{
+  "id": "21a762ad-81f0-424b-af4f-05cbdf5a3a5d",
+  "short_id": "21a762ad",
+  "project_id": "1bcc1c6f-c8fd-4477-8276-5326be0172be",
+  "project_name": "interactive-fire-calculator",
+  "environment": "preview",
+  "url": "https://21a762ad.interactive-fire-calculator.pages.dev",
+  "created_on": "2026-09-13T08:36:52Z",
+  "modified_on": "2026-09-13T08:36:54Z",
+  "latest_stage": {
+    "name": "deploy",
+    "started_on": null,
+    "ended_on": "2026-09-13T08:06:04.696591Z",
+    "status": "success"
+  },
+  "deployment_trigger": {
+    "type": "ad_hoc",
+    "metadata": {
+      "branch": "codex/finpath-quality-execution",
+      "commit_hash": "733e76c",
+      "commit_message": "docs(c04): record clean full-suite test execution log",
+      "commit_dirty": false
+    }
+  },
+  "stages": [
+    {
+      "name": "queued",
+      "started_on": "2026-09-13T08:06:00.828937Z",
+      "ended_on": null,
+      "status": "active"
+    },
+    {
+      "name": "initialize",
+      "started_on": null,
+      "ended_on": null,
+      "status": "idle"
+    },
+    {
+      "name": "clone_repo",
+      "started_on": null,
+      "ended_on": null,
+      "status": "idle"
+    },
+    {
+      "name": "build",
+      "started_on": null,
+      "ended_on": null,
+      "status": "idle"
+    },
+    {
+      "name": "deploy",
+      "started_on": null,
+      "ended_on": "2026-09-13T08:06:04.696591Z",
+      "status": "success"
+    }
+  ],
+  "build_config": {
+    "build_command": "npm run build",
+    "destination_dir": "dist",
+    "build_caching": true,
+    "root_dir": "/",
+    "web_analytics_tag": null,
+    "web_analytics_token": null
+  },
+  "source": {
+    "type": "github",
+    "config": {
+      "owner": "rakeshnreddy",
+      "repo_name": "Interactive-FIRE-Calculator",
+      "production_branch": "main",
+      "pr_comments_enabled": false
+    }
+  },
+  "env_vars": {
+    "CLERK_PUBLISHABLE_KEY": {
+      "type": "secret_text",
+      "value": ""
+    },
+    "CLERK_SECRET_KEY": {
+      "type": "secret_text",
+      "value": ""
+    },
+    "VITE_CLERK_PUBLISHABLE_KEY": {
+      "type": "secret_text",
+      "value": ""
+    }
+  },
+  "d1_databases": {
+    "DB": {
+      "id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+    }
+  },
+  "compatibility_date": "2026-06-06",
+  "compatibility_flags": [],
+  "build_image_major_version": 3,
+  "usage_model": "bundled",
+  "aliases": [
+    "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev"
+  ],
+  "is_skipped": false,
+  "production_branch": "main",
+  "uses_functions": true
+}

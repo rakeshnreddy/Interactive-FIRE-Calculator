@@ -22,7 +22,7 @@ FinPath turns one-off financial calculations into understandable decisions and r
 ## Anti-References
 
 - An endless directory of nearly identical calculator cards.
-- Generic fintech navy-and-purple gradients or decorative glass on every surface.
+- Generic fintech composition or decorative glass on every surface. The owner-approved light/dark material direction in docs/COLOR_AND_GLASS_SYSTEM.md permits purposeful gradients and bounded glass.
 - Marketing copy that exposes traffic, acquisition, or search strategy.
 - Oversized promotional layouts inside operational tools.
 - Financial estimates presented as promises or professional advice.

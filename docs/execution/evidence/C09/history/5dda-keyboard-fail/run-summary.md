@@ -1,0 +1,3 @@
+# First current-candidate hosted run — keyboard collector failed closed
+
+Date: 2026-09-25. Product code SHA: `5dda3d2be24246e3470a65e7653a0b6e425cbece`. Preview: `https://51acbf88.interactive-fire-calculator.pages.dev`. The evaluator exited nonzero solely because `keyboard_navigation_accessible` was false: 14 interactive controls were focused and visible focus found, but the Workspace target was not reached within 15 forward and 10 reverse Tab presses. All other evaluator criteria passed. Both synthetic users were deleted; all 15 scoped D1 tables zero; tombstones and provider 404 confirmed. This report is rejected for checkpoint acceptance and preserved before repair/retry.

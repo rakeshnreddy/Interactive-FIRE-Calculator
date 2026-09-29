@@ -195,6 +195,7 @@ export function TransactionImportPanel({ accounts, auth, onImportComplete }: Tra
             className="visually-hidden"
             type="file"
             accept=".csv,text/csv"
+            aria-label="Choose a transactions CSV file to import"
             tabIndex={-1}
             onChange={(event) => {
               const file = event.target.files?.[0];
@@ -396,6 +397,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function formatImportCents(cents: number): string {
   return new Intl.NumberFormat(undefined, {
     currency: 'USD',
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
     style: 'currency'
   }).format(cents / 100);

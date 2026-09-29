@@ -1,0 +1,28 @@
+Running test_evaluator_c04 comprehensive regression suites...
+  ✓ PASSING: valid complete synthetic packet exits 0 with verdict PASS
+  ✓ DEFECT: remove default CAGR headlinePercent exits 1 with verdict FAIL
+  ✓ DEFECT: remove default CAGR baseRowText exits 1 with verdict FAIL
+  ✓ DEFECT: remove default CAGR baseTableText exits 1 with verdict FAIL
+  ✓ DEFECT: delete consoleErrors exits 1 with verdict FAIL
+  ✓ DEFECT: delete pageExceptions exits 1 with verdict FAIL
+  ✓ DEFECT: contrast minRatio = NaN in direct evaluator test returns FAIL
+  ✓ DEFECT: contrast minRatio = Infinity in direct evaluator test returns FAIL
+  ✓ DEFECT: contrast minRatio = null in JSON CLI test exits 1 with verdict FAIL
+  ✓ DEFECT: remove requestedMode exits 1 with verdict FAIL
+  ✓ DEFECT: remove observedMode exits 1 with verdict FAIL
+  ✓ DEFECT: replace media row with ID only exits 1 with verdict FAIL
+  ✓ DEFECT: simulate zoom collector error results in BLOCKED/FAIL, never pass
+  ✓ DEFECT: false pass flag exits 1 with verdict FAIL
+  ✓ DEFECT: missing required case ID exits 1 with verdict FAIL
+  ✓ DEFECT: duplicate case ID exits 1 with verdict FAIL
+  ✓ DEFECT: requested dark but observed light exits 1 with verdict FAIL
+  ✓ DEFECT: identical canvas background for light and dark exits 1 with verdict FAIL
+  ✓ DEFECT: unscaled 0.1 in CAGR chart row exits 1 with verdict FAIL
+  ✓ DEFECT: console error exits 1 with verdict FAIL
+  ✓ DEFECT: page exception exits 1 with verdict FAIL
+  ✓ DEFECT: firstInputY = NaN exits 1 with verdict FAIL
+  ✓ DEFECT: firstInputY > 650 exits 1 with verdict FAIL
+  ✓ DEFECT: unexpected case ID exits 1 with verdict FAIL
+  ✓ DEFECT: zoom status PASS without zoomLevel=200 exits 1 with verdict FAIL
+
+All 25/25 regression evaluator tests passed successfully!

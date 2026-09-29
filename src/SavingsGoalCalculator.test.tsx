@@ -1,3 +1,5 @@
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { AuthState } from './auth';
@@ -205,5 +207,124 @@ describe('Savings Goal engagement and presentation contract', () => {
     expect(document.body.textContent).toContain('Current-plan shortfall');
     expect(document.body.textContent).toContain('Create savings goal');
     expect(document.body.textContent).toContain('Deadline and target sensitivity');
+  });
+
+  it('adopts unified scope note and removes duplicate trust-banner emphasis (B22)', () => {
+    const calculator = findSeoCalculator('/calculators/savings-goal');
+    const auth: AuthState = {
+      provider: 'clerk',
+      status: 'not-configured',
+      isConfigured: false,
+      isSignedIn: false,
+      missingEnv: ['VITE_CLERK_PUBLISHABLE_KEY'],
+      user: null
+    };
+    const html = renderToStaticMarkup(
+      <SavingsGoalCalculator
+        auth={auth}
+        calculator={calculator!}
+        onNavigate={() => undefined}
+        onSaveResult={async () => ({ destinationRoute: '/goals', message: 'Saved', savedResultId: 'saved-1' })}
+        savedResults={[]}
+      />
+    );
+    document.body.innerHTML = html;
+
+    const scopeNote = document.querySelector('.calculator-scope-note');
+    expect(scopeNote).not.toBeNull();
+    expect(scopeNote?.textContent).toContain('Turn a target and deadline into a practical saving pace');
+
+    // Duplicate trust-banner strip removed to reduce excessive framing (V10)
+    expect(document.querySelector('.compound-trust-strip')).toBeNull();
+  });
+
+  it('handles edge cases: zero-rate, fractional horizon, target already met, infeasible target, and large currency', () => {
+    // 1. Zero-rate: (target - currentSavings) / total payments
+    const zeroRate = calculateSavingsGoal({
+      ...defaultSavingsGoalInputs,
+      annualRatePercent: 0,
+      currentSavings: 10_000,
+      targetAmount: 70_000,
+      years: 5
+    });
+    expect(zeroRate.validation.isValid).toBe(true);
+    expect(zeroRate.requiredContribution).toBeCloseTo((70_000 - 10_000) / 60, 4);
+
+    // 2. Fractional horizon: 2.5 years
+    const fractional = calculateSavingsGoal({
+      ...defaultSavingsGoalInputs,
+      years: 2.5
+    });
+    expect(fractional.validation.isValid).toBe(true);
+    expect(fractional.annualSchedule.length).toBe(3); // Years 1, 2, and partial 2.5
+
+    // 3. Target already met (current savings >= target)
+    const targetMet = calculateSavingsGoal({
+      ...defaultSavingsGoalInputs,
+      currentSavings: 120_000,
+      targetAmount: 100_000
+    });
+    expect(targetMet.requiredContribution).toBe(0);
+    expect(targetMet.currentPlanDifference).toBeGreaterThan(0);
+
+    // 4. Infeasible target / no contribution falls before deadline
+    // (e.g. 0.05 years ~ 18 days with annual frequency and end timing: no contribution dates occur before deadline)
+    const infeasible = calculateSavingsGoal({
+      ...defaultSavingsGoalInputs,
+      contributionFrequency: 1,
+      contributionTiming: 'end',
+      years: 0.05
+    });
+    expect(infeasible.requiredContribution).toBeNull();
+
+    // 5. Large currency formatting
+    const largeFormatted = formatSavingsCurrency(250_000_000, 'USD', 'en-US');
+    expect(largeFormatted).toContain('$250,000,000');
+  });
+
+  it('displays error message when savings goal save fails', async () => {
+    const calculator = findSeoCalculator('/calculators/savings-goal');
+    const auth: AuthState = {
+      provider: 'clerk',
+      status: 'signed-in',
+      isConfigured: true,
+      isSignedIn: true,
+      getToken: async () => 'test-token',
+      user: { id: 'usr_test', displayName: 'Test User', email: 'test@example.com' }
+    };
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+
+    await act(async () => {
+      root.render(
+        <SavingsGoalCalculator
+          auth={auth}
+          calculator={calculator!}
+          onNavigate={() => undefined}
+          onSaveResult={async () => {
+            throw new Error('Simulated save failure: network timeout');
+          }}
+          savedResults={[]}
+        />
+      );
+    });
+
+    const saveButton = Array.from(container.querySelectorAll('button')).find(
+      (btn) => btn.textContent?.includes('Create savings goal')
+    );
+    expect(saveButton).toBeDefined();
+
+    await act(async () => {
+      saveButton?.click();
+    });
+
+    const message = container.querySelector('.calculator-save-message');
+    expect(message?.textContent).toContain('Simulated save failure: network timeout');
+
+    await act(async () => {
+      root.unmount();
+    });
+    container.remove();
   });
 });
