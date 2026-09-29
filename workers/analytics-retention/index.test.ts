@@ -102,7 +102,7 @@ describe('analytics retention Worker (B12)', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date(`${day104}T10:00:00.000Z`));
     try {
-      await recordServerEvent(db, userId, 'review_completed', { family: 'fire' });
+      await recordServerEvent(db, userId, 'review_completed', { decision: 'keep' });
     } finally {
       vi.useRealTimers();
     }
