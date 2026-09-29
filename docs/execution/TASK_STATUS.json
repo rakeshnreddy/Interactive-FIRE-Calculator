@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-27",
+  "updated": "2026-09-29",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -505,7 +505,7 @@
       "id": "B31",
       "title": "Close visual accessibility and performance acceptance matrix",
       "checkpoint": "C11",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B18",
         "B19",
@@ -528,7 +528,7 @@
       "prompt": "prompts/B31.md",
       "submission": "submissions/B31.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "2277b80",
+      "code_sha": "2277b80ce089d0ddf0caf22a21c0c809ae6a31f5",
       "review": "reviews/C11.md",
       "blocked_reason": null
     },
@@ -662,7 +662,7 @@
       "id": "B40",
       "title": "Consolidate calculator library and user-facing copy",
       "checkpoint": "C14",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B31",
         "B36"
@@ -670,7 +670,7 @@
       "prompt": "prompts/B40.md",
       "submission": "submissions/B40.md",
       "owner": "Claude (owner takeover 2026-09-26)",
-      "code_sha": "b3416cb1cb8d162a11a72601c549bf460eef36c8",
+      "code_sha": "2277b80ce089d0ddf0caf22a21c0c809ae6a31f5",
       "review": "reviews/C14.md",
       "blocked_reason": null
     },
@@ -726,10 +726,11 @@
     },
     {
       "id": "OA-3",
-      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350…) before any production release; it is applied to the preview D1 only.",
+      "action": "Authorise applying migration 0009_consented_analytics.sql to the production D1 (a5860350\u2026) before any production release; it is applied to the preview D1 only.",
       "blocking_task": "Production readiness of B12 only",
       "requested_date": "2026-09-27",
-      "status": "pending"
+      "status": "pending",
+      "authorization": "Owner final handoff authorizes production migrations after OA-1 passes; not yet executed."
     },
     {
       "id": "OA-4",

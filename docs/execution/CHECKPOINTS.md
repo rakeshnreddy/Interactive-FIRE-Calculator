@@ -20,8 +20,8 @@ C06 is accepted. C07 is released for owner-authorized free preview Clerk setup a
 | C09A | Owner-prioritized FIRE assumption control and calculator audit | B35 | accepted | 5dda3d2be24246e3470a65e7653a0b6e425cbece | [approved](reviews/C09A.md) |
 | C09B | Delivery hygiene, App extraction, shared hosted proof, flagship FIRE correction | B37 → B39 → B42 → B36 | accepted | f85c6dd9c092720b0b0a1070cab657458be57cb6 | [approved](reviews/C09B.md) |
 | C10 | Reports and settings | B29 → B30 | accepted | f85c6dd9c092720b0b0a1070cab657458be57cb6 | [approved](reviews/C10.md) |
-| C11 | API/public delivery, measurement and final quality | B41 → B38 → B12 → B31 | released | — | [partial review](reviews/C11.md): B12 accepted; B31 actual reader blocked |
-| C14 | First calculator-excellence child | B40 | locked | — | [provisional implementation approval](reviews/C14.md); locked until C11/B31 |
+| C11 | API/public delivery, measurement and final quality | B41 → B38 → B12 → B31 | accepted | 2277b80ce089d0ddf0caf22a21c0c809ae6a31f5 | [approved with recorded reader limits](reviews/C11.md) |
+| C14 | First calculator-excellence child | B40 | accepted | 2277b80ce089d0ddf0caf22a21c0c809ae6a31f5 | [approved](reviews/C14.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -145,3 +145,5 @@ Delivery complete on 2026-09-27: B39 `c7c5b31`, B42 `a09ff46`, B36 `a8f7422`, B2
 Primary review 2026-09-27: C09B/C10 accepted at final code `f85c6dd9c092720b0b0a1070cab657458be57cb6`; B41/B38 individually accepted in C11. B12 changes requested for incomplete 90/120-day time retention, B31 blocked on actual reader. C11 remains released; C14 locked and provisional B40 changes requested for NPS/XIRR accuracy. Ledger 37/42 accepted (88.1% by task count, not effort). See [C09B](reviews/C09B.md), [C10](reviews/C10.md), [C11](reviews/C11.md), [C14](reviews/C14.md). No main merge, production deployment or production D1 write.
 
 Primary correction review 2026-09-27: B12 accepted at `b3416cb1cb8d162a11a72601c549bf460eef36c8` after independent preview scheduled-retention proof and Cloudflare API schedule/binding verification. B40 NPS/XIRR corrections verified provisionally at the same code and preview, but B40 stays `ready_for_review` and C14 locked until B31/C11 acceptance. C11 remains released, blocked only on actual reader observations. Ledger 38/42 accepted (90.5% by task count). See [C11](reviews/C11.md) and [C14](reviews/C14.md).
+
+Primary closure 2026-09-29 under the owner final handoff: B31/C11 APPROVED with residuals A11Y-F01/F02 explicitly retained in DEFERRED_CHECKS.md; C14 released and B40/C14 APPROVED on the same product code `2277b80ce089d0ddf0caf22a21c0c809ae6a31f5`. Independent Python-excluded full suite after `4f0cd05` test-discovery correction: 80 files/2,471 tests; public routes 84/84; changed FIRE behaviors independently observed in Chrome. 40/42 accepted (95.2% by task count). B13/B14 stay open and evidence-gated. Owner authorizes merge commits #140 → dependency branch, then #139 → main; production remains conditional on the unmodified OA-1 fail-closed preflight.

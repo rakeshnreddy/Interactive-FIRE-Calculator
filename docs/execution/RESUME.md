@@ -50,3 +50,7 @@ B12 accepted at `b3416cb1cb8d162a11a72601c549bf460eef36c8`: independent full sui
 ## B31 reader gate — 2026-09-28
 
 Actual VoiceOver pass run by Claude with the owner enabling VoiceOver scripting: `scripts/smoke/b31-reader.mjs` (`--headed`), 41/41 steps on preview `https://d0d235df.interactive-fire-calculator.pages.dev` (code `2277b80`). It found and we fixed two defects (FIRE answer not announced; disabled Calculate unreachable). B31 is `ready_for_review`; B12 is accepted; B40 waits only on C11. Limitations and full matrix in `submissions/B31.md`. Final-candidate hosted scenarios on `2277b80` are recorded in `evidence/`.
+
+## Current reviewer state — 2026-09-29
+
+B31/C11 and B40/C14 accepted at product `2277b80ce089d0ddf0caf22a21c0c809ae6a31f5`, preview `https://d0d235df.interactive-fire-calculator.pages.dev`. Ledger 40/42; B13/B14 remain open and retention-gated. Reader residuals A11Y-F01/F02 remain explicit in DEFERRED_CHECKS.md. Independent Python-excluded full suite 2,471 tests/80 files and 84 public routes passed after `4f0cd05` included Worker regressions in CI. Owner authorizes merge commits #140 then #139; merge/release sequence in progress. Production remains fail-closed on OA-1, and OA-3 is authorized only after that gate passes. Cloudflare automatic production deployment was observed disabled.

@@ -23,3 +23,7 @@ B31/C11 follow-up ZOOM-FINAL: a lower-cost capable agent performs one consolidat
 ## 2026-09-28: actual VoiceOver pass executed for B31 (awaiting reviewer closure)
 
 VoiceOver (macOS 26.6.2) with Chrome 154 on preview `d0d235df` (code `2277b80`): 41/41 steps matched across the homepage, discovery/search, both result tables, FIRE inputs/errors/result, mortgage help/schedule/scenario tabs, synthetic signed-in dashboard/plans/reports/transactions/settings, menus and the 390px layout. Two defects found and fixed (FIRE result not announced; disabled Calculate unreachable). Limitations: focus-driven navigation instead of VO key chords, search empty-state announcement not verified, NVDA not tested. Evidence: `evidence/B31/b31-reader-2277b80.json`; details in `submissions/B31.md`. This note does not close the deferral; the primary reviewer does.
+
+## Primary-reviewer decision — 2026-09-29
+
+The owner final handoff authorizes Astra to decide whether stated reader limitations are acceptable for B31 closure with follow-up work. B31/C11 is accepted with the evidence and limits in [C11 review](reviews/C11.md). Actual VoiceOver control speech is verified; natural VO navigation, search/help content speech, deeper authenticated reader flows and NVDA remain open as [A11Y-F01/F02](DEFERRED_CHECKS.md). This decision supersedes the earlier blanket blocker, not the obligation to report unverified coverage honestly. No WCAG conformance claim.

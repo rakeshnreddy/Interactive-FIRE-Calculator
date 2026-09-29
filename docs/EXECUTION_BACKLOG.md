@@ -323,7 +323,7 @@ Based on [the visual audit](VISUAL_AND_UI_AUDIT.md) and [design contract](VISUAL
   - Migration/rollback: no schema in visual work; revert only this task's reviewed commits; preserve safety fixes and additive data migrations. Human 1–2 days; agent 3–6 hours, estimates excluding review/provider waits.
   - Detailed implementer prompt: [prompts/B30.md](execution/prompts/B30.md).
 
-- [ ] **B31 — Planned: Close visual accessibility and performance acceptance matrix.**
+- [x] **B31 — Planned: Close visual accessibility and performance acceptance matrix.**
   - Deferred actual-reader work: consolidate B32/C03/C04 and subsequent UI routes under A11Y-DEFERRED in execution/ACCESSIBILITY_DEFERRALS.md. A lower-cost capable agent performs real VoiceOver/NVDA checks after C10; primary verifies closure. This work does not block earlier implementation checkpoints, but remains mandatory for B31 and any WCAG-conformance claim.
   - User problem/evidence: Individual polished screens do not prove a coherent accessible product. Visual audit V16.
   - Expected outcome/scope: All objective visual gates have evidence; no unresolved major issue; subjective rubric justified; full suite/CI/preview verified at submitted code SHA.
@@ -489,7 +489,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Acceptance: five sampled calculator HTML responses correct; unknown routes 404/noindex; public page makes no pre-intent Clerk request; main raw chunk <250 KB with no build warning; public and signed-in preview CSP smoke has no violations.
   - Analytics/tests/security: no new collection; exact preview/auth isolation and existing public-route smoke. Dependencies: B36/B41 and C10 accepted. OA-1 blocks production readiness only, not preview acceptance. Rollback: revert delivery/routing as a unit. Human 2–3 days; agent 6–10 h. [Contract](execution/prompts/B38.md).
 
-- [ ] **B40 — First calculator-excellence child: library/copy consolidation (queued after C11).**
+- [x] **B40 — First calculator-excellence child: library/copy consolidation (queued after C11).**
   - User problem/evidence: duplicate EMI/debt discovery, templated descriptions, missing tax jurisdiction labels, leaked internal wording and signed-out Workspace links.
   - Expected outcome/scope: preserve stable aliases while grouping compatible presets, add region badges/filter, plain-language copy and a copy guard. Capture mortgage PITI/scenario and extreme-rate defects as explicit later per-route program gaps.
   - Non-goals: no mortgage/compound engine rewrite, unsupported tax-law claim or mass calculator completion claim.
