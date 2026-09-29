@@ -398,17 +398,17 @@ Landing review amendment 2026-09-10: [image, copy and theme findings](LANDING_PA
 
 C01T review 2026-09-10: B32 requires print-layer repair and completed verification evidence; [review](execution/reviews/C01T.md). No new task accepted; C01I remains locked.
 
-C01T re-review of 12b3546: B32 remains changes_requested. Hero print improved; lower continuity print and verification gate still need repair. Matching WebKit installed and sampled by reviewer. Follow latest [review](execution/reviews/C01T.md) and [worker prompt](execution/C01T_REWORK_PROMPT.md). Accepted total unchanged.
+C01T re-review of 12b3546: B32 remains changes_requested. Hero print improved; lower continuity print and verification gate still need repair. Matching WebKit installed and sampled by reviewer. Follow latest [review](execution/reviews/C01T.md) and [worker prompt](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C01T_REWORK_PROMPT.md). Accepted total unchanged.
 
 C01T third review of dd47fa3: whole-page print verified fixed; bounded native200% layout checks completed. Remaining evaluator missing-telemetry false PASS and manual reader/interaction proof keep B32 open. Follow latest review and bounded rework prompt; no new task accepted.
 
 C01T final acceptance: B32 accepted at `32584da7e47307a35730911e3567f02f9095550b` under the owner’s explicit actual-reader deferral, tracked in B31. This supersedes earlier C01T changes-requested notes. Accepted total 6/34 (17.6% by task count). C01I/B33 is released for its scoped isolation work; remote setup still needs its specified owner authorization. See [final review](execution/reviews/C01T.md).
 
-C01I primary review: B33 requires audit reliability repairs and scoped preview-binding authorization. No acceptance; C02 stays locked. See [review](execution/reviews/C01I.md) and [rework prompt](execution/C01I_REWORK_PROMPT.md).
+C01I primary review: B33 requires audit reliability repairs and scoped preview-binding authorization. No acceptance; C02 stays locked. See [review](execution/reviews/C01I.md) and [rework prompt](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C01I_REWORK_PROMPT.md).
 
 C01I accepted after primary reviewer completed the remaining audit repair. 7/34 tasks accepted (20.6% task count). C02 released, starting B02. See [final review](execution/reviews/C01I.md).
 
-C02 accepted 2026-09-11: B02/B03/B04, common candidate `ef2cded6441191a26537adf8ddf1a3e1909cf73b`, [review](execution/reviews/C02.md).10/34 accepted(29.4% by task count). C03 released: B18→B19→B09; use [explicit worker prompt](execution/C03_START_PROMPT.md).
+C02 accepted 2026-09-11: B02/B03/B04, common candidate `ef2cded6441191a26537adf8ddf1a3e1909cf73b`, [review](execution/reviews/C02.md).10/34 accepted(29.4% by task count). C03 released: B18→B19→B09; use [explicit worker prompt](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C03_START_PROMPT.md).
 
 C03 accepted 2026-09-13 at `285e9eadf2d854951cec75d02afc6cce97d4d6c5`; B18/B19/B09 accepted with owner-authorized actual-reader deferral tracked in B31 and execution/ACCESSIBILITY_DEFERRALS.md. C04 is released. 13/34 accepted (38.2%, task count). See execution/reviews/C03.md.
 
@@ -447,7 +447,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Non-goals: no hosted runner or C09 revise proof (B42), history rewrite, shipped formula/UI change, lost accepted review link or production write.
   - Likely files: legacy app/tests/config, `src/lib/fire.test.ts`, `scripts/test_all.sh`, workflows, `.gitignore`, README and evidence manifest. Existing untracked `scripts/hosted_smoke*` belongs to B42, excluded from B37 candidate.
   - Acceptance: finance goldens detect deliberate perturbation; full suite/CI work without Python and propagate failures; manifest Git-add commit and SHA-256 verified via `git show` or clean clone; normative docs do not point to removed runtime paths; baseline tracked size measured and post-commit clone sizes measured by Astra. Historic preview attribution must be truthful.
-  - Analytics/tests/security: no analytics or secrets; no hosted writes. Dependencies: B11/B28 accepted, C09B released, OA-2 done. Rollback: restore retired paths/index from reviewed commit; no history rewrite. Human 1–2 days; agent 2–4 h. [Contract](execution/prompts/B37.md); [focused rework](execution/B37_REWORK_PROMPT.md).
+  - Analytics/tests/security: no analytics or secrets; no hosted writes. Dependencies: B11/B28 accepted, C09B released, OA-2 done. Rollback: restore retired paths/index from reviewed commit; no history rewrite. Human 1–2 days; agent 2–4 h. [Contract](execution/prompts/B37.md); [focused rework](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/B37_REWORK_PROMPT.md).
 
 - [x] **B39 — Extract pure modules from App.tsx (C09B, second).**
   - User problem/evidence: `App.tsx` measured 8,841 lines and later feature work touches it; utility/parsing and shared primitives obscure review.

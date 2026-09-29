@@ -1,5 +1,7 @@
 # Technical and security roadmap
 
+> This is the dated design/threat-model baseline. Current implementation and release claims are in [RESUME.md](execution/RESUME.md) and the [release review](execution/reviews/RELEASE-2026-09-29.md).
+
 2026-09-07. Grounded in [current audit](CURRENT_STATE_AUDIT.md). This is a threat model and delivery plan, not an assertion that all controls have been tested. Production remains blocked by the existing preflight and owner authorization.
 
 ## Security model and release invariants
@@ -74,3 +76,15 @@ Two-week foundation is a capacity-limited sprint, not a claim that all P0 work f
 12 months: durable consumer subscription if retained value exists; selected regional workflows after currency/rule provenance; email/aggregation/mobile only through their gates. Capacity placeholder 1 owner/product lead + part-time engineering/security/legal support, not a committed staffing plan. Stop expansion if two cohorts fail.
 
 Non-goals: all 77 excellence upgrades, daily trading alerts, broker execution, native apps, automatic account syncing, AI advice, paid campaigns, wholesale framework migration, and deleting public URLs. Keep Flask parity tests until an explicit retirement decision has replacement oracle evidence.
+
+## Unscheduled ideas retained from the retired enhancements list
+
+These are uncommitted ideas, not accepted requirements or a second execution backlog. Before scheduling, require a repeated user job, sourced formulas/data where relevant, privacy design, and a bounded task:
+
+- Monte Carlo and historical backtesting with explicit data/source and uncertainty contracts.
+- Additional withdrawal strategies (percentage, guardrail, VPW) and tax/account-type-aware retirement scenarios.
+- Multi-language content and a financial glossary; guided help only where first-use evidence warrants it.
+- A public calculation API with versioning, abuse controls and a support contract.
+- Richer scenario sensitivity/delta and asset-allocation views where the specific calculator warrants them.
+
+Existing savings, account persistence, input sharing, CI and end-to-end work must be assessed against current code rather than rebuilt from the old list. Mobile/offline decisions remain governed by COMPANION_APP_DECISION.md; calculator modeling gaps remain in calculator-excellence/GAP_MATRIX.md.

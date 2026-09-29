@@ -44,6 +44,6 @@ Owner assistance, if needed: start VoiceOver manually on this preview and notify
 
 B32 remains unchecked; no new accepted task. Total5/34 (14.7% by task count). Set changes_requested for the small evaluator repair and keep the manual gap explicit. C01T remains the only released implementation checkpoint; C01I stays locked.
 
-Next implementer item: [bounded round3 prompt](../C01T_REWORK_PROMPT.md). Preserve the current product candidate if only evidence tooling changes; identify tested revision accurately. Do not repeat palette/print work or deploy an identical static build unnecessarily. Review must still bind any final evidence to the exact unchanged product tree.
+Next implementer item: [bounded round3 prompt](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C01T_REWORK_PROMPT.md). Preserve the current product candidate if only evidence tooling changes; identify tested revision accurately. Do not repeat palette/print work or deploy an identical static build unnecessarily. Review must still bind any final evidence to the exact unchanged product tree.
 
 No confirmed B15/B16/B17 reopening, formula/API changes, private writes, merge or production deployment. Visual judgment unchanged for normal screens; print/state presentation improved, but full accessibility acceptance remains open. Previous approved records remain historical, not blanket proof for new changes.

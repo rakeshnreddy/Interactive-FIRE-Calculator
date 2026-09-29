@@ -85,5 +85,5 @@ Actual zoom, actual screen reader, worst-case composed contrast, second-engine/u
 Accepted task IDs: none. Existing accepted total remains **5/34 (14.7%, task count only)**.
 B32 set to `changes_requested`; backlog remains unchecked. C01T stays released for B32 rework only. C01I/B33 remains locked because B32 has not passed.
 Owner input: no new business decision or secret is needed for the code fix. If the worker cannot execute required native zoom/reader/second-engine checks, name the exact unavailable capability for reviewer-assisted testing rather than fabricate a pass.
-Next item: R1 print-layer repair, then R2–R5 evidence completion on one final candidate. Use [C01T rework handoff](../C01T_REWORK_PROMPT.md).
+Next item: R1 print-layer repair, then R2–R5 evidence completion on one final candidate. Use [C01T rework handoff](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C01T_REWORK_PROMPT.md).
 No merge or production deployment performed or authorized by this review.

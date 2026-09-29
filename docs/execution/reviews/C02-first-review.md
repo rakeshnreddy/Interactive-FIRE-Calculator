@@ -35,4 +35,4 @@ B04 changes_requested for R1–R3 and evidence. B02/B03 blocked on final common 
 
 Migration0005 requires scoped authorization before remote application: only the existing isolated finpath-preview DB, reviewed additive SQL, no production DB or real records. Free-services instruction does not waive the existing remote-migration approval boundary. Finish local fixes first; then request the exact remaining action if not granted. Do not deploy code requiring0005 against a four-migration preview schema. Safe rollback preserves additive schema and disables unsafe save behavior rather than restoring duplicates.
 
-Next: [C02 implementation/validation rework](../C02_REWORK_PROMPT.md). Review all current criteria after fixes, including prior provisional tasks affected by the final candidate.
+Next: [C02 implementation/validation rework](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C02_REWORK_PROMPT.md). Review all current criteria after fixes, including prior provisional tasks affected by the final candidate.
