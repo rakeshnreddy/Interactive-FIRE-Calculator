@@ -1,3 +1,4 @@
+// @vitest-environment node
 /// <reference types="@cloudflare/workers-types" />
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
