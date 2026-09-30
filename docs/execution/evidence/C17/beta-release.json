@@ -1,0 +1,122 @@
+{
+  "checked_at": "2026-09-30T10:58:02.868Z",
+  "accepted_product_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+  "deployment_commit_sha": "e941093aaa71c3ed2de1aaa221b3342ae8da547a",
+  "product_equivalence": "Only review documentation differs from accepted source; authenticated build generated from this clean commit.",
+  "deployment_id": "9cb7d11d-7f8a-49f1-9e21-0d9465ce8ffb",
+  "immutable_url": "https://9cb7d11d.interactive-fire-calculator.pages.dev",
+  "beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+  "branch": "codex/finpath-quality-execution",
+  "environment": "preview",
+  "commit_dirty": false,
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "production_deployments_enabled": false,
+  "canonical_production_commit": "3399dbbd8d7f0e6379972356a790b236e6b177b1",
+  "checks": [
+    {
+      "route": "/api/health",
+      "status": 200
+    },
+    {
+      "route": "/api/me",
+      "status": 401
+    },
+    {
+      "route": "/api/plans",
+      "status": 401
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401
+    },
+    {
+      "route": "/dashboard",
+      "status": 200
+    }
+  ],
+  "bundle_sha256": [
+    {
+      "path": "/assets/BalanceImportPanel-CaoUqMGx.js",
+      "sha256": "4f1cb4c4b3449a6133549314890954ff86a281646d4b94ef7de34a5e2ccceb0c",
+      "bytes": 9679
+    },
+    {
+      "path": "/assets/calculator-catalog-Cs3dUGo2.js",
+      "sha256": "22b1ca633b1e2d76de71c07ddfa3eb6fd39d9101283bdf0ba523a0ce933b5dd6",
+      "bytes": 90456
+    },
+    {
+      "path": "/assets/CalculatorLibrary-CTxEvmyK.js",
+      "sha256": "04f3596175f9dfe88e15465afae95de2257bfdd9946704d86c659a73dcfaeb20",
+      "bytes": 349111
+    },
+    {
+      "path": "/assets/circle-check-CvjZpSFY.js",
+      "sha256": "d5972873289aad1c9e9daf97be5fa670a3a2252ffc38bec5fb245d6db011cbc3",
+      "bytes": 222
+    },
+    {
+      "path": "/assets/dist-_XyzNBdf.js",
+      "sha256": "f7255666396cf8bb239176a3d670722c7c56c6e2b70b7ae60b7ff8b1bee96971",
+      "bytes": 145733
+    },
+    {
+      "path": "/assets/history-BU5nD0J1.js",
+      "sha256": "15b27909f426ede14d5ea9ecd6a53673b5574c32ed85d2e656dad163bb04951b",
+      "bytes": 276
+    },
+    {
+      "path": "/assets/main-BlOrsVlu.js",
+      "sha256": "17a4b6b3e54b5bc019cc9683c3c955d077deb74496a95cfc29128f8aaea5ba52",
+      "bytes": 204976
+    },
+    {
+      "path": "/assets/main-C_1aaGvV.css",
+      "sha256": "4aebf8521010e4fcbd2dab47a9fcced469e215404da61d2d33e38734cb88eed2",
+      "bytes": 214781
+    },
+    {
+      "path": "/assets/papaparse.min-DIiCcvP0.js",
+      "sha256": "01a2bca9172dfa1468fcd9c23adbe81e4caa5d04e5fa487d353f74a7660b6914",
+      "bytes": 19979
+    },
+    {
+      "path": "/assets/PlanningWorkspace-ncrg9Mq6.js",
+      "sha256": "945cd5f7fb6a853c2605e1b126fd27c7a20a6a1f967016dc923e801aa01b1ca0",
+      "bytes": 27118
+    },
+    {
+      "path": "/assets/ProjectionChart-CNGFiQ_k.js",
+      "sha256": "d653241abffbbac1e8b57431c6be4e33221ba384dcfb061ab4be00752193d24c",
+      "bytes": 348238
+    },
+    {
+      "path": "/assets/react-vendor-CvBZlOBd.js",
+      "sha256": "2eb2df5b9abff34af7fdcd9775abf2d145105b56a2cd413ca1d96977a1bc4eb5",
+      "bytes": 139938
+    },
+    {
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "bytes": 694
+    },
+    {
+      "path": "/assets/rotate-ccw-D3XwuRYY.js",
+      "sha256": "fe6ffa0a2c7b0190c11b2ac6c5f5dd90edacfb9323fc2bf03d5e4872310db98b",
+      "bytes": 1620
+    },
+    {
+      "path": "/assets/TransactionImportPanel-uspR8b3v.js",
+      "sha256": "96fbd1a231ecf6f1f63d8eae3c715c3a9ecfa9f37ffac96947a32b8c4327f9eb",
+      "bytes": 10209
+    },
+    {
+      "path": "/assets/WorkspacePanels-D2GDHw0F.js",
+      "sha256": "2ee3b0a1e6dbed061658b9f939968c34e5610885c64d51ca24b0834f27bd471e",
+      "bytes": 46964
+    }
+  ],
+  "superseded_metadata_error": "An earlier upload used a mistyped SHA; this replacement resolves SHA directly from Git and verifies provider mapping and actual bundle bytes. No production/data operation."
+}

@@ -81,6 +81,22 @@
       "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
       "storage": "ignored local raw artifact",
       "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/beta-public-smoke.log",
+      "sha256": "d84d8e5f012aec51134f925de2b99fa6ea1d49c30fe3981b3290ee7acc171a1e",
+      "bytes": 314,
+      "source_sha": "e941093aaa71c3ed2de1aaa221b3342ae8da547a",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object; reproduce from accepted code and documented alias checks."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/beta-mortgage-final.jpg",
+      "sha256": "308e8ad179c5e88053c1a0d8d3ac5bd6896783bc54a1a156790b573ee978057a",
+      "bytes": 71381,
+      "source_sha": "e941093aaa71c3ed2de1aaa221b3342ae8da547a",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object; reproduce from accepted code and documented alias checks."
     }
   ]
 }
