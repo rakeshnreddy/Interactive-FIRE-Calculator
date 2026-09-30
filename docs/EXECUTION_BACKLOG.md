@@ -636,7 +636,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Security/privacy/dependencies: B53; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
   - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.
 
-- [ ] **B54 — Dated cash-flow return with bounded solver and versioned persistence.**
+- [x] **B54 — Dated cash-flow return with bounded solver and versioned persistence.**
   - User problem/evidence: reproduced omissions in the existing F-02 contract; [bounded scope](execution/prompts/B54.md).
   - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
   - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.

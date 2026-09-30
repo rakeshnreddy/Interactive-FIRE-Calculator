@@ -889,15 +889,15 @@
       "id": "B54",
       "title": "Dated cash-flow return with bounded solver and versioned persistence",
       "checkpoint": "C20",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B56"
       ],
       "prompt": "prompts/B54.md",
-      "submission": null,
+      "submission": "submissions/B54.md",
       "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "9375c990049ea79f5775aaee009d745ac28ac698",
+      "review": "reviews/C20.md",
       "blocked_reason": null
     },
     {

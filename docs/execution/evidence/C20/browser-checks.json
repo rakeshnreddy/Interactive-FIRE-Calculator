@@ -1,0 +1,78 @@
+{
+  "url": "https://44a8538a.interactive-fire-calculator.pages.dev/calculators/xirr",
+  "cases": [
+    {
+      "theme": "light",
+      "headline": "Annualized dated return10.00%Annualized rate for the entered period \u00b7 365 actual days",
+      "invalidSvg": false,
+      "overflow": -15,
+      "resultBottom": 642.5625,
+      "resultFocused": false,
+      "resultTop": 513.734375,
+      "topbarBottom": 64,
+      "width": 1440
+    },
+    {
+      "theme": "dark",
+      "headline": "Annualized dated return10.00%Annualized rate for the entered period \u00b7 365 actual days",
+      "invalidSvg": false,
+      "overflow": -15,
+      "resultBottom": 749.0625,
+      "resultFocused": false,
+      "resultTop": 620.234375,
+      "topbarBottom": 64,
+      "width": 1440
+    },
+    {
+      "theme": "light",
+      "headline": "Annualized dated return10.00%Annualized rate for the entered period \u00b7 365 actual days",
+      "invalidSvg": false,
+      "overflow": -15,
+      "resultBottom": 415.1796875,
+      "resultFocused": true,
+      "resultTop": 281.3515625,
+      "topbarBottom": 64,
+      "width": 390
+    },
+    {
+      "theme": "dark",
+      "headline": "Annualized dated return10.00%Annualized rate for the entered period \u00b7 365 actual days",
+      "invalidSvg": false,
+      "overflow": -15,
+      "resultBottom": 839.1796875,
+      "resultFocused": false,
+      "resultTop": 705.3515625,
+      "topbarBottom": 64,
+      "width": 390
+    },
+    {
+      "theme": "light",
+      "headline": "Annualized dated return10.00%Annualized rate for the entered period \u00b7 365 actual days",
+      "invalidSvg": false,
+      "overflow": 0,
+      "resultBottom": 415.0703125,
+      "resultFocused": true,
+      "resultTop": 281.2421875,
+      "topbarBottom": 64,
+      "width": 320
+    },
+    {
+      "theme": "dark",
+      "headline": "Annualized dated return10.00%Annualized rate for the entered period \u00b7 365 actual days",
+      "invalidSvg": false,
+      "overflow": 0,
+      "resultBottom": 839.0703125,
+      "resultFocused": false,
+      "resultTop": 705.2421875,
+      "topbarBottom": 64,
+      "width": 320
+    }
+  ],
+  "negative": "Annualized dated return-10.00%Negative return over the entered period \u00b7 365 actual days",
+  "ambiguousNoRate": true,
+  "table": "Sorted cash flows; same-day amounts combined\nDate\tAmount (USD)\tDirection\n2025-01-01\t-1,000\tInvested\n2026-01-01\t1,100\tReceived",
+  "monthlyPreserved": "23000",
+  "consoleErrors": [],
+  "csv_download": "NOT OBSERVED: browser download-event wait timed out; exact CSV verified in local tests",
+  "auth_save": "NOT RERUN HOSTED: real local SQLite save/list/retry/tenant fixture passes"
+}
