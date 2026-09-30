@@ -66,3 +66,17 @@ Status and checkpoint order live in the ledger and CHECKPOINTS; this table is on
 | B40 | [Consolidate calculator library and user-facing copy](prompts/B40.md) |
 | B41 | [Harden shared API parsing, auth and error boundaries](prompts/B41.md) |
 | B42 | [Shared hosted smoke runner plus the C09 revise residual](prompts/B42.md) |
+
+## New UX work — 2026-09-29
+
+Fresh analysis covers all 83 calculators. C15 is released; begin with B47, not a palette rewrite. Later checkpoints and paid/mobile studies remain gated by the canonical ledger.
+
+- [B47: Correct calculator visuals that invent or contradict the selected model](prompts/B47.md) — C15.
+- [B48: Honor APY in HYSA without changing nominal-rate calculators](prompts/B48.md) — C15.
+- [B45: Preserve input edits, losses and explicit sample-result state](prompts/B45.md) — C16.
+- [B43: Make FIRE refinements and generic additional controls discoverable](prompts/B43.md) — C16.
+- [B44: Expose dedicated calculator customization without a wall of options](prompts/B44.md) — C16.
+- [B46: Guide landing/library choices with intentional light and dark hierarchy](prompts/B46.md) — C17.
+- [B49: Make calculator scope, assumptions and rule provenance explicit](prompts/B49.md) — C17.
+- [B50: Turn remaining per-calculator feature gaps into bounded formula contracts](prompts/B50.md) — C17.
+- [B51: Validate discoverability, first value and genuine saved-plan return](prompts/B51.md) — C18.

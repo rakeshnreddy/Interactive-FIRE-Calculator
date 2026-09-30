@@ -41,3 +41,13 @@ Started by B40 on 2026-09-26 (owner takeover); rows added on 2026-09-27 from the
 | `/calculators/loan-eligibility-india`, `/calculators/stamp-duty-registration` | State-specific stamp duty and lender FOIR rules vary. | **Open.** Copy says the estimate is generic; a per-state table would be a new data contract. | — |
 | Dedicated FIRE calculator | Accumulation uses period 1's rates (stated in UI). Multi-period accumulation and cash-flow events remain out of scope. | **Open**, deliberately (B35/B36 decisions). | `submissions/B36.md` |
 | Charts (all) | Comparison charts show three scenarios of the headline metric only; no principal/interest split for the loan family outside the schedule table. | **Open.** Candidate visual improvement per `CALCULATOR_EXCELLENCE_PROGRAM.md` Stage 3; the schedule table is the accessible equivalent today. | — |
+
+## Fresh-review supplement — 2026-09-29
+
+[83-route UX matrix](CALCULATOR_UX_MATRIX_2026-09-29.md) provides individually tailored control, feature and visual work. Canonical state is TASK_STATUS.json; B43–B51 are pending. Earlier completion claims apply to their recorded narrow scope, not every new finding.
+
+- **New reproduced P0s (B47):** closing-costs/stamp-duty invent loans; interest-only chart amortizes retained principal; recast ignores upfront reduction; prepayment/biweekly use baseline rather than selected payoff. Shared chart parity must cover each financial model, not only generic mortgage.
+- **New reproduced P0 (B48):** HYSA APY uses nominal monthly compounding; the CD APY route is already consistent. See the [written correction decision](HYSA_APY_DECISION.md).
+- **New editing defects (B45):** clamping to displayed bounds fixed the earlier hidden-value discrepancy but clearing a field immediately to 0 and rejecting legitimate negative ROI are still UX/correctness defects. Keep validation visible and raw edits intact; do not restore hidden mismatched values.
+- **Fresh contradiction corrections:** FIRE required rates are already visible/empty; rent-buy already includes an ownership-cost input and equity; balance transfer already models promo expiry; US tax already includes a explicitly named state/local placeholder. Older audit statements that treat these as missing are historical. Adjacent scope/assumption copy still requires clarification, especially the finite-promo assumption contradiction.
+- **Scope discipline:** no formula or UI implementation occurs in this supplement. Source/date/model contracts precede new statutory features; neither an accessible table nor a fresh palette excuses a misleading graph.

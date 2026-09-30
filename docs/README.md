@@ -10,6 +10,7 @@ Start with [execution/RESUME.md](execution/RESUME.md) for current code, release 
 | Latest accepted release | [Release review](execution/reviews/RELEASE-2026-09-29.md) |
 | Product and visual contracts | [PRODUCT.md](../PRODUCT.md), [DESIGN.md](../DESIGN.md), [visual specification](VISUAL_DESIGN_SPEC.md), [color system](COLOR_AND_GLASS_SYSTEM.md) |
 | Production setup and data safety | [Authentication runbook](PRODUCTION_AUTH_RUNBOOK.md), [Pages deployment](CLOUDFLARE_PAGES.md), [deletion/recovery](DATA_DELETION_AND_RECOVERY.md) |
+| Fresh individual UX review and launch budget | [2026-09-29 audit](calculator-excellence/UX_REVIEW_2026-09-29.md), [83-route analysis](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md), [public launch costs](PUBLIC_LAUNCH_BUDGET.md) |
 | Calculator work still needed | [Gap matrix](calculator-excellence/GAP_MATRIX.md), [assumption decisions](calculator-excellence/FIRE_ASSUMPTIONS_DECISION.md), [excellence program](execution/CALCULATOR_EXCELLENCE_PROGRAM.md) |
 | Accessibility work still needed | [Deferred checks](execution/DEFERRED_CHECKS.md), [owner deferral decisions](execution/ACCESSIBILITY_DEFERRALS.md) |
 | Product/revenue hypotheses and future scope | [Positioning](PRODUCT_AND_POSITIONING_STRATEGY.md), [retention](RETENTION_AND_MONETIZATION_PLAN.md), [measurement](MEASUREMENT_AND_EXPERIMENT_PLAN.md), [technical roadmap](TECHNICAL_AND_SECURITY_ROADMAP.md), [mobile decision](COMPANION_APP_DECISION.md) |

@@ -22,6 +22,10 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C10 | Reports and settings | B29 → B30 | accepted | f85c6dd9c092720b0b0a1070cab657458be57cb6 | [approved](reviews/C10.md) |
 | C11 | API/public delivery, measurement and final quality | B41 → B38 → B12 → B31 | accepted | 2277b80ce089d0ddf0caf22a21c0c809ae6a31f5 | [approved with recorded reader limits](reviews/C11.md) |
 | C14 | First calculator-excellence child | B40 | accepted | 2277b80ce089d0ddf0caf22a21c0c809ae6a31f5 | [approved](reviews/C14.md) |
+| C15 | Financial chart truth and HYSA APY correction | B47 → B48 | released | — | [fresh evidence and scope](../calculator-excellence/UX_REVIEW_2026-09-29.md) |
+| C16 | Natural editing and visible customization | B45 → B43 → B44 | locked | — | Await C15 acceptance |
+| C17 | Intentional landing and calculator depth contracts | B46 → B49 → B50 | locked | — | Await C16 acceptance |
+| C18 | Genuine usability and recurring-value validation | B51 | locked | — | Await C17; owner recruitment and observation required |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -29,7 +33,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 
 - Task IDs remain stable; each is scheduled exactly once. A released checkpoint can use earlier complete submissions provisionally, but cross-checkpoint dependencies must be accepted. A worker stops at the review boundary.
 - Acceptance applies to the recorded code and scope. Any later change must reverify affected behavior and may reopen a regression. Tests/HTTP smoke alone do not establish visual, hosted lifecycle or real-reader proof.
-- C12/B13 and C13/B14 remain locked until their user-evidence and owner-decision criteria pass. Synthetic observations cannot establish retention or willingness to pay.
+- C12/B13 and C13/B14 remain locked until their user-evidence and owner-decision criteria pass. B13 also requires genuine B51 evidence; new code completion is not retention proof. Synthetic observations cannot establish retention or willingness to pay.
 - Preview publication and hosted writes require verified isolated bindings and applicable authority. Production remains separately gated by the owned-origin/live-Clerk preflight and restore-before-migration procedure. Follow [FREE_TIER_EXECUTION.md](FREE_TIER_EXECUTION.md).
 - The [implementation protocol](IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md) controls correction limits, evidence provenance and worker/primary authority. No fabricated PASS or fourth repair round.
 - FIRE return/inflation start empty and required; explicit zero is valid and examples require user action (OD-1). Sourced accumulation additions do not authorize changing existing drawdown behavior (OD-2). Keep the [assumptions decision](../calculator-excellence/FIRE_ASSUMPTIONS_DECISION.md) and existing formula goldens.

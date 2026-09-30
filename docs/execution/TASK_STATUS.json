@@ -211,7 +211,8 @@
         "B09",
         "B10",
         "B11",
-        "B12"
+        "B12",
+        "B51"
       ],
       "prompt": "prompts/B13.md",
       "submission": null,
@@ -705,6 +706,139 @@
       "code_sha": "f85c6dd9c092720b0b0a1070cab657458be57cb6",
       "review": "reviews/C09B.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B47",
+      "title": "Correct calculator visuals that invent or contradict the selected model",
+      "checkpoint": "C15",
+      "status": "pending",
+      "dependencies": [],
+      "prompt": "prompts/B47.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B48",
+      "title": "Honor APY in HYSA without changing nominal-rate calculators",
+      "checkpoint": "C15",
+      "status": "pending",
+      "dependencies": [
+        "B47"
+      ],
+      "prompt": "prompts/B48.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B45",
+      "title": "Preserve input edits, losses and explicit sample-result state",
+      "checkpoint": "C16",
+      "status": "pending",
+      "dependencies": [
+        "B48"
+      ],
+      "prompt": "prompts/B45.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B43",
+      "title": "Make FIRE refinements and generic additional controls discoverable",
+      "checkpoint": "C16",
+      "status": "pending",
+      "dependencies": [
+        "B45"
+      ],
+      "prompt": "prompts/B43.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B44",
+      "title": "Expose dedicated calculator customization without a wall of options",
+      "checkpoint": "C16",
+      "status": "pending",
+      "dependencies": [
+        "B43"
+      ],
+      "prompt": "prompts/B44.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B46",
+      "title": "Guide landing/library choices with intentional light and dark hierarchy",
+      "checkpoint": "C17",
+      "status": "pending",
+      "dependencies": [
+        "B44"
+      ],
+      "prompt": "prompts/B46.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B49",
+      "title": "Make calculator scope, assumptions and rule provenance explicit",
+      "checkpoint": "C17",
+      "status": "pending",
+      "dependencies": [
+        "B46"
+      ],
+      "prompt": "prompts/B49.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B50",
+      "title": "Turn remaining per-calculator feature gaps into bounded formula contracts",
+      "checkpoint": "C17",
+      "status": "pending",
+      "dependencies": [
+        "B49"
+      ],
+      "prompt": "prompts/B50.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B51",
+      "title": "Validate discoverability, first value and genuine saved-plan return",
+      "checkpoint": "C18",
+      "status": "pending",
+      "dependencies": [
+        "B50"
+      ],
+      "prompt": "prompts/B51.md",
+      "submission": null,
+      "owner": "Gemini implementation worker; Astra closure",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [
@@ -743,6 +877,14 @@
       "status": "done",
       "resolved_date": "2026-09-27",
       "resolution": "Owner authorised the deploy; Claude deployed finpath-analytics-retention-preview (version 296634b2) and recorded one observed scheduled run in submissions/B12.md."
+    },
+    {
+      "id": "OA-5",
+      "action": "Recruit the consented B51 usability and genuine saved-plan cohorts; provide observation availability, not personal financial data.",
+      "blocking_task": "B51 observed user/return evidence only; earlier code checkpoints may proceed",
+      "requested_date": "2026-09-29",
+      "status": "pending",
+      "resolution": "Ten usability participants (5 US/5 India) plus twenty genuine plan creators; no messages or recruitment performed by Astra."
     }
   ]
 }

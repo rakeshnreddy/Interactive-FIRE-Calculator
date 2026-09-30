@@ -1,0 +1,172 @@
+{
+  "date": "2026-09-29",
+  "timezone": "America/Los_Angeles",
+  "reviewer": "Astra",
+  "type": "primary_observations_not_worker_hosted_pass",
+  "source_sha": "50d817dcf7395eb766659cf338670b2802475bfb",
+  "preview": "https://d0d235df.interactive-fire-calculator.pages.dev",
+  "preview_product_sha": "2277b80ce089d0ddf0caf22a21c0c809ae6a31f5",
+  "driver": "Codex CUA in-app browser",
+  "catalog_source": "src/lib/seoCalculators.ts, executable Vite SSR inventory",
+  "registry_count": 82,
+  "calculator_page_count": 83,
+  "initial_layout_cases": 332,
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "themes": {
+    "light_canvas": "#eef3fa",
+    "dark_canvas": "#070d16"
+  },
+  "observed_horizontal_overflow_cases": 0,
+  "exclusions": [
+    "native 200% zoom",
+    "actual screen reader",
+    "all expanded states",
+    "all formulas independently rederived",
+    "authenticated lifecycle retest",
+    "full suite rerun during initial audit"
+  ],
+  "screenshots": "CUA screenshots were inspected in the review conversation; no screenshot file path or hash is asserted.",
+  "positions": {
+    "fire": {
+      "desktop": 1180,
+      "mobile": 1672
+    },
+    "compound-interest": {
+      "desktop": 1025,
+      "mobile": 1478
+    },
+    "savings-goal": {
+      "desktop": 939,
+      "mobile": 1253
+    },
+    "budget": {
+      "desktop": 1907,
+      "mobile": 2421
+    },
+    "emergency-fund": {
+      "desktop": 1184,
+      "mobile": 1607
+    }
+  },
+  "hosted_reproductions": {
+    "closing_costs_visual": "fictional $450000 loan, 60 months, closing-cost rate treated as loan rate",
+    "interest_only": "headline principal owed $300000; chart principal $0 at month360",
+    "hysa_default": "APY 4.25%; projected $30519",
+    "blank_mortgage_principal": "filled blank; input became 0 and primary result $0",
+    "negative_roi": "entered -1000 gain; input became 0 and ROI 0%"
+  },
+  "source_reproductions": {
+    "hysa_default_actual": 30519.033740012204,
+    "hysa_effective_apy_reference": 30468.781876553145,
+    "hysa_delta": 50.25186345905968,
+    "recast_result_principal": 250000,
+    "recast_chart_principal": 300000,
+    "prepayment_result_months": 153,
+    "prepayment_chart_months": 180,
+    "biweekly_months_saved": 68,
+    "biweekly_chart_final_month": 360
+  },
+  "correction": "An initial hypothesis that FIRE required rates were hidden was disproved; both are visible and blank. The remaining issue is optional-group discoverability and duplicate/unset period display.",
+  "routes": [
+    "compound-interest",
+    "savings-goal",
+    "net-worth",
+    "budget",
+    "emergency-fund",
+    "retirement",
+    "debt-payoff",
+    "investment-return",
+    "sip",
+    "step-up-sip",
+    "sip-goal",
+    "lumpsum-mutual-fund",
+    "swp",
+    "emi",
+    "home-loan-emi",
+    "car-loan-emi",
+    "personal-loan-emi",
+    "income-tax-india",
+    "salary-india",
+    "hra-exemption",
+    "fd",
+    "rd",
+    "ppf",
+    "epf",
+    "nps",
+    "gratuity",
+    "home-loan-prepayment",
+    "home-loan-foreclosure",
+    "home-loan-balance-transfer-india",
+    "flat-vs-reducing-rate",
+    "loan-eligibility-india",
+    "stamp-duty-registration",
+    "mortgage",
+    "mortgage-affordability",
+    "mortgage-refinance",
+    "amortization",
+    "extra-mortgage-payment",
+    "mortgage-payoff",
+    "biweekly-mortgage-payment",
+    "mortgage-recast",
+    "mortgage-points",
+    "15-vs-30-year-mortgage",
+    "arm-mortgage",
+    "interest-only-mortgage",
+    "balloon-loan",
+    "closing-costs",
+    "escrow",
+    "debt-to-income",
+    "loan-comparison",
+    "apr",
+    "home-equity-loan",
+    "fha-loan",
+    "va-loan",
+    "fha-vs-conventional",
+    "rent-vs-buy",
+    "credit-card-payoff",
+    "debt-snowball-avalanche",
+    "auto-loan",
+    "personal-loan",
+    "student-loan-payoff",
+    "401k",
+    "roth-vs-traditional-ira",
+    "paycheck",
+    "income-tax-us",
+    "social-security-break-even",
+    "rmd",
+    "cagr",
+    "xirr",
+    "inflation",
+    "rule-of-72",
+    "capital-gains-tax",
+    "gst",
+    "tds",
+    "down-payment",
+    "pmi",
+    "heloc",
+    "balance-transfer",
+    "cd",
+    "hysa",
+    "life-insurance-needs",
+    "lease-vs-buy",
+    "roi",
+    "fire"
+  ],
+  "publication_verification": {
+    "command": "./scripts/test_all.sh",
+    "exit_code": 0,
+    "vitest_files": 80,
+    "vitest_tests": 2471,
+    "typecheck_build_fixture_isolation": "passed",
+    "note": "Final publication gate run after drafting; product source unchanged by this audit. Raw log is local, not a claimed committed artifact."
+  }
+}

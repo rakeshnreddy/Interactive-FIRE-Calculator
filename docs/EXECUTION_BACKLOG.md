@@ -496,3 +496,106 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
   - Likely files: route inventory, CalculatorLibrary/navigation/copy, tests, calculator-excellence gap inventory.
   - Acceptance: old routes work; preset identity/filter/empty/keyboard/mobile/theme tests pass; internal phrases absent; signed-out discovery is public-first; follow-on math gaps remain visible.
   - Analytics/tests/security: no pre-consent tracking, preserve public access. Dependencies: B31/B36 and primary release after C11. Rollback: revert discovery changes, retain URLs. Human 1–2 days; agent estimate after inventory. [Contract](execution/prompts/B40.md).
+
+## Fresh calculator/landing UX increments — 2026-09-29
+
+The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. All new items remain unchecked; only Astra can accept them.
+
+- [ ] **B47 — Correct calculator visuals that invent or contradict the selected model.**
+  - User problem/evidence: UX-01/UX-02: closing-cost and stamp-duty charts invent loans; interest-only/recast/prepayment/biweekly charts contradict outputs.
+  - Outcome/scope: Every displayed visual represents the selected model and reconciles with the headline and accessible schedule. Implement only [the detailed contract](execution/prompts/B47.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/calculatorStudios.ts; src/CalculatorLibrary.tsx (visual renderer only); src/lib/calculatorStudios.test.ts; route-specific visual regression tests`.
+  - Acceptance: Closing-cost default visual decomposes 90000 + 13500 = 103500 and contains no loan time axis; stamp duty decomposes 480000 + 80000 = 560000 and has no imaginary interest. Interest-only selected-model principal remains 300000 throughout; any amortizing comparator is explicitly separate. Recast starts at 250000. Prepayment uses the actual 153-month outcome, not 180; foreclosure at full repayment ends immediately. Biweekly accelerated payoff matches the modeled 292 months (360−68), with the approximation disclosed. Chart/table/headline totals and units agree within the existing 0.005 residual tolerance; do not enlarge it. For all 77 generic routes, record visual kind, source model/schedule and reconciliation status; unsupported models fail safely. Labels, zero/negative states and accessible table text stay readable in both themes. No financial engine changes.
+  - Analytics: No telemetry required; correctness is judged by reconciled model data, not chart engagement.
+  - Tests: Unit visual-policy tests for unsupported/missing data, each reproduced contradiction and zero/principal/extra-payment states; existing model goldens remain unchanged; full ./scripts/test_all.sh once after the final local changes.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; accepted baseline; no secrets/raw financial values in evidence.
+  - Migration/rollback: No schema/data migration; revert chart-policy and presentation commit together. Preserve result/export math.
+  - Effort: 4–8 focused worker hours plus primary publication/review.
+
+- [ ] **B48 — Honor APY in HYSA without changing nominal-rate calculators.**
+  - User problem/evidence: UX-03: hosted HYSA APY produces 30519; independently derived effective-APY result is 30468.78.
+  - Outcome/scope: HYSA input meaning, result, schedule, comparison and export all use effective APY. Implement only [the detailed contract](execution/prompts/B48.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/seoCalculators.ts (HYSA adapter only); src/lib/calculatorStudios.ts; src/CalculatorLibrary.tsx (method/history notice if required); associated tests; docs/calculator-excellence/HYSA_APY_DECISION.md`.
+  - Acceptance: The exact goldens in HYSA_APY_DECISION pass; source result, chart end, schedule end, scenario CSV and explicit saved-result calculation match. CD 10920.25 stays unchanged. Other compound/SIP/401k financial goldens do not change. Historical records retain original inputs/metrics; recalculation creates a new snapshot only after user action and discloses the changed method. No user-facing live-bank accrual or guarantee claim. No src/lib/fire.ts change.
+  - Analytics: Calculation correction can use the existing allowlisted quality counter; never log APY or amounts. Do not invent a new event without consent/taxonomy review.
+  - Tests: Independent recurrence tests, zero-rate/top-up/fractional-horizon and regression comparison across every shared compound alias; persistence immutability tests where behavior changes; full suite.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B47; no secrets/raw financial values in evidence.
+  - Migration/rollback: No remote writes/migration; see written correction decision. Roll back only HYSA adapter plus notices together.
+  - Effort: 3–6 worker hours plus targeted primary review.
+
+- [ ] **B45 — Preserve input edits, losses and explicit sample-result state.**
+  - User problem/evidence: UX-04/UX-08: blank mortgage becomes 0; negative ROI becomes 0%; populated examples look personalized.
+  - Outcome/scope: Users can edit their numbers naturally and cannot mistake an unfinished/sample result for a valid personal answer. Implement only [the detailed contract](execution/prompts/B45.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `src/CalculatorLibrary.tsx; src/lib/seoCalculators.ts (input bounds only where mathematically justified); draft/share normalization; CalculatorLibraryDetail tests`.
+  - Acceptance: Clearing mortgage principal leaves the field empty and does not render a valid zero-payment answer. ROI net gain −1000 with cost 20000 produces −5%. Zero remains valid for fields whose math supports it. Out-of-range entries show the actual attempted value and an actionable validation state; calculation never uses a hidden differently clamped value. Sample/current/stale states are distinct and accessible. Reset and draft restoration reproduce their documented state; typed invalid data cannot be saved as a current estimate. Existing correct bounds/formula results remain intact.
+  - Analytics: Reuse existing result event only when valid; distinguish example use without finance payload. No per-keystroke analytics.
+  - Tests: User-event style regressions for empty→typed value, decimal editing, explicit zero, negative ROI, limits, NaN/non-finite restore, stale result, reset and save/export gates; full suite.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B48; no secrets/raw financial values in evidence.
+  - Migration/rollback: If draft shape changes, add backward-compatible read; never discard account records. Revert UI/state adapter as one unit.
+  - Effort: 4–8 worker hours.
+
+- [ ] **B43 — Make FIRE refinements and generic additional controls discoverable.**
+  - User problem/evidence: UX-05/06/07: late collapsed controls, misleading duplicated FIRE rate state, housing costs mixed with acceleration.
+  - Outcome/scope: Users see what they can customize before scanning long explanations or results. Implement only [the detailed contract](execution/prompts/B43.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `src/App.tsx (FIRE UI/summary only); src/CalculatorLibrary.tsx; src/vivid-theme.css (scoped controls); relevant UI tests`.
+  - Acceptance: Customization affordance is before the first financial input/help stack and points to the correct group. Keyboard Enter/Space opens the real disclosure; focus remains visible; no hover-only nudge. FIRE base rates remain empty/required, examples explicit and zero valid; visible advanced period status agrees with base unset state. Editing/loading multi-period saved plans preserves exact values. Mortgage gives distinct cost and acceleration groups and a clear P&I/total-housing/extra-payment distinction. Active options remain apparent after collapsing and after reload/draft restore; Reset clears only according to the documented scope. Long summaries wrap without overlap at 320/390/1440 in both themes.
+  - Analytics: Option discovery is a consented categorical event only if the existing analytics allowlist supports it; no entered amounts/rates/group contents.
+  - Tests: OD-1 regressions and existing FIRE goldens unchanged; disclosure/focus/summary/source-of-truth/loaded-plan tests; generic monthly/yearly extras plus housing costs; full suite.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B45; no secrets/raw financial values in evidence.
+  - Migration/rollback: No formula, persistence or D1 migration; rollback presentation as one commit. Preserve all stable routes.
+  - Effort: 4–8 worker hours.
+
+- [ ] **B44 — Expose dedicated calculator customization without a wall of options.**
+  - User problem/evidence: UX-05: compound/savings/emergency/budget controls are 1253–2421px down on mobile.
+  - Outcome/scope: Dedicated engines retain their depth while useful control groups become understandable at first use. Implement only [the detailed contract](execution/prompts/B44.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `src/CompoundInterestCalculator.tsx; src/SavingsGoalCalculator.tsx; src/CashflowPlanningCalculator.tsx; scoped CSS and their tests`.
+  - Acceptance: Each dedicated route has a first-layer customization entry before its long input stack. Financial settings and locale/display controls are distinct. Group summaries reflect actual rate basis, timing, fees, inflation and enabled events; no misleading zero/unset conflation. Values persist through open/close/reset/load as before. Existing schedule, headline and scenario outputs remain exactly unchanged for identical inputs. Key controls work using keyboard and on touch without hover; no text overlap at 320/390/1440 in both themes.
+  - Analytics: No new finance telemetry; reuse existing consent architecture only for safe categorical engagement.
+  - Tests: Existing dedicated engine goldens unchanged; grouped disclosure/value-summary/focus/reset and restore tests; budget stress and emergency shock/risk selections; full suite.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B43; no secrets/raw financial values in evidence.
+  - Migration/rollback: Presentation only, no data/engine migration; rollback component/CSS grouping together.
+  - Effort: 4–8 worker hours.
+
+- [ ] **B46 — Guide landing/library choices with intentional light and dark hierarchy.**
+  - User problem/evidence: UX-09/10/11: mobile question toolkits begin at y1766; repeated paths and a dense illustration compete for attention.
+  - Outcome/scope: Visitors choose a relevant question quickly, see honest value, and understand the optional saved-plan loop. Implement only [the detailed contract](execution/prompts/B46.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `src/App.tsx (LandingPage and public header); src/lib/landingContent.ts; src/HeroFireExample.tsx; src/CalculatorLibrary.tsx (library discovery); src/vivid-theme.css; DESIGN.md; landing/library tests`.
+  - Acceptance: At 390×844 the primary action is visible initially and a question-choice affordance is reachable within one additional viewport from the top; it precedes dense example detail. At 1440×1000 headline/action/illustration have clear first/second-layer hierarchy; no competing signup emphasis. Choosing each path and toolkit opens the correct stable route/anchor; back/search retain documented behavior. Example numbers remain derived from its fixture and full methodology remains available. Theme toggle materially changes surfaces/ink/chart tokens; actual composited contrast satisfies AA targets for changed text/controls. No clipping at 320/390/1440; keyboard, reduced motion/transparency, unsupported backdrop-filter and forced-colors fallbacks work. Native zoom/actual-reader limitations remain honestly recorded, not manufactured as PASS.
+  - Analytics: Observe valid calculator starts and saved-review funnel under current consent. No replay/heatmap/finance input collection. Proposed gaze behavior is tested with users in B51.
+  - Tests: Navigation/fragment/search/hero-fixture parity and visible-copy tests; changed token contrast measurements and targeted visual evidence; full suite. Reuse shared browser runner; no bespoke harness.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B44; no secrets/raw financial values in evidence.
+  - Migration/rollback: No migration; revert presentation/copy/tokens as a bounded set; preserve routes and original example formulas.
+  - Effort: 6–12 worker hours plus design review.
+
+- [ ] **B49 — Make calculator scope, assumptions and rule provenance explicit.**
+  - User problem/evidence: UX-12 and row-level findings: simplified tax/benefit/insurance/HELOC models have broader names; balance-transfer registry text contradicts its promo boundary.
+  - Outcome/scope: Users understand exactly what the result includes and what remains outside it. Implement only [the detailed contract](execution/prompts/B49.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/calculatorContent.ts; src/lib/calculatorQuality.ts; src/lib/seoCalculators.ts (copy/metadata only); scoped result notices; content tests`.
+  - Acceptance: Every assigned route has an honest adjacent scope block derived from its real inputs/model, with appropriate country/year and sources where factual. No claim of approval, eligibility, tax filing accuracy, personalized advice, guarantee or current statutory rate unless proven. Balance-transfer text no longer says promo lasts until payoff when duration is finite. Existing correctly modeled state/local placeholder, rent-buy ownership/equity and monthly-IRR caveats are preserved. Copy is shorter in first layer; details remain available. No financial outputs change for identical inputs.
+  - Analytics: No new telemetry or personal data; outbound official links do not embed entered values.
+  - Tests: Per-route content assertions against supported input/model metadata, internal-copy guard and shared output goldens; full suite. Record source/date by route.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B46; no secrets/raw financial values in evidence.
+  - Migration/rollback: Copy/metadata only; no data migration. Revert any misleading source/date claim immediately.
+  - Effort: 4–8 worker hours plus official-source research.
+
+- [ ] **B50 — Turn remaining per-calculator feature gaps into bounded formula contracts.**
+  - User problem/evidence: The individual matrix identifies useful missing controls and decision-specific outputs; implementing them all as one universal template would introduce risk.
+  - Outcome/scope: Every remaining feature has a small, sourced and testable implementation slice; no broad feature bundle or unearned completion claim. Implement only [the detailed contract](execution/prompts/B50.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `docs/calculator-excellence/ feature contracts; docs/execution/prompts/ proposed child prompts; candidate updates for canonical trackers (Astra applies them)`.
+  - Acceptance: Each of the 83 matrix rows has an explicit disposition: current slice, queued small feature contract, no additional feature justified, or externally gated. Every B50 implementation proposal is narrow, sourced and independently testable; sources match jurisdiction/effective date. Visuals are selected for the actual job and have accessible data equivalents. No feature list silently declares 83 completed; no formulas/code/data are edited in this planning task. The next three highest-value implementation contracts contain actual independent expected numbers and migration decisions, not instructions to use existing engine output as the oracle.
+  - Analytics: Each proposed event specifies consent, safe categories and exclusions; never log financial values or client identities.
+  - Tests: Cross-check full matrix coverage, source links and proposed ID uniqueness/dependencies with the existing packet validator; do not run the full product suite for documentation-only work.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B49; no secrets/raw financial values in evidence.
+  - Migration/rollback: Document proposed migrations individually; none are executed. Rollback is contract-specific.
+  - Effort: 6–10 worker hours of research/contracts; incremental implementations separately estimated.
+
+- [ ] **B51 — Validate discoverability, first value and genuine saved-plan return.**
+  - User problem/evidence: New UI hypotheses and paid offers have no demonstrated user success/retention yet.
+  - Outcome/scope: Owner can observe real user comprehension and return before funding traffic or a subscription build. Implement only [the detailed contract](execution/prompts/B51.md); all assigned individual matrix rows are part of scope.
+  - Non-goals/files: no unrelated formulas, paid services or production writes. `docs/MEASUREMENT_AND_EXPERIMENT_PLAN.md; existing privacy-reviewed analytics only if gaps are established; a compact consented pilot report template`.
+  - Acceptance: Protocol, consent and event/denominator definitions are complete; no raw finance data is collected. A real pilot report contains actual anonymized participant/observation counts and dates, not synthetic outcomes. Proposed gates: >=8/10 unprompted relevant customization and sample/limitation comprehension; zero serious chart/model misconception; >=6/20 genuine meaningful plan returns within 45d. If gates miss, report the failure and a specific corrective hypothesis. B13 remains locked until its original evidence requirements plus real B51 return proof pass. Owner recruitment/unobserved windows may block completion honestly; do not mark done merely because instrumentation runs.
+  - Analytics: North star and funnel defined in the fresh audit; safe event categories only. No session replay, raw financial inputs, account/plan IDs or unsolicited emails.
+  - Tests: Test event payload allowlists and consent only if changed; otherwise reuse existing tests. Analyse real observations with cohort integrity checks. Browser/user study is not a substitute for financial golden tests.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B50; no secrets/raw financial values in evidence.
+  - Migration/rollback: No schema/production changes by default; any event/schema addition needs its own explicit contract and rollback.
+  - Effort: 2–4 hours study setup, owner participant time, >=45 days elapsed for full return window.
