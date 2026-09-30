@@ -1947,3 +1947,37 @@ body {
   font-size: 0.8rem;
   font-weight: 650;
 }
+
+/* Estimate provenance stays beside the answer; text carries the status as well
+   as the accent so example, incomplete and current results cannot be confused. */
+.calculator-input-panel > .panel-heading {
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.calculator-result-state {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-3);
+  border-inline-start: 3px solid var(--color-data-2);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-inset);
+  color: var(--color-heading);
+  overflow-wrap: anywhere;
+}
+
+.calculator-result-state small {
+  color: var(--color-muted-strong);
+  line-height: 1.5;
+}
+
+.calculator-result-state.state-stale,
+.calculator-result-state.state-needs-input {
+  border-inline-start-color: var(--color-warning);
+}
+
+.calculator-field-error {
+  color: var(--color-danger);
+  line-height: 1.5;
+}

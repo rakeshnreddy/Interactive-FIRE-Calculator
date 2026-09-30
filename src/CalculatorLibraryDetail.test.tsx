@@ -208,7 +208,7 @@ describe('B20: Generic calculator reordering, hierarchy, and accessible disclosu
     expect(scenarioButtons[2].getAttribute('aria-selected')).toBe('true');
   });
 
-  it('keeps the field and the calculation on the same clamped value for out-of-range percents', () => {
+  it('keeps the attempted value visible and marks out-of-range percents invalid', () => {
     window.history.replaceState({}, '', '/calculators/mortgage');
     window.localStorage.clear();
     const { container } = renderComponent(
@@ -227,7 +227,8 @@ describe('B20: Generic calculator reordering, hierarchy, and accessible disclosu
       setter.call(rate, '500');
       rate!.dispatchEvent(new Event('input', { bubbles: true }));
     });
-    expect(rate!.value).toBe('100');
+    expect(rate!.value).toBe('500');
+    expect(rate!.getAttribute('aria-invalid')).toBe('true');
   });
 
   it('lists exactly which inputs a scenario changes, with before and after values', () => {

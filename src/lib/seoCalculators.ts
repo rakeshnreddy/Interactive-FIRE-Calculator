@@ -500,7 +500,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
     ['life-insurance-needs', 'Life Insurance Needs Calculator', 'insurance', [money('income', 'Annual income to replace', 100000), number('years', 'Years of support', 10, 'yrs'), money('debts', 'Debts and final expenses', 150000), money('savings', 'Existing savings/coverage', 100000)]],
     ['lease-vs-buy', 'Lease vs Buy Calculator', 'rent-buy', [money('rent', 'Monthly lease payment', 450), money('homePrice', 'Vehicle purchase price', 35000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan rate', 7), number('loanYears', 'Loan term', 5, 'yrs'), number('years', 'Years you would keep it', 4, 'yrs')]],
-    ['roi', 'ROI Calculator', 'roi', [money('gain', 'Net gain', 5000), money('cost', 'Cost', 20000)]]
+    ['roi', 'ROI Calculator', 'roi', [{ ...money('gain', 'Net gain', 5000, 'Enter a loss with a minus sign.'), min: -Number.MAX_SAFE_INTEGER }, money('cost', 'Cost', 20000)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'capital-gains' || formula === 'gst' || formula === 'tax-rate' ? 'Tax' : 'Investing',
     description: `${title} for a quick estimate you can compare, save, or revisit later.`,
