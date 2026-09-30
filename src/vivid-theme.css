@@ -1994,3 +1994,12 @@ body {
 .calculator-options-shell summary small, .advanced-summary small { overflow-wrap: anywhere; }
 .estimate-customization-links button:focus-visible { outline: 3px solid var(--color-data-2); outline-offset: 3px; }
 #fire-optional-refinements, [id^="options-"] { scroll-margin-top: 96px; }
+
+/* Disclosure destinations clear the sticky navigation when focused. */
+.compound-disclosure, .calculator-options-shell summary { scroll-margin-top: 96px; }
+.estimate-customization-links button:hover { border-color: var(--color-data-2); }
+.estimate-customization-links button:hover strong { color: var(--color-primary-ink); }
+.compound-disclosure > summary { min-height: 44px; }
+
+.estimate-customization-links.is-compact { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); }
+.estimate-customization-links.is-compact button { font-size: .875rem; padding: var(--space-2) var(--space-3); }
