@@ -2114,3 +2114,32 @@ body {
 .dated-flow-endpoints { display:flex; justify-content:space-between; gap:12px; font-size:.875rem; color:var(--color-muted); }
 
 .return-mode-panel[hidden] { display: none !important; }
+
+/* Vehicle decisions: three short input groups; total costs and equity have distinct scales. */
+.vehicle-group { min-width:0; padding:12px 0; margin:0; border:0; border-top:1px solid var(--color-border); }
+.vehicle-group legend { font-weight:700; padding:8px 0; color:var(--color-heading); }
+.vehicle-group p,.vehicle-continuation p { font-size:.875rem; line-height:1.5; margin:8px 0; color:var(--color-muted); }
+.vehicle-field { display:grid; align-content:start; gap:6px; min-width:0; font-size:.875rem; }
+.vehicle-field > span { font-weight:600; }
+.vehicle-field input { width:100%; min-width:0; min-height:44px; padding:10px 12px; border:1px solid var(--color-control-border); border-radius:var(--radius-md); background:var(--color-surface); color:var(--color-heading); font-size:1rem; }
+.vehicle-field input:focus-visible { outline:3px solid var(--color-focus); outline-offset:2px; }
+.vehicle-field small { line-height:1.5; color:var(--color-muted); }
+.vehicle-continuation { margin-block:12px; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface); }
+.vehicle-continuation > label { display:flex; align-items:center; gap:10px; min-height:44px; font-weight:600; font-size:.875rem; }
+.vehicle-continuation input[type=checkbox] { width:20px; height:20px; flex:none; accent-color:var(--color-data-1); }
+.vehicle-cost-visual,.vehicle-equity-visual { margin:16px 0; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-md); }
+.vehicle-cost-visual figcaption,.vehicle-equity-visual figcaption { display:grid; gap:4px; font-size:.875rem; line-height:1.5; }
+.vehicle-cost-visual figcaption span,.vehicle-equity-visual figcaption span { color:var(--color-muted); }
+.vehicle-cost-row { margin-top:12px; font-size:.875rem; }
+.vehicle-cost-track { position:relative; height:22px; margin-top:6px; background:var(--color-surface); }
+.vehicle-cost-track b { position:absolute; height:100%; min-width:0; border:1px solid currentColor; }
+.vehicle-buy-bar { background:var(--color-data-1); }
+.vehicle-lease-bar { background:var(--color-muted); }
+.vehicle-zero { position:absolute; top:-2px; bottom:-2px; width:1px; background:var(--color-heading); z-index:1; }
+.vehicle-equity-track { display:flex; height:22px; margin-top:12px; background:var(--color-surface); }
+.vehicle-equity-track span { min-width:0; border:1px solid currentColor; }
+.vehicle-equity-covered { background:var(--color-muted); }
+.vehicle-equity-left { background:var(--color-data-1); }
+.vehicle-equity-shortfall { background:repeating-linear-gradient(45deg,transparent,transparent 4px,var(--color-muted) 4px,var(--color-muted) 8px); }
+.vehicle-equity-visual p { font-size:.8rem; line-height:1.5; margin:8px 0 0; }
+@media (forced-colors:active) { .vehicle-cost-track b,.vehicle-equity-track span { background:Highlight; border:1px solid CanvasText; }.vehicle-zero {background:CanvasText;} }

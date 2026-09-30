@@ -1,3 +1,4 @@
+import { VehicleCalculator } from './VehicleCalculator';
 import type { DatedReturnInputModel } from './lib/datedReturns';
 import { modelVersionForCalculator, type CalculatorModelVersion } from './lib/calculatorModelVersion';
 import { XirrCalculator } from './XirrCalculator';
@@ -175,6 +176,7 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
 
   if (calculator) {
+    if (calculator.slug === 'lease-vs-buy') return <VehicleCalculator auth={auth} calculator={calculator} onSaveResult={onSaveResult} savedResults={savedResults}/>;
     if (calculator.slug === 'xirr') return <XirrCalculator auth={auth} calculator={calculator} onSaveResult={onSaveResult} savedResults={savedResults} renderPeriodic={()=><CalculatorDetail auth={auth} calculator={calculator} onNavigate={onNavigate} onSaveResult={onSaveResult} savedResults={savedResults}/>}/>;
 
     if (calculator.slug === 'compound-interest') {

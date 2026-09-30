@@ -1,3 +1,4 @@
+import { calculateVehicleCost } from './vehicleLeaseBuy';
 import {
   calculateSeoCalculator,
   calculatorCurrency,
@@ -218,6 +219,11 @@ export function buildCalculatorStudioChart(
   result: CalculatorResult = calculateSeoCalculator(calculator, values)
 ): CalculatorStudioChart {
   const metadata = getCalculatorStudioMetadata(calculator);
+  if (calculator.formula === 'vehicle-cost') {
+    const c = calculateVehicleCost(values);
+    if (!c.ok) return unavailableChart(metadata);
+    return { type:'comparison', title:`Net cost at ${c.months} months`, description:'Same currency and comparison horizon; resale is the entered assumption.', summary:'Net costs include remaining debt and resale; monthly payment is a separate metric.', valueType:'currency', currency:calculatorCurrency(calculator), legend:{primary:'Net cost'}, entries:[{label:'Buy',primary:c.buyCost,valueType:'currency'},{label:'Lease',primary:c.leaseCost,valueType:'currency'}] };
+  }
   // A chart must use the same complete input state as the result, never a default loan.
   if (calculator.inputs.some((input) => !Number.isFinite(values[input.key]))
     || !seoCalculators.some((item) => item.formula === calculator.formula)) {
@@ -241,6 +247,16 @@ export function buildCalculatorDetailSchedule(
   values: Record<string, number>,
   result: CalculatorResult = calculateSeoCalculator(calculator, values)
 ): CalculatorDetailSchedule | null {
+  if (calculator.formula === 'vehicle-cost') {
+    const c=calculateVehicleCost(values); if(!c.ok)return null;
+    return {title:`Vehicle cost components at ${c.months} months`,description:'Only the comparison-date resale is entered; no intermediate resale forecast is invented.',summary:'Buy net cost = down + payments + remaining loan − resale. Lease cost uses the quoted period plus any explicit continuation.',columns:[textColumn('component','Component'),moneyColumn('buy','Buy'),moneyColumn('lease','Lease')],rows:[
+      {id:'vehicle-upfront',values:{component:'Upfront cash',buy:c.down,lease:values.leaseUpfront??0}},
+      {id:'vehicle-payments',values:{component:'Payments paid',buy:c.paymentsPaid,lease:c.leaseCost-(values.leaseUpfront??0)}},
+      {id:'vehicle-remaining',values:{component:'Remaining loan added',buy:c.remainingLoan,lease:0}},
+      {id:'vehicle-resale',values:{component:'Resale subtracted',buy:-c.resale,lease:0}},
+      {id:'vehicle-net-cost',values:{component:'Net cost',buy:c.buyCost,lease:c.leaseCost}}
+    ]};
+  }
   const normalized = normalizeInputValues(calculator, values);
 
   switch (calculator.formula) {

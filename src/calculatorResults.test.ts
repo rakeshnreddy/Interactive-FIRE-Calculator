@@ -1059,4 +1059,30 @@ describe('versioned interpretation persistence', () => {
     });
   });
 
+
+
+describe('versioned vehicle-cost save boundary', () => {
+ const values={homePrice:25000,downPayment:5000,rate:0,loanYears:4,years:2,resale:14000,rent:350,leaseYears:2,leaseUpfront:0,extendLease:0};
+ const payload={...validPayload,calculatorSlug:'lease-vs-buy',conversionRoute:'/plans',inputValues:values,result:{...validPayload.result,modelVersion:'vehicle-cost-v1'}};
+ it('accepts complete explicit terms and rejects wrong destinations or omitted resale',()=>{
+  expect(parseCalculatorSavePayload(payload).ok).toBe(true);
+  expect(parseCalculatorSavePayload({...payload,conversionRoute:'/goals'}).ok).toBe(false);
+  const {resale:_,...missing}=values;expect(parseCalculatorSavePayload({...payload,inputValues:missing}).ok).toBe(false);
+  expect(parseCalculatorSavePayload({...payload,inputValues:{...values,years:3}}).ok).toBe(false);
+  expect(parseCalculatorSavePayload({...payload,inputValues:{...values,years:3,extendLease:1,extensionMonthly:350}}).ok).toBe(true);
+ });
+
+ it('roundtrips a vehicle comparison through real SQLite with retry and tenant isolation',async()=>{
+  const {database,sqlite}=createRealD1();
+  const parsed=parseCalculatorSavePayload({...payload,idempotencyKey:'vehicle-synthetic'});expect(parsed.ok).toBe(true);if(!parsed.ok)return;
+  const saved=await createSavedCalculatorResult(database,'vehicle-synthetic-A',parsed.value);
+  expect(saved.savedResult.inputValues).toEqual(values);expect(saved.savedResult.result.modelVersion).toBe('vehicle-cost-v1');
+  expect((await listSavedCalculatorResults(database,'vehicle-synthetic-A'))[0].inputValues.resale).toBe(14000);
+  expect(await listSavedCalculatorResults(database,'vehicle-synthetic-B')).toEqual([]);
+  expect((await createSavedCalculatorResult(database,'vehicle-synthetic-A',parsed.value)).saveStatus).toBe('retry');
+  const row=sqlite.prepare('SELECT input_json FROM saved_calculator_results WHERE id = ?').get(saved.savedResult.id) as {input_json:string};expect(JSON.parse(row.input_json)).toEqual(values);
+  expect(await hashCalculatorPayload(parsed.value)).not.toBe(await hashCalculatorPayload({...parsed.value,inputValues:{...values,resale:0}}));
+ });
+});
+
 });

@@ -625,6 +625,7 @@ function studioForFormula(formula: CalculatorFormula): CalculatorStudio {
     formula === 'mortgage-recast' ||
     formula === 'pmi' ||
     formula === 'refinance' ||
+    formula === 'vehicle-cost' ||
     formula === 'rent-buy' ||
     formula === 'stamp-duty' ||
     formula === 'va-loan'

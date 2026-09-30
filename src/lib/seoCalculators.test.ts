@@ -90,7 +90,7 @@ const expectedOutputs = [
   ['cd', 'Maturity value', 10_920.25, 'currency', 'USD'],
   ['hysa', 'Projected value', 30_468.781877, 'currency', 'USD'],
   ['life-insurance-needs', 'Coverage need', 1_050_000, 'currency', 'USD'],
-  ['lease-vs-buy', 'Monthly cost to buy', 594.035956, 'currency', 'USD'],
+  ['lease-vs-buy', 'Buying minus leasing net cost', 2600, 'currency', 'USD'],
   ['roi', 'ROI', 0.25, 'percent', 'USD']
 ] as const;
 

@@ -1,3 +1,4 @@
+import { vehicleCostResult } from './vehicleLeaseBuy';
 import { buildCalculatorPublicContent } from './calculatorContent';
 import type { CalculatorModelVersion } from './calculatorModelVersion';
 import { assessPayback } from './payback';
@@ -49,6 +50,7 @@ export type CalculatorFormula =
   | 'ppf'
   | 'rd'
   | 'refinance'
+  | 'vehicle-cost'
   | 'rent-buy'
   | 'retirement'
   | 'rmd'
@@ -210,6 +212,7 @@ const conversionByFormula: Record<CalculatorFormula, Pick<SeoCalculator, 'conver
   ppf: { conversionLabel: 'Track retirement account', conversionRoute: '/accounts' },
   rd: { conversionLabel: 'Track savings account', conversionRoute: '/accounts' },
   refinance: { conversionLabel: 'Compare loan plan', conversionRoute: '/plans' },
+  'vehicle-cost': { conversionLabel: 'Save vehicle comparison', conversionRoute: '/plans' },
   'rent-buy': { conversionLabel: 'Create home goal', conversionRoute: '/goals' },
   retirement: { conversionLabel: 'Save retirement plan', conversionRoute: '/plans' },
   rmd: { conversionLabel: 'Save retirement plan', conversionRoute: '/plans' },
@@ -253,6 +256,7 @@ const borrowingFormulas = new Set<CalculatorFormula>([
   'pmi',
   'points',
   'refinance',
+  'vehicle-cost',
   'rent-buy',
   'stamp-duty',
   'va-loan'
@@ -503,7 +507,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['cd', 'CD Calculator', 'fd', [money('principal', 'Deposit amount', 10000), percent('rate', 'APY', 4.5), number('years', 'Term', 2, 'yrs')]],
     ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
     ['life-insurance-needs', 'Life Insurance Needs Calculator', 'insurance', [money('income', 'Annual income to replace', 100000), number('years', 'Years of support', 10, 'yrs'), money('debts', 'Debts and final expenses', 150000), money('savings', 'Existing savings/coverage', 100000)]],
-    ['lease-vs-buy', 'Lease vs Buy Calculator', 'rent-buy', [money('rent', 'Monthly lease payment', 450), money('homePrice', 'Vehicle purchase price', 35000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan rate', 7), number('loanYears', 'Loan term', 5, 'yrs'), number('years', 'Years you would keep it', 4, 'yrs')]],
+    ['lease-vs-buy', 'Lease vs Buy Calculator', 'vehicle-cost', [money('homePrice', 'Vehicle purchase price', 25000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan APR', 0), number('loanYears', 'Loan term', 4, 'yrs'), number('years', 'Comparison horizon', 2, 'yrs'), money('rent', 'Monthly lease payment', 350), number('leaseYears', 'Quoted lease period', 2, 'yrs'), money('resale', 'Resale value at horizon', 14000), money('leaseUpfront', 'Upfront lease costs', 0), number('extendLease', 'Explicit lease continuation', 0), money('extensionMonthly', 'Continuation monthly cost', 0)]],
     ['roi', 'ROI Calculator', 'roi', [{ ...money('gain', 'Net gain', 5000, 'Enter a loss with a minus sign.'), min: -Number.MAX_SAFE_INTEGER }, money('cost', 'Cost', 20000)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'capital-gains' || formula === 'gst' || formula === 'tax-rate' ? 'Tax' : 'Investing',
@@ -1144,6 +1148,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
         metric('New payment', newPayment, 'currency')
       ]), modelVersion: 'payback-v2' };
     }
+    case 'vehicle-cost': return vehicleCostResult(values);
     case 'rent-buy': {
       const loanAmount = Math.max(0, get('homePrice') - get('downPayment'));
       const loanYears = Math.max(1, get('loanYears') || years);

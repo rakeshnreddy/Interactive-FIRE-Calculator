@@ -1,4 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
+import { calculateVehicleCost } from '../../src/lib/vehicleLeaseBuy';
+
 
 import { isCalculatorModelVersion, modelVersionMatchesCalculator, type CalculatorModelVersion } from '../../src/lib/calculatorModelVersion';
 import { calculateDatedReturn, parseDatedReturnInputModel, type DatedReturnInputModel } from '../../src/lib/datedReturns';
@@ -600,6 +602,11 @@ export function parseCalculatorSavePayload(
     return { error: 'result.modelVersion does not match this calculator.', ok: false };
   }
 
+  if (result.value.modelVersion === 'vehicle-cost-v1') {
+    const computed = calculateVehicleCost(inputValues.value);
+    if (conversionRoute.value !== '/plans') return { error: 'Vehicle comparisons require a plan destination.', ok: false };
+    if (!computed.ok) return { error: computed.error, ok: false };
+  }
   const inputModel = value.inputModel === undefined ? undefined : parseDatedReturnInputModel(value.inputModel);
   if (value.inputModel !== undefined || result.value.modelVersion === 'dated-xirr-v1') {
     if (!inputModel || calculatorSlug.value !== 'xirr' || result.value.modelVersion !== 'dated-xirr-v1' || conversionRoute.value !== '/plans' || inputValues.value.cashFlowCount !== inputModel.cashFlows.length) {
