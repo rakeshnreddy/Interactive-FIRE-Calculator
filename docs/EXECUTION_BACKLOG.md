@@ -499,9 +499,9 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
 
 ## Fresh calculator/landing UX increments — 2026-09-29
 
-The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. All new items remain unchecked; only Astra can accept them.
+The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. B47/B48 are accepted on the exact C15 candidate; C16 is released. Only Astra can accept items.
 
-- [ ] **B47 — Correct calculator visuals that invent or contradict the selected model.**
+- [x] **B47 — Correct calculator visuals that invent or contradict the selected model.**
   - User problem/evidence: UX-01/UX-02: closing-cost and stamp-duty charts invent loans; interest-only/recast/prepayment/biweekly charts contradict outputs.
   - Outcome/scope: Every displayed visual represents the selected model and reconciles with the headline and accessible schedule. Implement only [the detailed contract](execution/prompts/B47.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/calculatorStudios.ts; src/CalculatorLibrary.tsx (visual renderer only); src/lib/calculatorStudios.test.ts; route-specific visual regression tests`.
@@ -512,7 +512,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No schema/data migration; revert chart-policy and presentation commit together. Preserve result/export math.
   - Effort: 4–8 focused worker hours plus primary publication/review.
 
-- [ ] **B48 — Honor APY in HYSA without changing nominal-rate calculators.**
+- [x] **B48 — Honor APY in HYSA without changing nominal-rate calculators.**
   - User problem/evidence: UX-03: hosted HYSA APY produces 30519; independently derived effective-APY result is 30468.78.
   - Outcome/scope: HYSA input meaning, result, schedule, comparison and export all use effective APY. Implement only [the detailed contract](execution/prompts/B48.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/seoCalculators.ts (HYSA adapter only); src/lib/calculatorStudios.ts; src/CalculatorLibrary.tsx (method/history notice if required); associated tests; docs/calculator-excellence/HYSA_APY_DECISION.md`.

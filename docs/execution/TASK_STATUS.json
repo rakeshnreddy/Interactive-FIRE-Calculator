@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-29",
+  "updated": "2026-09-30",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -711,28 +711,28 @@
       "id": "B47",
       "title": "Correct calculator visuals that invent or contradict the selected model",
       "checkpoint": "C15",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "prompt": "prompts/B47.md",
-      "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B47.md",
+      "owner": "Astra direct implementation and primary verification; owner override 2026-09-29",
+      "code_sha": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "review": "reviews/C15.md",
       "blocked_reason": null
     },
     {
       "id": "B48",
       "title": "Honor APY in HYSA without changing nominal-rate calculators",
       "checkpoint": "C15",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B47"
       ],
       "prompt": "prompts/B48.md",
-      "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B48.md",
+      "owner": "Astra direct implementation and primary verification; owner override 2026-09-29",
+      "code_sha": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "review": "reviews/C15.md",
       "blocked_reason": null
     },
     {
@@ -745,7 +745,7 @@
       ],
       "prompt": "prompts/B45.md",
       "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
+      "owner": "Astra direct implementation and primary verification; no Gemini this pass",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -760,7 +760,7 @@
       ],
       "prompt": "prompts/B43.md",
       "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
+      "owner": "Astra direct implementation and primary verification; no Gemini this pass",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -775,7 +775,7 @@
       ],
       "prompt": "prompts/B44.md",
       "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
+      "owner": "Astra direct implementation and primary verification; no Gemini this pass",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -790,7 +790,7 @@
       ],
       "prompt": "prompts/B46.md",
       "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
+      "owner": "Astra direct implementation and primary verification; no Gemini this pass",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -805,7 +805,7 @@
       ],
       "prompt": "prompts/B49.md",
       "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
+      "owner": "Astra direct implementation and primary verification; no Gemini this pass",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
@@ -820,7 +820,7 @@
       ],
       "prompt": "prompts/B50.md",
       "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
+      "owner": "Astra direct implementation and primary verification; no Gemini this pass",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
