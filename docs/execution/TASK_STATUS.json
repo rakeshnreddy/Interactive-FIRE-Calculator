@@ -859,30 +859,30 @@
       "id": "B53",
       "title": "Truthful refinancing and points payback states",
       "checkpoint": "C19",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B50"
       ],
       "prompt": "prompts/B53.md",
-      "submission": null,
-      "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B53.md",
+      "owner": "Astra",
+      "code_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "review": "reviews/C19.md",
       "blocked_reason": null
     },
     {
       "id": "B56",
       "title": "Social Security no-catch-up semantics",
       "checkpoint": "C19",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B53"
       ],
       "prompt": "prompts/B56.md",
-      "submission": null,
-      "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
-      "code_sha": null,
-      "review": null,
+      "submission": "submissions/B56.md",
+      "owner": "Astra",
+      "code_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "review": "reviews/C19.md",
       "blocked_reason": null
     },
     {

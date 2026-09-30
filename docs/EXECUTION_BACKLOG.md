@@ -614,7 +614,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
 
 ## Independent calculator functionality — owner continuation 2026-09-30
 
-- [ ] **B53 — Truthful refinancing and points payback states.**
+- [x] **B53 — Truthful refinancing and points payback states.**
   - User problem/evidence: reproduced omissions in the existing F-01 contract; [bounded scope](execution/prompts/B53.md).
   - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
   - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.
@@ -625,7 +625,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Security/privacy/dependencies: B50; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
   - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.
 
-- [ ] **B56 — Social Security no-catch-up semantics.**
+- [x] **B56 — Social Security no-catch-up semantics.**
   - User problem/evidence: reproduced omissions in the existing SSA contract; [bounded scope](execution/prompts/B56.md).
   - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
   - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.

@@ -26,8 +26,8 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C16 | Natural editing and visible customization | B45 → B43 → B44 | accepted | 324be91322c791836bc5e5f105312944e0ec935a | [approved](reviews/C16.md) |
 | C17 | Intentional landing and calculator depth contracts | B46 → B52 → B49 → B50 | accepted | 9f3789b9190680fff70222b422c7bfda473c814c | [approved](reviews/C17.md) |
 | C18 | Genuine usability and recurring-value validation | B51 | released | — | Protocol prepared; B51 blocked on OA-5 real participants/observation |
-| C19 | Truthful payback and benefit catch-up states | B53 → B56 | released | — | Owner-authorized independent work; B51 deferred |
-| C20 | Dated cash-flow returns | B54 | locked | — | Await C19 |
+| C19 | Truthful payback and benefit catch-up states | B53 → B56 | accepted | 89052295d0fbed72d8531cadefe027e5d5efecfd | [approved](reviews/C19.md) |
+| C20 | Dated cash-flow returns | B54 | released | — | C19 accepted; begin B54 |
 | C21 | Vehicle cost and resale comparison | B55 | locked | — | Await C20 |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
