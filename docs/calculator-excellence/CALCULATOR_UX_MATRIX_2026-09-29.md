@@ -685,4 +685,3 @@ Each row retains an existing useful capability, identifies a specific boundary, 
 - **Control and functionality improvement:** Keep OD-1; replace duplicated state with clear optional-section summaries and visible customization entry above the form.
 - **Result / visual direction:** Target, current gap, accumulation versus drawdown, and active assumption summary; preserve existing age/withdrawal mechanics.
 - **Evidence / usage reference:** live route `/calculators/fire`; `src/App.tsx`; PLAN above.
-
