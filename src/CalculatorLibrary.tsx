@@ -1,3 +1,5 @@
+import { buildCalculatorScope } from './lib/calculatorScope';
+import { CalculatorScopeNotice } from './components/CalculatorScopeNotice';
 import { useResultReveal } from './lib/resultReveal';
 import { CalculatorResultAction } from './components/CalculatorResultAction';
 import { EstimateCustomization } from './components/EstimateCustomization';
@@ -913,6 +915,7 @@ function CalculatorDetail({
               );
             })}
           </div>
+          {hasValidResult ? <CalculatorScopeNotice scope={buildCalculatorScope(calculator, scenarioValues)} /> : null}
           <VariantChips calculator={calculator} onNavigate={onNavigate} />
           {hasValidResult && studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} disabled={!canUseResult} />

@@ -1121,9 +1121,9 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const uncapped = get('salary') * 15 / 26 * get('years');
       const statutoryCap = 2_000_000;
       const gratuity = Math.min(uncapped, statutoryCap);
-      return result('Estimated gratuity', gratuity, 'Fifteen days of last drawn basic plus DA for every completed year of service, capped at the statutory limit.', [
-        'Uses the Payment of Gratuity Act formula (15/26 of monthly basic plus DA per completed year).',
-        'The tax-free statutory ceiling is modelled at Rs 20,00,000; employer policies can pay more.'
+      return result('Estimated gratuity', gratuity, 'Entered monthly salary multiplied by 15/26 and service years, capped at the model’s Rs 20,00,000 assumption.', [
+        'Uses a legacy basic-plus-DA planning formula (15/26 per entered service year); current wage definitions and eligibility are not determined.',
+        'The modeled Rs 20,00,000 cap is not a determination of current entitlement or tax-free treatment; confirm the applicable Labour Code and employer terms.'
       ], uncapped > statutoryCap ? [metric('Formula amount before the cap', uncapped, 'currency', 'warning')] : []);
     }
     case 'refinance': {
