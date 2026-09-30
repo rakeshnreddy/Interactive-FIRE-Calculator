@@ -796,12 +796,27 @@
       "blocked_reason": null
     },
     {
+      "id": "B52",
+      "title": "Compact calculator spacing and reveal results after explicit actions",
+      "checkpoint": "C17",
+      "status": "pending",
+      "dependencies": [
+        "B46"
+      ],
+      "prompt": "prompts/B52.md",
+      "submission": null,
+      "owner": "Astra direct implementation and primary verification; owner addition 2026-09-30",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
       "id": "B49",
       "title": "Make calculator scope, assumptions and rule provenance explicit",
       "checkpoint": "C17",
       "status": "pending",
       "dependencies": [
-        "B46"
+        "B52"
       ],
       "prompt": "prompts/B49.md",
       "submission": null,

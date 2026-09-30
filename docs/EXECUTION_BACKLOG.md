@@ -599,3 +599,15 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B50; no secrets/raw financial values in evidence.
   - Migration/rollback: No schema/production changes by default; any event/schema addition needs its own explicit contract and rollback.
   - Effort: 2–4 hours study setup, owner participant time, >=45 days elapsed for full return window.
+
+
+- [ ] **B52 — Compact calculator spacing and reveal results after explicit actions.**
+  - User problem/evidence: Owner 2026-09-30 reports sparse input/result presentation and manual result hunting; actual desktop/mobile measurements are required.
+  - Outcome/scope: Clearer density and success-only result navigation; [bounded contract](execution/prompts/B52.md).
+  - Non-goals: No smaller touch targets, hidden critical assumptions, formula changes, new density control, route/dependency/D1 changes.
+  - Files: Shared reveal hook/helper; calculator UI components, App FIRE action, vivid-theme CSS, regression tests.
+  - Acceptance: Visible answer stays put; offscreen explicit answer clears topbar and receives focus; typing does not jump; 320/390/1440 both themes contained with 44px controls and 16px input text.
+  - Analytics: Existing consent only; no entered values, new financial telemetry or claimed retention evidence.
+  - Tests: Predicate, post-render mount, action/invalid/edit gates, focused UI and full suite; math goldens unchanged.
+  - Security/privacy/dependencies: B46; public synthetic examples only; no hosted financial write.
+  - Migration/rollback: None; revert scoped UI/helper together. Human estimate 3–5 hours; agent estimate 45–90 minutes plus actual verification, not a completion guarantee.
