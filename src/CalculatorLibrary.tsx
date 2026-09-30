@@ -320,12 +320,8 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">Decision toolkits</p>
         <h1 id="calculators-title">Start with the question, not the formula.</h1>
-        <p>Choose a planning toolkit or search for an exact calculator. Every estimate includes explanations, scenarios, visual context, and detailed schedules where they add value.</p>
-        <div className="calculator-library-stats" aria-label="Calculator library summary">
-          <span><strong>{calculatorToolkits.length}</strong> planning toolkits</span>
-          <span><strong>{seoCalculators.length + 1}</strong> public calculators</span>
-          <span><strong>0</strong> account required</span>
-        </div>
+        <p>Find a calculator for the decision in front of you. Choose a toolkit or search by name.</p>
+
       </div>
 
       <div className="calculator-search-panel">

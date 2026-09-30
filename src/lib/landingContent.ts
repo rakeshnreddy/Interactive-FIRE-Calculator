@@ -4,9 +4,9 @@ export const landingHero = {
   eyebrow: 'Free financial calculators for the US and India',
   title: 'Clear answers to your money questions.',
   body:
-    'Retirement, mortgages, loans, savings and tax: calculators that show their assumptions and explain what moves the answer. No account needed, no ads.',
+    'Work out retirement, debt and savings. Change the assumptions. See what moves the answer. No account needed, no ads.',
   primaryAction: 'See when you could retire',
-  secondaryAction: 'Browse all calculators'
+  secondaryAction: 'Find a calculator'
 };
 
 export const landingTrustPoints = [
