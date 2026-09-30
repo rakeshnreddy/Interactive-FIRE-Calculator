@@ -1,3 +1,4 @@
+import { EstimateCustomization } from './components/EstimateCustomization';
 import { AccountUserButton, SignInIntent, SignOutControl, SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
@@ -1941,25 +1942,16 @@ function App({ auth }: { auth: AuthState }) {
   const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
   const incomeStreams = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'income');
   const expensePhases = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'expense');
-  const ratesSummary = rateEntry && (rateEntry.r.trim() === '' || rateEntry.i.trim() === '')
-    ? 'Return and inflation not set yet'
-    : plan.ratePeriods.length === 1
-      ? `${(plan.ratePeriods[0].r * 100).toFixed(1)}% return, ${(plan.ratePeriods[0].i * 100).toFixed(1)}% inflation`
-      : plan.ratePeriods
-          .map(
-            (p, idx) =>
-              `P${idx + 1} (${p.duration}y): ${(p.r * 100).toFixed(1)}% return, ${(p.i * 100).toFixed(1)}% inflation`
-          )
-          .join('; ');
   const timingSummary = plan.withdrawalTiming === 'start' ? 'Start-year timing' : 'End-year timing';
-  const estateSummary = `${formatFireMoney(plan.desiredFinalValue)} estate`;
+  const estateSummary = plan.desiredFinalValue > 0 ? `${formatFireMoney(plan.desiredFinalValue)} legacy target` : 'No legacy target';
   const eventCount = plan.oneOffEvents.length;
   const eventsSummary = `${eventCount} event${eventCount === 1 ? '' : 's'}`;
   const incomeCount = incomeStreams.length;
   const incomeSummary = `${incomeCount} income stream${incomeCount === 1 ? '' : 's'}`;
   const expenseCount = expensePhases.length;
   const expenseSummary = `${expenseCount} expense phase${expenseCount === 1 ? '' : 's'}`;
-  const advancedSummaryDescription = `${ratesSummary} • ${timingSummary} • ${estateSummary} • ${eventsSummary} • ${incomeSummary} • ${expenseSummary}`;
+  const extraPeriodsSummary = plan.ratePeriods.slice(1).map((p, index) => `P${index + 2}: ${p.duration}y at ${(p.r * 100).toFixed(1)}% return / ${(p.i * 100).toFixed(1)}% inflation`).join('; ');
+  const advancedSummaryDescription = `${Math.max(0, plan.ratePeriods.length - 1)} extra market periods${extraPeriodsSummary ? ` (${extraPeriodsSummary})` : ''} • ${timingSummary} • ${estateSummary} • ${eventsSummary} • ${incomeSummary} • ${expenseSummary}`;
   const activeCalculator = calculatorModeCopy[calculatorMode];
   const annualExpenseLabel =
     calculatorMode === 'fire-number'
@@ -3699,6 +3691,7 @@ function App({ auth }: { auth: AuthState }) {
             <span className="pill">{duration} years</span>
           </div>
 
+          <EstimateCustomization groups={[{ id: 'fire-optional-refinements', label: 'Optional refinements', summary: advancedSummaryDescription }]} />
           <div className="form-grid quick-form core-fire-form">
             <div className="field full-field">
               <span className="field-label">
@@ -3873,7 +3866,7 @@ function App({ auth }: { auth: AuthState }) {
               <span>
                 Not sure? The homepage illustration uses <strong>{EXAMPLE_RATE_ENTRY.r}% return</strong> and{' '}
                 <strong>{EXAMPLE_RATE_ENTRY.i}% inflation</strong>. These are illustrative assumptions, not forecasts or historical averages.
-                {plan.ratePeriods.length > 1 ? ` These fields set period 1 of ${plan.ratePeriods.length}; edit every period in Advanced assumptions.` : ''}
+                {plan.ratePeriods.length > 1 ? ` These fields set period 1 of ${plan.ratePeriods.length}; edit every period in Optional refinements.` : ''}
               </span>
               <button type="button" className="secondary-button" onClick={applyExampleRates}>
                 Use example values
@@ -3933,10 +3926,10 @@ function App({ auth }: { auth: AuthState }) {
             </div>
           </div>
 
-          <details className="advanced-shell">
+          <details className="advanced-shell" id="fire-optional-refinements">
             <summary className="advanced-summary">
               <span>
-                <strong>Advanced assumptions</strong>
+                <strong>Optional refinements</strong>
                 <small>{advancedSummaryDescription}</small>
               </span>
               <SlidersHorizontal size={18} />
@@ -3947,6 +3940,7 @@ function App({ auth }: { auth: AuthState }) {
                   <div>
                     <p className="eyebrow">Rates</p>
                     <h2 id="period-title">Market periods</h2>
+                    <p>Use different rates over time. Period 1 shares the required rates above.</p>
                   </div>
                   <button className="secondary-button" onClick={addPeriod}>
                     Add
@@ -3989,7 +3983,8 @@ function App({ auth }: { auth: AuthState }) {
                         <input
                           type="number"
                           step="0.1"
-                          value={(period.r * 100).toFixed(1)}
+                          placeholder={index === 0 ? 'Not set above' : undefined}
+                          value={index === 0 ? returnPercentText : (period.r * 100).toFixed(1)}
                           onChange={(event) => {
                             markInputsChanged();
                             setPlan((current) => ({
@@ -4012,7 +4007,8 @@ function App({ auth }: { auth: AuthState }) {
                         <input
                           type="number"
                           step="0.1"
-                          value={(period.i * 100).toFixed(1)}
+                          placeholder={index === 0 ? 'Not set above' : undefined}
+                          value={index === 0 ? inflationPercentText : (period.i * 100).toFixed(1)}
                           onChange={(event) => {
                             markInputsChanged();
                             setPlan((current) => ({

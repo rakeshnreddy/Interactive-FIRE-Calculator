@@ -79,7 +79,8 @@ describe('B36: FIRE answers "when can I retire?"', () => {
     expect($('#fire-calc-blocker')?.textContent).toMatch(/Enter expected return and inflation/);
     expect($('.hero-result')).toBeNull();
     expect(document.body.textContent).not.toMatch(/No growth or inflation assumed/);
-    expect($('.advanced-summary')?.textContent).toMatch(/Return and inflation not set yet/);
+    expect($('.advanced-summary')?.textContent).toMatch(/Optional refinements/);
+    expect($('.advanced-summary')?.textContent).not.toMatch(/Return and inflation not set yet/);
     expect(issueFor('fire-return')).not.toMatch(/Enter an expected annual return/);
   });
 

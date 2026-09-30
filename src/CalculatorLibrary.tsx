@@ -1,3 +1,4 @@
+import { EstimateCustomization } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
@@ -690,8 +691,19 @@ function CalculatorDetail({
     setHistoricalHysaValue(null); setSaveMessage('Example restored. Optional additions are zero.');
   };
 
-  const standardInputs = calculator.inputs.filter((input) => !optionalCalculatorInputKeys.has(input.key));
-  const optionalInputs = calculator.inputs.filter((input) => optionalCalculatorInputKeys.has(input.key));
+  const mainExtraPayment = ['extra-mortgage-payment', 'mortgage-payoff'].includes(calculator.slug);
+  const isOptional = (key: string) => optionalCalculatorInputKeys.has(key) && !(mainExtraPayment && key === 'extraMonthlyPayment');
+  const standardInputs = calculator.inputs.filter((input) => !isOptional(input.key));
+  const housingKeys = new Set(['annualTaxes', 'annualInsurance', 'monthlyHoa']);
+  const optionalGroups = [
+    { key: 'payments', label: calculator.inputs.some((input) => input.key.startsWith('extra')) ? 'Pay extra' : 'Additional contributions', inputs: calculator.inputs.filter((input) => isOptional(input.key) && !housingKeys.has(input.key)) },
+    { key: 'housing', label: 'Include housing costs', inputs: calculator.inputs.filter((input) => housingKeys.has(input.key)) }
+  ].filter((group) => group.inputs.length > 0).map((group) => {
+    const active = group.inputs.filter((input) => Number(rawValues[input.key]) !== 0 && rawValues[input.key]?.trim() !== '');
+    const amounts = active.map((input) => `${input.label}: ${calculatorCurrency(calculator)} ${Number(rawValues[input.key]).toLocaleString()} / ${input.key === 'monthlyHoa' || input.key === 'extraMonthlyPayment' ? 'month' : 'year'}`).join('; ');
+    const summary = group.inputs.some((input) => validation.errors[input.key]) ? 'Check the highlighted options' : active.length ? `${active.length} active · ${amounts}` : 'None added · zero to skip';
+    return { ...group, id: `options-${calculator.slug}-${group.key}`, summary };
+  });
   const renderInput = (input: SeoCalculator['inputs'][number]) => {
     const inputId = `input-${calculator.slug}-${input.key}`;
     const helperId = input.helper ? `helper-${calculator.slug}-${input.key}` : undefined;
@@ -803,7 +815,6 @@ function CalculatorDetail({
         <p className="eyebrow">{toolkit.title} <RegionBadge calculator={calculator} /></p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
         <p className="calculator-scope-note">{calculator.description}</p>
-        <VariantChips calculator={calculator} onNavigate={onNavigate} />
         <a
           className="calculator-toolkit-backlink"
           href="/calculators"
@@ -823,29 +834,17 @@ function CalculatorDetail({
             </div>
             <button className="secondary-button" type="button" onClick={resetExample}>Reset to example</button>
           </div>
+          <EstimateCustomization groups={optionalGroups} />
+          {optionalGroups.some((group) => group.key === 'housing') ? <p className="calculator-cost-scope">Principal and interest are the base payment. Housing costs are excluded until entered below; extra payments reduce the loan separately.</p> : null}
           <div className="calculator-input-grid">
             {standardInputs.map(renderInput)}
           </div>
-          {optionalInputs.length > 0 ? (
-            <details className="calculator-options-shell">
-              <summary>
-                <span>
-                  <strong>
-                    {optionalInputs.some((input) => /Taxes|Insurance|Hoa/.test(input.key))
-                      ? 'Additional payments and housing costs'
-                      : optionalInputs.some((input) => input.key.startsWith('extra'))
-                        ? 'Additional payments'
-                        : 'Additional contributions'}
-                  </strong>
-                  <small>Optional. Leave at zero to skip.</small>
-                </span>
-                <ChevronDown size={17} />
-              </summary>
-              <div className="calculator-input-grid calculator-options-grid">
-                {optionalInputs.map(renderInput)}
-              </div>
+          {optionalGroups.map((group) => (
+            <details className="calculator-options-shell" id={group.id} key={group.id}>
+              <summary><span><strong>{group.label}</strong><small>{group.summary}</small></span><ChevronDown size={17} /></summary>
+              <div className="calculator-input-grid calculator-options-grid">{group.inputs.map(renderInput)}</div>
             </details>
-          ) : null}
+          ))}
           <CalculatorScenarioPanel
             disabled={!canUseResult}
             scenarios={scenarios}
@@ -914,6 +913,7 @@ function CalculatorDetail({
               );
             })}
           </div>
+          <VariantChips calculator={calculator} onNavigate={onNavigate} />
           {hasValidResult && studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} disabled={!canUseResult} />
           <p className="calculator-result-narrative">{result.narrative}</p>

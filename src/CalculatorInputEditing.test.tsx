@@ -95,3 +95,40 @@ describe('natural calculator editing and result provenance',()=>{
     const c=render('mortgage',[saved]);act(()=>button(c,'Load saved inputs').click());expect(state(c)).toBe('current');edit(c,'rate','');expect(state(c)).toBe('stale');expect(JSON.stringify(saved)).toBe(original);expect(save).not.toHaveBeenCalled();
   });
 });
+
+describe('discoverable model-specific options', () => {
+  it('offers separate mortgage payment and housing controls before the first financial input', () => {
+    const c = render();
+    const entry = c.querySelector('[aria-label="Customize this estimate"]')!;
+    expect(entry).toBeTruthy();
+    expect(entry.compareDocumentPosition(c.querySelector('[name="principal"]')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    for (const title of ['Pay extra', 'Include housing costs']) {
+      const action = entry.querySelector<HTMLButtonElement>(`[aria-label="${title}"]`)!;
+      expect(action).toBeTruthy();
+      act(() => action.click());
+      const target = c.querySelector<HTMLDetailsElement>(`#${action.getAttribute('aria-controls')}`)!;
+      expect(target.open).toBe(true);
+      expect(document.activeElement).toBe(target.querySelector('summary'));
+    }
+    expect(c.querySelector('[name="annualTaxes"]')?.closest('details')?.textContent).not.toContain('Extra monthly payment');
+    expect(c.querySelector('.calculator-input-panel')?.textContent).toMatch(/principal and interest.*housing costs.*excluded/i);
+  });
+  it('shows active amounts in the collapsed option summary and restores them from a browser draft', () => {
+    const c = render('mortgage', [], '', { ...auth, status: 'signed-out', isSignedIn: false, user: null } as AuthState);
+    edit(c, 'extraMonthlyPayment', '250'); edit(c, 'annualTaxes', '3600');
+    expect(c.querySelector('[name="extraMonthlyPayment"]')?.closest('details')?.querySelector('summary')?.textContent).toMatch(/1 active.*250.*month/i);
+    expect(c.querySelector('[name="annualTaxes"]')?.closest('details')?.querySelector('summary')?.textContent).toMatch(/1 active.*3,600.*year/i);
+    const restored = render('mortgage');
+    expect(restored.querySelector('[name="annualTaxes"]')?.closest('details')?.querySelector('summary')?.textContent).toMatch(/3,600/);
+  });
+  it.each(['extra-mortgage-payment', 'mortgage-payoff'])('keeps the main job extra payment visible for %s', (slug) => {
+    const c = render(slug);
+    expect(c.querySelector('[name="extraMonthlyPayment"]')?.closest('details')).toBeNull();
+  });
+  it('places other calculator presets after the primary answer', () => {
+    const c = render('mortgage');
+    const variants = c.querySelector('.calculator-variants');
+    expect(variants).toBeTruthy();
+    expect(c.querySelector('.calculator-result-metric-primary')!.compareDocumentPosition(variants!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+});
