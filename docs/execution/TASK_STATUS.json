@@ -904,15 +904,15 @@
       "id": "B55",
       "title": "Vehicle lease/buy net cost with explicit resale equity",
       "checkpoint": "C21",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B54"
       ],
       "prompt": "prompts/B55.md",
-      "submission": null,
+      "submission": "submissions/B55.md",
       "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "review": "reviews/C21.md",
       "blocked_reason": null
     }
   ],

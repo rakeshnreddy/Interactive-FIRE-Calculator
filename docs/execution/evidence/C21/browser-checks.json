@@ -1,0 +1,139 @@
+{
+  "interactive_source_sha": "dd18fd22fa1971579baeb579524be8674b88bb80",
+  "interactive_preview": "https://d48bb52f.interactive-fire-calculator.pages.dev",
+  "cases": [
+    {
+      "theme": "light",
+      "barColor": "rgb(11, 124, 108)",
+      "barWidth": 579.3671875,
+      "equity": "What the sale leaves youResale $14,000.00 \u2212 remaining loan $10,000.00 = equity $4,000.00Loan covered: $10,000.00 \u00b7 Equity left: $4,000.00 \u00b7 Shortfall: $0.00",
+      "focus": false,
+      "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+      "invalidGeometry": false,
+      "overflow": -15,
+      "resultBottom": 581.5625,
+      "resultTop": 452.734375,
+      "topbarBottom": 64,
+      "visual": "Net cost over 24 monthsSame currency and horizon. Bars start at zero; negative cost extends left.Buy: $11,000.00Lease: $8,400.00",
+      "width": 1440
+    },
+    {
+      "theme": "dark",
+      "barColor": "rgb(95, 230, 200)",
+      "barWidth": 579.3671875,
+      "equity": "What the sale leaves youResale $14,000.00 \u2212 remaining loan $10,000.00 = equity $4,000.00Loan covered: $10,000.00 \u00b7 Equity left: $4,000.00 \u00b7 Shortfall: $0.00",
+      "focus": false,
+      "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+      "invalidGeometry": false,
+      "overflow": -15,
+      "resultBottom": 561.0625,
+      "resultTop": 432.234375,
+      "topbarBottom": 64,
+      "visual": "Net cost over 24 monthsSame currency and horizon. Bars start at zero; negative cost extends left.Buy: $11,000.00Lease: $8,400.00",
+      "width": 1440
+    },
+    {
+      "theme": "light",
+      "barColor": "rgb(11, 124, 108)",
+      "barWidth": 295,
+      "equity": "What the sale leaves youResale $14,000.00 \u2212 remaining loan $10,000.00 = equity $4,000.00Loan covered: $10,000.00 \u00b7 Equity left: $4,000.00 \u00b7 Shortfall: $0.00",
+      "focus": true,
+      "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+      "invalidGeometry": false,
+      "overflow": -15,
+      "resultBottom": 394.6328125,
+      "resultTop": 280.8046875,
+      "topbarBottom": 64,
+      "visual": "Net cost over 24 monthsSame currency and horizon. Bars start at zero; negative cost extends left.Buy: $11,000.00Lease: $8,400.00",
+      "width": 390
+    },
+    {
+      "theme": "dark",
+      "barColor": "rgb(95, 230, 200)",
+      "barWidth": 295,
+      "equity": "What the sale leaves youResale $14,000.00 \u2212 remaining loan $10,000.00 = equity $4,000.00Loan covered: $10,000.00 \u00b7 Equity left: $4,000.00 \u00b7 Shortfall: $0.00",
+      "focus": false,
+      "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+      "invalidGeometry": false,
+      "overflow": -15,
+      "resultBottom": 814.6328125,
+      "resultTop": 700.8046875,
+      "topbarBottom": 64,
+      "visual": "Net cost over 24 monthsSame currency and horizon. Bars start at zero; negative cost extends left.Buy: $11,000.00Lease: $8,400.00",
+      "width": 390
+    },
+    {
+      "theme": "light",
+      "barColor": "rgb(11, 124, 108)",
+      "barWidth": 240,
+      "equity": "What the sale leaves youResale $14,000.00 \u2212 remaining loan $10,000.00 = equity $4,000.00Loan covered: $10,000.00 \u00b7 Equity left: $4,000.00 \u00b7 Shortfall: $0.00",
+      "focus": true,
+      "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+      "invalidGeometry": false,
+      "overflow": 0,
+      "resultBottom": 395.2265625,
+      "resultTop": 281.3984375,
+      "topbarBottom": 64,
+      "visual": "Net cost over 24 monthsSame currency and horizon. Bars start at zero; negative cost extends left.Buy: $11,000.00Lease: $8,400.00",
+      "width": 320
+    },
+    {
+      "theme": "dark",
+      "barColor": "rgb(95, 230, 200)",
+      "barWidth": 240,
+      "equity": "What the sale leaves youResale $14,000.00 \u2212 remaining loan $10,000.00 = equity $4,000.00Loan covered: $10,000.00 \u00b7 Equity left: $4,000.00 \u00b7 Shortfall: $0.00",
+      "focus": false,
+      "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+      "invalidGeometry": false,
+      "overflow": 0,
+      "resultBottom": 826.7265625,
+      "resultTop": 712.8984375,
+      "topbarBottom": 64,
+      "visual": "Net cost over 24 monthsSame currency and horizon. Bars start at zero; negative cost extends left.Buy: $11,000.00Lease: $8,400.00",
+      "width": 320
+    }
+  ],
+  "recovery": {
+    "unquotedGuard": true,
+    "beyond": "Comparison at 60 months\n\nYour terms\n\nBuying minus leasing net cost\n-$2,000.00\nBuying costs less over 60 months\nMonthly loan payment\n$416.67\n48 payments counted; stops at payoff\n\nNet cost accounts for resale and remaining debt. A lower monthly payment alone does not mean a cheaper choice. Your resale estimate can change the answer.\n\nNet cost over 60 months\nSame currency and horizon. Bars start at zero; negative cost extends left.\nBuy: $19,000.00\nLease: $21,000.00\nWhat the sale leaves you\nResale $6,000.00 \u2212 remaining loan $0.00 = equity $6,000.00\n\nLoan covered: $0.00 \u00b7 Equity left: $6,000.00 \u00b7 Shortfall: $0.00\n\nHow these costs add up\nExport comparison CSV\nCreate account to save",
+    "rawInvalid": {
+      "primary": null,
+      "value": "-"
+    },
+    "zero": "Comparison at 60 months\n\nYour terms\n\nBuying minus leasing net cost\n$4,000.00\nBuying costs more over 60 months\nMonthly loan payment\n$416.67\n48 payments counted; stops at payoff\n\nNet cost accounts for resale and remaining debt. A lower monthly payment alone does not mean a cheaper choice. Your resale estimate can change the answer.\n\nNet cost over 60 months\nSame currency and horizon. Bars start at zero; negative cost extends left.\nBuy: $25,000.00\nLease: $21,000.00\nWhat the sale leaves you\nResale $0.00 \u2212 remaining loan $0.00 = equity $0.00\n\nLoan covered: $0.00 \u00b7 Equity left: $0.00 \u00b7 Shortfall: $0.00\n\nHow these costs add up\nExport comparison CSV\nCreate account to save",
+    "long": {
+      "metricWidth": 266,
+      "overflow": 0,
+      "primary": "Buying minus leasing net cost-$999,999,996,000.00Buying costs less over 60 months"
+    },
+    "errors": []
+  },
+  "final_source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+  "final_preview": "https://c885ed62.interactive-fire-calculator.pages.dev",
+  "final_checks": {
+    "url": "https://c885ed62.interactive-fire-calculator.pages.dev/calculators/xirr",
+    "vehicle": [
+      {
+        "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+        "overflow": -15,
+        "radius": "6px",
+        "visualRadius": "6px",
+        "width": 1440
+      },
+      {
+        "headline": "Buying minus leasing net cost$2,600.00Buying costs more over 24 months",
+        "overflow": 0,
+        "radius": "6px",
+        "visualRadius": "6px",
+        "width": 320
+      }
+    ],
+    "dated": {
+      "headline": "Annualized dated return10.00%Annualized rate for the entered period \u00b7 365 actual days",
+      "overflow": 0,
+      "radius": "8px"
+    },
+    "errors": []
+  },
+  "difference": "Final changes only canonical radius tokens and eyebrow copy; no math, input or data-contract change. Final full suite and exact CI passed."
+}

@@ -1,0 +1,75 @@
+{
+  "candidate_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+  "artifacts": [
+    {
+      "path": "docs/execution/evidence/C21/raw/full-suite.log",
+      "sha256": "3754061aae986b3a72cd3f0f034be7682c4788c316a55a03c898d155f2a948aa",
+      "bytes": 7624,
+      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/finance-red.log",
+      "sha256": "27a834955320367c84d087d7f6e1c10b0d5e176292e59a6e974607bded891e30",
+      "bytes": 2468,
+      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/ui-red.log",
+      "sha256": "45cb1977ba91c38072e55aafd41065d5d25d91d2395fb1658bd4d10b47ef310e",
+      "bytes": 1772,
+      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/consumer-red.log",
+      "sha256": "ea86cfd983b57913a453252c131fedac1c7e1e47030f84fad05797e8546afed0",
+      "bytes": 2081,
+      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/browser-cases.json",
+      "sha256": "c1f363533c20efb234a1489e59c0ec9305edfdf6cac060780bf56b92ee748c65",
+      "bytes": 4071,
+      "source_sha": "dd18fd22fa1971579baeb579524be8674b88bb80",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/recovery.json",
+      "sha256": "ffd0d05bcbe41a693a016f0b3809484f7a4bb3a630b8cbbbe8bba860b5368e88",
+      "bytes": 1704,
+      "source_sha": "dd18fd22fa1971579baeb579524be8674b88bb80",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/final-checks.json",
+      "sha256": "bf52bafdde74c5ce4f0dabc71a3dff9262ab8eb71ad762e03416d3c9b3966a2f",
+      "bytes": 681,
+      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/desktop.png",
+      "sha256": "9119a45d3257bc27a1ced54c33784ef37c35cb9ad83d7f4c20050f5f327ce42d",
+      "bytes": 119736,
+      "source_sha": "dd18fd22fa1971579baeb579524be8674b88bb80",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/mobile.png",
+      "sha256": "7198d4e2012abb437db3986fa85a310ca16e0cbb6613849c6dec4b7f7e088cea",
+      "bytes": 39044,
+      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    },
+    {
+      "path": "docs/execution/evidence/C21/raw/public-smoke.log",
+      "sha256": "ec78b043a662637adfe0cdcaaede58f5cae4d3cd457fc4fc5b6e1836296a1656",
+      "bytes": 274,
+      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+    }
+  ]
+}

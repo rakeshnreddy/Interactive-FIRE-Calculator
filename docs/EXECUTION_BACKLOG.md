@@ -647,7 +647,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Security/privacy/dependencies: B56; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
   - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.
 
-- [ ] **B55 — Vehicle lease/buy net cost with explicit resale equity.**
+- [x] **B55 — Vehicle lease/buy net cost with explicit resale equity.**
   - User problem/evidence: reproduced omissions in the existing F-03 contract; [bounded scope](execution/prompts/B55.md).
   - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
   - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.
