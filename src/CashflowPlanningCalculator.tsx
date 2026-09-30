@@ -1,3 +1,6 @@
+import { useResultReveal } from './lib/resultReveal';
+import { CalculatorResultAction } from './components/CalculatorResultAction';
+import { EstimateCustomization, EstimateOptionGroup } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
@@ -34,11 +37,9 @@ import {
   type BudgetInputKey,
   type BudgetInputs,
   type BudgetProjection,
-  type EmergencyFundInputKey,
   type EmergencyFundInputs,
   type EmergencyFundProjection,
   type IncomeStability,
-  type NetWorthInputKey,
   type NetWorthInputs,
   type NetWorthProjection,
   type PlanningValidation
@@ -77,6 +78,7 @@ export function CashflowPlanningCalculator(props: Props) {
 }
 
 function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedResults }: Props) {
+  const { resultRef, revealResult } = useResultReveal();
   const initial = useMemo(() => restorePlanningState('net-worth', netWorthFormulaVersion, defaultNetWorthInputs), []);
   const [inputs, setInputs] = useState<NetWorthInputs>(initial?.inputs ?? defaultNetWorthInputs);
   const [currency, setCurrency] = useState<PlanningCurrencyCode>(initial?.currency ?? 'USD');
@@ -177,6 +179,7 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
       input={(
         <section className="calculator-input-panel" aria-labelledby="planning-input-title">
           <PanelHeading eyebrow="Balance sheet" title="Enter one dated snapshot" onReset={reset} />
+          <EstimateCustomization compact groups={[{ id: 'networth-valuation', label: 'Snapshot & valuations', summary: 'Use one date and ownership boundary' }, { id: 'estimate-display', label: 'Display only', summary: `${currency} · ${locale} · no FX conversion` }]} />
           <PlanningFieldset legend="Assets" note="Use current balances or defensible current values. Optional categories can be zero.">
             <PlanningMoneyGrid>
               <PlanningMoneyField error={projection.validation.errors.cashAndBank} fieldKey="cashAndBank" helper="Checking, savings, and cash equivalents available without selling an investment." label="Cash and bank accounts" onChange={(raw) => updateNumber(setInputs, 'cashAndBank', raw)} value={inputs.cashAndBank} />
@@ -196,12 +199,16 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
               <PlanningMoneyField error={projection.validation.errors.otherLiabilities} fieldKey="otherLiabilities" helper="Other amounts owed as of the same snapshot date." label="Other liabilities" onChange={(raw) => updateNumber(setInputs, 'otherLiabilities', raw)} value={inputs.otherLiabilities} />
             </PlanningMoneyGrid>
           </PlanningFieldset>
+          <EstimateOptionGroup id="networth-valuation" title="Snapshot & valuations" summary="One date, one household, current values">
+            <p>Use balances from the same date. For property, vehicles and other estimates, use a current defensible value and keep your valuation notes. The calculator does not retrieve prices or store a separate valuation date.</p>
+          </EstimateOptionGroup>
           <DisplayOptions currency={currency} locale={locale} onCurrency={setCurrency} onLocale={setLocale} />
+          <CalculatorResultAction disabled={!projection.validation.isValid} onReveal={revealResult} />
           <p className="cashflow-convention"><strong>Snapshot rule</strong><span>Every balance should describe the same household, ownership boundary, currency display, and point in time.</span></p>
         </section>
       )}
       result={(
-        <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
           <PanelHeading eyebrow="Current position" title={projection.netWorth < 0 ? 'Estimated net deficit' : 'Estimated net worth'} badges={['Snapshot']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
@@ -255,6 +262,7 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
 }
 
 function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedResults }: Props) {
+  const { resultRef, revealResult } = useResultReveal();
   const initial = useMemo(() => restorePlanningState('budget', budgetFormulaVersion, defaultBudgetInputs), []);
   const [inputs, setInputs] = useState<BudgetInputs>(initial?.inputs ?? defaultBudgetInputs);
   const [currency, setCurrency] = useState<PlanningCurrencyCode>(initial?.currency ?? 'USD');
@@ -344,6 +352,7 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
       input={(
         <section className="calculator-input-panel" aria-labelledby="planning-input-title">
           <PanelHeading eyebrow="Monthly plan" title="Map income and outgoings" onReset={reset} />
+          <EstimateCustomization compact groups={[{ id: 'budget-stress', label: 'Stress-test cashflow', summary: `${inputs.incomeShockPercent}% income loss · ${inputs.flexibleCutPercent}% trim` }, { id: 'budget-reference', label: 'Savings-rate reference', summary: `${inputs.targetSavingsRatePercent}% reference only` }, { id: 'estimate-display', label: 'Display only', summary: `${currency} · ${locale} · no FX conversion` }]} />
           <PlanningFieldset legend="Income" note="Use monthly take-home amounts after tax and payroll deductions.">
             <PlanningMoneyGrid>
               <PlanningMoneyField error={projection.validation.errors.takeHomePay} fieldKey="takeHomePay" helper="Regular household take-home pay available to spend or save each month." label="Take-home pay" onChange={(raw) => updateNumber(setInputs, 'takeHomePay', raw)} value={inputs.takeHomePay} />
@@ -365,22 +374,20 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
               <PlanningMoneyField error={projection.validation.errors.plannedSavings} fieldKey="plannedSavings" helper="Amount you intend to transfer to savings, investing, or extra debt payoff each month." label="Planned monthly saving" onChange={(raw) => updateNumber(setInputs, 'plannedSavings', raw)} value={inputs.plannedSavings} />
             </PlanningMoneyGrid>
           </PlanningFieldset>
-          <details className="compound-disclosure calculator-options-shell">
-            <summary><span><strong>Advanced comparisons</strong><small>Reference rate, income shock, flexible-spending trim, and display</small></span><ChevronDown size={17} /></summary>
-            <div className="compound-advanced-body">
-              <PlanningMoneyGrid>
-                <PlanningNumberField error={projection.validation.errors.targetSavingsRatePercent} fieldKey="targetSavingsRatePercent" helper="Optional reference only; it never changes your entered plan." label="Savings-rate reference" max={100} onChange={(raw) => updateNumber(setInputs, 'targetSavingsRatePercent', raw)} suffix="%" value={inputs.targetSavingsRatePercent} />
-                <PlanningNumberField error={projection.validation.errors.incomeShockPercent} fieldKey="incomeShockPercent" helper="Reduces income in the stress comparison while spending stays unchanged." label="Income-shock comparison" max={100} onChange={(raw) => updateNumber(setInputs, 'incomeShockPercent', raw)} suffix="%" value={inputs.incomeShockPercent} />
-                <PlanningNumberField error={projection.validation.errors.flexibleCutPercent} fieldKey="flexibleCutPercent" helper="Reduces only lifestyle, subscriptions, and other flexible spending." label="Flexible-spending trim" max={100} onChange={(raw) => updateNumber(setInputs, 'flexibleCutPercent', raw)} suffix="%" value={inputs.flexibleCutPercent} />
-              </PlanningMoneyGrid>
-              <DisplayFields currency={currency} locale={locale} onCurrency={setCurrency} onLocale={setLocale} />
-            </div>
-          </details>
+          <EstimateOptionGroup id="budget-stress" title="Stress-test cashflow" summary={`${inputs.incomeShockPercent}% income loss · ${inputs.flexibleCutPercent}% trim`}>
+            <PlanningMoneyGrid><PlanningNumberField error={projection.validation.errors.incomeShockPercent} fieldKey="incomeShockPercent" helper="Reduces income in the stress comparison while spending stays unchanged." label="Income-shock comparison" max={100} onChange={(raw) => updateNumber(setInputs, 'incomeShockPercent', raw)} suffix="%" value={inputs.incomeShockPercent} />
+<PlanningNumberField error={projection.validation.errors.flexibleCutPercent} fieldKey="flexibleCutPercent" helper="Reduces only lifestyle, subscriptions, and other flexible spending." label="Flexible-spending trim" max={100} onChange={(raw) => updateNumber(setInputs, 'flexibleCutPercent', raw)} suffix="%" value={inputs.flexibleCutPercent} /></PlanningMoneyGrid>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="budget-reference" title="Savings-rate reference" summary={`${inputs.targetSavingsRatePercent}% reference · does not change your plan`}>
+            <PlanningMoneyGrid><PlanningNumberField error={projection.validation.errors.targetSavingsRatePercent} fieldKey="targetSavingsRatePercent" helper="Optional reference only; it never changes your entered plan." label="Savings-rate reference" max={100} onChange={(raw) => updateNumber(setInputs, 'targetSavingsRatePercent', raw)} suffix="%" value={inputs.targetSavingsRatePercent} /></PlanningMoneyGrid>
+          </EstimateOptionGroup>
+          <DisplayOptions currency={currency} locale={locale} onCurrency={setCurrency} onLocale={setLocale} />
+          <CalculatorResultAction disabled={!projection.validation.isValid} onReveal={revealResult} />
           <p className="cashflow-convention"><strong>Monthly convention</strong><span>The same monthly amounts repeat for the 12-month pace. No inflation, tax estimate, or transaction timing is inferred.</span></p>
         </section>
       )}
       result={(
-        <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
           <PanelHeading eyebrow="Cashflow result" title={projection.monthlySurplus < 0 ? 'Monthly deficit' : 'Monthly surplus'} badges={['Before savings allocation']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
@@ -443,6 +450,7 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
 }
 
 function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, savedResults }: Props) {
+  const { resultRef, revealResult } = useResultReveal();
   const initial = useMemo(() => restoreEmergencyState(), []);
   const [inputs, setInputs] = useState<EmergencyFundInputs>(initial?.inputs ?? defaultEmergencyFundInputs);
   const [currency, setCurrency] = useState<PlanningCurrencyCode>(initial?.currency ?? 'USD');
@@ -539,6 +547,7 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
       input={(
         <section className="calculator-input-panel" aria-labelledby="planning-input-title">
           <PanelHeading eyebrow="Reserve plan" title="Set spending, liquidity, and coverage" onReset={reset} />
+          <EstimateCustomization compact groups={[{ id: 'emergency-buffer', label: 'Shock buffer', summary: `${money(inputs.oneTimeBuffer)} one-time buffer` }, { id: 'emergency-risk', label: 'Risk context', summary: `${inputs.incomeStability} income · reference only` }, { id: 'estimate-display', label: 'Display only', summary: `${currency} · ${locale} · no FX conversion` }]} />
           <PlanningFieldset legend="Essential spending and coverage" note="Use the monthly costs that would continue during an income interruption.">
             <PlanningMoneyGrid>
               <PlanningMoneyField error={projection.validation.errors.monthlyEssentials} fieldKey="monthlyEssentials" helper="Housing, basic food, utilities, transport, insurance, minimum debt payments, and essential care." label="Essential monthly spending" onChange={(raw) => updateNumber(setInputs, 'monthlyEssentials', raw)} value={inputs.monthlyEssentials} />
@@ -554,23 +563,19 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
               <PlanningMoneyField error={projection.validation.errors.accessibleInvestments} fieldKey="accessibleInvestments" helper="Non-retirement investments you would actually use. Market-value and sale-timing risk remain." label="Accessible investments" onChange={(raw) => updateNumber(setInputs, 'accessibleInvestments', raw)} value={inputs.accessibleInvestments} />
             </PlanningMoneyGrid>
           </PlanningFieldset>
-          <details className="compound-disclosure calculator-options-shell">
-            <summary><span><strong>Advanced risk context</strong><small>One-time shock buffer, income pattern, household support, and display</small></span><ChevronDown size={17} /></summary>
-            <div className="compound-advanced-body">
-              <PlanningMoneyGrid>
-                <PlanningMoneyField error={projection.validation.errors.oneTimeBuffer} fieldKey="oneTimeBuffer" helper="Optional separate amount for a likely deductible, repair, travel, or other one-time shock." label="One-time shock buffer" onChange={(raw) => updateNumber(setInputs, 'oneTimeBuffer', raw)} value={inputs.oneTimeBuffer} />
-                <PlanningSelectField fieldKey="incomeStability" helper="Used only in the labeled risk-reference comparison; it does not overwrite your selected months." label="Income pattern" onChange={(value) => setInputs((current) => ({ ...current, incomeStability: value as IncomeStability }))} options={[['Stable', 'stable'], ['Variable', 'variable'], ['Currently uncertain', 'uncertain']]} value={inputs.incomeStability} />
-                <PlanningSelectField fieldKey="householdEarners" helper="Two-plus earners can diversify income interruption risk; actual income dependence may differ." label="Household income earners" onChange={(value) => setInputs((current) => ({ ...current, householdEarners: Number(value) as 1 | 2 }))} options={[['One', 1], ['Two or more', 2]]} value={inputs.householdEarners} />
-                <PlanningNumberField error={projection.validation.errors.dependents} fieldKey="dependents" helper="People whose essential costs rely materially on this household income." label="Financial dependents" max={20} onChange={(raw) => updateNumber(setInputs, 'dependents', raw)} step={1} value={inputs.dependents} />
-              </PlanningMoneyGrid>
-              <DisplayFields currency={currency} locale={locale} onCurrency={setCurrency} onLocale={setLocale} />
-            </div>
-          </details>
+          <EstimateOptionGroup id="emergency-buffer" title="Shock buffer" summary={`${money(inputs.oneTimeBuffer)} one-time buffer · adds to selected coverage`}>
+            <PlanningMoneyGrid><PlanningMoneyField error={projection.validation.errors.oneTimeBuffer} fieldKey="oneTimeBuffer" helper="Optional separate amount for a likely deductible, repair, travel, or other one-time shock." label="One-time shock buffer" onChange={(raw) => updateNumber(setInputs, 'oneTimeBuffer', raw)} value={inputs.oneTimeBuffer} /></PlanningMoneyGrid>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="emergency-risk" title="Risk context" summary={`${inputs.incomeStability} income · ${inputs.householdEarners === 2 ? '2+ earners' : '1 earner'} · ${inputs.dependents} dependents · reference only`}>
+            <PlanningMoneyGrid><PlanningSelectField fieldKey="incomeStability" helper="Used only in the labeled risk-reference comparison; it does not overwrite your selected months." label="Income pattern" onChange={(value) => setInputs((current) => ({ ...current, incomeStability: value as IncomeStability }))} options={[['Stable', 'stable'], ['Variable', 'variable'], ['Currently uncertain', 'uncertain']]} value={inputs.incomeStability} /><PlanningSelectField fieldKey="householdEarners" helper="Two-plus earners can diversify income interruption risk; actual income dependence may differ." label="Household income earners" onChange={(value) => setInputs((current) => ({ ...current, householdEarners: Number(value) as 1 | 2 }))} options={[['One', 1], ['Two or more', 2]]} value={inputs.householdEarners} /><PlanningNumberField error={projection.validation.errors.dependents} fieldKey="dependents" helper="People whose essential costs rely materially on this household income." label="Financial dependents" max={20} onChange={(raw) => updateNumber(setInputs, 'dependents', raw)} step={1} value={inputs.dependents} /></PlanningMoneyGrid>
+          </EstimateOptionGroup>
+          <DisplayOptions currency={currency} locale={locale} onCurrency={setCurrency} onLocale={setLocale} />
+          <CalculatorResultAction disabled={!projection.validation.isValid} onReveal={revealResult} />
           <p className="cashflow-convention"><strong>Funding rule</strong><span>Target = essential monthly spending × selected months + one-time buffer. Current reserve is the sum of the four entered liquidity tiers.</span></p>
         </section>
       )}
       result={(
-        <section className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel compound-result-panel" aria-labelledby="planning-result-title">
           <PanelHeading eyebrow="Reserve target" title="Emergency fund target" badges={[`${inputs.targetMonths} months`, projection.gap <= 0 ? 'Fully funded' : 'Funding needed']} />
           {!projection.validation.isValid ? <ValidationSummary validation={projection.validation} /> : (
             <>
@@ -752,8 +757,8 @@ function PlanningSelectField({ fieldKey, helper, label, onChange, options, value
 
 function DisplayOptions({ currency, locale, onCurrency, onLocale }: { currency: PlanningCurrencyCode; locale: PlanningLocaleCode; onCurrency: (value: PlanningCurrencyCode) => void; onLocale: (value: PlanningLocaleCode) => void }) {
   return (
-    <details className="compound-disclosure calculator-options-shell">
-      <summary><span><strong>Display options</strong><small>Currency symbol and grouping style; no FX conversion</small></span><ChevronDown size={17} /></summary>
+    <details id="estimate-display" className="compound-disclosure calculator-options-shell">
+      <summary><span><strong>Display only</strong><small>{currency} · {locale} · no FX conversion</small></span><ChevronDown size={17} /></summary>
       <div className="compound-advanced-body"><DisplayFields currency={currency} locale={locale} onCurrency={onCurrency} onLocale={onLocale} /></div>
     </details>
   );

@@ -1,3 +1,5 @@
+import { useResultReveal } from './lib/resultReveal';
+import { EstimateCustomization } from './components/EstimateCustomization';
 import { AccountUserButton, SignInIntent, SignOutControl, SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
@@ -7,7 +9,6 @@ import {
   ChevronDown,
   ChevronRight,
   CircleDollarSign,
-  CircleGauge,
   ClipboardList,
   Download,
   FolderKanban,
@@ -15,7 +16,6 @@ import {
   Info,
   Landmark,
   LayoutDashboard,
-  Lightbulb,
   LineChart as LineChartIcon,
   LockKeyhole,
   LogIn,
@@ -53,42 +53,32 @@ import type {
   PlanningSnapshot
 } from './PlanningWorkspace';
 import {
-  annualSimulation,
   calculateFirePlan,
   formatMoney,
   formatPercent,
   totalDuration,
   type FirePlanResult,
   type PlanInput,
-  type PlanWarningCode,
   type RatePeriod,
   type RecurringCashFlow,
   type SimulationResult,
   type WithdrawalTiming,
   type YearResult
 } from './lib/fire';
-import { buildCalculatorFollowUp } from './lib/calculatorFollowUps';
+
 import {
   buildFinancialInsights,
-  type FinancialInsight,
   type InsightPriority
 } from './lib/insights';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
 import { applyRouteMetadata } from './lib/routeMetadata';
 import {
-  allTransactionAccountFilter,
-  allTransactionCategoryFilter,
   buildTransactionCashflowRollup,
   emptyTransactionFilters,
   filterTransactions,
   getTransactionCategoryOptions,
-  normalizeTransactionCategoryInput,
-  transactionCategoryLabel,
-  uncategorizedTransactionCategoryFilter,
-  unlinkedTransactionAccountFilter,
   type TransactionCashflowRollup,
-  type TransactionFilters,
-  type TransactionType
+  type TransactionFilters
 } from './lib/transactionAnalytics';
 import { findSeoCalculator, seoCalculators } from './lib/seoCalculators';
 import { estimateRetirementAge, fitRatePeriods, projectPortfolioAtAge, type AccumulationResult } from './lib/fireAccumulation';
@@ -97,17 +87,15 @@ import { configureAnalytics, flushAnalytics, track } from './lib/analyticsClient
 import { formatCompactMoney } from './lib/money';
 import { HERO_FIRE_FIXTURE } from './lib/heroExample';
 import { landingFaq, landingHero, landingTrustPoints } from './lib/landingContent';
-import { calculatorToolkits, type CalculatorToolkitIcon } from './lib/calculatorToolkits';
 import { FireRetirementEstimate, fireEstimateHeadline } from './components/FireRetirementEstimate';
 import { ReportsPanel } from './reports/ReportsPanel';
 import { PrivacyControlsPanel } from './settings/PrivacyControlsPanel';
 import { deletionFailure, exportFailure, summarizeDeletion, type PrivacyStatus } from './settings/privacyOutcome';
 export { PrivacyControlsPanel };
-import { buildReportScope, type ReportScope } from './reports/reportScope';
+import { buildReportScope } from './reports/reportScope';
 export { ReportsPanel as InsightsPanel };
 import {
   activeNavigationPath,
-  buildPlanDeepLink,
   parsePlanDeepLink,
   resolvePlansRouteAction,
   primaryNavigationFor,
@@ -116,11 +104,9 @@ import {
   type AppRoute
 } from './lib/navigation';
 import type { AuthState } from './auth';
-import { calculatePlanReviewDueStatus, loadDuePlanReviews, type DueReviewItem } from './lib/planReviews';
+import { loadDuePlanReviews, type DueReviewItem } from './lib/planReviews';
 import {
   ACCOUNT_DATA_DELETE_CONFIRMATION,
-  accountTypeLabel,
-  accountTypeOptions,
   addFinancialAccountBalanceRecord,
   archiveFinancialAccountRecord,
   archiveGoalRecord,
@@ -129,7 +115,6 @@ import {
   buildBalanceDraftMap,
   buildGoalUpdateDraftMap,
   buildTransactionDraftMap,
-  calculatorDestinationLabel,
   calculatorSaveMessage,
   clearLocalDrafts,
   createAccountPlan,
@@ -148,26 +133,14 @@ import {
   emptyTransactionSummary,
   formatAccountMetric,
   formatCurrencyBreakdown,
-  formatGoalPercent,
   formatTransactionAmount,
-  goalDeadlineLabel,
-  goalStatusLabel,
-  goalStatusOptions,
   goalToUpdateDraft,
-  goalTypeLabel,
-  goalTypeOptions,
-  isAccountCategory,
   isAppSnapshot,
   isBalanceStale,
-  isCalculatorConversionRoute,
   isFinancialAccountType,
   isGoalStatus,
   isGoalType,
-  isNumberRecord,
   isRecord,
-  isSavedCalculatorCreatedEntityType,
-  isSavedCalculatorDestinationType,
-  isSavedMetricValueType,
   isTransactionType,
   loadAccountDataExport,
   loadAccountPlans,
@@ -176,76 +149,42 @@ import {
   loadGoals,
   loadSavedCalculatorResults,
   loadTransactions,
-  pickString,
   PlanRequestError,
   planErrorMessage,
   profileToDraft,
-  readFinancialAccountResponse,
-  readGoalResponse,
-  readProfileResponse,
-  readSavedPlanResponse,
   readSavedPlans,
-  readTransactionResponse,
-  SAVED_PLANS_KEY,
   summarizeAccountList,
   summarizeGoalList,
   summarizeTransactionList,
-  toAccountBalance,
-  toAccountProfile,
-  toAccountSummary,
-  toCalculatorCreatedEntity,
   toFinancialAccount,
   toGoal,
-  toGoalSummary,
-  toSavedCalculatorMetric,
-  toSavedCalculatorResult,
-  toSavedCalculatorResultSnapshot,
-  toSavedPlan,
-  toTransaction,
-  toTransactionAccount,
-  toTransactionSummary,
-  transactionAmountClass,
   transactionToDraft,
-  transactionTypeLabel,
-  transactionTypeOptions,
   updateAccountPlan,
   updateAccountProfile,
   updateGoalRecord,
   updateTransactionRecord,
   writeSavedPlans,
-  type AccountCategory,
   type AccountDraft,
   type AccountProfile,
   type AccountProfileDraft,
-  type AccountProfileUpdate,
   type AccountSummary,
   type BalanceDraft,
   type CalculatorSaveApiResponse,
-  type CurrencyAccountSummary,
   type FinancialAccount,
-  type FinancialAccountType,
   type Goal,
   type GoalDraft,
   type GoalStatus,
   type GoalSummary,
   type GoalType,
   type GoalUpdateDraft,
-  type SavedCalculatorCreatedEntityType,
-  type SavedCalculatorDestinationType,
-  type SavedCalculatorMetric,
   type SavedCalculatorResult,
-  type SavedCalculatorResultSnapshot,
   type Transaction,
   type TransactionDraft,
   type TransactionSummary
 } from './lib/api';
 import {
   formatCents,
-  formatMonthLabel,
-  formatSavedCalculatorMetric,
-  formatSignedCents,
   formatSignedPercent,
-  formatStoredCurrency,
   moneyInputToCents,
   numericValue,
   todayInputDate
@@ -253,32 +192,19 @@ import {
 import {
   buildProjectionCsv,
   downloadCsv,
-  downloadJson,
-  escapeCsvCell
+  downloadJson
 } from './lib/csv';
 import {
-  averageRate,
-  engineWarnings,
-  ENGINE_WARNING_TITLES,
   firstNegativeYear,
-  humanizeWarningTitle,
-  normalizeWarning,
   planWarnings,
-  shouldSuppressHorizonDepletion,
   stressTestCurrentPortfolio,
   type WarningNotice
 } from './lib/warnings';
-import { Metric } from './components/Metric';
+
 import { InfoTip } from './components/InfoTip';
-import { Field, fieldSlugify } from './components/Field';
+import { Field } from './components/Field';
 import { YearByYearTable } from './components/YearByYearTable';
 
-const BalanceImportPanel = lazy(() =>
-  import('./BalanceImportPanel').then((module) => ({ default: module.BalanceImportPanel }))
-);
-const TransactionImportPanel = lazy(() =>
-  import('./TransactionImportPanel').then((module) => ({ default: module.TransactionImportPanel }))
-);
 const PlatformPage = lazy(() =>
   import('./workspace/WorkspacePanels').then((module) => ({ default: module.PlatformPage }))
 );
@@ -356,15 +282,6 @@ const navigationIconByPath: Record<string, typeof Calculator> = {
   '/settings': Settings,
   '/transactions': ClipboardList
 };
-
-const popularCalculatorLinks: Array<{ label: string; path: AppRoute }> = [
-  { label: 'Mortgage', path: '/calculators/mortgage' },
-  { label: 'EMI', path: '/calculators/emi' },
-  { label: 'SIP', path: '/calculators/sip' },
-  { label: 'Debt payoff', path: '/calculators/debt-payoff' },
-  { label: 'Compound interest', path: '/calculators/compound-interest' },
-  { label: 'FIRE', path: '/calculators/fire' }
-];
 
 const calculatorPanels: Array<{ id: CalculatorPanel; label: string; icon: typeof Calculator }> = [
   { id: 'planner', label: 'Inputs', icon: Calculator },
@@ -656,55 +573,9 @@ export const landingSteps = [
 ];
 
 export const usefulCalculatorPaths = [
-  {
-    title: 'Buying a home?',
-    action: 'Explore borrowing costs',
-    body: 'Estimate monthly payments and total interest over time.',
-    route: '/calculators/mortgage' as AppRoute,
-    icon: CircleDollarSign
-  },
-  {
-    title: 'Growing your savings?',
-    action: 'Explore compound growth',
-    body: 'See how regular contributions compound over time.',
-    route: '/calculators/compound-interest' as AppRoute,
-    icon: TrendingUp
-  },
-  {
-    title: 'Long-term independence?',
-    action: 'Explore financial independence',
-    body: 'Model portfolio needs and sustainable retirement withdrawals.',
-    route: '/calculators/fire' as AppRoute,
-    icon: Target
-  }
-];
-
-const calculatorModules = [
-  {
-    title: 'FIRE Calculator',
-    body: 'Estimate a retirement portfolio target or annual withdrawal from a portfolio.',
-    status: 'Ready',
-    route: '/calculators/fire' as AppRoute,
-    icon: Calculator
-  },
-  {
-    title: 'Emergency Fund',
-    body: 'Size cash reserves from monthly spending, income stability, and dependents.',
-    status: 'Planned',
-    icon: ShieldCheck
-  },
-  {
-    title: 'Debt Payoff',
-    body: 'Compare avalanche and snowball payoff schedules across balances and APRs.',
-    status: 'Planned',
-    icon: ClipboardList
-  },
-  {
-    title: 'Savings Goal',
-    body: 'Back into monthly savings for a home, education, travel, or family milestone.',
-    status: 'Planned',
-    icon: Target
-  }
+  { title: 'When could I retire?', action: 'Plan retirement', body: 'Test your spending, savings and timeline.', route: '/calculators/fire' as AppRoute, icon: Target },
+  { title: 'How soon can I be debt-free?', action: 'Pay down debt', body: 'See what paying a little extra changes.', route: '/calculators/debt-payoff' as AppRoute, icon: CircleDollarSign },
+  { title: 'What should I save each month?', action: 'Reach a savings goal', body: 'Turn an amount and a deadline into a plan.', route: '/calculators/savings-goal' as AppRoute, icon: TrendingUp }
 ];
 
 export const platformPages: Record<
@@ -1055,17 +926,6 @@ function DesktopNavigation({
   );
 }
 
-const landingToolkitIcons: Record<CalculatorToolkitIcon, typeof Calculator> = {
-  banknote: Banknote,
-  chart: BarChart3,
-  home: Home,
-  landmark: Landmark,
-  receipt: Receipt,
-  shield: ShieldCheck,
-  target: Target,
-  wallet: Wallet
-};
-
 export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
   const link = (route: AppRoute | string) => (event: ReactMouseEvent<HTMLAnchorElement>) => handleNavigationAnchorClick(event, route as AppRoute, onNavigate);
   return (
@@ -1086,61 +946,21 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
                 {landingHero.secondaryAction}
               </a>
             </div>
-            <nav className="landing-popular-paths" aria-label="Popular calculators">
-              <span>Popular starts</span>
-              {popularCalculatorLinks.map(({ path, label }) => (
-                <a key={path} href={path} onClick={link(path)}>
-                  {label}
-                  <ChevronRight size={14} />
-                </a>
-              ))}
-            </nav>
+
           </div>
 
+          <nav className="landing-decision-paths" aria-label="Choose a planning path">
+            <p className="eyebrow">What are you trying to work out?</p>
+            {usefulCalculatorPaths.map((pathItem) => {
+              const Icon = pathItem.icon;
+              return <a key={pathItem.route} href={pathItem.route} onClick={link(pathItem.route)}>
+                <Icon size={20} aria-hidden="true" />
+                <span><strong>{pathItem.action}</strong><small>{pathItem.title}</small></span>
+                <ArrowRight size={16} aria-hidden="true" />
+              </a>;
+            })}
+          </nav>
           <HeroFireExample />
-        </div>
-      </section>
-
-      <section className="landing-path-strip" aria-label="Choose a planning path">
-        {usefulCalculatorPaths.map((pathItem) => {
-          const Icon = pathItem.icon;
-          return (
-            <a key={pathItem.route} href={pathItem.route} onClick={link(pathItem.route)}>
-              <Icon size={22} />
-              <span>
-                <small>{pathItem.title}</small>
-                <strong>{pathItem.action}</strong>
-              </span>
-              <ArrowRight size={18} />
-            </a>
-          );
-        })}
-      </section>
-
-      <section className="landing-toolkits" aria-labelledby="toolkits-title">
-        <header>
-          <p className="eyebrow">Find a calculator by question</p>
-          <h2 id="toolkits-title">What are you trying to work out?</h2>
-          <p>{seoCalculators.length + 1} calculators, grouped by the decision you are making.</p>
-        </header>
-        <div className="landing-toolkit-grid">
-          {calculatorToolkits.map((toolkit) => {
-            const Icon = landingToolkitIcons[toolkit.icon];
-            const route = `/calculators#toolkit-${toolkit.id}`;
-            return (
-              <a key={toolkit.id} className="landing-toolkit-card" href={route} onClick={link(route)}>
-                <span className="feature-icon">
-                  <Icon size={20} />
-                </span>
-                <span className="landing-toolkit-text">
-                  <small>{toolkit.prompt}</small>
-                  <strong>{toolkit.title}</strong>
-                  <em>{toolkit.calculators.length} calculators</em>
-                </span>
-                <ArrowRight size={16} />
-              </a>
-            );
-          })}
         </div>
       </section>
 
@@ -1148,7 +968,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
         <header>
           <p className="eyebrow">How it works</p>
           <h2 id="capabilities-title">Start with a question. Leave with a clearer plan.</h2>
-          <p>Each tool helps you test assumptions, inspect the math, and understand what changes the outcome.</p>
+          <p>Calculate with your numbers. Compare a change. Save the decision when you want to revisit it.</p>
         </header>
 
         <div className="landing-feature-list">
@@ -1245,50 +1065,6 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
   );
 }
 
-function CalculatorsPage({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
-  return (
-    <section className="route-shell" aria-labelledby="calculators-title">
-      <div className="route-heading">
-        <p className="eyebrow">Calculators</p>
-        <h1 id="calculators-title">Financial calculators</h1>
-        <p>
-          Explore task-focused financial calculators designed to help you plan savings, debt payoff,
-          home purchases, and retirement.
-        </p>
-      </div>
-
-      <div className="module-grid">
-        {calculatorModules.map((module) => {
-          const Icon = module.icon;
-          return (
-            <article className="module-card" key={module.title}>
-              <span className="feature-icon">
-                <Icon size={20} />
-              </span>
-              <div>
-                <span className="pill">{module.status}</span>
-                <strong>{module.title}</strong>
-                <small>{module.body}</small>
-              </div>
-              {module.route ? (
-                <button
-                  className="secondary-button icon-text-button"
-                  onClick={() => onNavigate(module.route)}
-                >
-                  Open
-                  <ChevronRight size={16} />
-                </button>
-              ) : (
-                <span className="module-soon">Future module</span>
-              )}
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
 function TopbarAuthActions({
   auth,
   onNavigate
@@ -1331,14 +1107,14 @@ function TopbarAuthActions({
         </AuthActionButton>
       )}
       {auth.status === 'loading' ? (
-        <button className="primary-button topbar-primary" disabled>
+        <button className="secondary-button topbar-link" disabled>
           Create account
         </button>
       ) : (
         <AuthActionButton
           auth={auth}
           kind="sign-up"
-          className="primary-button topbar-primary"
+          className="secondary-button topbar-link"
           onUnavailable={() => onNavigate('/dashboard')}
         >
           Create account
@@ -1349,6 +1125,7 @@ function TopbarAuthActions({
 }
 
 function App({ auth }: { auth: AuthState }) {
+  const { resultRef, revealResult } = useResultReveal<HTMLDivElement>();
   const [route, setRoute] = useState<AppRoute>(readRoute);
   const mainRef = useRef<HTMLElement>(null);
   const previousRouteRef = useRef<AppRoute>(route);
@@ -2088,25 +1865,16 @@ function App({ auth }: { auth: AuthState }) {
   const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
   const incomeStreams = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'income');
   const expensePhases = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'expense');
-  const ratesSummary = rateEntry && (rateEntry.r.trim() === '' || rateEntry.i.trim() === '')
-    ? 'Return and inflation not set yet'
-    : plan.ratePeriods.length === 1
-      ? `${(plan.ratePeriods[0].r * 100).toFixed(1)}% return, ${(plan.ratePeriods[0].i * 100).toFixed(1)}% inflation`
-      : plan.ratePeriods
-          .map(
-            (p, idx) =>
-              `P${idx + 1} (${p.duration}y): ${(p.r * 100).toFixed(1)}% return, ${(p.i * 100).toFixed(1)}% inflation`
-          )
-          .join('; ');
   const timingSummary = plan.withdrawalTiming === 'start' ? 'Start-year timing' : 'End-year timing';
-  const estateSummary = `${formatFireMoney(plan.desiredFinalValue)} estate`;
+  const estateSummary = plan.desiredFinalValue > 0 ? `${formatFireMoney(plan.desiredFinalValue)} legacy target` : 'No legacy target';
   const eventCount = plan.oneOffEvents.length;
   const eventsSummary = `${eventCount} event${eventCount === 1 ? '' : 's'}`;
   const incomeCount = incomeStreams.length;
   const incomeSummary = `${incomeCount} income stream${incomeCount === 1 ? '' : 's'}`;
   const expenseCount = expensePhases.length;
   const expenseSummary = `${expenseCount} expense phase${expenseCount === 1 ? '' : 's'}`;
-  const advancedSummaryDescription = `${ratesSummary} • ${timingSummary} • ${estateSummary} • ${eventsSummary} • ${incomeSummary} • ${expenseSummary}`;
+  const extraPeriodsSummary = plan.ratePeriods.slice(1).map((p, index) => `P${index + 2}: ${p.duration}y at ${(p.r * 100).toFixed(1)}% return / ${(p.i * 100).toFixed(1)}% inflation`).join('; ');
+  const advancedSummaryDescription = `${Math.max(0, plan.ratePeriods.length - 1)} extra market periods${extraPeriodsSummary ? ` (${extraPeriodsSummary})` : ''} • ${timingSummary} • ${estateSummary} • ${eventsSummary} • ${incomeSummary} • ${expenseSummary}`;
   const activeCalculator = calculatorModeCopy[calculatorMode];
   const annualExpenseLabel =
     calculatorMode === 'fire-number'
@@ -2337,6 +2105,7 @@ function App({ auth }: { auth: AuthState }) {
     setIsStale(false);
     setHasCalculated(true);
     setCalculatorPanel('planner');
+    revealResult();
   };
 
   const setTimelineValue = (key: keyof TimelineInput) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -3846,6 +3615,7 @@ function App({ auth }: { auth: AuthState }) {
             <span className="pill">{duration} years</span>
           </div>
 
+          <EstimateCustomization groups={[{ id: 'fire-optional-refinements', label: 'Optional refinements', summary: advancedSummaryDescription }]} />
           <div className="form-grid quick-form core-fire-form">
             <div className="field full-field">
               <span className="field-label">
@@ -4020,7 +3790,7 @@ function App({ auth }: { auth: AuthState }) {
               <span>
                 Not sure? The homepage illustration uses <strong>{EXAMPLE_RATE_ENTRY.r}% return</strong> and{' '}
                 <strong>{EXAMPLE_RATE_ENTRY.i}% inflation</strong>. These are illustrative assumptions, not forecasts or historical averages.
-                {plan.ratePeriods.length > 1 ? ` These fields set period 1 of ${plan.ratePeriods.length}; edit every period in Advanced assumptions.` : ''}
+                {plan.ratePeriods.length > 1 ? ` These fields set period 1 of ${plan.ratePeriods.length}; edit every period in Optional refinements.` : ''}
               </span>
               <button type="button" className="secondary-button" onClick={applyExampleRates}>
                 Use example values
@@ -4080,10 +3850,10 @@ function App({ auth }: { auth: AuthState }) {
             </div>
           </div>
 
-          <details className="advanced-shell">
+          <details className="advanced-shell" id="fire-optional-refinements">
             <summary className="advanced-summary">
               <span>
-                <strong>Advanced assumptions</strong>
+                <strong>Optional refinements</strong>
                 <small>{advancedSummaryDescription}</small>
               </span>
               <SlidersHorizontal size={18} />
@@ -4094,6 +3864,7 @@ function App({ auth }: { auth: AuthState }) {
                   <div>
                     <p className="eyebrow">Rates</p>
                     <h2 id="period-title">Market periods</h2>
+                    <p>Use different rates over time. Period 1 shares the required rates above.</p>
                   </div>
                   <button className="secondary-button" onClick={addPeriod}>
                     Add
@@ -4136,7 +3907,8 @@ function App({ auth }: { auth: AuthState }) {
                         <input
                           type="number"
                           step="0.1"
-                          value={(period.r * 100).toFixed(1)}
+                          placeholder={index === 0 ? 'Not set above' : undefined}
+                          value={index === 0 ? returnPercentText : (period.r * 100).toFixed(1)}
                           onChange={(event) => {
                             markInputsChanged();
                             setPlan((current) => ({
@@ -4159,7 +3931,8 @@ function App({ auth }: { auth: AuthState }) {
                         <input
                           type="number"
                           step="0.1"
-                          value={(period.i * 100).toFixed(1)}
+                          placeholder={index === 0 ? 'Not set above' : undefined}
+                          value={index === 0 ? inflationPercentText : (period.i * 100).toFixed(1)}
                           onChange={(event) => {
                             markInputsChanged();
                             setPlan((current) => ({
@@ -4530,7 +4303,7 @@ function App({ auth }: { auth: AuthState }) {
           </div>
 
           {hasCalculated && (
-            <div className={`calculator-result-card hero-result ${isStale ? 'is-stale' : ''}`}>
+            <div ref={resultRef} tabIndex={-1} role="region" aria-label="FIRE calculation result" className={`calculator-result-card hero-result ${isStale ? 'is-stale' : ''}`}>
               {isStale && (
                 <div className="stale-result-badge" role="status" aria-live="polite">
                   <RotateCcw size={14} aria-hidden="true" />

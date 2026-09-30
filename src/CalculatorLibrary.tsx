@@ -1,3 +1,8 @@
+import { buildCalculatorScope } from './lib/calculatorScope';
+import { CalculatorScopeNotice } from './components/CalculatorScopeNotice';
+import { useResultReveal } from './lib/resultReveal';
+import { CalculatorResultAction } from './components/CalculatorResultAction';
+import { EstimateCustomization } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
@@ -24,6 +29,7 @@ import {
   WalletCards
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { calculatorRawValues, validateCalculatorInputs, optionalCalculatorInputKeys, type CalculatorInputOrigin } from './lib/calculatorInputState';
 import type { MouseEvent } from 'react';
 import type { AuthState } from './auth';
 import { CashflowPlanningCalculator } from './CashflowPlanningCalculator';
@@ -59,6 +65,7 @@ import {
 } from './lib/calculatorStudios';
 import {
   calculateSeoCalculator,
+  HYSA_APY_ASSUMPTION,
   calculatorCurrency,
   calculatorVariants,
   calculatorPath,
@@ -71,7 +78,6 @@ import {
 } from './lib/seoCalculators';
 import { resolveMoneyLocale } from './lib/money';
 
-const optionalCalculatorInputKeys = new Set(['annualTopUp', 'extraAnnualPayment', 'extraMonthlyPayment', 'annualTaxes', 'annualInsurance', 'monthlyHoa']);
 
 type RegionFilter = 'all' | 'US' | 'India';
 
@@ -139,6 +145,7 @@ export type CalculatorSavedResult = {
   id: string;
   inputValues: Record<string, number>;
   result: {
+    assumptions?: string[];
     metrics: Array<{
       label: string;
       value: number;
@@ -317,12 +324,8 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">Decision toolkits</p>
         <h1 id="calculators-title">Start with the question, not the formula.</h1>
-        <p>Choose a planning toolkit or search for an exact calculator. Every estimate includes explanations, scenarios, visual context, and detailed schedules where they add value.</p>
-        <div className="calculator-library-stats" aria-label="Calculator library summary">
-          <span><strong>{calculatorToolkits.length}</strong> planning toolkits</span>
-          <span><strong>{seoCalculators.length + 1}</strong> public calculators</span>
-          <span><strong>0</strong> account required</span>
-        </div>
+        <p>Find a calculator for the decision in front of you. Choose a toolkit or search by name.</p>
+
       </div>
 
       <div className="calculator-search-panel">
@@ -569,20 +572,28 @@ function CalculatorDetail({
   onSaveResult: (request: CalculatorSaveRequest) => Promise<CalculatorSaveOutcome>;
   savedResults: CalculatorSavedResult[];
 }) {
+  const { resultRef, revealResult } = useResultReveal();
   const [values, setValues] = useState<Record<string, number>>(
     Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]))
   );
+  const [rawValues, setRawValues] = useState(() => calculatorRawValues(calculator, defaultCalculatorValues(calculator)));
+  const [inputOrigin, setInputOrigin] = useState<CalculatorInputOrigin>('sample');
+  const [hasValidResult, setHasValidResult] = useState(true);
+  const validation = useMemo(() => validateCalculatorInputs(calculator, rawValues), [calculator, rawValues]);
+  const canUseResult = hasValidResult && validation.values !== null;
+  const resultState = !hasValidResult ? 'needs-input' : !canUseResult ? 'stale' : inputOrigin === 'sample' ? 'sample' : 'current';
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [lastSavedRoute, setLastSavedRoute] = useState<SeoCalculator['conversionRoute'] | null>(null);
   const [selectedScenarioId, setSelectedScenarioId] = useState<CalculatorScenarioId>('base');
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
+  const [historicalHysaValue, setHistoricalHysaValue] = useState<number | null>(null);
   const scenarioValues = useMemo(
     () => buildScenarioValues(calculator, values, selectedScenarioId),
     [calculator, selectedScenarioId, values]
   );
-  const result = useMemo(() => calculateSeoCalculator(calculator, scenarioValues), [calculator, scenarioValues]);
-  const scenarios = useMemo(() => buildCalculatorScenarios(calculator, values), [calculator, values]);
+  const result = useMemo<CalculatorResult>(() => hasValidResult ? calculateSeoCalculator(calculator, scenarioValues) : { metrics: [], assumptions: [], narrative: 'Finish your inputs to see an estimate.' }, [calculator, scenarioValues, hasValidResult]);
+  const scenarios = useMemo(() => hasValidResult ? buildCalculatorScenarios(calculator, values) : [], [calculator, values, hasValidResult]);
   const selectedScenario = scenarios.find((scenario) => scenario.id === selectedScenarioId) ?? scenarios[1];
   const studioMetadata = useMemo(() => getCalculatorStudioMetadata(calculator), [calculator]);
   const studioChart = useMemo(
@@ -590,14 +601,14 @@ function CalculatorDetail({
     [calculator, result, scenarioValues]
   );
   const detailSchedule = useMemo(
-    () => buildCalculatorDetailSchedule(calculator, scenarioValues, result),
-    [calculator, result, scenarioValues]
+    () => hasValidResult ? buildCalculatorDetailSchedule(calculator, scenarioValues, result) : null,
+    [calculator, result, scenarioValues, hasValidResult]
   );
   const toolkit = useMemo(() => getCalculatorToolkit(calculator), [calculator]);
   const qualitySpec = useMemo(() => getCalculatorQualitySpec(calculator), [calculator]);
   const inputImpacts = useMemo(
-    () => buildCalculatorInputImpacts(calculator, scenarioValues),
-    [calculator, scenarioValues]
+    () => hasValidResult ? buildCalculatorInputImpacts(calculator, scenarioValues) : [],
+    [calculator, scenarioValues, hasValidResult]
   );
   const calculatorHistory = useMemo(
     () => savedResults.filter((item) => item.calculatorSlug === calculator.slug).slice(0, 6),
@@ -610,9 +621,16 @@ function CalculatorDetail({
     const shared = typeof window === 'undefined' ? null : readCalculatorShareState(calculator, window.location.search);
     const draft = readCalculatorDraft(calculator.slug);
 
-    setValues(shared?.values ?? draft?.values ?? defaultCalculatorValues(calculator));
+    const incoming = shared?.rawValues ?? (draft ? calculatorRawValues(calculator, draft.rawValues ?? draft.values) : calculatorRawValues(calculator, defaultCalculatorValues(calculator)));
+    const checked = validateCalculatorInputs(calculator, incoming);
+    const previous = draft && !shared ? validateCalculatorInputs(calculator, calculatorRawValues(calculator, draft.values)).values : null;
+    setRawValues(incoming);
+    setValues(checked.values ?? previous ?? defaultCalculatorValues(calculator));
+    setHasValidResult(Boolean(checked.values ?? previous));
+    setInputOrigin(shared ? 'shared' : draft ? draft.inputOrigin ?? 'restored' : 'sample');
     setSelectedScenarioId(shared?.scenarioId ?? draft?.scenarioId ?? 'base');
     setSelectedHistoryId(null);
+    setHistoricalHysaValue(null);
     setLastSavedRoute(null);
     setSaveMessage(
       shared
@@ -644,29 +662,54 @@ function CalculatorDetail({
       scenarioId: selectedScenarioId,
       slug: calculator.slug,
       updatedAt: new Date().toISOString(),
-      values
+      values: hasValidResult ? values : {},
+      rawValues, inputOrigin
     });
-  }, [auth.status, calculator.slug, result, selectedScenarioId, values]);
+  }, [auth.status, calculator.slug, result, selectedScenarioId, values, rawValues, inputOrigin, hasValidResult]);
 
   const [openMetricHelp, setOpenMetricHelp] = useState<Record<string, boolean>>({});
 
-  // The field shows the same value the calculation uses: out-of-range entries are clamped to the input's bounds.
+  // Raw text is the user's edit, not a request to replace it with zero or a bound.
   const setValue = (input: CalculatorInput, value: string) => {
-    const parsed = Number(value);
-    const clamped = Number.isFinite(parsed) ? Math.min(input.max ?? Number.POSITIVE_INFINITY, Math.max(input.min ?? 0, parsed)) : 0;
+    const nextRaw = { ...rawValues, [input.key]: value };
+    const checked = validateCalculatorInputs(calculator, nextRaw);
+    setRawValues(nextRaw);
+    setInputOrigin('user');
+    if (checked.values) { setValues(checked.values); setHasValidResult(true); }
     setLastSavedRoute(null);
     setSaveMessage('');
-    setValues((current) => ({
-      ...current,
-      [input.key]: clamped
-    }));
+    setHistoricalHysaValue(null);
+  };
+  const loadInputValues = (incoming: Record<string, unknown>, origin: CalculatorInputOrigin) => {
+    const raw = calculatorRawValues(calculator, incoming);
+    const checked = validateCalculatorInputs(calculator, raw);
+    setRawValues(raw); setInputOrigin(origin); setHasValidResult(Boolean(checked.values));
+    if (checked.values) setValues(checked.values);
+    setSelectedScenarioId('base'); setLastSavedRoute(null);
+  };
+  const resetExample = () => {
+    loadInputValues(defaultCalculatorValues(calculator), 'sample');
+    setHistoricalHysaValue(null); setSaveMessage('Example restored. Optional additions are zero.');
   };
 
-  const standardInputs = calculator.inputs.filter((input) => !optionalCalculatorInputKeys.has(input.key));
-  const optionalInputs = calculator.inputs.filter((input) => optionalCalculatorInputKeys.has(input.key));
+  const mainExtraPayment = ['extra-mortgage-payment', 'mortgage-payoff'].includes(calculator.slug);
+  const isOptional = (key: string) => optionalCalculatorInputKeys.has(key) && !(mainExtraPayment && key === 'extraMonthlyPayment');
+  const standardInputs = calculator.inputs.filter((input) => !isOptional(input.key));
+  const housingKeys = new Set(['annualTaxes', 'annualInsurance', 'monthlyHoa']);
+  const optionalGroups = [
+    { key: 'payments', label: calculator.inputs.some((input) => input.key.startsWith('extra')) ? 'Pay extra' : 'Additional contributions', inputs: calculator.inputs.filter((input) => isOptional(input.key) && !housingKeys.has(input.key)) },
+    { key: 'housing', label: 'Include housing costs', inputs: calculator.inputs.filter((input) => housingKeys.has(input.key)) }
+  ].filter((group) => group.inputs.length > 0).map((group) => {
+    const active = group.inputs.filter((input) => Number(rawValues[input.key]) !== 0 && rawValues[input.key]?.trim() !== '');
+    const amounts = active.map((input) => `${input.label}: ${calculatorCurrency(calculator)} ${Number(rawValues[input.key]).toLocaleString()} / ${input.key === 'monthlyHoa' || input.key === 'extraMonthlyPayment' ? 'month' : 'year'}`).join('; ');
+    const summary = group.inputs.some((input) => validation.errors[input.key]) ? 'Check the highlighted options' : active.length ? `${active.length} active · ${amounts}` : 'None added · zero to skip';
+    return { ...group, id: `options-${calculator.slug}-${group.key}`, summary };
+  });
   const renderInput = (input: SeoCalculator['inputs'][number]) => {
     const inputId = `input-${calculator.slug}-${input.key}`;
     const helperId = input.helper ? `helper-${calculator.slug}-${input.key}` : undefined;
+    const errorId = `error-${calculator.slug}-${input.key}`;
+    const error = validation.errors[input.key];
     return (
       <label className="field" key={input.key} htmlFor={inputId}>
         <span className="calculator-field-label">
@@ -677,17 +720,17 @@ function CalculatorDetail({
           <input
             id={inputId}
             name={input.key}
-            type="number"
-            min={input.min}
-            max={input.max}
-            step={input.type === 'percent' ? '0.01' : '1'}
-            value={values[input.key] ?? 0}
+            type="text"
+            inputMode={(input.min ?? 0) < 0 ? 'text' : 'decimal'}
+            value={rawValues[input.key] ?? ''}
+            aria-invalid={Boolean(error)}
             onChange={(event) => setValue(input, event.target.value)}
-            aria-describedby={helperId}
+            aria-describedby={[helperId, error ? errorId : null].filter(Boolean).join(' ') || undefined}
           />
           {input.type === 'percent' ? <small>%</small> : null}
           {input.suffix ? <small>{input.suffix}</small> : null}
         </div>
+        {error ? <small className="calculator-field-error" id={errorId}>{error}</small> : null}
         {input.helper ? (
           <small className="calculator-field-helper" id={helperId}>
             {input.helper}
@@ -698,16 +741,18 @@ function CalculatorDetail({
   };
 
   const persistSignedOutDraft = () => {
+    if (!canUseResult) return;
     writeCalculatorDraft({
       result,
       scenarioId: selectedScenarioId,
       slug: calculator.slug,
       updatedAt: new Date().toISOString(),
-      values
+      values, rawValues, inputOrigin
     });
   };
 
   const saveResult = async () => {
+    if (!canUseResult) return;
     if (auth.status !== 'signed-in') {
       persistSignedOutDraft();
       setSaveMessage('Draft saved in this browser. Create an account to keep it in FinPath.');
@@ -736,14 +781,17 @@ function CalculatorDetail({
   };
 
   const loadSavedResult = (saved: CalculatorSavedResult) => {
-    setValues(normalizeSavedValues(calculator, saved.inputValues));
+    loadInputValues(saved.inputValues, 'saved');
     setSelectedScenarioId('base');
     setSelectedHistoryId(saved.id);
+    setHistoricalHysaValue(calculator.slug === 'hysa' && !saved.result.assumptions?.includes(HYSA_APY_ASSUMPTION)
+      ? saved.result.metrics[0]?.value ?? null : null);
     setLastSavedRoute(null);
     setSaveMessage(`Loaded the saved ${new Date(saved.createdAt).toLocaleDateString()} inputs. Current edits were replaced.`);
   };
 
   const copyShareLink = async () => {
+    if (!canUseResult) return;
     const origin = typeof window === 'undefined' ? 'https://interactive-fire-calculator.pages.dev' : window.location.origin;
     const url = buildCalculatorShareUrl(calculator, values, selectedScenarioId, origin);
 
@@ -756,6 +804,7 @@ function CalculatorDetail({
   };
 
   const exportScenarioSummary = () => {
+    if (!canUseResult) return;
     const csv = buildCalculatorSummaryCsv(calculator, scenarios, selectedScenarioId, inputImpacts);
     downloadText(`${calculator.slug}-scenario-summary.csv`, csv, 'text/csv;charset=utf-8;');
     setSaveMessage('Scenario summary exported as CSV.');
@@ -767,7 +816,6 @@ function CalculatorDetail({
         <p className="eyebrow">{toolkit.title} <RegionBadge calculator={calculator} /></p>
         <h1 id="calculator-detail-title">{calculator.h1}</h1>
         <p className="calculator-scope-note">{calculator.description}</p>
-        <VariantChips calculator={calculator} onNavigate={onNavigate} />
         <a
           className="calculator-toolkit-backlink"
           href="/calculators"
@@ -785,46 +833,50 @@ function CalculatorDetail({
               <p className="eyebrow">Inputs</p>
               <h2>Run the estimate</h2>
             </div>
+            <button className="secondary-button" type="button" onClick={resetExample}>Reset to example</button>
           </div>
+          <EstimateCustomization groups={optionalGroups} />
+          {optionalGroups.some((group) => group.key === 'housing') ? <p className="calculator-cost-scope">Principal and interest are the base payment. Housing costs are excluded until entered below; extra payments reduce the loan separately.</p> : null}
           <div className="calculator-input-grid">
             {standardInputs.map(renderInput)}
           </div>
-          {optionalInputs.length > 0 ? (
-            <details className="calculator-options-shell">
-              <summary>
-                <span>
-                  <strong>
-                    {optionalInputs.some((input) => /Taxes|Insurance|Hoa/.test(input.key))
-                      ? 'Additional payments and housing costs'
-                      : optionalInputs.some((input) => input.key.startsWith('extra'))
-                        ? 'Additional payments'
-                        : 'Additional contributions'}
-                  </strong>
-                  <small>Optional. Leave at zero to skip.</small>
-                </span>
-                <ChevronDown size={17} />
-              </summary>
-              <div className="calculator-input-grid calculator-options-grid">
-                {optionalInputs.map(renderInput)}
-              </div>
+          {optionalGroups.map((group) => (
+            <details className="calculator-options-shell" id={group.id} key={group.id}>
+              <summary><span><strong>{group.label}</strong><small>{group.summary}</small></span><ChevronDown size={17} /></summary>
+              <div className="calculator-input-grid calculator-options-grid">{group.inputs.map(renderInput)}</div>
             </details>
-          ) : null}
+          ))}
+          <CalculatorResultAction disabled={!canUseResult} onReveal={revealResult} />
           <CalculatorScenarioPanel
+            disabled={!canUseResult}
             scenarios={scenarios}
             selectedScenarioId={selectedScenarioId}
-            onSelectScenario={setSelectedScenarioId}
+            onSelectScenario={(id) => { if (!canUseResult) return; setSelectedScenarioId(id); setHistoricalHysaValue(null); revealResult(); }}
             calculator={calculator}
             focus={studioMetadata.scenarioFocus}
           />
         </section>
 
-        <section className="calculator-result-panel" aria-label={`${calculator.title} result`}>
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel" aria-label={`${calculator.title} result`}>
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Result</p>
               <h2>{result.metrics[0]?.label ?? 'Estimate'}</h2>
             </div>
           </div>
+          <div className={`calculator-result-state state-${resultState}`} role="status" data-result-state={resultState}>
+            <strong>{resultState === 'sample' ? 'Sample estimate' : resultState === 'stale' ? 'Previous result — finish your inputs to update' : resultState === 'needs-input' ? 'Finish your inputs to see an estimate' : 'Your inputs'}</strong>
+            {resultState === 'sample' ? <small>These are example numbers. Change them to match your decision.</small> : null}
+            {resultState === 'stale' || resultState === 'needs-input' ? <small>Check the highlighted fields. Saving, sharing and exports are paused.</small> : null}
+          </div>
+          {historicalHysaValue !== null && hasValidResult ? (
+            <p className="calculator-result-narrative" role="status" data-hysa-correction>
+              Recalculated with corrected APY. Old saved estimate: {formatMetric({ label: 'Saved', value: historicalHysaValue, valueType: 'currency' }, calculator)}.
+              {' '}Current corrected estimate: {formatMetric(result.metrics[0], calculator)}.
+              {' '}Difference: {formatMetric({ label: 'Difference', value: result.metrics[0].value - historicalHysaValue, valueType: 'currency' }, calculator)}.
+              {' '}The saved snapshot is unchanged. Save explicitly to keep a new result.
+            </p>
+          ) : null}
           <div className="calculator-result-metrics">
             {result.metrics.map((metric, index) => {
               const isPrimary = index === 0;
@@ -863,8 +915,10 @@ function CalculatorDetail({
               );
             })}
           </div>
-          <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} />
-          <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} />
+          {hasValidResult ? <CalculatorScopeNotice scope={buildCalculatorScope(calculator, scenarioValues)} /> : null}
+          <VariantChips calculator={calculator} onNavigate={onNavigate} />
+          {hasValidResult && studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
+          <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} disabled={!canUseResult} />
           <p className="calculator-result-narrative">{result.narrative}</p>
           <div className="calculator-conversion-panel">
             <span className="feature-icon"><ConversionIcon size={18} /></span>
@@ -873,12 +927,13 @@ function CalculatorDetail({
               <small>Use this estimate as the first step, then track progress inside FinPath.</small>
             </div>
             {auth.status === 'signed-in' ? (
-              <button className="primary-button icon-text-button" disabled={isSaving} type="button" onClick={saveResult}>
+              <button className="primary-button icon-text-button" disabled={isSaving || !canUseResult} type="button" onClick={saveResult}>
                 {isSaving ? 'Saving' : 'Save result'}
                 <ArrowRight size={16} />
               </button>
             ) : auth.status === 'not-configured' ? (
-              <button className="primary-button icon-text-button" type="button" onClick={() => {
+              <button className="primary-button icon-text-button" disabled={!canUseResult} type="button" onClick={() => {
+                if (!canUseResult) return;
                 persistSignedOutDraft();
                 onNavigate(calculator.conversionRoute);
               }}>
@@ -887,7 +942,7 @@ function CalculatorDetail({
               </button>
             ) : (
               <SignUpIntent mode="modal">
-                <button className="primary-button icon-text-button" type="button" onClick={persistSignedOutDraft}>
+                <button className="primary-button icon-text-button" disabled={!canUseResult} type="button" onClick={persistSignedOutDraft}>
                   Create account to save
                   <ArrowRight size={16} />
                 </button>
@@ -922,11 +977,12 @@ function CalculatorDetail({
         </article>
         <article>
           <p className="eyebrow">How to read it</p>
-          <p>{result.narrative} The supporting tiles explain the {selectedScenario.label.toLowerCase()} estimate and show the inputs that matter most.</p>
+          <p>{result.narrative} The supporting tiles explain the {selectedScenario?.label.toLowerCase() ?? 'previous'} estimate and show the inputs that matter most.</p>
         </article>
       </section>
 
       <CalculatorEngagementPanel
+        disabled={!canUseResult}
         auth={auth}
         calculator={calculator}
         currentResult={result}
@@ -962,7 +1018,8 @@ function CalculatorDetail({
         calculator={calculator}
         example={studioMetadata.example}
         onLoadExample={(exampleValues) => {
-          setValues(exampleValues);
+          setHistoricalHysaValue(null);
+          loadInputValues(exampleValues, 'sample');
           setSelectedScenarioId('base');
           setLastSavedRoute(null);
           setSaveMessage('Example loaded. Adjust the inputs or save the result when it fits your plan.');
@@ -990,10 +1047,12 @@ function CalculatorDetail({
 
 function CalculatorSchedulePanel({
   calculator,
+  disabled = false,
   schedule
 }: {
   calculator: SeoCalculator;
   schedule: CalculatorDetailSchedule | null;
+  disabled?: boolean;
 }) {
   const [periodView, setPeriodView] = useState<'all' | 'final-year' | 'first-five-years' | 'first-year'>('all');
 
@@ -1032,6 +1091,7 @@ function CalculatorSchedulePanel({
             ) : null}
             <button
               className="secondary-button icon-text-button calculator-breakdown-download"
+              disabled={disabled}
               type="button"
               onClick={() => downloadScheduleCsv(calculator, schedule)}
             >
@@ -1130,12 +1190,14 @@ function csvEscape(value: string): string {
 }
 
 function CalculatorScenarioPanel({
+  disabled = false,
   calculator,
   focus,
   onSelectScenario,
   scenarios,
   selectedScenarioId
 }: {
+  disabled?: boolean;
   calculator: SeoCalculator;
   focus: string;
   onSelectScenario: (scenarioId: CalculatorScenarioId) => void;
@@ -1157,6 +1219,7 @@ function CalculatorScenarioPanel({
             className={`calculator-scenario-tab${scenario.id === selectedScenarioId ? ' is-active' : ''}`}
             key={scenario.id}
             role="tab"
+            disabled={disabled}
             type="button"
             onClick={() => onSelectScenario(scenario.id)}
           >
@@ -1201,6 +1264,7 @@ function formatInputValue(input: CalculatorInput, value: number, calculator: Seo
 }
 
 function CalculatorEngagementPanel({
+  disabled = false,
   auth,
   calculator,
   currentResult,
@@ -1214,6 +1278,7 @@ function CalculatorEngagementPanel({
   selectedHistory,
   selectedScenarioId
 }: {
+  disabled?: boolean;
   auth: AuthState;
   calculator: SeoCalculator;
   currentResult: CalculatorResult;
@@ -1249,11 +1314,11 @@ function CalculatorEngagementPanel({
             <h2>See what changes the answer</h2>
           </div>
           <div className="calculator-engagement-actions">
-            <button className="secondary-button icon-text-button" type="button" onClick={onCopyShareLink}>
+            <button className="secondary-button icon-text-button" type="button" disabled={disabled} onClick={onCopyShareLink}>
               <Copy size={15} />
               Copy link
             </button>
-            <button className="secondary-button icon-text-button" type="button" onClick={onExportSummary}>
+            <button className="secondary-button icon-text-button" type="button" disabled={disabled} onClick={onExportSummary}>
               <Download size={15} />
               Summary CSV
             </button>
@@ -1268,6 +1333,7 @@ function CalculatorEngagementPanel({
               <small>Each column changes a bounded set of inputs while preserving the values entered above.</small>
             </div>
           </div>
+          {disabled ? <p>Previous scenarios — finish your inputs to update.</p> : null}
           <div className="calculator-comparison-grid">
             {scenarios.map((scenario) => (
               <article className={scenario.id === selectedScenarioId ? 'is-selected' : ''} key={scenario.id}>
@@ -1336,7 +1402,7 @@ function CalculatorEngagementPanel({
               {selectedHistory && savedMetric ? (
                 <div className="calculator-history-compare">
                   <div>
-                    <span>Current</span>
+                    <span>{disabled ? 'Previous result' : 'Current'}</span>
                     <strong>{currentMetric ? formatMetric(currentMetric, calculator) : 'No result'}</strong>
                   </div>
                   <div>
@@ -1688,16 +1754,6 @@ function savedDeltaLabel(
   return `Current is ${difference > 0 ? 'higher' : 'lower'} by ${formatMetric({ ...current, value: Math.abs(difference) }, calculator)}.`;
 }
 
-function normalizeSavedValues(
-  calculator: SeoCalculator,
-  values: Record<string, number>
-): Record<string, number> {
-  return Object.fromEntries(calculator.inputs.map((input) => {
-    const value = Number.isFinite(values[input.key]) ? values[input.key] : input.defaultValue;
-    return [input.key, Math.min(input.max ?? Number.POSITIVE_INFINITY, Math.max(input.min ?? 0, value))];
-  }));
-}
-
 async function copyText(value: string): Promise<void> {
   if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(value);
@@ -1745,11 +1801,6 @@ function metricDescription(metric: CalculatorMetric): string {
   if (metric.valueType === 'years') return 'A time estimate in years. Fractions represent partial years.';
   if (/month/i.test(metric.label)) return 'A monthly count or monthly amount derived from the estimate.';
   return 'A supporting value used to explain the main estimate.';
-}
-
-function visualMetricValue(metric: CalculatorMetric): number {
-  if (metric.valueType === 'percent') return Math.abs(metric.value * 100);
-  return Math.abs(metric.value);
 }
 
 export function formatChartValue(
@@ -1839,6 +1890,8 @@ function formatScheduleCell(
 }
 
 type StoredCalculatorDraft = {
+  rawValues?: Record<string, string>;
+  inputOrigin?: CalculatorInputOrigin;
   result: ReturnType<typeof calculateSeoCalculator>;
   scenarioId?: CalculatorScenarioId;
   slug: string;
@@ -1907,6 +1960,8 @@ function isDraftRecord(value: unknown): value is StoredCalculatorDraft {
     !Array.isArray(record.values) &&
     typeof record.result === 'object' &&
     record.result !== null &&
+    (record.rawValues === undefined || (typeof record.rawValues === 'object' && record.rawValues !== null && !Array.isArray(record.rawValues) && Object.values(record.rawValues).every(v => typeof v === 'string'))) &&
+    (record.inputOrigin === undefined || ['sample', 'user', 'restored', 'shared', 'saved'].includes(String(record.inputOrigin))) &&
     (record.scenarioId === undefined ||
       record.scenarioId === 'base' ||
       record.scenarioId === 'conservative' ||

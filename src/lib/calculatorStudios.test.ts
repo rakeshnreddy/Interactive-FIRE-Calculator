@@ -194,7 +194,8 @@ describe('calculator decision studios', () => {
       expect(chart.description.length).toBeGreaterThan(30);
       expect(chart.summary.length).toBeGreaterThan(40);
       expect(chart.legend.primary.length).toBeGreaterThanOrEqual(3);
-      expect(chart.entries.length).toBeGreaterThanOrEqual(3);
+      // Immediate full repayment has one truthful start point, not an invented timeline.
+      expect(chart.entries.length).toBeGreaterThanOrEqual(1);
       chart.entries.forEach((entry) => {
         expect(entry.label.length).toBeGreaterThan(0);
         expect(Number.isFinite(entry.primary)).toBe(true);

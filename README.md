@@ -6,7 +6,7 @@ A modern retirement and FIRE planning calculator for exploring required portfoli
 
 The product scope has expanded beyond a standalone FIRE calculator. The current target is a comprehensive personal financial tracker and planner where users can create accounts, store financial data, track goals, and save planning scenarios. The FIRE calculator is now the first planning module inside that broader platform.
 
-For a clean coding-session handoff, read [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md) first.
+For the current code, release status, and next action, read [execution resume](docs/execution/RESUME.md) first. Use the [documentation index](docs/README.md) for architecture, operations, and retained plans.
 
 ## Architecture
 
@@ -81,7 +81,9 @@ Rates are nominal annual returns. Inflation adjusts the withdrawal amount after 
 
 ## Documentation
 
-- [Financial platform handoff](docs/FINANCIAL_PLATFORM_HANDOFF.md)
+- [Documentation index](docs/README.md)
+- [Current execution and release state](docs/execution/RESUME.md)
+- [Authoritative task ledger](docs/execution/TASK_STATUS.json)
+- [Calculator gaps and future improvements](docs/calculator-excellence/GAP_MATRIX.md)
 - [Production authentication runbook](docs/PRODUCTION_AUTH_RUNBOOK.md)
-- [Comprehensive rebuild plan](docs/FIRE_REBUILD_PLAN.md)
 - [Cloudflare Pages deployment notes](docs/CLOUDFLARE_PAGES.md)

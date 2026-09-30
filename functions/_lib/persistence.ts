@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { apiError, json } from './http';
+import { apiError } from './http';
 
 export type DatabaseEnv = {
   DB?: D1Database;

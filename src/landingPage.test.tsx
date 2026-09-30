@@ -75,21 +75,21 @@ describe('LandingPage (B18)', () => {
 
     // Secondary link
     expect(html).toContain('href="/calculators"');
-    expect(html).toContain('Browse all calculators');
+    expect(html).toContain('Find a calculator');
 
-    // Popular starts links
-    expect(html).toContain('Popular starts');
-    expect(html).toContain('href="/calculators/mortgage"');
+    // Three decision paths replace competing preset links.
+    expect(html).not.toContain('Popular starts');
+    expect(html).not.toContain('href="/calculators/mortgage"');
     expect(html).toContain('href="/calculators/debt-payoff"');
-    expect(html).toContain('href="/calculators/compound-interest"');
-    expect(html).toContain('href="/calculators/emi"');
-    expect(html).toContain('href="/calculators/sip"');
+    expect(html).not.toContain('href="/calculators/compound-interest"');
+    expect(html).not.toContain('href="/calculators/emi"');
+    expect(html).not.toContain('href="/calculators/sip"');
   });
 
   it('renders toolkit, trust and FAQ sections that match the structured data copy', () => {
     const html = renderToStaticMarkup(<LandingPage auth={unconfiguredAuth} onNavigate={() => {}} />);
     expect(html).toContain('What are you trying to work out?');
-    expect(html).toContain('href="/calculators#toolkit-home"');
+    expect(html).toContain('href="/calculators/savings-goal"');
     expect(html).toContain('Built for the US and India');
     for (const item of landingFaq) {
       expect(html).toContain(item.question);
@@ -115,9 +115,9 @@ describe('LandingPage (B18)', () => {
     expect(html).toContain('See the timeline and the assumptions behind it.');
 
     // 3 paths
-    expect(html).toContain('Buying a home?');
-    expect(html).toContain('Growing your savings?');
-    expect(html).toContain('Long-term independence?');
+    expect(html).toContain('Pay down debt');
+    expect(html).toContain('Reach a savings goal');
+    expect(html).toContain('Plan retirement');
   });
 
   it('handles auth availability truthfully across states', () => {

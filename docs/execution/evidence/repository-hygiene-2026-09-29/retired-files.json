@@ -1,0 +1,485 @@
+[
+  {
+    "path": "PLANNED_ENHANCEMENTS.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 3905,
+    "sha256": "2da811085d21ee3d30a78277802b3f60ed148846e3fbd8dd47fe05c0a0431b87",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:PLANNED_ENHANCEMENTS.md"
+  },
+  {
+    "path": "docs/.keep",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 77,
+    "sha256": "1993fe912ba0c863aae3b9372058862589c9e675d8e4ae6696542fecf90c20f7",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/.keep"
+  },
+  {
+    "path": "docs/FINANCIAL_PLATFORM_HANDOFF.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 63258,
+    "sha256": "60857e072f22816ef751147cec649f395a40bb0015a2abe8538811c694bc87a7",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/FINANCIAL_PLATFORM_HANDOFF.md"
+  },
+  {
+    "path": "docs/FINANCIAL_PLATFORM_TRACKER.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 75322,
+    "sha256": "8a5dd01e43cce289ae18696c7ed980836e3256c738d059a88a4a33637c48b6ee",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/FINANCIAL_PLATFORM_TRACKER.md"
+  },
+  {
+    "path": "docs/FIRE_REBUILD_PLAN.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 21604,
+    "sha256": "30eb961c165f1aaeb37bb4fc77cf090efda9ed81adcb1afeaf12d833048e9f86",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/FIRE_REBUILD_PLAN.md"
+  },
+  {
+    "path": "docs/PRODUCT_GROWTH_REVIEW_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 14810,
+    "sha256": "dee649139721e2bd21e8270c230eb9200eb8e22e266d53b08f0fcc3a843dd5c2",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/PRODUCT_GROWTH_REVIEW_PROMPT.md"
+  },
+  {
+    "path": "docs/PROJECT_MEMORY.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 52961,
+    "sha256": "d8e5fefc140115188f0d9e32b1a95d1c343f371edadc7eeb03ba6b5c48bb9ee8",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/PROJECT_MEMORY.md"
+  },
+  {
+    "path": "docs/compare.html",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 19339,
+    "sha256": "b2a49fcde1c72328b736419faa8aa59d835243e6a66dffb1030a8814c4f02637",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/compare.html"
+  },
+  {
+    "path": "docs/execution/B12_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 3050,
+    "sha256": "8208907260e6ec2721aa618cf21f4742ee15af8e4da28a446a88076a69a73550",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/B12_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/B37_HYGIENE_CORRECTION_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 5379,
+    "sha256": "061d710ba52258bb147bf1dc36e9f98e2f4b30f51f4fbcd055644ba4d060056d",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/B37_HYGIENE_CORRECTION_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/B37_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 3930,
+    "sha256": "dacc02900124119a431cfbcb411ae94f509b2681ce46c70fdfbacc1c68b15b69",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/B37_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/B39_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 4216,
+    "sha256": "d957814d382c56f89c1654114fbdc8f3149d31975d5e7dfa64df18e392cb2ebb",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/B39_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/B40_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 2402,
+    "sha256": "24cec3634621fc3c322580040bf15f712922b21ebabc1122fc7934d74e2f1fb9",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/B40_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C01I_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 210,
+    "sha256": "42993d6596f925fff307b9e8a7e780e0fa88ce7e3fea79b940991ff0890fca7a",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C01I_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C01T_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 210,
+    "sha256": "54458330e638476d43a90304584ae0f11e402980e4ea8957f8e6816ca6f573d6",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C01T_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C02_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 208,
+    "sha256": "d16a24418ab8845d26eef194db30bfa8382c91f0bc09aba95030dd6b50ad358b",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C02_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C03_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 208,
+    "sha256": "d81750ade620cded387f8de4aae301c1ecb257ccaaa667a8563a88a116b46d1d",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C03_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C03_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 206,
+    "sha256": "e5d364c3c16c8c80e9c00f1d6f5ba2c6f30c3e7a2dc7f94d5021d07568dbed35",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C03_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C03_VALIDATION_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 230,
+    "sha256": "20f3fea1bdea02769198987754e56fe9f3dd259cf6274d6ec4115f2106a1e894",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C03_VALIDATION_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C04_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 208,
+    "sha256": "c53b9110f63df64c15ea36d7c2b92ff03c23ef1e7e0e13bbbb29dbd888a8d0e6",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C04_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C04_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 206,
+    "sha256": "76ac7e6a73ce59e73e0f7c5b1af50fbcf836f642b2c49cde0bd251ee980074e1",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C04_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C04_VERIFICATION_REPAIR_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 234,
+    "sha256": "ac7603603e1715d0afbc691923a4bb335e87d75b81e6cdb41994091a6fbc9ad7",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C04_VERIFICATION_REPAIR_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C05_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 208,
+    "sha256": "dadb990a26ee146195d6f15353ef9b538ddd88da6837b0dcae5ac67901c80f3e",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C05_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C05_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 206,
+    "sha256": "7d458af88373e3b9c20c06a5b3db77e776f241015e8eadc4df783bd7d5623164",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C05_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C05_VERIFICATION_REPAIR_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 234,
+    "sha256": "1aa0e30b9546dca9361d01b2b0442723845e33c1b95b55fe1d1d74962928b7f5",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C05_VERIFICATION_REPAIR_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C06_REWORK_2_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 212,
+    "sha256": "759673fca33908e2551d359090adbf1351d2d2dbd3398b3e72bf8ca634cb8a10",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C06_REWORK_2_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C06_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 208,
+    "sha256": "55e6e2e4380dce0b7e320bb96438282e9e4ada98623f7a337500cb2a987ca1c9",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C06_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C06_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 206,
+    "sha256": "216097949fccf4fe8370346eaa9e3d90c64336e2c24727f4f81a351a10a6f7d3",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C06_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C07_FINISH_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 208,
+    "sha256": "8e7cb46a33235474baef177a49ff666104a2ea89336a1683c47f9ce9258a8229",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C07_FINISH_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C07_PREPARATION_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 218,
+    "sha256": "1060f5001ad52633a5cf4d9734c16aec4e3eb8715dc0866e2fe6a51905d33e81",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C07_PREPARATION_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C07_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 206,
+    "sha256": "731c6d336385737c6a6830efbe6f3bdf11e91df160a19c1d07da22d37b5fac5e",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C07_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C08_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 208,
+    "sha256": "e704507771905a2bc30f4fb912398611f9307e97b2386eb816b0e1603ce270d3",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C08_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C08_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 206,
+    "sha256": "6e22bef007653456b3d7d2af1331abe8a2ee5a8121f48e77b8cd67961759e28c",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C08_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_COLLECTOR_SCHEMA_FINISH_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 6170,
+    "sha256": "c0f6418520d708030a84bd16306d662cbb5097b77bece27f98498dc9907a7952",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_COLLECTOR_SCHEMA_FINISH_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_FINAL_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 8420,
+    "sha256": "5cd2e96b0a1dc2154f91e6170fe5a643791c48339d4685f7ffceb5754067c8e3",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_FINAL_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_HOSTED_LOCATOR_FINISH_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 3460,
+    "sha256": "f62c2d01fdc99ed4da6772ae66b8a8b695abf0fbcf22642c2f226f572e8b66a7",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_HOSTED_LOCATOR_FINISH_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_HOSTED_RUNNER_FINISH_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 5007,
+    "sha256": "b1eef7dee8ccc7f03f361fed19acfe8d63fe80f6a19d651191fe8dfdb9e47e2b",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_HOSTED_RUNNER_FINISH_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_RESUME.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 205,
+    "sha256": "27d8ca3ee9d76c0d8319870fda492d6c917441511379f5f0c1891e1a678166d4",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_RESUME.md"
+  },
+  {
+    "path": "docs/execution/C09_REVISE_FINISH_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 6169,
+    "sha256": "c6c4fd3e2f27d36cb8e4ec201d931911ffcb16aeac0c9d256dd9e1acf63f4626",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_REVISE_FINISH_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 7865,
+    "sha256": "67c701b542a42fe134e329d4a4985ee77a555028ee6db47fb195b4f2c1060d90",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_STAGE4_READINESS_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 5358,
+    "sha256": "23921d478dfd00f767f7882d80f4da04a4445d4622c03ce5ef327c28000b4f7d",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_STAGE4_READINESS_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/C09_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 9642,
+    "sha256": "f95489b12affd684f684f438bc67dba97146f878e59d174933d5992e67555ac6",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/C09_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/CODEX_FINAL_HANDOFF_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 8093,
+    "sha256": "9acd641180b2bde01feb7ce163c23f867d84fd4bec00ec02ef2cbdec34dc00ea",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/CODEX_FINAL_HANDOFF_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/CODEX_VERIFICATION_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 7755,
+    "sha256": "77101b9305dc9308c725b7020c1d530ef538ee93f52c50f9144c3980da751ba2",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/CODEX_VERIFICATION_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/LANDING_PAGE_WORKER_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 2637,
+    "sha256": "92522a1f9155e0347535972f12ac864ad696b97c14f7eb5ec446c1f8ed83d2cc",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/LANDING_PAGE_WORKER_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C01I_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 651,
+    "sha256": "dd1690f6f7f172e285df2b985b75731a864ae28a3fb10fe6ba7a9bdf9d1182ca",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C01I_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C01T_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 1698,
+    "sha256": "d515fbb49662708f9449b2d42cfd1dbab304733a9365da44a42accaf08baa6df",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C01T_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C02_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 5127,
+    "sha256": "2455a830488f9a0b08e4e3a6758db4b9929c87e4dc9603b7e914be6ec52941dc",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C02_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C03_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 10478,
+    "sha256": "9a5c843148f64e94e155e3f1e4e9155583fada5cc7b27eb7119ebe06e1b90dda",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C03_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C03_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 9330,
+    "sha256": "443693dee88150be6c5320ec651191b4bbb4cef56546f87d7623ea748a12d77a",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C03_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C03_VALIDATION_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 10865,
+    "sha256": "2771b5365d285c2e2ba71078d71ea4ae69a36ceb56eb584790c6b299a320d43f",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C03_VALIDATION_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C04_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 7769,
+    "sha256": "8388abba718782e0213287ef0ce621f05da57812d0e8d76f88bf2b29cc203b77",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C04_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C04_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 12281,
+    "sha256": "6ba8978d4719cef03a956299f681db9c371ffa8f707710281701595c44a87115",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C04_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C04_VERIFICATION_REPAIR_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 5932,
+    "sha256": "10352dad8413cc9198397af4d15fc562e2b2160c10c6ebfaa74e98097095f132",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C04_VERIFICATION_REPAIR_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C05_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 9426,
+    "sha256": "1a628643c883d7b272dc5af0fc2034724095d4f8ccecb5a4c814ee2ae7490ad1",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C05_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C05_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 7991,
+    "sha256": "5d17f094f3cccf453750b6fcd8fd4aa276e3971bbd20ebce525aae63358cf89e",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C05_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C05_VERIFICATION_REPAIR_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 4879,
+    "sha256": "9245617b301b2ebfdc13e882d882fe63cf0045fb2f8a38fcf7ec259844dc51c3",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C05_VERIFICATION_REPAIR_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C06_REWORK_2_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 6197,
+    "sha256": "8af454266b3e8046afa6438f3aaae0de6bd432ff13ad6be5e31418338d004c0e",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C06_REWORK_2_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C06_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 8922,
+    "sha256": "9e8c00d98fe59574b2281a210099c3ccc5ae2883ef0b27213518e8807b82fa32",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C06_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C06_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 6505,
+    "sha256": "962255086213705ae6489f552ef0aa32f25c2d4e77ad1c324d865671c8dda3c2",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C06_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C07_FINISH_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 13266,
+    "sha256": "41b83f9f7a30e0b5482fb8e1717e59fe5b0ab267027a5b53596b67af13ee8380",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C07_FINISH_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C07_PREPARATION_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 3672,
+    "sha256": "6cbe6950b2f572a148b3fbbcfafd7552ddece8bd04bb62d73eb904d428d56fa4",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C07_PREPARATION_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C07_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 4441,
+    "sha256": "26b966127a695ec95b86c761b443a1d845b4f074133cb2ac4fda6c5192a8c983",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C07_START_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C08_REWORK_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 7658,
+    "sha256": "812b710b96ae4640061e4ef50a2113e4a322720ba375241b4f8789766ecd1374",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C08_REWORK_PROMPT.md"
+  },
+  {
+    "path": "docs/execution/archive/C08_START_PROMPT.md",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 11250,
+    "sha256": "033155b610c9e47e502682531d066baf81ce7e3e19c435c16f7b5eee3ef269a4",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/execution/archive/C08_START_PROMPT.md"
+  },
+  {
+    "path": "docs/index.html",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 2115,
+    "sha256": "ec5a40fb764228a9662703b46f8c2016e69f2bdaf0a4936e02b74e0e4dce1803",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/index.html"
+  },
+  {
+    "path": "docs/result.html",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 22780,
+    "sha256": "d04657299f724cd47efba7e78e369b6d4855dd7157436a7302beb732fdf6284a",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/result.html"
+  },
+  {
+    "path": "docs/static/css/main.css",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 17502,
+    "sha256": "3e4fafdcfb8e35f1b187560178234988d87c75109761ba5789fb3e04dc54e252",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/static/css/main.css"
+  },
+  {
+    "path": "docs/static/js/theme.js",
+    "commit": "5e4b703958bf98374dea61235e314f8ba21af283",
+    "bytes": 2077,
+    "sha256": "6166768f1d5682f4c387f2ab589a1866efc2c7afa620d7b3893719891beb3e97",
+    "retrieval": "git show 5e4b703958bf98374dea61235e314f8ba21af283:docs/static/js/theme.js"
+  }
+]

@@ -8507,8 +8507,16 @@ h2 {
   color: var(--heading);
 }
 
+/* A wide accessible data table must scroll inside its wrapper, not expand
+   the result card's implicit grid track and clip the metrics above it. */
+.calculator-result-panel {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .calculator-visual-panel {
   display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
   padding-top: 0.15rem;
 }

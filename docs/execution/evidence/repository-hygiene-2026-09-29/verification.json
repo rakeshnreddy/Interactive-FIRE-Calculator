@@ -1,0 +1,61 @@
+{
+  "recoveryObjectsVerified": 69,
+  "protectedScopeUnchanged": true,
+  "source": [
+    {
+      "path": "functions/_lib/accountData.ts",
+      "remainingStatementsUnchanged": 35,
+      "statementsRemoved": 15
+    },
+    {
+      "path": "functions/_lib/calculatorResults.ts",
+      "remainingStatementsUnchanged": 65,
+      "statementsRemoved": 1
+    },
+    {
+      "path": "functions/_lib/persistence.ts",
+      "remainingStatementsUnchanged": 8,
+      "statementsRemoved": 0
+    },
+    {
+      "path": "src/App.tsx",
+      "remainingStatementsUnchanged": 60,
+      "statementsRemoved": 4
+    },
+    {
+      "path": "src/CalculatorLibrary.tsx",
+      "remainingStatementsUnchanged": 56,
+      "statementsRemoved": 1
+    },
+    {
+      "path": "src/CashflowPlanningCalculator.tsx",
+      "remainingStatementsUnchanged": 67,
+      "statementsRemoved": 0
+    }
+  ],
+  "code_sha": "7bc501faeb9a3ce80b2ca2c3d1b07579c1d6538e",
+  "baseline_sha": "5e4b703958bf98374dea61235e314f8ba21af283",
+  "status": "LOCAL_PASS",
+  "full_suite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh",
+    "exit_code": 0,
+    "vitest_files": 80,
+    "vitest_tests": 2471,
+    "log_path": "docs/execution/evidence/repository-hygiene-2026-09-29/raw/full-suite.log",
+    "log_sha256": "83a94893d1bc0983e90ac29d2edc12854dec27e09bfe939235b0a093cb2f5582",
+    "log_bytes": 7622
+  },
+  "focused_suite": {
+    "files": 8,
+    "tests": 78,
+    "exit_code": 0
+  },
+  "packet_validator": "PASS: 42 tasks, 40 accepted; statuses unchanged",
+  "historical_citations": {
+    "link_only_documents": 24,
+    "content_unchanged_except_link_destinations": true
+  },
+  "hosted_run": "NOT RUN: unreachable code/import removal; no behavior or UI layout change; no hosted data writes",
+  "preview_binding_verified": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+  "production_auto_deploy": false
+}

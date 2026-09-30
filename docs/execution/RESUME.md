@@ -1,69 +1,15 @@
-# FinPath execution resume — 2026-09-29
+# FinPath execution resume — 2026-09-30
 
-**Current status: merged; production blocked on OA-1.** This section supersedes historical progress below.
+**C17 accepted; C18 released; B51 blocked on actual users. Astra continues directly without Gemini.** Canonical state: [TASK_STATUS.json](TASK_STATUS.json), [CHECKPOINTS.md](CHECKPOINTS.md).
 
-- Stable checkout: `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`, branch `main`, release merge `6f744ab570212042d8bbede3c9adda3f23c0f7e0`. PR #140 merged into the dependency branch, then PR #139 merged into main. Main CI 36535554047 passed.
-- B31/C11 and B40/C14 accepted. Ledger: **40/42**; B13/B14 remain open, gated on retention evidence. A11Y-F01/F02 remain explicit follow-ups, with no WCAG conformance claim.
-- Verified preview: <https://d0d235df.interactive-fire-calculator.pages.dev>, product `2277b80ce089d0ddf0caf22a21c0c809ae6a31f5`. Full Python-excluded gate: 80 files / 2,471 tests, build/typecheck/isolation; 84 public-route smoke checks passed.
-- Production preflight failed **0/6**. Production automatic deployment is disabled; the main deployment record is idle and the canonical site remains on old `3399dbb`. No production migration or Worker deployment occurred.
-- **Exact next action:** owner completes the owned-hostname and live-Clerk setup in [runbook sections 1–5](../PRODUCTION_AUTH_RUNBOOK.md). Then Astra reruns preflight and continues the already authorized production release sequence, including a restore bookmark before migrations. OA-3 is authorized, not executed; no repeat authorization needed.
-- Complete SHAs, CI/deployment records, owner checklist and remaining risks: [release review](reviews/RELEASE-2026-09-29.md). B13/B14 are not launch tasks. Use lower-cost agents for the scoped calculator/accessibility follow-ups; Astra retains closure authority.
+- Stable checkout `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`, read actual Git branch/HEAD before work; accepted candidate `9f3789b9190680fff70222b422c7bfda473c814c`; code commit `8c2d313`; later closure docs do not change product bytes. Documents/ChatGPT is stale. [PR #142](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/142) merged into cleanup PR #141 at `a6eb0e0a834c6f30162f10d913afbe57eaee0bb0`. [PR #141](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/141) carries the reviewed combined release into main; its GitHub mergeCommit is authoritative for the main landing SHA. Preserve existing changes; no reset/force push.
+- Verified immutable preview https://bacc1513.interactive-fire-calculator.pages.dev, [exact successful CI](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/36702127593). Isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`, health 200, anonymous protected APIs 401. [C17 review](reviews/C17.md): full suite **88 files / 2,581 tests**, typecheck/build/isolation, **84** public HTTP routes, **66** interactive light/dark/desktop/mobile cases. No production/data migration.
+- C15 chart/APY, C16 natural editing/customization and C17 landing/scope/density/result navigation are accepted. **49/52 accepted (94.2%, task count only)**; original 40/42. Mathematical feature proposals are not counted as implemented. [83-route matrix](../calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) and [bounded feature contracts](../calculator-excellence/FEATURE_CONTRACTS_2026-09-30.md) provide scope, not another tracker.
+- **Exact next task B51:** [prompt](prompts/B51.md), [prepared consent/session/cohort protocol](../calculator-excellence/B51_PILOT_PROTOCOL.md). OA-5 smallest input is two consented testers (one US/one India) and availability, using study IDs only. Do not fabricate observations or send messages without authorization. Completion needs 10 usability participants and 20 genuine plan creators with equal 45-day windows. B13 paid offer and B14 mobile remain locked.
+- A11Y-F01/F02 real-reader follow-ups plus one consolidated new-layout A11Y-F03 zoom sweep remain open in [DEFERRED_CHECKS.md](DEFERRED_CHECKS.md). No full WCAG claim; avoid repeating checks across each implementation.
 
----
+## Publication and production boundary
 
-# Historical execution context — started 2026-09-26
+**Updated stable beta:** https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev. Immutable promoted preview https://9cb7d11d.interactive-fire-calculator.pages.dev uses clean review-doc commit `e941093aaa71c3ed2de1aaa221b3342ae8da547a`; product equals accepted `9f3789b`. [Verified provider/asset mapping](evidence/C17/beta-release.json), [release protocol](BETA_RELEASE_PROTOCOL.md). All 16 runtime assets match; 84 route smoke and health/auth boundaries pass. PR #142 is merged; the combined cleanup + C15–C17 release goes through PR #141. Use the PR's observed merge state and actual Git HEAD rather than treating an accepted source SHA as the main merge SHA. Historical pre-cleanup main was `6f744ab570212042d8bbede3c9adda3f23c0f7e0`; [earlier release record](reviews/RELEASE-2026-09-29.md). Cleanup [review](reviews/REPOSITORY_HYGIENE-2026-09-29.md) remains applicable; the C15 child fixes its former dependency audit failure.
 
-Astra is architect, sole publisher and reviewer; Gemini implements. Read `CHECKPOINTS.md`, `TASK_STATUS.json`, PA-10 and the active prompt. Historical review records are not the live task ledger.
-
-## Exact code and hosted state
-
-- Branch/PR: `codex/finpath-quality-execution`, [PR #140](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/140), still separate from `main`.
-- B37 initial candidate: `0c6e35cd9720a1e79b05a1dc7baad7498848ff93` ([CI 36237024836](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/36237024836) succeeded); final two-file manifest verification fix: `83bc1a27b54203a3d30e85b85a042c5b308190fe` ([Verify run 36237336507](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/36237336507) succeeded). Reviewer closure is in `reviews/B37-closure-2026-09-26.md`. B37 hygiene made no new hosted deployment claim.
-- Last immutable isolated preview remains C09 code `c4bf784b106878e7e0c940564216ec44a72ecb38` at <https://18b043da.interactive-fire-calculator.pages.dev>, deployment `18b043da-e736-4f8f-83b0-3a0642ff6685`, bound to `finpath-preview` D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`. This preview is **not** B37 or B39 exact-code evidence. Production D1 `a5860350-0a50-4ebe-9f5f-1d9916a908e6` remains untouched.
-
-## Open work and exact next action
-
-- 30/42 tasks are accepted (71.4% by count, not effort). C09B is released in order **B39 → B42 → B36**; C10 stays locked. B39 is `changes_requested` after its first independent review: the extraction is preserved, but the claimed parity test rewrites its own baseline, normal desktop/375px browser evidence is absent, and two API parse-error paths changed. [B39 focused correction](B39_REWORK_PROMPT.md) is the exact next Gemini task. Astra publishes only after corrected local evidence and review.
-- The two untracked `scripts/hosted_smoke*` files are reserved for B42. Preserve them; they are neither B37 proof nor a permission to run hosted tests. B42 owns the C09 Version 2 revise → Version 3 hosted residual. No result for that journey is claimed yet.
-
-## Owner actions and guards
-
-- OA-1 production Clerk setup is pending for later production readiness only; it does not block free-preview B39 work. OA-2 current-index evidence untracking is done; no history rewrite.
-- No purchase, DNS change, production data write, main merge or production deployment. Production-auth preflight remains fail-closed. Native 200% zoom and actual screen reader are deferred to B31/C11 and have not passed.
-
-Verify live Git/hosted state rather than treating narrative as live state.
-
-
-## Claude takeover — completed delivery, 2026-09-26/27 (handoff to Codex verification)
-
-All work is on PR #140, branch `codex/finpath-quality-execution`, unmerged. Claude implemented, tested and hosted-verified; **no task is accepted**. Codex verifies with [CODEX_VERIFICATION_PROMPT.md](CODEX_VERIFICATION_PROMPT.md).
-
-- **Final candidate:** `f85c6dd9c092720b0b0a1070cab657458be57cb6`. Immutable preview `https://d120fe09.interactive-fire-calculator.pages.dev` (deployment `d120fe09-d666-4bf5-9a12-508650dd05f1`, preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`, migration 0009 applied there only). On it: public smoke 84/84 and hosted `c09-revise`, `c10-reports-settings`, `c11-api-boundary`, `c11-delivery`, `c11-analytics`, `b31-visual`, `b31-zoom --zoom 200` all PASS with verified cleanup. Full suite: 79 files, 2,458 tests.
-- **ready_for_review (submission in `submissions/`):** B39 `c7c5b31`, B42 `a09ff46`, B36 `a8f7422`, B29/B30 `f1db7db`, B41 `b4c7919`, B38 `2292aee` (+ `f994eca`), B12 `f994eca`, B40 `f85c6dd`, B31 `f85c6dd`.
-- **Owner-directed work outside the original task list** (2026-09-26 requests): liquid-glass theme, new light/dark palettes and landing page for discoverability (`d8991ed`); functional pass over all 83 calculators with engine corrections and goldens, library grouping and region filter (`7d087d5`). Reviewed under B40 and B31; see `docs/calculator-excellence/GAP_MATRIX.md` for what stays open.
-- **Pre-handoff independent review:** `/gstack-review` (local `codex` CLI adversarial + structured passes) found 13 defects in the calculator pass; all fixed in `f85c6dd` with regression tests and listed in `docs/calculator-excellence/GAP_MATRIX.md`. The Claude specialist sub-reviews were cut off by a session limit and were not rerun; Codex's own verification is the acceptance gate.
-- **Not done, stated plainly:** native screen-reader check (B31 blocker, needs a person with VoiceOver); production readiness needs OA-1 (Clerk production keys) and OA-3 (migration 0009 on production D1). B13/B14 stay gated on retention evidence.
-- **Next action for Codex:** run the verification prompt; record acceptance or `changes_requested` per task; release/close checkpoints C09B, C10, C11, C14 as the evidence supports. Keep PR #140 unmerged until the owner decides on production.
-
-## Primary review update — 2026-09-27
-
-Final code `f85c6dd9c092720b0b0a1070cab657458be57cb6`; immutable preview `https://d120fe09.interactive-fire-calculator.pages.dev`; PR #140 remains open and unmerged. Astra independently reran the Python-free full suite (79 files/2,458 tests), 84 public routes, and five hosted scenarios with isolated D1/Clerk cleanup. [C09B](reviews/C09B.md) and [C10](reviews/C10.md) are accepted; B39/B42/B36/B29/B30/B41/B38 are done (37/42 total accepted). C11 is released, with B12 changes requested for missing time-driven 90/120-day purge and B31 blocked on actual reader evidence. C14 remains locked; provisional B40 has NPS/XIRR claim corrections requested. Next delivery: [B12 rework](B12_REWORK_PROMPT.md), then [B31 reader gate](B31_READER_PROMPT.md); [B40 rework](B40_REWORK_PROMPT.md) may be prepared but cannot close before C11. OA-1 and OA-3 remain pending for eventual production; no main merge, production deployment or production D1 write. Earlier progress lines above are historical.
-
-## Correction round after Astra's C11/C14 review — 2026-09-27
-
-- **B40** corrected at `b3416cb` and back to `ready_for_review`: NPS annuity share is an editable example with the PFRDA All Citizen caveat; `/calculators/xirr` is labelled a modeled periodic monthly IRR with dated XIRR stated as not yet supported (gap reopened). Preview `https://ba7c620f.interactive-fire-calculator.pages.dev` (deployment `ba7c620f-26d6-47e2-8699-30b2054b3ad5`); public smoke 84/84; route checks in `evidence/B40/`.
-- **B12** corrected at `b3416cb` and back to `ready_for_review`: shared retention statements plus the scheduled Worker `finpath-analytics-retention-preview` (version `296634b2`, cron `17 3 * * *`, preview D1 only), deployed with owner authorisation and observed removing exactly the aged synthetic rows (`evidence/B12/retention-worker-b3416cb.json`). OA-4 done.
-- **B31** stays blocked on a real VoiceOver/NVDA pass ([B31_READER_PROMPT.md](B31_READER_PROMPT.md)); a person must run it.
-- Full gate at `b3416cb`: 79 files, 2,463 tests. No main merge, no production deploy, production D1 untouched.
-
-## Astra correction review — 2026-09-27
-
-B12 accepted at `b3416cb1cb8d162a11a72601c549bf460eef36c8`: independent full suite (2,463 tests), 84 public routes, deployed Worker version/cron/preview-only D1 verified through Cloudflare, and an independent synthetic scheduled test removed old event/cohort rows while retaining recent ones; cleanup zero. B40 NPS/XIRR implementation correction independently passes source, goldens, Chrome mobile/desktop and route smoke, but stays `ready_for_review` because C14 depends on B31. C11 remains released; B31 actual VoiceOver/NVDA is the next gate. C14, C12 and C13 remain locked. PR #140 unmerged; production D1 untouched. [C11 review](reviews/C11.md), [C14 review](reviews/C14.md), [sanitized record](evidence/reviewer-2026-09-27/b12-b40-correction-review.json).
-
-## B31 reader gate — 2026-09-28
-
-Actual VoiceOver pass run by Claude with the owner enabling VoiceOver scripting: `scripts/smoke/b31-reader.mjs` (`--headed`), 41/41 steps on preview `https://d0d235df.interactive-fire-calculator.pages.dev` (code `2277b80`). It found and we fixed two defects (FIRE answer not announced; disabled Calculate unreachable). B31 is `ready_for_review`; B12 is accepted; B40 waits only on C11. Limitations and full matrix in `submissions/B31.md`. Final-candidate hosted scenarios on `2277b80` are recorded in `evidence/`.
-
-## Current reviewer state — 2026-09-29
-
-B31/C11 and B40/C14 accepted at product `2277b80ce089d0ddf0caf22a21c0c809ae6a31f5`, preview `https://d0d235df.interactive-fire-calculator.pages.dev`. Ledger 40/42; B13/B14 remain open and retention-gated. Reader residuals A11Y-F01/F02 remain explicit in DEFERRED_CHECKS.md. Independent Python-excluded full suite 2,471 tests/80 files and 84 public routes passed after `4f0cd05` included Worker regressions in CI. Owner authorizes merge commits #140 then #139; merge/release sequence in progress. Production remains fail-closed on OA-1, and OA-3 is authorized only after that gate passes. Cloudflare automatic production deployment was observed disabled.
+Production preflight last verified **0/6**; automatic production deployments are disabled; canonical production remains old `3399dbb`. OA-1 requires an owned HTTPS hostname and completed Clerk production setup through [runbook sections 1–5](../PRODUCTION_AUTH_RUNBOOK.md), no keys in chat/Git. OA-3 migration authority already exists but execution stays gated by OA-1 and a restore bookmark. No production launch or purchase is implied by a Git merge or free preview promotion. [Dated launch budget](../PUBLIC_LAUNCH_BUDGET.md).

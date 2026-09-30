@@ -82,4 +82,4 @@ No confirmed reopening of B15/B16/B17; the print failure and new clipping verifi
 
 No task accepted. B32 remains `changes_requested`; C01T is released for rework only. C01I not released. Accepted total **5/34 (14.7%, task count only)**.
 
-Next exact work: repair complete print surfaces and implement/test the outcome evaluator, then complete isolated material tests and submit a stable candidate for reviewer-assisted native accessibility checks. Follow [updated rework prompt](../C01T_REWORK_PROMPT.md). No new business decision/secret is needed. Required live reader/native zoom remain explicit unperformed checks, not a claimed pass.
+Next exact work: repair complete print surfaces and implement/test the outcome evaluator, then complete isolated material tests and submit a stable candidate for reviewer-assisted native accessibility checks. Follow [updated rework prompt](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C01T_REWORK_PROMPT.md). No new business decision/secret is needed. Required live reader/native zoom remain explicit unperformed checks, not a claimed pass.

@@ -122,7 +122,7 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it('4. Collapsed summary discloses actual active return/inflation values, timing, estate, and counts', async () => {
+  it('4. Collapsed summary describes optional settings without duplicating required rates', async () => {
     await act(async () => {
       root!.render(<App auth={mockAuth} />);
     });
@@ -132,11 +132,10 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     expect(summary).not.toBeNull();
     const summaryText = summary?.textContent ?? '';
 
-    // Discloses 0.0% return, 0.0% inflation, End-year timing, $0 estate, and 0 events
-    expect(summaryText).toMatch(/0\.0% return/i);
-    expect(summaryText).toMatch(/0\.0% inflation/i);
+    expect(summaryText).toMatch(/0 extra market periods/i);
+    expect(summaryText).not.toMatch(/0\.0% return/i);
     expect(summaryText).toMatch(/end-year/i);
-    expect(summaryText).toMatch(/\$0 estate/i);
+    expect(summaryText).toMatch(/No legacy target/i);
   });
 
   it('5. Discloses visible notice that 0%/0% is a baseline simplification, not a forecast', async () => {
@@ -300,8 +299,8 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     // 1. Advanced summary shows 2 rate periods, start-year timing, $50,000 estate, and cashflows
     const summary = document.querySelector('.advanced-summary');
     expect(summary?.textContent).toMatch(/start-year/i);
-    expect(summary?.textContent).toMatch(/\$50,000 estate/i);
-    expect(summary?.textContent).toMatch(/7\.0%/);
+    expect(summary?.textContent).toMatch(/\$50,000 legacy target/i);
+    expect(summary?.textContent).toMatch(/1 extra market periods/);
     expect(summary?.textContent).toMatch(/1 event/i);
     expect(summary?.textContent).toMatch(/1 income/i);
 
@@ -317,7 +316,7 @@ describe('B35 FIRE Assumptions Transparency & Controls Architecture', () => {
     const p1Duration = periodRows[0].querySelector<HTMLInputElement>('input[min="1"]');
     const p1Rates = periodRows[0].querySelectorAll<HTMLInputElement>('input[step="0.1"]');
     expect(p1Duration?.value).toBe('15');
-    expect(p1Rates[0]?.value).toBe('7.0');
+    expect(Number(p1Rates[0]?.value)).toBe(7);
     expect(p1Rates[1]?.value).toBe('2.5');
 
     const p2Duration = periodRows[1].querySelector<HTMLInputElement>('input[min="1"]');

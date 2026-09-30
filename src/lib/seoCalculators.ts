@@ -500,7 +500,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
     ['life-insurance-needs', 'Life Insurance Needs Calculator', 'insurance', [money('income', 'Annual income to replace', 100000), number('years', 'Years of support', 10, 'yrs'), money('debts', 'Debts and final expenses', 150000), money('savings', 'Existing savings/coverage', 100000)]],
     ['lease-vs-buy', 'Lease vs Buy Calculator', 'rent-buy', [money('rent', 'Monthly lease payment', 450), money('homePrice', 'Vehicle purchase price', 35000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan rate', 7), number('loanYears', 'Loan term', 5, 'yrs'), number('years', 'Years you would keep it', 4, 'yrs')]],
-    ['roi', 'ROI Calculator', 'roi', [money('gain', 'Net gain', 5000), money('cost', 'Cost', 20000)]]
+    ['roi', 'ROI Calculator', 'roi', [{ ...money('gain', 'Net gain', 5000, 'Enter a loss with a minus sign.'), min: -Number.MAX_SAFE_INTEGER }, money('cost', 'Cost', 20000)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'capital-gains' || formula === 'gst' || formula === 'tax-rate' ? 'Tax' : 'Investing',
     description: `${title} for a quick estimate you can compare, save, or revisit later.`,
@@ -528,6 +528,9 @@ export function calculatorCurrency(calculator: SeoCalculator): 'INR' | 'USD' {
   return calculator.region === 'India' || ['gst', 'tds'].includes(calculator.slug) ? 'INR' : 'USD';
 }
 
+// Stored in the existing snapshot assumptions array; absent on historical nominal-APR HYSA runs.
+export const HYSA_APY_ASSUMPTION = 'APY includes compounding; this estimate converts it to an equivalent monthly rate.';
+
 export function calculateSeoCalculator(calculator: SeoCalculator, values: Record<string, number>): CalculatorResult {
   const get = (key: string) => Number.isFinite(values[key]) ? values[key] : 0;
   const rate = get('rate') / 100;
@@ -538,12 +541,15 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
 
   switch (calculator.formula) {
     case 'compound': {
-      const projection = projectRecurringBalance(get('principal'), get('monthly'), get('annualTopUp'), monthlyRate, months);
+      const compoundRate = calculator.slug === 'hysa' ? (1 + rate) ** (1 / 12) - 1 : monthlyRate;
+      const projection = projectRecurringBalance(get('principal'), get('monthly'), get('annualTopUp'), compoundRate, months);
       const futureValue = projection.balance;
       return result('Projected value', futureValue, 'Projected value after contributions and compounding.', [
         'Contributions are assumed monthly.',
         get('annualTopUp') > 0 ? 'The additional yearly contribution is added after every 12th monthly contribution.' : 'No additional yearly contribution is applied.',
-        'Returns are annualized and compounded monthly.'
+        ...(calculator.slug === 'hysa'
+          ? [HYSA_APY_ASSUMPTION, 'Constant APY and equivalent monthly growth are planning assumptions, not a reproduction of bank daily accrual.']
+          : ['Returns are annualized and compounded monthly.'])
       ], [
         metric('Total contributions', projection.contributions, 'currency'),
         metric('Estimated growth', futureValue - projection.contributions, 'currency', 'positive')
@@ -1115,9 +1121,9 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const uncapped = get('salary') * 15 / 26 * get('years');
       const statutoryCap = 2_000_000;
       const gratuity = Math.min(uncapped, statutoryCap);
-      return result('Estimated gratuity', gratuity, 'Fifteen days of last drawn basic plus DA for every completed year of service, capped at the statutory limit.', [
-        'Uses the Payment of Gratuity Act formula (15/26 of monthly basic plus DA per completed year).',
-        'The tax-free statutory ceiling is modelled at Rs 20,00,000; employer policies can pay more.'
+      return result('Estimated gratuity', gratuity, 'Entered monthly salary multiplied by 15/26 and service years, capped at the model’s Rs 20,00,000 assumption.', [
+        'Uses a legacy basic-plus-DA planning formula (15/26 per entered service year); current wage definitions and eligibility are not determined.',
+        'The modeled Rs 20,00,000 cap is not a determination of current entitlement or tax-free treatment; confirm the applicable Labour Code and employer terms.'
       ], uncapped > statutoryCap ? [metric('Formula amount before the cap', uncapped, 'currency', 'warning')] : []);
     }
     case 'refinance': {

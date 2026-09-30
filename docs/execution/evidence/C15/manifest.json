@@ -1,0 +1,81 @@
+{
+  "reviewer": "Astra",
+  "date": "2026-09-30",
+  "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+  "preview": "https://1d3c82ac.interactive-fire-calculator.pages.dev",
+  "ci": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/36684889361",
+  "artifacts": [
+    {
+      "path": "docs/execution/evidence/C15/raw/original-browser.json",
+      "sha256": "c0b671957b5d3acb44b81fab5a1916b8a3dbfa6cc5eeec5bcdb27b975d3cd6b3",
+      "bytes": 23959,
+      "sourceCommit": "801eabaabdee57f0df4f2ba825590ad897d7328f",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": "https://adb3197b.interactive-fire-calculator.pages.dev"
+    },
+    {
+      "path": "docs/execution/evidence/C15/raw/final-browser.json",
+      "sha256": "30d1c8b582d55cb69788408a8478dc1883c59ca97b4ffbcceefbdb32c45045cb",
+      "bytes": 29995,
+      "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": "https://1d3c82ac.interactive-fire-calculator.pages.dev"
+    },
+    {
+      "path": "docs/execution/evidence/C15/raw/interactions.json",
+      "sha256": "ead6777566923fa993147f9e6437aa38ddfb7f4b9493dbec78dc63715c4b6a02",
+      "bytes": 822,
+      "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": "https://1d3c82ac.interactive-fire-calculator.pages.dev"
+    },
+    {
+      "path": "docs/execution/evidence/C15/raw/final-suite.log",
+      "sha256": "48b94e6eb0c6f3d9428d2d6169e4507359b67e329768757f9bf574ee06a37d43",
+      "bytes": 7629,
+      "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": null
+    },
+    {
+      "path": "docs/execution/evidence/C15/raw/audit-fixed.json",
+      "sha256": "e8189ef023d05e240744177545b0bd090e5d67096dc4ed3343b8c551107f85cd",
+      "bytes": 364,
+      "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": null
+    },
+    {
+      "path": "docs/execution/evidence/C15/raw/public-smoke-final.log",
+      "sha256": "643e44c9bf8a2f5afcf77d290fa791c275fb009b0ad2e192c1d5b3df80338db4",
+      "bytes": 274,
+      "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": "https://1d3c82ac.interactive-fire-calculator.pages.dev"
+    },
+    {
+      "path": "docs/execution/evidence/C15/raw/hysa-dark.jpg",
+      "sha256": "44efb096b729042a8919fab31162d965b1c35132736a15085a8ea9acca148d51",
+      "bytes": 74185,
+      "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": "https://1d3c82ac.interactive-fire-calculator.pages.dev"
+    },
+    {
+      "path": "docs/execution/evidence/C15/raw/hysa-light.jpg",
+      "sha256": "1e0e7818825852ffc7eaa4c6ee6c1ce22c0fee6e17cfa2b10ecbb3e230260a2c",
+      "bytes": 97252,
+      "sourceCommit": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce with committed tests or the documented browser cases; raw files are not Git objects.",
+      "observedPreview": "https://1d3c82ac.interactive-fire-calculator.pages.dev"
+    }
+  ]
+}

@@ -88,7 +88,7 @@ const expectedOutputs = [
   ['heloc', 'Monthly payment', 619.928444, 'currency', 'USD'],
   ['balance-transfer', 'Estimated payoff cost savings', 1_542.716913, 'currency', 'USD'],
   ['cd', 'Maturity value', 10_920.25, 'currency', 'USD'],
-  ['hysa', 'Projected value', 30_519.03374, 'currency', 'USD'],
+  ['hysa', 'Projected value', 30_468.781877, 'currency', 'USD'],
   ['life-insurance-needs', 'Coverage need', 1_050_000, 'currency', 'USD'],
   ['lease-vs-buy', 'Monthly cost to buy', 594.035956, 'currency', 'USD'],
   ['roi', 'ROI', 0.25, 'percent', 'USD']

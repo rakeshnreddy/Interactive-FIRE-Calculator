@@ -35,4 +35,4 @@ Use git/CI output verbatim: cf350f9197b2b6b63aa01f525946c47287b71ccc is the veri
 ## Closure and next action
 
 B33 remains changes_requested; no external authorization blocker for this bounded repair. C02 stays locked. Accepted total 6/34 (17.6% by task count). Earlier UI tasks are unaffected; no UI rerender or visual score needed for this audit-only defect. No production merge, deploy, financial records or paid services used in review.
-Next: follow [bounded rework](../C01I_REWORK_PROMPT.md), add the missing regression cases, repair only the audit and attribution, rerun relevant/full tests, submit for primary review. Preserve the successful infrastructure setup.
+Next: follow [bounded rework](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C01I_REWORK_PROMPT.md), add the missing regression cases, repair only the audit and attribution, rerun relevant/full tests, submit for primary review. Preserve the successful infrastructure setup.

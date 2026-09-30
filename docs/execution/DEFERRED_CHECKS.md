@@ -1,16 +1,6 @@
-# Owner-deferred verification
+# Current deferred verification
 
-## C01T: actual screen-reader / VoiceOver check
-
-Status: DEFERRED, not passed.
-Authority: owner explicitly instructed “ignore screenreader and voiceover for now … we can come back to it later” during C01T review.
-Scope: this removes the actual-reader smoke as a C01T closure blocker only. Keyboard, focus, native zoom, contrast, semantics, error states and the production-auth guard remain required.
-Follow-up owner/task: primary reviewer, B31 final accessibility/visual quality gate. Complete a real reader/browser smoke covering public navigation, forms/errors and relevant workflows; record versions, actions, announcements, defects and retests. Keep this item open until independently verified. No full screen-reader or WCAG conformance claim is permitted meanwhile.
-The B32 evaluator records this check as DEFERRED and links this decision rather than reporting it PASS. Other checkpoints' reader requirements are unchanged unless explicitly amended by the owner.
-
-## 2026-09-28: actual VoiceOver pass executed for B31 (awaiting reviewer closure)
-
-VoiceOver (macOS 26.6.2) with Chrome 154 on preview `d0d235df` (code `2277b80`): 41/41 steps matched across the homepage, discovery/search, both result tables, FIRE inputs/errors/result, mortgage help/schedule/scenario tabs, synthetic signed-in dashboard/plans/reports/transactions/settings, menus and the 390px layout. Two defects found and fixed (FIRE result not announced; disabled Calculate unreachable). Limitations: focus-driven navigation instead of VO key chords, search empty-state announcement not verified, NVDA not tested. Evidence: `evidence/B31/b31-reader-2277b80.json`; details in `submissions/B31.md`. This note does not close the deferral; the primary reviewer does.
+Owner deferral history is in [ACCESSIBILITY_DEFERRALS.md](ACCESSIBILITY_DEFERRALS.md); this file lists current residuals.
 
 ## Reviewer closure and retained follow-ups — 2026-09-29
 
@@ -20,3 +10,9 @@ B31's original actual-reader gate is accepted by Astra under the owner's final-h
 - **A11Y-F02 — Windows/NVDA compatibility (open).** Owner: verifier with Windows and free NVDA; Astra closes. Smoke the same core discovery → calculator → saved-plan → privacy journey, natural reading order, labels, errors and live updates; retain actual phrases and defects. No paid tooling. This platform was not covered by the macOS pass. Complete before claiming cross-platform screen-reader compatibility.
 
 The native 200% final sweep is accepted from `b31-zoom-2277b80.json`; do not repeat passing cases unless a relevant UI change or a reported defect warrants it. The summary `41/41 matched` remains a collector metric only; it does not close A11Y-F01/F02.
+
+## New calculator/landing layout sweep — 2026-09-30
+
+- **A11Y-F03 — One consolidated native 200% zoom sweep (open).** Owner: verifier with interactive desktop browser; Astra closes. C15–C17 changed the landing reading order, visible customization shortcuts, scoped disclosures and explicit result actions. At the exact current accepted preview, use real desktop browser 200% UI zoom once for home/library/FIRE/mortgage/compound/savings/budget/emergency/net worth/US tax/India tax, both themes. Verify inputs/help remain reachable, disclosure focus and result headline clear the sticky bar, no clipped text/action or horizontal content loss. Fix meaningful defects with regressions. This replaces repeated per-task zoom gates; 320px responsive evidence does not count as native zoom. Earlier 2277b80 zoom evidence remains valid for that historical layout only. No automatic task rejection or broad WCAG claim from this deferral.
+
+The 2026-09-30 beta promotion also observed a 319px in-app pane: inherited html/body minimum width 320px gives exactly 1px document overflow. Contracted minimum 320px cases pass. Include this small-pane boundary in A11Y-F03; it is not a claim of a passing native-zoom case or a hidden financial/result defect.

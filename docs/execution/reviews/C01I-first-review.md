@@ -37,7 +37,7 @@ No UI/product changes in this submission; no new visual score or repeated browse
 
 B33: changes_requested, with explicit owner blocker retained. No task accepted. Total remains 6/34 (17.6% by task count). C01I remains released for its bounded rework; C02 remains locked.
 Owner input needed before remote setup: authorize changing only Pages project interactive-fire-calculator's preview DB binding to existing finpath-preview (0dbad68e-7493-452f-8504-98d4c61ee5da), plus the configuration-only bootstrap with unchanged backend and read-only checks. No production settings, migrations, financial writes or DNS changes are included. This authorization has not yet been supplied.
-Next worker instructions: [C01I rework prompt](../C01I_REWORK_PROMPT.md).
+Next worker instructions: [C01I rework prompt](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/C01I_REWORK_PROMPT.md).
 
 ## Subsequent owner amendment and configuration progress
 

@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-30",
+  "verifiedBy": "Astra",
+  "deploymentId": "1d3c82ac-afdd-4ce5-8946-7d6d39ac1496",
+  "url": "https://1d3c82ac.interactive-fire-calculator.pages.dev",
+  "aliases": [
+    "https://codex-calculator-truth-c15.interactive-fire-calculator.pages.dev"
+  ],
+  "environment": "preview",
+  "codeSha": "7192bdd13f8a7b4744df45ef296687e2abe62f9b",
+  "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+  "commitDirty": false,
+  "providerStage": "success",
+  "publicBoundaries": [
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/me",
+      "status": 401
+    },
+    {
+      "path": "/api/plans",
+      "status": 401
+    },
+    {
+      "path": "/api/calculator-results",
+      "status": 401
+    }
+  ]
+}

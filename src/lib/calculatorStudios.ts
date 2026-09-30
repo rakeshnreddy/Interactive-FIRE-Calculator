@@ -216,20 +216,22 @@ export function buildCalculatorStudioChart(
   result: CalculatorResult = calculateSeoCalculator(calculator, values)
 ): CalculatorStudioChart {
   const metadata = getCalculatorStudioMetadata(calculator);
-
-  if (metadata.chartType === 'amortization') {
-    return amortizationChart(calculator, values, metadata, result);
+  // A chart must use the same complete input state as the result, never a default loan.
+  if (calculator.inputs.some((input) => !Number.isFinite(values[input.key]))
+    || !seoCalculators.some((item) => item.formula === calculator.formula)) {
+    return unavailableChart(metadata);
   }
-
-  if (metadata.chartType === 'timeline') {
-    return timelineChart(calculator, values, result, metadata);
-  }
-
-  if (metadata.chartType === 'waterfall') {
-    return waterfallChart(calculator, values, result, metadata);
-  }
-
-  return comparisonChart(calculator, values, result, metadata);
+  const schedule = buildCalculatorDetailSchedule(calculator, values, result);
+  const model = selectedModelChart(calculator, values, result, schedule);
+  if (model) return model;
+  if (metadata.chartType === 'waterfall') return waterfallChart(calculator, values, result, metadata);
+  // A scenario comparison is a recalculated result, not an interpolated financial path.
+  return comparisonChart(calculator, values, result, {
+    ...metadata,
+    chartType: 'comparison',
+    chartTitle: 'Scenario comparison',
+    chartDescription: 'Compares the same headline result under the three explicitly labelled input scenarios.'
+  });
 }
 
 export function buildCalculatorDetailSchedule(
@@ -267,7 +269,8 @@ export function buildCalculatorDetailSchedule(
         principalKey: 'principal',
         recurringKey: 'monthly',
         recurringLabel: 'Annual deposits',
-        title: 'Contribution and growth schedule'
+        title: 'Contribution and growth schedule',
+        effectiveApy: calculator.slug === 'hysa'
       });
     case 'debt-payoff':
       return debtPayoffSchedule(calculator, normalized);
@@ -294,7 +297,7 @@ export function buildCalculatorDetailSchedule(
     case 'loan-comparison':
       return loanComparisonSchedule(calculator, normalized);
     case 'loan-eligibility':
-      return loanEligibilitySchedule(calculator, normalized);
+      return loanEligibilitySchedule(calculator, normalized, result);
     case 'loan-prepayment':
       return loanPrepaymentSchedule(calculator, normalized);
     case 'mortgage-recast':
@@ -536,116 +539,135 @@ function relationReason(current: SeoCalculator, related: SeoCalculator): string 
   return 'A useful next calculator after this estimate.';
 }
 
-function timelineChart(
-  calculator: SeoCalculator,
-  values: Record<string, number>,
-  result: CalculatorResult,
-  metadata: CalculatorStudioMetadata
-): CalculatorStudioChart {
-  const currency = calculatorCurrency(calculator);
-  const finalValue = Math.max(0, firstCurrencyMetric(result.metrics) ?? Math.abs(result.metrics[0]?.value ?? 0));
-  const startingValue = Math.max(0, firstFinite(values, ['principal', 'current', 'currentSavings', 'balance', 'corpus', 'assets', 'income']) ?? 0);
-  const years = Math.max(1, Math.round(firstFinite(values, ['years', 'retirementAge', 'delayYears']) ?? 5));
-  const totalContributions = Math.max(0, firstFinite(values, ['monthly', 'annual', 'payment', 'employee']) ?? 0) * (calculator.inputs.some((input) => input.key === 'annual') ? years : years * 12);
-  const steps = [0, 0.25, 0.5, 0.75, 1];
-
+function unavailableChart(metadata: CalculatorStudioMetadata): CalculatorStudioChart {
   return {
-    currency,
-    description: metadata.chartDescription,
-    entries: steps.map((step) => {
-      const label = step === 0 ? 'Start' : `Year ${Math.max(1, Math.round(years * step))}`;
-      const primary = interpolate(startingValue, finalValue, step);
-      const secondary = totalContributions > 0 ? totalContributions * step : undefined;
-
-      return {
-        currency,
-        label,
-        note: step === 1 ? 'Projected endpoint' : undefined,
-        primary,
-        secondary,
-        tone: step === 1 ? result.metrics[0]?.tone : 'neutral',
-        valueType: 'currency'
-      };
-    }),
-    legend: {
-      primary: 'Projected value',
-      secondary: totalContributions > 0 ? 'Contributions/payments' : undefined
-    },
-    summary: `This ${metadata.chartType} view turns the ${calculator.title.toLowerCase()} into a rough path, not just a single result.`,
-    title: metadata.chartTitle,
-    type: metadata.chartType,
-    valueType: 'currency'
+    description: 'A compatible model and complete inputs are required before showing a financial path.',
+    entries: [], legend: { primary: 'Model result' },
+    summary: 'No compatible financial path is available. Review the inputs and the result methodology.',
+    title: metadata.chartTitle, type: 'comparison'
   };
 }
 
-function amortizationChart(
+/** Explicit model policy. Temporal points are actual detail rows, never a second loan engine. */
+function selectedModelChart(
   calculator: SeoCalculator,
   values: Record<string, number>,
-  metadata: CalculatorStudioMetadata,
-  result?: CalculatorResult
-): CalculatorStudioChart {
+  result: CalculatorResult,
+  schedule: CalculatorDetailSchedule | null
+): CalculatorStudioChart | null {
   const currency = calculatorCurrency(calculator);
-  // Purchase-style inputs finance the price minus the down payment; the loan's own term wins over a comparison horizon.
-  const financedFromPrice = firstFinite(values, ['principal', 'balance']) === undefined && Number.isFinite(values.homePrice);
-  // Affordability derives the loan amount, so the chart amortises the eligible principal from the result.
-  const derivedPrincipal = calculator.formula === 'loan-eligibility' ? result?.metrics[0]?.value : undefined;
-  const principal = Math.max(0, derivedPrincipal ?? (financedFromPrice
-    ? (values.homePrice ?? 0) - Math.max(0, values.downPayment ?? 0)
-    : firstFinite(values, ['principal', 'balance', 'homePrice']) ?? 0));
-  const years = Math.max(1, firstFinite(values, ['loanYears', 'years']) ?? 5);
-  const initialRate = Math.max(0, firstFinite(values, ['rate', 'currentRate', 'newRate']) ?? 0) / 100;
-  const months = Math.max(1, Math.round(years * 12));
-  // ARM: the same reset the schedule uses (initial rate for the fixed period, then re-amortised at the adjusted rate).
-  const fixedMonths = calculator.formula === 'arm' ? Math.max(0, Math.min(Math.round((values.fixedYears ?? 0) * 12), months)) : months;
-  const adjustedRate = calculator.formula === 'arm' ? Math.max(0, values.adjustedRate ?? 0) / 100 : initialRate;
-  let rate = initialRate;
-  let payment = loanPayment(principal, rate, years);
-  const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
-  const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
-  const selectedMonths = Array.from(new Set([0, Math.round(months * 0.25), Math.round(months * 0.5), Math.round(months * 0.75), months]));
-  let balance = principal;
-  let cumulativeInterest = 0;
-  const monthRows = new Map<number, { balance: number; interest: number }>([[0, { balance, interest: 0 }]]);
-
-  for (let month = 1; month <= months; month += 1) {
-    if (month === fixedMonths + 1 && fixedMonths < months) {
-      rate = adjustedRate;
-      payment = loanPayment(balance, adjustedRate, Math.max(1 / 12, (months - fixedMonths) / 12));
-    }
-    const monthlyInterest = balance * rate / 12;
-    const paymentThisMonth = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
-    cumulativeInterest += monthlyInterest;
-    balance = Math.max(0, balance + monthlyInterest - paymentThisMonth);
-
-    if (selectedMonths.includes(month)) {
-      monthRows.set(month, { balance, interest: cumulativeInterest });
-    }
+  const costIds: Partial<Record<SeoCalculator['formula'], string[]>> = {
+    'closing-costs': ['down-payment', 'closing-costs', 'cash-to-close'],
+    'stamp-duty': ['stamp-duty', 'registration', 'total'],
+    escrow: ['tax', 'insurance', 'hoa', 'escrow']
+  };
+  const ids = costIds[calculator.formula];
+  if (ids) {
+    if (!schedule) return unavailableChart(getCalculatorStudioMetadata(calculator));
+    const costRows = schedule.rows;
+    return {
+      currency, description: schedule.description, title: schedule.title, type: 'waterfall', valueType: 'currency',
+      legend: { primary: 'Amount' }, summary: schedule.summary,
+      entries: ids.map((id) => costRows.find((row) => row.id === id))
+        .filter((row): row is CalculatorDetailScheduleRow => Boolean(row))
+        .map((row) => ({ label: String(row.values.lineItem), primary: Number(row.values.amount), note: String(row.values.note), valueType: 'currency', currency }))
+    };
+  }
+  if (calculator.formula === 'dti') {
+    const income = values.income;
+    return {
+      currency, description: 'Monthly debt obligations as a share of gross monthly income; this is not an approval decision.',
+      title: 'Debt share of monthly income', type: 'waterfall', valueType: 'percent',
+      legend: { primary: 'Share of gross income' }, summary: 'Existing debts and the proposed payment together create the displayed debt-to-income ratio.',
+      entries: [
+        { label: 'Existing debts', primary: income > 0 ? values.debts / income : 0 },
+        { label: 'Proposed payment', primary: income > 0 ? values.payment / income : 0 },
+        { label: 'Total debt-to-income ratio', primary: result.metrics[0].value }
+      ]
+    };
   }
 
-  return {
-    currency,
-    description: metadata.chartDescription,
-    entries: selectedMonths.map((month) => {
-      const row = monthRows.get(month) ?? { balance: 0, interest: cumulativeInterest };
-
-      return {
-        currency,
-        label: month === 0 ? 'Start' : `Month ${month}`,
-        note: month === months ? 'Final period' : undefined,
-        primary: row.balance,
-        secondary: row.interest,
-        tone: month === months ? 'positive' : 'neutral',
-        valueType: 'currency'
+  let primaryKey = 'endingBalance';
+  let secondaryKey: string | undefined = 'cumulativeInterest';
+  let primaryLabel = 'Remaining balance';
+  let secondaryLabel: string | undefined = 'Cumulative interest';
+  let start = loanPrincipalForSchedule(calculator, values);
+  let secondaryStart = 0;
+  let axis: 'Month' | 'Year' = 'Month';
+  let trimAtPayoff = false;
+  let type: CalculatorStudioChartType = 'amortization';
+  switch (calculator.formula) {
+    case 'loan': case 'amortization': case 'fha-loan': case 'va-loan': case 'balloon-loan': case 'biweekly-loan': break;
+    case 'loan-eligibility': {
+      start = result.metrics[0].value;
+      const capacity = result.metrics.find((metric) => metric.label === 'Maximum monthly payment')?.value;
+      if (capacity === undefined) return unavailableChart(getCalculatorStudioMetadata(calculator));
+      schedule = {
+        columns: amortizationColumns(),
+        rows: amortizationRows(start, values.rate / 100, values.years, capacity),
+        description: 'Balance schedule for the eligible principal at the entered rate and term, using the exact payment capacity from the headline model.',
+        summary: 'This is modeled financing capacity, not loan approval. Costs and lender-specific eligibility rules remain excluded.',
+        title: 'Eligible loan balance schedule'
       };
-    }),
-    legend: {
-      primary: 'Remaining balance',
-      secondary: 'Cumulative interest'
-    },
-    summary: `This preview uses the same payment math as the calculator to show how your balance declines and interest accumulates over time.`,
-    title: metadata.chartTitle,
-    type: 'amortization',
-    valueType: 'currency'
+      break;
+    }
+    case 'arm': axis = 'Year'; break;
+    case 'interest-only-loan':
+      primaryKey = 'principalStillOwed'; secondaryKey = 'amortizingBalance';
+      primaryLabel = 'Interest-only principal owed'; secondaryLabel = 'Amortizing comparator balance';
+      secondaryStart = start; axis = 'Year'; break;
+    case 'loan-prepayment':
+      primaryKey = 'prepayBalance'; secondaryKey = 'originalBalance';
+      primaryLabel = 'After prepayment balance'; secondaryLabel = 'Original loan comparator';
+      secondaryStart = start; start = Math.max(0, start - values.prepayment); trimAtPayoff = true; break;
+    case 'mortgage-recast':
+      primaryKey = 'newBalance'; secondaryKey = 'oldBalance';
+      primaryLabel = 'Recast balance'; secondaryLabel = 'Original loan comparator';
+      secondaryStart = start; start = Math.max(0, start - values.prepayment); trimAtPayoff = true; break;
+    case 'refinance':
+      primaryKey = 'newBalance'; secondaryKey = 'oldBalance';
+      primaryLabel = 'Refinanced balance'; secondaryLabel = 'Current loan comparator';
+      secondaryStart = start; start += values.closingCosts; break;
+    case 'loan-comparison':
+      primaryKey = 'optionBBalance'; secondaryKey = 'optionABalance';
+      primaryLabel = 'Option B balance'; secondaryLabel = 'Option A balance'; secondaryStart = start; break;
+    case 'debt-payoff': start = values.balance; break;
+    case 'balance-transfer':
+      primaryKey = 'promoBalance'; secondaryKey = 'currentBalance';
+      primaryLabel = 'Transfer balance'; secondaryLabel = 'Current balance';
+      start = values.balance * (1 + values.feeRate / 100); secondaryStart = values.balance; break;
+    case 'compound':
+      primaryKey = 'balance'; secondaryKey = 'cumulativeDeposits';
+      primaryLabel = 'Projected value'; secondaryLabel = 'Total deposited';
+      start = values.principal; secondaryStart = start; axis = calculator.slug === 'hysa' ? 'Month' : 'Year'; type = 'timeline'; break;
+    default: return null;
+  }
+  if (!schedule) return unavailableChart(getCalculatorStudioMetadata(calculator));
+  let rows = schedule.rows;
+  if (trimAtPayoff) {
+    const paidOff = rows.findIndex((row) => Number(row.values[primaryKey]) <= LOAN_RESIDUAL_TOLERANCE);
+    rows = start === 0 ? [] : paidOff < 0 ? rows : rows.slice(0, paidOff + 1);
+  }
+  if (rows.some((row) => !Number.isFinite(row.values[primaryKey])
+    || (secondaryKey && !Number.isFinite(row.values[secondaryKey])))) {
+    return unavailableChart(getCalculatorStudioMetadata(calculator));
+  }
+  // Sample actual rows while retaining the true final period, including capped/stalled schedules.
+  const indices = [...new Set([0.25, 0.5, 0.75, 1].map((part) => Math.max(0, Math.ceil(rows.length * part) - 1)))];
+  const entries: CalculatorChartDatum[] = [{ label: 'Start', primary: start, secondary: secondaryStart, currency, valueType: 'currency', note: start === 0 && trimAtPayoff ? 'Paid in full at the start' : undefined }];
+  if (rows.length) {
+    entries.push(...indices.map((index) => {
+      const row = rows[index];
+      const period = axis === 'Year' ? row.values.year : row.values.month ?? row.values.period;
+      return { label: `${axis} ${period}`, primary: Number(row.values[primaryKey]),
+        secondary: secondaryKey ? Number(row.values[secondaryKey]) : undefined,
+        currency, valueType: 'currency' as const, note: row.note };
+    }));
+  }
+  return {
+    currency, description: schedule.description, entries, legend: { primary: primaryLabel, secondary: secondaryLabel },
+    summary: `${secondaryKey === 'cumulativeInterest' && entries.at(-1)!.primary < start ? 'The balance declines and interest accumulates on the selected payment schedule. ' : ''}${schedule.summary} Chart points are sampled from the same table; comparator series are labelled separately.`,
+    title: schedule.title, type, valueType: 'currency'
   };
 }
 
@@ -851,54 +873,17 @@ function balanceTransferSchedule(_calculator: SeoCalculator, values: Record<stri
   };
 }
 
-function biweeklyLoanSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+function biweeklyLoanSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule {
   const principal = Math.max(0, values.principal ?? 0);
   const years = Math.max(1, values.years ?? 1);
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const monthlyPayment = loanPayment(principal, rate, years);
-  const biweeklyPayment = monthlyPayment / 2;
-  const maxPeriods = Math.min(maxMonthlyScheduleMonths * 2, Math.round(years * 26));
-  const periodRate = rate / 26;
-  let balance = principal;
-  let cumulativeInterest = 0;
-  const rows: CalculatorDetailScheduleRow[] = [];
-
-  for (let period = 1; period <= maxPeriods && balance > 0; period += 1) {
-    const interest = balance * periodRate;
-    const actualPayment = Math.min(biweeklyPayment, balance + interest);
-    const principalPaid = Math.max(0, actualPayment - interest);
-    cumulativeInterest += interest;
-    balance = Math.max(0, balance + interest - actualPayment);
-
-    rows.push({
-      id: `biweekly-${period}`,
-      note: period % 26 === 0 || balance === 0 ? `Year ${Math.ceil(period / 26)} close` : undefined,
-      values: {
-        cumulativeInterest,
-        endingBalance: balance,
-        interest,
-        payment: actualPayment,
-        period,
-        principalPaid,
-        year: Math.ceil(period / 26)
-      }
-    });
-  }
-
   return {
-    columns: [
-      textColumn('period', 'Biweekly #'),
-      textColumn('year', 'Year'),
-      moneyColumn('payment', 'Payment'),
-      moneyColumn('principalPaid', 'Principal'),
-      moneyColumn('interest', 'Interest'),
-      moneyColumn('endingBalance', 'Ending balance'),
-      moneyColumn('cumulativeInterest', 'Cumulative interest')
-    ],
-    description: 'Biweekly payment schedule using twenty-six half-payments per year.',
-    rows,
-    summary: `Shows how the extra annual payment created by biweekly timing can reduce the balance faster than a standard monthly schedule.`,
-    title: 'Biweekly payoff schedule'
+    columns: amortizationColumns(),
+    rows: amortizationRows(principal, rate, years, monthlyPayment, undefined, 0, monthlyPayment),
+    description: 'Monthly approximation of 26 half-payments per year: the regular monthly payment plus one extra monthly payment every twelfth month, matching the headline model.',
+    summary: 'This uses the same annual-extra approximation as the headline. Actual two-week accrual and servicer posting rules may produce a different payoff.',
+    title: 'Biweekly equivalent monthly payoff schedule'
   };
 }
 
@@ -1322,12 +1307,13 @@ function loanComparisonSchedule(_calculator: SeoCalculator, values: Record<strin
   };
 }
 
-function loanEligibilitySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+function loanEligibilitySchedule(_calculator: SeoCalculator, values: Record<string, number>, result: CalculatorResult): CalculatorDetailSchedule | null {
   const income = Math.max(0, values.income ?? 0);
   const debts = Math.max(0, values.debts ?? 0);
   const maxDti = Math.max(0, values.maxDti ?? 0) / 100;
-  const maxEmi = Math.max(0, income * maxDti - debts);
-  const eligibleLoan = presentValueFromPayment(maxEmi, Math.max(0, values.rate ?? 0) / 100, Math.max(1, values.years ?? 1));
+  // Capacity and principal come from the selected model (US housing and total-debt caps differ).
+  const maxEmi = result.metrics.find((metric) => metric.label === 'Maximum monthly payment')?.value ?? 0;
+  const eligibleLoan = result.metrics[0]?.value ?? 0;
 
   return lineItemSchedule({
     description: 'Eligibility breakdown from monthly income to estimated EMI capacity and supported loan amount.',
@@ -1335,7 +1321,7 @@ function loanEligibilitySchedule(_calculator: SeoCalculator, values: Record<stri
       { amount: income, id: 'income', lineItem: 'Monthly income', note: 'Gross monthly income used for this estimate.', rate: null },
       { amount: income * maxDti, id: 'target-obligation', lineItem: 'Target obligation capacity', note: 'Income multiplied by the EMI-to-income target.', rate: maxDti },
       { amount: debts, id: 'debts', lineItem: 'Existing obligations', note: 'Existing monthly EMI or debt obligations.', rate: null },
-      { amount: maxEmi, id: 'max-emi', lineItem: 'Maximum new EMI', note: 'Estimated room for the new loan payment.', rate: null },
+      { amount: maxEmi, id: 'max-emi', lineItem: 'Maximum new EMI', note: 'Payment capacity from the selected eligibility model.', rate: null },
       { amount: eligibleLoan, id: 'eligible-loan', lineItem: 'Eligible loan estimate', note: 'Loan principal supported by the EMI, rate, and tenure.', rate: null }
     ],
     summary: 'This turns a lender-style ratio into the actual payment capacity behind the eligible amount.',
@@ -1958,6 +1944,7 @@ function recurringGrowthSchedule(
   values: Record<string, number>,
   options: {
     description: string;
+    effectiveApy?: boolean;
     principalKey: string | null;
     recurringKey: string;
     recurringLabel: string;
@@ -1967,8 +1954,10 @@ function recurringGrowthSchedule(
 ): CalculatorDetailSchedule | null {
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const years = scheduleYears(values.years ?? 0);
-  const months = Math.max(1, Math.round(years * 12));
-  const monthlyRate = rate / 12;
+  const months = options.effectiveApy
+    ? Math.max(1, Math.min(maxScheduleYears * 12, Math.round(Math.max(0, values.years ?? 0) * 12)))
+    : Math.max(1, Math.round(years * 12));
+  const monthlyRate = options.effectiveApy ? (1 + rate) ** (1 / 12) - 1 : rate / 12;
   const startingBalance = options.principalKey ? Math.max(0, values[options.principalKey] ?? 0) : 0;
   let balance = startingBalance;
   let monthlyAmount = Math.max(0, values[options.recurringKey] ?? 0);
@@ -2001,6 +1990,7 @@ function recurringGrowthSchedule(
       rows.push({
         id: `year-${year}`,
         values: {
+          ...(options.effectiveApy ? { month } : {}),
           balance,
           cumulativeDeposits,
           deposits: annualDeposits,
@@ -2015,13 +2005,16 @@ function recurringGrowthSchedule(
 
   return {
     columns: [
+      ...(options.effectiveApy ? [textColumn('month', 'Month reached')] : []),
       textColumn('year', 'Year'),
       moneyColumn('deposits', options.recurringLabel),
       moneyColumn('growth', 'Estimated growth'),
       moneyColumn('cumulativeDeposits', 'Total deposited'),
       moneyColumn('balance', 'Ending value')
     ],
-    description: options.description,
+    description: options.effectiveApy
+      ? 'Annual and partial-year view using equivalent monthly growth from the entered APY, with end-month deposits and end-year top-ups.'
+      : options.description,
     rows,
     summary: scheduleCapSummary(values.years ?? years, `Shows ${rows.length} annual ${rows.length === 1 ? 'row' : 'rows'} so the result is audit-friendly without crowding the main estimate.`),
     title: options.title
@@ -3067,26 +3060,6 @@ function numberColumn(key: string, label: string, description?: string): Calcula
 
 function percentColumn(key: string, label: string, description?: string): CalculatorDetailScheduleColumn {
   return { description, key, label, valueType: 'percent' };
-}
-
-function firstFinite(values: Record<string, number>, keys: string[]): number | null {
-  for (const key of keys) {
-    if (Number.isFinite(values[key])) {
-      return values[key];
-    }
-  }
-
-  return null;
-}
-
-function firstCurrencyMetric(metrics: CalculatorMetric[]): number | null {
-  const metric = metrics.find((item) => item.valueType === 'currency' && Number.isFinite(item.value));
-  return metric?.value ?? null;
-}
-
-function interpolate(start: number, end: number, ratio: number): number {
-  const eased = ratio * ratio * (3 - 2 * ratio);
-  return start + (end - start) * eased;
 }
 
 function loanPayment(principal: number, annualRate: number, years: number): number {

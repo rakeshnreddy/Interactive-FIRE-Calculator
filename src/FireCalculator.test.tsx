@@ -467,3 +467,24 @@ describe('FIRE Calculator Flagship Refinement (B24 / V10 / V12)', () => {
     expect(recalculatedScenarios[1].deltaText).toBe('Vs planner: +$534,875');
   });
 });
+
+describe('FIRE customization discovery', () => {
+  it('exposes optional controls before the first input without filling required rates', async () => {
+    await act(async () => root!.render(<App auth={mockAuth} />));
+    const entry = container!.querySelector('[aria-label="Customize this estimate"]')!;
+    expect(entry).toBeTruthy();
+    expect(entry.compareDocumentPosition(container!.querySelector('#fire-current-age')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const action = entry.querySelector<HTMLButtonElement>('button')!;
+    await act(async () => action.click());
+    const disclosure = container!.querySelector<HTMLDetailsElement>(`#${action.getAttribute('aria-controls')}`)!;
+    expect(disclosure.open).toBe(true);
+    expect(document.activeElement).toBe(disclosure.querySelector('summary'));
+    expect(disclosure.querySelector('summary')?.textContent).not.toMatch(/Return and inflation not set/);
+    expect(container!.querySelector<HTMLInputElement>('#fire-return')?.value).toBe('');
+    const periodInputs = disclosure.querySelectorAll<HTMLInputElement>('.period-list input');
+    expect(periodInputs[1].value).toBe(''); expect(periodInputs[2].value).toBe('');
+    expect(periodInputs[1].placeholder).toMatch(/Not set/);
+    await enterRates('0', '0');
+    expect(disclosure.querySelectorAll<HTMLInputElement>('.period-list input')[1].value).toBe('0');
+  });
+});

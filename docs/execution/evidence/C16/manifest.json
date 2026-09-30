@@ -1,0 +1,49 @@
+{
+  "source_commit": "324be91322c791836bc5e5f105312944e0ec935a",
+  "preview": "https://d6cfc887.interactive-fire-calculator.pages.dev",
+  "ci": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/36694824592",
+  "artifacts": [
+    {
+      "path": "docs/execution/evidence/C16/raw/public-smoke.log",
+      "sha256": "c300f7d6a53ab73a3efc111ab4dfd2838952214b759fa9e4dd38f58a43d46314",
+      "bytes": 274,
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce the documented cases with committed tests / current browser; raw files are not Git objects."
+    },
+    {
+      "path": "docs/execution/evidence/C16/raw/full-suite.log",
+      "sha256": "309eb0ee35b9e7c7eb3aa6d3127a33dd3a95a595eec12519b309b7f2935b4c67",
+      "bytes": 7621,
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce the documented cases with committed tests / current browser; raw files are not Git objects."
+    },
+    {
+      "path": "docs/execution/evidence/C16/raw/hosted-browser.json",
+      "sha256": "91491e8470598cb1e6614f27e38bd86ccd3b2e613ff4d732ef0f3bb741a1598f",
+      "bytes": 12931,
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce the documented cases with committed tests / current browser; raw files are not Git objects."
+    },
+    {
+      "path": "docs/execution/evidence/C16/raw/contrast.json",
+      "sha256": "cdc21bace84570f5f202559632d51359063539763bb928142b60b30f59d57968",
+      "bytes": 3154,
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce the documented cases with committed tests / current browser; raw files are not Git objects."
+    },
+    {
+      "path": "docs/execution/evidence/C16/raw/dark-mobile.jpg",
+      "sha256": "d9273b092bdcb194aeafd230520cd389039f981b552b8db186324105dfd87eef",
+      "bytes": 33285,
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce the documented cases with committed tests / current browser; raw files are not Git objects."
+    },
+    {
+      "path": "docs/execution/evidence/C16/raw/local-browser.json",
+      "sha256": "df9d60b8eec67b32d76d09535526f4a93974949a191aeab8ed932e20362da117",
+      "bytes": 61354,
+      "storage": "ignored local raw artifact",
+      "recovery": "Reproduce the documented cases with committed tests / current browser; raw files are not Git objects."
+    }
+  ]
+}

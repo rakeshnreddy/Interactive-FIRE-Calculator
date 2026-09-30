@@ -12,4 +12,4 @@ Reviewer: Astra. Decision: **CHANGES_REQUESTED**. B37 remains open; B39 is locke
 
 Confirmed bounded work: all 53 PNGs and two bytecode files remain on disk after index-only untracking; the 53 currently named Git objects verify their recorded hashes; `src/lib/fire.ts` is untouched; packet validator passes 42 tasks/19 checkpoints; `git diff --check` and `git diff --cached --check` pass. No hosted PASS was claimed and `scripts/hosted_smoke*` remains excluded from B37. Because the manifest and audit have decisive faults, I have not repeated the full suite on this rejected candidate. Astra will run it on the corrected candidate and measure post-commit clones only after acceptance.
 
-Use [the focused correction prompt](../B37_HYGIENE_CORRECTION_PROMPT.md). Do not mark B37 done, release B39, commit worker files, deploy or perform hosted writes.
+Use [the focused correction prompt](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/B37_HYGIENE_CORRECTION_PROMPT.md). Do not mark B37 done, release B39, commit worker files, deploy or perform hosted writes.
