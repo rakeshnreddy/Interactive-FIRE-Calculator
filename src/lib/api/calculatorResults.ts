@@ -1,3 +1,4 @@
+import { isCalculatorModelVersion, type CalculatorModelVersion } from '../calculatorModelVersion';
 import type { CalculatorSaveRequest } from '../../CalculatorLibrary';
 import { authenticatedJsonRequest, isRecord, type SignedInAuth } from './client';
 
@@ -13,6 +14,7 @@ export type SavedCalculatorMetric = {
 };
 
 export type SavedCalculatorResultSnapshot = {
+  modelVersion?: CalculatorModelVersion;
   assumptions: string[];
   metrics: SavedCalculatorMetric[];
   narrative: string;
@@ -103,6 +105,8 @@ export function toSavedCalculatorResultSnapshot(value: unknown): SavedCalculator
     return null;
   }
 
+  if (value.modelVersion !== undefined && !isCalculatorModelVersion(value.modelVersion)) return null;
+
   const metrics = value.metrics
     .map(toSavedCalculatorMetric)
     .filter((metric): metric is SavedCalculatorMetric => Boolean(metric));
@@ -115,6 +119,7 @@ export function toSavedCalculatorResultSnapshot(value: unknown): SavedCalculator
     assumptions: Array.isArray(value.assumptions)
       ? value.assumptions.filter((assumption): assumption is string => typeof assumption === 'string')
       : [],
+    ...(isCalculatorModelVersion(value.modelVersion) ? { modelVersion: value.modelVersion } : {}),
     metrics,
     narrative: value.narrative
   };

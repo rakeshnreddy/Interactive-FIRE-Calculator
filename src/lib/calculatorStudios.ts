@@ -10,6 +10,8 @@ import {
   type SeoCalculator
 } from './seoCalculators';
 import { getCalculatorStudio, type CalculatorStudio } from './calculatorQuality';
+import { assessPayback } from './payback';
+import { assessBenefitCatchUp } from './benefitCatchUp';
 
 export const calculatorScenarioIds = ['conservative', 'base', 'optimistic'] as const;
 export type CalculatorScenarioId = (typeof calculatorScenarioIds)[number];
@@ -1616,11 +1618,11 @@ function pointsBreakEvenSchedule(_calculator: SeoCalculator, values: Record<stri
       const cumulativeSavings = monthlySavings * (index + 1);
       return {
         id: `points-${index + 1}`,
-        note: cumulativeSavings >= cost && cumulativeSavings - monthlySavings < cost ? 'Break-even month' : undefined,
+        note: monthlySavings > 0 && cost > 0 && cumulativeSavings >= cost && cumulativeSavings - monthlySavings < cost ? 'Simplified payback month' : undefined,
         values: { cumulativeSavings, month: index + 1, monthlySavings, netAfterCost: cumulativeSavings - cost }
       };
     }),
-    summary: 'The points are paid at closing, so the net column starts negative and turns positive at the break-even month.',
+    summary: `${assessPayback(monthlySavings, cost, months, 'points').message} Net saving subtracts the points paid at closing.`,
     title: 'Points break-even schedule'
   };
 }
@@ -1653,7 +1655,7 @@ function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<
       const cumulativeSavings = monthlySavings * (index + 1);
       return {
         id: `refi-${index + 1}`,
-        note: cumulativeSavings >= closingCosts && cumulativeSavings - monthlySavings < closingCosts ? 'Break-even month' : undefined,
+        note: monthlySavings > 0 && closingCosts > 0 && cumulativeSavings >= closingCosts && cumulativeSavings - monthlySavings < closingCosts ? 'Simplified payback month' : undefined,
         values: {
           cumulativeSavings,
           month: index + 1,
@@ -1664,7 +1666,7 @@ function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<
         }
       };
     }),
-    summary: 'Closing costs are carried in the net column so payment savings are not mistaken for immediate savings.',
+    summary: `${assessPayback(monthlySavings, closingCosts, years * 12, 'switching').message} Fees are financed; the net column also subtracts fees for a simplified cost-to-saving comparison, not full economic break-even.`,
     title: 'Refinance break-even schedule'
   };
 }
@@ -2428,7 +2430,8 @@ function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<strin
   const full = Math.max(0, values.full ?? 0);
   const delayYears = Math.max(0, values.delayYears ?? 0);
   const monthlyIncrease = full - early;
-  const breakEvenYears = monthlyIncrease > 0 ? early * delayYears / monthlyIncrease : delayYears;
+  const catchUp = assessBenefitCatchUp(early, full, delayYears);
+  const breakEvenYears = catchUp.years ?? 30;
   const years = Math.min(maxScheduleYears, Math.max(1, Math.ceil(delayYears + breakEvenYears + 5)));
   const rows: CalculatorDetailScheduleRow[] = [];
 
@@ -2437,7 +2440,7 @@ function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<strin
     const delayedCumulative = full * 12 * Math.max(0, year - delayYears);
     rows.push({
       id: `benefit-year-${year}`,
-      note: delayedCumulative >= earlyCumulative && year > delayYears ? 'Delayed claim catches up' : undefined,
+      note: catchUp.years !== undefined && monthlyIncrease > 0 && year >= delayYears + catchUp.years && year - 1 < delayYears + catchUp.years ? 'Delayed claim catches up' : undefined,
       values: {
         difference: delayedCumulative - earlyCumulative,
         delayedCumulative,
@@ -2456,7 +2459,7 @@ function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<strin
     ],
     description: 'Cumulative benefit comparison for early claiming versus delaying.',
     rows,
-    summary: 'Shows where the larger delayed benefit catches up after the years without payments.',
+    summary: `${catchUp.message} The table compares actual cumulative entered payments; its display horizon is capped.`,
     title: 'Benefit break-even schedule'
   };
 }

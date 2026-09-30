@@ -1,4 +1,7 @@
 import { buildCalculatorPublicContent } from './calculatorContent';
+import type { CalculatorModelVersion } from './calculatorModelVersion';
+import { assessPayback } from './payback';
+import { assessBenefitCatchUp } from './benefitCatchUp';
 
 export type CalculatorRegion = 'Global' | 'India' | 'US';
 export type CalculatorCategory = 'Borrowing' | 'Investing' | 'Planning' | 'Tax' | 'Savings';
@@ -83,6 +86,7 @@ export type CalculatorMetric = {
 };
 
 export type CalculatorResult = {
+  modelVersion?: CalculatorModelVersion;
   assumptions: string[];
   metrics: CalculatorMetric[];
   narrative: string;
@@ -744,14 +748,15 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const paymentWith = loanPayment(get('principal'), get('newRate') / 100, years);
       const savings = paymentWithout - paymentWith;
       const lifetimeSaved = savings * months - get('closingCosts');
-      return result('Monthly savings from points', savings, 'Payment difference between the two rates on the same loan; the points are paid at closing.', [
-        'Break-even is the cost of the points divided by the monthly saving.',
-        'Selling or refinancing before break-even forfeits the remaining benefit.'
+      const payback = assessPayback(savings, get('closingCosts'), months, 'points');
+      return { ...result('Monthly savings from points', savings, payback.message, [
+        'Points are paid at closing, not financed. Both offers use the same loan amount and term.',
+        'Simplified payback divides the points cost by a positive monthly payment saving; selling or refinancing can end the benefit.'
       ], [
-        metric('Break-even months', savings > 0 ? get('closingCosts') / savings : 0, 'number'),
+        ...(payback.months === undefined ? [] : [metric('Simplified payback months', payback.months, 'number')]),
         metric('Payment with points', paymentWith, 'currency'),
         metric('Lifetime saving after paying for points', lifetimeSaved, 'currency', lifetimeSaved >= 0 ? 'positive' : 'warning')
-      ]);
+      ]), modelVersion: 'payback-v2' };
     }
     case 'closing-costs': {
       const closingCosts = get('homePrice') * get('rate') / 100;
@@ -1130,10 +1135,14 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const oldPayment = loanPayment(get('principal'), get('currentRate') / 100, years);
       const newPayment = loanPayment(get('principal') + get('closingCosts'), get('newRate') / 100, years);
       const savings = oldPayment - newPayment;
-      return result('Monthly savings', savings, 'Estimated monthly payment difference after refinancing.', [], [
-        metric('Break-even months', savings > 0 ? get('closingCosts') / savings : 0, 'number'),
+      const payback = assessPayback(savings, get('closingCosts'), months, 'switching');
+      return { ...result('Monthly savings', savings, payback.message, [
+        'Closing costs are financed into the new balance. Both loans use the same entered term.',
+        'Cost divided by payment saving is a simplified comparison, not full economic break-even; it does not value time or changes in remaining term.'
+      ], [
+        ...(payback.months === undefined ? [] : [metric('Simplified payback months', payback.months, 'number')]),
         metric('New payment', newPayment, 'currency')
-      ]);
+      ]), modelVersion: 'payback-v2' };
     }
     case 'rent-buy': {
       const loanAmount = Math.max(0, get('homePrice') - get('downPayment'));
@@ -1203,14 +1212,20 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'social-security': {
       const monthlyIncrease = get('full') - get('early');
       const forgoneBenefits = get('early') * get('delayYears') * 12;
-      const breakEvenMonths = monthlyIncrease > 0 ? forgoneBenefits / monthlyIncrease : 0;
-      return result('Break-even years after delaying', breakEvenMonths / 12, 'Estimated time after delayed claiming for the higher monthly benefit to catch up.', [
-        'This simplified break-even estimate ignores COLA, taxes, survivor benefits, and investment returns.',
-        'Use it as a first-pass retirement planning comparison.'
-      ], [
+      const catchUp = assessBenefitCatchUp(get('early'), get('full'), get('delayYears'));
+      const metrics = [
         metric('Forgone early benefits', forgoneBenefits, 'currency'),
         metric('Monthly benefit increase', monthlyIncrease, 'currency', monthlyIncrease > 0 ? 'positive' : 'warning')
-      ]);
+      ];
+      return {
+        modelVersion: 'catch-up-v2',
+        assumptions: [
+          'This simplified comparison ignores COLA, taxes, survivor benefits, longevity and investment returns.',
+          'Both benefits and the waiting period are your entries, not estimates of eligibility or benefits.'
+        ],
+        narrative: catchUp.message,
+        metrics: catchUp.years === undefined ? metrics : [metric('Break-even years after delaying', catchUp.years, 'years', 'accent', catchUp.message), ...metrics]
+      };
     }
     case 'insurance': {
       const need = Math.max(0, get('income') * get('years') + get('debts') - get('savings'));

@@ -1,5 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
+import { isCalculatorModelVersion, modelVersionForCalculator, type CalculatorModelVersion } from '../../src/lib/calculatorModelVersion';
 import { readAccount, type AccountCreatePayload, type FinancialAccount } from './accounts';
 import { readGoal, type Goal, type GoalCreatePayload } from './goals';
 import { ensureUserProfile } from './persistence';
@@ -23,6 +24,7 @@ export type CalculatorMetricSnapshot = {
 };
 
 export type CalculatorResultSnapshot = {
+  modelVersion?: CalculatorModelVersion;
   assumptions: readonly string[];
   metrics: readonly CalculatorMetricSnapshot[];
   narrative: string;
@@ -591,6 +593,10 @@ export function parseCalculatorSavePayload(
   const result = parseCalculatorResult(value.result);
   if (!result.ok) return result;
 
+  if (result.value.modelVersion !== undefined && result.value.modelVersion !== modelVersionForCalculator(calculatorSlug.value)) {
+    return { error: 'result.modelVersion does not match this calculator.', ok: false };
+  }
+
   const parsedValue: CalculatorSavePayload = {
     calculatorCategory: calculatorCategory.value,
     calculatorRegion: calculatorRegion.value,
@@ -948,6 +954,9 @@ function parseCalculatorResult(value: unknown):
     return { error: 'result must be a JSON object.', ok: false };
   }
 
+  if (value.modelVersion !== undefined && !isCalculatorModelVersion(value.modelVersion)) {
+    return { error: 'result.modelVersion is not supported.', ok: false };
+  }
   const narrative = parseRequiredText(value.narrative, 'result.narrative', 600);
   if (!narrative.ok) return narrative;
 
@@ -971,6 +980,7 @@ function parseCalculatorResult(value: unknown):
     ok: true,
     value: {
       assumptions,
+      ...(isCalculatorModelVersion(value.modelVersion) ? { modelVersion: value.modelVersion } : {}),
       metrics,
       narrative: narrative.value
     }
@@ -1157,7 +1167,8 @@ export async function hashCalculatorPayload(payload: CalculatorSavePayload): Pro
         value: metric.value,
         valueType: metric.valueType
       })),
-      narrative: payload.result.narrative
+      narrative: payload.result.narrative,
+      ...(payload.result.modelVersion ? { modelVersion: payload.result.modelVersion } : {})
     }
   };
 

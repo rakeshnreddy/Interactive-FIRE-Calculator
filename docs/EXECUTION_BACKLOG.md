@@ -611,3 +611,49 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Tests: Predicate, post-render mount, action/invalid/edit gates, focused UI and full suite; math goldens unchanged.
   - Security/privacy/dependencies: B46; public synthetic examples only; no hosted financial write.
   - Migration/rollback: None; revert scoped UI/helper together. Human estimate 3–5 hours; agent estimate 45–90 minutes plus actual verification, not a completion guarantee.
+
+## Independent calculator functionality — owner continuation 2026-09-30
+
+- [ ] **B53 — Truthful refinancing and points payback states.**
+  - User problem/evidence: reproduced omissions in the existing F-01 contract; [bounded scope](execution/prompts/B53.md).
+  - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
+  - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.
+  - Files: calculator engine/route adapter, studio/schedule metadata, input validators, save parser/hash/export/client adapters and focused tests as needed. Follow current imports; stale paths are not a reason for duplicate modules.
+  - Acceptance: all contract fixtures and negative cases; invalid/raw recovery, keyboard and light/dark/mobile layout; actual saved parser roundtrip and old snapshots unchanged; no invented zero result or misleading unit.
+  - Analytics: existing consented action categories only; no dates, amounts or identifiers collected.
+  - Tests: independent formula goldens, consumer/persistence/legacy/export regressions, focused UI checks and final full suite/CI plus isolated preview changed journey and public smoke.
+  - Security/privacy/dependencies: B50; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
+  - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.
+
+- [ ] **B56 — Social Security no-catch-up semantics.**
+  - User problem/evidence: reproduced omissions in the existing SSA contract; [bounded scope](execution/prompts/B56.md).
+  - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
+  - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.
+  - Files: calculator engine/route adapter, studio/schedule metadata, input validators, save parser/hash/export/client adapters and focused tests as needed. Follow current imports; stale paths are not a reason for duplicate modules.
+  - Acceptance: all contract fixtures and negative cases; invalid/raw recovery, keyboard and light/dark/mobile layout; actual saved parser roundtrip and old snapshots unchanged; no invented zero result or misleading unit.
+  - Analytics: existing consented action categories only; no dates, amounts or identifiers collected.
+  - Tests: independent formula goldens, consumer/persistence/legacy/export regressions, focused UI checks and final full suite/CI plus isolated preview changed journey and public smoke.
+  - Security/privacy/dependencies: B53; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
+  - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.
+
+- [ ] **B54 — Dated cash-flow return with bounded solver and versioned persistence.**
+  - User problem/evidence: reproduced omissions in the existing F-02 contract; [bounded scope](execution/prompts/B54.md).
+  - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
+  - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.
+  - Files: calculator engine/route adapter, studio/schedule metadata, input validators, save parser/hash/export/client adapters and focused tests as needed. Follow current imports; stale paths are not a reason for duplicate modules.
+  - Acceptance: all contract fixtures and negative cases; invalid/raw recovery, keyboard and light/dark/mobile layout; actual saved parser roundtrip and old snapshots unchanged; no invented zero result or misleading unit.
+  - Analytics: existing consented action categories only; no dates, amounts or identifiers collected.
+  - Tests: independent formula goldens, consumer/persistence/legacy/export regressions, focused UI checks and final full suite/CI plus isolated preview changed journey and public smoke.
+  - Security/privacy/dependencies: B56; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
+  - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.
+
+- [ ] **B55 — Vehicle lease/buy net cost with explicit resale equity.**
+  - User problem/evidence: reproduced omissions in the existing F-03 contract; [bounded scope](execution/prompts/B55.md).
+  - Outcome/scope: fulfill its independently derived fixtures, intentional result states, visuals/data equivalents and immutable history contract. No market forecasts or eligibility/advice claim.
+  - Non-goals: banks/imports/paid services, production, unbounded features, FIRE arithmetic changes.
+  - Files: calculator engine/route adapter, studio/schedule metadata, input validators, save parser/hash/export/client adapters and focused tests as needed. Follow current imports; stale paths are not a reason for duplicate modules.
+  - Acceptance: all contract fixtures and negative cases; invalid/raw recovery, keyboard and light/dark/mobile layout; actual saved parser roundtrip and old snapshots unchanged; no invented zero result or misleading unit.
+  - Analytics: existing consented action categories only; no dates, amounts or identifiers collected.
+  - Tests: independent formula goldens, consumer/persistence/legacy/export regressions, focused UI checks and final full suite/CI plus isolated preview changed journey and public smoke.
+  - Security/privacy/dependencies: B54; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
+  - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.

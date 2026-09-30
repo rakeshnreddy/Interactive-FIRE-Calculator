@@ -1005,4 +1005,21 @@ describe('B04: atomic, retry-safe calculator save with real SQLite D1 harness', 
     expect(retry.saveStatus).toBe('retry');
     expect(retry.createdEntity?.id).toBe(planId);
   });
+
+describe('versioned interpretation persistence', () => {
+  it.each(['payback-v2','catch-up-v2'] as const)('retains %s in stored JSON, retries and tenant-scoped reads', async modelVersion => {
+    const { database, sqlite } = createRealD1();
+    const payload: CalculatorSavePayload = { ...validPayload, calculatorSlug: modelVersion === 'payback-v2' ? 'mortgage-refinance' : 'social-security-break-even', conversionRoute: '/plans', idempotencyKey: 'synthetic-versioned', result: {...validPayload.result, modelVersion} };
+    const first = await createSavedCalculatorResult(database, 'synthetic-version-A', payload);
+    expect(first.savedResult.result.modelVersion).toBe(modelVersion);
+    const retry = await createSavedCalculatorResult(database,'synthetic-version-A',payload);
+    expect(retry.saveStatus).toBe('retry');expect(retry.savedResult.id).toBe(first.savedResult.id);
+    expect((await listSavedCalculatorResults(database,'synthetic-version-A'))[0].result.modelVersion).toBe(modelVersion);
+    expect(await listSavedCalculatorResults(database,'synthetic-version-B')).toEqual([]);
+    const row = sqlite.prepare('SELECT result_json FROM saved_calculator_results WHERE id = ?').get(first.savedResult.id) as {result_json:string};
+    expect(JSON.parse(row.result_json).modelVersion).toBe(modelVersion);
+  });
+});
+
+
 });

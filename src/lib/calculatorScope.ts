@@ -121,7 +121,7 @@ const definitions: Record<string, ScopeDefinition> = {
   'social-security-break-even': {
     included: 'Forgone benefits while waiting, compared with the entered monthly increase.',
     excluded: 'Benefit estimation, COLA, taxes, survivor benefits, longevity and investment returns.',
-    basis: v => `Delay ${v.delayYears} years; both monthly benefits are your entries. If the later benefit is not higher, the current model returns zero rather than finding a catch-up date; that does not mean immediate break-even.`,
+    basis: v => `Delay ${v.delayYears} years; both monthly benefits are your entries. A later benefit that is not higher has no finite catch-up. A zero waiting period or no early benefits is labelled separately; neither estimates eligibility.`,
     sources: [source('SSA: retirement benefits and estimates', 'https://www.ssa.gov/retirement')]
   },
   rmd: {

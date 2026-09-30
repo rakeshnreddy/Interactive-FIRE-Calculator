@@ -853,7 +853,67 @@
       "owner": "Astra direct preparation and verification; owner recruitment",
       "code_sha": null,
       "review": null,
-      "blocked_reason": "OA-5: no consented real participants or genuine return cohort observed yet. Protocol prepared; participant availability and equal elapsed observation windows required."
+      "blocked_reason": "Owner deferred real-user validation on 2026-09-30. No participant/return evidence observed; task is not passed and does not block C19\u2013C21."
+    },
+    {
+      "id": "B53",
+      "title": "Truthful refinancing and points payback states",
+      "checkpoint": "C19",
+      "status": "pending",
+      "dependencies": [
+        "B50"
+      ],
+      "prompt": "prompts/B53.md",
+      "submission": null,
+      "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B56",
+      "title": "Social Security no-catch-up semantics",
+      "checkpoint": "C19",
+      "status": "pending",
+      "dependencies": [
+        "B53"
+      ],
+      "prompt": "prompts/B56.md",
+      "submission": null,
+      "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B54",
+      "title": "Dated cash-flow return with bounded solver and versioned persistence",
+      "checkpoint": "C20",
+      "status": "pending",
+      "dependencies": [
+        "B56"
+      ],
+      "prompt": "prompts/B54.md",
+      "submission": null,
+      "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B55",
+      "title": "Vehicle lease/buy net cost with explicit resale equity",
+      "checkpoint": "C21",
+      "status": "pending",
+      "dependencies": [
+        "B54"
+      ],
+      "prompt": "prompts/B55.md",
+      "submission": null,
+      "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [
@@ -899,7 +959,7 @@
       "blocking_task": "B51 observed user/return evidence only; earlier code checkpoints may proceed",
       "requested_date": "2026-09-29",
       "status": "pending",
-      "resolution": "Prepared B51 pilot protocol. First smallest input: availability for two consented testers (one US/one India), using study IDs only. Full gates still require 10 usability observations and 20 genuine plan creators with equal 45-day return windows; no recruitment or synthetic PASS."
+      "resolution": "Owner deferred recruitment/real validation on 2026-09-30; do not request participants during independent calculator implementation. B51 is open; paid/mobile evidence gates remain unproven."
     }
   ]
 }

@@ -96,7 +96,7 @@ The primary thesis stays **understand a decision, save it, revisit actual progre
 
 ## F-01 — truthful payback states before more refinancing controls
 
-**Proposed future task B53 (not registered/released).** User problem: the current `refinance`/`points` cases return numeric zero months when monthly savings are not positive. Zero looks like immediate recovery. Affected aliases: mortgage-refinance, home-loan-balance-transfer-india, mortgage-points. Do not extend this contract to other formulas without reproducing their state.
+**B53 registered/released by owner continuation 2026-09-30.** User problem: the current `refinance`/`points` cases return numeric zero months when monthly savings are not positive. Zero looks like immediate recovery. Affected aliases: mortgage-refinance, home-loan-balance-transfer-india, mortgage-points. Do not extend this contract to other formulas without reproducing their state.
 
 **Implement one change:** add an explicit payback display state: `no-payment-saving`, `no-upfront-cost`, `payback-within-horizon`, `payback-after-horizon`. For positive savings and positive cost, existing cost/savings arithmetic can remain a clearly labeled simplified payback estimate. For nonpositive savings, omit the numeric payback metric and show “No payment saving in this model”; never encode undefined payback as zero/Infinity. For positive savings with zero cost, zero payback is legitimate and labeled “No switching/points cost entered.” A fee-financed refinance is NOT a proven full economic break-even: disclose the existing financed-fee and same-term approximation. Independent terms, fee-mode controls, amortization/equity NPV and prepayment penalties need their own later contract.
 
@@ -117,7 +117,7 @@ Likely files: seoCalculators.ts, generic result DTO/rendering, calculatorDetailS
 
 ## F-02 — explicit dated cash-flow return, preserving monthly mode
 
-**Proposed future task B54 (not registered/released).** User problem: `/xirr` currently computes a periodic monthly IRR for equal contributions. Preserve that honest mode and add a separately labeled dated mode for statement cash flows; investment-return/CAGR may link to it, not silently change their formula.
+**B54 registered; awaits C19 acceptance.** User problem: `/xirr` currently computes a periodic monthly IRR for equal contributions. Preserve that honest mode and add a separately labeled dated mode for statement cash flows; investment-return/CAGR may link to it, not silently change their formula.
 
 **Source and formula:** [Microsoft XIRR definition](https://support.microsoft.com/en-us/excel/functions/xirr-function), checked 2026-09-30. Solve `sum(C_i/(1+r)^((date_i-date_0)/365))=0`, r>-1. Use UTC calendar-day differences and signed cash flows. A source's implementation example is not our test oracle; independently derived fixtures below are the acceptance oracle.
 
@@ -138,7 +138,7 @@ Likely files: new pure lib/datedReturns.ts and tests, route mode adapter, dedica
 
 ## F-03 — vehicle lease/buy comparison with residual equity
 
-**Proposed future task B55 (not registered/released).** User problem: the shared rent-buy model credits loan principal reduction but does not value depreciation/resale or purchase down payment as economic cost. The vehicle alias needs its own model. Preserve housing `/rent-vs-buy` and its existing amortization behavior.
+**B55 registered; awaits C20 acceptance.** User problem: the shared rent-buy model credits loan principal reduction but does not value depreciation/resale or purchase down payment as economic cost. The vehicle alias needs its own model. Preserve housing `/rent-vs-buy` and its existing amortization behavior.
 
 **Decision and source:** compare net cash cost at the same ownership horizon; [FTC financing/leasing guidance](https://consumer.ftc.gov/articles/financing-or-leasing-car), checked 2026-09-30, distinguishes use payments from ownership and explains lease depreciation/fees. User resale value is an assumption, never a market forecast. Mathematical convention: `buyNetCost = downPayment + paymentsPaid + remainingLoan - resaleValue`; `leaseCost = leaseUpfront + leaseMonthly * horizonMonths`. Regular loan payments cease at payoff. Rate/term are the loan's; horizon is independent.
 
@@ -163,3 +163,5 @@ Astra decision for this pass: F-01/F-02/F-03 are ready as **unregistered proposa
 ## Validation and rollback of this planning document
 
 Coverage: exactly 83 distinct route rows, same slugs/order as the matrix; each has one explicit disposition. All B49 scope omissions are represented and all B50 rows have a bounded next capability. Three complete contracts include independent arithmetic and version/rollback decisions. No financial formulas or saved data were changed by B50. The independent Decimal calculations are recorded under C17 compact evidence; full product tests belong to the final code checkpoint, not this documentation edit. Links/source availability limits are recorded in the C17 review; a located official document is not proof every current legal rule was implemented.
+
+Owner continuation amendment 2026-09-30: supersedes the earlier unregistered sequencing decision. B51 is deferred; B53–B55 plus SSA residual B56 are now canonical work. Existing contracts and formula/migration acceptance criteria remain binding. No paid/production gate is waived.
