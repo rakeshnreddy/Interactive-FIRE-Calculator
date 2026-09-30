@@ -2080,7 +2080,7 @@ body {
 .landing-actions a { text-decoration: none; }
 
 /* Dated cash-flow mode: compact controls, explicit direction, exact data beside the visual. */
-.calculator-mode-choice { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:16px; margin-block:16px; padding:16px; border:1px solid var(--color-border); border-radius:var(--radius-lg); background:var(--color-surface); color:var(--color-body); }
+.calculator-mode-choice { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:16px; margin-block:16px; padding:16px; border:1px solid var(--color-border); border-radius:var(--radius-panel); background:var(--color-surface); color:var(--color-body); }
 .calculator-mode-choice p { margin:4px 0 0; max-width:65ch; }
 .calculator-mode-actions,.dated-result-actions { display:flex; flex-wrap:wrap; gap:8px; }
 .calculator-mode-actions button,.dated-result-actions button { min-height:44px; }
@@ -2121,13 +2121,13 @@ body {
 .vehicle-group p,.vehicle-continuation p { font-size:.875rem; line-height:1.5; margin:8px 0; color:var(--color-muted); }
 .vehicle-field { display:grid; align-content:start; gap:6px; min-width:0; font-size:.875rem; }
 .vehicle-field > span { font-weight:600; }
-.vehicle-field input { width:100%; min-width:0; min-height:44px; padding:10px 12px; border:1px solid var(--color-control-border); border-radius:var(--radius-md); background:var(--color-surface); color:var(--color-heading); font-size:1rem; }
+.vehicle-field input { width:100%; min-width:0; min-height:44px; padding:10px 12px; border:1px solid var(--color-control-border); border-radius:var(--radius-control); background:var(--color-surface); color:var(--color-heading); font-size:1rem; }
 .vehicle-field input:focus-visible { outline:3px solid var(--color-focus); outline-offset:2px; }
 .vehicle-field small { line-height:1.5; color:var(--color-muted); }
-.vehicle-continuation { margin-block:12px; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface); }
+.vehicle-continuation { margin-block:12px; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-control); background:var(--color-surface); }
 .vehicle-continuation > label { display:flex; align-items:center; gap:10px; min-height:44px; font-weight:600; font-size:.875rem; }
 .vehicle-continuation input[type=checkbox] { width:20px; height:20px; flex:none; accent-color:var(--color-data-1); }
-.vehicle-cost-visual,.vehicle-equity-visual { margin:16px 0; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-md); }
+.vehicle-cost-visual,.vehicle-equity-visual { margin:16px 0; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-control); }
 .vehicle-cost-visual figcaption,.vehicle-equity-visual figcaption { display:grid; gap:4px; font-size:.875rem; line-height:1.5; }
 .vehicle-cost-visual figcaption span,.vehicle-equity-visual figcaption span { color:var(--color-muted); }
 .vehicle-cost-row { margin-top:12px; font-size:.875rem; }

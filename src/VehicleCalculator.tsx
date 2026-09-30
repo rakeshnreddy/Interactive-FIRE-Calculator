@@ -50,7 +50,7 @@ export function VehicleCalculator({ auth, calculator, onSaveResult, savedResults
   };
   const history = savedResults.filter(r => r.calculatorSlug === calculator.slug).slice(0,6);
   return <section className="calculator-library calculator-detail route-shell" aria-labelledby="vehicle-title">
-    <div className="route-heading"><p className="eyebrow">Vehicle decision · USD / INR and more</p><h1 id="vehicle-title">Lease or buy: what will it really cost?</h1><p>Compare both options over the same period. Include what you could sell the car for and the loan you would still owe.</p></div>
+    <div className="route-heading"><p className="eyebrow">Vehicle decision</p><h1 id="vehicle-title">Lease or buy: what will it really cost?</h1><p>Compare both options over the same period. Include what you could sell the car for and the loan you would still owe.</p></div>
     <div className="calculator-detail-grid">
       <section className="calculator-input-panel" aria-label="Vehicle comparison inputs">
         <div className="panel-heading"><h2>Your terms</h2><button className="secondary-button" type="button" onClick={useExample}>Use example terms</button></div>
