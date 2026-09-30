@@ -2076,3 +2076,5 @@ body {
 .calculator-scope ul { padding-left: var(--space-4); margin-bottom: 0; }
 .calculator-scope a { color: var(--color-primary-ink); text-decoration: underline; overflow-wrap: anywhere; }
 .calculator-scope a, .calculator-scope summary { scroll-margin-top: 88px; }
+
+.landing-actions a { text-decoration: none; }

@@ -101,7 +101,9 @@ describe('B39 App Parity Verification (Read-Only against Immutable Baseline)', (
     const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
     expect(candidateHtml).toContain('FinPath');
     expect(candidateHtml).toContain('landing-hero');
-    expect(candidateHtml).toContain('Browse all calculators');
+    const page = document.createElement('div');
+    page.innerHTML = candidateHtml;
+    expect(page.querySelector('.landing-actions a[href="/calculators"]')).not.toBeNull();
   });
 
   // B39's exact-hash proof for this route is recorded in its review. B36 intentionally changed the
