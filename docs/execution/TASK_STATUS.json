@@ -784,76 +784,76 @@
       "id": "B46",
       "title": "Guide landing/library choices with intentional light and dark hierarchy",
       "checkpoint": "C17",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B44"
       ],
       "prompt": "prompts/B46.md",
-      "submission": null,
+      "submission": "submissions/B46.md",
       "owner": "Astra direct implementation and primary verification; no Gemini this pass",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "review": "reviews/C17.md",
       "blocked_reason": null
     },
     {
       "id": "B52",
       "title": "Compact calculator spacing and reveal results after explicit actions",
       "checkpoint": "C17",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B46"
       ],
       "prompt": "prompts/B52.md",
-      "submission": null,
+      "submission": "submissions/B52.md",
       "owner": "Astra direct implementation and primary verification; owner addition 2026-09-30",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "review": "reviews/C17.md",
       "blocked_reason": null
     },
     {
       "id": "B49",
       "title": "Make calculator scope, assumptions and rule provenance explicit",
       "checkpoint": "C17",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B52"
       ],
       "prompt": "prompts/B49.md",
-      "submission": null,
+      "submission": "submissions/B49.md",
       "owner": "Astra direct implementation and primary verification; no Gemini this pass",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "review": "reviews/C17.md",
       "blocked_reason": null
     },
     {
       "id": "B50",
       "title": "Turn remaining per-calculator feature gaps into bounded formula contracts",
       "checkpoint": "C17",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B49"
       ],
       "prompt": "prompts/B50.md",
-      "submission": null,
+      "submission": "submissions/B50.md",
       "owner": "Astra direct implementation and primary verification; no Gemini this pass",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "review": "reviews/C17.md",
       "blocked_reason": null
     },
     {
       "id": "B51",
       "title": "Validate discoverability, first value and genuine saved-plan return",
       "checkpoint": "C18",
-      "status": "pending",
+      "status": "blocked",
       "dependencies": [
         "B50"
       ],
       "prompt": "prompts/B51.md",
       "submission": null,
-      "owner": "Gemini implementation worker; Astra closure",
+      "owner": "Astra direct preparation and verification; owner recruitment",
       "code_sha": null,
       "review": null,
-      "blocked_reason": null
+      "blocked_reason": "OA-5: no consented real participants or genuine return cohort observed yet. Protocol prepared; participant availability and equal elapsed observation windows required."
     }
   ],
   "owner_actions": [
@@ -899,7 +899,7 @@
       "blocking_task": "B51 observed user/return evidence only; earlier code checkpoints may proceed",
       "requested_date": "2026-09-29",
       "status": "pending",
-      "resolution": "Ten usability participants (5 US/5 India) plus twenty genuine plan creators; no messages or recruitment performed by Astra."
+      "resolution": "Prepared B51 pilot protocol. First smallest input: availability for two consented testers (one US/one India), using study IDs only. Full gates still require 10 usability observations and 20 genuine plan creators with equal 45-day return windows; no recruitment or synthetic PASS."
     }
   ]
 }

@@ -1,0 +1,86 @@
+{
+  "candidate_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+  "suite_source_equivalence": "8c2d313 to 9f3789b changes documentation only; exact 9f3789b CI also passed.",
+  "artifacts": [
+    {
+      "path": "docs/execution/evidence/C17/raw/full-suite.log",
+      "sha256": "95d4a17c05633462e2bd28daf48f66c30279f939c9ac5b355dba195b81ba6ce2",
+      "bytes": 7626,
+      "source_sha": "8c2d31306219032e8089519154db60f986b4f27d",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/public-smoke.log",
+      "sha256": "9719abab13512e22ee5a59942bac96352c66ea702e31338128c4862ac42e0f45",
+      "bytes": 274,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/hosted-cases.json",
+      "sha256": "a9fc94d865d39645ec3366d388473c94618d500882381a50c63563b179e71155",
+      "bytes": 21623,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/hosted-journeys.json",
+      "sha256": "900616b8e148a6008c4b965602af8fa07f56463f9dec7f783a5b6e129acc9c0f",
+      "bytes": 1528,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/hosted-secondary.json",
+      "sha256": "1bbc7ce982c5185fa211e32275c2369a4ad42b8bd6fbb059c25e9734a1012729",
+      "bytes": 868,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/contrast-density.json",
+      "sha256": "a52c004267d45cbc98dedc83c5d2c63b160748f34c45465f09fd24ebf6e1694a",
+      "bytes": 3065,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/calculator-light-desktop.jpg",
+      "sha256": "78dbe513899e6b7698ba8bef491a830a933139ae013bdd960e32fed48fe7b50c",
+      "bytes": 78376,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/calculator-dark-desktop.jpg",
+      "sha256": "071920f0a5b2da2cb862fc826b83ecb331e14cae6b68c17130c44082ea33ab36",
+      "bytes": 77041,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/landing-dark-desktop.jpg",
+      "sha256": "4ed9b0d25ed538377aa3e01d019f43f42f892b0d9b9249e1048976fe010039ad",
+      "bytes": 61039,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    },
+    {
+      "path": "docs/execution/evidence/C17/raw/landing-light-mobile.jpg",
+      "sha256": "a7d5382fbd4c4b057e271fe46d68fed7958278023d082d88558547eda513c291",
+      "bytes": 36640,
+      "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+      "storage": "ignored local raw artifact",
+      "recovery": "Not a Git object. Reproduce using committed tests and the documented hosted cases; these hashes identify the observed local artifacts."
+    }
+  ]
+}

@@ -499,7 +499,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
 
 ## Fresh calculator/landing UX increments — 2026-09-29
 
-The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. B47/B48 and B45/B43/B44 are accepted on their exact C15/C16 candidates; C17 is released. Only Astra can accept items.
+The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. B47/B48 and B45/B43/B44 are accepted on their exact C15/C16 candidates; C17 is accepted on `9f3789b`; C18 is released with B51 blocked on real participant evidence. Only Astra can accept items.
 
 - [x] **B47 — Correct calculator visuals that invent or contradict the selected model.**
   - User problem/evidence: UX-01/UX-02: closing-cost and stamp-duty charts invent loans; interest-only/recast/prepayment/biweekly charts contradict outputs.
@@ -556,7 +556,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: Presentation only, no data/engine migration; rollback component/CSS grouping together.
   - Effort: 4–8 worker hours.
 
-- [ ] **B46 — Guide landing/library choices with intentional light and dark hierarchy.**
+- [x] **B46 — Guide landing/library choices with intentional light and dark hierarchy.**
   - User problem/evidence: UX-09/10/11: mobile question toolkits begin at y1766; repeated paths and a dense illustration compete for attention.
   - Outcome/scope: Visitors choose a relevant question quickly, see honest value, and understand the optional saved-plan loop. Implement only [the detailed contract](execution/prompts/B46.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/App.tsx (LandingPage and public header); src/lib/landingContent.ts; src/HeroFireExample.tsx; src/CalculatorLibrary.tsx (library discovery); src/vivid-theme.css; DESIGN.md; landing/library tests`.
@@ -567,18 +567,18 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No migration; revert presentation/copy/tokens as a bounded set; preserve routes and original example formulas.
   - Effort: 6–12 worker hours plus design review.
 
-- [ ] **B49 — Make calculator scope, assumptions and rule provenance explicit.**
+- [x] **B49 — Make calculator scope, assumptions and rule provenance explicit.**
   - User problem/evidence: UX-12 and row-level findings: simplified tax/benefit/insurance/HELOC models have broader names; balance-transfer registry text contradicts its promo boundary.
   - Outcome/scope: Users understand exactly what the result includes and what remains outside it. Implement only [the detailed contract](execution/prompts/B49.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/calculatorContent.ts; src/lib/calculatorQuality.ts; src/lib/seoCalculators.ts (copy/metadata only); scoped result notices; content tests`.
   - Acceptance: Every assigned route has an honest adjacent scope block derived from its real inputs/model, with appropriate country/year and sources where factual. No claim of approval, eligibility, tax filing accuracy, personalized advice, guarantee or current statutory rate unless proven. Balance-transfer text no longer says promo lasts until payoff when duration is finite. Existing correctly modeled state/local placeholder, rent-buy ownership/equity and monthly-IRR caveats are preserved. Copy is shorter in first layer; details remain available. No financial outputs change for identical inputs.
   - Analytics: No new telemetry or personal data; outbound official links do not embed entered values.
   - Tests: Per-route content assertions against supported input/model metadata, internal-copy guard and shared output goldens; full suite. Record source/date by route.
-  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B46; no secrets/raw financial values in evidence.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B52; no secrets/raw financial values in evidence.
   - Migration/rollback: Copy/metadata only; no data migration. Revert any misleading source/date claim immediately.
   - Effort: 4–8 worker hours plus official-source research.
 
-- [ ] **B50 — Turn remaining per-calculator feature gaps into bounded formula contracts.**
+- [x] **B50 — Turn remaining per-calculator feature gaps into bounded formula contracts.**
   - User problem/evidence: The individual matrix identifies useful missing controls and decision-specific outputs; implementing them all as one universal template would introduce risk.
   - Outcome/scope: Every remaining feature has a small, sourced and testable implementation slice; no broad feature bundle or unearned completion claim. Implement only [the detailed contract](execution/prompts/B50.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `docs/calculator-excellence/ feature contracts; docs/execution/prompts/ proposed child prompts; candidate updates for canonical trackers (Astra applies them)`.
@@ -601,7 +601,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Effort: 2–4 hours study setup, owner participant time, >=45 days elapsed for full return window.
 
 
-- [ ] **B52 — Compact calculator spacing and reveal results after explicit actions.**
+- [x] **B52 — Compact calculator spacing and reveal results after explicit actions.**
   - User problem/evidence: Owner 2026-09-30 reports sparse input/result presentation and manual result hunting; actual desktop/mobile measurements are required.
   - Outcome/scope: Clearer density and success-only result navigation; [bounded contract](execution/prompts/B52.md).
   - Non-goals: No smaller touch targets, hidden critical assumptions, formula changes, new density control, route/dependency/D1 changes.

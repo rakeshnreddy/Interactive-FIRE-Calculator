@@ -24,8 +24,8 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C14 | First calculator-excellence child | B40 | accepted | 2277b80ce089d0ddf0caf22a21c0c809ae6a31f5 | [approved](reviews/C14.md) |
 | C15 | Financial chart truth and HYSA APY correction | B47 → B48 | accepted | 7192bdd13f8a7b4744df45ef296687e2abe62f9b | [approved](reviews/C15.md) |
 | C16 | Natural editing and visible customization | B45 → B43 → B44 | accepted | 324be91322c791836bc5e5f105312944e0ec935a | [approved](reviews/C16.md) |
-| C17 | Intentional landing and calculator depth contracts | B46 → B52 → B49 → B50 | released | — | C16 accepted; begin B46 |
-| C18 | Genuine usability and recurring-value validation | B51 | locked | — | Await C17; owner recruitment and observation required |
+| C17 | Intentional landing and calculator depth contracts | B46 → B52 → B49 → B50 | accepted | 9f3789b9190680fff70222b422c7bfda473c814c | [approved](reviews/C17.md) |
+| C18 | Genuine usability and recurring-value validation | B51 | released | — | Protocol prepared; B51 blocked on OA-5 real participants/observation |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 

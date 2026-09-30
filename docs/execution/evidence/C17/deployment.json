@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-09-30T10:23:44.091Z",
+  "source_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+  "id": "bacc1513-394a-461c-82e4-4f76e59382cc",
+  "url": "https://bacc1513.interactive-fire-calculator.pages.dev",
+  "environment": "preview",
+  "commit_dirty": false,
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/me",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/api/plans",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/api/calculator-results",
+      "status": 401,
+      "expected": 401
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "candidate_sha": "9f3789b9190680fff70222b422c7bfda473c814c",
+  "preview": "https://bacc1513.interactive-fire-calculator.pages.dev",
+  "routes": [
+    "/",
+    "/calculators",
+    "/calculators/budget",
+    "/calculators/compound-interest",
+    "/calculators/emergency-fund",
+    "/calculators/fire",
+    "/calculators/income-tax-india",
+    "/calculators/income-tax-us",
+    "/calculators/mortgage",
+    "/calculators/net-worth",
+    "/calculators/savings-goal"
+  ],
+  "widths": [
+    1440,
+    390,
+    320
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "total_cases": 66,
+  "offscreen_result_focus_cases": 38,
+  "scope_inside_answer_cases": 12,
+  "horizontal_overflow_cases": 0,
+  "new_target_min_px": 44,
+  "captured_console_errors": 0,
+  "typing": "Focused principal edit preserves focus and scroll; result remains offscreen until explicit action.",
+  "invalid": "Empty principal retains a stale answer with View result disabled.",
+  "scenario": "Keyboard Optimistic selection commits the new answer before result focus/reveal.",
+  "scope": "Keyboard source disclosure opens; official links have noopener noreferrer and contain no input data.",
+  "limitations": [
+    "No separate page-exception collector in this CUA pass.",
+    "Native zoom and real-reader follow-ups remain open; this is not WCAG certification.",
+    "The 84-route smoke checks HTTP delivery; interactive evidence is the 66 specified cases."
+  ]
+}
