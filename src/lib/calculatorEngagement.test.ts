@@ -44,18 +44,20 @@ describe('calculator engagement tools', () => {
       const state = readCalculatorShareState(calculator, new URL(url).search);
 
       expect(new URL(url).pathname).toBe(`/calculators/${calculator.slug}`);
-      expect(state).toEqual({ scenarioId: 'optimistic', values });
+      expect(state).toMatchObject({ scenarioId: 'optimistic', values });
       expect(Object.keys(state!.values)).toEqual(calculator.inputs.map((input) => input.key));
     }
   );
 
-  it('clamps invalid shared values and defaults an unsupported scenario', () => {
+  it('preserves invalid shared values for input validation and defaults only an unsupported scenario', () => {
     const calculator = seoCalculators.find((item) => item.slug === 'sip')!;
     const state = readCalculatorShareState(calculator, '?fp=1&scenario=extreme&monthly=-100&years=oops&rate=7');
 
     expect(state?.scenarioId).toBe('base');
-    expect(state?.values.monthly).toBe(0);
-    expect(state?.values.years).toBe(10);
+    expect(state?.values.monthly).toBe(-100);
+    expect(state?.values.years).toBeNaN();
+    expect(state?.rawValues.years).toBe('oops');
+    expect(state?.rawValues.principal).toBeUndefined();
     expect(state?.values.rate).toBe(7);
   });
 

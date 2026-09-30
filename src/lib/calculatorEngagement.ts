@@ -1,3 +1,4 @@
+import { calculatorRawValues } from './calculatorInputState';
 import {
   calculateSeoCalculator,
   calculatorPath,
@@ -26,6 +27,7 @@ export type CalculatorInputImpact = {
 };
 
 export type CalculatorShareState = {
+  rawValues: Record<string, string>;
   scenarioId: CalculatorScenarioId;
   values: Record<string, number>;
 };
@@ -72,13 +74,10 @@ export function readCalculatorShareState(
   const scenarioId = calculatorScenarioIds.includes(scenario as CalculatorScenarioId)
     ? scenario as CalculatorScenarioId
     : 'base';
-  const values = Object.fromEntries(calculator.inputs.map((input) => {
-    const raw = params.get(input.key);
-    const parsed = raw === null ? input.defaultValue : Number(raw);
-    return [input.key, clampInput(input, Number.isFinite(parsed) ? parsed : input.defaultValue)];
-  }));
-
-  return { scenarioId, values };
+  const record = Object.fromEntries(calculator.inputs.map(input => [input.key, params.get(input.key) ?? undefined]));
+  const rawValues = calculatorRawValues(calculator, record);
+  const values = Object.fromEntries(calculator.inputs.map(input => [input.key, rawValues[input.key].trim() ? Number(rawValues[input.key]) : Number.NaN]));
+  return { scenarioId, values, rawValues };
 }
 
 export function buildCalculatorSummaryCsv(

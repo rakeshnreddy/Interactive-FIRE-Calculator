@@ -499,9 +499,9 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
 
 ## Fresh calculator/landing UX increments — 2026-09-29
 
-The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. All new items remain unchecked; only Astra can accept them.
+The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. B47/B48 and B45/B43/B44 are accepted on their exact C15/C16 candidates; C17 is accepted on `9f3789b`; C18 is released with B51 blocked on real participant evidence. Only Astra can accept items.
 
-- [ ] **B47 — Correct calculator visuals that invent or contradict the selected model.**
+- [x] **B47 — Correct calculator visuals that invent or contradict the selected model.**
   - User problem/evidence: UX-01/UX-02: closing-cost and stamp-duty charts invent loans; interest-only/recast/prepayment/biweekly charts contradict outputs.
   - Outcome/scope: Every displayed visual represents the selected model and reconciles with the headline and accessible schedule. Implement only [the detailed contract](execution/prompts/B47.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/calculatorStudios.ts; src/CalculatorLibrary.tsx (visual renderer only); src/lib/calculatorStudios.test.ts; route-specific visual regression tests`.
@@ -512,7 +512,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No schema/data migration; revert chart-policy and presentation commit together. Preserve result/export math.
   - Effort: 4–8 focused worker hours plus primary publication/review.
 
-- [ ] **B48 — Honor APY in HYSA without changing nominal-rate calculators.**
+- [x] **B48 — Honor APY in HYSA without changing nominal-rate calculators.**
   - User problem/evidence: UX-03: hosted HYSA APY produces 30519; independently derived effective-APY result is 30468.78.
   - Outcome/scope: HYSA input meaning, result, schedule, comparison and export all use effective APY. Implement only [the detailed contract](execution/prompts/B48.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/seoCalculators.ts (HYSA adapter only); src/lib/calculatorStudios.ts; src/CalculatorLibrary.tsx (method/history notice if required); associated tests; docs/calculator-excellence/HYSA_APY_DECISION.md`.
@@ -523,7 +523,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No remote writes/migration; see written correction decision. Roll back only HYSA adapter plus notices together.
   - Effort: 3–6 worker hours plus targeted primary review.
 
-- [ ] **B45 — Preserve input edits, losses and explicit sample-result state.**
+- [x] **B45 — Preserve input edits, losses and explicit sample-result state.**
   - User problem/evidence: UX-04/UX-08: blank mortgage becomes 0; negative ROI becomes 0%; populated examples look personalized.
   - Outcome/scope: Users can edit their numbers naturally and cannot mistake an unfinished/sample result for a valid personal answer. Implement only [the detailed contract](execution/prompts/B45.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/CalculatorLibrary.tsx; src/lib/seoCalculators.ts (input bounds only where mathematically justified); draft/share normalization; CalculatorLibraryDetail tests`.
@@ -534,7 +534,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: If draft shape changes, add backward-compatible read; never discard account records. Revert UI/state adapter as one unit.
   - Effort: 4–8 worker hours.
 
-- [ ] **B43 — Make FIRE refinements and generic additional controls discoverable.**
+- [x] **B43 — Make FIRE refinements and generic additional controls discoverable.**
   - User problem/evidence: UX-05/06/07: late collapsed controls, misleading duplicated FIRE rate state, housing costs mixed with acceleration.
   - Outcome/scope: Users see what they can customize before scanning long explanations or results. Implement only [the detailed contract](execution/prompts/B43.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/App.tsx (FIRE UI/summary only); src/CalculatorLibrary.tsx; src/vivid-theme.css (scoped controls); relevant UI tests`.
@@ -545,7 +545,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No formula, persistence or D1 migration; rollback presentation as one commit. Preserve all stable routes.
   - Effort: 4–8 worker hours.
 
-- [ ] **B44 — Expose dedicated calculator customization without a wall of options.**
+- [x] **B44 — Expose dedicated calculator customization without a wall of options.**
   - User problem/evidence: UX-05: compound/savings/emergency/budget controls are 1253–2421px down on mobile.
   - Outcome/scope: Dedicated engines retain their depth while useful control groups become understandable at first use. Implement only [the detailed contract](execution/prompts/B44.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/CompoundInterestCalculator.tsx; src/SavingsGoalCalculator.tsx; src/CashflowPlanningCalculator.tsx; scoped CSS and their tests`.
@@ -556,7 +556,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: Presentation only, no data/engine migration; rollback component/CSS grouping together.
   - Effort: 4–8 worker hours.
 
-- [ ] **B46 — Guide landing/library choices with intentional light and dark hierarchy.**
+- [x] **B46 — Guide landing/library choices with intentional light and dark hierarchy.**
   - User problem/evidence: UX-09/10/11: mobile question toolkits begin at y1766; repeated paths and a dense illustration compete for attention.
   - Outcome/scope: Visitors choose a relevant question quickly, see honest value, and understand the optional saved-plan loop. Implement only [the detailed contract](execution/prompts/B46.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/App.tsx (LandingPage and public header); src/lib/landingContent.ts; src/HeroFireExample.tsx; src/CalculatorLibrary.tsx (library discovery); src/vivid-theme.css; DESIGN.md; landing/library tests`.
@@ -567,18 +567,18 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No migration; revert presentation/copy/tokens as a bounded set; preserve routes and original example formulas.
   - Effort: 6–12 worker hours plus design review.
 
-- [ ] **B49 — Make calculator scope, assumptions and rule provenance explicit.**
+- [x] **B49 — Make calculator scope, assumptions and rule provenance explicit.**
   - User problem/evidence: UX-12 and row-level findings: simplified tax/benefit/insurance/HELOC models have broader names; balance-transfer registry text contradicts its promo boundary.
   - Outcome/scope: Users understand exactly what the result includes and what remains outside it. Implement only [the detailed contract](execution/prompts/B49.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/lib/calculatorContent.ts; src/lib/calculatorQuality.ts; src/lib/seoCalculators.ts (copy/metadata only); scoped result notices; content tests`.
   - Acceptance: Every assigned route has an honest adjacent scope block derived from its real inputs/model, with appropriate country/year and sources where factual. No claim of approval, eligibility, tax filing accuracy, personalized advice, guarantee or current statutory rate unless proven. Balance-transfer text no longer says promo lasts until payoff when duration is finite. Existing correctly modeled state/local placeholder, rent-buy ownership/equity and monthly-IRR caveats are preserved. Copy is shorter in first layer; details remain available. No financial outputs change for identical inputs.
   - Analytics: No new telemetry or personal data; outbound official links do not embed entered values.
   - Tests: Per-route content assertions against supported input/model metadata, internal-copy guard and shared output goldens; full suite. Record source/date by route.
-  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B46; no secrets/raw financial values in evidence.
+  - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B52; no secrets/raw financial values in evidence.
   - Migration/rollback: Copy/metadata only; no data migration. Revert any misleading source/date claim immediately.
   - Effort: 4–8 worker hours plus official-source research.
 
-- [ ] **B50 — Turn remaining per-calculator feature gaps into bounded formula contracts.**
+- [x] **B50 — Turn remaining per-calculator feature gaps into bounded formula contracts.**
   - User problem/evidence: The individual matrix identifies useful missing controls and decision-specific outputs; implementing them all as one universal template would introduce risk.
   - Outcome/scope: Every remaining feature has a small, sourced and testable implementation slice; no broad feature bundle or unearned completion claim. Implement only [the detailed contract](execution/prompts/B50.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `docs/calculator-excellence/ feature contracts; docs/execution/prompts/ proposed child prompts; candidate updates for canonical trackers (Astra applies them)`.
@@ -599,3 +599,15 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Security/privacy/dependencies: public illustrative data only; PA-10 worker authority boundary; B50; no secrets/raw financial values in evidence.
   - Migration/rollback: No schema/production changes by default; any event/schema addition needs its own explicit contract and rollback.
   - Effort: 2–4 hours study setup, owner participant time, >=45 days elapsed for full return window.
+
+
+- [x] **B52 — Compact calculator spacing and reveal results after explicit actions.**
+  - User problem/evidence: Owner 2026-09-30 reports sparse input/result presentation and manual result hunting; actual desktop/mobile measurements are required.
+  - Outcome/scope: Clearer density and success-only result navigation; [bounded contract](execution/prompts/B52.md).
+  - Non-goals: No smaller touch targets, hidden critical assumptions, formula changes, new density control, route/dependency/D1 changes.
+  - Files: Shared reveal hook/helper; calculator UI components, App FIRE action, vivid-theme CSS, regression tests.
+  - Acceptance: Visible answer stays put; offscreen explicit answer clears topbar and receives focus; typing does not jump; 320/390/1440 both themes contained with 44px controls and 16px input text.
+  - Analytics: Existing consent only; no entered values, new financial telemetry or claimed retention evidence.
+  - Tests: Predicate, post-render mount, action/invalid/edit gates, focused UI and full suite; math goldens unchanged.
+  - Security/privacy/dependencies: B46; public synthetic examples only; no hosted financial write.
+  - Migration/rollback: None; revert scoped UI/helper together. Human estimate 3–5 hours; agent estimate 45–90 minutes plus actual verification, not a completion guarantee.

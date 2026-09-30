@@ -1,0 +1,640 @@
+{
+  "source_sha": "324be91322c791836bc5e5f105312944e0ec935a",
+  "preview": "https://d6cfc887.interactive-fire-calculator.pages.dev",
+  "final_hosted_cases": 42,
+  "cases": [
+    {
+      "slug": "fire",
+      "width": 1440,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "fire",
+      "width": 1440,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "mortgage",
+      "width": 1440,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "mortgage",
+      "width": 1440,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "compound-interest",
+      "width": 1440,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "compound-interest",
+      "width": 1440,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "savings-goal",
+      "width": 1440,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "savings-goal",
+      "width": 1440,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "budget",
+      "width": 1440,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "budget",
+      "width": 1440,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "emergency-fund",
+      "width": 1440,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "emergency-fund",
+      "width": 1440,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "net-worth",
+      "width": 1440,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "net-worth",
+      "width": 1440,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "fire",
+      "width": 390,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "fire",
+      "width": 390,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "mortgage",
+      "width": 390,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "mortgage",
+      "width": 390,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "compound-interest",
+      "width": 390,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "compound-interest",
+      "width": 390,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "savings-goal",
+      "width": 390,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "savings-goal",
+      "width": 390,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "budget",
+      "width": 390,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "budget",
+      "width": 390,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "emergency-fund",
+      "width": 390,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "emergency-fund",
+      "width": 390,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "net-worth",
+      "width": 390,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "net-worth",
+      "width": 390,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "fire",
+      "width": 320,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "fire",
+      "width": 320,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "mortgage",
+      "width": 320,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "mortgage",
+      "width": 320,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "compound-interest",
+      "width": 320,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "compound-interest",
+      "width": 320,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "savings-goal",
+      "width": 320,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "savings-goal",
+      "width": 320,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "budget",
+      "width": 320,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "budget",
+      "width": 320,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "emergency-fund",
+      "width": 320,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "emergency-fund",
+      "width": 320,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "net-worth",
+      "width": 320,
+      "theme": "light",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    },
+    {
+      "slug": "net-worth",
+      "width": 320,
+      "theme": "dark",
+      "document_overflow": false,
+      "focused": "SUMMARY",
+      "disclosure_open": true,
+      "focused_in_viewport": true,
+      "focus_outline": "solid",
+      "panels_contained": true,
+      "targets_min_44px": true
+    }
+  ],
+  "captured_console_errors": 0,
+  "contrast": [
+    {
+      "pairs": [
+        {
+          "bg": "rgb(241, 245, 251)",
+          "fg": "rgb(15, 30, 46)",
+          "ratio": 15.41112152920175,
+          "text": " Customize this estimate"
+        },
+        {
+          "bg": "rgb(255, 255, 255)",
+          "fg": "rgb(36, 56, 74)",
+          "ratio": 12.071980618323783,
+          "text": "Timing & rates"
+        },
+        {
+          "bg": "rgb(255, 255, 255)",
+          "fg": "rgb(36, 56, 74)",
+          "ratio": 12.071980618323783,
+          "text": "Fees & inflation"
+        },
+        {
+          "bg": "rgb(255, 255, 255)",
+          "fg": "rgb(36, 56, 74)",
+          "ratio": 12.071980618323783,
+          "text": "Target & events"
+        },
+        {
+          "bg": "rgb(255, 255, 255)",
+          "fg": "rgb(36, 56, 74)",
+          "ratio": 12.071980618323783,
+          "text": "Display only"
+        },
+        {
+          "bg": "rgb(241, 245, 251)",
+          "fg": "rgb(70, 90, 110)",
+          "ratio": 6.5108047579629185,
+          "text": "Nominal \u00b7 12 compounds / year \u00b7 end deposits"
+        },
+        {
+          "bg": "rgb(241, 245, 251)",
+          "fg": "rgb(70, 90, 110)",
+          "ratio": 6.5108047579629185,
+          "text": "$0 yearly top-up \u00b7 0% contribution increase \u00b7"
+        },
+        {
+          "bg": "rgb(241, 245, 251)",
+          "fg": "rgb(70, 90, 110)",
+          "ratio": 6.5108047579629185,
+          "text": "No target \u00b7 0 enabled events"
+        },
+        {
+          "bg": "rgb(241, 245, 251)",
+          "fg": "rgb(70, 90, 110)",
+          "ratio": 6.5108047579629185,
+          "text": "USD \u00b7 Browser number format \u00b7 no currency con"
+        }
+      ],
+      "theme": "light"
+    },
+    {
+      "pairs": [
+        {
+          "bg": "rgb(10, 19, 32)",
+          "fg": "rgb(238, 245, 251)",
+          "ratio": 16.939567246682376,
+          "text": " Customize this estimate"
+        },
+        {
+          "bg": "rgb(15, 26, 41)",
+          "fg": "rgb(213, 225, 236)",
+          "ratio": 13.174476914645226,
+          "text": "Timing & rates"
+        },
+        {
+          "bg": "rgb(15, 26, 41)",
+          "fg": "rgb(213, 225, 236)",
+          "ratio": 13.174476914645226,
+          "text": "Fees & inflation"
+        },
+        {
+          "bg": "rgb(15, 26, 41)",
+          "fg": "rgb(213, 225, 236)",
+          "ratio": 13.174476914645226,
+          "text": "Target & events"
+        },
+        {
+          "bg": "rgb(15, 26, 41)",
+          "fg": "rgb(213, 225, 236)",
+          "ratio": 13.174476914645226,
+          "text": "Display only"
+        },
+        {
+          "bg": "rgb(10, 19, 32)",
+          "fg": "rgb(159, 179, 196)",
+          "ratio": 8.62474750950845,
+          "text": "Nominal \u00b7 12 compounds / year \u00b7 end deposits"
+        },
+        {
+          "bg": "rgb(10, 19, 32)",
+          "fg": "rgb(159, 179, 196)",
+          "ratio": 8.62474750950845,
+          "text": "$0 yearly top-up \u00b7 0% contribution increase \u00b7"
+        },
+        {
+          "bg": "rgb(10, 19, 32)",
+          "fg": "rgb(159, 179, 196)",
+          "ratio": 8.62474750950845,
+          "text": "No target \u00b7 0 enabled events"
+        },
+        {
+          "bg": "rgb(10, 19, 32)",
+          "fg": "rgb(159, 179, 196)",
+          "ratio": 8.62474750950845,
+          "text": "USD \u00b7 Browser number format \u00b7 no currency con"
+        }
+      ],
+      "theme": "dark"
+    }
+  ],
+  "additional_live_checks": {
+    "roi_gain": -1000,
+    "roi_cost": 20000,
+    "roi_result_percent": -5,
+    "roi_mobile_input_mode": "text"
+  },
+  "earlier_local_cases": 48,
+  "limits": "No authenticated writes, native zoom or actual reader proof; no full WCAG claim."
+}

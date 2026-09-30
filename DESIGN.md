@@ -8,43 +8,43 @@ FinPath uses a vivid precision aesthetic: calm operational surfaces, crisp typog
 
 ### Light
 
-- Canvas: `#f4f8fb`
-- Surface: `#fbfdff`
+- Canvas: `#eef3fa`
+- Surface: `#ffffff`
 - Surface strong: `#ffffff`
-- Soft surface: `#eef4f7`
-- Ink: `#102c35`
-- Muted ink: `#526873`
-- Border: `#cfdee4`
-- Control border: `#71858e`
-- Primary teal: `#006b60`
-- Data blue: `#2455a6`
-- Supporting violet: `#6552a5`
-- Warm accent: `#b34e30`
-- Success: `#1d714f`
-- Warning: `#885100`
-- Danger: `#a32d48`
-- Focus ring: `#2455a6` plus surface gap
+- Soft surface: `#f1f5fb`
+- Ink: `#0f1e2e`
+- Muted ink: `#465a6e`
+- Border: `#d6dfeb`
+- Control border: `#7c8fa3`
+- Primary teal: `#0b7c6c`
+- Data blue: `#3b6cf0`
+- Supporting violet: `#7a63d9`
+- Warm accent: `#d9653f`
+- Success: `#178a5c`
+- Warning: `#9a5a00`
+- Danger: `#c4385a`
+- Focus ring: `#3b6cf0` plus surface gap
 
 ### Dark
 
-- Canvas: `#08151c`
-- Surface: `#10232c`
-- Surface strong: `#132b37`
-- Soft surface: `#0b1b23`
-- Ink: `#eaf6f7`
-- Muted ink: `#a4bbc4`
-- Border: `#304b57`
-- Control border: `#66838f`
-- Primary teal: `#69e3ca`
-- Data blue: `#8abaff`
-- Supporting violet: `#bba9ef`
-- Warm accent: `#ef916f`
-- Success: `#83ddb0`
-- Warning: `#f0bf72`
-- Danger: `#ff9aae`
-- Focus ring: `#8abaff` plus surface gap
+- Canvas: `#070d16`
+- Surface: `#0f1a29`
+- Surface strong: `#132234`
+- Soft surface: `#0a1320`
+- Ink: `#eef5fb`
+- Muted ink: `#9fb3c4`
+- Border: `#263a52`
+- Control border: `#5f7690`
+- Primary teal: `#5fe6c8`
+- Data blue: `#8fb7ff`
+- Supporting violet: `#c1b0ff`
+- Warm accent: `#ff9b78`
+- Success: `#7fe0b3`
+- Warning: `#f4c46f`
+- Danger: `#ff96ad`
+- Focus ring: `#8fb7ff` plus surface gap
 
-Teal identifies primary actions and current state. Cobalt supports growth, charts, and comparison. Warm coral identifies long-term or consequential decisions. Gold is reserved for warnings and select chart emphasis. Solid color bands may identify major decision families on public pages; operational pages use the same hues as thin hierarchy accents. Semantic colors retain their meaning. Never use gradient text, color blobs, or color without an information role.
+Teal identifies primary actions and current state. Cobalt supports growth, charts, and comparison. Warm coral identifies long-term or consequential decisions. Gold is reserved for warnings and select chart emphasis. Solid color bands may identify major decision families on public pages; operational pages use the same hues as thin hierarchy accents. Semantic colors retain their meaning. Keep financial text in a solid semantic ink. Gradients belong to the restrained entry atmosphere or primary action; never use color without a readable information role.
 
 ## Typography
 
@@ -108,3 +108,9 @@ Use exact calculator phrases for calculator page titles. Use user-centered toolk
 ## Owner-directed material update (2026-09-08)
 
 The owner requested glassmorphism and gradients in both light and dark themes. [COLOR_AND_GLASS_SYSTEM.md](docs/COLOR_AND_GLASS_SYSTEM.md) defines the target palette and material behavior; [VISUAL_DESIGN_SPEC.md](docs/VISUAL_DESIGN_SPEC.md) defines composition and verification. Task B32 applies the luminous mineral palette, bounded glass for navigation and overlay surfaces with solid fallbacks, static atmosphere gradients on public stages, action gradients with paired hover/pressed states, and a distinctly light/dark hero treatment while maintaining strictly opaque reading surfaces behind financial inputs and calculator results.
+
+## Verified UX refinement — 2026-09-30
+
+`src/vivid-theme.css` defines the executable light/dark palette above. These values supersede the older proposal in the fresh audit; the proposal was not a deployed theme. Navy ink/solid surfaces carry reading, teal carries actions and cobalt carries comparisons. Public entry/navigation may use the existing bounded gradient/glass roles and solid fallbacks. The illustrative money answer, calculator inputs and results remain opaque. No new global palette is introduced by the landing refinement.
+
+Homepage reading order: one clear question, public action/search, three decision paths, then optional example detail. The example's one main answer comes from the genuine FIRE engine fixture and is labeled illustrative; the explanatory chart/current-savings comparison remains inside a keyboard-accessible disclosure. Account creation stays a quiet secondary action. Library breadth is a secondary catalogue detail, not the value proposition.

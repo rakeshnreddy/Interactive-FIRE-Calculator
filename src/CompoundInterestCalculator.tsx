@@ -1,3 +1,6 @@
+import { useResultReveal } from './lib/resultReveal';
+import { CalculatorResultAction } from './components/CalculatorResultAction';
+import { EstimateCustomization, EstimateOptionGroup } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
@@ -87,6 +90,7 @@ export function CompoundInterestCalculator({
   onSaveResult,
   savedResults
 }: Props) {
+  const { resultRef, revealResult } = useResultReveal();
   const [inputs, setInputs] = useState<CompoundInterestInputs>(defaultCompoundInterestInputs);
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
   const [locale, setLocale] = useState<LocaleCode>('auto');
@@ -269,6 +273,13 @@ export function CompoundInterestCalculator({
             </button>
           </div>
 
+          <EstimateCustomization compact groups={[
+            { id: 'compound-timing', label: 'Timing & rates', summary: `${inputs.rateBasis === 'apy' ? 'APY' : `Nominal · ${inputs.compoundingFrequency} compounds / year`} · ${inputs.contributionTiming} deposits` },
+            { id: 'compound-costs', label: 'Fees & inflation', summary: `${money(inputs.annualTopUp)} yearly top-up · ${inputs.annualContributionIncreasePercent}% contribution increase · ${inputs.annualFeePercent}% fee · ${inputs.inflationPercent}% inflation` },
+            { id: 'compound-events', label: 'Target & events', summary: `${inputs.targetAmount > 0 ? `${money(inputs.targetAmount)} ${inputs.targetBasis === 'today' ? 'today’s-money' : 'future-money'} target` : 'No target'} · ${Number(inputs.futureDepositAmount > 0) + Number(inputs.futureWithdrawalAmount > 0)} enabled events` },
+            { id: 'estimate-display', label: 'Display only', summary: `${currency} · ${locale === 'auto' ? 'Browser number format' : locale} · no currency conversion` }
+          ]} />
+
           <div className="calculator-input-grid compound-quick-grid">
             <NumberField
               currency={currency}
@@ -349,13 +360,8 @@ export function CompoundInterestCalculator({
             </span>
           </div>
 
-          <details className="compound-disclosure calculator-options-shell">
-            <summary>
-              <span><strong>Advanced options</strong><small>Timing, rate basis, fees, inflation, target, and future events</small></span>
-              <ChevronDown size={17} />
-            </summary>
-            <div className="compound-advanced-body">
-              <fieldset>
+          <EstimateOptionGroup id="compound-timing" title="Timing & rate basis" summary={`${inputs.rateBasis === 'apy' ? 'APY' : `Nominal · ${inputs.compoundingFrequency} compounds / year`} · ${inputs.contributionTiming} deposits`}>
+            <fieldset>
                 <legend>Rate basis and contribution timing</legend>
                 <div className="calculator-input-grid">
                   <SelectField
@@ -379,8 +385,9 @@ export function CompoundInterestCalculator({
                   />
                 </div>
               </fieldset>
-
-              <fieldset>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="compound-costs" title="Contributions, fees & inflation" summary={`${money(inputs.annualTopUp)} yearly top-up · ${inputs.annualContributionIncreasePercent}% contribution increase · ${inputs.annualFeePercent}% fee · ${inputs.inflationPercent}% inflation`}>
+            <fieldset>
                 <legend>Changing contributions, fees, and inflation</legend>
                 <div className="calculator-input-grid">
                   <NumberField
@@ -426,8 +433,9 @@ export function CompoundInterestCalculator({
                   />
                 </div>
               </fieldset>
-
-              <fieldset>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="compound-events" title="Target & future events" summary={`${inputs.targetAmount > 0 ? `${money(inputs.targetAmount)} ${inputs.targetBasis === 'today' ? 'today’s-money' : 'future-money'} target` : 'No target'} · ${Number(inputs.futureDepositAmount > 0) + Number(inputs.futureWithdrawalAmount > 0)} enabled events`}>
+            <fieldset>
                 <legend>Optional target and future cash flows</legend>
                 <div className="calculator-input-grid">
                   <NumberField
@@ -493,8 +501,9 @@ export function CompoundInterestCalculator({
                   />
                 </div>
               </fieldset>
-
-              <fieldset>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="estimate-display" title="Display only" summary={`${currency} · ${locale === 'auto' ? 'Browser number format' : locale} · no currency conversion`}>
+            <fieldset>
                 <legend>Display only</legend>
                 <div className="calculator-input-grid">
                   <SelectField
@@ -524,12 +533,12 @@ export function CompoundInterestCalculator({
                   />
                 </div>
               </fieldset>
-            </div>
-          </details>
+          </EstimateOptionGroup>
 
+          <CalculatorResultAction disabled={!projection.validation.isValid} onReveal={revealResult} />
         </section>
 
-        <section className="calculator-result-panel compound-result-panel" aria-labelledby="compound-result-title">
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel compound-result-panel" aria-labelledby="compound-result-title">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Projection</p>
@@ -661,7 +670,7 @@ export function CompoundInterestCalculator({
                         name="compound-scenario"
                         type="radio"
                         value={scenario.id}
-                        onChange={() => setScenarioId(scenario.id)}
+                        onChange={() => { setScenarioId(scenario.id); revealResult(); }}
                       />
                       <span>{scenarioLabel(scenario.id)}</span>
                       <strong>{scenario.projection.validation.isValid ? money(scenario.projection.endingValue) : 'Invalid'}</strong>
@@ -967,7 +976,7 @@ function CompoundGrowthChart({
         <strong>Where the balance comes from</strong>
         <small>{showInflationAdjusted
           ? 'Net contributed capital and estimated growth stack to the ending balance. The outlined bar shows the inflation-adjusted ending value.'
-          : 'Net contributed capital and estimated growth stack to the ending balance. Add an inflation assumption in Advanced Options to compare an inflation-adjusted value.'}</small>
+          : 'Net contributed capital and estimated growth stack to the ending balance. Add an inflation assumption in Contributions, fees & inflation to compare an inflation-adjusted value.'}</small>
       </figcaption>
       <div className="compound-chart-legend">
         <span className="is-capital">Net contributed capital</span>

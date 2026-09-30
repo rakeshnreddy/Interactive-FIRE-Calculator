@@ -66,6 +66,12 @@ export function HeroFireExample() {
           </span>
         </div>
 
+      </div>
+      <p className="hero-example-driver">{formatted.returnRate} assumed return · {formatted.inflationRate} inflation · {formatted.timelineYearsLabel} horizon</p>
+      <p className="hero-example-note"><Info size={13} aria-hidden="true" /> An illustration, not a forecast. Your own numbers will change the answer.</p>
+      <details className="hero-example-detail">
+        <summary>See how this example works</summary>
+        <div className="hero-example-detail-body">
         <div className="hero-example-card">
           <span className="hero-example-metric-label">Current starting point</span>
           <strong className="hero-example-metric-value">{formatted.initialPortfolio}</strong>
@@ -73,8 +79,6 @@ export function HeroFireExample() {
             Gap to modeled target: {formatted.portfolioGap}
           </span>
         </div>
-      </div>
-
       {/* R2: Exposed figure with figcaption and accessible text alternative */}
       <figure
         className="hero-example-chart"
@@ -153,7 +157,7 @@ export function HeroFireExample() {
                 textAnchor="end"
                 className="hero-svg-amount-label"
               >
-                $0
+                {formatted.modeledEndBalance}
               </text>
             </g>
           )}
@@ -194,6 +198,8 @@ export function HeroFireExample() {
           An estimate based on the assumptions shown, not a guaranteed outcome.
         </p>
       </div>
+        </div>
+      </details>
     </aside>
   );
 }

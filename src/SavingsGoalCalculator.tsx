@@ -1,3 +1,6 @@
+import { useResultReveal } from './lib/resultReveal';
+import { CalculatorResultAction } from './components/CalculatorResultAction';
+import { EstimateCustomization, EstimateOptionGroup } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
   ArrowRight,
@@ -85,6 +88,7 @@ export function SavingsGoalCalculator({
   onSaveResult,
   savedResults
 }: Props) {
+  const { resultRef, revealResult } = useResultReveal();
   const [inputs, setInputs] = useState<SavingsGoalInputs>(defaultSavingsGoalInputs);
   const [currency, setCurrency] = useState<SavingsCurrencyCode>('USD');
   const [locale, setLocale] = useState<SavingsLocaleCode>('auto');
@@ -270,6 +274,13 @@ export function SavingsGoalCalculator({
             </button>
           </div>
 
+          <EstimateCustomization compact groups={[
+            { id: 'savings-contributions', label: 'Contribution plan', summary: `${frequencyLabel(inputs.contributionFrequency)} · ${inputs.contributionTiming} · ${money(inputs.annualTopUp)} yearly top-up · ${inputs.annualContributionIncreasePercent}% annual increase` },
+            { id: 'savings-rates', label: 'Rate contract & fees', summary: `${inputs.rateBasis === 'apy' ? 'APY' : `Nominal · ${inputs.compoundingFrequency} compounds / year`} · ${inputs.annualFeePercent}% fee` },
+            { id: 'savings-purchasing-power', label: 'Purchasing power', summary: `${inputs.targetBasis === 'today' ? 'Today’s purchasing power' : 'Future money'} · ${inputs.inflationPercent}% inflation${inputs.targetBasis === 'future' ? ' (not applied to target)' : ''}` },
+            { id: 'estimate-display', label: 'Display only', summary: `${currency} · ${locale === 'auto' ? 'Browser number format' : locale} · no currency conversion` }
+          ]} />
+
           <div className="calculator-input-grid">
             <SavingsNumberField currency={currency} error={projection.validation.errors.targetAmount} helper="The amount you want available at the selected deadline." inputKey="targetAmount" label="Goal amount" min={0.01} onChange={setNumber} value={inputs.targetAmount} />
             <SavingsNumberField currency={currency} error={projection.validation.errors.currentSavings} helper="Savings already set aside for this goal." inputKey="currentSavings" label="Current savings" min={0} onChange={setNumber} value={inputs.currentSavings} />
@@ -279,16 +290,11 @@ export function SavingsGoalCalculator({
           </div>
 
           <p className="compound-default-convention">
-            Default convention: nominal annual rate, monthly compounding, and end-of-month contributions. The required amount is a new total—not an amount added to your current contribution.
+            Current convention: {inputs.rateBasis === 'apy' ? 'APY (compounding included)' : `nominal rate compounded ${inputs.compoundingFrequency} times per year`}, {inputs.contributionTiming}-of-period contributions. The required amount is the total—not an addition to your current contribution.
           </p>
 
-          <details className="compound-disclosure calculator-options-shell">
-            <summary>
-              <span><strong>Advanced options</strong><small>Contribution rhythm, rate basis, inflation, fees, and display</small></span>
-              <ChevronDown size={17} />
-            </summary>
-            <div className="compound-advanced-body">
-              <fieldset>
+          <EstimateOptionGroup id="savings-contributions" title="Contribution plan" summary={`${frequencyLabel(inputs.contributionFrequency)} · ${inputs.contributionTiming} · ${money(inputs.annualTopUp)} yearly top-up · ${inputs.annualContributionIncreasePercent}% annual increase`}>
+            <fieldset>
                 <legend>Contribution plan</legend>
                 <div className="calculator-input-grid">
                   <SavingsSelectField helper="The required amount is quoted once per selected period." inputKey="contributionFrequency" label="Contribution frequency" onChange={(value) => setChoice('contributionFrequency', Number(value) as SavingsContributionFrequency)} options={contributionFrequencyOptions} value={inputs.contributionFrequency} />
@@ -297,8 +303,9 @@ export function SavingsGoalCalculator({
                   <SavingsNumberField currency={currency} error={projection.validation.errors.annualTopUp} helper="A fixed extra deposit on each full-year anniversary." inputKey="annualTopUp" label="Annual anniversary top-up" min={0} onChange={setNumber} value={inputs.annualTopUp} />
                 </div>
               </fieldset>
-
-              <fieldset>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="savings-rates" title="Rate contract & fees" summary={`${inputs.rateBasis === 'apy' ? 'APY' : `Nominal · ${inputs.compoundingFrequency} compounds / year`} · ${inputs.annualFeePercent}% fee`}>
+            <fieldset>
                 <legend>Rate contract and fees</legend>
                 <div className="calculator-input-grid">
                   <SavingsSelectField helper="APY/effective rate already includes compounding." inputKey="rateBasis" label="Rate basis" onChange={(value) => setChoice('rateBasis', value as SavingsRateBasis)} options={[{ label: 'Nominal annual rate', value: 'nominal' }, { label: 'APY / effective annual rate', value: 'apy' }]} value={inputs.rateBasis} />
@@ -310,27 +317,29 @@ export function SavingsGoalCalculator({
                   <SavingsNumberField error={projection.validation.errors.annualFeePercent} helper="Optional percentage-of-balance fee. Leave at 0 if the quoted APY or return is already net of fees." inputKey="annualFeePercent" label="Annual balance fee" min={0} onChange={setNumber} step={0.01} suffix="%" value={inputs.annualFeePercent} />
                 </div>
               </fieldset>
-
-              <fieldset>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="savings-purchasing-power" title="Purchasing power" summary={`${inputs.targetBasis === 'today' ? 'Today’s purchasing power' : 'Future money'} · ${inputs.inflationPercent}% inflation${inputs.targetBasis === 'future' ? ' (not applied to target)' : ''}`}>
+            <fieldset>
                 <legend>Purchasing power</legend>
                 <div className="calculator-input-grid">
                   <SavingsSelectField helper="Today’s-money targets rise with inflation before the deadline comparison." inputKey="targetBasis" label="Goal amount basis" onChange={(value) => setChoice('targetBasis', value as SavingsTargetBasis)} options={[{ label: 'Future money at deadline', value: 'future' }, { label: 'Today’s purchasing power', value: 'today' }]} value={inputs.targetBasis} />
                   <SavingsNumberField error={projection.validation.errors.inflationPercent} helper="Used only when the goal is expressed in today’s purchasing power." inputKey="inflationPercent" label="Inflation" onChange={setNumber} step={0.01} suffix="%" value={inputs.inflationPercent} />
                 </div>
               </fieldset>
-
-              <fieldset>
+          </EstimateOptionGroup>
+          <EstimateOptionGroup id="estimate-display" title="Display only" summary={`${currency} · ${locale === 'auto' ? 'Browser number format' : locale} · no currency conversion`}>
+            <fieldset>
                 <legend>Display only</legend>
                 <div className="calculator-input-grid">
                   <SavingsSelectField helper="Currency changes symbols and minor-unit guidance only. No FX conversion occurs." inputKey="currency" label="Currency" onChange={(value) => currencyCodes.includes(value as SavingsCurrencyCode) && setCurrency(value as SavingsCurrencyCode)} options={currencyCodes.map((value) => ({ label: value, value }))} value={currency} />
                   <SavingsSelectField helper="Choose Indian grouping for lakh/crore separators or another locale format." inputKey="locale" label="Number format" onChange={(value) => localeCodes.includes(value as SavingsLocaleCode) && setLocale(value as SavingsLocaleCode)} options={[{ label: 'Browser default', value: 'auto' }, { label: 'United States (1,000,000)', value: 'en-US' }, { label: 'India (10,00,000)', value: 'en-IN' }, { label: 'Germany (1.000.000)', value: 'de-DE' }]} value={locale} />
                 </div>
               </fieldset>
-            </div>
-          </details>
+          </EstimateOptionGroup>
+          <CalculatorResultAction disabled={!projection.validation.isValid || projection.requiredContribution === null} onReveal={revealResult} />
         </section>
 
-        <section className="calculator-result-panel compound-result-panel" aria-labelledby="savings-result-title">
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel compound-result-panel" aria-labelledby="savings-result-title">
           <div className="panel-heading">
             <div><p className="eyebrow">Saving pace</p><h2 id="savings-result-title">Required contribution</h2></div>
             <div className="compound-model-badges"><span className="compound-version">{scenarioLabel(scenarioId)} case</span></div>
@@ -423,7 +432,7 @@ export function SavingsGoalCalculator({
                 <p>Only the annual rate moves by 2 percentage points. These are deterministic comparisons, not probabilities.</p>
                 <div>{scenarios.map((scenario) => (
                   <label key={scenario.id}>
-                    <input checked={scenarioId === scenario.id} disabled={!scenario.projection.validation.isValid || scenario.projection.requiredContribution === null} name="savings-goal-scenario" type="radio" value={scenario.id} onChange={() => setScenarioId(scenario.id)} />
+                    <input checked={scenarioId === scenario.id} disabled={!scenario.projection.validation.isValid || scenario.projection.requiredContribution === null} name="savings-goal-scenario" type="radio" value={scenario.id} onChange={() => { setScenarioId(scenario.id); revealResult(); }} />
                     <span>{scenarioLabel(scenario.id)}</span>
                     <strong>{scenario.projection.validation.isValid && scenario.projection.requiredContribution !== null ? money(scenario.projection.requiredContribution, 2) : 'Unavailable'}</strong>
                     <small>{formatPercent(scenario.inputs.annualRatePercent / 100, resolvedLocale)}{scenarioId === scenario.id ? ' · Selected' : ''}</small>
