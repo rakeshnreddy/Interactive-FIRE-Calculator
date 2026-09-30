@@ -528,6 +528,9 @@ export function calculatorCurrency(calculator: SeoCalculator): 'INR' | 'USD' {
   return calculator.region === 'India' || ['gst', 'tds'].includes(calculator.slug) ? 'INR' : 'USD';
 }
 
+// Stored in the existing snapshot assumptions array; absent on historical nominal-APR HYSA runs.
+export const HYSA_APY_ASSUMPTION = 'APY includes compounding; this estimate converts it to an equivalent monthly rate.';
+
 export function calculateSeoCalculator(calculator: SeoCalculator, values: Record<string, number>): CalculatorResult {
   const get = (key: string) => Number.isFinite(values[key]) ? values[key] : 0;
   const rate = get('rate') / 100;
@@ -538,12 +541,15 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
 
   switch (calculator.formula) {
     case 'compound': {
-      const projection = projectRecurringBalance(get('principal'), get('monthly'), get('annualTopUp'), monthlyRate, months);
+      const compoundRate = calculator.slug === 'hysa' ? (1 + rate) ** (1 / 12) - 1 : monthlyRate;
+      const projection = projectRecurringBalance(get('principal'), get('monthly'), get('annualTopUp'), compoundRate, months);
       const futureValue = projection.balance;
       return result('Projected value', futureValue, 'Projected value after contributions and compounding.', [
         'Contributions are assumed monthly.',
         get('annualTopUp') > 0 ? 'The additional yearly contribution is added after every 12th monthly contribution.' : 'No additional yearly contribution is applied.',
-        'Returns are annualized and compounded monthly.'
+        ...(calculator.slug === 'hysa'
+          ? [HYSA_APY_ASSUMPTION, 'Constant APY and equivalent monthly growth are planning assumptions, not a reproduction of bank daily accrual.']
+          : ['Returns are annualized and compounded monthly.'])
       ], [
         metric('Total contributions', projection.contributions, 'currency'),
         metric('Estimated growth', futureValue - projection.contributions, 'currency', 'positive')

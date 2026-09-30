@@ -1,0 +1,778 @@
+{
+  "date": "2026-09-29",
+  "kind": "local source inventory, not hosted proof",
+  "baseline": "db866dfba0af3fed0e077f8a27428fb2ec1aed60",
+  "count": 77,
+  "rows": [
+    {
+      "slug": "retirement",
+      "formula": "retirement",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Retirement savings schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "debt-payoff",
+      "formula": "debt-payoff",
+      "visualKind": "amortization",
+      "title": "Debt payoff schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Debt payoff schedule",
+      "endpointLabel": "Month 31",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "investment-return",
+      "formula": "investment-return",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Return path table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "sip",
+      "formula": "sip",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "SIP contribution schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "step-up-sip",
+      "formula": "sip",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Step-up SIP schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "sip-goal",
+      "formula": "savings-goal",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Goal funding schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "lumpsum-mutual-fund",
+      "formula": "lumpsum",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Lumpsum growth schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "swp",
+      "formula": "swp",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Withdrawal runway schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "emi",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 120",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "home-loan-emi",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 240",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "car-loan-emi",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 60",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "personal-loan-emi",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 60",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "income-tax-india",
+      "formula": "india-tax",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "Old versus new regime table",
+      "endpointLabel": "Estimated tax saved",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "salary-india",
+      "formula": "salary",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "Salary take-home breakdown",
+      "endpointLabel": "Estimated income tax",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "hra-exemption",
+      "formula": "hra",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "HRA exemption breakdown",
+      "endpointLabel": "Basic salary",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "fd",
+      "formula": "fd",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Deposit maturity schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "rd",
+      "formula": "rd",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Recurring deposit schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "ppf",
+      "formula": "ppf",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "PPF yearly schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "epf",
+      "formula": "epf",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "EPF contribution schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "nps",
+      "formula": "nps",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "NPS contribution schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "gratuity",
+      "formula": "gratuity",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Service-year benefit schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "home-loan-prepayment",
+      "formula": "loan-prepayment",
+      "visualKind": "amortization",
+      "title": "Prepayment payoff comparison",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Prepayment payoff comparison",
+      "endpointLabel": "Month 153",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "home-loan-foreclosure",
+      "formula": "loan-prepayment",
+      "visualKind": "amortization",
+      "title": "Prepayment payoff comparison",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Prepayment payoff comparison",
+      "endpointLabel": "Start",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "home-loan-balance-transfer-india",
+      "formula": "refinance",
+      "visualKind": "amortization",
+      "title": "Refinance break-even schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Refinance break-even schedule",
+      "endpointLabel": "Month 180",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "flat-vs-reducing-rate",
+      "formula": "flat-rate-loan",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Flat versus reducing-balance schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "loan-eligibility-india",
+      "formula": "loan-eligibility",
+      "visualKind": "amortization",
+      "title": "Eligible loan balance schedule",
+      "source": "amortization rows using exact model-derived eligible principal and payment capacity with explicit entered rate/term",
+      "scheduleTitle": "Loan eligibility breakdown",
+      "endpointLabel": "Month 240",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "stamp-duty-registration",
+      "formula": "stamp-duty",
+      "visualKind": "waterfall",
+      "title": "Stamp duty and registration breakdown",
+      "source": "model result/cost components",
+      "scheduleTitle": "Stamp duty and registration breakdown",
+      "endpointLabel": "Total estimated charges",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "mortgage",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "mortgage-affordability",
+      "formula": "loan-eligibility",
+      "visualKind": "amortization",
+      "title": "Eligible loan balance schedule",
+      "source": "amortization rows using exact model-derived eligible principal and payment capacity with explicit entered rate/term",
+      "scheduleTitle": "Loan eligibility breakdown",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "mortgage-refinance",
+      "formula": "refinance",
+      "visualKind": "amortization",
+      "title": "Refinance break-even schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Refinance break-even schedule",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "amortization",
+      "formula": "amortization",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "extra-mortgage-payment",
+      "formula": "debt-payoff",
+      "visualKind": "amortization",
+      "title": "Debt payoff schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Debt payoff schedule",
+      "endpointLabel": "Month 217",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "mortgage-payoff",
+      "formula": "debt-payoff",
+      "visualKind": "amortization",
+      "title": "Debt payoff schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Debt payoff schedule",
+      "endpointLabel": "Month 217",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "biweekly-mortgage-payment",
+      "formula": "biweekly-loan",
+      "visualKind": "amortization",
+      "title": "Biweekly equivalent monthly payoff schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Biweekly equivalent monthly payoff schedule",
+      "endpointLabel": "Month 292",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "mortgage-recast",
+      "formula": "mortgage-recast",
+      "visualKind": "amortization",
+      "title": "Mortgage recast comparison table",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Mortgage recast comparison table",
+      "endpointLabel": "Month 300",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "mortgage-points",
+      "formula": "points",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Points break-even schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "15-vs-30-year-mortgage",
+      "formula": "loan-comparison",
+      "visualKind": "amortization",
+      "title": "Loan option comparison table",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Loan option comparison table",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "arm-mortgage",
+      "formula": "arm",
+      "visualKind": "amortization",
+      "title": "ARM payment schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "ARM payment schedule",
+      "endpointLabel": "Year 30",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "interest-only-mortgage",
+      "formula": "interest-only-loan",
+      "visualKind": "amortization",
+      "title": "Interest-only comparison schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Interest-only comparison schedule",
+      "endpointLabel": "Year 30",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "balloon-loan",
+      "formula": "balloon-loan",
+      "visualKind": "amortization",
+      "title": "Balloon payment schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Balloon payment schedule",
+      "endpointLabel": "Month 60",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "closing-costs",
+      "formula": "closing-costs",
+      "visualKind": "waterfall",
+      "title": "Cash-to-close breakdown",
+      "source": "model result/cost components",
+      "scheduleTitle": "Cash-to-close breakdown",
+      "endpointLabel": "Estimated cash to close",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "escrow",
+      "formula": "escrow",
+      "visualKind": "waterfall",
+      "title": "Escrow component breakdown",
+      "source": "model result/cost components",
+      "scheduleTitle": "Escrow component breakdown",
+      "endpointLabel": "Total monthly escrow estimate",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "debt-to-income",
+      "formula": "dti",
+      "visualKind": "waterfall",
+      "title": "Debt share of monthly income",
+      "source": "model debt-to-income components",
+      "scheduleTitle": "Debt-to-income breakdown",
+      "endpointLabel": "Total debt-to-income ratio",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "loan-comparison",
+      "formula": "loan-comparison",
+      "visualKind": "amortization",
+      "title": "Loan option comparison table",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Loan option comparison table",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "apr",
+      "formula": "apr",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "APR calculation breakdown",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "home-equity-loan",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 120",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "fha-loan",
+      "formula": "fha-loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "va-loan",
+      "formula": "va-loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 360",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "fha-vs-conventional",
+      "formula": "fha-conventional",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "FHA versus conventional comparison",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "rent-vs-buy",
+      "formula": "rent-buy",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Rent versus buy annual table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "credit-card-payoff",
+      "formula": "debt-payoff",
+      "visualKind": "amortization",
+      "title": "Debt payoff schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Debt payoff schedule",
+      "endpointLabel": "Month 30",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "debt-snowball-avalanche",
+      "formula": "debt-strategy",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Snowball versus avalanche payoff table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "auto-loan",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 60",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "personal-loan",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 48",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "student-loan-payoff",
+      "formula": "debt-payoff",
+      "visualKind": "amortization",
+      "title": "Debt payoff schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Debt payoff schedule",
+      "endpointLabel": "Month 95",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "401k",
+      "formula": "compound",
+      "visualKind": "timeline",
+      "title": "Contribution and growth schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Contribution and growth schedule",
+      "endpointLabel": "Year 10",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "roth-vs-traditional-ira",
+      "formula": "roth-traditional",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "Roth versus traditional value path",
+      "endpointLabel": "Roth contribution after tax today",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "paycheck",
+      "formula": "paycheck",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "Gross-to-net paycheck table",
+      "endpointLabel": "Taxable wages",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "income-tax-us",
+      "formula": "us-tax",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "US tax bracket estimate",
+      "endpointLabel": "Taxable income after deductions",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "social-security-break-even",
+      "formula": "social-security",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Benefit break-even schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "rmd",
+      "formula": "rmd",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "RMD distribution schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "cagr",
+      "formula": "investment-return",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Return path table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "xirr",
+      "formula": "xirr",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Modeled cash-flow table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "inflation",
+      "formula": "inflation",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Inflation path table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "rule-of-72",
+      "formula": "rule-72",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Doubling milestone table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "capital-gains-tax",
+      "formula": "capital-gains",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "Capital Gains Tax Calculator breakdown",
+      "endpointLabel": "Taxable base",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "gst",
+      "formula": "gst",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "GST breakdown",
+      "endpointLabel": "Pre-tax amount",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "tds",
+      "formula": "tax-rate",
+      "visualKind": "waterfall",
+      "title": "Gross-to-net preview",
+      "source": "model result/cost components",
+      "scheduleTitle": "TDS Calculator breakdown",
+      "endpointLabel": "Taxable base",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "down-payment",
+      "formula": "down-payment",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Down-payment breakdown",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "pmi",
+      "formula": "pmi",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "PMI cancellation timeline",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "heloc",
+      "formula": "loan",
+      "visualKind": "amortization",
+      "title": "Monthly amortization schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Monthly amortization schedule",
+      "endpointLabel": "Month 120",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "balance-transfer",
+      "formula": "balance-transfer",
+      "visualKind": "amortization",
+      "title": "Balance transfer payoff comparison",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Balance transfer payoff comparison",
+      "endpointLabel": "Month 26",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "cd",
+      "formula": "fd",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Deposit maturity schedule",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "hysa",
+      "formula": "compound",
+      "visualKind": "timeline",
+      "title": "Contribution and growth schedule",
+      "source": "actual selected detail-schedule rows",
+      "scheduleTitle": "Contribution and growth schedule",
+      "endpointLabel": "Month 36",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "life-insurance-needs",
+      "formula": "insurance",
+      "visualKind": "waterfall",
+      "title": "Cashflow and balance read",
+      "source": "model result/cost components",
+      "scheduleTitle": "Protection gap breakdown",
+      "endpointLabel": "Debts and final expenses",
+      "verification": "finite real-model data; targeted schedule/endpoint goldens cover applicable model family"
+    },
+    {
+      "slug": "lease-vs-buy",
+      "formula": "rent-buy",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": "Rent versus buy annual table",
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    },
+    {
+      "slug": "roi",
+      "formula": "roi",
+      "visualKind": "comparison",
+      "title": "Scenario comparison",
+      "source": "recalculated scenario headline",
+      "scheduleTitle": null,
+      "endpointLabel": "Optimistic",
+      "verification": "base equals unchanged headline within 0.005"
+    }
+  ]
+}

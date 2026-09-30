@@ -59,6 +59,7 @@ import {
 } from './lib/calculatorStudios';
 import {
   calculateSeoCalculator,
+  HYSA_APY_ASSUMPTION,
   calculatorCurrency,
   calculatorVariants,
   calculatorPath,
@@ -139,6 +140,7 @@ export type CalculatorSavedResult = {
   id: string;
   inputValues: Record<string, number>;
   result: {
+    assumptions?: string[];
     metrics: Array<{
       label: string;
       value: number;
@@ -577,6 +579,7 @@ function CalculatorDetail({
   const [lastSavedRoute, setLastSavedRoute] = useState<SeoCalculator['conversionRoute'] | null>(null);
   const [selectedScenarioId, setSelectedScenarioId] = useState<CalculatorScenarioId>('base');
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
+  const [historicalHysaValue, setHistoricalHysaValue] = useState<number | null>(null);
   const scenarioValues = useMemo(
     () => buildScenarioValues(calculator, values, selectedScenarioId),
     [calculator, selectedScenarioId, values]
@@ -613,6 +616,7 @@ function CalculatorDetail({
     setValues(shared?.values ?? draft?.values ?? defaultCalculatorValues(calculator));
     setSelectedScenarioId(shared?.scenarioId ?? draft?.scenarioId ?? 'base');
     setSelectedHistoryId(null);
+    setHistoricalHysaValue(null);
     setLastSavedRoute(null);
     setSaveMessage(
       shared
@@ -656,6 +660,7 @@ function CalculatorDetail({
     const clamped = Number.isFinite(parsed) ? Math.min(input.max ?? Number.POSITIVE_INFINITY, Math.max(input.min ?? 0, parsed)) : 0;
     setLastSavedRoute(null);
     setSaveMessage('');
+    setHistoricalHysaValue(null);
     setValues((current) => ({
       ...current,
       [input.key]: clamped
@@ -739,6 +744,8 @@ function CalculatorDetail({
     setValues(normalizeSavedValues(calculator, saved.inputValues));
     setSelectedScenarioId('base');
     setSelectedHistoryId(saved.id);
+    setHistoricalHysaValue(calculator.slug === 'hysa' && !saved.result.assumptions?.includes(HYSA_APY_ASSUMPTION)
+      ? saved.result.metrics[0]?.value ?? null : null);
     setLastSavedRoute(null);
     setSaveMessage(`Loaded the saved ${new Date(saved.createdAt).toLocaleDateString()} inputs. Current edits were replaced.`);
   };
@@ -812,7 +819,7 @@ function CalculatorDetail({
           <CalculatorScenarioPanel
             scenarios={scenarios}
             selectedScenarioId={selectedScenarioId}
-            onSelectScenario={setSelectedScenarioId}
+            onSelectScenario={(id) => { setSelectedScenarioId(id); setHistoricalHysaValue(null); }}
             calculator={calculator}
             focus={studioMetadata.scenarioFocus}
           />
@@ -825,6 +832,14 @@ function CalculatorDetail({
               <h2>{result.metrics[0]?.label ?? 'Estimate'}</h2>
             </div>
           </div>
+          {historicalHysaValue !== null ? (
+            <p className="calculator-result-narrative" role="status" data-hysa-correction>
+              Recalculated with corrected APY. Old saved estimate: {formatMetric({ label: 'Saved', value: historicalHysaValue, valueType: 'currency' }, calculator)}.
+              {' '}Current corrected estimate: {formatMetric(result.metrics[0], calculator)}.
+              {' '}Difference: {formatMetric({ label: 'Difference', value: result.metrics[0].value - historicalHysaValue, valueType: 'currency' }, calculator)}.
+              {' '}The saved snapshot is unchanged. Save explicitly to keep a new result.
+            </p>
+          ) : null}
           <div className="calculator-result-metrics">
             {result.metrics.map((metric, index) => {
               const isPrimary = index === 0;
@@ -863,7 +878,7 @@ function CalculatorDetail({
               );
             })}
           </div>
-          <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} />
+          {studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} />
           <p className="calculator-result-narrative">{result.narrative}</p>
           <div className="calculator-conversion-panel">
@@ -962,6 +977,7 @@ function CalculatorDetail({
         calculator={calculator}
         example={studioMetadata.example}
         onLoadExample={(exampleValues) => {
+          setHistoricalHysaValue(null);
           setValues(exampleValues);
           setSelectedScenarioId('base');
           setLastSavedRoute(null);
