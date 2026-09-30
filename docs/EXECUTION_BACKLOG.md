@@ -499,7 +499,7 @@ OD-1 partially supersedes B35: FIRE **return and inflation** now start empty and
 
 ## Fresh calculator/landing UX increments — 2026-09-29
 
-The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. B47/B48 are accepted on the exact C15 candidate; C16 is released. Only Astra can accept items.
+The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route matrix](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md) supply evidence and route-level scope. They are not alternate status trackers. Execution order is C15 → C16 → C17 → C18; B47 is first. First fix truth, then editing/control discovery, then landing and bounded depth, then real cohort evidence. B47/B48 and B45/B43/B44 are accepted on their exact C15/C16 candidates; C17 is released. Only Astra can accept items.
 
 - [x] **B47 — Correct calculator visuals that invent or contradict the selected model.**
   - User problem/evidence: UX-01/UX-02: closing-cost and stamp-duty charts invent loans; interest-only/recast/prepayment/biweekly charts contradict outputs.
@@ -523,7 +523,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No remote writes/migration; see written correction decision. Roll back only HYSA adapter plus notices together.
   - Effort: 3–6 worker hours plus targeted primary review.
 
-- [ ] **B45 — Preserve input edits, losses and explicit sample-result state.**
+- [x] **B45 — Preserve input edits, losses and explicit sample-result state.**
   - User problem/evidence: UX-04/UX-08: blank mortgage becomes 0; negative ROI becomes 0%; populated examples look personalized.
   - Outcome/scope: Users can edit their numbers naturally and cannot mistake an unfinished/sample result for a valid personal answer. Implement only [the detailed contract](execution/prompts/B45.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/CalculatorLibrary.tsx; src/lib/seoCalculators.ts (input bounds only where mathematically justified); draft/share normalization; CalculatorLibraryDetail tests`.
@@ -534,7 +534,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: If draft shape changes, add backward-compatible read; never discard account records. Revert UI/state adapter as one unit.
   - Effort: 4–8 worker hours.
 
-- [ ] **B43 — Make FIRE refinements and generic additional controls discoverable.**
+- [x] **B43 — Make FIRE refinements and generic additional controls discoverable.**
   - User problem/evidence: UX-05/06/07: late collapsed controls, misleading duplicated FIRE rate state, housing costs mixed with acceleration.
   - Outcome/scope: Users see what they can customize before scanning long explanations or results. Implement only [the detailed contract](execution/prompts/B43.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/App.tsx (FIRE UI/summary only); src/CalculatorLibrary.tsx; src/vivid-theme.css (scoped controls); relevant UI tests`.
@@ -545,7 +545,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Migration/rollback: No formula, persistence or D1 migration; rollback presentation as one commit. Preserve all stable routes.
   - Effort: 4–8 worker hours.
 
-- [ ] **B44 — Expose dedicated calculator customization without a wall of options.**
+- [x] **B44 — Expose dedicated calculator customization without a wall of options.**
   - User problem/evidence: UX-05: compound/savings/emergency/budget controls are 1253–2421px down on mobile.
   - Outcome/scope: Dedicated engines retain their depth while useful control groups become understandable at first use. Implement only [the detailed contract](execution/prompts/B44.md); all assigned individual matrix rows are part of scope.
   - Non-goals/files: no unrelated formulas, paid services or production writes. `src/CompoundInterestCalculator.tsx; src/SavingsGoalCalculator.tsx; src/CashflowPlanningCalculator.tsx; scoped CSS and their tests`.

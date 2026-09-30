@@ -739,45 +739,45 @@
       "id": "B45",
       "title": "Preserve input edits, losses and explicit sample-result state",
       "checkpoint": "C16",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B48"
       ],
       "prompt": "prompts/B45.md",
-      "submission": null,
+      "submission": "submissions/B45.md",
       "owner": "Astra direct implementation and primary verification; no Gemini this pass",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "324be91322c791836bc5e5f105312944e0ec935a",
+      "review": "reviews/C16.md",
       "blocked_reason": null
     },
     {
       "id": "B43",
       "title": "Make FIRE refinements and generic additional controls discoverable",
       "checkpoint": "C16",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B45"
       ],
       "prompt": "prompts/B43.md",
-      "submission": null,
+      "submission": "submissions/B43.md",
       "owner": "Astra direct implementation and primary verification; no Gemini this pass",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "324be91322c791836bc5e5f105312944e0ec935a",
+      "review": "reviews/C16.md",
       "blocked_reason": null
     },
     {
       "id": "B44",
       "title": "Expose dedicated calculator customization without a wall of options",
       "checkpoint": "C16",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B43"
       ],
       "prompt": "prompts/B44.md",
-      "submission": null,
+      "submission": "submissions/B44.md",
       "owner": "Astra direct implementation and primary verification; no Gemini this pass",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "324be91322c791836bc5e5f105312944e0ec935a",
+      "review": "reviews/C16.md",
       "blocked_reason": null
     },
     {
