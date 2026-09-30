@@ -14,8 +14,8 @@ export function EstimateCustomization({ groups, compact = false }: { groups: Cus
     const focusTarget = target instanceof HTMLDetailsElement
       ? target.querySelector<HTMLElement>('summary')
       : target.querySelector<HTMLElement>('input, select, button, summary');
-    focusTarget?.focus();
-    target.scrollIntoView?.({ block: 'nearest' });
+    focusTarget?.focus({ preventScroll: true });
+    target.scrollIntoView?.({ block: 'start', behavior: 'instant' });
   };
   return (
     <nav className="estimate-customization" aria-label="Customize this estimate">
