@@ -1022,4 +1022,41 @@ describe('versioned interpretation persistence', () => {
 });
 
 
+  describe('dated cash-flow snapshot contract',()=>{
+    const dated = {
+      ...validPayload, calculatorSlug:'xirr', calculatorTitle:'Dated Cash-flow Return', conversionRoute:'/plans' as const,
+      inputValues:{cashFlowCount:2},
+      inputModel:{kind:'dated-cash-flows' as const,version:'dated-xirr-v1' as const,cashFlows:[{date:'2025-01-01',amount:-1000},{date:'2026-01-01',amount:1100}]},
+      result:{assumptions:[],metrics:[{label:'Annualized dated return',value:0.1,valueType:'percent' as const}],narrative:'Annualized return from actual dates.',modelVersion:'dated-xirr-v1' as const}
+    };
+    it('validates dated inputs and rejects malformed, mismatched and ambiguous models',()=>{
+      const parsed=parseCalculatorSavePayload(dated);expect(parsed.ok).toBe(true);
+      if(parsed.ok)expect(parsed.value).toHaveProperty('inputModel',dated.inputModel);
+      for(const invalid of [
+        {...dated,calculatorSlug:'mortgage-refinance'},
+        {...dated,conversionRoute:'/goals'},
+        {...dated,inputValues:{cashFlowCount:3}},
+        {...dated,inputModel:undefined},
+        {...dated,result:{...dated.result,modelVersion:undefined}},
+        {...dated,inputModel:{...dated.inputModel,cashFlows:[{date:'2025-02-30',amount:-1000},{date:'2026-01-01',amount:1100}]}},
+        {...dated,inputModel:{...dated.inputModel,cashFlows:[{date:'2025-01-01',amount:-100},{date:'2026-01-01',amount:230},{date:'2027-01-01',amount:-132}]},inputValues:{cashFlowCount:3}}
+      ])expect(parseCalculatorSavePayload(invalid).ok).toBe(false);
+    });
+    it('preserves actual dates through storage, scoped read and retry',async()=>{
+      const {database,sqlite}=createRealD1();
+      const parsed=parseCalculatorSavePayload({...dated,idempotencyKey:'dated-synthetic'});expect(parsed.ok).toBe(true);if(!parsed.ok)return;
+      const saved=await createSavedCalculatorResult(database,'dated-synthetic-A',parsed.value);
+      expect(saved.savedResult).toHaveProperty('inputModel',dated.inputModel);
+      expect((await listSavedCalculatorResults(database,'dated-synthetic-A'))[0]).toHaveProperty('inputModel',dated.inputModel);
+      expect(await listSavedCalculatorResults(database,'dated-synthetic-B')).toEqual([]);
+      expect((await createSavedCalculatorResult(database,'dated-synthetic-A',parsed.value)).saveStatus).toBe('retry');
+      const row=sqlite.prepare('SELECT input_json FROM saved_calculator_results WHERE id = ?').get(saved.savedResult.id) as {input_json:string};
+      expect(JSON.parse(row.input_json)).toEqual({values:dated.inputValues,inputModel:dated.inputModel});
+    });
+    it('hashes actual cash-flow dates rather than only count and result',async()=>{
+      const p1=parseCalculatorSavePayload(dated);const p2=parseCalculatorSavePayload({...dated,inputModel:{...dated.inputModel,cashFlows:[{date:'2025-01-02',amount:-1000},{date:'2026-01-01',amount:1100}]}});
+      expect(p1.ok&&p2.ok).toBe(true);if(p1.ok&&p2.ok)expect(await hashCalculatorPayload(p1.value)).not.toBe(await hashCalculatorPayload(p2.value));
+    });
+  });
+
 });

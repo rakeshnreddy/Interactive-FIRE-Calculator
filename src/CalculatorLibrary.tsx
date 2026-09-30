@@ -1,4 +1,6 @@
+import type { DatedReturnInputModel } from './lib/datedReturns';
 import { modelVersionForCalculator, type CalculatorModelVersion } from './lib/calculatorModelVersion';
+import { XirrCalculator } from './XirrCalculator';
 import { buildCalculatorScope } from './lib/calculatorScope';
 import { CalculatorScopeNotice } from './components/CalculatorScopeNotice';
 import { useResultReveal } from './lib/resultReveal';
@@ -130,6 +132,7 @@ export type CalculatorSaveRequest = {
   currency: string;
   result: ReturnType<typeof calculateSeoCalculator>;
   values: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
 };
 
 export type CalculatorSaveOutcome = {
@@ -145,6 +148,7 @@ export type CalculatorSavedResult = {
   currency: string;
   id: string;
   inputValues: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
   result: {
     modelVersion?: CalculatorModelVersion;
     assumptions?: string[];
@@ -171,6 +175,8 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
 
   if (calculator) {
+    if (calculator.slug === 'xirr') return <XirrCalculator auth={auth} calculator={calculator} onSaveResult={onSaveResult} savedResults={savedResults} renderPeriodic={()=><CalculatorDetail auth={auth} calculator={calculator} onNavigate={onNavigate} onSaveResult={onSaveResult} savedResults={savedResults}/>}/>;
+
     if (calculator.slug === 'compound-interest') {
       return (
         <CompoundInterestCalculator
@@ -614,7 +620,7 @@ function CalculatorDetail({
     [calculator, scenarioValues, hasValidResult]
   );
   const calculatorHistory = useMemo(
-    () => savedResults.filter((item) => item.calculatorSlug === calculator.slug).slice(0, 6),
+    () => savedResults.filter((item) => item.calculatorSlug === calculator.slug && (calculator.slug !== 'xirr' || !item.inputModel)).slice(0, 6),
     [calculator.slug, savedResults]
   );
   const selectedHistory = calculatorHistory.find((item) => item.id === selectedHistoryId) ?? calculatorHistory[0] ?? null;

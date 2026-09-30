@@ -1,6 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { isCalculatorModelVersion, modelVersionForCalculator, type CalculatorModelVersion } from '../../src/lib/calculatorModelVersion';
+import { isCalculatorModelVersion, modelVersionMatchesCalculator, type CalculatorModelVersion } from '../../src/lib/calculatorModelVersion';
+import { calculateDatedReturn, parseDatedReturnInputModel, type DatedReturnInputModel } from '../../src/lib/datedReturns';
 import { readAccount, type AccountCreatePayload, type FinancialAccount } from './accounts';
 import { readGoal, type Goal, type GoalCreatePayload } from './goals';
 import { ensureUserProfile } from './persistence';
@@ -40,6 +41,7 @@ export type CalculatorSavePayload = {
   currency: string;
   idempotencyKey?: string | null;
   inputValues: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
   result: CalculatorResultSnapshot;
 };
 
@@ -58,6 +60,7 @@ export type SavedCalculatorResult = {
   id: string;
   idempotencyKey: string | null;
   inputValues: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
   payloadHash?: string | null;
   result: CalculatorResultSnapshot;
   updatedAt: string;
@@ -410,7 +413,7 @@ export async function createSavedCalculatorResult(
       destinationType,
       payload.conversionRoute,
       payload.conversionLabel,
-      JSON.stringify(payload.inputValues),
+      JSON.stringify(payload.inputModel ? { values: payload.inputValues, inputModel: payload.inputModel } : payload.inputValues),
       JSON.stringify(payload.result),
       createdEntityInfo?.type ?? null,
       createdEntityInfo?.id ?? null,
@@ -593,10 +596,18 @@ export function parseCalculatorSavePayload(
   const result = parseCalculatorResult(value.result);
   if (!result.ok) return result;
 
-  if (result.value.modelVersion !== undefined && result.value.modelVersion !== modelVersionForCalculator(calculatorSlug.value)) {
+  if (result.value.modelVersion !== undefined && !modelVersionMatchesCalculator(result.value.modelVersion, calculatorSlug.value)) {
     return { error: 'result.modelVersion does not match this calculator.', ok: false };
   }
 
+  const inputModel = value.inputModel === undefined ? undefined : parseDatedReturnInputModel(value.inputModel);
+  if (value.inputModel !== undefined || result.value.modelVersion === 'dated-xirr-v1') {
+    if (!inputModel || calculatorSlug.value !== 'xirr' || result.value.modelVersion !== 'dated-xirr-v1' || conversionRoute.value !== '/plans' || inputValues.value.cashFlowCount !== inputModel.cashFlows.length) {
+      return { error: 'Dated returns require valid actual cash flows, matching version/count and a plan destination.', ok: false };
+    }
+    const computed = calculateDatedReturn(inputModel.cashFlows);
+    if (!computed.ok) return { error: computed.error, ok: false };
+  }
   const parsedValue: CalculatorSavePayload = {
     calculatorCategory: calculatorCategory.value,
     calculatorRegion: calculatorRegion.value,
@@ -606,6 +617,7 @@ export function parseCalculatorSavePayload(
     conversionRoute: conversionRoute.value,
     currency: currency.value,
     inputValues: inputValues.value,
+    ...(inputModel ? { inputModel } : {}),
     result: result.value
   };
 
@@ -1023,6 +1035,7 @@ function parseMetric(value: unknown):
 }
 
 function toSavedCalculatorResult(row: SavedCalculatorResultRow): SavedCalculatorResult {
+  const stored = readStoredCalculatorInputs(row.input_json);
   return {
     calculatorCategory: row.calculator_category,
     calculatorRegion: row.calculator_region,
@@ -1037,11 +1050,22 @@ function toSavedCalculatorResult(row: SavedCalculatorResultRow): SavedCalculator
     destinationType: row.destination_type,
     id: row.id,
     idempotencyKey: row.idempotency_key ?? null,
-    inputValues: parseNumberRecord(row.input_json),
+    ...stored,
     payloadHash: row.payload_hash ?? null,
     result: parseResultSnapshot(row.result_json),
     updatedAt: row.updated_at
   };
+}
+
+function readStoredCalculatorInputs(value: string): Pick<SavedCalculatorResult, 'inputValues' | 'inputModel'> {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    if (isRecord(parsed) && isRecord(parsed.values) && parsed.inputModel !== undefined) {
+      const inputModel = parseDatedReturnInputModel(parsed.inputModel);
+      return { inputValues: parseNumberRecord(JSON.stringify(parsed.values)), ...(inputModel ? { inputModel } : {}) };
+    }
+  } catch { /* Legacy malformed JSON remains an empty input map. */ }
+  return { inputValues: parseNumberRecord(value) };
 }
 
 function parseNumberRecord(value: string): Record<string, number> {
@@ -1158,6 +1182,7 @@ export async function hashCalculatorPayload(payload: CalculatorSavePayload): Pro
         acc[key] = payload.inputValues[key];
         return acc;
       }, {}),
+    ...(payload.inputModel ? { inputModel: payload.inputModel } : {}),
     result: {
       assumptions: [...payload.result.assumptions],
       metrics: payload.result.metrics.map((metric) => ({

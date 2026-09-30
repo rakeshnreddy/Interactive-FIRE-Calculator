@@ -490,7 +490,7 @@ export const seoCalculators: SeoCalculator[] = [
   })),
   ...([
     ['cagr', 'CAGR Calculator', 'investment-return', [money('initial', 'Initial value', 10000), money('final', 'Final value', 18000), number('years', 'Years', 5, 'yrs')]],
-    ['xirr', 'Monthly IRR Calculator (XIRR-style)', 'xirr', [money('initial', 'Initial investment', 10000), money('monthly', 'Monthly contribution', 500), money('final', 'Ending value', 50000), number('years', 'Years', 5, 'yrs')]],
+    ['xirr', 'Investment Return Calculator (Monthly IRR & XIRR)', 'xirr', [money('initial', 'Initial investment', 10000), money('monthly', 'Monthly contribution', 500), money('final', 'Ending value', 50000), number('years', 'Years', 5, 'yrs')]],
     ['inflation', 'Inflation Calculator', 'inflation', [money('principal', 'Today cost', 10000), percent('rate', 'Inflation rate', 4), number('years', 'Years', 10, 'yrs')]],
     ['rule-of-72', 'Rule of 72 Calculator', 'rule-72', [percent('rate', 'Annual return', 8)]],
     ['capital-gains-tax', 'Capital Gains Tax Calculator', 'capital-gains', [money('gain', 'Capital gain', 50000), percent('effectiveRate', 'Estimated tax rate', 15)]],
@@ -941,14 +941,14 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'xirr': {
       const contributions = get('initial') + get('monthly') * months;
       const annualized = monthlyCashFlowIrr(get('initial'), get('monthly'), get('final'), months);
-      return result('Modeled annualised return (periodic monthly IRR)', annualized, 'The yearly rate at which the initial investment and equal end-of-month contributions would grow to the ending value. This is a periodic IRR, not a dated XIRR.', [
-        'Contributions are modeled as equal amounts at the end of each month with no dates. Spreadsheet XIRR needs the date of every cash flow; irregular dated cash flows are not yet supported here, so treat this as a screening estimate.',
+      return { ...result('Modeled annualised return (periodic monthly IRR)', annualized, 'The yearly rate at which the initial investment and equal end-of-month contributions would grow to the ending value. This is a periodic IRR, not a dated XIRR.', [
+        'Contributions are modeled as equal amounts at the end of each month with no dates. This mode has no actual dates. Choose dated cash flows above when payments are irregular; no dates are inferred from this projection.',
         'Fees and taxes are not deducted.'
       ], [
         metric('Total contributed', contributions, 'currency'),
         metric('Ending value', get('final'), 'currency'),
         metric('Total gain', get('final') - contributions, 'currency', get('final') >= contributions ? 'positive' : 'warning')
-      ]);
+      ]), modelVersion: 'monthly-periodic-v1' };
     }
     case 'lumpsum':
     case 'fd': {

@@ -1,3 +1,4 @@
+import { parseDatedReturnInputModel, type DatedReturnInputModel } from '../datedReturns';
 import { isCalculatorModelVersion, type CalculatorModelVersion } from '../calculatorModelVersion';
 import type { CalculatorSaveRequest } from '../../CalculatorLibrary';
 import { authenticatedJsonRequest, isRecord, type SignedInAuth } from './client';
@@ -35,6 +36,7 @@ export type SavedCalculatorResult = {
   id: string;
   idempotencyKey?: string | null;
   inputValues: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
   payloadHash?: string | null;
   result: SavedCalculatorResultSnapshot;
   updatedAt: string;
@@ -151,6 +153,11 @@ export function toSavedCalculatorResult(value: unknown): SavedCalculatorResult |
 
   const result = toSavedCalculatorResultSnapshot(value.result);
 
+  const inputModel = value.inputModel === undefined ? undefined : parseDatedReturnInputModel(value.inputModel);
+  if (value.inputModel !== undefined && !inputModel) return null;
+  if (result?.modelVersion === 'dated-xirr-v1' && (!inputModel || value.calculatorSlug !== 'xirr')) return null;
+  if (inputModel && result?.modelVersion !== 'dated-xirr-v1') return null;
+
   if (!result) {
     return null;
   }
@@ -170,6 +177,7 @@ export function toSavedCalculatorResult(value: unknown): SavedCalculatorResult |
     id: value.id,
     idempotencyKey: typeof value.idempotencyKey === 'string' ? value.idempotencyKey : null,
     inputValues: value.inputValues,
+    ...(inputModel ? { inputModel } : {}),
     payloadHash: typeof value.payloadHash === 'string' ? value.payloadHash : null,
     result,
     updatedAt: value.updatedAt
@@ -245,6 +253,7 @@ export async function createCalculatorResultRecord(
       currency: request.currency,
       idempotencyKey: resolvedKey,
       inputValues: request.values,
+      ...(request.inputModel ? { inputModel: request.inputModel } : {}),
       result: request.result
     }),
     headers: {

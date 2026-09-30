@@ -2537,9 +2537,10 @@ function xirrApproximationSchedule(
   const monthly = Math.max(0, values.monthly ?? 0);
   const final = Math.max(0, values.final ?? 0);
   const years = scheduleYears(values.years ?? 0);
-  const months = Math.max(1, years * 12);
+  const months = Math.min(maxScheduleYears * 12, Math.max(1, Math.round((values.years ?? 0) * 12)));
   const annualized = Number.isFinite(result.metrics[0]?.value) ? result.metrics[0].value : 0;
-  const monthlyRate = annualized / 12;
+  if (annualized <= -1) return null; // No finite implied monthly path for a total-loss boundary.
+  const monthlyRate = Math.expm1(Math.log1p(annualized) / 12);
   let cumulativeInvested = initial;
   let impliedValue = initial;
   let annualContribution = 0;
@@ -2551,8 +2552,8 @@ function xirrApproximationSchedule(
     cumulativeInvested += monthly;
 
     if (month % 12 === 0 || month === months) {
-      const year = Math.ceil(month / 12);
-      const endingValue = year === years ? final : impliedValue;
+      const year = month / 12;
+      const endingValue = impliedValue;
       rows.push({
         id: `xirr-year-${year}`,
         values: {
@@ -2567,6 +2568,8 @@ function xirrApproximationSchedule(
     }
   }
 
+  if (months === Math.round((values.years ?? 0) * 12) && Math.abs(impliedValue - final) > Math.max(0.01, Math.abs(final) * 1e-8)) return null;
+
   return {
     columns: [
       textColumn('year', 'Year'),
@@ -2575,7 +2578,7 @@ function xirrApproximationSchedule(
       moneyColumn('endingValue', 'Ending value'),
       moneyColumn('gain', 'Gain / loss')
     ],
-    description: 'Annual cash-flow table for the modeled periodic monthly IRR; a dated XIRR for irregular cash flows is not yet supported.',
+    description: 'Annual cash-flow table for the modeled periodic monthly IRR; choose dated cash flows for irregular payments.',
     rows,
     summary: scheduleCapSummary(values.years ?? years, 'Contributions are modeled as equal monthly amounts, so the table shows the implied value path rather than dated transactions.'),
     title: 'Modeled cash-flow table'
