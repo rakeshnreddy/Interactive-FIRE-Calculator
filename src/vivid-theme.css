@@ -2040,3 +2040,29 @@ body {
 }
 
 .app .landing-hero-example { background: var(--color-surface); background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+/* Calculator density: close label/control pairs, distinct groups, calm number scale. */
+.calculator-input-panel, .calculator-result-panel { padding: var(--space-4); }
+.calculator-input-panel > .panel-heading { flex-wrap: nowrap; align-items: flex-start; gap: var(--space-3); margin: 0; }
+.calculator-input-panel > .panel-heading > div { min-width: 0; }
+.calculator-input-panel > .panel-heading h2 { font-size: 1.25rem; line-height: 1.3; margin: 0; }
+.calculator-input-panel > .panel-heading > button { flex: 0 0 auto; width: auto; margin: 0; }
+.calculator-input-panel .calculator-input-grid { gap: var(--space-4); }
+.calculator-input-panel .field { gap: var(--space-1); }
+.calculator-input-panel .field > small { font-size: .875rem; line-height: 1.45; }
+.calculator-input-panel :is(input, select) { min-height: 44px; font-size: 1rem; }
+.calculator-result-panel .calculator-result-metrics { gap: var(--space-3); }
+.calculator-result-panel .calculator-result-metric { padding: var(--space-3); }
+.calculator-result-panel .calculator-result-metric strong { font-size: 1.375rem; line-height: 1.25; overflow-wrap: anywhere; }
+.calculator-result-panel .calculator-result-metric-primary strong { font-size: clamp(2rem, 3.2vw, 2.75rem); }
+.compound-headline > strong, .hero-result > strong { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; overflow-wrap: anywhere; }
+.calculator-result-action { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-block: var(--space-4); }
+.calculator-result-action small { color: var(--color-muted-strong); font-size: .875rem; }
+.calculator-result-panel[tabindex], .hero-result[tabindex] { scroll-margin-top: 88px; }
+.calculator-result-panel[tabindex]:focus-visible, .hero-result[tabindex]:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+@media (max-width: 480px) {
+  .calculator-result-action button { width: 100%; }
+}
+
+.calculator-input-panel > :is(.estimate-customization, .compound-disclosure, .calculator-options-shell, .calculator-result-action) { margin: 0; }
+.calculator-input-panel .estimate-customization-links.is-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }

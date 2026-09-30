@@ -1,3 +1,5 @@
+import { useResultReveal } from './lib/resultReveal';
+import { CalculatorResultAction } from './components/CalculatorResultAction';
 import { EstimateCustomization, EstimateOptionGroup } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
@@ -86,6 +88,7 @@ export function SavingsGoalCalculator({
   onSaveResult,
   savedResults
 }: Props) {
+  const { resultRef, revealResult } = useResultReveal();
   const [inputs, setInputs] = useState<SavingsGoalInputs>(defaultSavingsGoalInputs);
   const [currency, setCurrency] = useState<SavingsCurrencyCode>('USD');
   const [locale, setLocale] = useState<SavingsLocaleCode>('auto');
@@ -333,9 +336,10 @@ export function SavingsGoalCalculator({
                 </div>
               </fieldset>
           </EstimateOptionGroup>
+          <CalculatorResultAction disabled={!projection.validation.isValid || projection.requiredContribution === null} onReveal={revealResult} />
         </section>
 
-        <section className="calculator-result-panel compound-result-panel" aria-labelledby="savings-result-title">
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel compound-result-panel" aria-labelledby="savings-result-title">
           <div className="panel-heading">
             <div><p className="eyebrow">Saving pace</p><h2 id="savings-result-title">Required contribution</h2></div>
             <div className="compound-model-badges"><span className="compound-version">{scenarioLabel(scenarioId)} case</span></div>
@@ -428,7 +432,7 @@ export function SavingsGoalCalculator({
                 <p>Only the annual rate moves by 2 percentage points. These are deterministic comparisons, not probabilities.</p>
                 <div>{scenarios.map((scenario) => (
                   <label key={scenario.id}>
-                    <input checked={scenarioId === scenario.id} disabled={!scenario.projection.validation.isValid || scenario.projection.requiredContribution === null} name="savings-goal-scenario" type="radio" value={scenario.id} onChange={() => setScenarioId(scenario.id)} />
+                    <input checked={scenarioId === scenario.id} disabled={!scenario.projection.validation.isValid || scenario.projection.requiredContribution === null} name="savings-goal-scenario" type="radio" value={scenario.id} onChange={() => { setScenarioId(scenario.id); revealResult(); }} />
                     <span>{scenarioLabel(scenario.id)}</span>
                     <strong>{scenario.projection.validation.isValid && scenario.projection.requiredContribution !== null ? money(scenario.projection.requiredContribution, 2) : 'Unavailable'}</strong>
                     <small>{formatPercent(scenario.inputs.annualRatePercent / 100, resolvedLocale)}{scenarioId === scenario.id ? ' · Selected' : ''}</small>

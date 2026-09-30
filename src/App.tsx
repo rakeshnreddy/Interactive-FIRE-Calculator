@@ -1,3 +1,4 @@
+import { useResultReveal } from './lib/resultReveal';
 import { EstimateCustomization } from './components/EstimateCustomization';
 import { AccountUserButton, SignInIntent, SignOutControl, SignUpIntent } from './authRuntime';
 import {
@@ -1124,6 +1125,7 @@ function TopbarAuthActions({
 }
 
 function App({ auth }: { auth: AuthState }) {
+  const { resultRef, revealResult } = useResultReveal<HTMLDivElement>();
   const [route, setRoute] = useState<AppRoute>(readRoute);
   const mainRef = useRef<HTMLElement>(null);
   const previousRouteRef = useRef<AppRoute>(route);
@@ -2103,6 +2105,7 @@ function App({ auth }: { auth: AuthState }) {
     setIsStale(false);
     setHasCalculated(true);
     setCalculatorPanel('planner');
+    revealResult();
   };
 
   const setTimelineValue = (key: keyof TimelineInput) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -4300,7 +4303,7 @@ function App({ auth }: { auth: AuthState }) {
           </div>
 
           {hasCalculated && (
-            <div className={`calculator-result-card hero-result ${isStale ? 'is-stale' : ''}`}>
+            <div ref={resultRef} tabIndex={-1} role="region" aria-label="FIRE calculation result" className={`calculator-result-card hero-result ${isStale ? 'is-stale' : ''}`}>
               {isStale && (
                 <div className="stale-result-badge" role="status" aria-live="polite">
                   <RotateCcw size={14} aria-hidden="true" />

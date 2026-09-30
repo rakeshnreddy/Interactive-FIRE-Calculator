@@ -1,3 +1,5 @@
+import { useResultReveal } from './lib/resultReveal';
+import { CalculatorResultAction } from './components/CalculatorResultAction';
 import { EstimateCustomization } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
@@ -568,6 +570,7 @@ function CalculatorDetail({
   onSaveResult: (request: CalculatorSaveRequest) => Promise<CalculatorSaveOutcome>;
   savedResults: CalculatorSavedResult[];
 }) {
+  const { resultRef, revealResult } = useResultReveal();
   const [values, setValues] = useState<Record<string, number>>(
     Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]))
   );
@@ -841,17 +844,18 @@ function CalculatorDetail({
               <div className="calculator-input-grid calculator-options-grid">{group.inputs.map(renderInput)}</div>
             </details>
           ))}
+          <CalculatorResultAction disabled={!canUseResult} onReveal={revealResult} />
           <CalculatorScenarioPanel
             disabled={!canUseResult}
             scenarios={scenarios}
             selectedScenarioId={selectedScenarioId}
-            onSelectScenario={(id) => { setSelectedScenarioId(id); setHistoricalHysaValue(null); }}
+            onSelectScenario={(id) => { if (!canUseResult) return; setSelectedScenarioId(id); setHistoricalHysaValue(null); revealResult(); }}
             calculator={calculator}
             focus={studioMetadata.scenarioFocus}
           />
         </section>
 
-        <section className="calculator-result-panel" aria-label={`${calculator.title} result`}>
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel" aria-label={`${calculator.title} result`}>
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Result</p>

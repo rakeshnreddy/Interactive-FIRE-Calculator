@@ -1,3 +1,5 @@
+import { useResultReveal } from './lib/resultReveal';
+import { CalculatorResultAction } from './components/CalculatorResultAction';
 import { EstimateCustomization, EstimateOptionGroup } from './components/EstimateCustomization';
 import { SignUpIntent } from './authRuntime';
 import {
@@ -88,6 +90,7 @@ export function CompoundInterestCalculator({
   onSaveResult,
   savedResults
 }: Props) {
+  const { resultRef, revealResult } = useResultReveal();
   const [inputs, setInputs] = useState<CompoundInterestInputs>(defaultCompoundInterestInputs);
   const [currency, setCurrency] = useState<CurrencyCode>('USD');
   const [locale, setLocale] = useState<LocaleCode>('auto');
@@ -532,9 +535,10 @@ export function CompoundInterestCalculator({
               </fieldset>
           </EstimateOptionGroup>
 
+          <CalculatorResultAction disabled={!projection.validation.isValid} onReveal={revealResult} />
         </section>
 
-        <section className="calculator-result-panel compound-result-panel" aria-labelledby="compound-result-title">
+        <section ref={resultRef} tabIndex={-1} className="calculator-result-panel compound-result-panel" aria-labelledby="compound-result-title">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Projection</p>
@@ -666,7 +670,7 @@ export function CompoundInterestCalculator({
                         name="compound-scenario"
                         type="radio"
                         value={scenario.id}
-                        onChange={() => setScenarioId(scenario.id)}
+                        onChange={() => { setScenarioId(scenario.id); revealResult(); }}
                       />
                       <span>{scenarioLabel(scenario.id)}</span>
                       <strong>{scenario.projection.validation.isValid ? money(scenario.projection.endingValue) : 'Invalid'}</strong>
