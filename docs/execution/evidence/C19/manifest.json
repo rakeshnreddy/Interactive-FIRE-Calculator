@@ -12,15 +12,17 @@
       "path": "docs/execution/evidence/C19/raw/payback-red.log",
       "sha256": "c59091f4728345c631fd4ff6e1a472b33fe60831dd3f90a961f893eca14ca993",
       "bytes": 8898,
-      "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
-      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object"
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object",
+      "related_candidate_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "origin": "Observed failing test in pre-implementation working tree; related_candidate_sha identifies the resulting reviewed implementation, not the RED-state source. No Git commit represents that intermediate working tree."
     },
     {
       "path": "docs/execution/evidence/C19/raw/ssa-red.log",
       "sha256": "0c8cc1867e003e592c443f8a620f0ff187e2eb6f0790c03ec0fa8a0120b063c8",
       "bytes": 4524,
-      "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
-      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object"
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object",
+      "related_candidate_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "origin": "Observed failing test in pre-implementation working tree; related_candidate_sha identifies the resulting reviewed implementation, not the RED-state source. No Git commit represents that intermediate working tree."
     },
     {
       "path": "docs/execution/evidence/C19/raw/browser-cases.json",

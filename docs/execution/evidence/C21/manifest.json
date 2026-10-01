@@ -12,22 +12,25 @@
       "path": "docs/execution/evidence/C21/raw/finance-red.log",
       "sha256": "27a834955320367c84d087d7f6e1c10b0d5e176292e59a6e974607bded891e30",
       "bytes": 2468,
-      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
-      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation",
+      "related_candidate_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "origin": "Observed failing test in pre-implementation working tree; related_candidate_sha identifies the resulting reviewed implementation, not the RED-state source. No Git commit represents that intermediate working tree."
     },
     {
       "path": "docs/execution/evidence/C21/raw/ui-red.log",
       "sha256": "45cb1977ba91c38072e55aafd41065d5d25d91d2395fb1658bd4d10b47ef310e",
       "bytes": 1772,
-      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
-      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation",
+      "related_candidate_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "origin": "Observed failing test in pre-implementation working tree; related_candidate_sha identifies the resulting reviewed implementation, not the RED-state source. No Git commit represents that intermediate working tree."
     },
     {
       "path": "docs/execution/evidence/C21/raw/consumer-red.log",
       "sha256": "ea86cfd983b57913a453252c131fedac1c7e1e47030f84fad05797e8546afed0",
       "bytes": 2081,
-      "source_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
-      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation"
+      "storage": "ignored local raw; reproduce via committed tests and described browser cases; RED logs precede source implementation",
+      "related_candidate_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+      "origin": "Observed failing test in pre-implementation working tree; related_candidate_sha identifies the resulting reviewed implementation, not the RED-state source. No Git commit represents that intermediate working tree."
     },
     {
       "path": "docs/execution/evidence/C21/raw/browser-cases.json",
