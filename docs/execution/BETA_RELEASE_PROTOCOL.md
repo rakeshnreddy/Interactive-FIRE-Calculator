@@ -2,9 +2,10 @@
 
 ## Share one URL
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://9cb7d11d.interactive-fire-calculator.pages.dev, deployment `9cb7d11d-7f8a-49f1-9e21-0d9465ce8ffb`, clean commit `e941093aaa71c3ed2de1aaa221b3342ae8da547a`. Its product is byte-equivalent to accepted C17 source `9f3789b` (only review documents differ). [Provider mapping and bundle hashes](evidence/C17/beta-release.json), [C17 review](reviews/C17.md).
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://7a0c28db.interactive-fire-calculator.pages.dev, deployment `7a0c28db-e731-4087-b7ee-f25c7cbe6f98`, clean commit `7826e07f6c49cab117d9f43acf9dc258a6001f02`. Product is byte-equivalent to accepted C21 source `92c752ac37b0fadf59ad1716ae1c2546e0702312` (only review documents differ). [Provider mapping and actual bundle hashes](evidence/C21/beta-release.json), [C21 review](reviews/C21.md).
 
-Provider metadata confirms the branch alias maps to this deployment and Functions bind only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`. All 16 runtime JS/CSS files served from the alias match the local authenticated candidate build by SHA-256. This supersedes the old filename-only parity inference. All 84 public HTTP routes, health 200, anonymous protected APIs 401 and actual beta result navigation were verified. C17's fuller interactive scope is 66 desktop/mobile/light/dark cases; not every calculator workflow or authenticated lifecycle was rerun for unchanged server code.
+Provider metadata verifies this alias/deployment and only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`. All 16 runtime JS/CSS assets match the local authenticated candidate by SHA-256. Health 200, anonymous APIs 401; actual dated-return and vehicle net-cost beta journeys pass. All 84 calculator HTTP routes pass on the candidate and stable beta. Changed-save behavior is covered by real local SQLite/tenant fixtures; authenticated hosted lifecycle and actual CSV download were not rerun. Native reader/zoom and real-user B51 remain explicit deferrals.
+
 
 ## Promotion discipline
 
@@ -20,6 +21,6 @@ No automatic checkpoint promotion has been configured. Repository code/CI can ad
 
 ## Recovery and beta data
 
-To roll back, rebuild a previously accepted compatible source with the authenticated preview script, verify schema compatibility and isolated bindings, then redeploy to the same branch label. Do not assume an unverified provider preview-rollback command works. Retain the immutable evidence URL for each release. C17 introduced no schema change; the earlier C16 source is the compatible UI rollback candidate, while the C15 HYSA migration decision still governs historical snapshots.
+To roll back, rebuild a previously accepted compatible source with the authenticated preview script, verify schema compatibility and isolated bindings, then redeploy to the same branch label. Do not assume an unverified provider preview-rollback command works. Retain the immutable evidence URL for each release. C19–C21 introduce versioned JSON interpretations, including an actual-date input envelope. Do not blindly redeploy C17 or older readers that cannot understand those snapshots. Prefer reverting the new route behavior while retaining new version/input-envelope read and export support; no schema purge or historical backfill. C15 HYSA and C19–C21 migration decisions govern snapshot interpretation.
 
 Testers should use sample data. Beta records may be reset; this environment does not promise permanent storage. Do not share real financial records with agents or evidence collectors. Production remains on old `3399dbb`; automatic production deployments are disabled and the last production-auth preflight is 0/6. An owned domain and completed production Clerk setup remain required before production publication.

@@ -20,7 +20,10 @@ describe('calculator engagement tools', () => {
     (_slug, calculator) => {
       const impacts = buildCalculatorInputImpacts(calculator, defaultValues(calculator));
 
-      expect(impacts).toHaveLength(calculator.inputs.length);
+      if (calculator.formula === 'vehicle-cost') {
+        // Independently perturbing horizon/quote exceeds the lease and is invalid without continuation.
+        expect(impacts.map(i => i.inputKey).sort()).toEqual(calculator.inputs.map(i => i.key).filter(k => !['years','leaseYears'].includes(k)).sort());
+      } else expect(impacts).toHaveLength(calculator.inputs.length);
       impacts.forEach((impact) => {
         expect(calculator.inputs.some((input) => input.key === impact.inputKey)).toBe(true);
         expect(Number.isFinite(impact.baseOutput)).toBe(true);

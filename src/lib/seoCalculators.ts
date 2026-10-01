@@ -1,4 +1,8 @@
+import { vehicleCostResult } from './vehicleLeaseBuy';
 import { buildCalculatorPublicContent } from './calculatorContent';
+import type { CalculatorModelVersion } from './calculatorModelVersion';
+import { assessPayback } from './payback';
+import { assessBenefitCatchUp } from './benefitCatchUp';
 
 export type CalculatorRegion = 'Global' | 'India' | 'US';
 export type CalculatorCategory = 'Borrowing' | 'Investing' | 'Planning' | 'Tax' | 'Savings';
@@ -46,6 +50,7 @@ export type CalculatorFormula =
   | 'ppf'
   | 'rd'
   | 'refinance'
+  | 'vehicle-cost'
   | 'rent-buy'
   | 'retirement'
   | 'rmd'
@@ -83,6 +88,7 @@ export type CalculatorMetric = {
 };
 
 export type CalculatorResult = {
+  modelVersion?: CalculatorModelVersion;
   assumptions: string[];
   metrics: CalculatorMetric[];
   narrative: string;
@@ -206,6 +212,7 @@ const conversionByFormula: Record<CalculatorFormula, Pick<SeoCalculator, 'conver
   ppf: { conversionLabel: 'Track retirement account', conversionRoute: '/accounts' },
   rd: { conversionLabel: 'Track savings account', conversionRoute: '/accounts' },
   refinance: { conversionLabel: 'Compare loan plan', conversionRoute: '/plans' },
+  'vehicle-cost': { conversionLabel: 'Save vehicle comparison', conversionRoute: '/plans' },
   'rent-buy': { conversionLabel: 'Create home goal', conversionRoute: '/goals' },
   retirement: { conversionLabel: 'Save retirement plan', conversionRoute: '/plans' },
   rmd: { conversionLabel: 'Save retirement plan', conversionRoute: '/plans' },
@@ -249,6 +256,7 @@ const borrowingFormulas = new Set<CalculatorFormula>([
   'pmi',
   'points',
   'refinance',
+  'vehicle-cost',
   'rent-buy',
   'stamp-duty',
   'va-loan'
@@ -486,7 +494,7 @@ export const seoCalculators: SeoCalculator[] = [
   })),
   ...([
     ['cagr', 'CAGR Calculator', 'investment-return', [money('initial', 'Initial value', 10000), money('final', 'Final value', 18000), number('years', 'Years', 5, 'yrs')]],
-    ['xirr', 'Monthly IRR Calculator (XIRR-style)', 'xirr', [money('initial', 'Initial investment', 10000), money('monthly', 'Monthly contribution', 500), money('final', 'Ending value', 50000), number('years', 'Years', 5, 'yrs')]],
+    ['xirr', 'Investment Return Calculator (Monthly IRR & XIRR)', 'xirr', [money('initial', 'Initial investment', 10000), money('monthly', 'Monthly contribution', 500), money('final', 'Ending value', 50000), number('years', 'Years', 5, 'yrs')]],
     ['inflation', 'Inflation Calculator', 'inflation', [money('principal', 'Today cost', 10000), percent('rate', 'Inflation rate', 4), number('years', 'Years', 10, 'yrs')]],
     ['rule-of-72', 'Rule of 72 Calculator', 'rule-72', [percent('rate', 'Annual return', 8)]],
     ['capital-gains-tax', 'Capital Gains Tax Calculator', 'capital-gains', [money('gain', 'Capital gain', 50000), percent('effectiveRate', 'Estimated tax rate', 15)]],
@@ -499,7 +507,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['cd', 'CD Calculator', 'fd', [money('principal', 'Deposit amount', 10000), percent('rate', 'APY', 4.5), number('years', 'Term', 2, 'yrs')]],
     ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
     ['life-insurance-needs', 'Life Insurance Needs Calculator', 'insurance', [money('income', 'Annual income to replace', 100000), number('years', 'Years of support', 10, 'yrs'), money('debts', 'Debts and final expenses', 150000), money('savings', 'Existing savings/coverage', 100000)]],
-    ['lease-vs-buy', 'Lease vs Buy Calculator', 'rent-buy', [money('rent', 'Monthly lease payment', 450), money('homePrice', 'Vehicle purchase price', 35000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan rate', 7), number('loanYears', 'Loan term', 5, 'yrs'), number('years', 'Years you would keep it', 4, 'yrs')]],
+    ['lease-vs-buy', 'Lease vs Buy Calculator', 'vehicle-cost', [money('homePrice', 'Vehicle purchase price', 25000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan APR', 0), number('loanYears', 'Loan term', 4, 'yrs'), number('years', 'Comparison horizon', 2, 'yrs'), money('rent', 'Monthly lease payment', 350), number('leaseYears', 'Quoted lease period', 2, 'yrs'), money('resale', 'Resale value at horizon', 14000), money('leaseUpfront', 'Upfront lease costs', 0), number('extendLease', 'Explicit lease continuation', 0), money('extensionMonthly', 'Continuation monthly cost', 0)]],
     ['roi', 'ROI Calculator', 'roi', [{ ...money('gain', 'Net gain', 5000, 'Enter a loss with a minus sign.'), min: -Number.MAX_SAFE_INTEGER }, money('cost', 'Cost', 20000)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'capital-gains' || formula === 'gst' || formula === 'tax-rate' ? 'Tax' : 'Investing',
@@ -744,14 +752,15 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const paymentWith = loanPayment(get('principal'), get('newRate') / 100, years);
       const savings = paymentWithout - paymentWith;
       const lifetimeSaved = savings * months - get('closingCosts');
-      return result('Monthly savings from points', savings, 'Payment difference between the two rates on the same loan; the points are paid at closing.', [
-        'Break-even is the cost of the points divided by the monthly saving.',
-        'Selling or refinancing before break-even forfeits the remaining benefit.'
+      const payback = assessPayback(savings, get('closingCosts'), months, 'points');
+      return { ...result('Monthly savings from points', savings, payback.message, [
+        'Points are paid at closing, not financed. Both offers use the same loan amount and term.',
+        'Simplified payback divides the points cost by a positive monthly payment saving; selling or refinancing can end the benefit.'
       ], [
-        metric('Break-even months', savings > 0 ? get('closingCosts') / savings : 0, 'number'),
+        ...(payback.months === undefined ? [] : [metric('Simplified payback months', payback.months, 'number')]),
         metric('Payment with points', paymentWith, 'currency'),
         metric('Lifetime saving after paying for points', lifetimeSaved, 'currency', lifetimeSaved >= 0 ? 'positive' : 'warning')
-      ]);
+      ]), modelVersion: 'payback-v2' };
     }
     case 'closing-costs': {
       const closingCosts = get('homePrice') * get('rate') / 100;
@@ -936,14 +945,14 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'xirr': {
       const contributions = get('initial') + get('monthly') * months;
       const annualized = monthlyCashFlowIrr(get('initial'), get('monthly'), get('final'), months);
-      return result('Modeled annualised return (periodic monthly IRR)', annualized, 'The yearly rate at which the initial investment and equal end-of-month contributions would grow to the ending value. This is a periodic IRR, not a dated XIRR.', [
-        'Contributions are modeled as equal amounts at the end of each month with no dates. Spreadsheet XIRR needs the date of every cash flow; irregular dated cash flows are not yet supported here, so treat this as a screening estimate.',
+      return { ...result('Modeled annualised return (periodic monthly IRR)', annualized, 'The yearly rate at which the initial investment and equal end-of-month contributions would grow to the ending value. This is a periodic IRR, not a dated XIRR.', [
+        'Contributions are modeled as equal amounts at the end of each month with no dates. This mode has no actual dates. Choose dated cash flows above when payments are irregular; no dates are inferred from this projection.',
         'Fees and taxes are not deducted.'
       ], [
         metric('Total contributed', contributions, 'currency'),
         metric('Ending value', get('final'), 'currency'),
         metric('Total gain', get('final') - contributions, 'currency', get('final') >= contributions ? 'positive' : 'warning')
-      ]);
+      ]), modelVersion: 'monthly-periodic-v1' };
     }
     case 'lumpsum':
     case 'fd': {
@@ -1130,11 +1139,16 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const oldPayment = loanPayment(get('principal'), get('currentRate') / 100, years);
       const newPayment = loanPayment(get('principal') + get('closingCosts'), get('newRate') / 100, years);
       const savings = oldPayment - newPayment;
-      return result('Monthly savings', savings, 'Estimated monthly payment difference after refinancing.', [], [
-        metric('Break-even months', savings > 0 ? get('closingCosts') / savings : 0, 'number'),
+      const payback = assessPayback(savings, get('closingCosts'), months, 'switching');
+      return { ...result('Monthly savings', savings, payback.message, [
+        'Closing costs are financed into the new balance. Both loans use the same entered term.',
+        'Cost divided by payment saving is a simplified comparison, not full economic break-even; it does not value time or changes in remaining term.'
+      ], [
+        ...(payback.months === undefined ? [] : [metric('Simplified payback months', payback.months, 'number')]),
         metric('New payment', newPayment, 'currency')
-      ]);
+      ]), modelVersion: 'payback-v2' };
     }
+    case 'vehicle-cost': return vehicleCostResult(values);
     case 'rent-buy': {
       const loanAmount = Math.max(0, get('homePrice') - get('downPayment'));
       const loanYears = Math.max(1, get('loanYears') || years);
@@ -1203,14 +1217,20 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'social-security': {
       const monthlyIncrease = get('full') - get('early');
       const forgoneBenefits = get('early') * get('delayYears') * 12;
-      const breakEvenMonths = monthlyIncrease > 0 ? forgoneBenefits / monthlyIncrease : 0;
-      return result('Break-even years after delaying', breakEvenMonths / 12, 'Estimated time after delayed claiming for the higher monthly benefit to catch up.', [
-        'This simplified break-even estimate ignores COLA, taxes, survivor benefits, and investment returns.',
-        'Use it as a first-pass retirement planning comparison.'
-      ], [
+      const catchUp = assessBenefitCatchUp(get('early'), get('full'), get('delayYears'));
+      const metrics = [
         metric('Forgone early benefits', forgoneBenefits, 'currency'),
         metric('Monthly benefit increase', monthlyIncrease, 'currency', monthlyIncrease > 0 ? 'positive' : 'warning')
-      ]);
+      ];
+      return {
+        modelVersion: 'catch-up-v2',
+        assumptions: [
+          'This simplified comparison ignores COLA, taxes, survivor benefits, longevity and investment returns.',
+          'Both benefits and the waiting period are your entries, not estimates of eligibility or benefits.'
+        ],
+        narrative: catchUp.message,
+        metrics: catchUp.years === undefined ? metrics : [metric('Break-even years after delaying', catchUp.years, 'years', 'accent', catchUp.message), ...metrics]
+      };
     }
     case 'insurance': {
       const need = Math.max(0, get('income') * get('years') + get('debts') - get('savings'));

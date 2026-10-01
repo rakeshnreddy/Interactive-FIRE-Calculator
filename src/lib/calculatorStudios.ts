@@ -1,3 +1,4 @@
+import { calculateVehicleCost } from './vehicleLeaseBuy';
 import {
   calculateSeoCalculator,
   calculatorCurrency,
@@ -10,6 +11,8 @@ import {
   type SeoCalculator
 } from './seoCalculators';
 import { getCalculatorStudio, type CalculatorStudio } from './calculatorQuality';
+import { assessPayback } from './payback';
+import { assessBenefitCatchUp } from './benefitCatchUp';
 
 export const calculatorScenarioIds = ['conservative', 'base', 'optimistic'] as const;
 export type CalculatorScenarioId = (typeof calculatorScenarioIds)[number];
@@ -216,6 +219,11 @@ export function buildCalculatorStudioChart(
   result: CalculatorResult = calculateSeoCalculator(calculator, values)
 ): CalculatorStudioChart {
   const metadata = getCalculatorStudioMetadata(calculator);
+  if (calculator.formula === 'vehicle-cost') {
+    const c = calculateVehicleCost(values);
+    if (!c.ok) return unavailableChart(metadata);
+    return { type:'comparison', title:`Net cost at ${c.months} months`, description:'Same currency and comparison horizon; resale is the entered assumption.', summary:'Net costs include remaining debt and resale; monthly payment is a separate metric.', valueType:'currency', currency:calculatorCurrency(calculator), legend:{primary:'Net cost'}, entries:[{label:'Buy',primary:c.buyCost,valueType:'currency'},{label:'Lease',primary:c.leaseCost,valueType:'currency'}] };
+  }
   // A chart must use the same complete input state as the result, never a default loan.
   if (calculator.inputs.some((input) => !Number.isFinite(values[input.key]))
     || !seoCalculators.some((item) => item.formula === calculator.formula)) {
@@ -239,6 +247,16 @@ export function buildCalculatorDetailSchedule(
   values: Record<string, number>,
   result: CalculatorResult = calculateSeoCalculator(calculator, values)
 ): CalculatorDetailSchedule | null {
+  if (calculator.formula === 'vehicle-cost') {
+    const c=calculateVehicleCost(values); if(!c.ok)return null;
+    return {title:`Vehicle cost components at ${c.months} months`,description:'Only the comparison-date resale is entered; no intermediate resale forecast is invented.',summary:'Buy net cost = down + payments + remaining loan − resale. Lease cost uses the quoted period plus any explicit continuation.',columns:[textColumn('component','Component'),moneyColumn('buy','Buy'),moneyColumn('lease','Lease')],rows:[
+      {id:'vehicle-upfront',values:{component:'Upfront cash',buy:c.down,lease:values.leaseUpfront??0}},
+      {id:'vehicle-payments',values:{component:'Payments paid',buy:c.paymentsPaid,lease:c.leaseCost-(values.leaseUpfront??0)}},
+      {id:'vehicle-remaining',values:{component:'Remaining loan added',buy:c.remainingLoan,lease:0}},
+      {id:'vehicle-resale',values:{component:'Resale subtracted',buy:-c.resale,lease:0}},
+      {id:'vehicle-net-cost',values:{component:'Net cost',buy:c.buyCost,lease:c.leaseCost}}
+    ]};
+  }
   const normalized = normalizeInputValues(calculator, values);
 
   switch (calculator.formula) {
@@ -1616,11 +1634,11 @@ function pointsBreakEvenSchedule(_calculator: SeoCalculator, values: Record<stri
       const cumulativeSavings = monthlySavings * (index + 1);
       return {
         id: `points-${index + 1}`,
-        note: cumulativeSavings >= cost && cumulativeSavings - monthlySavings < cost ? 'Break-even month' : undefined,
+        note: monthlySavings > 0 && cost > 0 && cumulativeSavings >= cost && cumulativeSavings - monthlySavings < cost ? 'Simplified payback month' : undefined,
         values: { cumulativeSavings, month: index + 1, monthlySavings, netAfterCost: cumulativeSavings - cost }
       };
     }),
-    summary: 'The points are paid at closing, so the net column starts negative and turns positive at the break-even month.',
+    summary: `${assessPayback(monthlySavings, cost, months, 'points').message} Net saving subtracts the points paid at closing.`,
     title: 'Points break-even schedule'
   };
 }
@@ -1653,7 +1671,7 @@ function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<
       const cumulativeSavings = monthlySavings * (index + 1);
       return {
         id: `refi-${index + 1}`,
-        note: cumulativeSavings >= closingCosts && cumulativeSavings - monthlySavings < closingCosts ? 'Break-even month' : undefined,
+        note: monthlySavings > 0 && closingCosts > 0 && cumulativeSavings >= closingCosts && cumulativeSavings - monthlySavings < closingCosts ? 'Simplified payback month' : undefined,
         values: {
           cumulativeSavings,
           month: index + 1,
@@ -1664,7 +1682,7 @@ function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<
         }
       };
     }),
-    summary: 'Closing costs are carried in the net column so payment savings are not mistaken for immediate savings.',
+    summary: `${assessPayback(monthlySavings, closingCosts, years * 12, 'switching').message} Fees are financed; the net column also subtracts fees for a simplified cost-to-saving comparison, not full economic break-even.`,
     title: 'Refinance break-even schedule'
   };
 }
@@ -2428,7 +2446,8 @@ function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<strin
   const full = Math.max(0, values.full ?? 0);
   const delayYears = Math.max(0, values.delayYears ?? 0);
   const monthlyIncrease = full - early;
-  const breakEvenYears = monthlyIncrease > 0 ? early * delayYears / monthlyIncrease : delayYears;
+  const catchUp = assessBenefitCatchUp(early, full, delayYears);
+  const breakEvenYears = catchUp.years ?? 30;
   const years = Math.min(maxScheduleYears, Math.max(1, Math.ceil(delayYears + breakEvenYears + 5)));
   const rows: CalculatorDetailScheduleRow[] = [];
 
@@ -2437,7 +2456,7 @@ function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<strin
     const delayedCumulative = full * 12 * Math.max(0, year - delayYears);
     rows.push({
       id: `benefit-year-${year}`,
-      note: delayedCumulative >= earlyCumulative && year > delayYears ? 'Delayed claim catches up' : undefined,
+      note: catchUp.years !== undefined && monthlyIncrease > 0 && year >= delayYears + catchUp.years && year - 1 < delayYears + catchUp.years ? 'Delayed claim catches up' : undefined,
       values: {
         difference: delayedCumulative - earlyCumulative,
         delayedCumulative,
@@ -2456,7 +2475,7 @@ function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<strin
     ],
     description: 'Cumulative benefit comparison for early claiming versus delaying.',
     rows,
-    summary: 'Shows where the larger delayed benefit catches up after the years without payments.',
+    summary: `${catchUp.message} The table compares actual cumulative entered payments; its display horizon is capped.`,
     title: 'Benefit break-even schedule'
   };
 }
@@ -2534,9 +2553,10 @@ function xirrApproximationSchedule(
   const monthly = Math.max(0, values.monthly ?? 0);
   const final = Math.max(0, values.final ?? 0);
   const years = scheduleYears(values.years ?? 0);
-  const months = Math.max(1, years * 12);
+  const months = Math.min(maxScheduleYears * 12, Math.max(1, Math.round((values.years ?? 0) * 12)));
   const annualized = Number.isFinite(result.metrics[0]?.value) ? result.metrics[0].value : 0;
-  const monthlyRate = annualized / 12;
+  if (annualized <= -1) return null; // No finite implied monthly path for a total-loss boundary.
+  const monthlyRate = Math.expm1(Math.log1p(annualized) / 12);
   let cumulativeInvested = initial;
   let impliedValue = initial;
   let annualContribution = 0;
@@ -2548,8 +2568,8 @@ function xirrApproximationSchedule(
     cumulativeInvested += monthly;
 
     if (month % 12 === 0 || month === months) {
-      const year = Math.ceil(month / 12);
-      const endingValue = year === years ? final : impliedValue;
+      const year = month / 12;
+      const endingValue = impliedValue;
       rows.push({
         id: `xirr-year-${year}`,
         values: {
@@ -2564,6 +2584,8 @@ function xirrApproximationSchedule(
     }
   }
 
+  if (months === Math.round((values.years ?? 0) * 12) && Math.abs(impliedValue - final) > Math.max(0.01, Math.abs(final) * 1e-8)) return null;
+
   return {
     columns: [
       textColumn('year', 'Year'),
@@ -2572,7 +2594,7 @@ function xirrApproximationSchedule(
       moneyColumn('endingValue', 'Ending value'),
       moneyColumn('gain', 'Gain / loss')
     ],
-    description: 'Annual cash-flow table for the modeled periodic monthly IRR; a dated XIRR for irregular cash flows is not yet supported.',
+    description: 'Annual cash-flow table for the modeled periodic monthly IRR; choose dated cash flows for irregular payments.',
     rows,
     summary: scheduleCapSummary(values.years ?? years, 'Contributions are modeled as equal monthly amounts, so the table shows the implied value path rather than dated transactions.'),
     title: 'Modeled cash-flow table'

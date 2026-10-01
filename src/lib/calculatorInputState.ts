@@ -29,6 +29,7 @@ export function validateCalculatorInputs(calculator: SeoCalculator, raw: Record<
     else if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(text) || !Number.isFinite(value)) errors[input.key] = 'Enter a finite number, such as 1000 or 12.5.';
     else if (value < (input.min ?? 0)) errors[input.key] = `Use ${input.min ?? 0} or more.`;
     else if (input.max !== undefined && value > input.max) errors[input.key] = `Use ${input.max} or less.`;
+    else if (['refinance', 'points'].includes(calculator.formula) && input.key === 'years' && value <= 0) errors[input.key] = 'Enter a loan term greater than zero.';
     else if (calculator.formula === 'roi' && input.key === 'cost' && value === 0) errors[input.key] = 'Enter a cost greater than zero to calculate ROI.';
     else values[input.key] = value;
   }

@@ -309,7 +309,7 @@ describe('calculator decision studios', () => {
     const schedule = buildCalculatorDetailSchedule(calculator, defaultValues(calculator));
 
     expect(schedule?.columns.map((column) => column.key)).toContain('netAfterCosts');
-    expect(schedule?.rows.some((row) => row.note === 'Break-even month')).toBe(true);
+    expect(schedule?.rows.some((row) => row.note === 'Simplified payback month')).toBe(true);
     expect(Number(schedule?.rows.at(-1)?.values.netAfterCosts)).toBeGreaterThan(0);
   });
 

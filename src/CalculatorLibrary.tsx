@@ -1,3 +1,7 @@
+import { VehicleCalculator } from './VehicleCalculator';
+import type { DatedReturnInputModel } from './lib/datedReturns';
+import { modelVersionForCalculator, type CalculatorModelVersion } from './lib/calculatorModelVersion';
+import { XirrCalculator } from './XirrCalculator';
 import { buildCalculatorScope } from './lib/calculatorScope';
 import { CalculatorScopeNotice } from './components/CalculatorScopeNotice';
 import { useResultReveal } from './lib/resultReveal';
@@ -129,6 +133,7 @@ export type CalculatorSaveRequest = {
   currency: string;
   result: ReturnType<typeof calculateSeoCalculator>;
   values: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
 };
 
 export type CalculatorSaveOutcome = {
@@ -144,7 +149,9 @@ export type CalculatorSavedResult = {
   currency: string;
   id: string;
   inputValues: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
   result: {
+    modelVersion?: CalculatorModelVersion;
     assumptions?: string[];
     metrics: Array<{
       label: string;
@@ -169,6 +176,9 @@ export function CalculatorLibrary({ auth, route, onNavigate, onSaveResult, saved
   const calculator = route === '/calculators' ? null : findSeoCalculator(route);
 
   if (calculator) {
+    if (calculator.slug === 'lease-vs-buy') return <VehicleCalculator auth={auth} calculator={calculator} onSaveResult={onSaveResult} savedResults={savedResults}/>;
+    if (calculator.slug === 'xirr') return <XirrCalculator auth={auth} calculator={calculator} onSaveResult={onSaveResult} savedResults={savedResults} renderPeriodic={()=><CalculatorDetail auth={auth} calculator={calculator} onNavigate={onNavigate} onSaveResult={onSaveResult} savedResults={savedResults}/>}/>;
+
     if (calculator.slug === 'compound-interest') {
       return (
         <CompoundInterestCalculator
@@ -588,6 +598,7 @@ function CalculatorDetail({
   const [selectedScenarioId, setSelectedScenarioId] = useState<CalculatorScenarioId>('base');
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
   const [historicalHysaValue, setHistoricalHysaValue] = useState<number | null>(null);
+  const [legacyModelLoaded, setLegacyModelLoaded] = useState(false);
   const scenarioValues = useMemo(
     () => buildScenarioValues(calculator, values, selectedScenarioId),
     [calculator, selectedScenarioId, values]
@@ -611,7 +622,7 @@ function CalculatorDetail({
     [calculator, scenarioValues, hasValidResult]
   );
   const calculatorHistory = useMemo(
-    () => savedResults.filter((item) => item.calculatorSlug === calculator.slug).slice(0, 6),
+    () => savedResults.filter((item) => item.calculatorSlug === calculator.slug && (calculator.slug !== 'xirr' || !item.inputModel)).slice(0, 6),
     [calculator.slug, savedResults]
   );
   const selectedHistory = calculatorHistory.find((item) => item.id === selectedHistoryId) ?? calculatorHistory[0] ?? null;
@@ -630,7 +641,7 @@ function CalculatorDetail({
     setInputOrigin(shared ? 'shared' : draft ? draft.inputOrigin ?? 'restored' : 'sample');
     setSelectedScenarioId(shared?.scenarioId ?? draft?.scenarioId ?? 'base');
     setSelectedHistoryId(null);
-    setHistoricalHysaValue(null);
+    setHistoricalHysaValue(null); setLegacyModelLoaded(false);
     setLastSavedRoute(null);
     setSaveMessage(
       shared
@@ -678,7 +689,7 @@ function CalculatorDetail({
     if (checked.values) { setValues(checked.values); setHasValidResult(true); }
     setLastSavedRoute(null);
     setSaveMessage('');
-    setHistoricalHysaValue(null);
+    setHistoricalHysaValue(null); setLegacyModelLoaded(false);
   };
   const loadInputValues = (incoming: Record<string, unknown>, origin: CalculatorInputOrigin) => {
     const raw = calculatorRawValues(calculator, incoming);
@@ -689,7 +700,7 @@ function CalculatorDetail({
   };
   const resetExample = () => {
     loadInputValues(defaultCalculatorValues(calculator), 'sample');
-    setHistoricalHysaValue(null); setSaveMessage('Example restored. Optional additions are zero.');
+    setHistoricalHysaValue(null); setLegacyModelLoaded(false); setSaveMessage('Example restored. Optional additions are zero.');
   };
 
   const mainExtraPayment = ['extra-mortgage-payment', 'mortgage-payoff'].includes(calculator.slug);
@@ -784,6 +795,7 @@ function CalculatorDetail({
     loadInputValues(saved.inputValues, 'saved');
     setSelectedScenarioId('base');
     setSelectedHistoryId(saved.id);
+    setLegacyModelLoaded(Boolean(modelVersionForCalculator(calculator.slug) && saved.result.modelVersion !== modelVersionForCalculator(calculator.slug)));
     setHistoricalHysaValue(calculator.slug === 'hysa' && !saved.result.assumptions?.includes(HYSA_APY_ASSUMPTION)
       ? saved.result.metrics[0]?.value ?? null : null);
     setLastSavedRoute(null);
@@ -851,7 +863,7 @@ function CalculatorDetail({
             disabled={!canUseResult}
             scenarios={scenarios}
             selectedScenarioId={selectedScenarioId}
-            onSelectScenario={(id) => { if (!canUseResult) return; setSelectedScenarioId(id); setHistoricalHysaValue(null); revealResult(); }}
+            onSelectScenario={(id) => { if (!canUseResult) return; setSelectedScenarioId(id); setHistoricalHysaValue(null); setLegacyModelLoaded(false); revealResult(); }}
             calculator={calculator}
             focus={studioMetadata.scenarioFocus}
           />
@@ -877,6 +889,8 @@ function CalculatorDetail({
               {' '}The saved snapshot is unchanged. Save explicitly to keep a new result.
             </p>
           ) : null}
+          {legacyModelLoaded ? <p className="calculator-result-narrative" role="status" data-model-correction>The saved snapshot uses an earlier interpretation and is unchanged. These restored inputs were recalculated with the current model. Save explicitly to keep a new result.</p> : null}
+          {result.modelVersion ? <p className="calculator-result-narrative" data-model-interpretation>{result.narrative}</p> : null}
           <div className="calculator-result-metrics">
             {result.metrics.map((metric, index) => {
               const isPrimary = index === 0;
@@ -919,7 +933,7 @@ function CalculatorDetail({
           <VariantChips calculator={calculator} onNavigate={onNavigate} />
           {hasValidResult && studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} disabled={!canUseResult} />
-          <p className="calculator-result-narrative">{result.narrative}</p>
+          {!result.modelVersion ? <p className="calculator-result-narrative">{result.narrative}</p> : null}
           <div className="calculator-conversion-panel">
             <span className="feature-icon"><ConversionIcon size={18} /></span>
             <div>
@@ -1018,7 +1032,7 @@ function CalculatorDetail({
         calculator={calculator}
         example={studioMetadata.example}
         onLoadExample={(exampleValues) => {
-          setHistoricalHysaValue(null);
+          setHistoricalHysaValue(null); setLegacyModelLoaded(false);
           loadInputValues(exampleValues, 'sample');
           setSelectedScenarioId('base');
           setLastSavedRoute(null);
@@ -1399,6 +1413,7 @@ function CalculatorEngagementPanel({
                 ))}
               </div>
 
+              {selectedHistory && modelVersionForCalculator(calculator.slug) && selectedHistory.result.modelVersion !== modelVersionForCalculator(calculator.slug) ? <p data-legacy-model>Earlier model interpretation. This saved snapshot is unchanged; load its inputs to use the current model.</p> : null}
               {selectedHistory && savedMetric ? (
                 <div className="calculator-history-compare">
                   <div>
@@ -1707,6 +1722,7 @@ function scenarioDeltaLabel(
   const metric = scenario.result.metrics[0];
   const baseMetric = baseScenario.result.metrics[0];
   if (!metric || !baseMetric) return 'No headline comparison';
+  if (metric.label !== baseMetric.label || metric.valueType !== baseMetric.valueType) return 'Different outcome states — compare the result explanation.';
 
   const difference = metric.value - baseMetric.value;
   if (Math.abs(difference) <= 1e-9) return 'Same headline result as base';
@@ -1746,7 +1762,7 @@ function savedDeltaLabel(
   saved: CalculatorSavedResult['result']['metrics'][number],
   calculator: SeoCalculator
 ): string {
-  if (!current || current.valueType !== saved.valueType) return 'The current and saved headline results use different units.';
+  if (!current || current.valueType !== saved.valueType || current.label !== saved.label) return 'The current and saved headline results describe different outcomes.';
 
   const difference = current.value - saved.value;
   if (Math.abs(difference) <= 1e-9) return 'The current headline result matches this saved run.';

@@ -37,10 +37,12 @@ export function buildCalculatorInputImpacts(
   values: Record<string, number>
 ): CalculatorInputImpact[] {
   const normalized = normalizeValues(calculator, values);
-  const baseOutput = primaryOutput(calculateSeoCalculator(calculator, normalized));
+  const baseResult = calculateSeoCalculator(calculator, normalized);
+  const baseOutput = primaryOutput(baseResult);
 
   return calculator.inputs
-    .map((input) => inputImpact(calculator, normalized, input, baseOutput))
+    .map((input) => inputImpact(calculator, normalized, input, baseOutput, baseResult))
+    .filter((impact): impact is CalculatorInputImpact => impact !== null)
     .sort((left, right) => right.magnitude - left.magnitude || left.inputLabel.localeCompare(right.inputLabel));
 }
 
@@ -92,6 +94,10 @@ export function buildCalculatorSummaryCsv(
     calculator.inputs.forEach((input) => {
       rows.push(['Input', scenario.label, input.label, String(scenario.values[input.key] ?? 0), inputUnit(input)]);
     });
+    if (scenario.result.modelVersion) {
+      rows.push(['Interpretation', scenario.label, 'Meaning of this result', scenario.result.narrative, 'text']);
+      rows.push(['Model', scenario.label, 'Model version', scenario.result.modelVersion, 'text']);
+    }
     scenario.result.metrics.forEach((metric) => {
       rows.push(['Result', scenario.label, metric.label, String(metric.value), metric.valueType]);
     });
@@ -114,14 +120,19 @@ function inputImpact(
   calculator: SeoCalculator,
   values: Record<string, number>,
   input: CalculatorInput,
-  baseOutput: number
-): CalculatorInputImpact {
+  baseOutput: number,
+  baseResult: CalculatorResult
+): CalculatorInputImpact | null {
   const current = values[input.key] ?? input.defaultValue;
   const change = Math.max(Math.abs(current) * 0.1, Math.abs(input.defaultValue) * 0.1, minimumTestChange(input));
   const lowerInput = clampInput(input, current - change);
   const higherInput = clampInput(input, current + change);
-  const lowerOutput = outputWithInput(calculator, values, input.key, lowerInput);
-  const higherOutput = outputWithInput(calculator, values, input.key, higherInput);
+  const lowerResult = calculateSeoCalculator(calculator, { ...values, [input.key]: lowerInput });
+  const higherResult = calculateSeoCalculator(calculator, { ...values, [input.key]: higherInput });
+  // A state transition can replace years with money. Those values cannot be subtracted.
+  if ([lowerResult, higherResult].some(r => r.metrics[0]?.label !== baseResult.metrics[0]?.label || r.metrics[0]?.valueType !== baseResult.metrics[0]?.valueType)) return null;
+  const lowerOutput = primaryOutput(lowerResult);
+  const higherOutput = primaryOutput(higherResult);
   const magnitude = Math.max(Math.abs(lowerOutput - baseOutput), Math.abs(higherOutput - baseOutput));
   const direction = directionFrom(baseOutput, higherOutput);
 
@@ -140,15 +151,6 @@ function inputImpact(
       ? `${input.label} does not change the headline result inside this test range.`
       : `A higher ${input.label.toLowerCase()} ${direction} the headline result when other inputs stay fixed.`
   };
-}
-
-function outputWithInput(
-  calculator: SeoCalculator,
-  values: Record<string, number>,
-  key: string,
-  value: number
-): number {
-  return primaryOutput(calculateSeoCalculator(calculator, { ...values, [key]: value }));
 }
 
 function primaryOutput(result: CalculatorResult): number {

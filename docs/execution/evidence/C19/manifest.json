@@ -1,0 +1,56 @@
+{
+  "candidate_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+  "artifacts": [
+    {
+      "path": "docs/execution/evidence/C19/raw/full-suite.log",
+      "sha256": "9418aae31e1a749d45358fb688f4ecbe77f002ba306f1d32c9642a89a35396cc",
+      "bytes": 7628,
+      "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object"
+    },
+    {
+      "path": "docs/execution/evidence/C19/raw/payback-red.log",
+      "sha256": "c59091f4728345c631fd4ff6e1a472b33fe60831dd3f90a961f893eca14ca993",
+      "bytes": 8898,
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object",
+      "related_candidate_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "origin": "Observed failing test in pre-implementation working tree; related_candidate_sha identifies the resulting reviewed implementation, not the RED-state source. No Git commit represents that intermediate working tree."
+    },
+    {
+      "path": "docs/execution/evidence/C19/raw/ssa-red.log",
+      "sha256": "0c8cc1867e003e592c443f8a620f0ff187e2eb6f0790c03ec0fa8a0120b063c8",
+      "bytes": 4524,
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object",
+      "related_candidate_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "origin": "Observed failing test in pre-implementation working tree; related_candidate_sha identifies the resulting reviewed implementation, not the RED-state source. No Git commit represents that intermediate working tree."
+    },
+    {
+      "path": "docs/execution/evidence/C19/raw/browser-cases.json",
+      "sha256": "28013362886a9ed7ac0613b9676c695ea10052edb76aeb8f3b5563942764dd07",
+      "bytes": 8844,
+      "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object"
+    },
+    {
+      "path": "docs/execution/evidence/C19/raw/recovery.json",
+      "sha256": "6ec0ecc618182df99ac329f166f4d9ab2da1bc345ba93872428906413f24bcd4",
+      "bytes": 387,
+      "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object"
+    },
+    {
+      "path": "docs/execution/evidence/C19/raw/public-smoke.log",
+      "sha256": "eecd27009dfbebec59d3bd0cdfd97d1d9cdf822b31fdf94308dcff4251c55d9c",
+      "bytes": 274,
+      "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object"
+    },
+    {
+      "path": "docs/execution/evidence/C19/raw/social-security.jpg",
+      "sha256": "0babcec34a7f82b19c6b83c4bc150144f068b1e410503f96472288b61bf2c697",
+      "bytes": 33465,
+      "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+      "storage": "ignored local raw; reproduce with committed tests and documented browser cases, not a Git object"
+    }
+  ]
+}

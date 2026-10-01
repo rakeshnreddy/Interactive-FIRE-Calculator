@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-09-30T18:39:41.794Z",
+  "source_sha": "89052295d0fbed72d8531cadefe027e5d5efecfd",
+  "id": "75190a6c-a0e4-4fcb-8c6b-67027bd8548e",
+  "url": "https://75190a6c.interactive-fire-calculator.pages.dev",
+  "environment": "preview",
+  "commit_dirty": false,
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/me",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/api/plans",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/api/calculator-results",
+      "status": 401,
+      "expected": 401
+    }
+  ]
+}

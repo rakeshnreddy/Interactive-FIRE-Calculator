@@ -26,6 +26,9 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C16 | Natural editing and visible customization | B45 → B43 → B44 | accepted | 324be91322c791836bc5e5f105312944e0ec935a | [approved](reviews/C16.md) |
 | C17 | Intentional landing and calculator depth contracts | B46 → B52 → B49 → B50 | accepted | 9f3789b9190680fff70222b422c7bfda473c814c | [approved](reviews/C17.md) |
 | C18 | Genuine usability and recurring-value validation | B51 | released | — | Protocol prepared; B51 blocked on OA-5 real participants/observation |
+| C19 | Truthful payback and benefit catch-up states | B53 → B56 | accepted | 89052295d0fbed72d8531cadefe027e5d5efecfd | [approved](reviews/C19.md) |
+| C20 | Dated cash-flow returns | B54 | accepted | 9375c990049ea79f5775aaee009d745ac28ac698 | [approved](reviews/C20.md) |
+| C21 | Vehicle cost and resale comparison | B55 | accepted | 92c752ac37b0fadf59ad1716ae1c2546e0702312 | [approved](reviews/C21.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -42,3 +45,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 ## Decision provenance
 
 Earlier release announcements and repair instructions are historical, not live scheduling commands. Each table row links its acceptance review; the [release review](reviews/RELEASE-2026-09-29.md) records main merges and the production blocker. Full earlier owner amendments, correction-round outcomes, audit adjustments and chronology are preserved in [the pre-cleanup ledger](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/blob/5e4b703958bf98374dea61235e314f8ba21af283/docs/execution/CHECKPOINTS.md). No acceptance, task dependency, owner authorization or residual was changed by documentation consolidation.
+
+## Owner amendment — 2026-09-30: independent continuation
+
+Owner defers actual-user validation and asks Astra to close work needing no intervention. B51/OA-5 remain open/deferred, not passed. C19–C21 are independent of real cohort evidence; register B53–B55 from the existing bounded contracts and B56 for the identified SSA residual. Order B53 → B56 → B54 → B55. B13/B14 and production retain their explicit evidence/setup gates. Owner's direct implementation instruction overrides the historical Gemini/non-coder role for this pass. No fabricated observations or paid/production action.

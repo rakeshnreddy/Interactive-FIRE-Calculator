@@ -1005,4 +1005,84 @@ describe('B04: atomic, retry-safe calculator save with real SQLite D1 harness', 
     expect(retry.saveStatus).toBe('retry');
     expect(retry.createdEntity?.id).toBe(planId);
   });
+
+describe('versioned interpretation persistence', () => {
+  it.each(['payback-v2','catch-up-v2'] as const)('retains %s in stored JSON, retries and tenant-scoped reads', async modelVersion => {
+    const { database, sqlite } = createRealD1();
+    const payload: CalculatorSavePayload = { ...validPayload, calculatorSlug: modelVersion === 'payback-v2' ? 'mortgage-refinance' : 'social-security-break-even', conversionRoute: '/plans', idempotencyKey: 'synthetic-versioned', result: {...validPayload.result, modelVersion} };
+    const first = await createSavedCalculatorResult(database, 'synthetic-version-A', payload);
+    expect(first.savedResult.result.modelVersion).toBe(modelVersion);
+    const retry = await createSavedCalculatorResult(database,'synthetic-version-A',payload);
+    expect(retry.saveStatus).toBe('retry');expect(retry.savedResult.id).toBe(first.savedResult.id);
+    expect((await listSavedCalculatorResults(database,'synthetic-version-A'))[0].result.modelVersion).toBe(modelVersion);
+    expect(await listSavedCalculatorResults(database,'synthetic-version-B')).toEqual([]);
+    const row = sqlite.prepare('SELECT result_json FROM saved_calculator_results WHERE id = ?').get(first.savedResult.id) as {result_json:string};
+    expect(JSON.parse(row.result_json).modelVersion).toBe(modelVersion);
+  });
+});
+
+
+  describe('dated cash-flow snapshot contract',()=>{
+    const dated = {
+      ...validPayload, calculatorSlug:'xirr', calculatorTitle:'Dated Cash-flow Return', conversionRoute:'/plans' as const,
+      inputValues:{cashFlowCount:2},
+      inputModel:{kind:'dated-cash-flows' as const,version:'dated-xirr-v1' as const,cashFlows:[{date:'2025-01-01',amount:-1000},{date:'2026-01-01',amount:1100}]},
+      result:{assumptions:[],metrics:[{label:'Annualized dated return',value:0.1,valueType:'percent' as const}],narrative:'Annualized return from actual dates.',modelVersion:'dated-xirr-v1' as const}
+    };
+    it('validates dated inputs and rejects malformed, mismatched and ambiguous models',()=>{
+      const parsed=parseCalculatorSavePayload(dated);expect(parsed.ok).toBe(true);
+      if(parsed.ok)expect(parsed.value).toHaveProperty('inputModel',dated.inputModel);
+      for(const invalid of [
+        {...dated,calculatorSlug:'mortgage-refinance'},
+        {...dated,conversionRoute:'/goals'},
+        {...dated,inputValues:{cashFlowCount:3}},
+        {...dated,inputModel:undefined},
+        {...dated,result:{...dated.result,modelVersion:undefined}},
+        {...dated,inputModel:{...dated.inputModel,cashFlows:[{date:'2025-02-30',amount:-1000},{date:'2026-01-01',amount:1100}]}},
+        {...dated,inputModel:{...dated.inputModel,cashFlows:[{date:'2025-01-01',amount:-100},{date:'2026-01-01',amount:230},{date:'2027-01-01',amount:-132}]},inputValues:{cashFlowCount:3}}
+      ])expect(parseCalculatorSavePayload(invalid).ok).toBe(false);
+    });
+    it('preserves actual dates through storage, scoped read and retry',async()=>{
+      const {database,sqlite}=createRealD1();
+      const parsed=parseCalculatorSavePayload({...dated,idempotencyKey:'dated-synthetic'});expect(parsed.ok).toBe(true);if(!parsed.ok)return;
+      const saved=await createSavedCalculatorResult(database,'dated-synthetic-A',parsed.value);
+      expect(saved.savedResult).toHaveProperty('inputModel',dated.inputModel);
+      expect((await listSavedCalculatorResults(database,'dated-synthetic-A'))[0]).toHaveProperty('inputModel',dated.inputModel);
+      expect(await listSavedCalculatorResults(database,'dated-synthetic-B')).toEqual([]);
+      expect((await createSavedCalculatorResult(database,'dated-synthetic-A',parsed.value)).saveStatus).toBe('retry');
+      const row=sqlite.prepare('SELECT input_json FROM saved_calculator_results WHERE id = ?').get(saved.savedResult.id) as {input_json:string};
+      expect(JSON.parse(row.input_json)).toEqual({values:dated.inputValues,inputModel:dated.inputModel});
+    });
+    it('hashes actual cash-flow dates rather than only count and result',async()=>{
+      const p1=parseCalculatorSavePayload(dated);const p2=parseCalculatorSavePayload({...dated,inputModel:{...dated.inputModel,cashFlows:[{date:'2025-01-02',amount:-1000},{date:'2026-01-01',amount:1100}]}});
+      expect(p1.ok&&p2.ok).toBe(true);if(p1.ok&&p2.ok)expect(await hashCalculatorPayload(p1.value)).not.toBe(await hashCalculatorPayload(p2.value));
+    });
+  });
+
+
+
+describe('versioned vehicle-cost save boundary', () => {
+ const values={homePrice:25000,downPayment:5000,rate:0,loanYears:4,years:2,resale:14000,rent:350,leaseYears:2,leaseUpfront:0,extendLease:0};
+ const payload={...validPayload,calculatorSlug:'lease-vs-buy',conversionRoute:'/plans',inputValues:values,result:{...validPayload.result,modelVersion:'vehicle-cost-v1'}};
+ it('accepts complete explicit terms and rejects wrong destinations or omitted resale',()=>{
+  expect(parseCalculatorSavePayload(payload).ok).toBe(true);
+  expect(parseCalculatorSavePayload({...payload,conversionRoute:'/goals'}).ok).toBe(false);
+  const {resale:_,...missing}=values;expect(parseCalculatorSavePayload({...payload,inputValues:missing}).ok).toBe(false);
+  expect(parseCalculatorSavePayload({...payload,inputValues:{...values,years:3}}).ok).toBe(false);
+  expect(parseCalculatorSavePayload({...payload,inputValues:{...values,years:3,extendLease:1,extensionMonthly:350}}).ok).toBe(true);
+ });
+
+ it('roundtrips a vehicle comparison through real SQLite with retry and tenant isolation',async()=>{
+  const {database,sqlite}=createRealD1();
+  const parsed=parseCalculatorSavePayload({...payload,idempotencyKey:'vehicle-synthetic'});expect(parsed.ok).toBe(true);if(!parsed.ok)return;
+  const saved=await createSavedCalculatorResult(database,'vehicle-synthetic-A',parsed.value);
+  expect(saved.savedResult.inputValues).toEqual(values);expect(saved.savedResult.result.modelVersion).toBe('vehicle-cost-v1');
+  expect((await listSavedCalculatorResults(database,'vehicle-synthetic-A'))[0].inputValues.resale).toBe(14000);
+  expect(await listSavedCalculatorResults(database,'vehicle-synthetic-B')).toEqual([]);
+  expect((await createSavedCalculatorResult(database,'vehicle-synthetic-A',parsed.value)).saveStatus).toBe('retry');
+  const row=sqlite.prepare('SELECT input_json FROM saved_calculator_results WHERE id = ?').get(saved.savedResult.id) as {input_json:string};expect(JSON.parse(row.input_json)).toEqual(values);
+  expect(await hashCalculatorPayload(parsed.value)).not.toBe(await hashCalculatorPayload({...parsed.value,inputValues:{...values,resale:0}}));
+ });
+});
+
 });

@@ -1,0 +1,121 @@
+{
+  "checked_at": "2026-10-01T00:00:56.937Z",
+  "accepted_product_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
+  "deployment_commit_sha": "7826e07f6c49cab117d9f43acf9dc258a6001f02",
+  "product_equivalence": "Only review documentation differs from accepted source; authenticated build generated from this clean commit.",
+  "deployment_id": "7a0c28db-e731-4087-b7ee-f25c7cbe6f98",
+  "immutable_url": "https://7a0c28db.interactive-fire-calculator.pages.dev",
+  "beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+  "branch": "codex/finpath-quality-execution",
+  "environment": "preview",
+  "commit_dirty": false,
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "production_deployments_enabled": false,
+  "canonical_production_commit": "3399dbbd8d7f0e6379972356a790b236e6b177b1",
+  "checks": [
+    {
+      "route": "/api/health",
+      "status": 200
+    },
+    {
+      "route": "/api/me",
+      "status": 401
+    },
+    {
+      "route": "/api/plans",
+      "status": 401
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401
+    },
+    {
+      "route": "/dashboard",
+      "status": 200
+    }
+  ],
+  "bundle_sha256": [
+    {
+      "path": "/assets/BalanceImportPanel-BUhTGV-I.js",
+      "sha256": "5a3b5d992021adbd248458e6c26d166339a1867e2ad16ad66bf87c5cea26ed37",
+      "bytes": 9680
+    },
+    {
+      "path": "/assets/calculator-catalog-BlTpG4ZG.js",
+      "sha256": "7a4e05f234fe486a6542985f7a37cc9f9544dc06c88d19b1c55e8ba2ae892f68",
+      "bytes": 96890
+    },
+    {
+      "path": "/assets/CalculatorLibrary-CdvL52qc.js",
+      "sha256": "5587b07e9fa8c17ea94ad21283bc9fe896b9cd578c21288421ab90f98e73192d",
+      "bytes": 378533
+    },
+    {
+      "path": "/assets/circle-check-CvjZpSFY.js",
+      "sha256": "d5972873289aad1c9e9daf97be5fa670a3a2252ffc38bec5fb245d6db011cbc3",
+      "bytes": 222
+    },
+    {
+      "path": "/assets/dist-_XyzNBdf.js",
+      "sha256": "f7255666396cf8bb239176a3d670722c7c56c6e2b70b7ae60b7ff8b1bee96971",
+      "bytes": 145733
+    },
+    {
+      "path": "/assets/history-BU5nD0J1.js",
+      "sha256": "15b27909f426ede14d5ea9ecd6a53673b5574c32ed85d2e656dad163bb04951b",
+      "bytes": 276
+    },
+    {
+      "path": "/assets/main-Bd9zfbM6.css",
+      "sha256": "a80b7120d25f83b1c4f8506e19b9a75eac0a481a864fab9ffb5e6392965228cd",
+      "bytes": 220312
+    },
+    {
+      "path": "/assets/main-DyAOkhgB.js",
+      "sha256": "8a10eb2bf389fd8dcc98c41b3e05fe17a1ef3f2775161e2bf2109caf43cebef3",
+      "bytes": 208995
+    },
+    {
+      "path": "/assets/papaparse.min-DIiCcvP0.js",
+      "sha256": "01a2bca9172dfa1468fcd9c23adbe81e4caa5d04e5fa487d353f74a7660b6914",
+      "bytes": 19979
+    },
+    {
+      "path": "/assets/PlanningWorkspace-DVC4xv5u.js",
+      "sha256": "f6fe53b44bc11f9230b16a87a93cc89001946f042722e0b7029a822eef4746dd",
+      "bytes": 27120
+    },
+    {
+      "path": "/assets/ProjectionChart-C3frlMBH.js",
+      "sha256": "610df64fb021d3ae8b6c9c0eb75dbd806c9af669f588106f9055aacd6489e8ca",
+      "bytes": 348238
+    },
+    {
+      "path": "/assets/react-vendor-CvBZlOBd.js",
+      "sha256": "2eb2df5b9abff34af7fdcd9775abf2d145105b56a2cd413ca1d96977a1bc4eb5",
+      "bytes": 139938
+    },
+    {
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "bytes": 694
+    },
+    {
+      "path": "/assets/rotate-ccw-D3XwuRYY.js",
+      "sha256": "fe6ffa0a2c7b0190c11b2ac6c5f5dd90edacfb9323fc2bf03d5e4872310db98b",
+      "bytes": 1620
+    },
+    {
+      "path": "/assets/TransactionImportPanel-DsNEaqaF.js",
+      "sha256": "d37f024c446b63e9566bf5f36f89ef5a0679a6702dc516ff30dd48c20293dd09",
+      "bytes": 10210
+    },
+    {
+      "path": "/assets/WorkspacePanels-BlbJdrcZ.js",
+      "sha256": "842f335a6f327400ecf913f34013150a1a68163d8f9e501df743eba17a263c79",
+      "bytes": 46966
+    }
+  ]
+}

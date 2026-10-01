@@ -43,7 +43,10 @@ describe('calculator registry audit', () => {
       for (const [name, values] of variants(calculator)) {
         it(`returns finite metrics for ${name}`, () => {
           const result = calculateSeoCalculator(calculator, values);
-          expect(result.metrics.length).toBeGreaterThan(0);
+          if (calculator.formula === 'vehicle-cost' && ['all zeros','zero rate and term','very large'].includes(name)) {
+            // Positive durations and a 0/1 continuation choice are required; invalid input has no invented cost.
+            expect(result.metrics).toEqual([]);
+          } else expect(result.metrics.length).toBeGreaterThan(0);
           expect(badNumbers(result), `${name}: ${JSON.stringify(values)}`).toEqual([]);
           expect(result.narrative.trim().length).toBeGreaterThan(0);
         });

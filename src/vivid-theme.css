@@ -2078,3 +2078,68 @@ body {
 .calculator-scope a, .calculator-scope summary { scroll-margin-top: 88px; }
 
 .landing-actions a { text-decoration: none; }
+
+/* Dated cash-flow mode: compact controls, explicit direction, exact data beside the visual. */
+.calculator-mode-choice { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:16px; margin-block:16px; padding:16px; border:1px solid var(--color-border); border-radius:var(--radius-panel); background:var(--color-surface); color:var(--color-body); }
+.calculator-mode-choice p { margin:4px 0 0; max-width:65ch; }
+.calculator-mode-actions,.dated-result-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.calculator-mode-actions button,.dated-result-actions button { min-height:44px; }
+.dated-currency { display:grid; gap:4px; margin-block:12px; max-width:200px; font-weight:600; }
+.dated-currency select,.dated-flow-row input { width:100%; min-width:0; min-height:44px; padding:10px; border:1px solid var(--color-control-border); border-radius:8px; background:var(--color-field-surface); color:var(--color-body); }
+.dated-flow-list { display:grid; gap:12px; margin-block:12px; }
+.dated-flow-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; align-items:end; gap:12px; min-width:0; margin:0; padding:12px; border:1px solid var(--color-border); border-radius:12px; background:var(--color-surface-inset); }
+.dated-flow-row legend { padding-inline:4px; font-size:.875rem; font-weight:700; color:var(--color-muted); }
+.dated-flow-row label { display:grid; gap:4px; min-width:0; font-weight:600; }
+.dated-flow-row input[aria-invalid=true] { border-color:var(--color-danger); }
+.dated-flow-visual { margin:16px 0; }
+.dated-flow-visual figcaption { display:grid; gap:4px; }
+.dated-flow-visual figcaption span { font-size:.875rem; color:var(--color-muted); }
+.dated-flow-visual svg { display:block; width:100%; height:auto; margin-top:8px; }
+.dated-flow-axis { stroke:var(--color-control-border); stroke-width:1; }
+.dated-flow-stem { stroke:var(--color-muted); stroke-width:1; }
+.dated-flow-in { fill:var(--color-data-1); }
+.dated-flow-out { fill:var(--color-data-3); }
+.dated-flow-visual svg text { fill:var(--color-body); font-size:16px; }
+.dated-flow-table { min-width:0; margin-block:12px; }
+.dated-flow-table summary { display:flex; align-items:center; min-height:44px; padding-block:8px; cursor:pointer; font-weight:600; }
+.dated-flow-table .table-scroll { max-width:100%; overflow-x:auto; }
+.dated-flow-table table { width:100%; border-collapse:collapse; }
+.dated-flow-table th,.dated-flow-table td { padding:8px; text-align:left; border-bottom:1px solid var(--color-border); }
+.dated-flow-table p { font-size:.875rem; color:var(--color-muted); }
+.dated-history { margin-top:20px; display:grid; gap:12px; }
+.dated-history h2,.dated-history p { margin:0; }
+@media (max-width:700px) { .calculator-mode-choice { grid-template-columns:minmax(0,1fr); } }
+@media (max-width:540px) { .dated-flow-row { grid-template-columns:minmax(0,1fr); } .calculator-mode-actions button { flex:1 1 120px; } }
+@media (forced-colors:active) { .dated-flow-in,.dated-flow-out { fill:CanvasText; } .dated-flow-axis,.dated-flow-stem { stroke:CanvasText; } }
+.dated-flow-endpoints { display:flex; justify-content:space-between; gap:12px; font-size:.875rem; color:var(--color-muted); }
+
+.return-mode-panel[hidden] { display: none !important; }
+
+/* Vehicle decisions: three short input groups; total costs and equity have distinct scales. */
+.vehicle-group { min-width:0; padding:12px 0; margin:0; border:0; border-top:1px solid var(--color-border); }
+.vehicle-group legend { font-weight:700; padding:8px 0; color:var(--color-heading); }
+.vehicle-group p,.vehicle-continuation p { font-size:.875rem; line-height:1.5; margin:8px 0; color:var(--color-muted); }
+.vehicle-field { display:grid; align-content:start; gap:6px; min-width:0; font-size:.875rem; }
+.vehicle-field > span { font-weight:600; }
+.vehicle-field input { width:100%; min-width:0; min-height:44px; padding:10px 12px; border:1px solid var(--color-control-border); border-radius:var(--radius-control); background:var(--color-surface); color:var(--color-heading); font-size:1rem; }
+.vehicle-field input:focus-visible { outline:3px solid var(--color-focus); outline-offset:2px; }
+.vehicle-field small { line-height:1.5; color:var(--color-muted); }
+.vehicle-continuation { margin-block:12px; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-control); background:var(--color-surface); }
+.vehicle-continuation > label { display:flex; align-items:center; gap:10px; min-height:44px; font-weight:600; font-size:.875rem; }
+.vehicle-continuation input[type=checkbox] { width:20px; height:20px; flex:none; accent-color:var(--color-data-1); }
+.vehicle-cost-visual,.vehicle-equity-visual { margin:16px 0; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-control); }
+.vehicle-cost-visual figcaption,.vehicle-equity-visual figcaption { display:grid; gap:4px; font-size:.875rem; line-height:1.5; }
+.vehicle-cost-visual figcaption span,.vehicle-equity-visual figcaption span { color:var(--color-muted); }
+.vehicle-cost-row { margin-top:12px; font-size:.875rem; }
+.vehicle-cost-track { position:relative; height:22px; margin-top:6px; background:var(--color-surface); }
+.vehicle-cost-track b { position:absolute; height:100%; min-width:0; border:1px solid currentColor; }
+.vehicle-buy-bar { background:var(--color-data-1); }
+.vehicle-lease-bar { background:var(--color-muted); }
+.vehicle-zero { position:absolute; top:-2px; bottom:-2px; width:1px; background:var(--color-heading); z-index:1; }
+.vehicle-equity-track { display:flex; height:22px; margin-top:12px; background:var(--color-surface); }
+.vehicle-equity-track span { min-width:0; border:1px solid currentColor; }
+.vehicle-equity-covered { background:var(--color-muted); }
+.vehicle-equity-left { background:var(--color-data-1); }
+.vehicle-equity-shortfall { background:repeating-linear-gradient(45deg,transparent,transparent 4px,var(--color-muted) 4px,var(--color-muted) 8px); }
+.vehicle-equity-visual p { font-size:.8rem; line-height:1.5; margin:8px 0 0; }
+@media (forced-colors:active) { .vehicle-cost-track b,.vehicle-equity-track span { background:Highlight; border:1px solid CanvasText; }.vehicle-zero {background:CanvasText;} }

@@ -53,7 +53,7 @@ describe('XIRR-style route is labelled as a modeled periodic IRR', () => {
     const result = calculateSeoCalculator(entry, defaults('xirr'));
     expect(result.metrics[0].label).toMatch(/periodic monthly IRR/i);
     expect(result.metrics[0].label).not.toMatch(/^Annualized return \(IRR\)$/);
-    expect([entry.title, result.narrative, ...result.assumptions].join(' ')).toMatch(/not yet supported/i);
+    expect([entry.title, result.narrative, ...result.assumptions].join(' ')).toMatch(/this mode has no actual dates/i);
     expect(entry.keywords.join(' ')).toMatch(/xirr/i);
   });
 });

@@ -1,3 +1,5 @@
+import { parseDatedReturnInputModel, type DatedReturnInputModel } from '../datedReturns';
+import { isCalculatorModelVersion, type CalculatorModelVersion } from '../calculatorModelVersion';
 import type { CalculatorSaveRequest } from '../../CalculatorLibrary';
 import { authenticatedJsonRequest, isRecord, type SignedInAuth } from './client';
 
@@ -13,6 +15,7 @@ export type SavedCalculatorMetric = {
 };
 
 export type SavedCalculatorResultSnapshot = {
+  modelVersion?: CalculatorModelVersion;
   assumptions: string[];
   metrics: SavedCalculatorMetric[];
   narrative: string;
@@ -33,6 +36,7 @@ export type SavedCalculatorResult = {
   id: string;
   idempotencyKey?: string | null;
   inputValues: Record<string, number>;
+  inputModel?: DatedReturnInputModel;
   payloadHash?: string | null;
   result: SavedCalculatorResultSnapshot;
   updatedAt: string;
@@ -103,6 +107,8 @@ export function toSavedCalculatorResultSnapshot(value: unknown): SavedCalculator
     return null;
   }
 
+  if (value.modelVersion !== undefined && !isCalculatorModelVersion(value.modelVersion)) return null;
+
   const metrics = value.metrics
     .map(toSavedCalculatorMetric)
     .filter((metric): metric is SavedCalculatorMetric => Boolean(metric));
@@ -115,6 +121,7 @@ export function toSavedCalculatorResultSnapshot(value: unknown): SavedCalculator
     assumptions: Array.isArray(value.assumptions)
       ? value.assumptions.filter((assumption): assumption is string => typeof assumption === 'string')
       : [],
+    ...(isCalculatorModelVersion(value.modelVersion) ? { modelVersion: value.modelVersion } : {}),
     metrics,
     narrative: value.narrative
   };
@@ -146,6 +153,11 @@ export function toSavedCalculatorResult(value: unknown): SavedCalculatorResult |
 
   const result = toSavedCalculatorResultSnapshot(value.result);
 
+  const inputModel = value.inputModel === undefined ? undefined : parseDatedReturnInputModel(value.inputModel);
+  if (value.inputModel !== undefined && !inputModel) return null;
+  if (result?.modelVersion === 'dated-xirr-v1' && (!inputModel || value.calculatorSlug !== 'xirr')) return null;
+  if (inputModel && result?.modelVersion !== 'dated-xirr-v1') return null;
+
   if (!result) {
     return null;
   }
@@ -165,6 +177,7 @@ export function toSavedCalculatorResult(value: unknown): SavedCalculatorResult |
     id: value.id,
     idempotencyKey: typeof value.idempotencyKey === 'string' ? value.idempotencyKey : null,
     inputValues: value.inputValues,
+    ...(inputModel ? { inputModel } : {}),
     payloadHash: typeof value.payloadHash === 'string' ? value.payloadHash : null,
     result,
     updatedAt: value.updatedAt
@@ -240,6 +253,7 @@ export async function createCalculatorResultRecord(
       currency: request.currency,
       idempotencyKey: resolvedKey,
       inputValues: request.values,
+      ...(request.inputModel ? { inputModel: request.inputModel } : {}),
       result: request.result
     }),
     headers: {
