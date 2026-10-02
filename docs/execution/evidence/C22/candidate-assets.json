@@ -1,0 +1,121 @@
+{
+  "checked_at": "2026-10-02T02:45:44.710Z",
+  "accepted_product_sha": "2a2f3efc49a4282be1e8a6258e05a95b1d771fa9",
+  "deployment_commit_sha": "2a2f3efc49a4282be1e8a6258e05a95b1d771fa9",
+  "product_equivalence": "Deployed clean source equals the accepted candidate; no product files differ.",
+  "deployment_id": "2fed475c-8ea4-4340-ac1b-9ee1a912b187",
+  "immutable_url": "https://2fed475c.interactive-fire-calculator.pages.dev",
+  "branch": "codex/return-method-guidance",
+  "environment": "preview",
+  "commit_dirty": false,
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "production_deployments_enabled": false,
+  "canonical_production_commit": "3399dbbd8d7f0e6379972356a790b236e6b177b1",
+  "checks": [
+    {
+      "route": "/api/health",
+      "status": 200
+    },
+    {
+      "route": "/api/me",
+      "status": 401
+    },
+    {
+      "route": "/api/plans",
+      "status": 401
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401
+    },
+    {
+      "route": "/dashboard",
+      "status": 200
+    }
+  ],
+  "bundle_sha256": [
+    {
+      "path": "/assets/BalanceImportPanel-C_WnLz5o.js",
+      "sha256": "bc256996476eb3563e89d4207348af837eddb94147e1f3b8e23e11e4811db15a",
+      "bytes": 9680
+    },
+    {
+      "path": "/assets/calculator-catalog-0ON4eR-8.js",
+      "sha256": "565e9b5fe45def15b140bc6a61190ce6653530e83e59d4c2dd9f51590501b686",
+      "bytes": 96912
+    },
+    {
+      "path": "/assets/CalculatorLibrary-BOOjWGLh.js",
+      "sha256": "eb8291e3e1550f521a9afddad48ef25731b3aeaa98bafe76f9d0c413bbbfe997",
+      "bytes": 379979
+    },
+    {
+      "path": "/assets/circle-check-CvjZpSFY.js",
+      "sha256": "d5972873289aad1c9e9daf97be5fa670a3a2252ffc38bec5fb245d6db011cbc3",
+      "bytes": 222
+    },
+    {
+      "path": "/assets/dist-_XyzNBdf.js",
+      "sha256": "f7255666396cf8bb239176a3d670722c7c56c6e2b70b7ae60b7ff8b1bee96971",
+      "bytes": 145733
+    },
+    {
+      "path": "/assets/history-BU5nD0J1.js",
+      "sha256": "15b27909f426ede14d5ea9ecd6a53673b5574c32ed85d2e656dad163bb04951b",
+      "bytes": 276
+    },
+    {
+      "path": "/assets/main-DNhARteC.css",
+      "sha256": "7127b0aefaa21c9d623745c713cc0e3f7babdb0b4663e03548da002c65d72f6f",
+      "bytes": 220892
+    },
+    {
+      "path": "/assets/main-ntxJUeg9.js",
+      "sha256": "86a6750957ee7e66305616e37a045fc814c7cbf4aaa7bfb56f5fddfa66e51e9c",
+      "bytes": 208995
+    },
+    {
+      "path": "/assets/papaparse.min-DIiCcvP0.js",
+      "sha256": "01a2bca9172dfa1468fcd9c23adbe81e4caa5d04e5fa487d353f74a7660b6914",
+      "bytes": 19979
+    },
+    {
+      "path": "/assets/PlanningWorkspace-BG_srf8n.js",
+      "sha256": "a02e9d07d7686410d0f8e7ae3d4dd903199c5489d54a7bf055c9c86f394672d8",
+      "bytes": 27120
+    },
+    {
+      "path": "/assets/ProjectionChart-D7gOZsyI.js",
+      "sha256": "71d71f65e3a30f5b84e99f5c133bf8593ee3ec158ff6c0882fa55f575441d094",
+      "bytes": 348238
+    },
+    {
+      "path": "/assets/react-vendor-CvBZlOBd.js",
+      "sha256": "2eb2df5b9abff34af7fdcd9775abf2d145105b56a2cd413ca1d96977a1bc4eb5",
+      "bytes": 139938
+    },
+    {
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "bytes": 694
+    },
+    {
+      "path": "/assets/rotate-ccw-D3XwuRYY.js",
+      "sha256": "fe6ffa0a2c7b0190c11b2ac6c5f5dd90edacfb9323fc2bf03d5e4872310db98b",
+      "bytes": 1620
+    },
+    {
+      "path": "/assets/TransactionImportPanel-BqdFqj9e.js",
+      "sha256": "eb5dc72d88d1d0561b01e837f09b2637ef535a235be6747948e1d8c483900769",
+      "bytes": 10210
+    },
+    {
+      "path": "/assets/WorkspacePanels-D9lExQu4.js",
+      "sha256": "a0f87f0c93fe7ae3f44633f40efd3cc77fc153ab2b31d5011f366beb8017e337",
+      "bytes": 46966
+    }
+  ],
+  "candidate_url": "https://2fed475c.interactive-fire-calculator.pages.dev"
+}

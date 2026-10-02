@@ -1,0 +1,494 @@
+{
+  "source_sha": "2a2f3efc49a4282be1e8a6258e05a95b1d771fa9",
+  "preview": "https://2fed475c.interactive-fire-calculator.pages.dev",
+  "hosted_layouts": [
+    {
+      "client": 1425,
+      "dark": "false",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(15, 30, 46)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(241, 245, 251)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 118,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/investment-return",
+      "viewport": 1440
+    },
+    {
+      "client": 1425,
+      "dark": "true",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(238, 245, 251)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(10, 19, 32)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 118,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/investment-return",
+      "viewport": 1440
+    },
+    {
+      "client": 375,
+      "dark": "false",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(15, 30, 46)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(241, 245, 251)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 139,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/investment-return",
+      "viewport": 390
+    },
+    {
+      "client": 375,
+      "dark": "true",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(238, 245, 251)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(10, 19, 32)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 139,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/investment-return",
+      "viewport": 390
+    },
+    {
+      "client": 305,
+      "dark": "false",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(15, 30, 46)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(241, 245, 251)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 160,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/investment-return",
+      "viewport": 320
+    },
+    {
+      "client": 305,
+      "dark": "true",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(238, 245, 251)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(10, 19, 32)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 160,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/investment-return",
+      "viewport": 320
+    },
+    {
+      "client": 1425,
+      "dark": "false",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(15, 30, 46)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(241, 245, 251)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 118,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/cagr",
+      "viewport": 1440
+    },
+    {
+      "client": 1425,
+      "dark": "true",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(238, 245, 251)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(10, 19, 32)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 118,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/cagr",
+      "viewport": 1440
+    },
+    {
+      "client": 375,
+      "dark": "false",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(15, 30, 46)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(241, 245, 251)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 139,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/cagr",
+      "viewport": 390
+    },
+    {
+      "client": 375,
+      "dark": "true",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(238, 245, 251)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(10, 19, 32)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 139,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/cagr",
+      "viewport": 390
+    },
+    {
+      "client": 305,
+      "dark": "false",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(15, 30, 46)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(241, 245, 251)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 160,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/cagr",
+      "viewport": 320
+    },
+    {
+      "client": 305,
+      "dark": "true",
+      "datedRows": null,
+      "inputFont": "16px",
+      "linkColor": "rgb(238, 245, 251)",
+      "linkHeight": 44,
+      "linkHref": "/calculators/xirr?returnMode=dated",
+      "noticeBackground": "rgb(10, 19, 32)",
+      "noticeBeforeInputs": true,
+      "noticeHeight": 160,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Case A13.44%",
+        "Your inputs12.47%",
+        "Case B11.72%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/cagr",
+      "viewport": 320
+    },
+    {
+      "client": 1425,
+      "dark": "false",
+      "datedRows": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "datedVisible": true,
+      "inputFont": "16px",
+      "linkColor": null,
+      "noticeBackground": null,
+      "noticeBeforeInputs": null,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Conservative15.33%",
+        "Base7.25%",
+        "Optimistic1.98%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+      "viewport": 1440
+    },
+    {
+      "client": 1425,
+      "dark": "true",
+      "datedRows": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "datedVisible": true,
+      "inputFont": "16px",
+      "linkColor": null,
+      "noticeBackground": null,
+      "noticeBeforeInputs": null,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Conservative15.33%",
+        "Base7.25%",
+        "Optimistic1.98%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+      "viewport": 1440
+    },
+    {
+      "client": 375,
+      "dark": "false",
+      "datedRows": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "datedVisible": true,
+      "inputFont": "16px",
+      "linkColor": null,
+      "noticeBackground": null,
+      "noticeBeforeInputs": null,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Conservative15.33%",
+        "Base7.25%",
+        "Optimistic1.98%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+      "viewport": 390
+    },
+    {
+      "client": 375,
+      "dark": "true",
+      "datedRows": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "datedVisible": true,
+      "inputFont": "16px",
+      "linkColor": null,
+      "noticeBackground": null,
+      "noticeBeforeInputs": null,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Conservative15.33%",
+        "Base7.25%",
+        "Optimistic1.98%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+      "viewport": 390
+    },
+    {
+      "client": 305,
+      "dark": "false",
+      "datedRows": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "datedVisible": true,
+      "inputFont": "16px",
+      "linkColor": null,
+      "noticeBackground": null,
+      "noticeBeforeInputs": null,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Conservative15.33%",
+        "Base7.25%",
+        "Optimistic1.98%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+      "viewport": 320
+    },
+    {
+      "client": 305,
+      "dark": "true",
+      "datedRows": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "datedVisible": true,
+      "inputFont": "16px",
+      "linkColor": null,
+      "noticeBackground": null,
+      "noticeBeforeInputs": null,
+      "overflow": 0,
+      "resultVisible": false,
+      "tabs": [
+        "Conservative15.33%",
+        "Base7.25%",
+        "Optimistic1.98%"
+      ],
+      "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+      "viewport": 320
+    }
+  ],
+  "hosted_journey": {
+    "cases": [
+      {
+        "source": "investment-return",
+        "entry": {
+          "blank": true,
+          "result": false,
+          "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated"
+        },
+        "edits": {
+          "date": "2025-01-01",
+          "monthly": "23456",
+          "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated"
+        },
+        "reveal": {
+          "focus": "calculator-result-panel",
+          "header": 64,
+          "top": 87.9609375
+        },
+        "forward": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+        "reload": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr"
+      },
+      {
+        "source": "cagr",
+        "entry": {
+          "blank": true,
+          "result": false,
+          "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated"
+        },
+        "edits": {
+          "date": "2025-01-01",
+          "monthly": "23456",
+          "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated"
+        },
+        "reveal": {
+          "focus": "calculator-result-panel",
+          "header": 64,
+          "top": 87.4609375
+        },
+        "forward": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated",
+        "reload": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr"
+      }
+    ],
+    "consoleErrors": [],
+    "initialObservation": {
+      "status": "not reproduced after phase tracing and navigation-ready checks",
+      "back": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/investment-return",
+      "forward": {
+        "dated": false,
+        "url": "https://2fed475c.interactive-fire-calculator.pages.dev/calculators/xirr"
+      }
+    }
+  },
+  "local_root_width_regressions": [
+    {
+      "client": 305,
+      "overflow": 0,
+      "route": "/"
+    },
+    {
+      "client": 305,
+      "overflow": 0,
+      "route": "/calculators"
+    },
+    {
+      "client": 305,
+      "overflow": 0,
+      "route": "/calculators/fire"
+    },
+    {
+      "client": 305,
+      "overflow": 0,
+      "route": "/calculators/mortgage"
+    },
+    {
+      "client": 305,
+      "overflow": 0,
+      "route": "/calculators/lease-vs-buy"
+    }
+  ],
+  "minimum_opaque_link_contrast": 15.41112152920175,
+  "summary": {
+    "hosted_configurations": 18,
+    "overflow_failures": 0,
+    "minimum_action_height_px": 44,
+    "captured_console_errors": 0
+  },
+  "limits": [
+    "Actual native reader and zoom remain deferred; responsive widths do not close them.",
+    "No authenticated save or hosted financial-data write was performed.",
+    "Initial unguarded Forward observation was inconsistent; phase traces and both navigation-ready journeys passed on unchanged source. No router-code defect was established."
+  ]
+}

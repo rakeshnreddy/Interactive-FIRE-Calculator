@@ -660,7 +660,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
 
 ## Return-method follow-up — 2026-10-01
 
-- [ ] **B57 — Guide endpoint-return users to actual-date cash-flow returns.**
+- [x] **B57 — Guide endpoint-return users to actual-date cash-flow returns.**
   - User problem/evidence: the fresh matrix rows 08/67 and B50 route dispositions identify that endpoint growth cannot interpret intermediate cash flows; B54 now supplies a dated model, but no direct before-input suitability path connects it.
   - Outcome/scope: before-input plain-language scope and a direct link from investment-return/CAGR to empty dated mode; explicit mode switching preserves edits and a non-financial mode URL only. [Bounded contract](execution/prompts/B57.md).
   - Non-goals: new engines, cash-flow imports, value transfer in URLs, required questionnaire, new telemetry, account operations, dependencies, production or D1 changes.
@@ -671,7 +671,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Security/privacy/dependencies: B50/B54; static same-origin link and allowlisted presentation mode only; no remote writes.
   - Migration/rollback/effort: no model/schema migration; revert scoped notice/mode UI together and retain B54 read support. Human 2–4h; agent 45–90m including review, estimates only.
 
-- [ ] **B58 — Correct endpoint-return scope copy and sensitivity labels.**
+- [x] **B58 — Correct endpoint-return scope copy and sensitivity labels.**
   - User problem/evidence: actual browser showed “conservative” 13.44% > base 12.47% > “optimistic” 11.72%; generic scope also implied cash-flow, cost and inflation treatment. [Exact contract](execution/prompts/B58.md).
   - Outcome/scope: neutral Case A/Your inputs/Case B labels with honest joint-sensitivity description, and precise endpoint exclusions.
   - Non-goals: recalculating formulas/presets, new scenarios, historic snapshot rewrite, forecast/advice or additional controls.

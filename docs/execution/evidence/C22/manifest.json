@@ -1,0 +1,67 @@
+{
+  "related_candidate_sha": "2a2f3efc49a4282be1e8a6258e05a95b1d771fa9",
+  "preview": "https://2fed475c.interactive-fire-calculator.pages.dev",
+  "artifact_location": "Ignored raw files retained in this review checkout only; not recoverable from the Git index. Compact evidence is committed.",
+  "artifacts": [
+    {
+      "path": "raw/candidate-smoke.log",
+      "bytes": 274,
+      "sha256": "c083c71055147d0eb5bb39b9c233b2692e977fb262470ec4a79f7e48745cf22f",
+      "provenance": "Local command log; precommit working-tree product matches candidate, not a claim that its Git commit existed at log creation."
+    },
+    {
+      "path": "raw/full-suite.log",
+      "bytes": 7628,
+      "sha256": "7c9eb1cfe27bc2af84d6c2fb1ffb602b14ac5738de034644326a3b212768c32c",
+      "provenance": "Local command log; precommit working-tree product matches candidate, not a claim that its Git commit existed at log creation."
+    },
+    {
+      "path": "raw/hosted-journey.json",
+      "bytes": 1848,
+      "sha256": "03fd65144bb3069e3a04bd0cc910c963853bad5670aabcd6e76fff8d088dc08b",
+      "provenance": "Actual reviewer browser/API artifact"
+    },
+    {
+      "path": "raw/hosted-layout.json",
+      "bytes": 9827,
+      "sha256": "26bde06e5ddc7a6602dbab872a21c1d7ceb50161ec69cf453f4d6fa9098e62e7",
+      "provenance": "Actual reviewer browser/API artifact"
+    },
+    {
+      "path": "raw/layout-red.json",
+      "bytes": 2836,
+      "sha256": "d9247d25be12e8d6e9bcaa45f39850f8d625c7b3033eed65590ad57a97ff0cfc",
+      "provenance": "Actual reviewer browser/API artifact"
+    },
+    {
+      "path": "raw/local-layout.json",
+      "bytes": 6734,
+      "sha256": "464c620213ee0c4d7833dee67f1a04f6b0cc2874caafb1d865ea9d8422fd1dce",
+      "provenance": "Actual reviewer browser/API artifact"
+    },
+    {
+      "path": "raw/predeploy.json",
+      "bytes": 357,
+      "sha256": "0d0ab6c1c729d07b90e2a16e4c36b473ca7f0216e0b70808b22aa4ddae7e4a0c",
+      "provenance": "Actual reviewer browser/API artifact"
+    },
+    {
+      "path": "raw/red-guidance.log",
+      "bytes": 3342,
+      "sha256": "bfac74816f8181afa513112bf2d9320d30142968b02a705637e81e9c06619c86",
+      "provenance": "Local command log; precommit working-tree product matches candidate, not a claim that its Git commit existed at log creation."
+    },
+    {
+      "path": "raw/red-scope.log",
+      "bytes": 1709,
+      "sha256": "50f7bec6a271cad2d8cc7dff2bcb6c2a24d4c3ff6d78c69f8253a5835e773130",
+      "provenance": "Local command log; precommit working-tree product matches candidate, not a claim that its Git commit existed at log creation."
+    },
+    {
+      "path": "raw/root-width.json",
+      "bytes": 393,
+      "sha256": "62dd5646fd6653f8cb973036eaa24ab3171e8710c516aece3fcd6ae4e7a1186f",
+      "provenance": "Actual reviewer browser/API artifact"
+    }
+  ]
+}

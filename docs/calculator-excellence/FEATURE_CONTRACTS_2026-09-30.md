@@ -17,7 +17,7 @@ The primary thesis stays **understand a decision, save it, revisit actual progre
 | 05 | `emergency-fund` | Current slice | B44 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
 | 06 | `retirement` | Current slice | B43 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
 | 07 | `debt-payoff` | Current slice | B43 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
-| 08 | `investment-return` | Queued small feature contract | Cash-flow suitability question and link to dated mode after proposal F-02; retain point-to-point CAGR. |
+| 08 | `investment-return` | Implemented bounded contract | B57/B58 at C22: before-input scope and empty dated-mode link; neutral sensitivity labels and precise exclusions; point-to-point arithmetic unchanged. |
 | 09 | `sip` | Current slice | B43 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
 | 10 | `step-up-sip` | Current slice | B43 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
 | 11 | `sip-goal` | Queued small feature contract | Provide target date, current contribution comparison and a clearly bounded inflation option in its later family contract. |
@@ -76,7 +76,7 @@ The primary thesis stays **understand a decision, save it, revisit actual progre
 | 64 | `income-tax-us` | Externally gated | B49 exposes verified 2026 single-filer basis and state placeholder. Filing-status/credit rules require a separately versioned year/country contract. |
 | 65 | `social-security-break-even` | Implemented bounded contract | B49 warns that zero when the later benefit is not higher is not immediate break-even. Small semantic catch-up-state repair before age/benefit automation. |
 | 66 | `rmd` | Queued small feature contract | B49 honest manual mode. Age/account/table selector only under a dated IRS divisor and inherited-account contract. |
-| 67 | `cagr` | Queued small feature contract | Cash-flow suitability question; no annual-return claim when deposits/withdrawals are omitted. |
+| 67 | `cagr` | Implemented bounded contract | B57/B58 at C22: appropriate-method guidance and neutral sensitivity cases; CAGR and historical records unchanged. |
 | 68 | `xirr` | Implemented bounded contract | F-02: explicit dated return mode. Preserve the existing equal-monthly mode. |
 | 69 | `inflation` | Queued small feature contract | Add a clearly separated future-cost versus present-purchasing-power mode only through a tested contract. |
 | 70 | `rule-of-72` | Queued small feature contract | Explain approximation and optionally compare exact doubling time; handle zero/negative rates explicitly. |
