@@ -62,6 +62,21 @@
       "bytes": 393,
       "sha256": "62dd5646fd6653f8cb973036eaa24ab3171e8710c516aece3fcd6ae4e7a1186f",
       "provenance": "Actual reviewer browser/API artifact"
+    },
+    {
+      "path": "raw/beta-smoke.log",
+      "bytes": 314,
+      "sha256": "d84d8e5f012aec51134f925de2b99fa6ea1d49c30fe3981b3290ee7acc171a1e",
+      "provenance": "Actual accepted stable-beta observation; product-equivalent clean deployment recorded in beta-release.json."
+    },
+    {
+      "path": "raw/beta-return.png",
+      "bytes": 93696,
+      "sha256": "a03b0710d6f7e373a946d0fe641d36c3e4650a6e47389e061de0bcd87308e8ce",
+      "provenance": "Actual accepted stable-beta observation; product-equivalent clean deployment recorded in beta-release.json."
     }
-  ]
+  ],
+  "beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+  "beta_immutable_url": "https://463dcb01.interactive-fire-calculator.pages.dev",
+  "beta_deployment_commit_sha": "f943a5ade74910ab9ec3a79a4efdabcbe7f96334"
 }

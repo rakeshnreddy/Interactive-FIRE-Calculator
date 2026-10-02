@@ -1,0 +1,14 @@
+{
+  "guidance": {
+    "guide": "Made deposits or withdrawals?This calculation assumes no deposits or withdrawals in between.Use dated cash flows \u2192",
+    "href": "/calculators/xirr?returnMode=dated",
+    "overflow": 0,
+    "sample": true
+  },
+  "entry": {
+    "blank": true,
+    "result": false,
+    "url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/calculators/xirr?returnMode=dated"
+  },
+  "consoleErrors": []
+}

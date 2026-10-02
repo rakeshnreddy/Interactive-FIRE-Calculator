@@ -2,7 +2,7 @@
 
 ## What is necessary now
 
-The accepted public calculator beta works at [one shareable URL](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev). It was promoted and provider/bundle-verified on 2026-09-30; [release protocol](execution/BETA_RELEASE_PROTOCOL.md). The free rolling alias can update at accepted checkpoints, while immutable URLs preserve individual release evidence. The vendor prices below remain the dated 2026-09-29 research; recheck before purchasing. This promotion did not change production or buy a service.
+The accepted public calculator beta works at [one shareable URL](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev). Its latest accepted update was promoted and provider/bundle-verified on 2026-10-01; [release protocol](execution/BETA_RELEASE_PROTOCOL.md). The free rolling alias can update at accepted checkpoints, while immutable URLs preserve individual release evidence. The vendor prices below remain the dated 2026-09-29 research; recheck before purchasing. This promotion did not change production or buy a service.
 
 For the repository's **complete authenticated production launch**, OA-1 requires an owned hostname, completed Clerk production instance, live frontend key, server secrets and exact authorized origin. This is a setup/security requirement, not a requirement to buy Cloudflare Pro or Clerk Pro. Current production gate remains 0/6; the canonical production page is still the old release recorded in [the release review](execution/reviews/RELEASE-2026-09-29.md). Do not route beta credentials/data to production or bypass the guard.
 
