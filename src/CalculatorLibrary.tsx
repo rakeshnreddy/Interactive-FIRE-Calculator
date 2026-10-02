@@ -1,3 +1,4 @@
+import { ReturnMethodNotice } from './components/ReturnMethodNotice';
 import { VehicleCalculator } from './VehicleCalculator';
 import type { DatedReturnInputModel } from './lib/datedReturns';
 import { modelVersionForCalculator, type CalculatorModelVersion } from './lib/calculatorModelVersion';
@@ -847,6 +848,7 @@ function CalculatorDetail({
             </div>
             <button className="secondary-button" type="button" onClick={resetExample}>Reset to example</button>
           </div>
+          {calculator.formula === 'investment-return' ? <ReturnMethodNotice /> : null}
           <EstimateCustomization groups={optionalGroups} />
           {optionalGroups.some((group) => group.key === 'housing') ? <p className="calculator-cost-scope">Principal and interest are the base payment. Housing costs are excluded until entered below; extra payments reduce the loan separately.</p> : null}
           <div className="calculator-input-grid">
@@ -991,7 +993,7 @@ function CalculatorDetail({
         </article>
         <article>
           <p className="eyebrow">How to read it</p>
-          <p>{result.narrative} The supporting tiles explain the {selectedScenario?.label.toLowerCase() ?? 'previous'} estimate and show the inputs that matter most.</p>
+          <p>{result.narrative} The supporting tiles explain {calculator.formula === 'investment-return' ? 'this estimate' : `the ${selectedScenario?.label.toLowerCase() ?? 'previous'} estimate`} and show the inputs that matter most.</p>
         </article>
       </section>
 

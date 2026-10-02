@@ -382,6 +382,7 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
     ]
   },
   'investment-return': {
+    decisionUsefulness: 'Compare annualized growth from two balances. No intermediate deposits or withdrawals are included. Fees, taxes and inflation are not adjusted automatically.',
     calculationRequirements: [
       'Calculate CAGR from starting value, ending value, and elapsed years.',
       'Add benchmark and inflation-adjusted return for comprehensive mode.'
@@ -574,7 +575,7 @@ export function getCalculatorQualitySpec(calculator: SeoCalculator): CalculatorQ
       slug.calculationRequirements
     ),
     conversionExpectation: `${calculator.conversionLabel} in ${conversionArea(calculator.conversionRoute)}.`,
-    decisionUsefulness: slug.decisionUsefulness ?? defaults.decisionUsefulness,
+    decisionUsefulness: slug.decisionUsefulness ?? formula.decisionUsefulness ?? defaults.decisionUsefulness,
     doneWhen: universalDoneWhen,
     inputRequirements: calculator.inputs.map((input) =>
       `${input.label}: ${input.helper ?? 'Use the calculator unit shown with this input.'}`

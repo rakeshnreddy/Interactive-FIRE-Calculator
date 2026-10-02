@@ -50,3 +50,38 @@ it('preserves monthly edits when switching away and back', async () => {
  await click('Dated cash flows');await click('Monthly contributions');
  expect(container.querySelector<HTMLInputElement>('input[aria-label="Monthly probe"]')!.value).toBe('23000');
 });
+
+
+afterEach(() => window.history.replaceState(null, '', '/'));
+it('opens a dated-mode link with blank rows and no automatic example or save', async () => {
+ window.history.replaceState(null, '', '/calculators/xirr?returnMode=dated');
+ await render();
+ const visible = container.querySelector('.return-mode-panel:not([hidden])');
+ expect(visible?.textContent).toContain('Your cash flows');
+ expect([...visible!.querySelectorAll<HTMLInputElement>('input')].every(input => input.value === '')).toBe(true);
+ expect(visible?.querySelector('.calculator-result-metric-primary')).toBeNull();
+ expect(save).not.toHaveBeenCalled();
+});
+it.each(['', '?returnMode=unknown', '?returnMode=Dated'])('keeps legacy monthly mode for %s', async (search) => {
+ window.history.replaceState(null, '', `/calculators/xirr${search}`);
+ await render();
+ expect(container.querySelector('.return-mode-panel:not([hidden])')?.textContent).toContain('Periodic mode preserved');
+});
+it('updates only the mode hint and restores it on history navigation without losing cash-flow edits', async () => {
+ window.history.replaceState({ownerHint:'preserve'}, '', '/calculators/xirr?currency=INR&returnMode=dated#method');
+ await render();await click('Use example cash flows');
+ await click('Monthly contributions');
+ expect(new URLSearchParams(window.location.search).has('returnMode')).toBe(false);
+ expect(new URLSearchParams(window.location.search).get('currency')).toBe('INR');
+ expect(window.location.hash).toBe('#method');expect(window.history.state).toEqual({ownerHint:'preserve'});
+ await click('Dated cash flows');
+ expect(new URLSearchParams(window.location.search).get('returnMode')).toBe('dated');
+ expect(new URLSearchParams(window.location.search).has('cashFlows')).toBe(false);
+ expect(container.querySelector<HTMLInputElement>('input[type=date]')?.value).toBe('2025-01-01');
+ await act(async () => {window.history.replaceState(null, '', '/calculators/xirr');window.dispatchEvent(new PopStateEvent('popstate'));});
+ expect(container.querySelector('.return-mode-panel:not([hidden])')?.textContent).toContain('Periodic mode preserved');
+ await act(async () => {window.history.replaceState(null, '', '/calculators/xirr?returnMode=dated');window.dispatchEvent(new PopStateEvent('popstate'));});
+ expect(container.querySelector('.return-mode-panel:not([hidden])')?.textContent).toContain('Your cash flows');
+ expect(container.querySelector<HTMLInputElement>('input[type=date]')?.value).toBe('2025-01-01');
+ expect(save).not.toHaveBeenCalled();
+});

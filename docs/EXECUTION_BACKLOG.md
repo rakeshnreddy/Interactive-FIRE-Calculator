@@ -657,3 +657,27 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Tests: independent formula goldens, consumer/persistence/legacy/export regressions, focused UI checks and final full suite/CI plus isolated preview changed journey and public smoke.
   - Security/privacy/dependencies: B54; bounded payload/input validation, existing tenancy; no D1 migration/remote backfill.
   - Migration/rollback/effort: written version/read-support decision before publication; revert behavior while retaining new snapshot read support. Human 4–16h; agent 2–8h plus verification, excluding external setup.
+
+## Return-method follow-up — 2026-10-01
+
+- [x] **B57 — Guide endpoint-return users to actual-date cash-flow returns.**
+  - User problem/evidence: the fresh matrix rows 08/67 and B50 route dispositions identify that endpoint growth cannot interpret intermediate cash flows; B54 now supplies a dated model, but no direct before-input suitability path connects it.
+  - Outcome/scope: before-input plain-language scope and a direct link from investment-return/CAGR to empty dated mode; explicit mode switching preserves edits and a non-financial mode URL only. [Bounded contract](execution/prompts/B57.md).
+  - Non-goals: new engines, cash-flow imports, value transfer in URLs, required questionnaire, new telemetry, account operations, dependencies, production or D1 changes.
+  - Files: CalculatorLibrary.tsx, XirrCalculator.tsx, shared ReturnMethodNotice, focused tests and vivid-theme.css; canonical packet.
+  - Acceptance: both endpoint routes show the limitation before fields; one native/modified/keyboard-safe link opens dated inputs empty, not an example; unknown mode keeps monthly; switch/reload/Back retain the intended mode; switching preserves both edits; unrelated calculators unaffected. Both themes/320/390/1440 layouts remain contained with 44px action targets.
+  - Analytics: use existing consented category-level events only; no new events or values/dates in the link; watch method-appropriate completion when real observation resumes, without claiming retention.
+  - Tests: failing entry/default/switch/privacy/route-order regressions first; unchanged engine goldens; full suite, exact CI, actual hosted link/keyboard/mobile/light-dark journey plus public-route smoke.
+  - Security/privacy/dependencies: B50/B54; static same-origin link and allowlisted presentation mode only; no remote writes.
+  - Migration/rollback/effort: no model/schema migration; revert scoped notice/mode UI together and retain B54 read support. Human 2–4h; agent 45–90m including review, estimates only.
+
+- [x] **B58 — Correct endpoint-return scope copy and sensitivity labels.**
+  - User problem/evidence: actual browser showed “conservative” 13.44% > base 12.47% > “optimistic” 11.72%; generic scope also implied cash-flow, cost and inflation treatment. [Exact contract](execution/prompts/B58.md).
+  - Outcome/scope: neutral Case A/Your inputs/Case B labels with honest joint-sensitivity description, and precise endpoint exclusions.
+  - Non-goals: recalculating formulas/presets, new scenarios, historic snapshot rewrite, forecast/advice or additional controls.
+  - Files: calculatorStudios.ts, calculatorQuality.ts, calculatorContent.ts and focused UI/preset tests.
+  - Acceptance: both endpoint routes use neutral labels; original IDs/input vectors/results unchanged; copy states no intermediate flows or automatic cost/tax/inflation adjustment; unrelated calculators unchanged; chart/table/export inherit honest labels.
+  - Analytics: existing category events only; no financial values or new telemetry. Watch method-appropriate completion only when genuine observation resumes.
+  - Tests: before-fix failing label/copy regressions, exact fixture vector/goldens, consumer UI and full suite/CI/preview/public smoke.
+  - Security/privacy/dependencies: B57; no financial payload/schema/auth/remote-data changes.
+  - Migration/rollback/effort: no interpretation migration because math/IDs stay byte-equivalent; revert presentation only. Human 1–2h; agent 30–60m plus validation, not a promise.

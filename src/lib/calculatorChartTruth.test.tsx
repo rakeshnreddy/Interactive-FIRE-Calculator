@@ -219,7 +219,7 @@ describe('B21: Calculator chart truth, proportionality, and accessibility', () =
 
     // Check Base row in visual chart
     const rows = container.querySelectorAll('.calculator-studio-chart-row');
-    const baseRow = Array.from(rows).find((r) => r.textContent?.includes('Base'));
+    const baseRow = Array.from(rows).find((r) => r.textContent?.includes('Your inputs'));
     expect(baseRow).toBeDefined();
     expect(baseRow?.textContent).toContain('12.47%');
     expect(baseRow?.textContent).not.toContain('0.1');
@@ -227,7 +227,7 @@ describe('B21: Calculator chart truth, proportionality, and accessibility', () =
     // Check table row
     const table = container.querySelector('table');
     const tableRows = table?.querySelectorAll('tbody tr');
-    const baseTableRow = Array.from(tableRows ?? []).find((r) => r.textContent?.includes('Base'));
+    const baseTableRow = Array.from(tableRows ?? []).find((r) => r.textContent?.includes('Your inputs'));
     expect(baseTableRow?.textContent).toContain('12.47%');
     expect(baseTableRow?.textContent).not.toContain('0.1');
   });
@@ -249,13 +249,13 @@ describe('B21: Calculator chart truth, proportionality, and accessibility', () =
     expect(result.metrics[0].value).toBeCloseTo(-0.129449, 4);
 
     const rows = container.querySelectorAll('.calculator-studio-chart-row');
-    const baseRow = Array.from(rows).find((r) => r.textContent?.includes('Base'));
+    const baseRow = Array.from(rows).find((r) => r.textContent?.includes('Your inputs'));
     expect(baseRow).toBeDefined();
     expect(baseRow?.textContent).toContain('-12.94%');
 
     const table = container.querySelector('table');
     const tableRows = table?.querySelectorAll('tbody tr');
-    const baseTableRow = Array.from(tableRows ?? []).find((r) => r.textContent?.includes('Base'));
+    const baseTableRow = Array.from(tableRows ?? []).find((r) => r.textContent?.includes('Your inputs'));
     expect(baseTableRow?.textContent).toContain('-12.94%');
   });
 

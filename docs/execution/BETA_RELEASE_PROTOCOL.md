@@ -1,11 +1,10 @@
-# Stable beta release protocol — verified 2026-09-30
+# Stable beta release protocol — verified 2026-10-01
 
 ## Share one URL
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://7a0c28db.interactive-fire-calculator.pages.dev, deployment `7a0c28db-e731-4087-b7ee-f25c7cbe6f98`, clean commit `7826e07f6c49cab117d9f43acf9dc258a6001f02`. Product is byte-equivalent to accepted C21 source `92c752ac37b0fadf59ad1716ae1c2546e0702312` (only review documents differ). [Provider mapping and actual bundle hashes](evidence/C21/beta-release.json), [C21 review](reviews/C21.md).
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://463dcb01.interactive-fire-calculator.pages.dev, deployment `463dcb01-f9f5-466e-baff-505d24897107`, clean commit `f943a5ade74910ab9ec3a79a4efdabcbe7f96334`. Product equals accepted C22 source `2a2f3efc49a4282be1e8a6258e05a95b1d771fa9` (review documents differ). [Provider/asset hashes](evidence/C22/beta-release.json), [beta journey](evidence/C22/beta-journey.json), [C22 review](reviews/C22.md).
 
-Provider metadata verifies this alias/deployment and only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`. All 16 runtime JS/CSS assets match the local authenticated candidate by SHA-256. Health 200, anonymous APIs 401; actual dated-return and vehicle net-cost beta journeys pass. All 84 calculator HTTP routes pass on the candidate and stable beta. Changed-save behavior is covered by real local SQLite/tenant fixtures; authenticated hosted lifecycle and actual CSV download were not rerun. Native reader/zoom and real-user B51 remain explicit deferrals.
-
+Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; 16 actual runtime asset hashes match. Health 200, anonymous protected APIs 401, all 84 calculator HTTP routes and the method-guidance → empty dated journey pass. C22 performed no hosted financial-data write or authenticated save/download rerun. Native reader/zoom and actual-user B51 remain deferred. The immediate asset read was not a PASS; full verification passed after the observed deployment transition without another upload. Allow navigation/asset readiness before recording results; no unsupported root-cause claim.
 
 ## Promotion discipline
 
