@@ -2143,3 +2143,9 @@ body {
 .vehicle-equity-shortfall { background:repeating-linear-gradient(45deg,transparent,transparent 4px,var(--color-muted) 4px,var(--color-muted) 8px); }
 .vehicle-equity-visual p { font-size:.8rem; line-height:1.5; margin:8px 0 0; }
 @media (forced-colors:active) { .vehicle-cost-track b,.vehicle-equity-track span { background:Highlight; border:1px solid CanvasText; }.vehicle-zero {background:CanvasText;} }
+
+/* Return-method guidance stays beside the decision, before financial inputs. */
+.return-method-notice { margin-block: var(--space-3); padding: var(--space-3); border-inline-start: 3px solid var(--color-data-2); border-radius: var(--radius-control); background: var(--color-surface-inset); color: var(--color-body); font-size: var(--font-label-size); line-height: var(--font-body-line); }
+.return-method-notice > strong { color: var(--color-heading); }
+.return-method-notice p { margin: var(--space-2) 0 0; }
+.return-method-notice a { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; color: var(--color-heading); font-weight: 600; text-decoration: underline; text-underline-offset: 0.2em; }

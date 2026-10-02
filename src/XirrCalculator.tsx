@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { AuthState } from './auth';
 import { SignUpIntent } from './authRuntime';
 import type { CalculatorSaveOutcome, CalculatorSaveRequest, CalculatorSavedResult } from './CalculatorLibrary';
@@ -11,16 +11,31 @@ export type XirrProps = {auth:AuthState; calculator:SeoCalculator; onSaveResult:
 type RawFlow = { date:string; amount:string };
 const blankRows=():RawFlow[]=>[{date:'',amount:''},{date:'',amount:''}];
 const currencyCodes=['USD','INR','EUR','GBP','CAD','AUD','JPY'];
+function readReturnMode(): 'monthly' | 'dated' {
+  return typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('returnMode') === 'dated' ? 'dated' : 'monthly';
+}
 export function XirrCalculator(props:XirrProps) {
-  const [mode,setMode]=useState<'monthly'|'dated'>('monthly');
+  const [mode,setMode]=useState<'monthly'|'dated'>(readReturnMode);
+  useEffect(() => {
+    const restoreMode = () => setMode(readReturnMode());
+    window.addEventListener('popstate', restoreMode);
+    return () => window.removeEventListener('popstate', restoreMode);
+  }, []);
+  const chooseMode = (next: 'monthly' | 'dated') => {
+    setMode(next);
+    const url = new URL(window.location.href);
+    if (next === 'dated') url.searchParams.set('returnMode', 'dated');
+    else url.searchParams.delete('returnMode');
+    window.history.replaceState(window.history.state, '', url);
+  };
   const [rows,setRows]=useState<RawFlow[]>(blankRows);
   const [currency,setCurrency]=useState('USD');
   return <>
     <section className="calculator-mode-choice route-shell" aria-label="Return calculation type">
-      <div><strong>Choose how your money moved</strong><p>Equal monthly contributions use a monthly IRR. For irregular payments, enter the actual dates below.</p></div>
+      <div><strong>Choose how your money moved</strong><p>Equal monthly contributions use a monthly IRR. For deposits or withdrawals on actual dates, choose dated cash flows.</p></div>
       <div className="calculator-mode-actions">
-        <button className={mode==='monthly'?'primary-button':'secondary-button'} type="button" aria-pressed={mode==='monthly'} onClick={()=>setMode('monthly')}>Monthly contributions</button>
-        <button className={mode==='dated'?'primary-button':'secondary-button'} type="button" aria-pressed={mode==='dated'} onClick={()=>setMode('dated')}>Dated cash flows</button>
+        <button className={mode==='monthly'?'primary-button':'secondary-button'} type="button" aria-pressed={mode==='monthly'} onClick={()=>chooseMode('monthly')}>Monthly contributions</button>
+        <button className={mode==='dated'?'primary-button':'secondary-button'} type="button" aria-pressed={mode==='dated'} onClick={()=>chooseMode('dated')}>Dated cash flows</button>
       </div>
     </section>
     <div className="return-mode-panel" hidden={mode!=='monthly'}>{props.renderPeriodic()}</div>

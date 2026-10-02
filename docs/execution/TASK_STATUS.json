@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-30",
+  "updated": "2026-10-01",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -913,6 +913,37 @@
       "owner": "Astra direct implementation and sole review; owner continuation without Gemini",
       "code_sha": "92c752ac37b0fadf59ad1716ae1c2546e0702312",
       "review": "reviews/C21.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B57",
+      "title": "Guide endpoint-return users to actual-date cash-flow returns",
+      "checkpoint": "C22",
+      "status": "in_progress",
+      "dependencies": [
+        "B50",
+        "B54"
+      ],
+      "prompt": "prompts/B57.md",
+      "submission": "submissions/B57.md",
+      "owner": "Astra direct implementation \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B58",
+      "title": "Correct endpoint-return scope copy and sensitivity labels",
+      "checkpoint": "C22",
+      "status": "in_progress",
+      "dependencies": [
+        "B57"
+      ],
+      "prompt": "prompts/B58.md",
+      "submission": "submissions/B58.md",
+      "owner": "Astra direct implementation \u2014 observed browser defect",
+      "code_sha": null,
+      "review": null,
       "blocked_reason": null
     }
   ],

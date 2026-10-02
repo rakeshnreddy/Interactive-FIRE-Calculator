@@ -29,6 +29,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C19 | Truthful payback and benefit catch-up states | B53 → B56 | accepted | 89052295d0fbed72d8531cadefe027e5d5efecfd | [approved](reviews/C19.md) |
 | C20 | Dated cash-flow returns | B54 | accepted | 9375c990049ea79f5775aaee009d745ac28ac698 | [approved](reviews/C20.md) |
 | C21 | Vehicle cost and resale comparison | B55 | accepted | 92c752ac37b0fadf59ad1716ae1c2546e0702312 | [approved](reviews/C21.md) |
+| C22 | Return-method suitability and honest sensitivities | B57, B58 | released | — | — |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -49,3 +50,9 @@ Earlier release announcements and repair instructions are historical, not live s
 ## Owner amendment — 2026-09-30: independent continuation
 
 Owner defers actual-user validation and asks Astra to close work needing no intervention. B51/OA-5 remain open/deferred, not passed. C19–C21 are independent of real cohort evidence; register B53–B55 from the existing bounded contracts and B56 for the identified SSA residual. Order B53 → B56 → B54 → B55. B13/B14 and production retain their explicit evidence/setup gates. Owner's direct implementation instruction overrides the historical Gemini/non-coder role for this pass. No fabricated observations or paid/production action.
+
+## Independent follow-up — 2026-10-01
+
+Owner continues autonomous implementation with B51 still deferred. C22/B57 scopes the existing investment-return/CAGR cash-flow suitability finding now that B54 is accepted. No formula, financial payload, paid, production or owner-evidence gate changes. Astra implements and reviews directly; no Gemini. The larger route proposals remain unregistered until separately scoped.
+
+C22 browser review additionally reproduced B58: the endpoint-return copy implied cash-flow/cost/inflation adjustment and displayed inverse conservative/optimistic results (13.44% versus 11.72% around base 12.47%). Correct scope and neutral labels only; original scenario input vectors/arithmetic/IDs remain unchanged. This is a verified UI-content defect, not a new formula contract.

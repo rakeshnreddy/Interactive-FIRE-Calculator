@@ -184,7 +184,7 @@ export function buildCalculatorScenarios(
     return {
       description: scenarioDescription(calculator, id),
       id,
-      label: scenarioLabel(id),
+      label: scenarioLabel(calculator, id),
       result: calculateSeoCalculator(calculator, scenarioValues),
       values: scenarioValues
     };
@@ -451,7 +451,8 @@ function clampInput(input: CalculatorInput, value: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-function scenarioLabel(id: CalculatorScenarioId): string {
+function scenarioLabel(calculator: SeoCalculator, id: CalculatorScenarioId): string {
+  if (calculator.formula === 'investment-return') return id === 'base' ? 'Your inputs' : id === 'conservative' ? 'Case A' : 'Case B';
   if (id === 'conservative') return 'Conservative';
   if (id === 'optimistic') return 'Optimistic';
   return 'Base';
@@ -462,6 +463,10 @@ function scenarioDescription(calculator: SeoCalculator, id: CalculatorScenarioId
 
   if (id === 'base') {
     return 'Uses the inputs exactly as shown in the calculator.';
+  }
+
+  if (calculator.formula === 'investment-return') {
+    return 'Changes the ending value and holding period together. This is a sensitivity check, not a performance forecast.';
   }
 
   if (studio === 'Loan and Home Studio' || studio === 'Debt Payoff Studio') {
