@@ -148,17 +148,18 @@ describe('mortgage affordability', () => {
     const values = defaults('mortgage-affordability');
     const result = calculateSeoCalculator(calculator('mortgage-affordability'), values);
     // 28% housing = $2,520; 36% total - $800 debts = $2,440: the tighter one wins.
-    expect(metric(result, 'Maximum monthly payment')).toBeCloseTo(Math.min(values.income * 0.28, values.income * BACK_END_DEBT_SHARE - values.debts), 6);
+    expect(metric(result, 'Principal + interest / month')).toBeCloseTo(Math.min(values.income * 0.28, values.income * BACK_END_DEBT_SHARE - values.debts), 6);
     const noDebts = calculateSeoCalculator(calculator('mortgage-affordability'), { ...values, debts: 0 });
-    expect(metric(noDebts, 'Maximum monthly payment')).toBeCloseTo(values.income * 0.28, 6);
+    expect(metric(noDebts, 'Principal + interest / month')).toBeCloseTo(values.income * 0.28, 6);
   });
 
-  it('chart amortises the eligible loan rather than an absent principal', () => {
+  it('chart shows the monthly payment budget without mixing it with principal', () => {
     const values = defaults('mortgage-affordability');
     const result = calculateSeoCalculator(calculator('mortgage-affordability'), values);
     const chart = buildCalculatorStudioChart(calculator('mortgage-affordability'), values, result);
-    expect(chart.entries[0].primary).toBeCloseTo(result.metrics[0].value, 2);
-    expect(chart.entries[chart.entries.length - 1].secondary).toBeGreaterThan(0);
+    expect(chart.entries[0].primary).toBeCloseTo(metric(result, 'Principal + interest / month') ?? Number.NaN, 6);
+    expect(chart.entries.slice(1).every(entry => entry.primary === 0)).toBe(true);
+    expect(chart.title).toBe('Your monthly housing budget');
   });
 });
 

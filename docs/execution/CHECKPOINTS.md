@@ -30,6 +30,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C20 | Dated cash-flow returns | B54 | accepted | 9375c990049ea79f5775aaee009d745ac28ac698 | [approved](reviews/C20.md) |
 | C21 | Vehicle cost and resale comparison | B55 | accepted | 92c752ac37b0fadf59ad1716ae1c2546e0702312 | [approved](reviews/C21.md) |
 | C22 | Return-method suitability and honest sensitivities | B57, B58 | accepted | 2a2f3efc49a4282be1e8a6258e05a95b1d771fa9 | [approved](reviews/C22.md) |
+| C23 | Mortgage affordability with entered housing costs | B59 | released | — | — |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 

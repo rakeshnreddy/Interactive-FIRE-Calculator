@@ -509,12 +509,12 @@ const slugOverrides: Record<string, QualityOverride> = {
   },
   'mortgage-affordability': {
     calculationRequirements: [
-      'Calculate maximum home price from income, debts, down payment, taxes, insurance, PMI, and front-end/back-end DTI limits.',
-      'Show cash reserve and cash-to-close checks.'
+      'Reserve entered taxes, homeowners / supplementary insurance, mortgage insurance and HOA within the disclosed housing and total-debt planning limits.',
+      'Show remaining P&I budget and no-room/overage states; exclude closing costs and reserves explicitly.'
     ],
     visualRequirements: [
-      'Front-end and back-end DTI gauges.',
-      'Maximum price sensitivity by rate and down payment.'
+      'Monthly cost component bars and a reconciled budget table.',
+      'Keep loan principal separate from monthly units; no lender-approval claim.'
     ]
   },
   'roth-vs-traditional-ira': {
