@@ -697,7 +697,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
 
 ## Deposit presentation continuation — 2026-10-03
 
-- [ ] **B60 — Deposit-specific FD/CD presentation and visible rate basis.**
+- [x] **B60 — Deposit-specific FD/CD presentation and visible rate basis.**
   - User problem/evidence: B50 rows 21/78; local baseline shows principal called “recurring”, generic “annual return / rate” and contribution copy, no tax/fee/penalty exclusions, and an 18-month CD table ending at year 2 ($10,920.25) against a $10,682.54 headline. [Exact sourced contract](execution/prompts/B60.md).
   - Outcome/scope: before-input deposit basis and exclusions, deposit-specific labels/helpers, deposit + interest = maturity line, neutral what-if labels, exact-term schedule and deposit decision copy for `fd`/`cd` only.
   - Non-goals: payout mode, compounding frequency, RD, tax/fee/penalty arithmetic, market rates, insurance claims, recommendations, formula or schema changes, production.
