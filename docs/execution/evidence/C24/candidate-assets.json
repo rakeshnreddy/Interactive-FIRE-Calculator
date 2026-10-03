@@ -1,0 +1,188 @@
+{
+  "checked_at": "2026-10-03T11:24:00.757Z",
+  "candidate_sha": "485070fc39db78eb3f27c9ed56b2a069f7eb566a",
+  "deployment_commit_sha": "485070fc39db78eb3f27c9ed56b2a069f7eb566a",
+  "deployment_id": "5b937d2c-55e6-479e-95a4-9736510c67a4",
+  "immutable_url": "https://5b937d2c.interactive-fire-calculator.pages.dev",
+  "branch": "codex/deposit-presentation",
+  "branch_alias": "https://codex-deposit-presentation.interactive-fire-calculator.pages.dev",
+  "environment": "preview",
+  "commit_dirty": false,
+  "latest_stage": "deploy:success",
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "production_deployments_enabled": false,
+  "production_branch": "main",
+  "canonical_production_commit": "3399dbbd8d7f0e6379972356a790b236e6b177b1",
+  "build": "npm run build:preview-auth from clean tree at candidate SHA (Node v24.2.0); wrangler pages deploy --commit-dirty=false",
+  "ci": {
+    "run_id": 37119436276,
+    "head_sha": "485070fc39db78eb3f27c9ed56b2a069f7eb566a",
+    "conclusion": "success",
+    "workflow": "Verify"
+  },
+  "other_deployments_same_commit": [
+    {
+      "id": "04a93a16-94a9-4406-93d8-973151fa6e64",
+      "origin": "Git-integration preview triggered by push",
+      "latest_stage": "queued:idle",
+      "note": "not the candidate; no evidence relies on it or the branch alias"
+    }
+  ],
+  "public_calculator_smoke": "84 public calculator routes verified without authentication",
+  "checks": [
+    {
+      "route": "/api/health",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/api/me",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/plans",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/calculators/fd",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/calculators/cd",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    }
+  ],
+  "asset_count": 16,
+  "asset_mismatches_vs_local_build": 0,
+  "bundle_sha256": [
+    {
+      "path": "/assets/BalanceImportPanel-J2U2ze4I.js",
+      "status": 200,
+      "sha256": "56c3873cb8da76fc2a4a23cfcce13bd6609bf623b775b463bd1932ec9d41815a",
+      "bytes": 9680,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/CalculatorLibrary-DXsyyxNE.js",
+      "status": 200,
+      "sha256": "88672d5993c81d2d2be6a3c5643a5cebb87ab3785f9a3d6df437fae0c03065a1",
+      "bytes": 388614,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/PlanningWorkspace-CHsTLfDx.js",
+      "status": 200,
+      "sha256": "a3fee700849591c457d575dae5adbe14d9b0a73762265b93e660c003031c9ab4",
+      "bytes": 27120,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/ProjectionChart-DQBw0XHL.js",
+      "status": 200,
+      "sha256": "c5d87d219ad0b6c2429a426a23faa8cc08cd78bb38a9dafeaa5d0a1b74981062",
+      "bytes": 348238,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/TransactionImportPanel-Bka1QdNk.js",
+      "status": 200,
+      "sha256": "788d63cc1ae6dda078d0d097fc7effd61060f8a71de1eebdfb099c7e5c53258d",
+      "bytes": 10210,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/WorkspacePanels-CdSRq0i2.js",
+      "status": 200,
+      "sha256": "d9661db90e5c55c6294e5863ce017df5b2f553ccae3c8ad057681653df37635c",
+      "bytes": 46966,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/calculator-catalog-5NrBFYvb.js",
+      "status": 200,
+      "sha256": "f34ca10466e243fb1f322e216d85a5f5845818055af872beedef122aa4889349",
+      "bytes": 100436,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/circle-check-CvjZpSFY.js",
+      "status": 200,
+      "sha256": "d5972873289aad1c9e9daf97be5fa670a3a2252ffc38bec5fb245d6db011cbc3",
+      "bytes": 222,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/dist-_XyzNBdf.js",
+      "status": 200,
+      "sha256": "f7255666396cf8bb239176a3d670722c7c56c6e2b70b7ae60b7ff8b1bee96971",
+      "bytes": 145733,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/history-BU5nD0J1.js",
+      "status": 200,
+      "sha256": "15b27909f426ede14d5ea9ecd6a53673b5574c32ed85d2e656dad163bb04951b",
+      "bytes": 276,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-D2skYtTL.js",
+      "status": 200,
+      "sha256": "ad2669ae8c2a02f932f7229d7543c946cdf4fbbbd5d37012a5c29eb34cf5e993",
+      "bytes": 209073,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-DNhARteC.css",
+      "status": 200,
+      "sha256": "7127b0aefaa21c9d623745c713cc0e3f7babdb0b4663e03548da002c65d72f6f",
+      "bytes": 220892,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/papaparse.min-DIiCcvP0.js",
+      "status": 200,
+      "sha256": "01a2bca9172dfa1468fcd9c23adbe81e4caa5d04e5fa487d353f74a7660b6914",
+      "bytes": 19979,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/react-vendor-CvBZlOBd.js",
+      "status": 200,
+      "sha256": "2eb2df5b9abff34af7fdcd9775abf2d145105b56a2cd413ca1d96977a1bc4eb5",
+      "bytes": 139938,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "status": 200,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "bytes": 694,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rotate-ccw-D3XwuRYY.js",
+      "status": 200,
+      "sha256": "fe6ffa0a2c7b0190c11b2ac6c5f5dd90edacfb9323fc2bf03d5e4872310db98b",
+      "bytes": 1620,
+      "matches_local_build": true
+    }
+  ]
+}

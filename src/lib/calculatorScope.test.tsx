@@ -12,14 +12,15 @@ describe('honest adjacent calculator scope', () => {
   it('covers exactly all B49 matrix assignments', () => {
     const rows = readFileSync('docs/calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md', 'utf8').split(/^### /m).slice(1);
     const assigned = rows.filter(row => row.includes('B49')).map(row => row.match(/— `([^`]+)`/)![1]);
-    expect([...calculatorScopeSlugs].sort()).toEqual(assigned.sort());
+    // B60 adds FD/CD from their own dated contract, not from the B49 matrix.
+    expect([...calculatorScopeSlugs].sort()).toEqual([...assigned, 'fd', 'cd'].sort());
   });
   it.each(calculatorScopeSlugs)('%s has adjacent, dated scope and official links without transmitting inputs', slug => {
     const calculator = seoCalculators.find(c => c.slug === slug)!;
     const values = defaults(slug); const before = JSON.stringify(values);
     const scope = buildCalculatorScope(calculator, values)!;
     expect(scope.included.length).toBeGreaterThan(10); expect(scope.excluded.length).toBeGreaterThan(10);
-    expect(scope.basis.length).toBeGreaterThan(10); expect(scope.checked).toBe(slug === 'mortgage-affordability' ? '2026-10-03' : '2026-09-30');
+    expect(scope.basis.length).toBeGreaterThan(10); expect(scope.checked).toBe(['mortgage-affordability', 'fd', 'cd'].includes(slug) ? '2026-10-03' : '2026-09-30');
     for (const source of scope.sources) {
       const url = new URL(source.url);
       expect(url.protocol).toBe('https:'); expect(url.hostname).toMatch(/(?:\.gov|\.gov\.in|pfrda\.org\.in|rbi\.org\.in)$/);

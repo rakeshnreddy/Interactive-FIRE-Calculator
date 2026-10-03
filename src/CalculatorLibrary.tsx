@@ -850,6 +850,9 @@ function CalculatorDetail({
           </div>
           {calculator.formula === 'investment-return' ? <ReturnMethodNotice /> : null}
           {calculator.slug === 'mortgage-affordability' ? <p className="calculator-cost-scope" data-housing-budget-scope><strong>Leave room for housing costs.</strong> Enter taxes, insurance and HOA below to reserve them before the loan payment. The fixed 36% total-debt planning limit is not a lender requirement. Zero means a cost is excluded.</p> : null}
+          {calculator.formula === 'fd' ? <p className="calculator-cost-scope" data-deposit-basis>{calculator.slug === 'cd'
+            ? <><strong>One deposit held to maturity.</strong> APY already includes compounding, so it is applied once a year, not converted again. Taxes, fees and early-withdrawal penalties are not included.</>
+            : <><strong>One deposit, interest compounded once a year.</strong> Interest stays in the deposit and is paid with it at maturity. Tax/TDS, fees and premature-withdrawal penalties are not included.</>}</p> : null}
           <EstimateCustomization groups={optionalGroups} />
           {calculator.slug !== 'mortgage-affordability' && optionalGroups.some((group) => group.key === 'housing') ? <p className="calculator-cost-scope">Principal and interest are the base payment. Housing costs are excluded until entered below; extra payments reduce the loan separately.</p> : null}
           <div className="calculator-input-grid">
@@ -932,6 +935,13 @@ function CalculatorDetail({
               );
             })}
           </div>
+          {calculator.formula === 'fd' && hasValidResult && result.metrics.length > 1 ? (
+            <p className="calculator-result-narrative" data-deposit-reconciliation>
+              {formatMetric({ label: 'Deposit', value: scenarioValues.principal, valueType: 'currency' }, calculator)} deposit
+              {' + '}{formatMetric(result.metrics[1], calculator)} interest
+              {' = '}<strong>{formatMetric(result.metrics[0], calculator)}</strong> at maturity after {formatDepositNumber(scenarioValues.years)} {scenarioValues.years === 1 ? 'year' : 'years'} at {formatDepositNumber(scenarioValues.rate)}%{calculator.slug === 'cd' ? ' APY' : ' a year, compounded once a year'}.
+            </p>
+          ) : null}
           {hasValidResult ? <CalculatorScopeNotice scope={buildCalculatorScope(calculator, scenarioValues)} /> : null}
           <VariantChips calculator={calculator} onNavigate={onNavigate} />
           {hasValidResult && studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
@@ -994,7 +1004,7 @@ function CalculatorDetail({
         </article>
         <article>
           <p className="eyebrow">How to read it</p>
-          <p>{result.narrative} The supporting tiles explain {calculator.formula === 'investment-return' ? 'this estimate' : `the ${selectedScenario?.label.toLowerCase() ?? 'previous'} estimate`} and show the inputs that matter most.</p>
+          <p>{result.narrative} The supporting tiles explain {calculator.formula === 'investment-return' || calculator.formula === 'fd' ? 'this estimate' : `the ${selectedScenario?.label.toLowerCase() ?? 'previous'} estimate`} and show the inputs that matter most.</p>
         </article>
       </section>
 
@@ -1184,7 +1194,11 @@ function downloadScheduleCsv(calculator: SeoCalculator, schedule: CalculatorDeta
   URL.revokeObjectURL(url);
 }
 
-function scheduleToCsv(calculator: SeoCalculator, schedule: CalculatorDetailSchedule): string {
+function formatDepositNumber(value: number): string {
+  return value.toLocaleString(undefined, { maximumFractionDigits: 4 });
+}
+
+export function scheduleToCsv(calculator: SeoCalculator, schedule: CalculatorDetailSchedule): string {
   const headers = schedule.columns.map((column) => column.label);
   const hasNotes = schedule.rows.some((row) => row.note);
   if (hasNotes) headers.push('Note');

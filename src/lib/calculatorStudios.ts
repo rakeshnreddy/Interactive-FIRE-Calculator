@@ -170,6 +170,9 @@ export function getCalculatorStudioMetadata(
 
   return {
     ...defaults,
+    ...(calculator.formula === 'fd' ? {
+      scenarioFocus: 'Compare your deposit with a smaller, shorter, lower-rate what-if and a larger, longer, higher-rate one. Each changes all three inputs.'
+    } : {}),
     example: buildCalculatorExample(calculator),
     relatedCalculators: relatedCalculatorsFor(calculator, allCalculators),
     studio
@@ -338,8 +341,9 @@ export function buildCalculatorDetailSchedule(
     case 'savings-goal':
       return savingsGoalSchedule(calculator, normalized, result);
     case 'lumpsum':
-    case 'fd':
       return singleDepositGrowthSchedule(calculator, normalized);
+    case 'fd':
+      return fixedDepositSchedule(normalized);
     case 'rd':
       return recurringGrowthSchedule(normalized, {
         description: 'Annual view of recurring deposits, estimated interest, and maturity progress.',
@@ -455,6 +459,7 @@ function clampInput(input: CalculatorInput, value: number): number {
 
 function scenarioLabel(calculator: SeoCalculator, id: CalculatorScenarioId): string {
   if (calculator.formula === 'investment-return') return id === 'base' ? 'Your inputs' : id === 'conservative' ? 'Case A' : 'Case B';
+  if (calculator.formula === 'fd') return id === 'base' ? 'Your deposit' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (id === 'conservative') return 'Conservative';
   if (id === 'optimistic') return 'Optimistic';
   return 'Base';
@@ -469,6 +474,12 @@ function scenarioDescription(calculator: SeoCalculator, id: CalculatorScenarioId
 
   if (calculator.formula === 'investment-return') {
     return 'Changes the ending value and holding period together. This is a sensitivity check, not a performance forecast.';
+  }
+
+  if (calculator.formula === 'fd') {
+    return id === 'conservative'
+      ? 'A smaller deposit, shorter term and lower rate together. A what-if, not an offered rate or forecast.'
+      : 'A larger deposit, longer term and higher rate together. A what-if, not an offered rate or forecast.';
   }
 
   if (studio === 'Loan and Home Studio' || studio === 'Debt Payoff Studio') {
@@ -500,7 +511,9 @@ function buildCalculatorExample(calculator: SeoCalculator): CalculatorStudioExam
   const secondInput = calculator.inputs[1]?.label.toLowerCase() ?? 'second input';
 
   return {
-    description: `Load a sample ${calculator.title.toLowerCase()} using ${firstInput} and ${secondInput} so the visual, scenarios, and save path can be read together.`,
+    description: calculator.formula === 'fd'
+      ? `Load the sample deposit, term and rate so the maturity breakdown, schedule and what-ifs can be read together.`
+      : `Load a sample ${calculator.title.toLowerCase()} using ${firstInput} and ${secondInput} so the visual, scenarios, and save path can be read together.`,
     insight: exampleInsight(calculator),
     title: `${calculator.title} example`,
     values
@@ -509,6 +522,10 @@ function buildCalculatorExample(calculator: SeoCalculator): CalculatorStudioExam
 
 function exampleInsight(calculator: SeoCalculator): string {
   const route = calculator.conversionRoute;
+
+  if (calculator.formula === 'fd') {
+    return 'The sample rate is illustrative, not a current bank offer. Enter the rate and term from the deposit you are considering.';
+  }
 
   if (route === '/goals') {
     return 'Use the example to see how the result can become a tracked goal with a deadline or funding gap.';
@@ -2135,6 +2152,43 @@ function savingsGoalSchedule(
   };
 }
 
+// FD/CD maturity schedule: whole years, then the exact remaining part year, so the last row is the headline maturity.
+function fixedDepositSchedule(values: Record<string, number>): CalculatorDetailSchedule | null {
+  const principal = Math.max(0, values.principal ?? 0);
+  const rate = Math.max(0, values.rate ?? 0) / 100;
+  const term = Math.min(maxScheduleYears, Math.max(0, Number.isFinite(values.years) ? values.years : 0));
+  if (term <= 0) return null;
+  const points = Array.from({ length: Math.floor(term) }, (_, index) => index + 1);
+  if (term > Math.floor(term)) points.push(term);
+  let previousBalance = principal;
+  const rows = points.map((year): CalculatorDetailScheduleRow => {
+    const balance = principal * (1 + rate) ** year;
+    const row: CalculatorDetailScheduleRow = {
+      id: `deposit-year-${year}`,
+      note: Number.isInteger(year) ? undefined : `Part year: the annual rate is applied for ${formatScheduleYears(year - Math.floor(year))} of a year. Banks may calculate a broken period differently.`,
+      values: { balance, interest: balance - previousBalance, totalInterest: balance - principal, year }
+    };
+    previousBalance = balance;
+    return row;
+  });
+  return {
+    columns: [
+      textColumn('year', 'Year'),
+      moneyColumn('interest', 'Interest this period'),
+      moneyColumn('totalInterest', 'Total interest'),
+      moneyColumn('balance', 'Balance', 'Deposit plus interest added so far; the last row is the maturity value.')
+    ],
+    description: 'Interest added each year until maturity; the last row equals the maturity value.',
+    rows,
+    summary: scheduleCapSummary(values.years ?? term, 'One deposit at the start, interest compounded once a year, no withdrawals, taxes, fees or penalties.'),
+    title: 'Deposit maturity schedule'
+  };
+}
+
+function formatScheduleYears(value: number): string {
+  return Number(value.toFixed(4)).toString();
+}
+
 function singleDepositGrowthSchedule(calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
@@ -2166,7 +2220,7 @@ function singleDepositGrowthSchedule(calculator: SeoCalculator, values: Record<s
     description: 'Annual interest and maturity path for a one-time deposit or lumpsum investment.',
     rows,
     summary: scheduleCapSummary(values.years ?? years, `Shows how the single deposit compounds year by year.`),
-    title: calculator.formula === 'fd' ? 'Deposit maturity schedule' : 'Lumpsum growth schedule'
+    title: 'Lumpsum growth schedule'
   };
 }
 

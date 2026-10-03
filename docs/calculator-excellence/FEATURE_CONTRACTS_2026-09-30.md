@@ -30,7 +30,7 @@ The primary thesis stays **understand a decision, save it, revisit actual progre
 | 18 | `income-tax-india` | Externally gated | B49 scope completed. Before expanded tax coverage: country/year/rule specialist checks, marginal relief and regime-specific income basis contract. |
 | 19 | `salary-india` | No additional feature justified | B49 labels the CTC-based approximation. Test demand before replacing it with statutory payroll; never claim payslip accuracy. |
 | 20 | `hra-exemption` | Queued small feature contract | B49 scope completed. Explicit qualifying salary/city/regime contract using official rules and independent eligibility negatives. |
-| 21 | `fd` | Queued small feature contract | Use fixed-deposit-specific copy; specify cumulative versus payout treatment and rate basis before adding frequency. |
+| 21 | `fd` | Implemented bounded contract | B60/C24: deposit-specific copy, yearly-compounded cumulative basis before fields, tax/TDS/fee/premature-penalty exclusions, deposit + interest = maturity line and exact-term schedule. Payout mode and compounding frequency remain unbuilt future contracts. |
 | 22 | `rd` | Queued small feature contract | Explain deposit timing and interest basis; distinguish extra top-up from standard RD installments. |
 | 23 | `ppf` | Queued small feature contract | B49 scope completed. Deposit-date interest/limits contract with official scheme text; no prediction of notified rates. |
 | 24 | `epf` | Queued small feature contract | B49 scope completed. Separate EPF/EPS contribution-basis contract; do not count employer pension allocation as savings. |
@@ -87,7 +87,7 @@ The primary thesis stays **understand a decision, save it, revisit actual progre
 | 75 | `pmi` | Queued small feature contract | B49 scope completed. Quote-based cancellation milestone contract with servicer conditions; no invented removal date. |
 | 76 | `heloc` | Queued small feature contract | B49 repayment-only scope completed. Separate draw/repay/rate-reset model, not a relabeled amortization line. |
 | 77 | `balance-transfer` | Queued small feature contract | B49 finite promo copy corrected. Separate entered post-promo APR and negative-payoff-state contract; promo duration already exists. |
-| 78 | `cd` | Queued small feature contract | Use CD-specific principal/term copy and show liquidity/penalty exclusions; do not convert APY again. |
+| 78 | `cd` | Implemented bounded contract | B60/C24: CD principal/term copy, APY applied once a year without reconversion, liquidity/penalty/tax exclusions with dated CFPB sources, exact-term schedule. |
 | 79 | `hysa` | Current slice | B48 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
 | 80 | `life-insurance-needs` | Queued small feature contract | Show resources/liabilities/support years and exclusions; source existing cover, inflation and discounting controls before expansion. |
 | 81 | `lease-vs-buy` | Implemented bounded contract | F-03: vehicle-specific residual equity at a common horizon; no changes to housing rent-vs-buy. |

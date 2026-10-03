@@ -1,0 +1,20 @@
+{
+  "observed_on": "2026-10-03",
+  "source_sha": "485070fc39db78eb3f27c9ed56b2a069f7eb566a",
+  "preview": "https://5b937d2c.interactive-fire-calculator.pages.dev",
+  "route": "/calculators/cd",
+  "inputs": {
+    "principal": 10000,
+    "rate": 4.5,
+    "years": 1.5,
+    "entry": "term typed with keyboard"
+  },
+  "method": "Real CSV button click; app-generated Blob captured by wrapping URL.createObjectURL; anchor download suppressed so no file was saved to the user machine.",
+  "file_name": "cd-deposit-maturity-schedule.csv",
+  "rows": 2,
+  "last_row_balance": "$10,683",
+  "headline": "$10,683",
+  "reconciliation": "$10,000 deposit + $683 interest = $10,683 at maturity after 1.5 years at 4.5% APY.",
+  "oracle": "10000 × 1.045 × √1.045 = 10682.5377368863 (Python Decimal)",
+  "raw": "raw/hosted-cd-18m.csv"
+}

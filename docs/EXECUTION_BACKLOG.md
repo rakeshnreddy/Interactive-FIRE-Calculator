@@ -694,3 +694,16 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Tests: regressions first, untouched default/India goldens, full suite/typecheck/build/CI plus isolated hosted journey and public-route smoke.
   - Security/privacy/dependencies: B50/B58; no new telemetry, data writes, dependencies or credentials. Versioned JSON snapshot; no D1 migration.
   - Migration/rollback/effort: preserve `housing-budget-v1` readers on rollback, never backfill saved records. Human 4–8h, agent 1–3h plus validation, estimates only.
+
+## Deposit presentation continuation — 2026-10-03
+
+- [x] **B60 — Deposit-specific FD/CD presentation and visible rate basis.**
+  - User problem/evidence: B50 rows 21/78; local baseline shows principal called “recurring”, generic “annual return / rate” and contribution copy, no tax/fee/penalty exclusions, and an 18-month CD table ending at year 2 ($10,920.25) against a $10,682.54 headline. [Exact sourced contract](execution/prompts/B60.md).
+  - Outcome/scope: before-input deposit basis and exclusions, deposit-specific labels/helpers, deposit + interest = maturity line, neutral what-if labels, exact-term schedule and deposit decision copy for `fd`/`cd` only.
+  - Non-goals: payout mode, compounding frequency, RD, tax/fee/penalty arithmetic, market rates, insurance claims, recommendations, formula or schema changes, production.
+  - Files: seoCalculators (labels/helpers), calculatorStudios, calculatorQuality, calculatorContent, calculatorScope, calculatorEngagement, CalculatorLibrary and focused tests.
+  - Acceptance: basis/exclusions before fields; no recurring or generic rate copy; reconciliation line; unchanged scenario vectors/results and goldens; fractional final row equals headline with independent oracle; table/CSV agree; lumpsum unchanged; light/dark 320/390/1440 and keyboard result reveal.
+  - Analytics: existing consented category events only; no values or new telemetry. Watch FD/CD completion when genuine observation resumes.
+  - Tests: failing regressions first, full suite/typecheck/build/CI, isolated hosted journey and public-route smoke.
+  - Security/privacy/dependencies: B50/B59; no data writes, dependencies, credentials or auth change.
+  - Migration/rollback/effort: results/inputs byte-equivalent, no model version or snapshot retagging; revert presentation together. Human 2–4h, agent 1–2h plus validation, estimates only.

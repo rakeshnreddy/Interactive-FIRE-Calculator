@@ -1,0 +1,187 @@
+{
+  "observed_on": "2026-10-03",
+  "source_sha": "485070fc39db78eb3f27c9ed56b2a069f7eb566a",
+  "preview": "https://5b937d2c.interactive-fire-calculator.pages.dev",
+  "method": "Claude desktop in-app browser; viewport emulation; theme set by the real header toggle (finpath.colorMode); real Tab/Enter key events; DOM measurements via page JavaScript (read-only except focusing the last field before Tab).",
+  "copy_observed": {
+    "fd_basis": "One deposit, interest compounded once a year. Interest stays in the deposit and is paid with it at maturity. Tax/TDS, fees and premature-withdrawal penalties are not included.",
+    "cd_basis": "One deposit held to maturity. APY already includes compounding, so it is applied once a year, not converted again. Taxes, fees and early-withdrawal penalties are not included.",
+    "fd_reconciliation": "₹5,00,000 deposit + ₹5,79,462 interest = ₹10,79,462 at maturity after 10 years at 8% a year, compounded once a year.",
+    "cd_reconciliation": "$10,000 deposit + $920 interest = $10,920 at maturity after 2 years at 4.5% APY.",
+    "fd_labels": [
+      "Deposit amount",
+      "Deposit term",
+      "Annual interest rate"
+    ],
+    "cd_labels": [
+      "Deposit amount",
+      "APY",
+      "Term"
+    ]
+  },
+  "cases": [
+    {
+      "route": "fd",
+      "theme": "light",
+      "width": 1440,
+      "client": 1425,
+      "scroll": 1425,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "keyboard": "Tab from rate → \"View result\", Enter; primary result already visible beside inputs so reveal correctly does not move (resultReveal visible-guard)"
+    },
+    {
+      "route": "fd",
+      "theme": "dark",
+      "width": 1440,
+      "client": 1425,
+      "scroll": 1425,
+      "panelBg": "rgb(15, 26, 41)",
+      "copyColor": "rgb(195, 210, 223)",
+      "via": "header toggle click"
+    },
+    {
+      "route": "fd",
+      "theme": "dark",
+      "width": 390,
+      "client": 390,
+      "scroll": 390,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 87,
+      "headerBottom": 64
+    },
+    {
+      "route": "fd",
+      "theme": "dark",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 87,
+      "headerBottom": 64,
+      "longValue": "typed 999999999999: tiles and reconciliation wrap without page overflow",
+      "typingScroll": {
+        "before": 420,
+        "after": 420,
+        "note": "typing 1.5 in term did not move viewport"
+      }
+    },
+    {
+      "route": "cd",
+      "theme": "dark",
+      "width": 1440,
+      "client": 1425,
+      "scroll": 1425,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "primaryVisibleAtLoad": true
+    },
+    {
+      "route": "cd",
+      "theme": "dark",
+      "width": 390,
+      "client": 390,
+      "scroll": 390,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 86,
+      "headerBottom": 64
+    },
+    {
+      "route": "cd",
+      "theme": "dark",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 81,
+      "headerBottom": 64
+    },
+    {
+      "route": "cd",
+      "theme": "light",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "panelBg": "rgb(255, 255, 255)",
+      "copyColor": "rgb(59, 80, 99)",
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 83,
+      "headerBottom": 64,
+      "via": "header toggle click"
+    },
+    {
+      "route": "cd",
+      "theme": "light",
+      "width": 390,
+      "client": 390,
+      "scroll": 390,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 87,
+      "headerBottom": 64
+    },
+    {
+      "route": "cd",
+      "theme": "light",
+      "width": 1440,
+      "client": 1425,
+      "scroll": 1425,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "primaryVisibleAtLoad": true
+    },
+    {
+      "route": "fd",
+      "theme": "light",
+      "width": 390,
+      "client": 390,
+      "scroll": 390,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 87,
+      "headerBottom": 64
+    },
+    {
+      "route": "fd",
+      "theme": "light",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 81,
+      "headerBottom": 64
+    }
+  ],
+  "console_errors": "none captured on the final candidate tab (not a full cross-session console guarantee)",
+  "not_claimed": [
+    "native screen reader (A11Y-F01/F02 owner-deferred)",
+    "native 200% zoom (A11Y-F03 owner-deferred)",
+    "WCAG conformance",
+    "prefers-reduced-motion emulation: reveal uses instant scroll by design; motion preference not separately emulated"
+  ]
+}

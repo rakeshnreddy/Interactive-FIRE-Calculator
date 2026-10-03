@@ -381,6 +381,14 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
       'Month-by-month payoff calendar.'
     ]
   },
+  fd: {
+    decisionUsefulness: 'Use this calculator to compare what one deposit pays at maturity across offered rates and terms before committing the money for the full term.',
+    interpretationChecks: [
+      'Separate the deposit you put in from the interest earned by maturity.',
+      'Compare offers on the same rate basis (APY or yearly-compounded rate) and the same term.',
+      'Check taxes, fees, early-withdrawal penalties and whether you may need the money before maturity.'
+    ]
+  },
   'investment-return': {
     decisionUsefulness: 'Compare annualized growth from two balances. No intermediate deposits or withdrawals are included. Fees, taxes and inflation are not adjusted automatically.',
     calculationRequirements: [
@@ -580,7 +588,8 @@ export function getCalculatorQualitySpec(calculator: SeoCalculator): CalculatorQ
     inputRequirements: calculator.inputs.map((input) =>
       `${input.label}: ${input.helper ?? 'Use the calculator unit shown with this input.'}`
     ),
-    interpretationChecks: mergeRequirements(
+    // Deposit guidance replaces the studio's contribution-based checks instead of appending after them.
+    interpretationChecks: calculator.formula === 'fd' ? mergeRequirements(formula.interpretationChecks, slug.interpretationChecks) : mergeRequirements(
       defaults.interpretationChecks,
       formula.interpretationChecks,
       slug.interpretationChecks
