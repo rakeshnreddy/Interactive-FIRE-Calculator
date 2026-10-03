@@ -961,6 +961,22 @@
       "code_sha": "aab17a026bcda53ba25925377edb7cb4c205b3fd",
       "review": "reviews/C23.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B60",
+      "title": "deposit-specific FD/CD presentation and visible rate basis",
+      "checkpoint": "C24",
+      "status": "pending",
+      "dependencies": [
+        "B50",
+        "B59"
+      ],
+      "prompt": "prompts/B60.md",
+      "submission": null,
+      "owner": "Astra direct implementation \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

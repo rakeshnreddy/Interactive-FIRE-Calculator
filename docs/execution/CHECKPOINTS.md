@@ -31,6 +31,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C21 | Vehicle cost and resale comparison | B55 | accepted | 92c752ac37b0fadf59ad1716ae1c2546e0702312 | [approved](reviews/C21.md) |
 | C22 | Return-method suitability and honest sensitivities | B57, B58 | accepted | 2a2f3efc49a4282be1e8a6258e05a95b1d771fa9 | [approved](reviews/C22.md) |
 | C23 | Mortgage affordability with entered housing costs | B59 | accepted | aab17a026bcda53ba25925377edb7cb4c205b3fd | [approved](reviews/C23.md) |
+| C24 | Deposit-specific FD/CD presentation and rate basis | B60 | released | — | Contract registered; implementation and review pending |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -57,3 +58,7 @@ Owner defers actual-user validation and asks Astra to close work needing no inte
 Owner continues autonomous implementation with B51 still deferred. C22/B57 scopes the existing investment-return/CAGR cash-flow suitability finding now that B54 is accepted. No formula, financial payload, paid, production or owner-evidence gate changes. Astra implements and reviews directly; no Gemini. The larger route proposals remain unregistered until separately scoped.
 
 C22 browser review additionally reproduced B58: the endpoint-return copy implied cash-flow/cost/inflation adjustment and displayed inverse conservative/optimistic results (13.44% versus 11.72% around base 12.47%). Correct scope and neutral labels only; original scenario input vectors/arithmetic/IDs remain unchanged. This is a verified UI-content defect, not a new formula contract.
+
+## Deposit presentation continuation — 2026-10-03
+
+Owner continues direct independent implementation without Gemini after C23. C24/B60 scopes B50 rows 21/78 (FD/CD) from source inspection: annual application of the entered rate/APY, generic recurring-amount copy, missing tax/fee/penalty exclusions and a fractional-term schedule row that disagrees with the headline. Presentation and reconciliation only; no formula, payout/compounding-frequency, RD, schema or production change. B51, B13/B14 and production gates are unchanged.
