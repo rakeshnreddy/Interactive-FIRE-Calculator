@@ -43,7 +43,7 @@ The primary thesis stays **understand a decision, save it, revisit actual progre
 | 31 | `loan-eligibility-india` | No additional feature justified | B49 borrowing-limit assumptions explicit. Approval/credit matching is not a FinPath calculation feature. |
 | 32 | `stamp-duty-registration` | Current slice | B47 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
 | 33 | `mortgage` | Current slice | B43 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
-| 34 | `mortgage-affordability` | Queued small feature contract | B49 loan-capacity exclusions explicit. Add user-entered taxes/insurance/HOA to the same payment cap under one budget contract. |
+| 34 | `mortgage-affordability` | Implemented bounded contract | B59/C23 reserves entered tax, homeowners/supplementary insurance, HOA and mortgage insurance within existing caps, with monthly visuals and no-room/overage states. Fixed 36% is a disclosed planning assumption; no lender rule, cash-to-close or reserve automation. |
 | 35 | `mortgage-refinance` | Implemented bounded contract | F-01: honest no-payment-benefit/payback states; current same-term/financed-fee approximation stays explicit. |
 | 36 | `amortization` | Current slice | B47 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |
 | 37 | `extra-mortgage-payment` | Current slice | B43 covers this matrix finding. Keep the existing model and decision-specific chart/table; no extra feature justified by this audit alone. |

@@ -84,7 +84,9 @@ export function buildCalculatorPublicContent(options: {
   title: string;
 }): CalculatorPublicContent {
   const { formula, inputs, slug, title } = options;
-  const content = blueprints[formula];
+  const content = slug === 'mortgage-affordability'
+    ? blueprint('estimate a mortgage loan budget after entered housing costs', 'reserves entered monthly housing costs inside income-based planning limits before converting the remaining payment to loan principal', 'the housing share is your input and the 36% total-debt limit is a fixed planning assumption, not a lender requirement', 'review the loan-payment budget alongside maintenance, utilities, closing costs and reserves')
+    : blueprints[formula];
   const inputNames = humanList(inputs.slice(0, 4).map((input) => softLower(input.label)));
   const changingInputs = humanList(inputs.slice(0, 3).map((input) => input.label));
   const keyInputs = humanList(inputs.slice(0, 3).map((input) => softLower(input.label)));
@@ -137,7 +139,7 @@ const routeAngles: Record<string, string> = {
   'lease-vs-buy': 'It compares net costs over the same period with your explicit resale estimate and lease terms.',
   'lumpsum-mutual-fund': 'It frames the one-time investment as a market-linked mutual-fund projection rather than a guaranteed deposit.',
   mortgage: 'It focuses on the standard principal-and-interest payment for a fixed-rate home loan.',
-  'mortgage-affordability': 'It starts from a proposed affordable loan target; income-based DTI checks remain a separate step.',
+  'mortgage-affordability': 'It reserves entered taxes, insurance and HOA inside the income-based housing and total-debt planning limits, then estimates the loan budget from the remaining payment. Maintenance, utilities, closing costs and reserves are excluded; it does not decide lender eligibility.',
   'mortgage-payoff': 'The entered payment represents the current payoff pace used to estimate the finish date.',
   'personal-loan': 'It frames the installment estimate around unsecured US personal borrowing.',
   'personal-loan-emi': 'It frames the EMI around an India unsecured personal-loan balance and tenure.',

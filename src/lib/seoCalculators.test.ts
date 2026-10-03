@@ -43,7 +43,7 @@ const expectedOutputs = [
   ['loan-eligibility-india', 'Eligible loan amount', 4_321_156.493422, 'currency', 'INR'],
   ['stamp-duty-registration', 'Stamp duty and registration cost', 560_000, 'currency', 'INR'],
   ['mortgage', 'Monthly payment', 1_896.20407, 'currency', 'USD'],
-  ['mortgage-affordability', 'Eligible loan amount', 376_195.985297, 'currency', 'USD'],
+  ['mortgage-affordability', 'Estimated loan budget', 376_195.985297, 'currency', 'USD'],
   ['mortgage-refinance', 'Monthly savings', 162.434207, 'currency', 'USD'],
   ['amortization', 'Monthly payment', 1_896.20407, 'currency', 'USD'],
   ['extra-mortgage-payment', 'Payoff time', 18.083333, 'years', 'USD'],

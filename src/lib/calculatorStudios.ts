@@ -1,6 +1,8 @@
+import { housingBudget } from './housingBudget';
 import { calculateVehicleCost } from './vehicleLeaseBuy';
 import {
   calculateSeoCalculator,
+  BACK_END_DEBT_SHARE,
   calculatorCurrency,
   calculatorPath,
   LOAN_RESIDUAL_TOLERANCE,
@@ -584,6 +586,21 @@ function selectedModelChart(
     'stamp-duty': ['stamp-duty', 'registration', 'total'],
     escrow: ['tax', 'insurance', 'hoa', 'escrow']
   };
+  if (calculator.slug === 'mortgage-affordability') {
+    const budget = housingBudget(values, BACK_END_DEBT_SHARE);
+    return { currency, title: 'Your monthly housing budget', type: 'comparison', valueType: 'currency',
+      description: 'All components use monthly amounts. Annual tax and insurance inputs are divided by 12.',
+      summary: budget.shortfall > 0
+        ? 'Entered housing costs exceed the housing limit. No principal-and-interest budget remains.'
+        : 'Principal and interest use only the budget left after entered housing costs. Zero costs are excluded, not estimated.',
+      legend: { primary: 'Per month' }, entries: [
+        { label: 'Principal + interest', primary: budget.loanPayment },
+        { label: 'Property tax', primary: budget.taxes },
+        { label: 'Home / supplementary insurance', primary: budget.insurance },
+        { label: 'HOA dues', primary: budget.hoa },
+        { label: 'Mortgage insurance', primary: budget.mortgageInsurance }
+      ] };
+  }
   const ids = costIds[calculator.formula];
   if (ids) {
     if (!schedule) return unavailableChart(getCalculatorStudioMetadata(calculator));
@@ -1331,6 +1348,26 @@ function loanComparisonSchedule(_calculator: SeoCalculator, values: Record<strin
 }
 
 function loanEligibilitySchedule(_calculator: SeoCalculator, values: Record<string, number>, result: CalculatorResult): CalculatorDetailSchedule | null {
+  if (_calculator.slug === 'mortgage-affordability') {
+    const budget = housingBudget(values, BACK_END_DEBT_SHARE);
+    return lineItemSchedule({ title: 'Housing budget breakdown',
+      description: 'Monthly limits and costs, followed by the total loan principal they support.',
+      summary: 'Use local estimates and quotes. A zero input excludes the cost; this table is not a lender approval or full household budget.',
+      rows: [
+        { id: 'housing-share', lineItem: 'Housing share limit / month', amount: budget.housingShareLimit, note: 'Gross income multiplied by your entered housing share.', rate: null },
+        { id: 'debt-room', lineItem: 'Total-debt room / month', amount: budget.totalDebtRoom, note: '36% of gross income minus other debts, floored at zero. Fixed planning assumption, not a lender rule.', rate: null },
+        { id: 'housing-limit', lineItem: 'Monthly housing limit', amount: budget.limit, note: 'The lower of the two limits above.', rate: null },
+        { id: 'taxes', lineItem: 'Property tax / month', amount: budget.taxes, note: 'Entered annual tax divided by 12.', rate: null },
+        { id: 'home-insurance', lineItem: 'Home / supplementary insurance / month', amount: budget.insurance, note: 'Entered annual premium divided by 12.', rate: null },
+        { id: 'hoa', lineItem: 'HOA dues / month', amount: budget.hoa, note: 'Entered monthly amount.', rate: null },
+        { id: 'mortgage-insurance', lineItem: 'Mortgage insurance / month', amount: budget.mortgageInsurance, note: 'Entered monthly premium; no automatic PMI calculation.', rate: null },
+        { id: 'housing-costs', lineItem: 'Entered housing costs / month', amount: budget.costs, note: 'Sum of the four cost components above.', rate: null },
+        { id: 'max-emi', lineItem: 'Principal + interest budget / month', amount: budget.loanPayment, note: 'Housing limit less costs, floored at zero.', rate: null },
+        { id: 'shortfall', lineItem: 'Monthly budget shortfall', amount: budget.shortfall, note: 'How much entered costs alone exceed the limit.', rate: null },
+        { id: 'eligible-loan', lineItem: 'Loan principal (total)', amount: result.metrics[0].value, note: 'Total financed principal at the entered rate and term; not a monthly amount.', rate: null }
+      ] });
+  }
+
   const income = Math.max(0, values.income ?? 0);
   const debts = Math.max(0, values.debts ?? 0);
   const maxDti = Math.max(0, values.maxDti ?? 0) / 100;

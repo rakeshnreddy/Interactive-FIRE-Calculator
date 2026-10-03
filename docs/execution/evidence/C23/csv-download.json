@@ -1,0 +1,12 @@
+{
+  "observed_at_utc": "2026-10-03T10:38:36.465521+00:00",
+  "browser_action": "CSV button clicked in this exact-source session; event wait timed out. Matching file was observed after one direct-click retry; the original file mtime predates that retry, so no assertion that this basename came from the retry.",
+  "basename": "mortgage-affordability-housing-budget-breakdown.csv",
+  "bytes": 957,
+  "mtime_utc": "2026-10-03T10:34:40.076645+00:00",
+  "sha256": "d8a42a92f0179709e82d584909222f003bc251e6586731fbc9f6fb7a91bc721e",
+  "rows": 11,
+  "fixture_match": true,
+  "source_sha": "aab17a026bcda53ba25925377edb7cb4c205b3fd",
+  "preview": "https://60fe979d.interactive-fire-calculator.pages.dev"
+}

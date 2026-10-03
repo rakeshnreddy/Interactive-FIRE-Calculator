@@ -1,3 +1,4 @@
+import { housingBudget } from './housingBudget';
 import { vehicleCostResult } from './vehicleLeaseBuy';
 import { buildCalculatorPublicContent } from './calculatorContent';
 import type { CalculatorModelVersion } from './calculatorModelVersion';
@@ -436,7 +437,7 @@ export const seoCalculators: SeoCalculator[] = [
   })),
   ...([
     ['mortgage', 'Mortgage Payment Calculator', 'loan', [...loanInputs, ...additionalPaymentInputs, money('annualTaxes', 'Annual property tax', 0, 'Optional. Adds property tax to the total monthly housing payment.'), money('annualInsurance', 'Annual homeowners insurance', 0, 'Optional. Adds insurance to the total monthly housing payment.'), money('monthlyHoa', 'Monthly HOA dues', 0, 'Optional. Adds dues to the total monthly housing payment.')]],
-    ['mortgage-affordability', 'Mortgage Affordability Calculator', 'loan-eligibility', [money('income', 'Gross monthly income', 9000), money('debts', 'Other monthly debt payments', 800), money('downPayment', 'Down payment saved', 60000), percent('rate', 'Mortgage rate', 6.75), number('years', 'Term', 30, 'yrs'), percent('maxDti', 'Housing payment share of income', 28, 'Lenders commonly cap housing costs near 28% and total debts near 36% of gross income.')]],
+    ['mortgage-affordability', 'Mortgage Affordability Calculator', 'loan-eligibility', [money('income', 'Gross monthly income', 9000), money('debts', 'Other monthly debt payments', 800), money('downPayment', 'Down payment saved', 60000), percent('rate', 'Mortgage rate', 6.75), number('years', 'Term', 30, 'yrs'), percent('maxDti', 'Housing payment share of income', 28, 'Your planning target for total housing costs. The separate 36% total-debt planning limit is fixed in this model, not a lender requirement.'), money('annualTaxes', 'Annual property tax', 0, 'Optional. Use a local estimate or bill; zero leaves it excluded.'), money('annualInsurance', 'Annual homeowners / supplementary insurance', 0, 'Optional. Include any flood or other supplementary cover; zero leaves it excluded.'), money('monthlyHoa', 'Monthly HOA dues', 0, 'Optional. Enter association dues per month; zero leaves them excluded.'), money('monthlyMortgageInsurance', 'Monthly mortgage insurance', 0, 'Optional. Use your quote for PMI or other mortgage insurance; no premium is estimated automatically.')]],
     ['mortgage-refinance', 'Mortgage Refinance Calculator', 'refinance', [money('principal', 'Current balance', 300000), percent('currentRate', 'Current rate', 7.25), percent('newRate', 'New rate', 6.25), number('years', 'New term', 30, 'yrs'), money('closingCosts', 'Closing costs', 6000)]],
     ['amortization', 'Amortization Schedule Calculator', 'amortization', [...loanInputs, ...additionalPaymentInputs]],
     ['extra-mortgage-payment', 'Extra Mortgage Payment Calculator', 'debt-payoff', [money('balance', 'Mortgage balance', 300000), percent('rate', 'Interest rate', 6.75), money('payment', 'Required monthly payment', 2400), ...additionalPaymentInputs]],
@@ -876,6 +877,24 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'loan-eligibility': {
+      if (calculator.slug === 'mortgage-affordability') {
+        const budget = housingBudget(values, BACK_END_DEBT_SHARE);
+        const principal = presentValueFromPayment(budget.loanPayment, rate, years);
+        return { ...result('Estimated loan budget', principal,
+          budget.loanPayment > 0
+            ? 'Entered housing costs are reserved inside the monthly housing limit. The remainder supports principal and interest; this is a planning budget, not loan approval.'
+            : 'No loan-payment budget remains under these assumptions. Review housing costs, other debts and your income before relying on a financed home-price estimate.', [
+          'The monthly housing limit is the lower of your entered housing share and 36% of gross income minus other debts. The fixed 36% total-debt limit is a planning assumption, not a lender requirement.',
+          'Annual property tax and homeowners / supplementary insurance are divided by 12. Monthly HOA and mortgage insurance use the entered amounts; zero leaves a cost excluded.',
+          'Maintenance, utilities, closing costs and cash reserves are excluded. No property costs, insurance premiums or lender approval are estimated automatically.'
+        ], [
+          ...(budget.loanPayment > 0 ? [metric('Estimated home price', principal + get('downPayment'), 'currency', 'positive')] : []),
+          metric('Principal + interest / month', budget.loanPayment, 'currency'),
+          metric('Monthly housing limit', budget.limit, 'currency'),
+          metric('Entered housing costs / month', budget.costs, 'currency'),
+          ...(budget.loanPayment === 0 ? [metric('Monthly budget shortfall', budget.shortfall, 'currency', budget.shortfall > 0 ? 'warning' : 'neutral')] : [])
+        ]), modelVersion: 'housing-budget-v1' };
+      }
       const hasDownPayment = calculator.inputs.some((input) => input.key === 'downPayment');
       // US affordability: the housing payment is limited by its own share of income AND by the total-debt
       // share (housing plus other debts). Other lenders' eligibility (FOIR) treats the share as total obligations.

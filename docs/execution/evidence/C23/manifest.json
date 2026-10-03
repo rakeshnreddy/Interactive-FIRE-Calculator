@@ -1,0 +1,73 @@
+{
+  "related_candidate_sha": "aab17a026bcda53ba25925377edb7cb4c205b3fd",
+  "preview": "https://60fe979d.interactive-fire-calculator.pages.dev",
+  "provenance": "Tests/red/local captures were produced before commit from final or documented prior local source; related SHA is not a claim that that commit existed at capture. Hosted artifacts explicitly bind observed clean source and URL.",
+  "files": [
+    {
+      "path": "docs/execution/evidence/C23/raw/full-suite.log",
+      "bytes": 7618,
+      "sha256": "94a4a1d46f84cdc1fdf3f5acb97d4b4fd6f1d796fa5819a8b4833b5926298921",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/hosted-budget.csv",
+      "bytes": 957,
+      "sha256": "d8a42a92f0179709e82d584909222f003bc251e6586731fbc9f6fb7a91bc721e",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/label-red.log",
+      "bytes": 4007,
+      "sha256": "2af0f233036e0dc8e5340d4693afc307fe3b7a45ed0202570892a15373c59f6e",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/local-browser.json",
+      "bytes": 2729,
+      "sha256": "73e14028d480c523f2a7a1c6d797eb9d2ea8271b4f2c924778f87d8eb9b9a633",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/predeploy.json",
+      "bytes": 357,
+      "sha256": "de51ec5e1be6afaeb691490af1af8080a5d2e4e01505d8da5713fd4309708fb2",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/preview.png",
+      "bytes": 111018,
+      "sha256": "b54a77f904f00a7dd29cc44f28c7f7d883734a9c915d9deb221c8006bb524b8a",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/public-smoke.log",
+      "bytes": 274,
+      "sha256": "c56b35d260de1bae2c96463e85d634db2800d4220e2541f19285e1c17db7b8eb",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/red.log",
+      "bytes": 9634,
+      "sha256": "3a67a862016f15d9126b813c8aa98f0002db6ac747c89e6aa25d518ff4000169",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/scope-red.log",
+      "bytes": 1383,
+      "sha256": "d13d4c6a182d77c1f923c6c5a799e507c014ff5b44c4ed69dda45827c108c7bb",
+      "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/beta-smoke.log",
+      "bytes": 314,
+      "sha256": "d84d8e5f012aec51134f925de2b99fa6ea1d49c30fe3981b3290ee7acc171a1e",
+      "origin": "Stable beta at clean reviewed commit f4f96f74f0d0c32f6db79853bd4bb81b931b3d4a; product equals accepted aab17a0"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/beta.png",
+      "bytes": 127143,
+      "sha256": "637cdf844d4c5a2e16a606f6fca4ec1058996ad4688f4d8656bf493ceeb6f905",
+      "origin": "Stable beta at clean reviewed commit f4f96f74f0d0c32f6db79853bd4bb81b931b3d4a; product equals accepted aab17a0"
+    }
+  ]
+}

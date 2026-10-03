@@ -681,3 +681,16 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Tests: before-fix failing label/copy regressions, exact fixture vector/goldens, consumer UI and full suite/CI/preview/public smoke.
   - Security/privacy/dependencies: B57; no financial payload/schema/auth/remote-data changes.
   - Migration/rollback/effort: no interpretation migration because math/IDs stay byte-equivalent; revert presentation only. Human 1–2h; agent 30–60m plus validation, not a promise.
+
+## Housing budget continuation — 2026-10-03
+
+- [x] **B59 — Include entered housing costs in mortgage affordability.**
+  - User problem/evidence: B50 row 34 and source loan-eligibility allocate the whole housing cap to P&I; CFPB describes total housing costs. [Exact sourced contract](execution/prompts/B59.md).
+  - Outcome/scope: four optional zero cost fields, visible before-input scope, costs subtracted inside existing caps, honest no-room/overage states and monthly breakdown.
+  - Non-goals: lender approval, automated taxes/insurance, new DTI caps, cash-to-close/reserves, India math, production.
+  - Files: housingBudget, calculator inputs/content/model registry, generic detail/chart/table and focused engine/UI/parser/history tests.
+  - Acceptance: independent cap/annuity/zero-room fixtures, correct monthly versus annual units, costs/chart/table/CSV agree, blank/negative errors retain edits, historical snapshots unchanged; light/dark/mobile/keyboard result reveal.
+  - Analytics: existing consented safe events only; watch cost-inclusive completion and plan returns when B51 resumes, no claims of observed retention.
+  - Tests: regressions first, untouched default/India goldens, full suite/typecheck/build/CI plus isolated hosted journey and public-route smoke.
+  - Security/privacy/dependencies: B50/B58; no new telemetry, data writes, dependencies or credentials. Versioned JSON snapshot; no D1 migration.
+  - Migration/rollback/effort: preserve `housing-budget-v1` readers on rollback, never backfill saved records. Human 4–8h, agent 1–3h plus validation, estimates only.

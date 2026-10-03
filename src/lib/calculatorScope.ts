@@ -7,7 +7,7 @@ export type CalculatorScope = {
   checked: string;
   sources: { label: string; url: string }[];
 };
-type ScopeDefinition = Omit<CalculatorScope, 'basis' | 'checked'> & { basis: (v: Record<string, number>) => string };
+type ScopeDefinition = Omit<CalculatorScope, 'basis' | 'checked'> & { basis: (v: Record<string, number>) => string; checked?: string };
 const percent = (v: Record<string, number>, key: string) => `${new Intl.NumberFormat('en-US', {maximumFractionDigits: 4}).format(v[key])}%`;
 const source = (label: string, url: string) => ({label, url});
 const indiaTax = source('Income Tax Department: AY 2026–27', 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-1');
@@ -65,10 +65,11 @@ const definitions: Record<string, ScopeDefinition> = {
     sources: [source('RBI: floating-rate EMI loan disclosures', 'https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/FAQRFIR10012025.pdf')]
   },
   'mortgage-affordability': {
-    included: 'Loan/home-price capacity under the chosen housing share and modeled debt ceiling.',
-    excluded: 'Taxes, insurance, HOA, closing cash, reserves and a complete household budget.',
-    basis: v => `Housing share ${percent(v, 'maxDti')}; all-debt ceiling is a fixed model assumption of 36% of gross income. Other debt payments reduce that ceiling; down payment adds to the modeled home price. Neither ratio guarantees lender approval.`,
-    sources: [loanCosts]
+    included: 'Loan/home-price budget after entered taxes, homeowners / supplementary insurance, mortgage insurance and HOA are reserved within the monthly housing limit.',
+    excluded: 'Unentered costs, maintenance, utilities, closing cash, reserves and a complete household budget.',
+    basis: v => `Chosen housing share ${percent(v, 'maxDti')} of gross income, limited further by 36% of income minus other monthly debts. The fixed 36% total-debt limit is a planning assumption, not a lender requirement. Annual tax and homeowners / supplementary insurance are divided by 12; HOA and mortgage insurance are monthly. Zero excludes a cost; fixed entered loan rate and term.`,
+    sources: [source('CFPB: budget for total housing costs', 'https://www.consumerfinance.gov/owning-a-home/prepare/figure-out-how-much-you-want-to-spend/')],
+    checked: '2026-10-03'
   },
   apr: {
     included: 'A fee-inclusive rate estimate from net proceeds and fixed monthly payments.',
@@ -164,5 +165,5 @@ const definitions: Record<string, ScopeDefinition> = {
 export const calculatorScopeSlugs = Object.keys(definitions);
 export function buildCalculatorScope(calculator: SeoCalculator, values: Record<string, number>): CalculatorScope | null {
   const definition = definitions[calculator.slug];
-  return definition ? {...definition, basis: definition.basis(values), checked: '2026-09-30'} : null;
+  return definition ? {...definition, basis: definition.basis(values), checked: definition.checked ?? '2026-09-30'} : null;
 }

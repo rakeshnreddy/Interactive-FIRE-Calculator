@@ -1,0 +1,12 @@
+{
+  "observed_at": "2026-10-03T10:43:57.381Z",
+  "url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/calculators/mortgage-affordability",
+  "deployed_sha": "f4f96f74f0d0c32f6db79853bd4bb81b931b3d4a",
+  "code_sha": "aab17a026bcda53ba25925377edb7cb4c205b3fd",
+  "synthetic_fixture": true,
+  "focused": true,
+  "header": 64,
+  "loan": "$12,000",
+  "resultText": "Result\n\nEstimated loan budget\nYour inputs\n\nEntered housing costs are reserved inside the monthly housing limit. The remainder supports principal and interest; this is a planning budget, not loan approval.\n\nEstimated loan budget\n$12,000\nEstimated home price\n$15,000\nPrincipal + interest / month\n$1,000\nMonthly housing limit\n$1,400\nEntered housing costs / month\n$400\n\nIncludes: Loan/home-price budget after entered taxes, homeowners / supplementary insurance, mortgage insurance and HOA are reserved within the monthly housing limit.\n\nNot included: Unentered costs, maintenance, utilities, closing cash, reserves and a complete household budget.\n\nModel basis & official sources\n\nVisual read\n\nYour monthly housing budget\nAll components use monthly amounts. Annual tax and insurance inputs are divided by 12.\nPrincipal + interest\n$1,000\nProperty tax\n$200\nHome / supplementary insurance\n$100\nHOA dues\n$50\nMortgage insurance\n$50\nPer month\nView chart data as table\nHousing budget breakdown\nMonthly limits and costs, followed by the total loan principal they support.\nCreate affordability plan\nUse this estimate as the first step, then track progress inside FinPath.\nCreate account to save",
+  "top": 87.6171875
+}
