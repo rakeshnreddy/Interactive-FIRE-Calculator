@@ -134,7 +134,9 @@ describe('calculator decision studios', () => {
       expect(chartTypes.has(metadata.chartType)).toBe(true);
 
       expect(metadata.example.title).toContain(calculator.title);
-      expect(metadata.example.description).toContain(calculator.title.toLowerCase());
+      // B60: deposit examples name the deposit inputs instead of a lowercased acronym title.
+      if (calculator.formula === 'fd') expect(metadata.example.description).toContain('sample deposit, term and rate');
+      else expect(metadata.example.description).toContain(calculator.title.toLowerCase());
       expect(metadata.example.insight.length).toBeGreaterThan(40);
       expect(Object.keys(metadata.example.values)).toEqual(calculator.inputs.map((input) => input.key));
 

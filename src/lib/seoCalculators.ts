@@ -168,6 +168,8 @@ const additionalPaymentInputs = [
   money('extraMonthlyPayment', 'Additional monthly payment', 0, 'Optional amount paid above the regular payment every month.'),
   money('extraAnnualPayment', 'Additional yearly payment', 0, 'Optional lump sum paid after every 12th regular payment.')
 ] as const;
+const depositHelper = 'One-time amount placed in the deposit at the start; no later deposits are added.';
+const depositTermHelper = 'Time until maturity in years; 1.5 means 18 months.';
 const annualTopUpInput = money('annualTopUp', 'Additional yearly contribution', 0, 'Optional contribution added once at the end of each year.');
 const conversionByFormula: Record<CalculatorFormula, Pick<SeoCalculator, 'conversionLabel' | 'conversionRoute'>> = {
   amortization: { conversionLabel: 'Track this loan', conversionRoute: '/accounts' },
@@ -411,7 +413,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['income-tax-india', 'India Income Tax Calculator: Old vs New Regime', 'india-tax', [money('income', 'Annual taxable income before deductions', 1500000), money('deductions', 'Old-regime deductions and exemptions', 150000)]],
     ['salary-india', 'India Salary Take-home Calculator', 'salary', [money('income', 'Annual CTC', 2400000), percent('effectiveRate', 'Estimated income tax rate', 12), percent('employeePfRate', 'Employee PF / payroll deduction rate', 5), money('professionalTax', 'Annual professional tax', 2400)]],
     ['hra-exemption', 'HRA Exemption Calculator', 'hra', [money('salary', 'Basic salary', 1200000), money('hra', 'HRA received', 500000), money('rent', 'Annual rent paid', 600000), percent('metroPercent', 'Salary exemption cap', 50)]],
-    ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000), ...termInputs]],
+    ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000, depositHelper), number('years', 'Deposit term', 10, 'yrs', depositTermHelper), percent('rate', 'Annual interest rate', 8, 'Quoted yearly rate; this estimate compounds it once a year.')]],
     ['rd', 'RD Calculator', 'rd', [money('monthly', 'Monthly deposit', 10000), annualTopUpInput, ...termInputs]],
     ['ppf', 'PPF Calculator', 'ppf', [money('annual', 'Annual contribution', 150000), percent('rate', 'Annual return', 7.1), number('years', 'Years', 15, 'yrs')]],
     ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, ...termInputs]],
@@ -505,7 +507,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['pmi', 'PMI Calculator', 'pmi', [money('homePrice', 'Home price', 450000), money('downPayment', 'Down payment', 45000), percent('rate', 'Annual PMI rate', 0.6)]],
     ['heloc', 'HELOC Calculator', 'loan', [money('principal', 'HELOC balance', 50000), percent('rate', 'Interest rate', 8.5), number('years', 'Repayment years', 10, 'yrs'), ...additionalPaymentInputs]],
     ['balance-transfer', 'Balance Transfer Calculator', 'balance-transfer', [money('balance', 'Balance transferred', 8000), percent('currentRate', 'Current APR', 22), percent('newRate', 'Promo APR', 3), number('promoMonths', 'Promo period', 18, 'months'), percent('feeRate', 'Transfer fee', 3), money('payment', 'Monthly payment', 400)]],
-    ['cd', 'CD Calculator', 'fd', [money('principal', 'Deposit amount', 10000), percent('rate', 'APY', 4.5), number('years', 'Term', 2, 'yrs')]],
+    ['cd', 'CD Calculator', 'fd', [money('principal', 'Deposit amount', 10000, depositHelper), percent('rate', 'APY', 4.5, 'Annual percentage yield quoted for the CD.'), number('years', 'Term', 2, 'yrs', depositTermHelper)]],
     ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
     ['life-insurance-needs', 'Life Insurance Needs Calculator', 'insurance', [money('income', 'Annual income to replace', 100000), number('years', 'Years of support', 10, 'yrs'), money('debts', 'Debts and final expenses', 150000), money('savings', 'Existing savings/coverage', 100000)]],
     ['lease-vs-buy', 'Lease vs Buy Calculator', 'vehicle-cost', [money('homePrice', 'Vehicle purchase price', 25000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan APR', 0), number('loanYears', 'Loan term', 4, 'yrs'), number('years', 'Comparison horizon', 2, 'yrs'), money('rent', 'Monthly lease payment', 350), number('leaseYears', 'Quoted lease period', 2, 'yrs'), money('resale', 'Resale value at horizon', 14000), money('leaseUpfront', 'Upfront lease costs', 0), number('extendLease', 'Explicit lease continuation', 0), money('extensionMonthly', 'Continuation monthly cost', 0)]],

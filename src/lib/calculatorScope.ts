@@ -155,6 +155,20 @@ const definitions: Record<string, ScopeDefinition> = {
     basis: v => `Repayment only: ${percent(v, 'rate')} held constant across the entered term. This is an installment approximation, not a full HELOC contract.`,
     sources: [source('CFPB: HELOC draw and repayment periods', 'https://www.consumerfinance.gov/ask-cfpb/what-is-a-home-equity-line-of-credit-heloc-en-107/')]
   },
+  fd: {
+    included: 'One deposit at the start, interest compounded once a year and paid with the deposit at maturity.',
+    excluded: 'Tax and TDS on interest, fees, premature-withdrawal penalties, payout (non-cumulative) options and rate changes.',
+    basis: v => `${percent(v, 'rate')} a year, applied once a year for ${new Intl.NumberFormat('en-US', {maximumFractionDigits: 4}).format(v.years)} years. If your bank compounds more often than yearly, its maturity amount for the same quoted rate will be higher; a part year continues the annual rate and banks may calculate it differently.`,
+    sources: [source('RBI: FAQs on interest rate on deposits', 'https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/FAQIRD01042025.pdf')],
+    checked: '2026-10-03'
+  },
+  cd: {
+    included: 'One deposit at the start held to maturity, growing by the entered APY each year.',
+    excluded: 'Taxes on interest, fees, early-withdrawal penalties, rate changes and deposit-insurance limits.',
+    basis: v => `APY ${percent(v, 'rate')} already includes the bank's compounding, so it is applied once a year and not converted again. The term is ${new Intl.NumberFormat('en-US', {maximumFractionDigits: 4}).format(v.years)} years; a part year continues the same yearly growth.`,
+    sources: [source('CFPB: what a CD is and early-withdrawal penalties', 'https://www.consumerfinance.gov/ask-cfpb/what-is-a-certificate-of-deposit-cd-en-917/'), source('CFPB: Regulation DD APY calculation', 'https://www.consumerfinance.gov/rules-policy/regulations/1030/a/')],
+    checked: '2026-10-03'
+  },
   'balance-transfer': {
     included: 'Transfer fee, promo-period interest and the remaining post-promo payoff.',
     excluded: 'New spending, penalty APRs and an independently entered post-promo offer rate.',

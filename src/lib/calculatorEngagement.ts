@@ -149,8 +149,13 @@ function inputImpact(
     relativeMagnitude: Math.abs(baseOutput) > 1e-9 ? magnitude / Math.abs(baseOutput) : magnitude,
     summary: direction === 'unchanged'
       ? `${input.label} does not change the headline result inside this test range.`
-      : `A higher ${input.label.toLowerCase()} ${direction} the headline result when other inputs stay fixed.`
+      : `A higher ${lowerKeepingAcronyms(input.label)} ${direction} the headline result when other inputs stay fixed.`
   };
+}
+
+// Keeps acronyms such as APY or APR readable mid-sentence.
+function lowerKeepingAcronyms(label: string): string {
+  return label.split(' ').map((word) => (/[A-Z]{2,}/.test(word) ? word : word.toLowerCase())).join(' ');
 }
 
 function primaryOutput(result: CalculatorResult): number {
