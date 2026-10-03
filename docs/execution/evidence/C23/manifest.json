@@ -56,6 +56,18 @@
       "bytes": 1383,
       "sha256": "d13d4c6a182d77c1f923c6c5a799e507c014ff5b44c4ed69dda45827c108c7bb",
       "origin": "ignored raw evidence; browser/CLI source and timing qualified in submission/review"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/beta-smoke.log",
+      "bytes": 314,
+      "sha256": "d84d8e5f012aec51134f925de2b99fa6ea1d49c30fe3981b3290ee7acc171a1e",
+      "origin": "Stable beta at clean reviewed commit f4f96f74f0d0c32f6db79853bd4bb81b931b3d4a; product equals accepted aab17a0"
+    },
+    {
+      "path": "docs/execution/evidence/C23/raw/beta.png",
+      "bytes": 127143,
+      "sha256": "637cdf844d4c5a2e16a606f6fca4ec1058996ad4688f4d8656bf493ceeb6f905",
+      "origin": "Stable beta at clean reviewed commit f4f96f74f0d0c32f6db79853bd4bb81b931b3d4a; product equals accepted aab17a0"
     }
   ]
 }
