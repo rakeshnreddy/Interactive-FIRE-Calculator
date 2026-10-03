@@ -950,7 +950,7 @@
       "id": "B59",
       "title": "include entered housing costs in mortgage affordability",
       "checkpoint": "C23",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B50",
         "B58"
@@ -958,8 +958,8 @@
       "prompt": "prompts/B59.md",
       "submission": "submissions/B59.md",
       "owner": "Astra direct implementation \u2014 owner continuation",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "aab17a026bcda53ba25925377edb7cb4c205b3fd",
+      "review": "reviews/C23.md",
       "blocked_reason": null
     }
   ],

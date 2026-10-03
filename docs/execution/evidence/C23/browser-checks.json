@@ -1,0 +1,132 @@
+{
+  "observed_at": "2026-10-03T10:34:20.359Z",
+  "source_sha": "aab17a026bcda53ba25925377edb7cb4c205b3fd",
+  "preview": "https://60fe979d.interactive-fire-calculator.pages.dev",
+  "keyboard": {
+    "costsOpen": true,
+    "focused": true,
+    "headerBottom": 64,
+    "loan": "$12,000",
+    "resultTop": 88.1171875
+  },
+  "cases": [
+    {
+      "size": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "client": 1425,
+      "clipped": [],
+      "headerBottom": 64,
+      "height": 1000,
+      "loan": "$12,000",
+      "primaryBottom": 470.5078125,
+      "primaryTop": 340.7109375,
+      "resultTop": 88.1171875,
+      "scroll": 1425,
+      "summary": "Include housing costs4 active \u00b7 Annual property tax: USD 2,400 / year; Annual homeowners / supplementary insurance: USD 1,200 / year; Monthly HOA dues: USD 50 / month; Monthly mortgage insurance: USD 50 / month"
+    },
+    {
+      "size": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "client": 1425,
+      "clipped": [],
+      "headerBottom": 64,
+      "height": 1000,
+      "loan": "$12,000",
+      "primaryBottom": 470.5078125,
+      "primaryTop": 340.7109375,
+      "resultTop": 88.1171875,
+      "scroll": 1425,
+      "summary": "Include housing costs4 active \u00b7 Annual property tax: USD 2,400 / year; Annual homeowners / supplementary insurance: USD 1,200 / year; Monthly HOA dues: USD 50 / month; Monthly mortgage insurance: USD 50 / month"
+    },
+    {
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "light",
+      "client": 375,
+      "clipped": [],
+      "headerBottom": 64,
+      "height": 844,
+      "loan": "$12,000",
+      "primaryBottom": 474.984375,
+      "primaryTop": 360.1875,
+      "resultTop": 88.1171875,
+      "scroll": 375,
+      "summary": "Include housing costs4 active \u00b7 Annual property tax: USD 2,400 / year; Annual homeowners / supplementary insurance: USD 1,200 / year; Monthly HOA dues: USD 50 / month; Monthly mortgage insurance: USD 50 / month"
+    },
+    {
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "dark",
+      "client": 375,
+      "clipped": [],
+      "headerBottom": 64,
+      "height": 844,
+      "loan": "$12,000",
+      "primaryBottom": 474.984375,
+      "primaryTop": 360.1875,
+      "resultTop": 88.1171875,
+      "scroll": 375,
+      "summary": "Include housing costs4 active \u00b7 Annual property tax: USD 2,400 / year; Annual homeowners / supplementary insurance: USD 1,200 / year; Monthly HOA dues: USD 50 / month; Monthly mortgage insurance: USD 50 / month"
+    },
+    {
+      "size": {
+        "width": 320,
+        "height": 740
+      },
+      "theme": "light",
+      "client": 305,
+      "clipped": [],
+      "headerBottom": 64,
+      "height": 740,
+      "loan": "$12,000",
+      "primaryBottom": 522.984375,
+      "primaryTop": 408.1875,
+      "resultTop": 88.1171875,
+      "scroll": 305,
+      "summary": "Include housing costs4 active \u00b7 Annual property tax: USD 2,400 / year; Annual homeowners / supplementary insurance: USD 1,200 / year; Monthly HOA dues: USD 50 / month; Monthly mortgage insurance: USD 50 / month"
+    },
+    {
+      "size": {
+        "width": 320,
+        "height": 740
+      },
+      "theme": "dark",
+      "client": 305,
+      "clipped": [],
+      "headerBottom": 64,
+      "height": 740,
+      "loan": "$12,000",
+      "primaryBottom": 522.984375,
+      "primaryTop": 408.1875,
+      "resultTop": 88.1171875,
+      "scroll": 305,
+      "summary": "Include housing costs4 active \u00b7 Annual property tax: USD 2,400 / year; Annual homeowners / supplementary insurance: USD 1,200 / year; Monthly HOA dues: USD 50 / month; Monthly mortgage insurance: USD 50 / month"
+    }
+  ],
+  "csv_receipt": "See csv-download.json: matching actual file was observed, not a passing download-event wait.",
+  "local_invalid_and_overage": {
+    "origin": "local final source",
+    "blank_cost": "retained; aria-invalid true; View result disabled",
+    "overage": "cap1400/cost1401: loan0, no home-price metric, shortfall1"
+  },
+  "console_scope": "Fresh post-interruption candidate tab captured zero error-level logs; no claim of complete cross-session console coverage.",
+  "deferred": [
+    "native screen reader",
+    "native 200% zoom",
+    "real user/retention evidence"
+  ],
+  "tool_discrepancies": [
+    "Local early check after hot reload reset fixture and Enter did not produce focus; final hosted Enter passed on clean exact code.",
+    "Download event wait timed out and reset tool kernel. Subsequent direct click succeeded; exact known Downloads CSV matched fixture. No simulated event receipt."
+  ]
+}

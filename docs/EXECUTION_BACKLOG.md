@@ -684,7 +684,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
 
 ## Housing budget continuation — 2026-10-03
 
-- [ ] **B59 — Include entered housing costs in mortgage affordability.**
+- [x] **B59 — Include entered housing costs in mortgage affordability.**
   - User problem/evidence: B50 row 34 and source loan-eligibility allocate the whole housing cap to P&I; CFPB describes total housing costs. [Exact sourced contract](execution/prompts/B59.md).
   - Outcome/scope: four optional zero cost fields, visible before-input scope, costs subtracted inside existing caps, honest no-room/overage states and monthly breakdown.
   - Non-goals: lender approval, automated taxes/insurance, new DTI caps, cash-to-close/reserves, India math, production.
