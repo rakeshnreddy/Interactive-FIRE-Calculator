@@ -16,6 +16,36 @@
       "origin": "ignored raw evidence"
     },
     {
+      "path": "docs/execution/evidence/C26/raw/beta-assets-alias.json",
+      "bytes": 4468,
+      "sha256": "7a5b34a0c3547bfc5fb6a7defa59a271e93eab3edb9b69785d8890597cdf6847",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/beta-assets-immutable.json",
+      "bytes": 4448,
+      "sha256": "08398d27c4a5fcbc6678ddcf3e11881cccd292ba14564dbc6f31c0aa67c841c0",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/beta-deployment.json",
+      "bytes": 546,
+      "sha256": "e0cd395957f3a1a20017e2ade18c38ad9f83c9cd3b662de4cab665b89f1e5398",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/beta-public-smoke.log",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/build-beta.log",
+      "bytes": 3002,
+      "sha256": "990c9e9829400d808d6b44e2a0e743849d009a285123d87b6d497b384ebf71ea",
+      "origin": "ignored raw evidence"
+    },
+    {
       "path": "docs/execution/evidence/C26/raw/build-preview-auth.log",
       "bytes": 3002,
       "sha256": "1e2ce965511a206a51916a51c6fb437b316cb5bd04444971b77ac742578863e0",
@@ -31,6 +61,12 @@
       "path": "docs/execution/evidence/C26/raw/candidate-deployment.json",
       "bytes": 539,
       "sha256": "38e222e51a29e17ff5ff78e045644e3377685fc60c6ec829b472c6c22269f68e",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/deploy-beta.log",
+      "bytes": 614,
+      "sha256": "3c47639a1059c37cbc0b3b312917a230e57a04f2bd1602562e71130e3f3df669",
       "origin": "ignored raw evidence"
     },
     {
@@ -69,5 +105,10 @@
       "sha256": "d454d6214aeecd6bcea30f2302f4eb03577cf48f15e214ef6d4d4802c403381a",
       "origin": "ignored raw evidence"
     }
-  ]
+  ],
+  "beta": {
+    "immutable": "https://775103db.interactive-fire-calculator.pages.dev",
+    "deployment_id": "775103db-d1f0-40ba-b38c-a8bc3aa5eada",
+    "commit": "d0e08013d6c108c8dbcfcfd500f9ce008559b047"
+  }
 }

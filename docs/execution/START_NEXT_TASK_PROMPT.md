@@ -1,16 +1,17 @@
-# FinPath — clean-point handoff after C25 (2026-10-03)
+# FinPath — clean-point handoff after C26 (2026-10-03)
 
 You are the next primary FinPath architect, direct implementer and responsible reviewer. The owner requested work here without Gemini. That explicit owner instruction supersedes the historical non-coder/mandatory-Gemini role in AGENTS.md for this continuation. Do not automatically launch Gemini or subagents. If instead acting only as a worker under a later explicit owner assignment, preserve PA-10: no worker Git mutations/deployment/closure or invented hosted PASS.
 
 ## Resolve the real starting state
 
-Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C25.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #148](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/148). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
+Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C26.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #149](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/149). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
 
-C19–C25 are accepted, not tasks to replay. C25 accepted product `5f2fdbf2021d946d9e6b51bf31c268801aec037d` (B61 RD timing/basis/exclusions; B62 exact-term lump-sum and monthly recurring schedules). Full suite 101 files/2,742 tests; stable beta serves C25 (deployment `7677dac2`, verified). 59/62 accepted (registered count only); B51 owner-deferred, B13/B14 locked. Production cannot be deployed until the owner supplies `.env.production.local` with a live Clerk key and an owned origin (OA-1); never bypass the preflight.
+C19–C26 are accepted, not tasks to replay. C26 accepted product `5181cb1411e5f680521de25538da493c7a76b774`: every annual/monthly table whose engine uses the exact term now ends at that term (audited across every route with a `years` input). Full suite 102 files/2,748 tests; stable beta serves C26 (deployment `775103db`, verified). 60/63 accepted (registered count only); B51 owner-deferred, B13/B14 locked. Production cannot be deployed until the owner supplies `.env.production.local` with a live Clerk key and an owned origin (OA-1); never bypass the preflight.
 
-## Next bounded independent work (register a contract before edits)
+## Next bounded independent work (register a sourced contract before edits)
 
-**B62 residual audit:** these schedule builders still use whole-year rounding: EPF, PPF, savings goal, inflation, investment return, XIRR approximation, Roth/traditional, rent-vs-buy, interest-only, flat-rate comparison, gratuity. For each, check whether the route accepts a fractional term and whether its engine treats it exactly; reproduce any table/headline contradiction with an independent oracle before writing a contract. Fix only proven contradictions; leave integer-only inputs alone. Preserve results, scenario vectors, URLs and saved snapshots.
+1. **PPF part-year term.** PPF takes yearly deposits; the engine accepts a fractional term and its table rounds up. Decide from official PPF scheme rules (dated, primary source) whether the input should be whole years (with a clear message) or define a part-year treatment; preserve existing whole-year vectors and saved records.
+2. **Gratuity part-year service.** The engine multiplies by fractional service years; the statute counts a part year above six months as a year. Read the current primary source first (Payment of Gratuity Act and any Labour Code change), version the model if the result changes, and keep historical saved results readable.
 
 ## Implementation and closure discipline
 
