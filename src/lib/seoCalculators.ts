@@ -1312,28 +1312,35 @@ function result(
   };
 }
 
+// Used only when an input has no explicit helper; says nothing the label does not support.
 function defaultInputHelper(input: CalculatorInput): string {
   const lower = input.label.toLowerCase();
 
   if (input.type === 'currency') {
-    const oneTime = /down payment|balance|prepay|transfer|lump|price|value|gain|cost|fee|target|savings|corpus|assets|liabilit/i.test(input.label);
-    if (!oneTime && /monthly|payment|rent|withdrawal|contribution|deposit|sip|income|salary|ctc/i.test(input.label)) {
-      return `Enter the ${lower} as a recurring amount in the calculator currency.`;
-    }
-
+    if (/monthly/i.test(input.label)) return 'Amount each month in the calculator currency.';
+    if (/annual|yearly|\bctc\b/i.test(input.label)) return 'Amount each year in the calculator currency.';
     return `Enter the ${lower} in the calculator currency.`;
   }
 
   if (input.type === 'percent') {
-    return `Enter the ${lower} as an annual percentage unless the label says otherwise.`;
+    // Shares of an amount (taxes, duties, fees, down payment, caps, ratios) are not yearly rates.
+    if (/tax|tds|gst|duty|registration|fee|closing|down payment|cap|to-income|pf|payroll|deduction|withholding/i.test(input.label)) {
+      return 'Enter as a percentage, for example 18 for 18%.';
+    }
+    return 'Yearly rate as a percentage, for example 7.5 for 7.5% a year.';
   }
 
-  if (/year|tenure|term|support|delayed/i.test(input.label)) {
-    return `Enter the ${lower} in years.`;
+  if (/per year/i.test(input.label)) {
+    return `Number of ${lower.replace(/ per year$/, '')} in a year; for example, 26 for biweekly pay.`;
   }
 
-  if (/period/i.test(input.label)) {
-    return `Enter the number of ${lower}; for example, 26 for biweekly pay.`;
+  // The unit suffix shown beside the field decides the unit the helper names.
+  const unit = input.suffix ?? (/month|coverage/i.test(input.label) ? 'months' : /year|tenure|term|support|delayed/i.test(input.label) ? 'yrs' : undefined);
+  if (unit === 'yrs') {
+    return /year/i.test(input.label) ? 'Number of years; 1.5 means 18 months.' : 'In years; 1.5 means 18 months.';
+  }
+  if (unit === 'months') {
+    return 'Number of months, for example 6 or 18.';
   }
 
   return `Enter the ${lower} used for this estimate.`;
