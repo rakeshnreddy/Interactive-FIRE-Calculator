@@ -1023,6 +1023,36 @@
       "code_sha": "5181cb1411e5f680521de25538da493c7a76b774",
       "review": "reviews/C26.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B64",
+      "title": "PPF whole financial years and yearly deposit limit",
+      "checkpoint": "C27",
+      "status": "pending",
+      "dependencies": [
+        "B63"
+      ],
+      "prompt": "prompts/B64.md",
+      "submission": null,
+      "owner": "Astra direct implementation \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B65",
+      "title": "gratuity table ends at the entered service",
+      "checkpoint": "C27",
+      "status": "pending",
+      "dependencies": [
+        "B63"
+      ],
+      "prompt": "prompts/B65.md",
+      "submission": null,
+      "owner": "Astra direct implementation \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [
