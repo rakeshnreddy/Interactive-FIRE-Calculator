@@ -1,21 +1,16 @@
-# FinPath — clean-point handoff after C24 (2026-10-03)
+# FinPath — clean-point handoff after C25 (2026-10-03)
 
 You are the next primary FinPath architect, direct implementer and responsible reviewer. The owner requested work here without Gemini. That explicit owner instruction supersedes the historical non-coder/mandatory-Gemini role in AGENTS.md for this continuation. Do not automatically launch Gemini or subagents. If instead acting only as a worker under a later explicit owner assignment, preserve PA-10: no worker Git mutations/deployment/closure or invented hosted PASS.
 
 ## Resolve the real starting state
 
-Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C24.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #146](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/146). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
+Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C25.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #148](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/148). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
 
-C19–C24 are accepted, not tasks to replay. C24/B60 accepted product `485070fc39db78eb3f27c9ed56b2a069f7eb566a` (FD/CD rate basis, exclusions, deposit + interest = maturity line, neutral what-ifs, exact-term schedule; results/vectors byte-equal). Full suite 100 files/2,721 tests; exact CI 37119436276; candidate https://5b937d2c.interactive-fire-calculator.pages.dev verified. 57/60 accepted (registered count only); B51 owner-deferred, B13/B14 locked.
+C19–C25 are accepted, not tasks to replay. C25 accepted product `5f2fdbf2021d946d9e6b51bf31c268801aec037d` (B61 RD timing/basis/exclusions; B62 exact-term lump-sum and monthly recurring schedules). Full suite 101 files/2,742 tests; stable beta serves C25 (deployment `7677dac2`, verified). 59/62 accepted (registered count only); B51 owner-deferred, B13/B14 locked. Production cannot be deployed until the owner supplies `.env.production.local` with a live Clerk key and an owned origin (OA-1); never bypass the preflight.
 
-C24 publication is complete: the owner approved promotion and merge; the stable beta serves C24 (deployment `6d48224d`, verified, see `evidence/C24/beta-release.json`) and PR #146 carries it to main. Confirm the actual merge commit and main CI before branching.
+## Next bounded independent work (register a contract before edits)
 
-## Next bounded independent proposals (register a contract before edits)
-
-1. **B61 — RD presentation** (B50 row 22): `/calculators/rd` still uses generic "Annual return / rate"; explain deposit timing and the monthly-rate basis exactly as `projectRecurringBalance` implements them (verify; do not assume) and that the optional yearly top-up is separate from standard instalments; reconcile deposits/interest/maturity with table/CSV. Determine the convention from `seoCalculators.ts`/`projectRecurringBalance`, not the route name. Presentation only unless an independent oracle proves a math defect (split it).
-2. **Lumpsum exact-term schedule**: `lumpsum-mutual-fund` still rounds a fractional term up in its schedule (same defect fixed for FD/CD in B60); fix only the schedule/labels with an independent oracle.
-
-Use B50/B60 accepted dependencies and the same contract fields as B60 (problem/evidence, outcome/scope/non-goals/files, acceptance, analytics, tests, privacy, dependencies, migration/rollback, estimates). Preserve existing numeric vectors, URLs, saved snapshots and shared formulas.
+**B62 residual audit:** these schedule builders still use whole-year rounding: EPF, PPF, savings goal, inflation, investment return, XIRR approximation, Roth/traditional, rent-vs-buy, interest-only, flat-rate comparison, gratuity. For each, check whether the route accepts a fractional term and whether its engine treats it exactly; reproduce any table/headline contradiction with an independent oracle before writing a contract. Fix only proven contradictions; leave integer-only inputs alone. Preserve results, scenario vectors, URLs and saved snapshots.
 
 ## Implementation and closure discipline
 

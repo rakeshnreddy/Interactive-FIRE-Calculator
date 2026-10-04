@@ -1,10 +1,10 @@
-# Stable beta release protocol — verified 2026-10-03 (C24)
+# Stable beta release protocol — verified 2026-10-03 (C25)
 
 ## Share one URL
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://6d48224d.interactive-fire-calculator.pages.dev, deployment `6d48224d-d839-405e-be72-1b06ba98ba7d`, clean commit `19291d4a500936dad988963658669f3d48e5a6e0`. Product equals accepted C24 source `485070fc39db78eb3f27c9ed56b2a069f7eb566a` (review documents differ). [Provider/asset hashes](evidence/C24/beta-release.json), [beta journey](evidence/C24/beta-journey.json), [C24 review](reviews/C24.md). Previous verified beta: C23 `82ed082d` / `f4f96f74f0d0c32f6db79853bd4bb81b931b3d4a` ([record](evidence/C23/beta-release.json)).
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://7677dac2.interactive-fire-calculator.pages.dev, deployment `7677dac2-d23d-4ab0-87f9-a22726689f63`, clean commit `40ede27935cf306807c8a7da1aacae6d935c2114`. Product equals accepted C25 source `5f2fdbf2021d946d9e6b51bf31c268801aec037d` (review documents differ). [Provider/asset hashes](evidence/C25/beta-release.json), [beta journey](evidence/C25/beta-journey.json), [C25 review](reviews/C25.md). Previous verified beta: C24 `6d48224d` / `19291d4a500936dad988963658669f3d48e5a6e0` ([record](evidence/C24/beta-release.json)).
 
-Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; 16 actual runtime asset hashes match the build and the verified C24 candidate on both the immutable URL and the beta alias. Health200/protected401, all84 calculator HTTP routes and the actual 18-month CD keyboard journey pass. No hosted financial-data write in C24. Native reader/zoom and B51 actual-user evidence remain deferred.
+Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; 16 actual runtime asset hashes match the build and the verified C25 candidate on both the immutable URL and the beta alias. Health200/protected401, all84 calculator HTTP routes and the actual 18-month RD keyboard journey pass. No hosted financial-data write in C25. Native reader/zoom and B51 actual-user evidence remain deferred.
 
 ## Promotion discipline
 
