@@ -130,11 +130,12 @@ describe('B60 deposit-specific FD/CD presentation', () => {
     expect(page(slug).textContent).not.toMatch(/the your deposit estimate/i);
   });
 
-  it('leaves the lumpsum schedule unchanged', () => {
+  // B62 deliberately moved lump sum to an exact-term schedule with growth labels; its scenarios stay unchanged.
+  it('keeps lumpsum scenario labels while its schedule ends at the exact term', () => {
     const lumpsum = find('lumpsum-mutual-fund');
     const schedule = buildCalculatorDetailSchedule(lumpsum, { principal: 10000, rate: 4.5, years: 1.5 })!;
-    expect(schedule.rows.at(-1)!.values.year).toBe(2);
-    expect(schedule.columns.find((c) => c.key === 'balance')!.label).toBe('Maturity value');
+    expect(schedule.rows.at(-1)!.values.year).toBe(1.5);
+    expect(schedule.columns.find((c) => c.key === 'balance')!.label).toBe('Value');
     expect(buildCalculatorScenarios(lumpsum, defaults('lumpsum-mutual-fund')).map((s) => s.label)).toEqual(['Conservative', 'Base', 'Optimistic']);
   });
 
