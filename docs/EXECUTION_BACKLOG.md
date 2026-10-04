@@ -721,3 +721,11 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Outcome/scope: exact-term final rows equal to headlines for lump sum, compound, SIP, step-up SIP, RD and NPS; lump-sum growth labels; integer terms unchanged.
   - Non-goals: engines, other schedule builders (residual survey), results, scenarios, schema, production.
   - Acceptance/tests: Decimal oracles, table/CSV equal headline, full suite, CI, hosted CSV check. Human 1–2h, agent 1h.
+
+## Exact-term schedule audit — 2026-10-03
+
+- [x] **B63 — Exact-term schedules for return, inflation, Roth/traditional and EPF tables.**
+  - User problem/evidence: at a part-year term CAGR's table shows 10.29% against an 11.28% headline and ends at year 6 for 5.5; inflation, Roth and EPF tables end above their headlines. [Exact contract](execution/prompts/B63.md).
+  - Outcome/scope: whole years then the exact term; EPF on engine months; one shared helper (FD/CD and lump sum value-identical).
+  - Non-goals: engines, PPF, gratuity, results, scenarios, schema, production.
+  - Acceptance/tests: Decimal oracles, last rows equal headlines, whole-year rows unchanged, CSV, full suite, CI, hosted CSV. Human 1–2h, agent 1h.

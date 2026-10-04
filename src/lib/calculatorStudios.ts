@@ -2000,7 +2000,8 @@ function rothTraditionalSchedule(_calculator: SeoCalculator, values: Record<stri
   const currentTaxSavings = contribution * Math.max(0, values.currentTaxRate ?? 0) / 100;
   // Same out-of-pocket money as the headline: the Roth contribution is what is left after today's tax.
   const rothContribution = Math.max(0, contribution - currentTaxSavings);
-  const years = scheduleYears(values.years ?? 0);
+  const points = exactTermPoints(values.years);
+  if (!points.length) return null;
 
   return {
     columns: [
@@ -2011,12 +2012,12 @@ function rothTraditionalSchedule(_calculator: SeoCalculator, values: Record<stri
       moneyColumn('currentTaxSavings', 'Current tax savings')
     ],
     description: 'Annual Roth versus traditional value path for the same money out of pocket today: the pre-tax traditional contribution against the smaller after-tax Roth contribution it allows.',
-    rows: Array.from({ length: years }, (_, index) => {
-      const year = index + 1;
+    rows: points.map((year) => {
       const rothValue = rothContribution * (1 + rate) ** year;
       const traditionalAfterTax = contribution * (1 + rate) ** year * (1 - futureTaxRate);
       return {
         id: `roth-traditional-${year}`,
+        note: partYearNote(year, 'the annual return is'),
         values: {
           currentTaxSavings,
           rothAdvantage: rothValue - traditionalAfterTax,
@@ -2173,16 +2174,15 @@ function savingsGoalSchedule(
 function fixedDepositSchedule(values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const term = Math.min(maxScheduleYears, Math.max(0, Number.isFinite(values.years) ? values.years : 0));
-  if (term <= 0) return null;
-  const points = Array.from({ length: Math.floor(term) }, (_, index) => index + 1);
-  if (term > Math.floor(term)) points.push(term);
+  const points = exactTermPoints(values.years);
+  if (!points.length) return null;
   let previousBalance = principal;
   const rows = points.map((year): CalculatorDetailScheduleRow => {
     const balance = principal * (1 + rate) ** year;
+    const note = partYearNote(year, 'the annual rate is');
     const row: CalculatorDetailScheduleRow = {
       id: `deposit-year-${year}`,
-      note: Number.isInteger(year) ? undefined : `Part year: the annual rate is applied for ${formatScheduleYears(year - Math.floor(year))} of a year. Banks may calculate a broken period differently.`,
+      note: note && `${note} Banks may calculate a broken period differently.`,
       values: { balance, interest: balance - previousBalance, totalInterest: balance - principal, year }
     };
     previousBalance = balance;
@@ -2197,7 +2197,7 @@ function fixedDepositSchedule(values: Record<string, number>): CalculatorDetailS
     ],
     description: 'Interest added each year until maturity; the last row equals the maturity value.',
     rows,
-    summary: scheduleCapSummary(values.years ?? term, 'One deposit at the start, interest compounded once a year, no withdrawals, taxes, fees or penalties.'),
+    summary: scheduleCapSummary(values.years ?? points.length, 'One deposit at the start, interest compounded once a year, no withdrawals, taxes, fees or penalties.'),
     title: 'Deposit maturity schedule'
   };
 }
@@ -2206,20 +2206,30 @@ function formatScheduleYears(value: number): string {
   return Number(value.toFixed(4)).toString();
 }
 
+// Whole years, then the exact remaining part year, so annual tables end at the entered term (capped like other tables).
+function exactTermPoints(value: number): number[] {
+  const term = Math.min(maxScheduleYears, Math.max(0, Number.isFinite(value) ? value : 0));
+  const points = Array.from({ length: Math.floor(term) }, (_, index) => index + 1);
+  if (term > Math.floor(term)) points.push(term);
+  return points;
+}
+
+function partYearNote(year: number, subject: string): string | undefined {
+  return Number.isInteger(year) ? undefined : `Part year: ${subject} applied for ${formatScheduleYears(year - Math.floor(year))} of a year.`;
+}
+
 // Lump sum: whole years, then the exact remaining part year, so the last row is the headline value.
 function singleDepositGrowthSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const term = Math.min(maxScheduleYears, Math.max(0, Number.isFinite(values.years) ? values.years : 0));
-  if (term <= 0) return null;
-  const points = Array.from({ length: Math.floor(term) }, (_, index) => index + 1);
-  if (term > Math.floor(term)) points.push(term);
+  const points = exactTermPoints(values.years);
+  if (!points.length) return null;
   let previousBalance = principal;
   const rows = points.map((year): CalculatorDetailScheduleRow => {
     const balance = principal * (1 + rate) ** year;
     const row: CalculatorDetailScheduleRow = {
       id: `deposit-year-${year}`,
-      note: Number.isInteger(year) ? undefined : `Part year: the annual return is applied for ${formatScheduleYears(year - Math.floor(year))} of a year.`,
+      note: partYearNote(year, 'the annual return is'),
       values: { balance, interest: balance - previousBalance, totalInterest: balance - principal, year }
     };
     previousBalance = balance;
@@ -2235,7 +2245,7 @@ function singleDepositGrowthSchedule(_calculator: SeoCalculator, values: Record<
     ],
     description: 'Estimated growth each year until the end of the term; the last row equals the projected value.',
     rows,
-    summary: scheduleCapSummary(values.years ?? term, 'Shows how the single investment compounds year by year at the entered return; market returns vary.'),
+    summary: scheduleCapSummary(values.years ?? points.length, 'Shows how the single investment compounds year by year at the entered return; market returns vary.'),
     title: 'Lumpsum growth schedule'
   };
 }
@@ -2283,7 +2293,8 @@ function epfSchedule(_calculator: SeoCalculator, values: Record<string, number>)
   const employer = Math.max(0, values.employer ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const years = scheduleYears(values.years ?? 0);
-  const months = Math.max(1, years * 12);
+  // Same month count as the engine, so a part-year term ends at the headline corpus.
+  const months = Math.min(maxScheduleYears * 12, termMonths(values.years ?? 0));
   const monthlyRate = rate / 12;
   const annualTopUp = Math.max(0, values.annualTopUp ?? 0);
   let balance = 0;
@@ -2307,16 +2318,17 @@ function epfSchedule(_calculator: SeoCalculator, values: Record<string, number>)
     }
 
     if (month % 12 === 0 || month === months) {
-      const year = Math.ceil(month / 12);
+      const partMonths = month % 12;
       rows.push({
-        id: `epf-year-${year}`,
+        id: `epf-year-${Math.ceil(month / 12)}`,
+        note: partMonths > 0 ? `Part year: ${partMonths} ${partMonths === 1 ? 'month' : 'months'} of contributions and growth.` : undefined,
         values: {
           balance,
           employee: annualEmployee,
           employer: annualEmployer,
           growth: annualGrowth,
           topUp: yearlyTopUp,
-          year
+          year: partMonths > 0 ? Number((month / 12).toFixed(4)) : month / 12
         }
       });
       annualEmployee = 0;
@@ -2625,22 +2637,25 @@ function gratuitySchedule(_calculator: SeoCalculator, values: Record<string, num
 function investmentReturnSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const initial = Math.max(0, values.initial ?? 0);
   const final = Math.max(0, values.final ?? 0);
-  const years = scheduleYears(values.years ?? 0);
-  const annualized = years > 0 && initial > 0 ? (final / initial) ** (1 / years) - 1 : 0;
-  const rows: CalculatorDetailScheduleRow[] = [];
-
-  for (let year = 0; year <= years; year += 1) {
-    const value = year === years ? final : initial * (1 + annualized) ** year;
-    rows.push({
+  // Same term and rate as the headline; the last row is the entered ending value.
+  const term = Math.max(0, Number.isFinite(values.years) ? values.years : 0);
+  const points = exactTermPoints(term);
+  if (!points.length) return null;
+  const annualized = initial > 0 ? (final / initial) ** (1 / term) - 1 : 0;
+  const endPoint = points[points.length - 1];
+  const rows: CalculatorDetailScheduleRow[] = [0, ...points].map((year) => {
+    const value = year === endPoint && endPoint === term ? final : initial * (1 + annualized) ** year;
+    return {
       id: `return-year-${year}`,
+      note: year ? partYearNote(year, 'the annualized return is') : undefined,
       values: {
         annualized,
         gain: value - initial,
         value,
         year: year === 0 ? 'Start' : year
       }
-    });
-  }
+    };
+  });
 
   return {
     columns: [
@@ -2651,7 +2666,7 @@ function investmentReturnSchedule(_calculator: SeoCalculator, values: Record<str
     ],
     description: 'Implied annual value path that reconciles starting value, ending value, and elapsed time.',
     rows,
-    summary: scheduleCapSummary(values.years ?? years, 'Turns the annualized return into a year-by-year value path.'),
+    summary: scheduleCapSummary(term, 'Turns the annualized return into a year-by-year value path.'),
     title: 'Return path table'
   };
 }
@@ -2716,21 +2731,21 @@ function xirrApproximationSchedule(
 function inflationSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const years = scheduleYears(values.years ?? 0);
-  const rows: CalculatorDetailScheduleRow[] = [];
-
-  for (let year = 1; year <= years; year += 1) {
+  const points = exactTermPoints(values.years);
+  if (!points.length) return null;
+  const rows = points.map((year): CalculatorDetailScheduleRow => {
     const futureCost = principal * (1 + rate) ** year;
-    rows.push({
+    return {
       id: `inflation-year-${year}`,
+      note: partYearNote(year, 'the yearly inflation rate is'),
       values: {
         increase: futureCost - principal,
         purchasingPower: principal / ((1 + rate) ** year),
         futureCost,
         year
       }
-    });
-  }
+    };
+  });
 
   return {
     columns: [
@@ -2741,7 +2756,7 @@ function inflationSchedule(_calculator: SeoCalculator, values: Record<string, nu
     ],
     description: 'Annual inflation path showing future cost and the purchasing-power pressure behind it.',
     rows,
-    summary: scheduleCapSummary(values.years ?? years, 'Shows how inflation compounds over the planning period.'),
+    summary: scheduleCapSummary(values.years ?? points.length, 'Shows how inflation compounds over the planning period.'),
     title: 'Inflation path table'
   };
 }

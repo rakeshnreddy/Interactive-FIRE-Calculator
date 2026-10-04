@@ -1,0 +1,216 @@
+{
+  "checked_at": "2026-10-04T02:51:50.811Z",
+  "owner_approval": "Owner asked on 2026-10-03 to finish all work not needing an owner unblock; same promotion flow the owner approved for C24",
+  "deployment_commit_sha": "d0e08013d6c108c8dbcfcfd500f9ce008559b047",
+  "accepted_product_sha": "5181cb1411e5f680521de25538da493c7a76b774",
+  "product_equivalence": "git diff 5181cb1..d0e0801 changes docs/ only; runtime JS/CSS bytes equal the verified candidate 3eaac24e",
+  "deployment_id": "775103db-d1f0-40ba-b38c-a8bc3aa5eada",
+  "immutable_url": "https://775103db.interactive-fire-calculator.pages.dev",
+  "beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+  "branch": "codex/finpath-quality-execution",
+  "environment": "preview",
+  "commit_dirty": false,
+  "latest_stage": "deploy:success",
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "production_deployments_enabled": false,
+  "canonical_production_commit": "3399dbbd8d7f0e6379972356a790b236e6b177b1",
+  "build": "npm run build:preview-auth from clean d0e0801 (Node v24.2.0); wrangler pages deploy --commit-dirty=false",
+  "public_calculator_smoke": "84 public calculator routes verified without authentication at the beta alias",
+  "immutable_checks": [
+    {
+      "route": "/api/health",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/api/me",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/plans",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/calculators/cagr",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/calculators/epf",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    }
+  ],
+  "alias_checks": [
+    {
+      "route": "/api/health",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/api/me",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/plans",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/calculators/cagr",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/calculators/epf",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    }
+  ],
+  "assets_match_local_build": {
+    "immutable": true,
+    "alias": true
+  },
+  "assets_equal_verified_candidate": true,
+  "bundle_sha256": [
+    {
+      "path": "/assets/BalanceImportPanel-CZ8UePTu.js",
+      "status": 200,
+      "sha256": "4ac434c89988349bd0acc2e61e31c9590463c61883c46990da4b414ef13b2279",
+      "bytes": 9680,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/CalculatorLibrary-WNDYOep9.js",
+      "status": 200,
+      "sha256": "abbaaa44314b1aa1e629ae7999938c43de10534b19065bbd99e0b119d3ea8a3d",
+      "bytes": 392559,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/PlanningWorkspace-AEU0-bP_.js",
+      "status": 200,
+      "sha256": "acb0406302240511625fea7b6225ad5f24e78a6eb0ef9a1748428c89d4ab9cc7",
+      "bytes": 27120,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/ProjectionChart-C0yokO2K.js",
+      "status": 200,
+      "sha256": "b8ff8e958cec3a620c5386632c51b286f83f6d35cffd7ffe00db6e5dc3e4aee1",
+      "bytes": 348238,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/TransactionImportPanel-BQsyljWG.js",
+      "status": 200,
+      "sha256": "80a2232a9fc6721815598240f460c5fde011a43790a9ed2cf832676ec33a7b22",
+      "bytes": 10210,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/WorkspacePanels-LViEiCCp.js",
+      "status": 200,
+      "sha256": "febb1ea3e33f98d797e169f022dc753551ac8d16369e19047c182eb6ac3a5394",
+      "bytes": 46966,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/calculator-catalog--IaRkd3q.js",
+      "status": 200,
+      "sha256": "f3a38c381886e0754d9da3b2a17e4b642fb046ae2d8382eae15d2507aa28a52d",
+      "bytes": 101114,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/circle-check-CvjZpSFY.js",
+      "status": 200,
+      "sha256": "d5972873289aad1c9e9daf97be5fa670a3a2252ffc38bec5fb245d6db011cbc3",
+      "bytes": 222,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/dist-_XyzNBdf.js",
+      "status": 200,
+      "sha256": "f7255666396cf8bb239176a3d670722c7c56c6e2b70b7ae60b7ff8b1bee96971",
+      "bytes": 145733,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/history-BU5nD0J1.js",
+      "status": 200,
+      "sha256": "15b27909f426ede14d5ea9ecd6a53673b5574c32ed85d2e656dad163bb04951b",
+      "bytes": 276,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-DNhARteC.css",
+      "status": 200,
+      "sha256": "7127b0aefaa21c9d623745c713cc0e3f7babdb0b4663e03548da002c65d72f6f",
+      "bytes": 220892,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-okv9cNp8.js",
+      "status": 200,
+      "sha256": "516aa7c3bf58267096bb02351f5f133bf912a5adb360b20cae286cc4bad343ca",
+      "bytes": 209073,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/papaparse.min-DIiCcvP0.js",
+      "status": 200,
+      "sha256": "01a2bca9172dfa1468fcd9c23adbe81e4caa5d04e5fa487d353f74a7660b6914",
+      "bytes": 19979,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/react-vendor-CvBZlOBd.js",
+      "status": 200,
+      "sha256": "2eb2df5b9abff34af7fdcd9775abf2d145105b56a2cd413ca1d96977a1bc4eb5",
+      "bytes": 139938,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "status": 200,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "bytes": 694,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rotate-ccw-D3XwuRYY.js",
+      "status": 200,
+      "sha256": "fe6ffa0a2c7b0190c11b2ac6c5f5dd90edacfb9323fc2bf03d5e4872310db98b",
+      "bytes": 1620,
+      "matches_local_build": true
+    }
+  ]
+}

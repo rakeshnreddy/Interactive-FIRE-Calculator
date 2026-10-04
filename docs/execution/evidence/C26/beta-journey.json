@@ -1,0 +1,17 @@
+{
+  "observed_on": "2026-10-03",
+  "url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/calculators/cagr",
+  "deployment_id": "775103db-d1f0-40ba-b38c-a8bc3aa5eada",
+  "viewport": "390x844",
+  "steps": "Typed 5.5 in Years; real Tab to \"View result\"; real Enter",
+  "typing_scroll": {
+    "before": 421,
+    "after": 421
+  },
+  "result_focused": true,
+  "result_top": 88,
+  "client_width": 390,
+  "scroll_width": 390,
+  "headline": "11.28%",
+  "table_last_row": "5.5 | $18,000 | $8,000 | 11.28% | Part year: the annualized return is applied for 0.5 of a year."
+}
