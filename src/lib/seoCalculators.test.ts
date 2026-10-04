@@ -21,7 +21,8 @@ const expectedOutputs = [
   ['sip', 'Projected corpus', 1_829_460.351817, 'currency', 'INR'],
   ['step-up-sip', 'Projected corpus', 2_739_652.891105, 'currency', 'INR'],
   ['sip-goal', 'Monthly savings needed', 54_660.927689, 'currency', 'INR'],
-  ['lumpsum-mutual-fund', 'Maturity value', 1_079_462.498636, 'currency', 'INR'],
+  // B67: lump sum is labelled as a market investment; the value is unchanged.
+  ['lumpsum-mutual-fund', 'Projected value', 1_079_462.498636, 'currency', 'INR'],
   ['swp', 'Estimated withdrawal runway', 51.416667, 'years', 'INR'],
   ['emi', 'Monthly payment', 25_335.15475, 'currency', 'INR'],
   ['home-loan-emi', 'Monthly payment', 52_069.394002, 'currency', 'INR'],

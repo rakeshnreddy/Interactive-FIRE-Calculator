@@ -171,6 +171,9 @@ const additionalPaymentInputs = [
 const depositHelper = 'One-time amount placed in the deposit at the start; no later deposits are added.';
 const depositTermHelper = 'Time until maturity in years; 1.5 means 18 months.';
 const annualTopUpInput = money('annualTopUp', 'Additional yearly contribution', 0, 'Optional contribution added once at the end of each year.');
+const sipReturnInput = percent('rate', 'Expected annual return', 8, 'Yearly return to assume; this estimate compounds it monthly (rate ÷ 12). Market returns vary.');
+const sipTermInput = number('years', 'Years', 10, 'yrs', 'Number of years of instalments, rounded to whole months; 1.5 means 18 months.');
+const sipExtraInput = money('annualTopUp', 'Extra yearly investment', 0, 'Optional lump sum invested after every 12th instalment, separate from the SIP. Enter 0 to skip.');
 const rdInputs = [
   money('monthly', 'Monthly deposit', 10000, 'Same amount every month, added at the end of each month.'),
   money('annualTopUp', 'Extra yearly deposit', 0, 'Optional lump sum added after every 12th instalment, separate from the monthly deposits. Not every RD accepts extra deposits; enter 0 for a standard RD.'),
@@ -407,10 +410,10 @@ export const seoCalculators: SeoCalculator[] = [
     title: 'Investment Return Calculator'
   }),
   ...([
-    ['sip', 'SIP Calculator', 'sip', [money('monthly', 'Monthly SIP', 10000), annualTopUpInput, ...termInputs]],
-    ['step-up-sip', 'Step-up SIP Calculator', 'sip', [money('monthly', 'Starting monthly SIP', 10000), percent('stepUp', 'Annual step-up', 10), annualTopUpInput, ...termInputs]],
+    ['sip', 'SIP Calculator', 'sip', [money('monthly', 'Monthly SIP', 10000, 'Same amount invested at the end of each month.'), sipExtraInput, sipTermInput, sipReturnInput]],
+    ['step-up-sip', 'Step-up SIP Calculator', 'sip', [money('monthly', 'Starting monthly SIP', 10000, "First year's instalment, invested at the end of each month."), percent('stepUp', 'Annual step-up', 10, 'Raises the monthly instalment by this percentage once a year, from month 13.'), sipExtraInput, sipTermInput, sipReturnInput]],
     ['sip-goal', 'SIP Goal Calculator', 'savings-goal', [money('target', 'Target corpus', 10000000), money('current', 'Current savings', 0), ...termInputs]],
-    ['lumpsum-mutual-fund', 'Lumpsum Mutual Fund Calculator', 'lumpsum', [money('principal', 'Lumpsum investment', 500000), ...termInputs]],
+    ['lumpsum-mutual-fund', 'Lumpsum Mutual Fund Calculator', 'lumpsum', [money('principal', 'Lumpsum investment', 500000, 'One-time amount invested at the start; nothing is added later.'), number('years', 'Years', 10, 'yrs', 'Number of years invested; 1.5 means 18 months.'), percent('rate', 'Expected annual return', 8, 'Yearly return to assume, compounded once a year, like an annualised (CAGR) return. Market returns vary.')]],
     ['swp', 'SWP Calculator', 'swp', [money('corpus', 'Starting corpus', 10000000), money('withdrawal', 'Monthly withdrawal', 60000), percent('rate', 'Annual return', 7)]],
     ['emi', 'EMI Calculator', 'loan', [money('principal', 'Loan amount', 2000000), percent('rate', 'Interest rate', 9), number('years', 'Tenure', 10, 'yrs'), ...additionalPaymentInputs]],
     ['home-loan-emi', 'Home Loan EMI Calculator', 'loan', [money('principal', 'Home loan amount', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Tenure', 20, 'yrs'), ...additionalPaymentInputs]],
@@ -985,7 +988,13 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
         metric('Total gain', get('final') - contributions, 'currency', get('final') >= contributions ? 'positive' : 'warning')
       ]), modelVersion: 'monthly-periodic-v1' };
     }
-    case 'lumpsum':
+    case 'lumpsum': {
+      // Same arithmetic as a deposit, labelled for a market-linked investment.
+      const futureValue = get('principal') * (1 + rate) ** years;
+      return result('Projected value', futureValue, 'Projected value at a constant yearly return; market returns vary, so this is not a forecast.', [], [
+        metric('Estimated gains', futureValue - get('principal'), 'currency', 'positive')
+      ]);
+    }
     case 'fd': {
       const futureValue = get('principal') * (1 + rate) ** years;
       return result('Maturity value', futureValue, 'Estimated maturity value after compounding.', [], [

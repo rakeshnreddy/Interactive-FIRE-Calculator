@@ -175,6 +175,8 @@ export function getCalculatorStudioMetadata(
       scenarioFocus: 'Compare your deposit with a smaller, shorter, lower-rate what-if and a larger, longer, higher-rate one. Each changes all three inputs.'
     } : calculator.formula === 'rd' ? {
       scenarioFocus: 'Compare your deposits with a smaller, shorter, lower-rate what-if and a larger, longer, higher-rate one. Each changes the monthly deposit, term and rate together.'
+    } : isMarketGrowth(calculator) ? {
+      scenarioFocus: 'Compare your plan with a smaller, shorter, lower-return what-if and a larger, longer, higher-return one. Each changes the amount, time and return together.'
     } : {}),
     example: buildCalculatorExample(calculator),
     relatedCalculators: relatedCalculatorsFor(calculator, allCalculators),
@@ -462,10 +464,16 @@ function clampInput(input: CalculatorInput, value: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+// Lump sum and SIP routes: market-linked growth at an assumed constant return.
+export function isMarketGrowth(calculator: SeoCalculator): boolean {
+  return calculator.formula === 'lumpsum' || calculator.formula === 'sip';
+}
+
 function scenarioLabel(calculator: SeoCalculator, id: CalculatorScenarioId): string {
   if (calculator.formula === 'investment-return') return id === 'base' ? 'Your inputs' : id === 'conservative' ? 'Case A' : 'Case B';
   if (calculator.formula === 'fd') return id === 'base' ? 'Your deposit' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (calculator.formula === 'rd') return id === 'base' ? 'Your deposits' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
+  if (isMarketGrowth(calculator)) return id === 'base' ? 'Your plan' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (id === 'conservative') return 'Conservative';
   if (id === 'optimistic') return 'Optimistic';
   return 'Base';
@@ -492,6 +500,13 @@ function scenarioDescription(calculator: SeoCalculator, id: CalculatorScenarioId
     return id === 'conservative'
       ? 'A smaller monthly deposit, shorter term and lower rate together. A what-if, not an offered rate or forecast.'
       : 'A larger monthly deposit, longer term and higher rate together. A what-if, not an offered rate or forecast.';
+  }
+
+  if (isMarketGrowth(calculator)) {
+    const amount = calculator.formula === 'lumpsum' ? 'investment' : calculator.slug === 'step-up-sip' ? 'monthly SIP and step-up' : 'monthly SIP';
+    return id === 'conservative'
+      ? `A smaller ${amount}, shorter time and lower return together. A what-if, not a forecast.`
+      : `A larger ${amount}, longer time and higher return together. A what-if, not a forecast.`;
   }
 
   if (studio === 'Loan and Home Studio' || studio === 'Debt Payoff Studio') {
@@ -539,6 +554,10 @@ function exampleInsight(calculator: SeoCalculator): string {
 
   if (calculator.formula === 'fd' || calculator.formula === 'rd') {
     return 'The sample rate is illustrative, not a current bank offer. Enter the rate and term from the deposit you are considering.';
+  }
+
+  if (isMarketGrowth(calculator)) {
+    return 'The sample return is illustrative, not a forecast for any fund. Try a lower return as well as the one you expect.';
   }
 
   if (route === '/goals') {
