@@ -1,10 +1,10 @@
-# Stable beta release protocol — verified 2026-10-04 (C27)
+# Stable beta release protocol — verified 2026-10-04 (C28)
 
 ## Share one URL
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://d01dd062.interactive-fire-calculator.pages.dev, deployment `d01dd062-c273-4ee4-a8a5-5735801e073f`, clean commit `4488726bcf9470f2369cfc78ff77941214661c3f`. Product equals accepted C27 source `3e2569c6f0482876f7f02c753f99146cd372787f` (review documents differ). [Provider/asset hashes](evidence/C27/beta-release.json), [beta journey](evidence/C27/beta-journey.json), [C27 review](reviews/C27.md). Previous verified beta: C26 `775103db` / `d0e08013d6c108c8dbcfcfd500f9ce008559b047` ([record](evidence/C26/beta-release.json)).
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://b91c11d7.interactive-fire-calculator.pages.dev, deployment `b91c11d7-76ec-4622-be5a-7a1813045159`, clean commit `5582715d87c9e3e3ef68054aac1ed256bd463222`. Product equals accepted C28 source `7fc0170bc4996dd96d6eb7449574702df73fdc81` (review documents differ). [Provider/asset hashes](evidence/C28/beta-release.json), [beta journey](evidence/C28/beta-journey.json), [C28 review](reviews/C28.md). Previous verified beta: C27 `d01dd062` / `4488726bcf9470f2369cfc78ff77941214661c3f` ([record](evidence/C27/beta-release.json)).
 
-Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; 16 actual runtime asset hashes match the build and the verified C27 candidate on both the immutable URL and the beta alias. An alias check made immediately after deploy can still see the previous deployment; re-check until it matches and record only the matching check. Health200/protected401, all84 calculator HTTP routes and the actual PPF validation and 20-year keyboard journey pass. No hosted financial-data write in C27. Native reader/zoom and B51 actual-user evidence remain deferred.
+Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; 16 actual runtime asset hashes match the build and the verified C28 candidate on both the immutable URL and the beta alias. An alias check made immediately after deploy can still see the previous deployment; re-check until it matches and record only the matching check. Health200/protected401, all84 calculator HTTP routes and the actual paycheck helper and keyboard journey pass. No hosted financial-data write in C28. Native reader/zoom and B51 actual-user evidence remain deferred.
 
 ## Promotion discipline
 

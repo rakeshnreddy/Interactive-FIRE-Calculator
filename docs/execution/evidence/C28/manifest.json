@@ -4,6 +4,36 @@
   "provenance": "helpers-baseline.json and red-tests.log captured before implementation from main after C27; helpers-after.json and test-all.log from final local source equal to candidate.",
   "files": [
     {
+      "path": "docs/execution/evidence/C28/raw/beta-assets-alias.json",
+      "bytes": 4490,
+      "sha256": "4e76163240ed0fca6479f1a37070794b0420cc68a3f10e99141d027ca9d67223",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/beta-assets-immutable.json",
+      "bytes": 4470,
+      "sha256": "5a148698779f4829bd076768a77addb2bc43d6038458e417c37793379ae5ab2e",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/beta-deployment.json",
+      "bytes": 546,
+      "sha256": "afe53f9a36436dccbaf358c010257f31a89817ec7d73dd5f721fe9da751742a6",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/beta-public-smoke.log",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/build-beta.log",
+      "bytes": 3156,
+      "sha256": "86bccf346f31656013ae4bb5b8bcc8b4870e6bd88e640857e8ca1adfc2366747",
+      "origin": "ignored raw evidence"
+    },
+    {
       "path": "docs/execution/evidence/C28/raw/build-preview-auth.log",
       "bytes": 3002,
       "sha256": "74b74d16492c23185f7be8e3ed043bd0bbae246b31b1e937bdf7c5a7e72cf6d6",
@@ -19,6 +49,12 @@
       "path": "docs/execution/evidence/C28/raw/candidate-deployment.json",
       "bytes": 543,
       "sha256": "bffaa39285619b3966b0daad11bc388c4a0519bf9bf3cc78ee9c170808fcd9ce",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/deploy-beta.log",
+      "bytes": 614,
+      "sha256": "e13b6036f17b79e9bf072cef948ad6cfd7d1c74e9935b0c77e9e6c4f4ada2521",
       "origin": "ignored raw evidence"
     },
     {
@@ -57,5 +93,10 @@
       "sha256": "9ced34e978f946150fcccf95215b43bac69c7db990c8d978cee9afedf2e7a321",
       "origin": "ignored raw evidence"
     }
-  ]
+  ],
+  "beta": {
+    "immutable": "https://b91c11d7.interactive-fire-calculator.pages.dev",
+    "deployment_id": "b91c11d7-76ec-4622-be5a-7a1813045159",
+    "commit": "5582715d87c9e3e3ef68054aac1ed256bd463222"
+  }
 }
