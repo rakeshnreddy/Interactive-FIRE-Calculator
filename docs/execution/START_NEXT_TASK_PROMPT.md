@@ -1,16 +1,16 @@
-# FinPath — clean-point handoff after C28 (2026-10-04)
+# FinPath — clean-point handoff after C29 (2026-10-04)
 
 You are the next primary FinPath architect, direct implementer and responsible reviewer. The owner requested work here without Gemini. That explicit owner instruction supersedes the historical non-coder/mandatory-Gemini role in AGENTS.md for this continuation. Do not automatically launch Gemini or subagents. If instead acting only as a worker under a later explicit owner assignment, preserve PA-10: no worker Git mutations/deployment/closure or invented hosted PASS.
 
 ## Resolve the real starting state
 
-Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C28.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #151](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/151). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
+Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C29.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #152](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/152). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
 
-C19–C28 are accepted, not tasks to replay. C28 accepted product `7fc0170bc4996dd96d6eb7449574702df73fdc81` (generated input helpers made truthful; C27 PPF/gratuity before it). Full suite 104 files/2,760 tests; stable beta serves C28 (deployment `b91c11d7`, verified). 63/66 accepted (registered count only); B51 owner-deferred, B13/B14 locked. Production cannot be deployed until the owner supplies `.env.production.local` with a live Clerk key and an owned origin (OA-1); never bypass the preflight.
+C19–C29 are accepted, not tasks to replay. C29 accepted product `698ce790a18ae016564264c074689ed304370c30` (lump sum/SIP/step-up SIP market-growth presentation; C28 truthful generated helpers before it). Full suite 105 files/2,777 tests; stable beta serves C29 (deployment `d5ce67a4`, verified). 64/67 accepted (registered count only); B51 owner-deferred, B13/B14 locked. Production cannot be deployed until the owner supplies `.env.production.local` with a live Clerk key and an owned origin (OA-1); never bypass the preflight.
 
 ## Next bounded independent work (register a contract before edits)
 
-**Route-specific helpers for high-traffic routes.** C28 made every generated helper true but generic. Pick a small group (e.g. lump sum, SIP, step-up SIP, compound interest) and write route-specific helpers and basis lines as B60/B61 did for FD/CD/RD: state the actual engine convention (read the formula first), say a market return is an assumption, keep keys/defaults/results byte-equal. Primary sources only for factual claims; PDFs can be read by decompressing their text streams locally (see C27 evidence).
+**Loan EMI presentation.** Apply the B60/B61/B67 pattern to EMI, home-loan EMI, car-loan EMI, personal-loan EMI and mortgage (check whether mortgage already has dedicated copy first): read the engine to state its payment convention (rate ÷ 12, end-of-month payments, fixed rate, optional extra payments), what is excluded (processing fees, insurance, floating-rate resets), an EMI × months = principal + interest reconciliation, neutral what-ifs. Values, inputs and scenario vectors byte-equal; primary sources only for any factual claim.
 
 ## Implementation and closure discipline
 
