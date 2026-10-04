@@ -707,3 +707,17 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Tests: failing regressions first, full suite/typecheck/build/CI, isolated hosted journey and public-route smoke.
   - Security/privacy/dependencies: B50/B59; no data writes, dependencies, credentials or auth change.
   - Migration/rollback/effort: results/inputs byte-equivalent, no model version or snapshot retagging; revert presentation together. Human 2–4h, agent 1–2h plus validation, estimates only.
+
+## RD and exact-term schedule continuation — 2026-10-03
+
+- [ ] **B61 — RD presentation: deposit timing and interest basis.**
+  - User problem/evidence: B50 row 22; baseline RD says "recurring amount in the calculator currency", "years in years", "annual return / rate … unless the label says otherwise", contribution wording and Conservative/Optimistic, and never states end-of-month instalments, monthly compounding or exclusions. [Exact contract](execution/prompts/B61.md).
+  - Outcome/scope: before-input basis and exclusions, RD labels/helpers, extra yearly deposit distinguished from instalments, deposits + interest = maturity line, neutral what-ifs, RD guidance and scope notice; `rd` only.
+  - Non-goals: start-of-month or quarterly arithmetic, tax/fees/penalties, missed instalments, market rates, recommendations, formula/schema changes, production.
+  - Acceptance/tests: failing regressions first; results/scenarios byte-equal; default golden with independent oracle; full suite, CI, hosted 1440/390/320 light/dark and keyboard reveal.
+  - Analytics/privacy/dependencies: none new; B50/B60. Migration: byte-equivalent results, no retagging. Human 2–3h, agent 1h plus validation.
+- [ ] **B62 — Exact-term schedules for lump sum and monthly recurring calculators.**
+  - User problem/evidence: at 1.5 years the lump-sum table ends at ₹5,83,200 against a ₹5,61,184.46 headline and RD/SIP at ₹2,59,331.90 against ₹1,90,571.91. [Exact contract](execution/prompts/B62.md).
+  - Outcome/scope: exact-term final rows equal to headlines for lump sum, compound, SIP, step-up SIP, RD and NPS; lump-sum growth labels; integer terms unchanged.
+  - Non-goals: engines, other schedule builders (residual survey), results, scenarios, schema, production.
+  - Acceptance/tests: Decimal oracles, table/CSV equal headline, full suite, CI, hosted CSV check. Human 1–2h, agent 1h.
