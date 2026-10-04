@@ -36,9 +36,10 @@ const definitions: Record<string, ScopeDefinition> = {
   },
   ppf: {
     included: 'Equal annual deposits and growth at a constant entered rate.',
-    excluded: 'Monthly deposit-date rules, changing notified rates, contribution limits and withdrawals.',
-    basis: v => `${percent(v, 'rate')} is a planning assumption, not a live notified rate. The model deposits at each year’s beginning and compounds annually.`,
-    sources: [source('National Savings Institute: PPF scheme', 'https://www.nsiindia.gov.in/writereaddata/SchemeRules/PublicProvidentFundSchemeRule.pdf')]
+    excluded: 'Interest lost on deposits made after the 5th of a month, changing notified rates, loans and withdrawals.',
+    basis: v => `${percent(v, 'rate')} is a planning assumption, not a live notified rate. Each year's deposit is assumed to be made by 5 April, so it earns interest for the whole financial year; interest is credited once a year. Terms are whole financial years and deposits are capped at ₹1,50,000 a year under the PPF Scheme, 2019.`,
+    sources: [source('India Post: Public Provident Fund Scheme, 2019', 'https://www.indiapost.gov.in/documents/offerings/schemesandservices/posb/PublicProvidentFundScheme2019English.pdf'), source('National Savings Institute: PPF scheme', 'https://www.nsiindia.gov.in/writereaddata/SchemeRules/PublicProvidentFundSchemeRule.pdf')],
+    checked: '2026-10-04'
   },
   epf: {
     included: 'Entered employee/employer amounts accumulated as monthly savings.',

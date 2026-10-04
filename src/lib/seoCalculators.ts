@@ -421,7 +421,11 @@ export const seoCalculators: SeoCalculator[] = [
     ['hra-exemption', 'HRA Exemption Calculator', 'hra', [money('salary', 'Basic salary', 1200000), money('hra', 'HRA received', 500000), money('rent', 'Annual rent paid', 600000), percent('metroPercent', 'Salary exemption cap', 50)]],
     ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000, depositHelper), number('years', 'Deposit term', 10, 'yrs', depositTermHelper), percent('rate', 'Annual interest rate', 8, 'Quoted yearly rate; this estimate compounds it once a year.')]],
     ['rd', 'RD Calculator', 'rd', [...rdInputs]],
-    ['ppf', 'PPF Calculator', 'ppf', [money('annual', 'Annual contribution', 150000), percent('rate', 'Annual return', 7.1), number('years', 'Years', 15, 'yrs')]],
+    ['ppf', 'PPF Calculator', 'ppf', [
+      { ...money('annual', 'Annual contribution', 150000, 'Deposit for each financial year, ₹500 to ₹1,50,000 per financial year under the PPF scheme. This model assumes one deposit made by 5 April.'), max: 150000 },
+      percent('rate', 'Annual return', 7.1),
+      number('years', 'Years', 15, 'yrs', 'Whole financial years. The account can be closed after 15 years or extended in 5-year blocks.')
+    ]],
     ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, ...termInputs]],
     ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), annualTopUpInput, ...termInputs, percent('annuityPercent', 'Annuity allocation', 40, 'Share of the corpus used to buy an annuity. 40% is an editable example, not a rule: the minimum depends on your NPS sector, exit type and corpus size.'), percent('annuityRate', 'Annuity rate', 6, 'The yearly payout rate the annuity provider offers on the annuitised portion.')]],
     ['gratuity', 'Gratuity Calculator', 'gratuity', [money('salary', 'Last drawn basic + DA', 120000), number('years', 'Completed service', 8, 'yrs')]],
