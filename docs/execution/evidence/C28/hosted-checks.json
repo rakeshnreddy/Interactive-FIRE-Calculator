@@ -1,0 +1,33 @@
+{
+  "observed_on": "2026-10-04",
+  "source_sha": "7fc0170bc4996dd96d6eb7449574702df73fdc81",
+  "preview": "https://47795076.interactive-fire-calculator.pages.dev",
+  "viewport": "390x844",
+  "survey": "All 359 inputs on 82 routes before (raw/helpers-baseline.json) and after (raw/helpers-after.json): 196 helpers changed; 0 remaining with \"unless the label says otherwise\", \"recurring amount\" or \"… in years.\" phrasing.",
+  "cases": [
+    {
+      "route": "/calculators/home-loan-foreclosure",
+      "helpers": {
+        "Interest rate": "Yearly rate as a percentage, for example 7.5 for 7.5% a year.",
+        "Remaining tenure": "In years; 1.5 means 18 months.",
+        "Foreclosure payment": "Enter the foreclosure payment in the calculator currency."
+      }
+    },
+    {
+      "route": "/calculators/paycheck",
+      "helpers": {
+        "Estimated withholding rate": "Enter as a percentage, for example 18 for 18%.",
+        "Pay periods per year": "Number of pay periods in a year; for example, 26 for biweekly pay."
+      }
+    },
+    {
+      "route": "/calculators/gst",
+      "helpers": {
+        "GST rate": "Enter as a percentage, for example 18 for 18%."
+      }
+    }
+  ],
+  "overflow": "clientWidth 390 = scrollWidth 390 on all three",
+  "defective_text_on_page": false,
+  "console_errors": "none captured"
+}

@@ -1,0 +1,16 @@
+{
+  "observed_on": "2026-10-04",
+  "url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/calculators/paycheck",
+  "deployment_id": "b91c11d7-76ec-4622-be5a-7a1813045159",
+  "viewport": "390x844",
+  "helpers_seen": {
+    "Estimated withholding rate": "Enter as a percentage, for example 18 for 18%.",
+    "Pay periods per year": "Number of pay periods in a year; for example, 26 for biweekly pay."
+  },
+  "steps": "Focus last field; real Tab to \"View result\"; real Enter",
+  "result_focused": true,
+  "result_top": 88,
+  "client_width": 390,
+  "scroll_width": 390,
+  "headline": "$94,380"
+}

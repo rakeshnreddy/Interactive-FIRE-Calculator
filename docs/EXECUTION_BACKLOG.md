@@ -741,3 +741,11 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - User problem/evidence: 8.5 years headline ₹5,88,461.54 versus a year-9 row ₹6,23,076.92. [Exact contract](execution/prompts/B65.md).
   - Outcome/scope: exact entered-service final row with a note matching the existing scope; results unchanged; no legal claim.
   - Acceptance/tests: oracle, whole-year rows unchanged, CSV. Human 0.5h, agent 0.5h.
+
+## Generated input helper copy — 2026-10-04
+
+- [x] **B66 — Truthful generated input helpers.**
+  - User problem/evidence: 86 inputs on 66 routes read "annual percentage unless the label says otherwise", 48 call amounts "recurring" (including one-time foreclosure/recast payments), 52 say "in years" (15 literally "Enter the years in years."; pay periods told to be in years). [Exact contract](execution/prompts/B66.md).
+  - Outcome/scope: share-versus-yearly-rate percent text, monthly/yearly currency only when labelled, unit-suffix time text; generator only.
+  - Non-goals: hand-written per-route helpers, labels, results, production.
+  - Acceptance/tests: no defective phrasing on any route, named cases correct, explicit helpers unchanged; full suite, CI, hosted spot check. Human 1h, agent 0.5h.
