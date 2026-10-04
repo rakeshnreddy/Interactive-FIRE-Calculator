@@ -1053,6 +1053,21 @@
       "code_sha": "3e2569c6f0482876f7f02c753f99146cd372787f",
       "review": "reviews/C27.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B66",
+      "title": "truthful generated input helpers",
+      "checkpoint": "C28",
+      "status": "pending",
+      "dependencies": [
+        "B65"
+      ],
+      "prompt": "prompts/B66.md",
+      "submission": null,
+      "owner": "Astra direct implementation \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

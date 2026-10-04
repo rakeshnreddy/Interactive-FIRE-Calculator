@@ -35,6 +35,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C25 | RD presentation and exact-term growth schedules | B61, B62 | accepted | 5f2fdbf2021d946d9e6b51bf31c268801aec037d | [approved](reviews/C25.md) |
 | C26 | Exact-term return, inflation, Roth and EPF tables | B63 | accepted | 5181cb1411e5f680521de25538da493c7a76b774 | [approved](reviews/C26.md) |
 | C27 | PPF whole years and gratuity service table | B64, B65 | accepted | 3e2569c6f0482876f7f02c753f99146cd372787f | [approved](reviews/C27.md) |
+| C28 | Truthful generated input helpers | B66 | released | — | Contract registered; implementation and review pending |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -77,4 +78,8 @@ The B62 residual audit measured every route with a `years` input at its default 
 ## PPF and gratuity terms — 2026-10-04
 
 Owner said "continue" after C26. B64 applies the PPF Scheme 2019 (G.S.R. 915(E), read from the official India Post PDF): terms are whole financial years and deposits are capped at ₹1,50,000 a year, so impossible part-year and over-limit results are rejected with a clear message. B65 keeps gratuity's documented "service used exactly as entered" model and only makes its table end at the entered service; no statutory part-year rule is claimed because the cited Labour Codes FAQ could not be re-read. No model version, schema or production change.
+
+## Generated input helper copy — 2026-10-04
+
+A survey of all 359 inputs found the label-only helper generator calling one-time payments "recurring", shares/fees/taxes "annual percentages", pay periods "years" and writing "Enter the years in years." C28/B66 makes generated helpers say only what the label and unit suffix support. Copy only; explicit helpers, inputs, validation and results unchanged.
 
