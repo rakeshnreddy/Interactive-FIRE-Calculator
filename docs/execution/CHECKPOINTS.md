@@ -33,6 +33,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C23 | Mortgage affordability with entered housing costs | B59 | accepted | aab17a026bcda53ba25925377edb7cb4c205b3fd | [approved](reviews/C23.md) |
 | C24 | Deposit-specific FD/CD presentation and rate basis | B60 | accepted | 485070fc39db78eb3f27c9ed56b2a069f7eb566a | [approved](reviews/C24.md) |
 | C25 | RD presentation and exact-term growth schedules | B61, B62 | accepted | 5f2fdbf2021d946d9e6b51bf31c268801aec037d | [approved](reviews/C25.md) |
+| C26 | Exact-term return, inflation, Roth and EPF tables | B63 | released | — | Contract registered; implementation and review pending |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -67,3 +68,8 @@ Owner continues direct independent implementation without Gemini after C23. C24/
 ## RD and exact-term schedule continuation — 2026-10-03
 
 Owner asked to finish the work that needs no owner unblock. C25/B61 scopes B50 row 22 (RD) from source: end-of-month instalments, monthly compounding at rate ÷ 12, generic recurring/contribution copy and no exclusions. B62 fixes the C24 residual: lump-sum and shared monthly recurring schedules round a fractional term up to whole years and contradict the exact-term headline. Presentation and schedule reconciliation only; no formula, model version, schema or production change. B51, B13/B14 and production gates are unchanged.
+
+## Exact-term schedule audit — 2026-10-03
+
+The B62 residual audit measured every route with a `years` input at its default and default + 0.5. C26/B63 fixes the four builders whose tables contradict an exact-term engine at a part-year term: investment return/CAGR (table rate 10.29% versus headline 11.28%), inflation, Roth/traditional and EPF. PPF (yearly deposits) and gratuity (statutory part-year rule) are domain questions recorded as residuals, not folded in. Presentation only; no formula, model version, schema or production change.
+

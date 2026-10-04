@@ -1008,6 +1008,21 @@
       "code_sha": "5f2fdbf2021d946d9e6b51bf31c268801aec037d",
       "review": "reviews/C25.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B63",
+      "title": "exact-term schedules for return, inflation, Roth/traditional and EPF tables",
+      "checkpoint": "C26",
+      "status": "pending",
+      "dependencies": [
+        "B62"
+      ],
+      "prompt": "prompts/B63.md",
+      "submission": null,
+      "owner": "Astra direct implementation \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [
