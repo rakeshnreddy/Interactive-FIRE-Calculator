@@ -61,6 +61,7 @@ import {
   buildCalculatorStudioChart,
   buildScenarioValues,
   getCalculatorStudioMetadata,
+  isMarketGrowth,
   type CalculatorDetailSchedule,
   type CalculatorScenario,
   type CalculatorScenarioId,
@@ -710,7 +711,7 @@ function CalculatorDetail({
   const standardInputs = calculator.inputs.filter((input) => !isOptional(input.key));
   const housingKeys = new Set(['annualTaxes', 'annualInsurance', 'monthlyHoa', 'monthlyMortgageInsurance']);
   const optionalGroups = [
-    { key: 'payments', label: calculator.inputs.some((input) => input.key.startsWith('extra')) ? 'Pay extra' : calculator.formula === 'rd' ? 'Extra yearly deposit' : 'Additional contributions', inputs: calculator.inputs.filter((input) => isOptional(input.key) && !housingKeys.has(input.key)) },
+    { key: 'payments', label: calculator.inputs.some((input) => input.key.startsWith('extra')) ? 'Pay extra' : calculator.formula === 'rd' ? 'Extra yearly deposit' : calculator.formula === 'sip' ? 'Extra yearly investment' : 'Additional contributions', inputs: calculator.inputs.filter((input) => isOptional(input.key) && !housingKeys.has(input.key)) },
     { key: 'housing', label: 'Include housing costs', inputs: calculator.inputs.filter((input) => housingKeys.has(input.key)) }
   ].filter((group) => group.inputs.length > 0).map((group) => {
     const active = group.inputs.filter((input) => Number(rawValues[input.key]) !== 0 && rawValues[input.key]?.trim() !== '');
@@ -854,6 +855,8 @@ function CalculatorDetail({
           {calculator.formula === 'fd' ? <p className="calculator-cost-scope" data-deposit-basis>{calculator.slug === 'cd'
             ? <><strong>One deposit held to maturity.</strong> APY already includes compounding, so it is applied once a year, not converted again. Taxes, fees and early-withdrawal penalties are not included.</>
             : <><strong>One deposit, interest compounded once a year.</strong> Interest stays in the deposit and is paid with it at maturity. Tax/TDS, fees and premature-withdrawal penalties are not included.</>}</p> : null}
+          {calculator.formula === 'lumpsum' ? <p className="calculator-cost-scope" data-growth-basis><strong>One investment at the start, growing at the yearly return you enter, compounded once a year.</strong> {marketGrowthCaveat}</p> : null}
+          {calculator.formula === 'sip' ? <p className="calculator-cost-scope" data-growth-basis><strong>Equal monthly instalments, invested at the end of each month{calculator.slug === 'step-up-sip' ? ' and raised by the step-up once a year' : ''}.</strong> Growth uses the yearly return ÷ 12, compounded monthly, so it grows slightly faster than the same annualised (CAGR) return. {marketGrowthCaveat}</p> : null}
           {calculator.formula === 'rd' ? <p className="calculator-cost-scope" data-deposit-basis><strong>Equal monthly deposits, each added at the end of its month.</strong> Interest is compounded monthly at the yearly rate ÷ 12 and paid with the deposits at maturity. Tax/TDS, fees and penalties for missed instalments or premature withdrawal are not included. A bank that compounds or counts instalments differently will quote a slightly different maturity.</p> : null}
           <EstimateCustomization groups={optionalGroups} />
           {calculator.slug !== 'mortgage-affordability' && optionalGroups.some((group) => group.key === 'housing') ? <p className="calculator-cost-scope">Principal and interest are the base payment. Housing costs are excluded until entered below; extra payments reduce the loan separately.</p> : null}
@@ -944,6 +947,7 @@ function CalculatorDetail({
               {' = '}<strong>{formatMetric(result.metrics[0], calculator)}</strong> at maturity after {formatDepositNumber(scenarioValues.years)} {scenarioValues.years === 1 ? 'year' : 'years'} at {formatDepositNumber(scenarioValues.rate)}%{calculator.slug === 'cd' ? ' APY' : ' a year, compounded once a year'}.
             </p>
           ) : null}
+          {isMarketGrowth(calculator) && hasValidResult && result.metrics.length > 1 ? <MarketGrowthReconciliation calculator={calculator} result={result} values={scenarioValues} /> : null}
           {calculator.formula === 'rd' && hasValidResult && result.metrics.length > 2 ? <RecurringDepositReconciliation calculator={calculator} result={result} values={scenarioValues} /> : null}
           {hasValidResult ? <CalculatorScopeNotice scope={buildCalculatorScope(calculator, scenarioValues)} /> : null}
           <VariantChips calculator={calculator} onNavigate={onNavigate} />
@@ -1195,6 +1199,27 @@ function downloadScheduleCsv(calculator: SeoCalculator, schedule: CalculatorDeta
   anchor.click();
   anchor.remove();
   URL.revokeObjectURL(url);
+}
+
+const marketGrowthCaveat = 'Market returns vary; a constant-rate estimate is not a forecast or guarantee. Fund expenses, exit loads and tax are not deducted unless the return you enter already allows for them.';
+
+// Invested + estimated gains = projected value for lump sum and SIP routes.
+function MarketGrowthReconciliation({ calculator, result, values }: { calculator: SeoCalculator; result: CalculatorResult; values: Record<string, number> }) {
+  const money = (value: number) => formatMetric({ label: 'Amount', value, valueType: 'currency' }, calculator);
+  const lumpsum = calculator.formula === 'lumpsum';
+  const invested = lumpsum ? Math.max(0, values.principal) : result.metrics[1].value;
+  const gains = lumpsum ? result.metrics[1].value : result.metrics[2]?.value ?? result.metrics[0].value - invested;
+  const months = termMonths(values.years);
+  const extraTotal = lumpsum ? 0 : Math.max(0, values.annualTopUp ?? 0) * Math.floor(months / 12);
+  const term = lumpsum ? `${formatDepositNumber(values.years)} ${values.years === 1 ? 'year' : 'years'}` : `${months} ${months === 1 ? 'month' : 'months'}`;
+  return (
+    <p className="calculator-result-narrative" data-growth-reconciliation>
+      {money(invested)} invested
+      {extraTotal > 0 ? ` (${money(invested - extraTotal)} monthly + ${money(extraTotal)} extra yearly)` : ''}
+      {' + '}{money(gains)} estimated gains
+      {' = '}<strong>{money(result.metrics[0].value)}</strong> after {term} at {formatDepositNumber(values.rate)}% a year, compounded {lumpsum ? 'once a year' : 'monthly'}.
+    </p>
+  );
 }
 
 // Deposits + interest = maturity for a recurring deposit, itemising any extra yearly deposits.

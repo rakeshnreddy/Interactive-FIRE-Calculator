@@ -1,0 +1,18 @@
+{
+  "observed_on": "2026-10-04",
+  "url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/calculators/lumpsum-mutual-fund",
+  "deployment_id": "d5ce67a4-5461-429a-a23a-93aa1e93cedc",
+  "viewport": "390x844",
+  "steps": "Typed 1.5 in Years; real Tab from the return field to \"View result\"; real Enter",
+  "typing_scroll": {
+    "before": 377,
+    "after": 377
+  },
+  "result_focused": true,
+  "result_top": 88,
+  "client_width": 390,
+  "scroll_width": 390,
+  "result_heading": "Projected value",
+  "headline": "₹5,61,184",
+  "reconciliation": "₹5,00,000 invested + ₹61,184 estimated gains = ₹5,61,184 after 1.5 years at 8% a year, compounded once a year."
+}

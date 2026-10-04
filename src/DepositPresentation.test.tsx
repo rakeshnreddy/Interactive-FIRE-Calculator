@@ -131,12 +131,13 @@ describe('B60 deposit-specific FD/CD presentation', () => {
   });
 
   // B62 deliberately moved lump sum to an exact-term schedule with growth labels; its scenarios stay unchanged.
-  it('keeps lumpsum scenario labels while its schedule ends at the exact term', () => {
+  it('gives lumpsum its own scenario labels while its schedule ends at the exact term', () => {
     const lumpsum = find('lumpsum-mutual-fund');
     const schedule = buildCalculatorDetailSchedule(lumpsum, { principal: 10000, rate: 4.5, years: 1.5 })!;
     expect(schedule.rows.at(-1)!.values.year).toBe(1.5);
     expect(schedule.columns.find((c) => c.key === 'balance')!.label).toBe('Value');
-    expect(buildCalculatorScenarios(lumpsum, defaults('lumpsum-mutual-fund')).map((s) => s.label)).toEqual(['Conservative', 'Base', 'Optimistic']);
+    // B67 gives lump sum neutral market what-if labels.
+    expect(buildCalculatorScenarios(lumpsum, defaults('lumpsum-mutual-fund')).map((s) => s.label)).toEqual(['Lower what-if', 'Your plan', 'Higher what-if']);
   });
 
   it('keeps the scenario chart consistent with the relabelled scenarios', () => {

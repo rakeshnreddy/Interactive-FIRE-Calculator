@@ -1,0 +1,216 @@
+{
+  "checked_at": "2026-10-04T21:40:16.707Z",
+  "owner_approval": "Owner: \"ok do that\" (2026-10-04); same promotion flow approved for C24",
+  "deployment_commit_sha": "11ea34ee9365676bebdcc3c301f7c922022f8389",
+  "accepted_product_sha": "698ce790a18ae016564264c074689ed304370c30",
+  "product_equivalence": "git diff 698ce79..11ea34e changes docs/ only; runtime JS/CSS bytes equal the verified candidate c2fc57b2",
+  "deployment_id": "d5ce67a4-5461-429a-a23a-93aa1e93cedc",
+  "immutable_url": "https://d5ce67a4.interactive-fire-calculator.pages.dev",
+  "beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+  "branch": "codex/finpath-quality-execution",
+  "environment": "preview",
+  "commit_dirty": false,
+  "latest_stage": "deploy:success",
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "production_deployments_enabled": false,
+  "canonical_production_commit": "3399dbbd8d7f0e6379972356a790b236e6b177b1",
+  "build": "npm run build:preview-auth from clean 11ea34e (Node v24.2.0); wrangler pages deploy --commit-dirty=false",
+  "public_calculator_smoke": "84 public calculator routes verified without authentication at the beta alias",
+  "immutable_checks": [
+    {
+      "route": "/api/health",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/api/me",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/plans",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/calculators/sip",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/calculators/lumpsum-mutual-fund",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    }
+  ],
+  "alias_checks": [
+    {
+      "route": "/api/health",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/api/me",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/plans",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/calculators/sip",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/calculators/lumpsum-mutual-fund",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    }
+  ],
+  "assets_match_local_build": {
+    "immutable": true,
+    "alias": true
+  },
+  "assets_equal_verified_candidate": true,
+  "bundle_sha256": [
+    {
+      "path": "/assets/BalanceImportPanel-B5v8SAcQ.js",
+      "status": 200,
+      "sha256": "e26e1d2c83661284b30e912196a73f7830c20b5110f70d7741f54fc48e131f3a",
+      "bytes": 9680,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/CalculatorLibrary-BM0rThLW.js",
+      "status": 200,
+      "sha256": "373aeb07a5bf6f6d19f303a6e29fb242da285240951f961ad1de954676316504",
+      "bytes": 396801,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/PlanningWorkspace-CNDWp5gJ.js",
+      "status": 200,
+      "sha256": "0794535b2d27bb2931553cb14d6834f1c5d40e27fe12670934f709482e74cf1d",
+      "bytes": 27120,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/ProjectionChart-PF_dS1MO.js",
+      "status": 200,
+      "sha256": "734cfad4d171e5d930e288b88c4328e51642229d5ad5baa322ebffe38166ce89",
+      "bytes": 348238,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/TransactionImportPanel-DBcf3Mn0.js",
+      "status": 200,
+      "sha256": "3a0750ffff5f2644ff6056f2214935b828f5906ff60e0d48e05e0d71c65f2e3d",
+      "bytes": 10210,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/WorkspacePanels-DfFpuTDD.js",
+      "status": 200,
+      "sha256": "242b240c3735d2aaa5985af5db8ead574848510c345a6c88ba67c699adc4b26f",
+      "bytes": 46966,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/calculator-catalog-BZUp18Rk.js",
+      "status": 200,
+      "sha256": "311853c2305d39ad8102ba48acf499e067ec435eac1a7ec78e47945a5efe919a",
+      "bytes": 102747,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/circle-check-CvjZpSFY.js",
+      "status": 200,
+      "sha256": "d5972873289aad1c9e9daf97be5fa670a3a2252ffc38bec5fb245d6db011cbc3",
+      "bytes": 222,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/dist-_XyzNBdf.js",
+      "status": 200,
+      "sha256": "f7255666396cf8bb239176a3d670722c7c56c6e2b70b7ae60b7ff8b1bee96971",
+      "bytes": 145733,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/history-BU5nD0J1.js",
+      "status": 200,
+      "sha256": "15b27909f426ede14d5ea9ecd6a53673b5574c32ed85d2e656dad163bb04951b",
+      "bytes": 276,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-DNhARteC.css",
+      "status": 200,
+      "sha256": "7127b0aefaa21c9d623745c713cc0e3f7babdb0b4663e03548da002c65d72f6f",
+      "bytes": 220892,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-DpHXkfV5.js",
+      "status": 200,
+      "sha256": "690907883b301e7293faf981f6ae42c3b78bb7c1dabaceca5690a98547b70a2e",
+      "bytes": 209073,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/papaparse.min-DIiCcvP0.js",
+      "status": 200,
+      "sha256": "01a2bca9172dfa1468fcd9c23adbe81e4caa5d04e5fa487d353f74a7660b6914",
+      "bytes": 19979,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/react-vendor-CvBZlOBd.js",
+      "status": 200,
+      "sha256": "2eb2df5b9abff34af7fdcd9775abf2d145105b56a2cd413ca1d96977a1bc4eb5",
+      "bytes": 139938,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "status": 200,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "bytes": 694,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rotate-ccw-D3XwuRYY.js",
+      "status": 200,
+      "sha256": "fe6ffa0a2c7b0190c11b2ac6c5f5dd90edacfb9323fc2bf03d5e4872310db98b",
+      "bytes": 1620,
+      "matches_local_build": true
+    }
+  ]
+}

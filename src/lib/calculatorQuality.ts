@@ -389,6 +389,22 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
       'Check taxes, fees, early-withdrawal penalties and whether you may need the money before maturity.'
     ]
   },
+  lumpsum: {
+    decisionUsefulness: 'Use this calculator to see what one investment could grow to at a constant yearly return, and how much the result depends on the return you assume.',
+    interpretationChecks: [
+      'Separate the amount invested from the estimated gains.',
+      'Market returns vary from year to year and are not guaranteed; test a lower return as well as the one you expect.',
+      'Check whether the return you enter is before or after fund expenses, exit loads and tax.'
+    ]
+  },
+  sip: {
+    decisionUsefulness: 'Use this calculator to see what regular monthly investing could build at a constant yearly return, and how much the result depends on the return and time you assume.',
+    interpretationChecks: [
+      'Separate the total invested from the estimated gains.',
+      'Market returns vary from year to year and are not guaranteed; test a lower return as well as the one you expect.',
+      'Check that the monthly instalment, and any step-up, fit your budget for the whole term, and whether the return you enter is before or after fund expenses, exit loads and tax.'
+    ]
+  },
   rd: {
     decisionUsefulness: 'Use this calculator to see what a fixed monthly deposit builds by maturity before committing to every instalment for the full term.',
     interpretationChecks: [
@@ -597,7 +613,7 @@ export function getCalculatorQualitySpec(calculator: SeoCalculator): CalculatorQ
       `${input.label}: ${input.helper ?? 'Use the calculator unit shown with this input.'}`
     ),
     // Deposit guidance replaces the studio's contribution-based checks instead of appending after them.
-    interpretationChecks: calculator.formula === 'fd' || calculator.formula === 'rd' ? mergeRequirements(formula.interpretationChecks, slug.interpretationChecks) : mergeRequirements(
+    interpretationChecks: ['fd', 'rd', 'lumpsum', 'sip'].includes(calculator.formula) ? mergeRequirements(formula.interpretationChecks, slug.interpretationChecks) : mergeRequirements(
       defaults.interpretationChecks,
       formula.interpretationChecks,
       slug.interpretationChecks
