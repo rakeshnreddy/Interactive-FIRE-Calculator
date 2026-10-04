@@ -31,6 +31,7 @@ export function validateCalculatorInputs(calculator: SeoCalculator, raw: Record<
     else if (input.max !== undefined && value > input.max) errors[input.key] = `Use ${input.max} or less.`;
     else if ((['refinance', 'points'].includes(calculator.formula) || calculator.slug === 'mortgage-affordability') && input.key === 'years' && value <= 0) errors[input.key] = 'Enter a loan term greater than zero.';
     else if (calculator.formula === 'roi' && input.key === 'cost' && value === 0) errors[input.key] = 'Enter a cost greater than zero to calculate ROI.';
+    else if (calculator.formula === 'ppf' && input.key === 'years' && !Number.isInteger(value)) errors[input.key] = 'PPF runs in whole financial years. Enter a whole number, such as 15 or 20.';
     else values[input.key] = value;
   }
   return { values: Object.keys(errors).length ? null : values, errors };

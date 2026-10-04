@@ -20,7 +20,7 @@ describe('honest adjacent calculator scope', () => {
     const values = defaults(slug); const before = JSON.stringify(values);
     const scope = buildCalculatorScope(calculator, values)!;
     expect(scope.included.length).toBeGreaterThan(10); expect(scope.excluded.length).toBeGreaterThan(10);
-    expect(scope.basis.length).toBeGreaterThan(10); expect(scope.checked).toBe(['mortgage-affordability', 'fd', 'cd', 'rd'].includes(slug) ? '2026-10-03' : '2026-09-30');
+    expect(scope.basis.length).toBeGreaterThan(10); expect(scope.checked).toBe(slug === 'ppf' ? '2026-10-04' : ['mortgage-affordability', 'fd', 'cd', 'rd'].includes(slug) ? '2026-10-03' : '2026-09-30');
     for (const source of scope.sources) {
       const url = new URL(source.url);
       expect(url.protocol).toBe('https:'); expect(url.hostname).toMatch(/(?:\.gov|\.gov\.in|pfrda\.org\.in|rbi\.org\.in)$/);

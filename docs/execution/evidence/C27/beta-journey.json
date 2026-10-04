@@ -1,0 +1,14 @@
+{
+  "observed_on": "2026-10-04",
+  "url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/calculators/ppf",
+  "deployment_id": "d01dd062-c273-4ee4-a8a5-5735801e073f",
+  "viewport": "390x844",
+  "steps": "Typed 15.5 in Years (rejected, View result disabled, viewport 303→303); typed 20; real Tab to View result; real Enter",
+  "message": "PPF runs in whole financial years. Enter a whole number, such as 15 or 20.",
+  "result_focused": true,
+  "result_top": 88,
+  "client_width": 390,
+  "scroll_width": 390,
+  "headline_20y": "₹66,58,288",
+  "oracle": "150000 × ((1.071^20 − 1)/0.071) × 1.071 = 6658288.169641770 (Python Decimal)"
+}

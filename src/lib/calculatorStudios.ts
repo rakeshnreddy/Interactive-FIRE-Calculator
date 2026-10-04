@@ -2606,21 +2606,25 @@ function socialSecuritySchedule(_calculator: SeoCalculator, values: Record<strin
 
 function gratuitySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const salary = Math.max(0, values.salary ?? 0);
-  const years = scheduleYears(values.years ?? 0);
-  const rows: CalculatorDetailScheduleRow[] = [];
-
+  // Ends at the service entered, matching the headline; the model uses entered service exactly (see scope).
+  const points = exactTermPoints(values.years);
+  if (!points.length) return null;
   const statutoryCap = 2_000_000;
-  for (let year = 1; year <= years; year += 1) {
+  const rows = points.map((year): CalculatorDetailScheduleRow => {
     const formulaAmount = salary * 15 / 26 * year;
-    rows.push({
+    const notes = [
+      year < 5 ? 'Often below common vesting threshold' : formulaAmount > statutoryCap ? 'Statutory ceiling reached' : '',
+      Number.isInteger(year) ? '' : 'Part year: service used exactly as entered; statutory counting of a part year is not applied.'
+    ].filter(Boolean);
+    return {
       id: `gratuity-year-${year}`,
-      note: year < 5 ? 'Often below common vesting threshold' : formulaAmount > statutoryCap ? 'Statutory ceiling reached' : undefined,
+      note: notes.length ? notes.join(' ') : undefined,
       values: {
         benefit: Math.min(formulaAmount, statutoryCap),
         year
       }
-    });
-  }
+    };
+  });
 
   return {
     columns: [

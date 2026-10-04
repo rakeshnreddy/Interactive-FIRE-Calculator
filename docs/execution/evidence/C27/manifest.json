@@ -1,0 +1,108 @@
+{
+  "related_candidate_sha": "3e2569c6f0482876f7f02c753f99146cd372787f",
+  "preview": "https://88ad1c8a.interactive-fire-calculator.pages.dev",
+  "provenance": "baseline.json and red-tests.log captured before implementation against main 6413640; test-all.log from final local source equal to candidate; deployment/assets/CSV bound to the clean candidate.",
+  "files": [
+    {
+      "path": "docs/execution/evidence/C27/raw/baseline.json",
+      "bytes": 11734,
+      "sha256": "488098139d34cd4a8284e56a51591a7bd6a00f6f73eaafe34d0dc00598e6d133",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/beta-assets-alias.json",
+      "bytes": 4472,
+      "sha256": "643892a8d3abb8879d51edc47579acee63c07466bcc8e5811f9daa98b79231ee",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/beta-assets-immutable.json",
+      "bytes": 4452,
+      "sha256": "cf1ef5b20cf519d76600879be81859ec5483e94e629f73515fd462438b831573",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/beta-deployment.json",
+      "bytes": 546,
+      "sha256": "031f4fd5498d77eb09e2f2d11bdd251c1094881e6fdffdce484354be1780c654",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/beta-public-smoke.log",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/build-beta.log",
+      "bytes": 3002,
+      "sha256": "e8cb240a98219cecb710e6a1659dca3e6891aa82082a4b5b21c112b45f75ad2c",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/build-preview-auth.log",
+      "bytes": 3002,
+      "sha256": "f2c7daf110b9b785640ef1277b57fefca11cf57fea6146dc8b660d4459c2aceb",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/candidate-assets-raw.json",
+      "bytes": 4452,
+      "sha256": "ce1efb4884ee8493622564bafde1d35fb354739f886d3277fc9049cccc471518",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/candidate-deployment.json",
+      "bytes": 535,
+      "sha256": "7ae94ae44034b353e3922eb334d2108637d53d3568f8dc90a49d42910cdb157e",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/deploy-beta.log",
+      "bytes": 614,
+      "sha256": "0d3164e9cfafc86e2b6313c4be298c75886c0384103d6dd401a7e4357887b682",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/deploy.log",
+      "bytes": 570,
+      "sha256": "2fd409cf6e43e6034c9c7057e0eb10fa9c1f6db497c608a4fcbfedbfd9b411a0",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/hosted-gratuity-8.5.csv",
+      "bytes": 432,
+      "sha256": "441f7ffdcda4749ee2f76a051499fc34101e3034f50f070ab054383cd796686c",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/ppf-scheme-2019-extracted.txt",
+      "bytes": 39394,
+      "sha256": "856513cf74fdafef340d74930e8ab2c46f4772b5e1373104fd236c37f0d2b5ca",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/public-smoke.log",
+      "bytes": 119,
+      "sha256": "56fc6c40a3b3ef05628d4a3b55c00eb320c226387ff376ca7c9426a87c18f725",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/red-tests.log",
+      "bytes": 14972,
+      "sha256": "6426ef74cc6f33d95acefeeb4851cdb794dd3b11a0f479be51f5bcd90f78248e",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C27/raw/test-all.log",
+      "bytes": 7628,
+      "sha256": "a62a6d259b51c4db0f4aa9f31a8241e82ca573b22c16f7be071791e32a0e0087",
+      "origin": "ignored raw evidence"
+    }
+  ],
+  "beta": {
+    "immutable": "https://d01dd062.interactive-fire-calculator.pages.dev",
+    "deployment_id": "d01dd062-c273-4ee4-a8a5-5735801e073f",
+    "commit": "4488726bcf9470f2369cfc78ff77941214661c3f"
+  }
+}
