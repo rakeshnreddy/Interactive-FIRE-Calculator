@@ -1068,6 +1068,22 @@
       "code_sha": "7fc0170bc4996dd96d6eb7449574702df73fdc81",
       "review": "reviews/C28.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B67",
+      "title": "market-growth presentation for lump sum, SIP and step-up SIP",
+      "checkpoint": "C29",
+      "status": "pending",
+      "dependencies": [
+        "B62",
+        "B66"
+      ],
+      "prompt": "prompts/B67.md",
+      "submission": null,
+      "owner": "Astra direct implementation \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

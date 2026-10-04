@@ -749,3 +749,11 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Outcome/scope: share-versus-yearly-rate percent text, monthly/yearly currency only when labelled, unit-suffix time text; generator only.
   - Non-goals: hand-written per-route helpers, labels, results, production.
   - Acceptance/tests: no defective phrasing on any route, named cases correct, explicit helpers unchanged; full suite, CI, hosted spot check. Human 1h, agent 0.5h.
+
+## Market-growth presentation — 2026-10-04
+
+- [ ] **B67 — Market-growth presentation for lump sum, SIP and step-up SIP.**
+  - User problem/evidence: lump sum calls a fund "Maturity value / Estimated interest" and asks for a monthly-budget check with no contributions; none state timing, monthly-versus-CAGR compounding, fees/tax exclusions or that returns are not forecasts. [Exact contract](execution/prompts/B67.md).
+  - Outcome/scope: before-input growth basis, route labels/helpers, lump-sum result relabel, invested + gains = value line, neutral what-ifs, route guidance.
+  - Non-goals: annuity-due or fee/tax arithmetic, fund data, compound-interest page, schema, production.
+  - Acceptance/tests: failing regressions first, Decimal oracles, byte-equal values, full suite, CI, hosted light/dark 1440/390/320. Human 2–3h, agent 1h.
