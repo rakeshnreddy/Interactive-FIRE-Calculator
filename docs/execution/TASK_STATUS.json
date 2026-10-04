@@ -1013,15 +1013,15 @@
       "id": "B63",
       "title": "exact-term schedules for return, inflation, Roth/traditional and EPF tables",
       "checkpoint": "C26",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B62"
       ],
       "prompt": "prompts/B63.md",
-      "submission": null,
+      "submission": "submissions/B63.md",
       "owner": "Astra direct implementation \u2014 owner continuation",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "5181cb1411e5f680521de25538da493c7a76b774",
+      "review": "reviews/C26.md",
       "blocked_reason": null
     }
   ],

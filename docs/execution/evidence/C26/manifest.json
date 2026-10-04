@@ -1,0 +1,73 @@
+{
+  "related_candidate_sha": "5181cb1411e5f680521de25538da493c7a76b774",
+  "preview": "https://3eaac24e.interactive-fire-calculator.pages.dev",
+  "provenance": "audit-baseline.json and red-tests.log captured before implementation; test-all.log and audit-after.json from final local source equal to candidate; deployment/assets/CSV bound to the clean candidate and immutable URL.",
+  "files": [
+    {
+      "path": "docs/execution/evidence/C26/raw/audit-after.json",
+      "bytes": 1821582,
+      "sha256": "499694b6d6a16a579a18b2bafdb6f3a17fa245475356219550df0a7bf90c6948",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/audit-baseline.json",
+      "bytes": 42920,
+      "sha256": "0864ea25a5b917add529a1ab334ff93ffebea6048a254c098fcb503fd4d73f19",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/build-preview-auth.log",
+      "bytes": 3002,
+      "sha256": "1e2ce965511a206a51916a51c6fb437b316cb5bd04444971b77ac742578863e0",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/candidate-assets-raw.json",
+      "bytes": 4448,
+      "sha256": "62879a55a0155b2c9540261e43cd9a7ee72e3e217bdc79dd18aa05f163da8fc2",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/candidate-deployment.json",
+      "bytes": 539,
+      "sha256": "38e222e51a29e17ff5ff78e045644e3377685fc60c6ec829b472c6c22269f68e",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/deploy.log",
+      "bytes": 680,
+      "sha256": "183d500d7a61710e45d147ee1d4134dc813a95945293f843a76d691ea1be04a4",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/hosted-cagr-5.5.csv",
+      "bytes": 321,
+      "sha256": "8fca6bc418847229d209015532b58b1fdc71a9babecd1bf80234006d4195babe",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/hosted-epf-10.5-tail.csv",
+      "bytes": 178,
+      "sha256": "1545f0f378baa911ae536c89c989fc0542dab09e12e63a6ca81b1fb443ff45b4",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/public-smoke.log",
+      "bytes": 119,
+      "sha256": "df2fd435670ac66e224b200b41277472685fcacdeb9fc565e1986b899415aebf",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/red-tests.log",
+      "bytes": 3766,
+      "sha256": "498f4faa22b2347209e352a7ffe8bee341020949db852f59dbd2bb84b5cca7c3",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C26/raw/test-all.log",
+      "bytes": 7631,
+      "sha256": "d454d6214aeecd6bcea30f2302f4eb03577cf48f15e214ef6d4d4802c403381a",
+      "origin": "ignored raw evidence"
+    }
+  ]
+}

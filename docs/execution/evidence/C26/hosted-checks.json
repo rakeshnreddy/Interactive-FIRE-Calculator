@@ -1,0 +1,57 @@
+{
+  "observed_on": "2026-10-03",
+  "source_sha": "5181cb1411e5f680521de25538da493c7a76b774",
+  "preview": "https://3eaac24e.interactive-fire-calculator.pages.dev",
+  "method": "Claude desktop in-app browser; term typed with the keyboard; real CSV button; Blob captured via URL.createObjectURL with the anchor download suppressed (no local file).",
+  "cases": [
+    {
+      "route": "/calculators/cagr",
+      "viewport": "390x844",
+      "inputs": {
+        "initial": 10000,
+        "final": 18000,
+        "years": 5.5
+      },
+      "headline": "11.28%",
+      "client_width": 390,
+      "scroll_width": 390,
+      "csv_file": "cagr-return-path-table.csv",
+      "csv_rows": [
+        "Start",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "5.5"
+      ],
+      "every_row_rate": "11.28%",
+      "last_row_value": "$18,000",
+      "oracle": "1.8^(1/5.5) − 1 = 0.1127899192821328 (Python Decimal)",
+      "raw": "raw/hosted-cagr-5.5.csv"
+    },
+    {
+      "route": "/calculators/epf",
+      "viewport": "1440x1000",
+      "inputs": {
+        "employee": 12000,
+        "employer": 12000,
+        "years": 10.5,
+        "rate": 8
+      },
+      "headline": "₹47,15,708",
+      "client_width": 1425,
+      "scroll_width": 1425,
+      "csv_file": "epf-epf-contribution-schedule.csv",
+      "last_row": "10.5 … ₹47,15,708, Part year: 6 months of contributions and growth.",
+      "oracle": "126 end-of-month deposits of 24,000 at 8%/12 = 4715707.764417067 (Python Decimal)",
+      "raw": "raw/hosted-epf-10.5-tail.csv"
+    }
+  ],
+  "audit": "Every route with a years input at default and default + 0.5 (raw/audit-baseline.json → raw/audit-after.json): exactly investment-return, cagr, inflation, roth-vs-traditional-ira and epf changed from mismatched to matching at the part-year term; no whole-year last row changed on any route; ppf and gratuity remain (recorded residuals).",
+  "console_errors": "none captured",
+  "not_claimed": [
+    "native reader/zoom",
+    "WCAG conformance"
+  ]
+}
