@@ -1,17 +1,16 @@
-# FinPath — clean-point handoff after C26 (2026-10-03)
+# FinPath — clean-point handoff after C27 (2026-10-04)
 
 You are the next primary FinPath architect, direct implementer and responsible reviewer. The owner requested work here without Gemini. That explicit owner instruction supersedes the historical non-coder/mandatory-Gemini role in AGENTS.md for this continuation. Do not automatically launch Gemini or subagents. If instead acting only as a worker under a later explicit owner assignment, preserve PA-10: no worker Git mutations/deployment/closure or invented hosted PASS.
 
 ## Resolve the real starting state
 
-Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C26.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #149](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/149). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
+Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `/Users/Rakesh/Documents/ChatGPT/Interactive-FIRE-Calculator` is stale. Read AGENTS.md, PRODUCT.md, DESIGN.md, `docs/execution/RESUME.md`, TASK_STATUS.json, CHECKPOINTS.md, IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md and reviews/C27.md. Run `git status --short --branch`, resolve HEAD and origin/main, and confirm the merge state of [PR #150](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/150). Do not reset, stash, delete or overwrite another session's edits; explicitly stage only your edited paths.
 
-C19–C26 are accepted, not tasks to replay. C26 accepted product `5181cb1411e5f680521de25538da493c7a76b774`: every annual/monthly table whose engine uses the exact term now ends at that term (audited across every route with a `years` input). Full suite 102 files/2,748 tests; stable beta serves C26 (deployment `775103db`, verified). 60/63 accepted (registered count only); B51 owner-deferred, B13/B14 locked. Production cannot be deployed until the owner supplies `.env.production.local` with a live Clerk key and an owned origin (OA-1); never bypass the preflight.
+C19–C27 are accepted, not tasks to replay. C27 accepted product `3e2569c6f0482876f7f02c753f99146cd372787f` (PPF whole financial years and ₹1,50,000 cap from the PPF Scheme, 2019; gratuity table ends at entered service). Full suite 103 files/2,755 tests; stable beta serves C27 (deployment `d01dd062`, verified). 62/65 accepted (registered count only); B51 owner-deferred, B13/B14 locked. Production cannot be deployed until the owner supplies `.env.production.local` with a live Clerk key and an owned origin (OA-1); never bypass the preflight.
 
-## Next bounded independent work (register a sourced contract before edits)
+## Next bounded independent work (register a contract before edits)
 
-1. **PPF part-year term.** PPF takes yearly deposits; the engine accepts a fractional term and its table rounds up. Decide from official PPF scheme rules (dated, primary source) whether the input should be whole years (with a clear message) or define a part-year treatment; preserve existing whole-year vectors and saved records.
-2. **Gratuity part-year service.** The engine multiplies by fractional service years; the statute counts a part year above six months as a year. Read the current primary source first (Payment of Gratuity Act and any Labour Code change), version the model if the result changes, and keep historical saved results readable.
+**Generic rate-helper copy on market-linked calculators.** PPF ("Annual return"), lump sum, SIP, step-up SIP, compound interest and similar still show "Enter the annual return … as an annual percentage unless the label says otherwise." Survey every route still using that default helper, then write route-appropriate helpers (expected return is an assumption, not a guarantee; PPF rate is a notified rate the user enters) without changing keys, defaults or results. Primary sources only for factual claims; PDFs can be read by decompressing their text streams locally (see the C27 evidence).
 
 ## Implementation and closure discipline
 
