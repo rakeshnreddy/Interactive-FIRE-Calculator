@@ -732,12 +732,12 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
 
 ## PPF and gratuity terms — 2026-10-04
 
-- [ ] **B64 — PPF: whole financial years and the yearly deposit limit.**
+- [x] **B64 — PPF: whole financial years and the yearly deposit limit.**
   - User problem/evidence: 15.5 years models 15.5 yearly deposits and a table ending at year 16; the optimistic what-if deposits ₹1,68,000, above the ₹1,50,000 scheme limit. [Exact sourced contract](execution/prompts/B64.md).
   - Outcome/scope: whole-year validation with a clear message, ₹1,50,000 input maximum (caps the what-if), deposit-timing and source in scope; valid whole-year results unchanged.
   - Non-goals: live rates, minimum/discontinuation, loans/withdrawals, model version, production.
   - Acceptance/tests: failing regressions first, Decimal oracles, full suite, CI, hosted validation message. Human 1–2h, agent 1h.
-- [ ] **B65 — Gratuity table ends at the entered service.**
+- [x] **B65 — Gratuity table ends at the entered service.**
   - User problem/evidence: 8.5 years headline ₹5,88,461.54 versus a year-9 row ₹6,23,076.92. [Exact contract](execution/prompts/B65.md).
   - Outcome/scope: exact entered-service final row with a note matching the existing scope; results unchanged; no legal claim.
   - Acceptance/tests: oracle, whole-year rows unchanged, CSV. Human 0.5h, agent 0.5h.

@@ -34,7 +34,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C24 | Deposit-specific FD/CD presentation and rate basis | B60 | accepted | 485070fc39db78eb3f27c9ed56b2a069f7eb566a | [approved](reviews/C24.md) |
 | C25 | RD presentation and exact-term growth schedules | B61, B62 | accepted | 5f2fdbf2021d946d9e6b51bf31c268801aec037d | [approved](reviews/C25.md) |
 | C26 | Exact-term return, inflation, Roth and EPF tables | B63 | accepted | 5181cb1411e5f680521de25538da493c7a76b774 | [approved](reviews/C26.md) |
-| C27 | PPF whole years and gratuity service table | B64, B65 | released | — | Contracts registered; implementation and review pending |
+| C27 | PPF whole years and gratuity service table | B64, B65 | accepted | 3e2569c6f0482876f7f02c753f99146cd372787f | [approved](reviews/C27.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 

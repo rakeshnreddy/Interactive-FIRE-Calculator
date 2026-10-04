@@ -1,0 +1,59 @@
+{
+  "observed_on": "2026-10-04",
+  "source_sha": "3e2569c6f0482876f7f02c753f99146cd372787f",
+  "preview": "https://88ad1c8a.interactive-fire-calculator.pages.dev",
+  "method": "Claude desktop in-app browser at 390x844 (dark); values typed with the keyboard; real CSV button with the Blob captured and the download suppressed.",
+  "source_read": {
+    "document": "Public Provident Fund Scheme, 2019 — G.S.R. 915(E), 12 December 2019",
+    "url": "https://www.indiapost.gov.in/documents/offerings/schemesandservices/posb/PublicProvidentFundScheme2019English.pdf",
+    "how": "official PDF downloaded; text streams decompressed locally (raw/ppf-scheme-2019-extracted.txt)",
+    "paragraphs": [
+      "2(1)(f) year means the financial year",
+      "4(1) ₹500–₹1,50,000 in a year",
+      "5(2) lump sum or instalments",
+      "7 monthly interest on lowest balance after the fifth day, credited at the end of each year",
+      "11 closure after fifteen years",
+      "12 extension for further blocks of five years"
+    ]
+  },
+  "cases": [
+    {
+      "route": "/calculators/ppf",
+      "action": "typed 15.5 in Years",
+      "field_invalid": true,
+      "message": "PPF runs in whole financial years. Enter a whole number, such as 15 or 20.",
+      "raw_kept": "15.5",
+      "result_state": "Previous result — finish your inputs to update; View result disabled; saving, sharing and exports paused",
+      "typing_scroll": {
+        "before": 303,
+        "after": 303
+      },
+      "client_width": 390,
+      "scroll_width": 390
+    },
+    {
+      "route": "/calculators/ppf",
+      "action": "typed 200000 in Annual contribution",
+      "field_invalid": true,
+      "message": "Use 150000 or less.",
+      "helper": "Deposit for each financial year, ₹500 to ₹1,50,000 per financial year under the PPF scheme. This model assumes one deposit made by 5 April."
+    },
+    {
+      "route": "/calculators/gratuity",
+      "action": "typed 8.5 in Completed service; real CSV",
+      "headline": "₹5,88,462",
+      "csv_last_row": "8.5,\"₹5,88,462\",Part year: service used exactly as entered; statutory counting of a part year is not applied.",
+      "oracle": "120000 × 15/26 × 8.5 = 588461.5384615385",
+      "raw": "raw/hosted-gratuity-8.5.csv",
+      "client_width": 390,
+      "scroll_width": 390
+    }
+  ],
+  "console_errors": "none captured",
+  "not_claimed": [
+    "statutory gratuity rules",
+    "current notified PPF rate",
+    "native reader/zoom",
+    "WCAG conformance"
+  ]
+}
