@@ -7,6 +7,7 @@ import {
   calculatorPath,
   LOAN_RESIDUAL_TOLERANCE,
   seoCalculators,
+  termMonths,
   type CalculatorInput,
   type CalculatorMetric,
   type CalculatorResult,
@@ -172,6 +173,8 @@ export function getCalculatorStudioMetadata(
     ...defaults,
     ...(calculator.formula === 'fd' ? {
       scenarioFocus: 'Compare your deposit with a smaller, shorter, lower-rate what-if and a larger, longer, higher-rate one. Each changes all three inputs.'
+    } : calculator.formula === 'rd' ? {
+      scenarioFocus: 'Compare your deposits with a smaller, shorter, lower-rate what-if and a larger, longer, higher-rate one. Each changes the monthly deposit, term and rate together.'
     } : {}),
     example: buildCalculatorExample(calculator),
     relatedCalculators: relatedCalculatorsFor(calculator, allCalculators),
@@ -346,10 +349,12 @@ export function buildCalculatorDetailSchedule(
       return fixedDepositSchedule(normalized);
     case 'rd':
       return recurringGrowthSchedule(normalized, {
-        description: 'Annual view of recurring deposits, estimated interest, and maturity progress.',
+        balanceLabel: 'Balance',
+        description: 'Deposits and interest added each year until maturity; the last row equals the maturity value.',
+        growthLabel: 'Interest this period',
         principalKey: null,
         recurringKey: 'monthly',
-        recurringLabel: 'Annual deposits',
+        recurringLabel: 'Deposits this period',
         title: 'Recurring deposit schedule'
       });
     case 'ppf':
@@ -460,6 +465,7 @@ function clampInput(input: CalculatorInput, value: number): number {
 function scenarioLabel(calculator: SeoCalculator, id: CalculatorScenarioId): string {
   if (calculator.formula === 'investment-return') return id === 'base' ? 'Your inputs' : id === 'conservative' ? 'Case A' : 'Case B';
   if (calculator.formula === 'fd') return id === 'base' ? 'Your deposit' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
+  if (calculator.formula === 'rd') return id === 'base' ? 'Your deposits' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (id === 'conservative') return 'Conservative';
   if (id === 'optimistic') return 'Optimistic';
   return 'Base';
@@ -480,6 +486,12 @@ function scenarioDescription(calculator: SeoCalculator, id: CalculatorScenarioId
     return id === 'conservative'
       ? 'A smaller deposit, shorter term and lower rate together. A what-if, not an offered rate or forecast.'
       : 'A larger deposit, longer term and higher rate together. A what-if, not an offered rate or forecast.';
+  }
+
+  if (calculator.formula === 'rd') {
+    return id === 'conservative'
+      ? 'A smaller monthly deposit, shorter term and lower rate together. A what-if, not an offered rate or forecast.'
+      : 'A larger monthly deposit, longer term and higher rate together. A what-if, not an offered rate or forecast.';
   }
 
   if (studio === 'Loan and Home Studio' || studio === 'Debt Payoff Studio') {
@@ -513,6 +525,8 @@ function buildCalculatorExample(calculator: SeoCalculator): CalculatorStudioExam
   return {
     description: calculator.formula === 'fd'
       ? `Load the sample deposit, term and rate so the maturity breakdown, schedule and what-ifs can be read together.`
+      : calculator.formula === 'rd'
+      ? `Load the sample monthly deposit, term and rate so the maturity breakdown, schedule and what-ifs can be read together.`
       : `Load a sample ${calculator.title.toLowerCase()} using ${firstInput} and ${secondInput} so the visual, scenarios, and save path can be read together.`,
     insight: exampleInsight(calculator),
     title: `${calculator.title} example`,
@@ -523,7 +537,7 @@ function buildCalculatorExample(calculator: SeoCalculator): CalculatorStudioExam
 function exampleInsight(calculator: SeoCalculator): string {
   const route = calculator.conversionRoute;
 
-  if (calculator.formula === 'fd') {
+  if (calculator.formula === 'fd' || calculator.formula === 'rd') {
     return 'The sample rate is illustrative, not a current bank offer. Enter the rate and term from the deposit you are considering.';
   }
 
@@ -2020,8 +2034,10 @@ function rothTraditionalSchedule(_calculator: SeoCalculator, values: Record<stri
 function recurringGrowthSchedule(
   values: Record<string, number>,
   options: {
+    balanceLabel?: string;
     description: string;
     effectiveApy?: boolean;
+    growthLabel?: string;
     principalKey: string | null;
     recurringKey: string;
     recurringLabel: string;
@@ -2031,9 +2047,8 @@ function recurringGrowthSchedule(
 ): CalculatorDetailSchedule | null {
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const years = scheduleYears(values.years ?? 0);
-  const months = options.effectiveApy
-    ? Math.max(1, Math.min(maxScheduleYears * 12, Math.round(Math.max(0, values.years ?? 0) * 12)))
-    : Math.max(1, Math.round(years * 12));
+  // Same month count as the engine, so a part-year term ends at the headline instead of the next whole year.
+  const months = Math.min(maxScheduleYears * 12, termMonths(values.years ?? 0));
   const monthlyRate = options.effectiveApy ? (1 + rate) ** (1 / 12) - 1 : rate / 12;
   const startingBalance = options.principalKey ? Math.max(0, values[options.principalKey] ?? 0) : 0;
   let balance = startingBalance;
@@ -2063,9 +2078,11 @@ function recurringGrowthSchedule(
     }
 
     if (month % 12 === 0 || month === months) {
-      const year = Math.ceil(month / 12);
+      const partMonths = month % 12;
+      const year = options.effectiveApy || partMonths === 0 ? Math.ceil(month / 12) : Number((month / 12).toFixed(4));
       rows.push({
-        id: `year-${year}`,
+        id: `year-${Math.ceil(month / 12)}`,
+        note: !options.effectiveApy && partMonths > 0 ? `Part year: ${partMonths} ${partMonths === 1 ? 'month' : 'months'} of deposits and growth.` : undefined,
         values: {
           ...(options.effectiveApy ? { month } : {}),
           balance,
@@ -2085,9 +2102,9 @@ function recurringGrowthSchedule(
       ...(options.effectiveApy ? [textColumn('month', 'Month reached')] : []),
       textColumn('year', 'Year'),
       moneyColumn('deposits', options.recurringLabel),
-      moneyColumn('growth', 'Estimated growth'),
+      moneyColumn('growth', options.growthLabel ?? 'Estimated growth'),
       moneyColumn('cumulativeDeposits', 'Total deposited'),
-      moneyColumn('balance', 'Ending value')
+      moneyColumn('balance', options.balanceLabel ?? 'Ending value')
     ],
     description: options.effectiveApy
       ? 'Annual and partial-year view using equivalent monthly growth from the entered APY, with end-month deposits and end-year top-ups.'
@@ -2189,37 +2206,36 @@ function formatScheduleYears(value: number): string {
   return Number(value.toFixed(4)).toString();
 }
 
-function singleDepositGrowthSchedule(calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
+// Lump sum: whole years, then the exact remaining part year, so the last row is the headline value.
+function singleDepositGrowthSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const years = scheduleYears(values.years ?? 0);
-  const rows: CalculatorDetailScheduleRow[] = [];
+  const term = Math.min(maxScheduleYears, Math.max(0, Number.isFinite(values.years) ? values.years : 0));
+  if (term <= 0) return null;
+  const points = Array.from({ length: Math.floor(term) }, (_, index) => index + 1);
+  if (term > Math.floor(term)) points.push(term);
   let previousBalance = principal;
-
-  for (let year = 1; year <= years; year += 1) {
+  const rows = points.map((year): CalculatorDetailScheduleRow => {
     const balance = principal * (1 + rate) ** year;
-    rows.push({
+    const row: CalculatorDetailScheduleRow = {
       id: `deposit-year-${year}`,
-      values: {
-        balance,
-        interest: balance - previousBalance,
-        totalInterest: balance - principal,
-        year
-      }
-    });
+      note: Number.isInteger(year) ? undefined : `Part year: the annual return is applied for ${formatScheduleYears(year - Math.floor(year))} of a year.`,
+      values: { balance, interest: balance - previousBalance, totalInterest: balance - principal, year }
+    };
     previousBalance = balance;
-  }
+    return row;
+  });
 
   return {
     columns: [
       textColumn('year', 'Year'),
-      moneyColumn('interest', 'Year interest'),
-      moneyColumn('totalInterest', 'Total interest'),
-      moneyColumn('balance', 'Maturity value')
+      moneyColumn('interest', 'Growth this period'),
+      moneyColumn('totalInterest', 'Total growth'),
+      moneyColumn('balance', 'Value')
     ],
-    description: 'Annual interest and maturity path for a one-time deposit or lumpsum investment.',
+    description: 'Estimated growth each year until the end of the term; the last row equals the projected value.',
     rows,
-    summary: scheduleCapSummary(values.years ?? years, `Shows how the single deposit compounds year by year.`),
+    summary: scheduleCapSummary(values.years ?? term, 'Shows how the single investment compounds year by year at the entered return; market returns vary.'),
     title: 'Lumpsum growth schedule'
   };
 }

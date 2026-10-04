@@ -1,0 +1,20 @@
+{
+  "observed_on": "2026-10-03",
+  "url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/calculators/rd",
+  "deployment_id": "7677dac2-d23d-4ab0-87f9-a22726689f63",
+  "viewport": "390x844",
+  "theme": "dark",
+  "steps": "Typed 1.5 in Deposit term; focus rate field; real Tab, Tab to \"View result\"; real Enter",
+  "typing_scroll": {
+    "before": 483,
+    "after": 483
+  },
+  "result_focused": true,
+  "result_top": 88,
+  "header_bottom": 64,
+  "client_width": 390,
+  "scroll_width": 390,
+  "headline": "₹1,90,572",
+  "reconciliation": "₹1,80,000 deposits + ₹10,572 interest = ₹1,90,572 at maturity after 18 months at 8% a year, compounded monthly.",
+  "schedule_last_row": "1.5 | ₹60,000 | ₹6,073 | ₹1,80,000 | ₹1,90,572 | Part year: 6 months of deposits and growth."
+}

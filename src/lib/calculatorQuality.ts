@@ -389,6 +389,14 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
       'Check taxes, fees, early-withdrawal penalties and whether you may need the money before maturity.'
     ]
   },
+  rd: {
+    decisionUsefulness: 'Use this calculator to see what a fixed monthly deposit builds by maturity before committing to every instalment for the full term.',
+    interpretationChecks: [
+      'Separate the total you deposit from the interest earned by maturity.',
+      'Compare offers on the same rate, compounding basis and term; a bank that compounds quarterly or counts each instalment from its due date will quote a slightly different maturity.',
+      'Check that you can make every instalment, and check taxes, fees and penalties for missed instalments or premature withdrawal.'
+    ]
+  },
   'investment-return': {
     decisionUsefulness: 'Compare annualized growth from two balances. No intermediate deposits or withdrawals are included. Fees, taxes and inflation are not adjusted automatically.',
     calculationRequirements: [
@@ -589,7 +597,7 @@ export function getCalculatorQualitySpec(calculator: SeoCalculator): CalculatorQ
       `${input.label}: ${input.helper ?? 'Use the calculator unit shown with this input.'}`
     ),
     // Deposit guidance replaces the studio's contribution-based checks instead of appending after them.
-    interpretationChecks: calculator.formula === 'fd' ? mergeRequirements(formula.interpretationChecks, slug.interpretationChecks) : mergeRequirements(
+    interpretationChecks: calculator.formula === 'fd' || calculator.formula === 'rd' ? mergeRequirements(formula.interpretationChecks, slug.interpretationChecks) : mergeRequirements(
       defaults.interpretationChecks,
       formula.interpretationChecks,
       slug.interpretationChecks

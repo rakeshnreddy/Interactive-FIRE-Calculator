@@ -171,6 +171,12 @@ const additionalPaymentInputs = [
 const depositHelper = 'One-time amount placed in the deposit at the start; no later deposits are added.';
 const depositTermHelper = 'Time until maturity in years; 1.5 means 18 months.';
 const annualTopUpInput = money('annualTopUp', 'Additional yearly contribution', 0, 'Optional contribution added once at the end of each year.');
+const rdInputs = [
+  money('monthly', 'Monthly deposit', 10000, 'Same amount every month, added at the end of each month.'),
+  money('annualTopUp', 'Extra yearly deposit', 0, 'Optional lump sum added after every 12th instalment, separate from the monthly deposits. Not every RD accepts extra deposits; enter 0 for a standard RD.'),
+  number('years', 'Deposit term', 10, 'yrs', 'Time until maturity in years, rounded to whole months; 1.5 means 18 months.'),
+  percent('rate', 'Annual interest rate', 8, 'Quoted yearly rate; this estimate compounds it monthly (rate ÷ 12).')
+] as const;
 const conversionByFormula: Record<CalculatorFormula, Pick<SeoCalculator, 'conversionLabel' | 'conversionRoute'>> = {
   amortization: { conversionLabel: 'Track this loan', conversionRoute: '/accounts' },
   apr: { conversionLabel: 'Compare loan plan', conversionRoute: '/plans' },
@@ -414,7 +420,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['salary-india', 'India Salary Take-home Calculator', 'salary', [money('income', 'Annual CTC', 2400000), percent('effectiveRate', 'Estimated income tax rate', 12), percent('employeePfRate', 'Employee PF / payroll deduction rate', 5), money('professionalTax', 'Annual professional tax', 2400)]],
     ['hra-exemption', 'HRA Exemption Calculator', 'hra', [money('salary', 'Basic salary', 1200000), money('hra', 'HRA received', 500000), money('rent', 'Annual rent paid', 600000), percent('metroPercent', 'Salary exemption cap', 50)]],
     ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000, depositHelper), number('years', 'Deposit term', 10, 'yrs', depositTermHelper), percent('rate', 'Annual interest rate', 8, 'Quoted yearly rate; this estimate compounds it once a year.')]],
-    ['rd', 'RD Calculator', 'rd', [money('monthly', 'Monthly deposit', 10000), annualTopUpInput, ...termInputs]],
+    ['rd', 'RD Calculator', 'rd', [...rdInputs]],
     ['ppf', 'PPF Calculator', 'ppf', [money('annual', 'Annual contribution', 150000), percent('rate', 'Annual return', 7.1), number('years', 'Years', 15, 'yrs')]],
     ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, ...termInputs]],
     ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), annualTopUpInput, ...termInputs, percent('annuityPercent', 'Annuity allocation', 40, 'Share of the corpus used to buy an annuity. 40% is an editable example, not a rule: the minimum depends on your NPS sector, exit type and corpus size.'), percent('annuityRate', 'Annuity rate', 6, 'The yearly payout rate the annuity provider offers on the annuitised portion.')]],
@@ -547,7 +553,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
   const rate = get('rate') / 100;
   const years = Math.max(0, get('years'));
   const monthlyRate = rate / 12;
-  const months = Math.max(1, Math.round(years * 12));
+  const months = termMonths(years);
   const fvFactor = monthlyRate === 0 ? months : ((1 + monthlyRate) ** months - 1) / monthlyRate;
 
   switch (calculator.formula) {
@@ -1489,6 +1495,11 @@ function approximateApr(principal: number, fees: number, payment: number, years:
   }
 
   return (low + high) / 2;
+}
+
+// Whole months the monthly engines run for a term in years; schedules use the same count so they end at the headline.
+export function termMonths(years: number): number {
+  return Math.max(1, Math.round(Math.max(0, Number.isFinite(years) ? years : 0) * 12));
 }
 
 function projectRecurringBalance(

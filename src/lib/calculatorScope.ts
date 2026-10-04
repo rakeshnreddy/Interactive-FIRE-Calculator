@@ -1,4 +1,4 @@
-import type { SeoCalculator } from './seoCalculators';
+import { termMonths, type SeoCalculator } from './seoCalculators';
 
 export type CalculatorScope = {
   included: string;
@@ -160,6 +160,16 @@ const definitions: Record<string, ScopeDefinition> = {
     excluded: 'Tax and TDS on interest, fees, premature-withdrawal penalties, payout (non-cumulative) options and rate changes.',
     basis: v => `${percent(v, 'rate')} a year, applied once a year for ${new Intl.NumberFormat('en-US', {maximumFractionDigits: 4}).format(v.years)} years. If your bank compounds more often than yearly, its maturity amount for the same quoted rate will be higher; a part year continues the annual rate and banks may calculate it differently.`,
     sources: [source('RBI: FAQs on interest rate on deposits', 'https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/FAQIRD01042025.pdf')],
+    checked: '2026-10-03'
+  },
+  rd: {
+    included: 'Equal monthly deposits added at the end of each month, any extra yearly deposit, and interest compounded monthly and paid at maturity.',
+    excluded: 'Tax and TDS on interest, fees, penalties for missed instalments or premature withdrawal, and rate changes.',
+    basis: v => {
+      const months = termMonths(v.years);
+      return `${percent(v, 'rate')} a year ÷ 12, compounded monthly over ${months} monthly deposits; each deposit earns from the month after it is made. A bank that compounds quarterly or counts instalments from their due dates will quote a slightly different maturity.`;
+    },
+    sources: [],
     checked: '2026-10-03'
   },
   cd: {

@@ -32,6 +32,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C22 | Return-method suitability and honest sensitivities | B57, B58 | accepted | 2a2f3efc49a4282be1e8a6258e05a95b1d771fa9 | [approved](reviews/C22.md) |
 | C23 | Mortgage affordability with entered housing costs | B59 | accepted | aab17a026bcda53ba25925377edb7cb4c205b3fd | [approved](reviews/C23.md) |
 | C24 | Deposit-specific FD/CD presentation and rate basis | B60 | accepted | 485070fc39db78eb3f27c9ed56b2a069f7eb566a | [approved](reviews/C24.md) |
+| C25 | RD presentation and exact-term growth schedules | B61, B62 | accepted | 5f2fdbf2021d946d9e6b51bf31c268801aec037d | [approved](reviews/C25.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -62,3 +63,7 @@ C22 browser review additionally reproduced B58: the endpoint-return copy implied
 ## Deposit presentation continuation — 2026-10-03
 
 Owner continues direct independent implementation without Gemini after C23. C24/B60 scopes B50 rows 21/78 (FD/CD) from source inspection: annual application of the entered rate/APY, generic recurring-amount copy, missing tax/fee/penalty exclusions and a fractional-term schedule row that disagrees with the headline. Presentation and reconciliation only; no formula, payout/compounding-frequency, RD, schema or production change. B51, B13/B14 and production gates are unchanged.
+
+## RD and exact-term schedule continuation — 2026-10-03
+
+Owner asked to finish the work that needs no owner unblock. C25/B61 scopes B50 row 22 (RD) from source: end-of-month instalments, monthly compounding at rate ÷ 12, generic recurring/contribution copy and no exclusions. B62 fixes the C24 residual: lump-sum and shared monthly recurring schedules round a fractional term up to whole years and contradict the exact-term headline. Presentation and schedule reconciliation only; no formula, model version, schema or production change. B51, B13/B14 and production gates are unchanged.
