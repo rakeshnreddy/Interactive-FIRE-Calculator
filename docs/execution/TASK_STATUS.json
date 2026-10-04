@@ -1073,16 +1073,16 @@
       "id": "B67",
       "title": "market-growth presentation for lump sum, SIP and step-up SIP",
       "checkpoint": "C29",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B62",
         "B66"
       ],
       "prompt": "prompts/B67.md",
-      "submission": null,
+      "submission": "submissions/B67.md",
       "owner": "Astra direct implementation \u2014 owner continuation",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "698ce790a18ae016564264c074689ed304370c30",
+      "review": "reviews/C29.md",
       "blocked_reason": null
     }
   ],

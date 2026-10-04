@@ -36,7 +36,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C26 | Exact-term return, inflation, Roth and EPF tables | B63 | accepted | 5181cb1411e5f680521de25538da493c7a76b774 | [approved](reviews/C26.md) |
 | C27 | PPF whole years and gratuity service table | B64, B65 | accepted | 3e2569c6f0482876f7f02c753f99146cd372787f | [approved](reviews/C27.md) |
 | C28 | Truthful generated input helpers | B66 | accepted | 7fc0170bc4996dd96d6eb7449574702df73fdc81 | [approved](reviews/C28.md) |
-| C29 | Market-growth presentation for lump sum and SIP | B67 | released | — | Contract registered; implementation and review pending |
+| C29 | Market-growth presentation for lump sum and SIP | B67 | accepted | 698ce790a18ae016564264c074689ed304370c30 | [approved](reviews/C29.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 

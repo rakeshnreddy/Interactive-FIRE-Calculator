@@ -752,7 +752,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
 
 ## Market-growth presentation — 2026-10-04
 
-- [ ] **B67 — Market-growth presentation for lump sum, SIP and step-up SIP.**
+- [x] **B67 — Market-growth presentation for lump sum, SIP and step-up SIP.**
   - User problem/evidence: lump sum calls a fund "Maturity value / Estimated interest" and asks for a monthly-budget check with no contributions; none state timing, monthly-versus-CAGR compounding, fees/tax exclusions or that returns are not forecasts. [Exact contract](execution/prompts/B67.md).
   - Outcome/scope: before-input growth basis, route labels/helpers, lump-sum result relabel, invested + gains = value line, neutral what-ifs, route guidance.
   - Non-goals: annuity-due or fee/tax arithmetic, fund data, compound-interest page, schema, production.

@@ -1,0 +1,116 @@
+{
+  "observed_on": "2026-10-04",
+  "source_sha": "698ce790a18ae016564264c074689ed304370c30",
+  "preview": "https://c2fc57b2.interactive-fire-calculator.pages.dev",
+  "method": "Claude desktop in-app browser; viewport emulation; theme via the real header toggle; real Tab/Enter; DOM measurements via page JavaScript.",
+  "cases": [
+    {
+      "route": "sip",
+      "theme": "light",
+      "width": 1440,
+      "client": 1425,
+      "scroll": 1425,
+      "basisBefore": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "primaryVisibleAtLoad": true,
+      "panelBg": "rgb(255, 255, 255)",
+      "reconciliation": "₹12,00,000 invested + ₹6,29,460 estimated gains = ₹18,29,460 after 120 months at 8% a year, compounded monthly."
+    },
+    {
+      "route": "sip",
+      "theme": "light",
+      "width": 390,
+      "client": 390,
+      "scroll": 390,
+      "basisBefore": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "keyboard": "rate → Extra yearly investment summary → View result; Enter",
+      "resultFocused": true,
+      "resultTop": 88,
+      "headerBottom": 64
+    },
+    {
+      "route": "sip",
+      "theme": "light",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "basisBefore": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultFocused": true,
+      "resultTop": 88
+    },
+    {
+      "route": "step-up-sip",
+      "theme": "dark",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "basisBefore": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "panelBg": "rgb(15, 26, 41)",
+      "resultFocused": true,
+      "resultTop": 88,
+      "reconciliation": "₹19,12,491 invested + ₹8,27,162 estimated gains = ₹27,39,653 after 120 months at 8% a year, compounded monthly.",
+      "via": "header toggle click"
+    },
+    {
+      "route": "lumpsum-mutual-fund",
+      "theme": "dark",
+      "width": 390,
+      "client": 390,
+      "scroll": 390,
+      "basisBefore": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "resultLabels": [
+        "Projected value",
+        "Estimated gains"
+      ],
+      "keyboard": "rate → View result; Enter",
+      "resultFocused": true,
+      "resultTop": 88,
+      "reconciliation": "₹5,00,000 invested + ₹5,79,462 estimated gains = ₹10,79,462 after 10 years at 8% a year, compounded once a year."
+    },
+    {
+      "route": "lumpsum-mutual-fund",
+      "theme": "dark",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "inputsContained": true,
+      "metricsContained": true
+    },
+    {
+      "route": "sip",
+      "theme": "dark",
+      "width": 1440,
+      "client": 1425,
+      "scroll": 1425,
+      "metricsContained": true,
+      "primaryVisibleAtLoad": true,
+      "panelBg": "rgb(15, 26, 41)"
+    }
+  ],
+  "typed_extra_yearly": {
+    "route": "sip",
+    "width": 390,
+    "inputs": "annualTopUp 5000 then years 1.5 typed",
+    "reconciliation": "₹1,85,000 invested (₹1,80,000 monthly + ₹5,000 extra yearly) + ₹10,775 estimated gains = ₹1,95,775 after 18 months at 8% a year, compounded monthly.",
+    "headline": "₹1,95,775",
+    "oracle": "195775.2681621231 (Python Decimal)"
+  },
+  "typing_stability": {
+    "note": "A first run measured scrollY 831.5→851.5 while typing the extra amount; that was browser scroll anchoring compensating for the group summary growing. A clean re-run with the draft cleared measured the field at 400→400 px while the summary changed from \"None added · zero to skip\" to \"1 active · …\". On the current beta (pre-B67) the same flow moved the field 400→418 px — a pre-existing shift recorded as an observation, not claimed fixed by B67."
+  },
+  "console_errors": "none captured",
+  "not_claimed": [
+    "native reader/zoom",
+    "WCAG conformance",
+    "reduced-motion emulation"
+  ]
+}

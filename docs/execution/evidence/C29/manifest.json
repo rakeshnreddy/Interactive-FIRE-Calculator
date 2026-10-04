@@ -1,0 +1,55 @@
+{
+  "related_candidate_sha": "698ce790a18ae016564264c074689ed304370c30",
+  "preview": "https://c2fc57b2.interactive-fire-calculator.pages.dev",
+  "provenance": "baseline.json and red-tests.log captured before implementation against main e741166; test-all.log from final local source equal to candidate.",
+  "files": [
+    {
+      "path": "docs/execution/evidence/C29/raw/baseline.json",
+      "bytes": 36297,
+      "sha256": "af3ef021c461c7800a77b6810fc707eee9dc61680a12841849e86f4da1470c4b",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C29/raw/build-preview-auth.log",
+      "bytes": 3002,
+      "sha256": "fe239cef4485725f7bc2aca2c4ebb97a386217cd748c832ea7a723232cdd4159",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C29/raw/candidate-assets-raw.json",
+      "bytes": 4463,
+      "sha256": "690013318944d8cb42004fd1935a3030d2849b6865a5cf50b90dcebfc99379b2",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C29/raw/candidate-deployment.json",
+      "bytes": 547,
+      "sha256": "4ffc3e93e8b8d6e69c21f2c5d84410e4fb2a8e8031a71e6d9f576ae5cca798e7",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C29/raw/deploy.log",
+      "bytes": 573,
+      "sha256": "02cc1afdef0849177c7a87df4cf848efd7e5b445199d2809dbb862d08c597517",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C29/raw/public-smoke.log",
+      "bytes": 119,
+      "sha256": "fddc9b1cebc5611d8e160605b4ad17d7f292bcb9388dd06a5c07fade249d7b43",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C29/raw/red-tests.log",
+      "bytes": 33200,
+      "sha256": "74854f3d058a8d49f2c0a90cadc2a9349702cbf0f25e601a515f92d2ff7334a5",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C29/raw/test-all.log",
+      "bytes": 7633,
+      "sha256": "eba64599e75bbe60988169c48540274cbc45f5e5ec5568d656fa42617de28274",
+      "origin": "ignored raw evidence"
+    }
+  ]
+}
