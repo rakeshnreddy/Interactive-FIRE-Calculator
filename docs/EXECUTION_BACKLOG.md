@@ -744,7 +744,7 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
 
 ## Generated input helper copy — 2026-10-04
 
-- [ ] **B66 — Truthful generated input helpers.**
+- [x] **B66 — Truthful generated input helpers.**
   - User problem/evidence: 86 inputs on 66 routes read "annual percentage unless the label says otherwise", 48 call amounts "recurring" (including one-time foreclosure/recast payments), 52 say "in years" (15 literally "Enter the years in years."; pay periods told to be in years). [Exact contract](execution/prompts/B66.md).
   - Outcome/scope: share-versus-yearly-rate percent text, monthly/yearly currency only when labelled, unit-suffix time text; generator only.
   - Non-goals: hand-written per-route helpers, labels, results, production.

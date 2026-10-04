@@ -1,0 +1,178 @@
+{
+  "checked_at": "2026-10-04T07:43:35.648Z",
+  "candidate_sha": "7fc0170bc4996dd96d6eb7449574702df73fdc81",
+  "deployment_commit_sha": "7fc0170bc4996dd96d6eb7449574702df73fdc81",
+  "deployment_id": "47795076-e7e4-4cc8-8d83-35fdc790db7d",
+  "immutable_url": "https://47795076.interactive-fire-calculator.pages.dev",
+  "branch": "codex/truthful-input-helpers",
+  "environment": "preview",
+  "commit_dirty": false,
+  "latest_stage": "deploy:success",
+  "d1_database_ids": [
+    "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  ],
+  "production_deployments_enabled": false,
+  "canonical_production_commit": "3399dbbd8d7f0e6379972356a790b236e6b177b1",
+  "build": "npm run build:preview-auth from clean tree at candidate SHA (Node v24.2.0); wrangler pages deploy --commit-dirty=false",
+  "ci": {
+    "run_id": 37186645870,
+    "head_sha": "7fc0170bc4996dd96d6eb7449574702df73fdc81",
+    "conclusion": "success",
+    "workflow": "Verify"
+  },
+  "public_calculator_smoke": "84 public calculator routes verified without authentication",
+  "checks": [
+    {
+      "route": "/api/health",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/api/me",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/plans",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/api/calculator-results",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "route": "/calculators/home-loan-foreclosure",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "route": "/calculators/paycheck",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    }
+  ],
+  "asset_count": 16,
+  "asset_mismatches_vs_local_build": 0,
+  "bundle_sha256": [
+    {
+      "path": "/assets/BalanceImportPanel-1W9Yc_Bb.js",
+      "status": 200,
+      "sha256": "706e53db5ea151a53a99af0d0112b34ae1b7387966eb199362b821b6f5f48fc6",
+      "bytes": 9680,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/CalculatorLibrary-sCeP-CN4.js",
+      "status": 200,
+      "sha256": "6c5759d317440a0c15224d54defca1bedb3e0510155268c2e08d409df7b47c2f",
+      "bytes": 393254,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/PlanningWorkspace-BkgZXgKG.js",
+      "status": 200,
+      "sha256": "45c924309b45208d3bc4596fba7e510688e81833cb8d234ccf0f393f42c205ee",
+      "bytes": 27120,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/ProjectionChart-D0bnn-Bj.js",
+      "status": 200,
+      "sha256": "78415620b3aa9ab89f0186b995cfa207c1f79a0cb31cd2cd49ba7f5c5caecc69",
+      "bytes": 348238,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/TransactionImportPanel-Dbq7dfk7.js",
+      "status": 200,
+      "sha256": "f015015f98613a7847cb54bcedfaee1341f46bc93f328db5952da432a76bb3cf",
+      "bytes": 10210,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/WorkspacePanels-Cl2orxLT.js",
+      "status": 200,
+      "sha256": "608d6fa0ac29dfb265eb055ea59e9e60b33c5ebc29b844d1e6d4897dfbfb7b5a",
+      "bytes": 46966,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/calculator-catalog-C7aJF4Ks.js",
+      "status": 200,
+      "sha256": "0fb65a18a44041b23789bb1fb6f52200923e110388ca25c39d4fce9ca46c8156",
+      "bytes": 101661,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/circle-check-CvjZpSFY.js",
+      "status": 200,
+      "sha256": "d5972873289aad1c9e9daf97be5fa670a3a2252ffc38bec5fb245d6db011cbc3",
+      "bytes": 222,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/dist-_XyzNBdf.js",
+      "status": 200,
+      "sha256": "f7255666396cf8bb239176a3d670722c7c56c6e2b70b7ae60b7ff8b1bee96971",
+      "bytes": 145733,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/history-BU5nD0J1.js",
+      "status": 200,
+      "sha256": "15b27909f426ede14d5ea9ecd6a53673b5574c32ed85d2e656dad163bb04951b",
+      "bytes": 276,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-DNhARteC.css",
+      "status": 200,
+      "sha256": "7127b0aefaa21c9d623745c713cc0e3f7babdb0b4663e03548da002c65d72f6f",
+      "bytes": 220892,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/main-Dvfr8gUO.js",
+      "status": 200,
+      "sha256": "9b7a891afcf916372a44715aafd5f6fde5dbc7a23e152e5aa7938f5329849af1",
+      "bytes": 209073,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/papaparse.min-DIiCcvP0.js",
+      "status": 200,
+      "sha256": "01a2bca9172dfa1468fcd9c23adbe81e4caa5d04e5fa487d353f74a7660b6914",
+      "bytes": 19979,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/react-vendor-CvBZlOBd.js",
+      "status": 200,
+      "sha256": "2eb2df5b9abff34af7fdcd9775abf2d145105b56a2cd413ca1d96977a1bc4eb5",
+      "bytes": 139938,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "status": 200,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+      "bytes": 694,
+      "matches_local_build": true
+    },
+    {
+      "path": "/assets/rotate-ccw-D3XwuRYY.js",
+      "status": 200,
+      "sha256": "fe6ffa0a2c7b0190c11b2ac6c5f5dd90edacfb9323fc2bf03d5e4872310db98b",
+      "bytes": 1620,
+      "matches_local_build": true
+    }
+  ]
+}

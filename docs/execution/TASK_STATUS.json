@@ -1058,15 +1058,15 @@
       "id": "B66",
       "title": "truthful generated input helpers",
       "checkpoint": "C28",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B65"
       ],
       "prompt": "prompts/B66.md",
-      "submission": null,
+      "submission": "submissions/B66.md",
       "owner": "Astra direct implementation \u2014 owner continuation",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "7fc0170bc4996dd96d6eb7449574702df73fdc81",
+      "review": "reviews/C28.md",
       "blocked_reason": null
     }
   ],

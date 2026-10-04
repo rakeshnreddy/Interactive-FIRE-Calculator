@@ -1,0 +1,61 @@
+{
+  "related_candidate_sha": "7fc0170bc4996dd96d6eb7449574702df73fdc81",
+  "preview": "https://47795076.interactive-fire-calculator.pages.dev",
+  "provenance": "helpers-baseline.json and red-tests.log captured before implementation from main after C27; helpers-after.json and test-all.log from final local source equal to candidate.",
+  "files": [
+    {
+      "path": "docs/execution/evidence/C28/raw/build-preview-auth.log",
+      "bytes": 3002,
+      "sha256": "74b74d16492c23185f7be8e3ed043bd0bbae246b31b1e937bdf7c5a7e72cf6d6",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/candidate-assets-raw.json",
+      "bytes": 4470,
+      "sha256": "f94eff7b4f3ba21f5556f64b7499866174e45a08278d583bef72d3c05efe6d45",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/candidate-deployment.json",
+      "bytes": 543,
+      "sha256": "bffaa39285619b3966b0daad11bc388c4a0519bf9bf3cc78ee9c170808fcd9ce",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/deploy.log",
+      "bytes": 682,
+      "sha256": "6185a142043372b80634aa3fed3db967c7d1f3353ddcd8ae9c1c6a6176bf6ff1",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/helpers-after.json",
+      "bytes": 55576,
+      "sha256": "771e00aae7b3cb81a7aaf9013274e3fb989c68caa44e260b6c3e6dfa7440dd10",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/helpers-baseline.json",
+      "bytes": 58290,
+      "sha256": "2c0c1dd2df36d9c2fa4db69adf8072f64a72fe8f3bd2f38d7d142fcd36304f56",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/public-smoke.log",
+      "bytes": 119,
+      "sha256": "1272992757bb54a31049eaaa4019640a5bf13091089857f0a8f514cf6f1b96ea",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/red-tests.log",
+      "bytes": 4329,
+      "sha256": "fa04587ca36083c8f5211f99e10fd6749da2b11a71b84c32a1be6ba71ecbf3a2",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C28/raw/test-all.log",
+      "bytes": 7623,
+      "sha256": "9ced34e978f946150fcccf95215b43bac69c7db990c8d978cee9afedf2e7a321",
+      "origin": "ignored raw evidence"
+    }
+  ]
+}
