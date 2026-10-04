@@ -1,0 +1,36 @@
+{
+  "observed_on": "2026-10-03",
+  "source_sha": "5f2fdbf2021d946d9e6b51bf31c268801aec037d",
+  "preview": "https://b342aae0.interactive-fire-calculator.pages.dev",
+  "method": "Real CSV button click; app-generated Blob captured by wrapping URL.createObjectURL; anchor download suppressed so no file was saved locally. Values typed with the keyboard.",
+  "cases": [
+    {
+      "route": "/calculators/rd",
+      "inputs": {
+        "monthly": 10000,
+        "annualTopUp": 5000,
+        "years": 1.5,
+        "rate": 8
+      },
+      "file_name": "rd-recurring-deposit-schedule.csv",
+      "last_row_balance": "₹1,95,775",
+      "headline": "₹1,95,775",
+      "reconciliation": "₹1,85,000 deposits (₹1,80,000 monthly + ₹5,000 extra yearly) + ₹10,775 interest = ₹1,95,775 at maturity after 18 months at 8% a year, compounded monthly.",
+      "oracle": "10000 × ((1 + 0.08/12)^18 − 1)/(0.08/12) + 5000 × (1 + 0.08/12)^6 = 195775.2681621231 (Python Decimal)",
+      "raw": "raw/hosted-rd-18m.csv"
+    },
+    {
+      "route": "/calculators/lumpsum-mutual-fund",
+      "inputs": {
+        "principal": 500000,
+        "years": 1.5,
+        "rate": 8
+      },
+      "file_name": "lumpsum-mutual-fund-lumpsum-growth-schedule.csv",
+      "last_row_balance": "₹5,61,184",
+      "headline": "₹5,61,184",
+      "oracle": "500000 × 1.08 × √1.08 = 561184.4616523162 (Python Decimal)",
+      "raw": "raw/hosted-lumpsum-18m.csv"
+    }
+  ]
+}

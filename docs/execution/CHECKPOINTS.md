@@ -32,7 +32,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C22 | Return-method suitability and honest sensitivities | B57, B58 | accepted | 2a2f3efc49a4282be1e8a6258e05a95b1d771fa9 | [approved](reviews/C22.md) |
 | C23 | Mortgage affordability with entered housing costs | B59 | accepted | aab17a026bcda53ba25925377edb7cb4c205b3fd | [approved](reviews/C23.md) |
 | C24 | Deposit-specific FD/CD presentation and rate basis | B60 | accepted | 485070fc39db78eb3f27c9ed56b2a069f7eb566a | [approved](reviews/C24.md) |
-| C25 | RD presentation and exact-term growth schedules | B61, B62 | released | — | Contracts registered; implementation and review pending |
+| C25 | RD presentation and exact-term growth schedules | B61, B62 | accepted | 5f2fdbf2021d946d9e6b51bf31c268801aec037d | [approved](reviews/C25.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 

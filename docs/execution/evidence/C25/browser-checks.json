@@ -1,0 +1,121 @@
+{
+  "observed_on": "2026-10-03",
+  "source_sha": "5f2fdbf2021d946d9e6b51bf31c268801aec037d",
+  "preview": "https://b342aae0.interactive-fire-calculator.pages.dev",
+  "method": "Claude desktop in-app browser; viewport emulation; theme set by the real header toggle (finpath.colorMode); real Tab/Enter key events (rate field → Extra yearly deposit summary → View result); DOM measurements via page JavaScript.",
+  "copy_observed": {
+    "rd_basis": "Equal monthly deposits, each added at the end of its month. Interest is compounded monthly at the yearly rate ÷ 12 and paid with the deposits at maturity. Tax/TDS, fees and penalties for missed instalments or premature withdrawal are not included. A bank that compounds or counts instalments differently will quote a slightly different maturity.",
+    "rd_labels": [
+      "Monthly deposit",
+      "Deposit term",
+      "Annual interest rate",
+      "Extra yearly deposit"
+    ],
+    "rd_default_reconciliation": "₹12,00,000 deposits + ₹6,29,460 interest = ₹18,29,460 at maturity after 120 months at 8% a year, compounded monthly.",
+    "rd_scenarios": [
+      "Lower what-if",
+      "Your deposits",
+      "Higher what-if"
+    ]
+  },
+  "cases": [
+    {
+      "route": "rd",
+      "theme": "dark",
+      "width": 1440,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "client": 1425,
+      "scroll": 1425,
+      "panelBg": "rgb(15, 26, 41)",
+      "primaryVisibleAtLoad": true
+    },
+    {
+      "route": "rd",
+      "theme": "dark",
+      "width": 390,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "client": 390,
+      "scroll": 390,
+      "resultFocused": true,
+      "resultTop": 88,
+      "headerBottom": 64
+    },
+    {
+      "route": "rd",
+      "theme": "dark",
+      "width": 320,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "client": 320,
+      "scroll": 320,
+      "resultFocused": true,
+      "resultTop": 88,
+      "headerBottom": 64
+    },
+    {
+      "route": "rd",
+      "theme": "light",
+      "width": 320,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "client": 320,
+      "scroll": 320,
+      "panelBg": "rgb(255, 255, 255)",
+      "basisColor": "rgb(59, 80, 99)",
+      "resultFocused": true,
+      "resultTop": 88,
+      "via": "header toggle click"
+    },
+    {
+      "route": "rd",
+      "theme": "light",
+      "width": 390,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "client": 390,
+      "scroll": 390,
+      "resultFocused": true,
+      "resultTop": 88
+    },
+    {
+      "route": "rd",
+      "theme": "light",
+      "width": 1440,
+      "basisBeforeFields": true,
+      "inputsContained": true,
+      "metricsContained": true,
+      "client": 1425,
+      "scroll": 1425,
+      "primaryVisibleAtLoad": true
+    },
+    {
+      "route": "lumpsum-mutual-fund",
+      "theme": "dark",
+      "width": 320,
+      "client": 320,
+      "scroll": 320,
+      "note": "local preview of the same source; schedule last row ₹5,61,184 equals headline at 1.5 years"
+    }
+  ],
+  "local_typing": {
+    "route": "rd",
+    "width": 390,
+    "before": 483,
+    "after": 483,
+    "note": "typing 1.5 in Deposit term did not move the viewport (local preview of the same source)"
+  },
+  "console_errors": "none captured on the final candidate tab",
+  "not_claimed": [
+    "native screen reader (A11Y-F01/F02 owner-deferred)",
+    "native 200% zoom (A11Y-F03 owner-deferred)",
+    "WCAG conformance",
+    "reduced-motion emulation"
+  ]
+}

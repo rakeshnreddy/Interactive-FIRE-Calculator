@@ -31,7 +31,7 @@ The primary thesis stays **understand a decision, save it, revisit actual progre
 | 19 | `salary-india` | No additional feature justified | B49 labels the CTC-based approximation. Test demand before replacing it with statutory payroll; never claim payslip accuracy. |
 | 20 | `hra-exemption` | Queued small feature contract | B49 scope completed. Explicit qualifying salary/city/regime contract using official rules and independent eligibility negatives. |
 | 21 | `fd` | Implemented bounded contract | B60/C24: deposit-specific copy, yearly-compounded cumulative basis before fields, tax/TDS/fee/premature-penalty exclusions, deposit + interest = maturity line and exact-term schedule. Payout mode and compounding frequency remain unbuilt future contracts. |
-| 22 | `rd` | Registered bounded contract | B61/C25: explain end-of-month instalments, monthly compounding basis and exclusions; distinguish the extra yearly deposit from standard instalments. |
+| 22 | `rd` | Implemented bounded contract | B61/C25: end-of-month instalments, monthly compounding at rate ÷ 12 and exclusions before fields; extra yearly deposit separated from instalments; deposits + interest = maturity line; exact-term schedule (B62). |
 | 23 | `ppf` | Queued small feature contract | B49 scope completed. Deposit-date interest/limits contract with official scheme text; no prediction of notified rates. |
 | 24 | `epf` | Queued small feature contract | B49 scope completed. Separate EPF/EPS contribution-basis contract; do not count employer pension allocation as savings. |
 | 25 | `nps` | Externally gated | B49 separates user annuity assumptions from eligibility. Sector/exit/corpus rule selection requires a dated PFRDA contract. |

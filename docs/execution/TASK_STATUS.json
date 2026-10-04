@@ -982,31 +982,31 @@
       "id": "B61",
       "title": "RD presentation: deposit timing and interest basis",
       "checkpoint": "C25",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B50",
         "B60"
       ],
       "prompt": "prompts/B61.md",
-      "submission": null,
+      "submission": "submissions/B61.md",
       "owner": "Astra direct implementation \u2014 owner continuation",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "5f2fdbf2021d946d9e6b51bf31c268801aec037d",
+      "review": "reviews/C25.md",
       "blocked_reason": null
     },
     {
       "id": "B62",
       "title": "exact-term schedules for lump sum and monthly recurring calculators",
       "checkpoint": "C25",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B60"
       ],
       "prompt": "prompts/B62.md",
-      "submission": null,
+      "submission": "submissions/B62.md",
       "owner": "Astra direct implementation \u2014 owner continuation",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "5f2fdbf2021d946d9e6b51bf31c268801aec037d",
+      "review": "reviews/C25.md",
       "blocked_reason": null
     }
   ],
