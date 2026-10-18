@@ -16,6 +16,8 @@ Production stays at old `3399dbbd8d7f0e6379972356a790b236e6b177b1`; automatic pr
 
 ## Next
 
-1. Route-specific copy for the next high-traffic group: loan EMIs (EMI, home/car/personal loan EMI, mortgage) — state the engine's payment convention (read the formula first: monthly rate ÷ 12, end-of-month payments, fixed rate) and what is excluded (processing fees, insurance, rate resets), with neutral what-ifs; values byte-equal.
-2. Gratuity statutory part-year counting/eligibility stays a disclosed exclusion; changing results needs a re-readable primary source and a versioned model.
-3. Owner-gated: B51 real users, OA-1/OA-3 production, A11Y-F01–F03 native checks, B13/B14.
+The owner set the next session's direction on 2026-10-18; the full brief is in [START_NEXT_TASK_PROMPT.md](START_NEXT_TASK_PROMPT.md):
+
+1. **Multi-agent calculator analysis** of all 84 public routes (inventory → per-toolkit review → adversarial verification → ranked backlog → bounded fix checkpoints). Loan EMI copy, gratuity part-year counting and generic helpers are known starting residuals.
+2. **Complete visual redesign** with full owner authority over the site's visual presentation, rolled out in staged, verified checkpoints that keep financial values legible and honest, and accessibility and performance at or above today's level.
+3. Owner-gated (unchanged): B51 real users, OA-1/OA-3 production, A11Y-F01–F03 native checks, B13/B14.
