@@ -766,3 +766,7 @@ Preserve [the October 18 multi-agent analysis](calculator-excellence/ANALYSIS_20
 - [ ] **B70 / C31 — Contrast-checked design foundation and application shell.** [Contract](execution/prompts/B70.md). After B68, measure OKLCH pairs, establish token/cascade ownership, redesign navigation/footer, repair eyebrow contrast and add reduced-motion-aware transitions. Verify breakpoints/themes, accessibility interactions and performance against a baseline, then release through the full loop. No calculation changes.
 
 B69 and B71–B76 remain ranked proposals requiring separate bounded registration; preserve their IDs. C30 covers B68 only in this continuation. No new analytics, dependencies, credentials, paid action or production/D1 write is authorized by registration. Existing owner deferrals remain open.
+
+## C30R release prerequisite — 2026-10-26
+
+- [ ] **B77 — Repair development-tool advisories blocking release.** [Contract](execution/prompts/B77.md). Exact-head CI passed tests/build but failed the unchanged dependency-audit gate. Patch compatible Vite/Vitest and Miniflare's Undici, without a forced Wrangler downgrade or runtime/formula changes. Re-run clean locked install, audit, full suite and the complete isolated-beta release verification before acceptance. B68 follows this prerequisite.

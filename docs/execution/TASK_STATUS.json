@@ -1093,7 +1093,8 @@
       "dependencies": [
         "B62",
         "B63",
-        "B67"
+        "B67",
+        "B77"
       ],
       "prompt": "prompts/B68.md",
       "submission": null,
@@ -1113,6 +1114,21 @@
       "prompt": "prompts/B70.md",
       "submission": null,
       "owner": "Primary agent direct implementation and review \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B77",
+      "title": "repair development-tool advisories blocking C30R release",
+      "checkpoint": "C30R",
+      "status": "in_progress",
+      "dependencies": [
+        "B67"
+      ],
+      "prompt": "prompts/B77.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and review",
       "code_sha": null,
       "review": null,
       "blocked_reason": null
