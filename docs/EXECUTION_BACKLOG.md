@@ -757,3 +757,12 @@ The [fresh audit](calculator-excellence/UX_REVIEW_2026-09-29.md) and [83-route m
   - Outcome/scope: before-input growth basis, route labels/helpers, lump-sum result relabel, invested + gains = value line, neutral what-ifs, route guidance.
   - Non-goals: annuity-due or fee/tax arithmetic, fund data, compound-interest page, schema, production.
   - Acceptance/tests: failing regressions first, Decimal oracles, byte-equal values, full suite, CI, hosted light/dark 1440/390/320. Human 2–3h, agent 1h.
+
+## Verified audit continuation — 2026-10-26
+
+Preserve [the October 18 multi-agent analysis](calculator-excellence/ANALYSIS_2026-10-18.md) as the incoming ranked backlog. C30R is documentation/registration only; no prior finding is newly certified and no fix is marked done. Owner authorizes sequential push, release and isolated shared-beta deployment after every step, with an exact resume action.
+
+- [ ] **B68 / C30 — Exact-term reconciliation and truthful contribution accounting.** [Contract](execution/prompts/B68.md). Reproduce savings-goal/flat-rate/interest-only/rent-versus-buy/retirement mismatches, one-time Roth wording, negative zero and SWP depletion identity; failing tests first, version changed results and retain historical readers. Preserve FIRE, data boundaries and scenario scope. Full suite, CI, candidate/browser/CSV review and beta verification before acceptance.
+- [ ] **B70 / C31 — Contrast-checked design foundation and application shell.** [Contract](execution/prompts/B70.md). After B68, measure OKLCH pairs, establish token/cascade ownership, redesign navigation/footer, repair eyebrow contrast and add reduced-motion-aware transitions. Verify breakpoints/themes, accessibility interactions and performance against a baseline, then release through the full loop. No calculation changes.
+
+B69 and B71–B76 remain ranked proposals requiring separate bounded registration; preserve their IDs. C30 covers B68 only in this continuation. No new analytics, dependencies, credentials, paid action or production/D1 write is authorized by registration. Existing owner deferrals remain open.

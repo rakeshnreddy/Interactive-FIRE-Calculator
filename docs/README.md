@@ -7,11 +7,12 @@ Start with [execution/RESUME.md](execution/RESUME.md) for current code, release 
 | Task status and owner actions | [TASK_STATUS.json](execution/TASK_STATUS.json) |
 | Dependency order and release gates | [CHECKPOINTS.md](execution/CHECKPOINTS.md) |
 | Task scope and acceptance criteria | [EXECUTION_BACKLOG.md](EXECUTION_BACKLOG.md), task prompts linked from [execution README](execution/README.md) |
-| Latest accepted release | [Release review](execution/reviews/RELEASE-2026-09-29.md) |
+| Current release and next action | [Execution resume](execution/RESUME.md), [checkpoint reviews](execution/CHECKPOINTS.md) |
 | Product and visual contracts | [PRODUCT.md](../PRODUCT.md), [DESIGN.md](../DESIGN.md), [visual specification](VISUAL_DESIGN_SPEC.md), [color system](COLOR_AND_GLASS_SYSTEM.md) |
 | Production setup and data safety | [Authentication runbook](PRODUCTION_AUTH_RUNBOOK.md), [Pages deployment](CLOUDFLARE_PAGES.md), [deletion/recovery](DATA_DELETION_AND_RECOVERY.md) |
 | Fresh individual UX review and launch budget | [2026-09-29 audit](calculator-excellence/UX_REVIEW_2026-09-29.md), [83-route analysis](calculator-excellence/CALCULATOR_UX_MATRIX_2026-09-29.md), [public launch costs](PUBLIC_LAUNCH_BUDGET.md) |
 | Calculator work still needed | [Gap matrix](calculator-excellence/GAP_MATRIX.md), [assumption decisions](calculator-excellence/FIRE_ASSUMPTIONS_DECISION.md), [excellence program](execution/CALCULATOR_EXCELLENCE_PROGRAM.md) |
+| October 18 audit and next contracts | [Preserved multi-agent audit](calculator-excellence/ANALYSIS_2026-10-18.md), [B68 reconciliation](execution/prompts/B68.md), [B70 design foundation](execution/prompts/B70.md) |
 | Accessibility work still needed | [Deferred checks](execution/DEFERRED_CHECKS.md), [owner deferral decisions](execution/ACCESSIBILITY_DEFERRALS.md) |
 | Product/revenue hypotheses and future scope | [Positioning](PRODUCT_AND_POSITIONING_STRATEGY.md), [retention](RETENTION_AND_MONETIZATION_PLAN.md), [measurement](MEASUREMENT_AND_EXPERIMENT_PLAN.md), [technical roadmap](TECHNICAL_AND_SECURITY_ROADMAP.md), [mobile decision](COMPANION_APP_DECISION.md) |
 | Review authority and worker protocol | [Execution README](execution/README.md), [implementation protocol](execution/IMPLEMENTATION_AND_VALIDATION_PROTOCOL.md) |

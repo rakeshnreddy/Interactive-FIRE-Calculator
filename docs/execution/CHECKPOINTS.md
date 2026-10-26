@@ -37,6 +37,9 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C27 | PPF whole years and gratuity service table | B64, B65 | accepted | 3e2569c6f0482876f7f02c753f99146cd372787f | [approved](reviews/C27.md) |
 | C28 | Truthful generated input helpers | B66 | accepted | 7fc0170bc4996dd96d6eb7449574702df73fdc81 | [approved](reviews/C28.md) |
 | C29 | Market-growth presentation for lump sum and SIP | B67 | accepted | 698ce790a18ae016564264c074689ed304370c30 | [approved](reviews/C29.md) |
+| C30R | Audit preservation and next-contract registration | registration only | released | — | [verification pending](reviews/C30R.md) |
+| C30 | Exact-term reconciliation and contribution accounting | B68 | released | — | Pending implementation |
+| C31 | Design foundation and application shell | B70 | locked | — | Pending C30 acceptance |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -88,3 +91,9 @@ A survey of all 359 inputs found the label-only helper generator calling one-tim
 
 Owner approved route-specific copy for high-traffic routes. C29/B67 covers lump sum, SIP and step-up SIP (compound interest already has a dedicated experience): state the engine's timing and compounding basis, that a constant return is not a forecast, and what is not deducted; relabel lump sum's deposit-style result; neutral what-ifs; reconciliation lines. Results/vectors byte-equal (lump-sum metric labels excepted). No formula, schema or production change.
 
+
+## Stepwise continuation — 2026-10-26
+
+Owner authorizes push, release and shared-beta deployment after each bounded step. C30R preserves the existing audit and registers only B68 and B70. Finish and verify this documentation release before B68; finish B68/C30 before B70/C31. Other audit suggestions remain proposals. B69 is not implicitly included in C30. Task status remains 64 done of 69 registered; registration is not implementation or acceptance.
+
+`released` in the ledger means the contract is available for execution; it does not mean a candidate is accepted or deployed. The review and RESUME record those observed outcomes separately. C31 stays locked until B68 is accepted.

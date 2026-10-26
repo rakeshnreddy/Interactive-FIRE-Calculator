@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-03",
+  "updated": "2026-10-26",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1083,6 +1083,38 @@
       "owner": "Astra direct implementation \u2014 owner continuation",
       "code_sha": "698ce790a18ae016564264c074689ed304370c30",
       "review": "reviews/C29.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B68",
+      "title": "exact-term reconciliation and truthful contribution accounting",
+      "checkpoint": "C30",
+      "status": "pending",
+      "dependencies": [
+        "B62",
+        "B63",
+        "B67"
+      ],
+      "prompt": "prompts/B68.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and review \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B70",
+      "title": "contrast-checked design foundation and application shell",
+      "checkpoint": "C31",
+      "status": "pending",
+      "dependencies": [
+        "B68"
+      ],
+      "prompt": "prompts/B70.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and review \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
       "blocked_reason": null
     }
   ],

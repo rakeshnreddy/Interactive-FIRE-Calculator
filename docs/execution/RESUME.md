@@ -1,23 +1,27 @@
-# FinPath execution resume — 2026-10-04 (after C29)
+# FinPath execution resume — 2026-10-26
 
-**C25–C29 accepted; B61–B67 complete; beta promotion verified.** Astra implements/reviews directly under the owner override; no Gemini. Canonical [TASK_STATUS.json](TASK_STATUS.json) and [CHECKPOINTS.md](CHECKPOINTS.md); start the next session with [the handoff prompt](START_NEXT_TASK_PROMPT.md).
+**Active: C30R audit preservation and registration.** Branch `codex/audit-backlog-registration`, baseline main `d488110fe81332054f75aa329e86f0f09ae9fb61` (PR #153). Implementation has not started. [Release review](reviews/C30R.md) records verification as it happens; pending entries are not passes.
 
-- Stable checkout `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`; Documents/ChatGPT is stale. C28 is on main via PR #151 merge `e7411660289835e09ef4a564e4503309c25c8a36` (main CI 37186973774). C29 lives on branch `codex/market-growth-presentation`, [PR #152](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/152): registration `3a5b265`, accepted product `698ce790a18ae016564264c074689ed304370c30`, docs only after it. Resolve the observed PR state/mergeCommit; never reset existing changes.
-- C25: RD timing/basis/exclusions; exact-term lump-sum and monthly recurring schedules. C26: exact-term return/CAGR, inflation, Roth/traditional and EPF tables. C27: PPF follows the PPF Scheme, 2019 (whole financial years; ₹1,50,000 yearly deposit cap, with a clear validation message; optimistic what-if capped); gratuity table ends at the entered service. C28: generated input helpers say only what the label and unit support (196 of 359 helpers; no "recurring amount", "unless the label says otherwise" or "years in years"). C29: lump sum, SIP and step-up SIP state timing, compounding (monthly rate ÷ 12 versus CAGR), not-a-forecast and fee/tax exclusions; lump sum reads "Projected value / Estimated gains" with identical values; neutral what-ifs and invested + gains lines. Reviews [C25](reviews/C25.md)–[C29](reviews/C29.md).
-- In the audit of every route with a `years` input, each table that tracks a balance or rate headline now ends at that headline at whole and part-year terms (PPF rejects part years by rule); routes whose headline is not a table balance (savings-goal monthly amount, loan comparisons and similar) were not in scope. Full suite **105 files / 2,777 tests**; C29 product CI 37236755792.
-- **64/67 accepted (95.5%, registered task count only).** B51 real users and OA-5 remain owner-deferred; B13 paid and B14 mobile remain locked. No synthetic retention or willingness-to-pay proof.
-- Native reader A11Y-F01/F02 and native zoom A11Y-F03 remain open in [DEFERRED_CHECKS.md](DEFERRED_CHECKS.md). No WCAG conformance claim.
+## Working copy
 
-## Verified release
+Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. The checkout under Documents/ChatGPT is stale at PR #138 and some File Provider reads stall. Do not reset or overwrite it. Check `git status --short --branch`, remote main and PR state before resuming. Preserve the incoming audit at `docs/calculator-excellence/ANALYSIS_2026-10-18.md`.
 
-Bookmarkable beta **https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev**, immutable **https://d5ce67a4.interactive-fire-calculator.pages.dev**, deployment `d5ce67a4-5461-429a-a23a-93aa1e93cedc`. Clean source `11ea34ee9365676bebdcc3c301f7c922022f8389`, product equal to accepted `698ce79`. Provider commit/branch/success/preview D1, 16 runtime JS/CSS hashes (immutable and alias, equal to the verified candidate), health 200/protected 401, 84 calculator routes and a 1.5-year lump-sum keyboard journey on the alias pass. [Provider/assets](evidence/C29/beta-release.json), [journey](evidence/C29/beta-journey.json), [release protocol](BETA_RELEASE_PROTOCOL.md). Rollback: redeploy C28 `5582715` to the same label.
+## Exact next action
 
-Production stays at old `3399dbbd8d7f0e6379972356a790b236e6b177b1`; automatic production deployments disabled (re-checked 2026-10-04); last auth preflight 0/6. The preflight cannot start without `.env.production.local` (live Clerk publishable key and owned production origin), so production was not deployed. OA-1 needs owned HTTPS origin/completed production Clerk; OA-3 retains restore/setup gates. Preview D1 only `0dbad68e-7493-452f-8504-98d4c61ee5da`; production D1 untouched.
+1. Finish C30R: full repository suite and documentation review; explicitly stage only registration/audit/resume files; push/PR; exact-head CI; clean authenticated preview build; deploy candidate and verify provider SHA/branch/success, preview D1, runtime assets, health/protected boundaries and 84 public routes. Accept only on observed evidence, then promote/verify the stable beta, merge and confirm main CI. Record immutable URL and SHA.
+2. Start [B68/C30](prompts/B68.md) on a fresh branch from merged main: reproduce each claim and write failing behavioural regressions before code. Do not combine B69 scenario work with it. Version any changed financial result while retaining saved-record readers. Release and deploy through the full loop.
+3. Start [B70/C31](prompts/B70.md) after C30 acceptance: measured contrast, cascade/token foundation and shell. The redesign's later stages remain separately scoped proposals.
 
-## Next
+Owner asks for stepwise pushes/releases/deployments and clean documentation. Direct implementation; no Gemini or broad subagent fan-out. Narrow independent release reviews may be used. The completed multi-agent audit does not need to be repeated.
 
-The owner set the next session's direction on 2026-10-18; the full brief is in [START_NEXT_TASK_PROMPT.md](START_NEXT_TASK_PROMPT.md):
+## Canonical status
 
-1. **Multi-agent calculator analysis** of all 84 public routes (inventory → per-toolkit review → adversarial verification → ranked backlog → bounded fix checkpoints). Loan EMI copy, gratuity part-year counting and generic helpers are known starting residuals.
-2. **Complete visual redesign** with full owner authority over the site's visual presentation, rolled out in staged, verified checkpoints that keep financial values legible and honest, and accessibility and performance at or above today's level.
-3. Owner-gated (unchanged): B51 real users, OA-1/OA-3 production, A11Y-F01–F03 native checks, B13/B14.
+C25–C29 remain accepted; B61–B67 done. **64 of 69 registered tasks done** after adding pending B68 and B70 (task count, not launch readiness). B69/B71–B76 are proposals, not registered/completed work. [TASK_STATUS.json](TASK_STATUS.json), [CHECKPOINTS.md](CHECKPOINTS.md), [backlog](../EXECUTION_BACKLOG.md). B51/OA-5 real-user evidence remains deferred; B13/B14 locked. Native reader/zoom A11Y-F01–F03 remain open; no WCAG conformance claim.
+
+## Last verified shared beta (prior checkpoint)
+
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), C29 immutable https://d5ce67a4.interactive-fire-calculator.pages.dev, deployment `d5ce67a4-5461-429a-a23a-93aa1e93cedc`, clean source `11ea34ee9365676bebdcc3c301f7c922022f8389`, product equal to accepted `698ce790a18ae016564264c074689ed304370c30`. [Provider/assets](evidence/C29/beta-release.json), [journey](evidence/C29/beta-journey.json), [protocol](BETA_RELEASE_PROTOCOL.md). Prior tests: 105 files / 2,777 tests; current run is pending. C30R has no live deployment yet.
+
+## Boundaries
+
+Deploy to isolated preview/shared beta only: D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`. Production remains gated by OA-1/OA-3 (owned HTTPS origin, production Clerk and preflight); last recorded production source `3399dbb`, automatic production deployments disabled. Re-check provider facts before publication. No production D1, DNS, paid action or invented user evidence. Keep raw logs/screenshots ignored and commit compact evidence. Maximum three correction rounds per product checkpoint.
