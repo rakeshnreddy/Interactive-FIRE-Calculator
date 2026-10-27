@@ -769,4 +769,4 @@ B69 and B71–B76 remain ranked proposals requiring separate bounded registratio
 
 ## C30R release prerequisite — 2026-10-26
 
-- [ ] **B77 — Repair development-tool advisories blocking release.** [Contract](execution/prompts/B77.md). Exact-head CI passed tests/build but failed the unchanged dependency-audit gate. Patch compatible Vite/Vitest and Miniflare's Undici, without a forced Wrangler downgrade or runtime/formula changes. Re-run clean locked install, audit, full suite and the complete isolated-beta release verification before acceptance. B68 follows this prerequisite.
+- [x] **B77 — Repair development-tool advisories blocking release.** [Contract](execution/prompts/B77.md). Exact-head CI passed tests/build but failed the unchanged dependency-audit gate. Patch compatible Vite/Vitest and Miniflare's Undici, without a forced Wrangler downgrade or runtime/formula changes. Re-run clean locked install, audit, full suite and the complete isolated-beta release verification before acceptance. B68 follows this prerequisite.

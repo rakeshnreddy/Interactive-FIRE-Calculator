@@ -1122,7 +1122,7 @@
       "id": "B77",
       "title": "repair development-tool advisories blocking C30R release",
       "checkpoint": "C30R",
-      "status": "ready_for_review",
+      "status": "done",
       "dependencies": [
         "B67"
       ],

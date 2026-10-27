@@ -1,27 +1,27 @@
 # FinPath execution resume — 2026-10-27
 
-**Active: C30R audit preservation and registration.** Branch `codex/audit-backlog-registration`, baseline main `d488110fe81332054f75aa329e86f0f09ae9fb61` (PR #153). B68/B70 implementation has not started. B77 is ready for final review; candidate product verified, contracted shared-beta verification and final task acceptance remain pending. [Release review](reviews/C30R.md) records verification as it happens; pending entries are not passes.
+**C30R/B77 shared-beta release verified. B68 and B70 are pending.** Audit backlog preserved and bounded contracts registered; the unexpected development-tool CI blocker is repaired. [Review](reviews/C30R.md), [task ledger](TASK_STATUS.json), [checkpoints](CHECKPOINTS.md). Landing/main-CI status is recorded in [PR #154](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/154); resolve its actual state before continuing.
 
-## Working copy
+## Working copy and next action
 
-Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. The checkout under Documents/ChatGPT is stale at PR #138 and some File Provider reads stall. Do not reset or overwrite it. Check `git status --short --branch`, remote main and PR state before resuming. Preserve the incoming audit at `docs/calculator-excellence/ANALYSIS_2026-10-18.md`.
+Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. Documents/ChatGPT is stale at PR #138 and File Provider reads can stall; do not reset or overwrite it. Current release branch is `codex/audit-backlog-registration` until landing. Preserve other work and explicitly stage only owned files.
 
-## Exact next action
+1. Read `git status --short --branch` and PR #154 state, head, mergeCommit and checks. If open, finish landing after final-head CI. If merged, do not replay it: fetch main, fast-forward only from a clean tree and verify CI for its merge commit. See PR #154's landing receipt. Production auto-deploy remains disabled.
+2. Begin [B68/C30](prompts/B68.md) on a fresh `codex/` branch from the verified main: reproduce claims, write failing behavioural regressions, then implement. Do not combine B69 scenario work. Version changed financial results and retain historical snapshot readers. Release through the full loop and verify the shared beta before closure.
+3. Begin [B70/C31](prompts/B70.md) only after C30 acceptance: measured contrast, token/cascade foundation, navigation/footer and reduced-motion-aware transitions. Later audit proposals need their own registration.
 
-1. Finish C30R release: approved candidate product `7d0f1782b03f9f49de3491eaac1be2067c9222e2`, exact CI `40519019900` passed. Candidate https://8998432e.interactive-fire-calculator.pages.dev passes provider/assets/health/auth/84-route/browser checks. Commit the candidate-review/evidence docs, confirm their CI, rebuild the clean equivalent product with preview auth, promote/verify the stable beta, record the immutable URL, then merge PR #154 after final docs CI and confirm main CI. No beta promotion has happened yet.
-2. Start [B68/C30](prompts/B68.md) on a fresh branch from merged main: reproduce each claim and write failing behavioural regressions before code. Do not combine B69 scenario work with it. Version any changed financial result while retaining saved-record readers. Release and deploy through the full loop.
-3. Start [B70/C31](prompts/B70.md) after C30 acceptance: measured contrast, cascade/token foundation and shell. The redesign's later stages remain separately scoped proposals.
+Owner asks for sequential pushes/releases/deployments with exact resumption notes. Direct implementation, no Gemini or broad agent fan-out; narrow independent reviews may be used. Do not repeat the completed multi-agent analysis.
 
-Owner asks for stepwise pushes/releases/deployments and clean documentation. Direct implementation; no Gemini or broad subagent fan-out. Narrow independent release reviews may be used. The completed multi-agent audit does not need to be repeated.
+## Verified release
 
-## Canonical status
+[Shared beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), immutable https://10ca2f8d.interactive-fire-calculator.pages.dev, deployment `10ca2f8d-71e3-4424-b616-31fcbff63448`. Clean source `34e077caca1562c600cafa51ceeb3487fb610e11`, product equal to accepted `7d0f1782b03f9f49de3491eaac1be2067c9222e2`; both exact CI checks passed (`40522172333`, `40519019900`). Candidate https://8998432e.interactive-fire-calculator.pages.dev. [Provider/assets/routes](evidence/C30R/beta-release.json), [browser](evidence/C30R/beta-browser-checks.json), [raw hashes](evidence/C30R/manifest.json), [release protocol](BETA_RELEASE_PROTOCOL.md).
 
-C25–C29 remain accepted; B61–B67 done. **64 of 70 registered tasks done** after adding pending B68/B70 and B77 ready for final review (task count, not launch readiness). B69/B71–B76 are proposals, not registered/completed work. [TASK_STATUS.json](TASK_STATUS.json), [CHECKPOINTS.md](CHECKPOINTS.md), [backlog](../EXECUTION_BACKLOG.md). B51/OA-5 real-user evidence remains deferred; B13/B14 locked. Native reader/zoom A11Y-F01–F03 remain open; no WCAG conformance claim.
+Full suite: 30 Node tests, TypeScript, 105 Vitest files / 2,777 tests, build, 92 prerendered pages and build isolation. Audit: zero vulnerabilities. Beta immutable and alias both match all 16 runtime JS/CSS hashes, health 200/protected 401 and 84 public routes. Six signed-out browser cases cover light/dark at 1440/390/320, Tab/Enter reveal, no overflow/errors and a Decimal-oracle SIP sample. No hosted financial-data write.
 
-## Last verified shared beta (prior checkpoint)
+## Canonical status and boundaries
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), C29 immutable https://d5ce67a4.interactive-fire-calculator.pages.dev, deployment `d5ce67a4-5461-429a-a23a-93aa1e93cedc`, clean source `11ea34ee9365676bebdcc3c301f7c922022f8389`, product equal to accepted `698ce790a18ae016564264c074689ed304370c30`. [Provider/assets](evidence/C29/beta-release.json), [journey](evidence/C29/beta-journey.json), [protocol](BETA_RELEASE_PROTOCOL.md). Current B77 tests: 30 Node and 105 files / 2,777 Vitest tests, TypeScript/build/isolation, zero-vulnerability audit and exact-head CI pass. C30R candidate is live; shared beta is still the prior release until promotion is verified.
+**65 of 70 registered tasks done** (task count, not launch readiness). B77 done; B68/B70 pending. B69/B71–B76 remain proposals. B51/OA-5 real-user evidence is deferred; B13/B14 remain locked. Native reader/zoom A11Y-F01–F03 remain open; no WCAG conformance claim. Incoming audit SHA256 `b0b692fe5e39af54835f65b6c237d3c86c705fc68a1813d05612fc34b924e918`; its findings must be reproduced before fixes.
 
-## Boundaries
+Isolated preview D1 only `0dbad68e-7493-452f-8504-98d4c61ee5da`. Production source remains `3399dbb`, automatic deployments disabled (provider rechecked 2026-10-27); OA-1/OA-3 remain gated on owned origin, production Clerk and preflight. No production D1, DNS, paid action or invented user evidence. Raw logs/screenshots stay ignored; commit compact manifests. Maximum three correction rounds per product checkpoint.
 
-Deploy to isolated preview/shared beta only: D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`. Production remains gated by OA-1/OA-3 (owned HTTPS origin, production Clerk and preflight); last recorded production source `3399dbb`, automatic production deployments disabled. Re-check provider facts before publication. No production D1, DNS, paid action or invented user evidence. Keep raw logs/screenshots ignored and commit compact evidence. Maximum three correction rounds per product checkpoint.
+Dependency repair notes: compatible Vite 8.1.6/Vitest 4.1.12, global dev-only Undici 7.30.1 override; runtime versions unchanged. npm 10 consumes the checked lock with normal `npm ci`; regenerate with a resolver containing the upstream optional-peer fix if old npm raises `edgesOut`. See [B77 submission](submissions/B77.md).
