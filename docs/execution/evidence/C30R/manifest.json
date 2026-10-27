@@ -1,0 +1,109 @@
+{
+  "related_candidate_sha": "7d0f1782b03f9f49de3491eaac1be2067c9222e2",
+  "preview": "https://8998432e.interactive-fire-calculator.pages.dev",
+  "provenance": "Captured suite/audit against corrected locked dependencies; browser captures use synthetic SIP inputs. Initial browser assertion expected focus unconditionally; corrected to existing resultReveal contract after source/DOM inspection. No application change from that investigation.",
+  "files": [
+    {
+      "path": "docs/execution/evidence/C30R/raw/browser-checks.log",
+      "bytes": 72,
+      "sha256": "cc06f20f025de33687465fd913baeaabc70a9dcc654fa2011e480ca3bd05d953",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/browser-result.log",
+      "bytes": 5553,
+      "sha256": "a7fcff7a8bccee7462333b9d3e40aa8bf4342610e7851cb6877b659f67c3d042",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/browser-smoke.js",
+      "bytes": 3423,
+      "sha256": "8cf23c910f4e49b31c7f3d34e0b240f8e58d0e63d06cf57a0cf1168ed60436e8",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-1440-dark.png",
+      "bytes": 201517,
+      "sha256": "7e1170305bf1c90fb3d7fe670749e1901a9b7becd1b9c0175357c9cdbc814b6e",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-1440-light.png",
+      "bytes": 200168,
+      "sha256": "144b61d86f9eb6f9b27ae04761c221311fdb3ecf650697f968a3f6548b2a8d16",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-320-dark.png",
+      "bytes": 69607,
+      "sha256": "ee442af75a0cbcba18c5799ba3f37e290fe87d812344f7fec4cab177cc18d7c6",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-320-light.png",
+      "bytes": 70913,
+      "sha256": "0c7b2f2c90605e910b407072db291ad609a32bc6bf51016d20cf0f6b7a19421b",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-390-dark.png",
+      "bytes": 72997,
+      "sha256": "c2e896331a18dc99a0354c0726001c67e518dd1c8c22befd6c7d5c88164bc872",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-390-light.png",
+      "bytes": 73970,
+      "sha256": "a2658a2272a172b0764fb1380da523eea57f8babfe484e9ce8cbd3114eddf986",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-deploy.log",
+      "bytes": 681,
+      "sha256": "818d261806add43a5391c27315f14125cafe01c63c9f696286bbf27c2bf16184",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/candidate-public-smoke.log",
+      "bytes": 119,
+      "sha256": "4f3e5dc3e75e1c1bf1f6aa1f4ed7e78b5e3f5ba9be3997a0f508b8af1ea8669c",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/ci-failure.log",
+      "bytes": 5546,
+      "sha256": "790cfe036e1642632723f0a47001f655e0017a37d0da4e94d2d0b8fa88bb26aa",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/npm10-clean-ci.log",
+      "bytes": 144,
+      "sha256": "d3ed5cb4eeaf3ab4e9a92ed20f7bd67109e600f827eb6dc919500a89233a80bb",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/repair-ci-watch.log",
+      "bytes": 2493,
+      "sha256": "0cacadb6ff605c9f90b913f0a20a929a4b1957fcf5d44044894a8d8ae4916e7a",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/repair-install.log",
+      "bytes": 143,
+      "sha256": "233a18bf8b845cec48bbb6ce16f61c0b655d2ed5f4335bf27791f72896560bad",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/repair-preview-build.log",
+      "bytes": 3001,
+      "sha256": "ce8fb8d3512efb917999c40c9b71ffaca236272e67cf517e36de8c7ddd03b130",
+      "origin": "ignored raw evidence"
+    },
+    {
+      "path": "docs/execution/evidence/C30R/raw/repair-test-all.log",
+      "bytes": 7619,
+      "sha256": "89a5bfadf1d296a5dd1398370288a3f770c7d440a0b883ad9e256dadfe98fa07",
+      "origin": "ignored raw evidence"
+    }
+  ]
+}

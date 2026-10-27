@@ -1,0 +1,8 @@
+{
+  "method": "independent Decimal annuity, end-of-month deposits",
+  "monthly": "10000",
+  "annual_rate": "0.08",
+  "months": 18,
+  "value": "190571.90505061653238284085608440323756897745281710",
+  "display_whole_inr": "190572"
+}

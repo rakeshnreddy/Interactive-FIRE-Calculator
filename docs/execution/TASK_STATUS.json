@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-26",
+  "updated": "2026-10-27",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1122,15 +1122,15 @@
       "id": "B77",
       "title": "repair development-tool advisories blocking C30R release",
       "checkpoint": "C30R",
-      "status": "in_progress",
+      "status": "ready_for_review",
       "dependencies": [
         "B67"
       ],
       "prompt": "prompts/B77.md",
-      "submission": null,
+      "submission": "submissions/B77.md",
       "owner": "Primary agent direct implementation and review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "7d0f1782b03f9f49de3491eaac1be2067c9222e2",
+      "review": "reviews/C30R.md",
       "blocked_reason": null
     }
   ],

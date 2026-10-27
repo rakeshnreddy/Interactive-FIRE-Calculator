@@ -37,7 +37,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C27 | PPF whole years and gratuity service table | B64, B65 | accepted | 3e2569c6f0482876f7f02c753f99146cd372787f | [approved](reviews/C27.md) |
 | C28 | Truthful generated input helpers | B66 | accepted | 7fc0170bc4996dd96d6eb7449574702df73fdc81 | [approved](reviews/C28.md) |
 | C29 | Market-growth presentation for lump sum and SIP | B67 | accepted | 698ce790a18ae016564264c074689ed304370c30 | [approved](reviews/C29.md) |
-| C30R | Audit preservation and next-contract registration | B77; audit/registration | released | — | [CI audit repair in progress](reviews/C30R.md) |
+| C30R | Audit preservation and next-contract registration | B77; audit/registration | released | — | [candidate approved; final acceptance pending beta](reviews/C30R.md) |
 | C30 | Exact-term reconciliation and contribution accounting | B68 | released | — | Pending implementation |
 | C31 | Design foundation and application shell | B70 | locked | — | Pending C30 acceptance |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
