@@ -1,0 +1,93 @@
+{
+  "url": "https://8998432e.interactive-fire-calculator.pages.dev",
+  "cases": [
+    {
+      "width": 1440,
+      "theme": "light",
+      "alreadyVisible": true,
+      "status": 200,
+      "viewport": 1440,
+      "scrollWidth": 1440,
+      "heading": "SIP Calculator",
+      "focusedResult": false,
+      "preservedButtonFocus": true,
+      "resultText": "Projected corpus\u20b91,90,572",
+      "screenshot": "raw/candidate-1440-light.png",
+      "activeElementTop": 1085.03125
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "alreadyVisible": true,
+      "status": 200,
+      "viewport": 1440,
+      "scrollWidth": 1440,
+      "heading": "SIP Calculator",
+      "focusedResult": false,
+      "preservedButtonFocus": true,
+      "resultText": "Projected corpus\u20b91,90,572",
+      "screenshot": "raw/candidate-1440-dark.png",
+      "activeElementTop": 1081.03125
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "alreadyVisible": false,
+      "status": 200,
+      "viewport": 390,
+      "scrollWidth": 390,
+      "heading": "SIP Calculator",
+      "focusedResult": true,
+      "preservedButtonFocus": false,
+      "resultText": "Projected corpus\u20b91,90,572",
+      "screenshot": "raw/candidate-390-light.png",
+      "activeElementTop": 88.421875
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "alreadyVisible": false,
+      "status": 200,
+      "viewport": 390,
+      "scrollWidth": 390,
+      "heading": "SIP Calculator",
+      "focusedResult": true,
+      "preservedButtonFocus": false,
+      "resultText": "Projected corpus\u20b91,90,572",
+      "screenshot": "raw/candidate-390-dark.png",
+      "activeElementTop": 88.421875
+    },
+    {
+      "width": 320,
+      "theme": "light",
+      "alreadyVisible": false,
+      "status": 200,
+      "viewport": 320,
+      "scrollWidth": 320,
+      "heading": "SIP Calculator",
+      "focusedResult": true,
+      "preservedButtonFocus": false,
+      "resultText": "Projected corpus\u20b91,90,572",
+      "screenshot": "raw/candidate-320-light.png",
+      "activeElementTop": 88.015625
+    },
+    {
+      "width": 320,
+      "theme": "dark",
+      "alreadyVisible": false,
+      "status": 200,
+      "viewport": 320,
+      "scrollWidth": 320,
+      "heading": "SIP Calculator",
+      "focusedResult": true,
+      "preservedButtonFocus": false,
+      "resultText": "Projected corpus\u20b91,90,572",
+      "screenshot": "raw/candidate-320-dark.png",
+      "activeElementTop": 88.015625
+    }
+  ],
+  "errors": [],
+  "pass": true,
+  "source_sha": "7d0f1782b03f9f49de3491eaac1be2067c9222e2",
+  "focus_contract": "Preserve button focus when the primary answer is already visible; otherwise reveal and focus the result panel. activeElementTop is the focused element, not necessarily the result."
+}

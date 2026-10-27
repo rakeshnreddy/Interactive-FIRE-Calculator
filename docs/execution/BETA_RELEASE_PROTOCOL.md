@@ -1,10 +1,10 @@
-# Stable beta release protocol — verified 2026-10-04 (C29)
+# Stable beta release protocol — verified 2026-10-27 (C30R/B77)
 
 ## Share one URL
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at accepted checkpoints. Current immutable deployment: https://d5ce67a4.interactive-fire-calculator.pages.dev, deployment `d5ce67a4-5461-429a-a23a-93aa1e93cedc`, clean commit `11ea34ee9365676bebdcc3c301f7c922022f8389`. Product equals accepted C29 source `698ce790a18ae016564264c074689ed304370c30` (review documents differ). [Provider/asset hashes](evidence/C29/beta-release.json), [beta journey](evidence/C29/beta-journey.json), [C29 review](reviews/C29.md). Previous verified beta: C28 `b91c11d7` / `5582715d87c9e3e3ef68054aac1ed256bd463222` ([record](evidence/C28/beta-release.json)).
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at verified checkpoints. Current immutable deployment: https://10ca2f8d.interactive-fire-calculator.pages.dev, deployment `10ca2f8d-71e3-4424-b616-31fcbff63448`, clean source `34e077caca1562c600cafa51ceeb3487fb610e11`. Product equals accepted C30R/B77 source `7d0f1782b03f9f49de3491eaac1be2067c9222e2` (documentation-only delta). [Provider/asset/routes](evidence/C30R/beta-release.json), [beta browser](evidence/C30R/beta-browser-checks.json), [review](reviews/C30R.md). Previous verified beta: C29 `d5ce67a4` / `11ea34ee9365676bebdcc3c301f7c922022f8389` ([record](evidence/C29/beta-release.json)).
 
-Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; 16 actual runtime asset hashes match the build and the verified C29 candidate on both the immutable URL and the beta alias. An alias check made immediately after deploy can still see the previous deployment; re-check until it matches and record only the matching check. Health200/protected401, all84 calculator HTTP routes and the actual 1.5-year lump-sum keyboard journey pass. No hosted financial-data write in C29. Native reader/zoom and B51 actual-user evidence remain deferred.
+Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; all 16 runtime JS/CSS hashes match the tested candidate at both immutable and alias URLs. Health 200/protected 401, all 84 routes on both URLs and six signed-out light/dark 1440/390/320 browser cases pass. No hosted financial-data write occurred. Native reader/zoom and B51 actual-user evidence remain deferred. Publication does not open production gates.
 
 ## Promotion discipline
 

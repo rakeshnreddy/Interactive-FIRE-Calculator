@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-03",
+  "updated": "2026-10-27",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1083,6 +1083,54 @@
       "owner": "Astra direct implementation \u2014 owner continuation",
       "code_sha": "698ce790a18ae016564264c074689ed304370c30",
       "review": "reviews/C29.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B68",
+      "title": "exact-term reconciliation and truthful contribution accounting",
+      "checkpoint": "C30",
+      "status": "pending",
+      "dependencies": [
+        "B62",
+        "B63",
+        "B67",
+        "B77"
+      ],
+      "prompt": "prompts/B68.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and review \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B70",
+      "title": "contrast-checked design foundation and application shell",
+      "checkpoint": "C31",
+      "status": "pending",
+      "dependencies": [
+        "B68"
+      ],
+      "prompt": "prompts/B70.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and review \u2014 owner continuation",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "B77",
+      "title": "repair development-tool advisories blocking C30R release",
+      "checkpoint": "C30R",
+      "status": "done",
+      "dependencies": [
+        "B67"
+      ],
+      "prompt": "prompts/B77.md",
+      "submission": "submissions/B77.md",
+      "owner": "Primary agent direct implementation and review",
+      "code_sha": "7d0f1782b03f9f49de3491eaac1be2067c9222e2",
+      "review": "reviews/C30R.md",
       "blocked_reason": null
     }
   ],

@@ -1,6 +1,6 @@
 # FinPath execution protocol
 
-Read [RESUME.md](RESUME.md) first. [TASK_STATUS.json](TASK_STATUS.json) is the sole task/owner-action ledger; [CHECKPOINTS.md](CHECKPOINTS.md) defines ordering and gates, and [EXECUTION_BACKLOG.md](../EXECUTION_BACKLOG.md) defines task scope. Do not copy status counts into another tracker.
+Read [RESUME.md](RESUME.md) first. [TASK_STATUS.json](TASK_STATUS.json) is the sole task/owner-action ledger; [CHECKPOINTS.md](CHECKPOINTS.md) defines ordering and gates, and [EXECUTION_BACKLOG.md](../EXECUTION_BACKLOG.md) defines task scope. Do not copy status counts into another tracker. Current owner continuation authorizes direct implementation; the October 18 analysis is complete. Execute [B68](prompts/B68.md), then [B70](prompts/B70.md), with a verified shared-beta release per step.
 
 ## Work and review
 
