@@ -1089,7 +1089,7 @@
       "id": "B68",
       "title": "exact-term reconciliation and truthful contribution accounting",
       "checkpoint": "C30",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B62",
         "B63",
