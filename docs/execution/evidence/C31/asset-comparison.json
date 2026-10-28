@@ -1,22 +1,184 @@
 {
+  "method": "Node zlib.gzipSync level9 for both SHA-verified B68 immutable runtime files and current local candidate2 runtime files; estimates, not wire sizes",
+  "baseline_sha": "25af47ee5785c747155aad675ebade42d576e849",
+  "current_sha": "2aec033f905a5f906bf9958f843239aea2ecd676",
   "B68": {
-    ".js": {
+    "js": {
       "bytes": 1460570,
-      "gzip_bytes": 415213
+      "gzip": 414376
     },
-    ".css": {
+    "css": {
       "bytes": 220892,
-      "gzip_bytes": 36118
+      "gzip": 35706
     }
   },
   "B70": {
-    ".js": {
+    "js": {
       "bytes": 1461946,
-      "gzip_bytes": 414460
+      "gzip": 414464
     },
-    ".css": {
-      "bytes": 221202,
-      "gzip_bytes": 36227
+    "css": {
+      "bytes": 221295,
+      "gzip": 36245
     }
-  }
+  },
+  "baseline": [
+    {
+      "name": "BalanceImportPanel-DYgDXeWF.js",
+      "bytes": 9680,
+      "gzip": 3401
+    },
+    {
+      "name": "CalculatorLibrary-BPLn9oG7.js",
+      "bytes": 397384,
+      "gzip": 107180
+    },
+    {
+      "name": "PlanningWorkspace-BViDyyuR.js",
+      "bytes": 27128,
+      "gzip": 7554
+    },
+    {
+      "name": "ProjectionChart-ljFyb06d.js",
+      "bytes": 348252,
+      "gzip": 101239
+    },
+    {
+      "name": "TransactionImportPanel-M3K63YhQ.js",
+      "bytes": 10210,
+      "gzip": 3484
+    },
+    {
+      "name": "WorkspacePanels-CC5JpD4H.js",
+      "bytes": 46967,
+      "gzip": 9522
+    },
+    {
+      "name": "calculator-catalog-WAbKDJcp.js",
+      "bytes": 103177,
+      "gzip": 30657
+    },
+    {
+      "name": "circle-check-lEWUmlMP.js",
+      "bytes": 222,
+      "gzip": 200
+    },
+    {
+      "name": "dist--Jp3jFdt.js",
+      "bytes": 145734,
+      "gzip": 38621
+    },
+    {
+      "name": "history-Dc3eRbS1.js",
+      "bytes": 276,
+      "gzip": 228
+    },
+    {
+      "name": "main-BgnZCahN.js",
+      "bytes": 209314,
+      "gzip": 58783
+    },
+    {
+      "name": "main-DNhARteC.css",
+      "bytes": 220892,
+      "gzip": 35706
+    },
+    {
+      "name": "papaparse.min-CtcDmbBi.js",
+      "bytes": 19979,
+      "gzip": 7361
+    },
+    {
+      "name": "react-vendor-BKbRJdrT.js",
+      "bytes": 139933,
+      "gzip": 44788
+    },
+    {
+      "name": "rolldown-runtime-QTnfLwEv.js",
+      "bytes": 694,
+      "gzip": 423
+    },
+    {
+      "name": "rotate-ccw-DAj8ZMuS.js",
+      "bytes": 1620,
+      "gzip": 935
+    }
+  ],
+  "current": [
+    {
+      "name": "BalanceImportPanel-CUToppHh.js",
+      "bytes": 9638,
+      "gzip": 3387
+    },
+    {
+      "name": "CalculatorLibrary-U9y3sucx.js",
+      "bytes": 397340,
+      "gzip": 107182
+    },
+    {
+      "name": "PlanningWorkspace-kacctsjZ.js",
+      "bytes": 27091,
+      "gzip": 7534
+    },
+    {
+      "name": "ProjectionChart-CnpEYPkO.js",
+      "bytes": 348252,
+      "gzip": 101241
+    },
+    {
+      "name": "TransactionImportPanel-BrvmSiFG.js",
+      "bytes": 10168,
+      "gzip": 3469
+    },
+    {
+      "name": "WorkspacePanels-BwjULGD-.js",
+      "bytes": 46931,
+      "gzip": 9511
+    },
+    {
+      "name": "calculator-catalog-WAbKDJcp.js",
+      "bytes": 103177,
+      "gzip": 30657
+    },
+    {
+      "name": "circle-check-DDQnJn_2.js",
+      "bytes": 217,
+      "gzip": 196
+    },
+    {
+      "name": "dist--Jp3jFdt.js",
+      "bytes": 145734,
+      "gzip": 38621
+    },
+    {
+      "name": "history-CgYv1i2i.js",
+      "bytes": 271,
+      "gzip": 223
+    },
+    {
+      "name": "main-25OI54Ko.js",
+      "bytes": 212526,
+      "gzip": 59869
+    },
+    {
+      "name": "main-BT6MXVLM.css",
+      "bytes": 221295,
+      "gzip": 36245
+    },
+    {
+      "name": "papaparse.min-DNh3VwX4.js",
+      "bytes": 19974,
+      "gzip": 7363
+    },
+    {
+      "name": "react-vendor-BKbRJdrT.js",
+      "bytes": 139933,
+      "gzip": 44788
+    },
+    {
+      "name": "rolldown-runtime-QTnfLwEv.js",
+      "bytes": 694,
+      "gzip": 423
+    }
+  ]
 }

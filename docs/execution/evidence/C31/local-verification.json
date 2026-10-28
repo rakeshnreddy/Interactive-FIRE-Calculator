@@ -1,7 +1,7 @@
 {
   "date": "2026-10-28",
   "baseline": "7a61d88126b5c8e36bf1ece5fb02da936c70614c",
-  "status": "Initial-product local evidence; hosted CLS finding requires reviewed main-height correction and replacement candidate. See C31 review.",
+  "status": "Reviewed corrected product; local and hosted candidate gates pass, beta pending",
   "full_suite": {
     "node_checks": 30,
     "vitest_files": 109,
@@ -29,7 +29,9 @@
     "findings_remaining": 0,
     "outside": "unavailable: Claude CLI not installed",
     "fixtures": "summary only",
-    "react_checklist": "no actionable findings"
+    "react_checklist": "no actionable findings",
+    "landing_receipt": "6f419b2b-846d-417e-8b5f-683668c98cc9",
+    "landing_scope": "Main viewport minimum height and synchronized hosted Escape-focus assertion"
   },
   "sources": [
     {
@@ -46,7 +48,7 @@
     },
     {
       "path": "src/shell.css",
-      "sha256": "6bd8fab81a31089350406523d9e9f2cb7dc9be3072f27f26318ee84fe960bb9f"
+      "sha256": "d460420307e736b0b775bffe4330f604b188a6665ea35afa00032cc066bbf76e"
     },
     {
       "path": "src/styles.css",
@@ -82,9 +84,9 @@
     },
     {
       "path": "scripts/smoke/c31-shell.mjs",
-      "sha256": "fc42f87c8a19c74250d9e53b9d9aa4564c1eb92d460474816d0384a320f81f39"
+      "sha256": "5e6503955cd5cfc64033d5062c632e960d371cc0b8999211d90e80f2b5c2e93d"
     }
   ],
   "fire_unchanged": true,
-  "source_product_sha": "a581dff22aa9f1ee6a834175ecc781122e11f2bd"
+  "source_product_sha": "2aec033f905a5f906bf9958f843239aea2ecd676"
 }

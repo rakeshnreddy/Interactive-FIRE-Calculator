@@ -1,0 +1,81 @@
+{
+  "method": "Paired alternating B68/B70,3cold-cache navigations per route and width,light theme,same Chromium,no throttling,not field/INP/Lighthouse/trace",
+  "version": "156.0.8078.48",
+  "cells": [
+    {
+      "width": 1440,
+      "route": "/",
+      "B68": {
+        "lcp": 376,
+        "fcp": 336,
+        "cls": 0.0062313282656571494,
+        "ttfb": 68.09999996423721,
+        "load": 384
+      },
+      "B70": {
+        "lcp": 312,
+        "fcp": 296,
+        "cls": 0.005930643466274434,
+        "ttfb": 54.60000002384186,
+        "load": 327
+      }
+    },
+    {
+      "width": 1440,
+      "route": "/calculators",
+      "B68": {
+        "lcp": 520,
+        "fcp": 300,
+        "cls": 0,
+        "ttfb": 73.80000001192093,
+        "load": 347.7000000476837
+      },
+      "B70": {
+        "lcp": 452,
+        "fcp": 176,
+        "cls": 0,
+        "ttfb": 51.09999996423721,
+        "load": 387.69999998807907
+      }
+    },
+    {
+      "width": 390,
+      "route": "/",
+      "B68": {
+        "lcp": 232,
+        "fcp": 208,
+        "cls": 0.025174927884615384,
+        "ttfb": 54.60000002384186,
+        "load": 317.4000000357628
+      },
+      "B70": {
+        "lcp": 216,
+        "fcp": 200,
+        "cls": 0.024887966820987654,
+        "ttfb": 73,
+        "load": 274.19999998807907
+      }
+    },
+    {
+      "width": 390,
+      "route": "/calculators",
+      "B68": {
+        "lcp": 312,
+        "fcp": 176,
+        "cls": 0,
+        "ttfb": 57.200000047683716,
+        "load": 265.5
+      },
+      "B70": {
+        "lcp": 320,
+        "fcp": 192,
+        "cls": 0,
+        "ttfb": 49.30000001192093,
+        "load": 248.29999995231628
+      }
+    }
+  ],
+  "limits": [
+    "3samples per cell, lab only; timing variance remains; no field INP/Lighthouse/trace."
+  ]
+}
