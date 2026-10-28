@@ -27,7 +27,7 @@ export function formatStoredCurrency(value: number, currency: string): string {
     currency,
     maximumFractionDigits: 0,
     style: 'currency'
-  }).format(value);
+  }).format(Math.abs(value) < 0.5 ? 0 : value);
 }
 
 export function formatSavedCalculatorMetric(item: {

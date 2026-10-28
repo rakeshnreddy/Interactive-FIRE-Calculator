@@ -11,7 +11,7 @@ const trimDecimal = (value: number) => (Math.round(value * 10) / 10).toString();
 // Compact labels for headlines and chart axes: $850K, $2.4M, ₹24 L, ₹2.4 Cr.
 export function formatCompactMoney(value: number, currency = 'USD'): string {
   if (!Number.isFinite(value)) return 'Not feasible';
-  const sign = value < 0 ? '-' : '';
+  const sign = value <= -0.5 ? '-' : '';
   const abs = Math.abs(value);
   if (currency === 'INR') {
     if (abs >= 1e7) return `${sign}₹${trimDecimal(abs / 1e7)} Cr`;

@@ -1,5 +1,5 @@
 /** Versioned interpretations share result JSON, not a new database schema. */
-export const calculatorModelVersions = ['payback-v2', 'catch-up-v2', 'monthly-periodic-v1', 'dated-xirr-v1', 'vehicle-cost-v1', 'housing-budget-v1'] as const;
+export const calculatorModelVersions = ['payback-v2', 'catch-up-v2', 'monthly-periodic-v1', 'dated-xirr-v1', 'vehicle-cost-v1', 'housing-budget-v1', 'savings-goal-monthly-v1', 'retirement-exact-term-v1'] as const;
 export type CalculatorModelVersion = typeof calculatorModelVersions[number];
 export function isCalculatorModelVersion(value: unknown): value is CalculatorModelVersion {
   return typeof value === 'string' && (calculatorModelVersions as readonly string[]).includes(value);
@@ -8,6 +8,8 @@ export function modelVersionForCalculator(slug: string): CalculatorModelVersion 
   if (['mortgage-refinance', 'home-loan-balance-transfer-india', 'mortgage-points'].includes(slug)) return 'payback-v2';
   if (slug === 'mortgage-affordability') return 'housing-budget-v1';
   if (slug === 'lease-vs-buy') return 'vehicle-cost-v1';
+  if (['sip-goal', 'savings-goal'].includes(slug)) return 'savings-goal-monthly-v1';
+  if (slug === 'retirement') return 'retirement-exact-term-v1';
   if (slug === 'xirr') return 'monthly-periodic-v1';
   if (slug === 'social-security-break-even') return 'catch-up-v2';
   return undefined;

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-27",
+  "updated": "2026-10-28",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1097,10 +1097,10 @@
         "B77"
       ],
       "prompt": "prompts/B68.md",
-      "submission": null,
+      "submission": "submissions/B68.md",
       "owner": "Primary agent direct implementation and review \u2014 owner continuation",
       "code_sha": null,
-      "review": null,
+      "review": "reviews/C30.md",
       "blocked_reason": null
     },
     {

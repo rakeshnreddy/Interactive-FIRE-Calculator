@@ -1,4 +1,4 @@
-# FinPath execution resume — 2026-10-27
+# FinPath execution resume — 2026-10-28
 
 **Active B68/C30: `codex/reconcile-calculator-schedules`, baseline main `2b87187bd242c112934bcb2e6d89cdabe95654d1`.** C30R/B77 is merged and shared-beta/main-CI verified. B68 is in progress; B70 remains pending. Audit backlog preserved and bounded contracts registered; the unexpected development-tool CI blocker is repaired. [Review](reviews/C30R.md), [task ledger](TASK_STATUS.json), [checkpoints](CHECKPOINTS.md). Landing/main-CI status is recorded in [PR #154](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/154); resolve its actual state before continuing.
 
@@ -6,8 +6,8 @@
 
 Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. Documents/ChatGPT is stale at PR #138 and File Provider reads can stall; do not reset or overwrite it. Current branch is `codex/reconcile-calculator-schedules`; C30R is already landed. Preserve other work and explicitly stage only owned files.
 
-1. Reproduce B68 defects and save failing regressions before implementation: older registry savings-goal/SIP-goal monthly compounding and exact terms; flat-rate/interest-only/rent-versus-buy/retirement schedules; zero saving years; one-time IRA wording; negative-zero display; SWP final withdrawal identity. Preserve the already-consistent dedicated savings-goal v2 engine.
-2. Implement against [B68](prompts/B68.md), version changed registry results, prove old saved snapshots remain readable and unchanged, run relevant tests then the full suite, and complete PR/CI/candidate/beta/main verification before closure. Current implementation branch is `codex/reconcile-calculator-schedules`; no app code has changed yet.
+1. Completed B68 reproduction and local implementation (22 initial failures, full suite 2,811 tests passes): older registry savings-goal/SIP-goal monthly compounding and exact terms; flat-rate/interest-only/rent-versus-buy/retirement schedules; zero saving years; one-time IRA wording; negative-zero display; SWP final withdrawal identity. Preserve the already-consistent dedicated savings-goal v2 engine.
+2. Complete the release against [B68](prompts/B68.md). Corrected registry results are versioned; legacy/new snapshot persistence and UI history pass. Current implementation branch is `codex/reconcile-calculator-schedules`; implementation and local verification pass; [submission](submissions/B68.md) and [review](reviews/C30.md) list the observed gates. Next: commit/push, exact-head CI, clean authenticated candidate, hosted browser/CSV checks, beta verification, then merge/main CI. Do not repeat the completed C30R release.
 3. Begin [B70/C31](prompts/B70.md) only after C30 acceptance: measured contrast, token/cascade foundation, navigation/footer and reduced-motion-aware transitions. Later audit proposals need their own registration.
 
 Owner asks for sequential pushes/releases/deployments with exact resumption notes. Direct implementation, no Gemini or broad agent fan-out; narrow independent reviews may be used. Do not repeat the completed multi-agent analysis.

@@ -11,7 +11,7 @@ import {
 
 const expectedOutputs = [
   ['compound-interest', 'Projected value', 113_669.419936, 'currency', 'USD'],
-  ['savings-goal', 'Monthly savings needed', 428.600434, 'currency', 'USD'],
+  ['savings-goal', 'Monthly savings needed', 425.28168253155314, 'currency', 'USD'],
   ['net-worth', 'Estimated net worth', 175_000, 'currency', 'USD'],
   ['budget', 'Monthly surplus', 2_500, 'currency', 'USD'],
   ['emergency-fund', 'Emergency fund target', 27_000, 'currency', 'USD'],
