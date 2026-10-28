@@ -1,0 +1,383 @@
+{
+  "product_sha": "2aec033f905a5f906bf9958f843239aea2ecd676",
+  "status": "PASS",
+  "stages": [
+    {
+      "name": "preflight",
+      "status": "PASS",
+      "detail": {
+        "deploymentId": "09de7c48-37b2-40fd-8273-6ff88834269b",
+        "url": "https://09de7c48.interactive-fire-calculator.pages.dev",
+        "sha": "2aec033f905a5f906bf9958f843239aea2ecd676",
+        "dbId": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+        "commitDirty": false
+      }
+    },
+    {
+      "name": "d1-reachable",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sign-in",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "signed-in-shell",
+      "status": "PASS",
+      "detail": {
+        "cases": [
+          {
+            "width": 1440,
+            "theme": "light",
+            "geometry": {
+              "height": 80,
+              "width": 1440,
+              "viewport": 1440
+            },
+            "problems": []
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "geometry": {
+              "height": 80,
+              "width": 1440,
+              "viewport": 1440
+            },
+            "problems": []
+          },
+          {
+            "width": 1041,
+            "theme": "light",
+            "geometry": {
+              "height": 80,
+              "width": 1041,
+              "viewport": 1041
+            },
+            "problems": []
+          },
+          {
+            "width": 1041,
+            "theme": "dark",
+            "geometry": {
+              "height": 80,
+              "width": 1041,
+              "viewport": 1041
+            },
+            "problems": []
+          },
+          {
+            "width": 768,
+            "theme": "light",
+            "geometry": {
+              "height": 72,
+              "width": 768,
+              "viewport": 768
+            },
+            "problems": []
+          },
+          {
+            "width": 768,
+            "theme": "dark",
+            "geometry": {
+              "height": 72,
+              "width": 768,
+              "viewport": 768
+            },
+            "problems": []
+          },
+          {
+            "width": 390,
+            "theme": "light",
+            "geometry": {
+              "height": 72,
+              "width": 390,
+              "viewport": 390
+            },
+            "problems": []
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "geometry": {
+              "height": 72,
+              "width": 390,
+              "viewport": 390
+            },
+            "problems": []
+          },
+          {
+            "width": 320,
+            "theme": "light",
+            "geometry": {
+              "height": 72,
+              "width": 320,
+              "viewport": 320
+            },
+            "problems": []
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "geometry": {
+              "height": 72,
+              "width": 320,
+              "viewport": 320
+            },
+            "problems": []
+          }
+        ],
+        "focus": [
+          {
+            "width": 768,
+            "theme": "light",
+            "immediate": false,
+            "settled": true
+          },
+          {
+            "width": 768,
+            "theme": "dark",
+            "immediate": false,
+            "settled": true
+          },
+          {
+            "width": 390,
+            "theme": "light",
+            "immediate": false,
+            "settled": true
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "immediate": false,
+            "settled": true
+          },
+          {
+            "width": 320,
+            "theme": "light",
+            "immediate": false,
+            "settled": true
+          },
+          {
+            "width": 320,
+            "theme": "dark",
+            "immediate": false,
+            "settled": true
+          }
+        ],
+        "errors": []
+      }
+    },
+    {
+      "name": "anonymous-account-gates",
+      "status": "PASS",
+      "detail": {
+        "cases": [
+          {
+            "route": "/dashboard",
+            "width": 1440,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/accounts",
+            "width": 1440,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/transactions",
+            "width": 1440,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/goals",
+            "width": 1440,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/plans",
+            "width": 1440,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/reports",
+            "width": 1440,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/settings",
+            "width": 1440,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/dashboard",
+            "width": 1440,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/accounts",
+            "width": 1440,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/transactions",
+            "width": 1440,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/goals",
+            "width": 1440,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/plans",
+            "width": 1440,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/reports",
+            "width": 1440,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/settings",
+            "width": 1440,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/dashboard",
+            "width": 320,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/accounts",
+            "width": 320,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/transactions",
+            "width": 320,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/goals",
+            "width": 320,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/plans",
+            "width": 320,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/reports",
+            "width": 320,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/settings",
+            "width": 320,
+            "theme": "light",
+            "problems": []
+          },
+          {
+            "route": "/dashboard",
+            "width": 320,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/accounts",
+            "width": 320,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/transactions",
+            "width": 320,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/goals",
+            "width": 320,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/plans",
+            "width": 320,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/reports",
+            "width": 320,
+            "theme": "dark",
+            "problems": []
+          },
+          {
+            "route": "/settings",
+            "width": 320,
+            "theme": "dark",
+            "problems": []
+          }
+        ],
+        "errors": []
+      }
+    }
+  ],
+  "cleanup": [
+    {
+      "tenant": "A",
+      "appDataDeleted": true,
+      "tableCounts": {
+        "account_balances": 0,
+        "analytics_consent": 0,
+        "assumptions": 0,
+        "audit_log": 0,
+        "balance_imports": 0,
+        "financial_accounts": 0,
+        "fire_plan_inputs": 0,
+        "fire_plan_results": 0,
+        "goals": 0,
+        "plan_reviews": 0,
+        "plan_versions": 0,
+        "plans": 0,
+        "saved_calculator_results": 0,
+        "transaction_imports": 0,
+        "transactions": 0,
+        "user_profiles": 0
+      },
+      "tombstone": "present",
+      "providerDeleted": true,
+      "providerAbsent": true,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "limits": [
+    "Isolated synthetic identity only; no real-user study."
+  ]
+}

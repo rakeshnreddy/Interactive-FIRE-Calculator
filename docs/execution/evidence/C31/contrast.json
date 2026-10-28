@@ -1,0 +1,1965 @@
+{
+  "method": "Chromium actual computed OKLCH converted by a 1x1 sRGB canvas. Forty-five screenshot pixels sampled behind the actual text Range with text fill hidden without layout change. Minimum ratio across all sampled colors, not inferred from transparent computed color. Snapshot-backed glass/gradient backgrounds. Local preview only, no signed-in workspace and no WCAG conformance claim. Final shell recheck disables temporary ink-hiding transitions, waits for settled paint, excludes occluded text and composites foreground alpha. Earlier sampler failures are preserved as measurement artifacts.",
+  "themes": [
+    {
+      "theme": "light",
+      "routes": 92,
+      "publicCalculatorRoutes": 84,
+      "home": 1,
+      "protectedSignedOutGates": 7,
+      "eyebrowSamples": 317,
+      "coveredRoutes": 92,
+      "minimumEyebrowRatio": 5.641366064476268,
+      "minimumTextSampleRatio": 5.641366064476268,
+      "below4_5": 0,
+      "lowestEyebrows": [
+        {
+          "route": "/calculators/retirement",
+          "text": "Retirement Planning US & India",
+          "fg": [
+            7,
+            95,
+            82
+          ],
+          "bg": [
+            214,
+            223,
+            235
+          ],
+          "ratio": 5.641366064476268,
+          "computedColor": "oklch(0.435714 0.0775067 178.875)"
+        },
+        {
+          "route": "/calculators/mortgage",
+          "text": "Home Buying & Mortgage United States",
+          "fg": [
+            7,
+            95,
+            82
+          ],
+          "bg": [
+            214,
+            223,
+            235
+          ],
+          "ratio": 5.641366064476268,
+          "computedColor": "oklch(0.435714 0.0775067 178.875)"
+        },
+        {
+          "route": "/calculators/mortgage-affordability",
+          "text": "Home Buying & Mortgage United States",
+          "fg": [
+            7,
+            95,
+            82
+          ],
+          "bg": [
+            214,
+            223,
+            235
+          ],
+          "ratio": 5.641366064476268,
+          "computedColor": "oklch(0.435714 0.0775067 178.875)"
+        },
+        {
+          "route": "/calculators/mortgage-refinance",
+          "text": "Home Buying & Mortgage United States",
+          "fg": [
+            7,
+            95,
+            82
+          ],
+          "bg": [
+            214,
+            223,
+            235
+          ],
+          "ratio": 5.641366064476268,
+          "computedColor": "oklch(0.435714 0.0775067 178.875)"
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "routes": 92,
+      "publicCalculatorRoutes": 84,
+      "home": 1,
+      "protectedSignedOutGates": 7,
+      "eyebrowSamples": 317,
+      "coveredRoutes": 92,
+      "minimumEyebrowRatio": 7.537726463807566,
+      "minimumTextSampleRatio": 7.537726463807566,
+      "below4_5": 0,
+      "lowestEyebrows": [
+        {
+          "route": "/calculators/retirement",
+          "text": "Retirement Planning US & India",
+          "fg": [
+            95,
+            230,
+            200
+          ],
+          "bg": [
+            38,
+            58,
+            82
+          ],
+          "ratio": 7.537726463807566,
+          "computedColor": "oklch(0.842255 0.125969 175.937)"
+        },
+        {
+          "route": "/calculators/mortgage",
+          "text": "Home Buying & Mortgage United States",
+          "fg": [
+            95,
+            230,
+            200
+          ],
+          "bg": [
+            38,
+            58,
+            82
+          ],
+          "ratio": 7.537726463807566,
+          "computedColor": "oklch(0.842255 0.125969 175.937)"
+        },
+        {
+          "route": "/calculators/mortgage-affordability",
+          "text": "Home Buying & Mortgage United States",
+          "fg": [
+            95,
+            230,
+            200
+          ],
+          "bg": [
+            38,
+            58,
+            82
+          ],
+          "ratio": 7.537726463807566,
+          "computedColor": "oklch(0.842255 0.125969 175.937)"
+        },
+        {
+          "route": "/calculators/mortgage-refinance",
+          "text": "Home Buying & Mortgage United States",
+          "fg": [
+            95,
+            230,
+            200
+          ],
+          "bg": [
+            38,
+            58,
+            82
+          ],
+          "ratio": 7.537726463807566,
+          "computedColor": "oklch(0.842255 0.125969 175.937)"
+        }
+      ]
+    }
+  ],
+  "final_shell_pairs": [
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Free financial calculators for the US and India",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        230,
+        244,
+        246
+      ],
+      "minimum_sampled_ratio": 6.694198825937035,
+      "border_ratio_on_inside": 6.7331186907436535
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "What are you trying to work out?",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        229,
+        241,
+        249
+      ],
+      "minimum_sampled_ratio": 6.475796453614352,
+      "border_ratio_on_inside": 6.60521570439575
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Free financial calculators for the US and India",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        230,
+        244,
+        246
+      ],
+      "minimum_sampled_ratio": 6.694198825937035,
+      "border_ratio_on_inside": 6.7331186907436535
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "What are you trying to work out?",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        230,
+        241,
+        250
+      ],
+      "minimum_sampled_ratio": 6.433601089622892,
+      "border_ratio_on_inside": 6.621658996038334
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "How it works",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        238,
+        243,
+        250
+      ],
+      "minimum_sampled_ratio": 6.805543560502951,
+      "border_ratio_on_inside": 6.805543560502951
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Why FinPath",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        238,
+        243,
+        250
+      ],
+      "minimum_sampled_ratio": 6.805543560502951,
+      "border_ratio_on_inside": 6.805543560502951
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Common questions",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        238,
+        243,
+        250
+      ],
+      "minimum_sampled_ratio": 6.805543560502951,
+      "border_ratio_on_inside": 6.805543560502951
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Why FinPath",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        238,
+        243,
+        250
+      ],
+      "minimum_sampled_ratio": 6.805543560502951,
+      "border_ratio_on_inside": 6.805543560502951
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Common questions",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        238,
+        243,
+        250
+      ],
+      "minimum_sampled_ratio": 6.805543560502951,
+      "border_ratio_on_inside": 6.805543560502951
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "FinPath",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        248,
+        250,
+        251
+      ],
+      "minimum_sampled_ratio": 15.380976538405465,
+      "border_ratio_on_inside": 16.105169110531158
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Calculators",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        252,
+        253,
+        254
+      ],
+      "minimum_sampled_ratio": 16.556251952765493,
+      "border_ratio_on_inside": 20.620352674971326
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "FIRE",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        252,
+        253,
+        254
+      ],
+      "minimum_sampled_ratio": 16.556251952765493,
+      "border_ratio_on_inside": 20.620352674971326
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Sign in",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Create account",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "FinPath",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 13.561834223223835,
+      "border_ratio_on_inside": 13.561834223223835
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "A clearer view of your money. Free financial calculators for the US and India.",
+      "foreground": [
+        169,
+        191,
+        210,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 9.224280312906739,
+      "border_ratio_on_inside": 9.224280312906739
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Explore",
+      "foreground": [
+        141,
+        230,
+        209,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 11.975749990373254,
+      "border_ratio_on_inside": 11.975749990373254
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "All calculators",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 13.561834223223835,
+      "border_ratio_on_inside": 13.561834223223835
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "FIRE calculator",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 13.561834223223835,
+      "border_ratio_on_inside": 13.561834223223835
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Work it out",
+      "foreground": [
+        141,
+        230,
+        209,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 11.975749990373254,
+      "border_ratio_on_inside": 11.975749990373254
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Mortgage & home",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 13.561834223223835,
+      "border_ratio_on_inside": 13.561834223223835
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Income & tax",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 13.561834223223835,
+      "border_ratio_on_inside": 13.561834223223835
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Your next step",
+      "foreground": [
+        141,
+        230,
+        209,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 11.975749990373254,
+      "border_ratio_on_inside": 11.975749990373254
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Common questions",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 13.561834223223835,
+      "border_ratio_on_inside": 13.561834223223835
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Your workspace",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 13.561834223223835,
+      "border_ratio_on_inside": 13.561834223223835
+    },
+    {
+      "theme": "light",
+      "route": "/",
+      "kind": "footer",
+      "text": "Planning estimates, not financial advice. You can use every public calculator without an a",
+      "foreground": [
+        169,
+        191,
+        210,
+        255
+      ],
+      "background": [
+        15,
+        26,
+        41
+      ],
+      "minimum_sampled_ratio": 9.224280312906739,
+      "border_ratio_on_inside": 9.224280312906739
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "eyebrow",
+      "text": "Decision toolkits",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        230,
+        239,
+        245
+      ],
+      "minimum_sampled_ratio": 6.455677865767415,
+      "border_ratio_on_inside": 6.514196870117514
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "eyebrow",
+      "text": "Starting paths",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        238,
+        243,
+        250
+      ],
+      "minimum_sampled_ratio": 6.805543560502951,
+      "border_ratio_on_inside": 6.805543560502951
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "FinPath",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        243,
+        247,
+        250
+      ],
+      "minimum_sampled_ratio": 15.352793300909296,
+      "border_ratio_on_inside": 15.653233738140258
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "Calculators",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        226,
+        241,
+        237
+      ],
+      "minimum_sampled_ratio": 6.517462990837807,
+      "border_ratio_on_inside": 6.517462990837807
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "FIRE",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        250,
+        252,
+        254
+      ],
+      "minimum_sampled_ratio": 16.395476703125045,
+      "border_ratio_on_inside": 20.42011156010723
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "Sign in",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "Create account",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "FinPath",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        243,
+        247,
+        250
+      ],
+      "minimum_sampled_ratio": 15.352793300909296,
+      "border_ratio_on_inside": 15.653233738140258
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "Calculators",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        226,
+        241,
+        237
+      ],
+      "minimum_sampled_ratio": 6.517462990837807,
+      "border_ratio_on_inside": 6.517462990837807
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "FIRE",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        250,
+        252,
+        254
+      ],
+      "minimum_sampled_ratio": 16.395476703125045,
+      "border_ratio_on_inside": 20.42011156010723
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "Sign in",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "Create account",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "FinPath",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        243,
+        247,
+        250
+      ],
+      "minimum_sampled_ratio": 15.352793300909296,
+      "border_ratio_on_inside": 15.653233738140258
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "Calculators",
+      "foreground": [
+        7,
+        95,
+        82,
+        255
+      ],
+      "background": [
+        226,
+        241,
+        237
+      ],
+      "minimum_sampled_ratio": 6.517462990837807,
+      "border_ratio_on_inside": 6.517462990837807
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "FIRE",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        250,
+        252,
+        254
+      ],
+      "minimum_sampled_ratio": 16.395476703125045,
+      "border_ratio_on_inside": 20.42011156010723
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "Sign in",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "Create account",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "light",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "",
+      "foreground": [
+        15,
+        30,
+        46,
+        255
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "minimum_sampled_ratio": 16.861073934496073,
+      "border_ratio_on_inside": 4.075113886800737
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Free financial calculators for the US and India",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        14,
+        44,
+        51
+      ],
+      "minimum_sampled_ratio": 9.459735094302408,
+      "border_ratio_on_inside": 9.559730235163126
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "What are you trying to work out?",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        16,
+        40,
+        57
+      ],
+      "minimum_sampled_ratio": 9.494707925550511,
+      "border_ratio_on_inside": 9.850523488537394
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Free financial calculators for the US and India",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        14,
+        44,
+        51
+      ],
+      "minimum_sampled_ratio": 9.459735094302408,
+      "border_ratio_on_inside": 9.559730235163126
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "What are you trying to work out?",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        17,
+        41,
+        60
+      ],
+      "minimum_sampled_ratio": 9.494707925550511,
+      "border_ratio_on_inside": 9.699022978672451
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "How it works",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        7,
+        13,
+        22
+      ],
+      "minimum_sampled_ratio": 12.65022024935631,
+      "border_ratio_on_inside": 12.65022024935631
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Why FinPath",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        7,
+        13,
+        22
+      ],
+      "minimum_sampled_ratio": 12.65022024935631,
+      "border_ratio_on_inside": 12.65022024935631
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Common questions",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        7,
+        13,
+        22
+      ],
+      "minimum_sampled_ratio": 12.65022024935631,
+      "border_ratio_on_inside": 12.65022024935631
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Why FinPath",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        7,
+        13,
+        22
+      ],
+      "minimum_sampled_ratio": 12.65022024935631,
+      "border_ratio_on_inside": 12.65022024935631
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "eyebrow",
+      "text": "Common questions",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        7,
+        13,
+        22
+      ],
+      "minimum_sampled_ratio": 12.65022024935631,
+      "border_ratio_on_inside": 12.65022024935631
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "FinPath",
+      "foreground": [
+        238,
+        245,
+        251,
+        255
+      ],
+      "background": [
+        11,
+        21,
+        32
+      ],
+      "minimum_sampled_ratio": 15.937346470003968,
+      "border_ratio_on_inside": 16.710602068379764
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Calculators",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 18.481800815886878,
+      "border_ratio_on_inside": 1.1282353269181282
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "FIRE",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 18.613138145003226,
+      "border_ratio_on_inside": 1.1269118241905256
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Sign in",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Create account",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "FinPath",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 14.442479642186077,
+      "border_ratio_on_inside": 14.442479642186077
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "A clearer view of your money. Free financial calculators for the US and India.",
+      "foreground": [
+        169,
+        191,
+        210,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 9.823264201595942,
+      "border_ratio_on_inside": 9.823264201595942
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Explore",
+      "foreground": [
+        141,
+        230,
+        209,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 12.753402127545028,
+      "border_ratio_on_inside": 12.753402127545028
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "All calculators",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 14.442479642186077,
+      "border_ratio_on_inside": 14.442479642186077
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "FIRE calculator",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 14.442479642186077,
+      "border_ratio_on_inside": 14.442479642186077
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Work it out",
+      "foreground": [
+        141,
+        230,
+        209,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 12.753402127545028,
+      "border_ratio_on_inside": 12.753402127545028
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Mortgage & home",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 14.442479642186077,
+      "border_ratio_on_inside": 14.442479642186077
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Income & tax",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 14.442479642186077,
+      "border_ratio_on_inside": 14.442479642186077
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Your next step",
+      "foreground": [
+        141,
+        230,
+        209,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 12.753402127545028,
+      "border_ratio_on_inside": 12.753402127545028
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Common questions",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 14.442479642186077,
+      "border_ratio_on_inside": 14.442479642186077
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Your workspace",
+      "foreground": [
+        216,
+        228,
+        240,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 14.442479642186077,
+      "border_ratio_on_inside": 14.442479642186077
+    },
+    {
+      "theme": "dark",
+      "route": "/",
+      "kind": "footer",
+      "text": "Planning estimates, not financial advice. You can use every public calculator without an a",
+      "foreground": [
+        169,
+        191,
+        210,
+        255
+      ],
+      "background": [
+        10,
+        19,
+        32
+      ],
+      "minimum_sampled_ratio": 9.823264201595942,
+      "border_ratio_on_inside": 9.823264201595942
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "eyebrow",
+      "text": "Decision toolkits",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        9,
+        18,
+        26
+      ],
+      "minimum_sampled_ratio": 11.996524583533377,
+      "border_ratio_on_inside": 12.253969130291454
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "eyebrow",
+      "text": "Starting paths",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        7,
+        13,
+        22
+      ],
+      "minimum_sampled_ratio": 12.65022024935631,
+      "border_ratio_on_inside": 12.65022024935631
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "FinPath",
+      "foreground": [
+        238,
+        245,
+        251,
+        255
+      ],
+      "background": [
+        10,
+        21,
+        32
+      ],
+      "minimum_sampled_ratio": 16.601640582848283,
+      "border_ratio_on_inside": 16.729985034807644
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "Calculators",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        23,
+        59,
+        58
+      ],
+      "minimum_sampled_ratio": 7.915507367139636,
+      "border_ratio_on_inside": 7.915507367139636
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "FIRE",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        9,
+        16,
+        28
+      ],
+      "minimum_sampled_ratio": 19.047621335817222,
+      "border_ratio_on_inside": 1.1024998675562454
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "Sign in",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "Create account",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-default",
+      "text": "",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "FinPath",
+      "foreground": [
+        238,
+        245,
+        251,
+        255
+      ],
+      "background": [
+        10,
+        21,
+        32
+      ],
+      "minimum_sampled_ratio": 16.601640582848283,
+      "border_ratio_on_inside": 16.729985034807644
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "Calculators",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        23,
+        59,
+        58
+      ],
+      "minimum_sampled_ratio": 7.915507367139636,
+      "border_ratio_on_inside": 7.915507367139636
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "FIRE",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        9,
+        16,
+        28
+      ],
+      "minimum_sampled_ratio": 19.047621335817222,
+      "border_ratio_on_inside": 1.1024998675562454
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "Sign in",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "Create account",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-hover",
+      "text": "",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "FinPath",
+      "foreground": [
+        238,
+        245,
+        251,
+        255
+      ],
+      "background": [
+        10,
+        21,
+        32
+      ],
+      "minimum_sampled_ratio": 16.601640582848283,
+      "border_ratio_on_inside": 16.729985034807644
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "Calculators",
+      "foreground": [
+        95,
+        230,
+        200,
+        255
+      ],
+      "background": [
+        23,
+        59,
+        58
+      ],
+      "minimum_sampled_ratio": 7.915507367139636,
+      "border_ratio_on_inside": 7.915507367139636
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "FIRE",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        9,
+        16,
+        28
+      ],
+      "minimum_sampled_ratio": 19.047621335817222,
+      "border_ratio_on_inside": 1.1024998675562454
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "Sign in",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "Create account",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    },
+    {
+      "theme": "dark",
+      "route": "/calculators",
+      "kind": "shell-focus",
+      "text": "",
+      "foreground": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "background": [
+        11,
+        20,
+        32
+      ],
+      "minimum_sampled_ratio": 18.499778478824258,
+      "border_ratio_on_inside": 3.947214816013515
+    }
+  ],
+  "baseline_claim": {
+    "invisibleEyebrowReproduced": false,
+    "routeCount22Verified": false,
+    "evidence": [
+      "../before-home-light.png",
+      "../before-home-dark.png",
+      "../before-styles.json",
+      "../before-dark-styles.json"
+    ],
+    "reason": "Baseline computed transparent text is gradient-clipped; light and dark screenshots visibly paint the eyebrow gradient. Transparent color alone is not a 1:1 contrast measurement."
+  },
+  "limits": [
+    "Sampled contrast is not whole-site WCAG conformance.",
+    "Initial 92-route eyebrow sweep token values unchanged; final shell recheck covers corrected blur and active boundaries.",
+    "Native reader and browser zoom remain deferred."
+  ]
+}

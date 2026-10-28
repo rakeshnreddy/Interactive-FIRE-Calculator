@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-28",
+  "baseline": "7a61d88126b5c8e36bf1ece5fb02da936c70614c",
+  "status": "Corrected product and shared beta verified; PR156 landing receipt is the authority for final docs CI, merge and main CI; resolve it before new work.",
+  "full_suite": {
+    "node_checks": 30,
+    "vitest_files": 109,
+    "vitest_tests": 2825,
+    "typecheck": "pass",
+    "build": "pass",
+    "prerender_pages": 92,
+    "isolation": "pass"
+  },
+  "red": [
+    "raw/red-shell-tests-corrected.log",
+    "raw/red-dirty-footer-corrected.log"
+  ],
+  "current_browser": {
+    "layout_cases": 136,
+    "preference_cases": 24,
+    "keyboard_history_interruptions_fragments": "pass",
+    "page_errors": 0,
+    "native_zoom": false,
+    "coverage_repair": "Eight obsolete debt-route cells superseded by heading-asserted debt-snowball-avalanche replays;17validsitemappaths/136cells."
+  },
+  "review": {
+    "native_receipt": "41806316-4fb4-466a-9f41-42c397aefa2d",
+    "source": "in-host",
+    "findings_remaining": 0,
+    "outside": "unavailable: Claude CLI not installed",
+    "fixtures": "summary only",
+    "react_checklist": "no actionable findings",
+    "landing_receipt": "6f419b2b-846d-417e-8b5f-683668c98cc9",
+    "landing_scope": "Main viewport minimum height and synchronized hosted Escape-focus assertion"
+  },
+  "sources": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "2a454307f7da3c050ea29302ee5d96a2d9679fb684bb788bae35744794764a56"
+    },
+    {
+      "path": "src/main.tsx",
+      "sha256": "1273ef3d39e65e1f8df9332ed4d01c31d32d546d8cfc0d1d53a07692d48f327e"
+    },
+    {
+      "path": "src/app.css",
+      "sha256": "cd14cf0563e4211e4a1ed1db02fbc82f423070b35e68c6b9652db46ae197131b"
+    },
+    {
+      "path": "src/shell.css",
+      "sha256": "d460420307e736b0b775bffe4330f604b188a6665ea35afa00032cc066bbf76e"
+    },
+    {
+      "path": "src/styles.css",
+      "sha256": "6adb329f0207ab8b8e901243de751f3a3c588c695bdb02db8e744016e3457170"
+    },
+    {
+      "path": "src/vivid-theme.css",
+      "sha256": "379e0e3cd2af05fbba98e018c7388f34433bba450f3428695c3dca940f22aaa2"
+    },
+    {
+      "path": "src/lib/routeTransitions.ts",
+      "sha256": "fed8215193a704c873a727ace9a6f6d066c313cdc7d5453e449879bb8981685b"
+    },
+    {
+      "path": "src/lib/routeTransitions.test.ts",
+      "sha256": "ddd61646a26acc15eae18ac385e31b86a25f467408cb0caca4cb078c1e4f7162"
+    },
+    {
+      "path": "src/shellNavigation.test.tsx",
+      "sha256": "0aa0bf15626a9b8086a504205cefd695a642f142ed2aabe1cd63b57b4da4586b"
+    },
+    {
+      "path": "src/shellDirtyNavigation.test.tsx",
+      "sha256": "5c9a641ab666872a0294f64ca4864f9dad435177877554e228dd89fd50a10029"
+    },
+    {
+      "path": "src/fixtures/main.tsx",
+      "sha256": "f8554b36496e706a5491791eebec84c78358cc715e82f36f55349ef8f41e4a6a"
+    },
+    {
+      "path": "src/fixtures/FixtureApp.tsx",
+      "sha256": "75bf8db7ccc07192c26540fca09e9d71dbacd5ed1fd7616564b1056d6aa1c1fb"
+    },
+    {
+      "path": "scripts/smoke/c31-shell.mjs",
+      "sha256": "5e6503955cd5cfc64033d5062c632e960d371cc0b8999211d90e80f2b5c2e93d"
+    }
+  ],
+  "fire_unchanged": true,
+  "source_product_sha": "2aec033f905a5f906bf9958f843239aea2ecd676",
+  "hosted": {
+    "candidate": "09de7c48",
+    "beta": "9a8e7915",
+    "public_cases_each": 136,
+    "preference_cases_each": 24,
+    "signed_in_cases_each": 10,
+    "anonymous_gate_cases_each": 28,
+    "calculator_csv_cases_each": 48,
+    "cleanup": "PASS"
+  }
+}

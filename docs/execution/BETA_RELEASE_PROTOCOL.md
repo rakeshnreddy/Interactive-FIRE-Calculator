@@ -1,10 +1,10 @@
-# Stable beta release protocol — verified 2026-10-28 (C30/B68)
+# Stable beta release protocol —verified2026-10-28(C31/B70)
 
 ## Share one URL
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) updates only at verified checkpoints. Current immutable deployment: [602127ca](https://602127ca.interactive-fire-calculator.pages.dev), deployment `602127ca-c614-4fae-9eb4-da680c5cfb5e`, clean source `25af47ee5785c747155aad675ebade42d576e849`. This is the same accepted CI-passing product as candidate [512f7960](https://512f7960.interactive-fire-calculator.pages.dev). [Provider/assets/routes](evidence/C30/beta-release.json), [browser/CSV](evidence/C30/beta-browser-checks.json), [review](reviews/C30.md). Previous C30R beta: [10ca2f8d](https://10ca2f8d.interactive-fire-calculator.pages.dev), source `34e077caca1562c600cafa51ceeb3487fb610e11` ([record](evidence/C30R/beta-release.json)).
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) updates at verified checkpoints. Current immutable [9a8e7915](https://9a8e7915.interactive-fire-calculator.pages.dev), deployment9a8e7915-b568-46cf-8eb6-e85960fcd360, clean source `2aec033f905a5f906bf9958f843239aea2ecd676`. Same accepted candidate [09de7c48](https://09de7c48.interactive-fire-calculator.pages.dev), exact CI40759239554. [Receipt](evidence/C31/beta-release.json), [browser](evidence/C31/beta-browser.json), [auth shell](evidence/C31/beta-signed-shell.json), [calculator/CSV](evidence/C31/beta-calculator-preservation.json), [review](reviews/C31.md). Previous B68 beta602127ca/source25af47e remains historical compatible evidence in C30.
 
-Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; all 16 runtime hashes match on immutable and alias URLs. Health 200/protected 401 and all 84 public routes pass at both. Forty-eight browser journeys/CSV downloads cover eight routes in light/dark at 1440/390/320 with keyboard reveal, no overflow/errors and exact-term/oracle checks. No hosted financial-data write. Native reader/zoom and B51 actual-user evidence remain deferred. Publication does not open production gates.
+Only preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`;15runtime hashes and API200/401 boundaries plus84routes pass on immutable and alias. Alias136public/24preference and48calculator/CSV cases pass in both themes at1440/768/390/320(public matrix); immutable10signed-in/28anonymous-gate cases pass with synthetic cleanup. Paired candidate performance applies to identical beta runtime bytes. No native reader/zoom, field-performance, real-user or production gate is opened.
 
 ## Promotion discipline
 

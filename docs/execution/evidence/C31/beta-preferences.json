@@ -1,0 +1,379 @@
+{
+  "status": "PASS",
+  "cases": 24,
+  "results": [
+    {
+      "width": 1440,
+      "theme": "light",
+      "features": [],
+      "height": 80,
+      "token": 80,
+      "background": "rgba(255, 255, 255, 0.72)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 80,
+      "token": 80,
+      "background": "oklch(1 4.00000e-8 0)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 80,
+      "token": 80,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "features": [],
+      "height": 72,
+      "token": 72,
+      "background": "rgba(255, 255, 255, 0.72)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "oklch(1 4.00000e-8 0)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "features": [],
+      "height": 72,
+      "token": 72,
+      "background": "rgba(255, 255, 255, 0.72)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "oklch(1 4.00000e-8 0)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "theme": "light",
+      "features": [],
+      "height": 72,
+      "token": 72,
+      "background": "rgba(255, 255, 255, 0.72)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "theme": "light",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "oklch(1 4.00000e-8 0)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "theme": "light",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "features": [],
+      "height": 80,
+      "token": 80,
+      "background": "rgba(10, 18, 30, 0.66)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 80,
+      "token": 80,
+      "background": "oklch(0.189031 0.0280961 255.886)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 80,
+      "token": 80,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "features": [],
+      "height": 72,
+      "token": 72,
+      "background": "rgba(10, 18, 30, 0.66)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "oklch(0.189031 0.0280961 255.886)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "features": [],
+      "height": 72,
+      "token": 72,
+      "background": "rgba(10, 18, 30, 0.66)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "oklch(0.189031 0.0280961 255.886)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "theme": "dark",
+      "features": [],
+      "height": 72,
+      "token": 72,
+      "background": "rgba(10, 18, 30, 0.66)",
+      "blur": "blur(16px) saturate(1.2)",
+      "forced": false,
+      "reducedTransparency": false,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "prefers-reduced-transparency",
+          "value": "reduce"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "oklch(0.189031 0.0280961 255.886)",
+      "blur": "none",
+      "forced": false,
+      "reducedTransparency": true,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "theme": "dark",
+      "features": [
+        {
+          "name": "forced-colors",
+          "value": "active"
+        }
+      ],
+      "height": 72,
+      "token": 72,
+      "background": "rgb(255, 255, 255)",
+      "blur": "none",
+      "forced": true,
+      "reducedTransparency": false,
+      "overflow": false
+    }
+  ],
+  "reflow": {
+    "viewport": 320,
+    "scrollWidth": 320
+  },
+  "nativeZoom": false
+}

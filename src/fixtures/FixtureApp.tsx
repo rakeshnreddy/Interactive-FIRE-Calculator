@@ -13,8 +13,7 @@ import {
 import { AccountsPanel, DashboardPanel, GoalsPanel, ProfileSettingsPanel, TransactionsPanel } from '../workspace/WorkspacePanels';
 import type { TransactionFilters } from '../lib/transactionAnalytics';
 import { PlanningWorkspace, type PlanningSaveDraft, type PlanVersionDetail } from '../PlanningWorkspace';
-import '../styles.css';
-import '../vivid-theme.css';
+import '../app.css';
 import './fixtures.css';
 import { installFixtureNetworkGuard, setFixtureGuardState } from './fixtureNetworkGuard';
 import {

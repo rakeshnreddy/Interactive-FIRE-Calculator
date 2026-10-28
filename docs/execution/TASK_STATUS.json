@@ -1107,15 +1107,15 @@
       "id": "B70",
       "title": "contrast-checked design foundation and application shell",
       "checkpoint": "C31",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         "B68"
       ],
       "prompt": "prompts/B70.md",
-      "submission": null,
+      "submission": "submissions/B70.md",
       "owner": "Primary agent direct implementation and review \u2014 owner continuation",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "2aec033f905a5f906bf9958f843239aea2ecd676",
+      "review": "reviews/C31.md",
       "blocked_reason": null
     },
     {

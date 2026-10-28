@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import '@fontsource-variable/inter/index.css';
-import '../styles.css';
-import '../vivid-theme.css';
+import '../app.css';
 import { FixtureApp } from './FixtureApp';
 
 const container = document.getElementById('fixture-root') || document.getElementById('root');
