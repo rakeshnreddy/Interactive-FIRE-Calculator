@@ -1107,7 +1107,7 @@
       "id": "B70",
       "title": "contrast-checked design foundation and application shell",
       "checkpoint": "C31",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         "B68"
       ],

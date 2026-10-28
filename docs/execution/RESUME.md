@@ -1,12 +1,12 @@
 # FinPath execution resume — 2026-10-28
 
-**B68/C30 is accepted and verified on the shared beta. Next: B70/C31.** Product `25af47ee5785c747155aad675ebade42d576e849`, [PR #155](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/155), [review](reviews/C30.md), [submission](submissions/B68.md). Final documentation CI, merge and main-CI authority is the PR's landing receipt; resolve actual PR/main state before starting B70. Do not repeat C30R or B68 releases.
+**Active B70/C31: `codex/luminous-shell-foundation`, baseline main `7a61d88126b5c8e36bf1ece5fb02da936c70614c`.** B68/C30 is fully landed and verified; PR #155 landing receipt and main CI passed. B70 is in progress. Product `25af47ee5785c747155aad675ebade42d576e849`, [PR #155](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/155), [review](reviews/C30.md), [submission](submissions/B68.md). Final documentation CI, merge and main-CI authority is the PR's landing receipt; resolve actual PR/main state before starting B70. Do not repeat C30R or B68 releases.
 
 ## Working copy and next action
 
-Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. Documents/ChatGPT is stale at PR #138 and File Provider reads can stall; do not reset or overwrite it. Current release branch `codex/reconcile-calculator-schedules`; preserve other work and stage only owned paths.
+Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. Documents/ChatGPT is stale at PR #138 and File Provider reads can stall; do not reset or overwrite it. Current implementation branch `codex/luminous-shell-foundation`; preserve other work and stage only owned paths.
 
-1. Resolve PR #155's actual state. If final docs CI/merge/main CI remain pending, complete those first. If landed and green, fast-forward clean main and start a new `codex/` branch for [B70](prompts/B70.md).
+1. Continue B70 from verified main `7a61d88`: capture the current browser/contrast/performance baseline, inventory the cascade, then implement against the registered contract. No B70 app code has changed at this checkpoint.
 2. B70: compute real OKLCH contrast pairs, establish colour-token and stylesheet-layer ownership, redesign navigation/footer, fix invisible eyebrow text, and add transitions respecting reduced motion. Register no unrelated audit proposals implicitly. Release through the same tests/PR/exact CI/candidate/beta/browser/landing loop.
 3. Keep task status, checkpoints, submission/review and this resume aligned with observed evidence. Direct implementation; no Gemini or broad agent fan-out. Narrow independent reviews are permitted. Owner requests sequential pushes/releases/deployments and durable state after each step.
 
@@ -18,7 +18,7 @@ Full suite: 30 Node checks, TypeScript, 106 Vitest files / 2,811 tests, build, 9
 
 ## Compatibility and boundaries
 
-**66 of 70 registered tasks done** (task count, not launch readiness). B68 done; B70 pending and C31 contract released. B69/B71–B76 remain proposals. B51/OA-5 real-user evidence is deferred; B13/B14 remain locked. Native reader/zoom A11Y-F01–F03 remain open; no WCAG conformance claim. Incoming audit SHA256 `b0b692fe5e39af54835f65b6c237d3c86c705fc68a1813d05612fc34b924e918` is unchanged; reproduce findings before fixes.
+**66 of 70 registered tasks done** (task count, not launch readiness). B68 done; B70 in progress and C31 contract released. B69/B71–B76 remain proposals. B51/OA-5 real-user evidence is deferred; B13/B14 remain locked. Native reader/zoom A11Y-F01–F03 remain open; no WCAG conformance claim. Incoming audit SHA256 `b0b692fe5e39af54835f65b6c237d3c86c705fc68a1813d05612fc34b924e918` is unchanged; reproduce findings before fixes.
 
 B68 changes only older registry goal/retirement results; saved legacy values stay unchanged and explicit loading/saving creates the new interpretation. Rollback must retain **both** `savings-goal-monthly-v1` and `retirement-exact-term-v1` identifiers **and their slug mappings**. Dedicated savings-goal v2 arithmetic, FIRE and raw numeric exports are preserved. No schema migration/backfill.
 

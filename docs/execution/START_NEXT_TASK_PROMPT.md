@@ -1,6 +1,6 @@
 # Current continuation — 2026-10-28
 
-Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. C30R/B77 and B68/C30 are accepted; B68's shared beta and exact product CI are verified. Resolve final landing/main CI in [PR #155](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/155) before beginning [B70/C31](prompts/B70.md) from clean main. B68 is done, B70 pending; 66/70 registered tasks done. Push, exact-head CI, isolated candidate verification, shared-beta promotion/verification and clean resumption docs remain required per step.
+Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. C30R/B77 and B68/C30 are accepted; B68's shared beta and exact product CI are verified. PR #155 is merged and main CI passed. Continue active [B70/C31](prompts/B70.md) on `codex/luminous-shell-foundation` from main `7a61d88`. B68 is done, B70 in progress; 66/70 registered tasks done. Push, exact-head CI, isolated candidate verification, shared-beta promotion/verification and clean resumption docs remain required per step.
 
 The October 18 analysis is complete and preserved in `docs/calculator-excellence/ANALYSIS_2026-10-18.md`; do not rerun it. Direct implementation; no Gemini or broad agent fan-out. Narrow independent reviews may be used. Production/owner evidence gates remain in force. This continuation supersedes the historical brief's initial-analysis instructions, counts and release state.
 
