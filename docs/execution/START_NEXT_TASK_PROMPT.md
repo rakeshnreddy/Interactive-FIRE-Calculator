@@ -1,6 +1,6 @@
 # Current continuation — 2026-10-28
 
-Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. C30R/B77 and B68/C30 are accepted; B68's shared beta and exact product CI are verified. PR #155 is merged and main CI passed. Continue active [B70/C31](prompts/B70.md) on `codex/luminous-shell-foundation` from main `7a61d88`. B68 is done, B70 in progress; 66/70 registered tasks done. Push, exact-head CI, isolated candidate verification, shared-beta promotion/verification and clean resumption docs remain required per step.
+Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. B68/C30 and B70/C31 are accepted; B70 shared beta is verified at product2aec033, immutable9a8e7915. PR156's landing receipt is the authority for final docs CI/merge/main CI; resolve actual state before new work.67of70registered tasks are done. Do not repeat completed releases. Next register the bounded B71/C32 home-redesign proposal from verified current main; other proposal IDs are not automatically registered. Preserve the full tests/PR/exact CI/isolated candidate/verified beta/landing loop.
 
 The October 18 analysis is complete and preserved in `docs/calculator-excellence/ANALYSIS_2026-10-18.md`; do not rerun it. Direct implementation; no Gemini or broad agent fan-out. Narrow independent reviews may be used. Production/owner evidence gates remain in force. This continuation supersedes the historical brief's initial-analysis instructions, counts and release state.
 

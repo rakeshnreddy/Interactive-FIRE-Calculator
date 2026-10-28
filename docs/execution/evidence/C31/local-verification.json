@@ -1,7 +1,7 @@
 {
   "date": "2026-10-28",
   "baseline": "7a61d88126b5c8e36bf1ece5fb02da936c70614c",
-  "status": "Reviewed corrected product; local and hosted candidate gates pass, beta pending",
+  "status": "Corrected product and shared beta verified; PR156 landing receipt is the authority for final docs CI, merge and main CI; resolve it before new work.",
   "full_suite": {
     "node_checks": 30,
     "vitest_files": 109,
@@ -88,5 +88,15 @@
     }
   ],
   "fire_unchanged": true,
-  "source_product_sha": "2aec033f905a5f906bf9958f843239aea2ecd676"
+  "source_product_sha": "2aec033f905a5f906bf9958f843239aea2ecd676",
+  "hosted": {
+    "candidate": "09de7c48",
+    "beta": "9a8e7915",
+    "public_cases_each": 136,
+    "preference_cases_each": 24,
+    "signed_in_cases_each": 10,
+    "anonymous_gate_cases_each": 28,
+    "calculator_csv_cases_each": 48,
+    "cleanup": "PASS"
+  }
 }
