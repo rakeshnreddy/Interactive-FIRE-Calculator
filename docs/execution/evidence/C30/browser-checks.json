@@ -1,0 +1,1078 @@
+{
+  "url": "https://512f7960.interactive-fire-calculator.pages.dev",
+  "source_sha": "25af47ee5785c747155aad675ebade42d576e849",
+  "cases": [
+    {
+      "slug": "sip-goal",
+      "width": 1440,
+      "theme": "light",
+      "status": 200,
+      "primary": "Monthly savings needed\n\u20b94,656",
+      "year": "1.5",
+      "finalRow": "1.5 | \u20b927,936 | \u20b93,268 | \u20b91,00,000 | \u20b90 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-light.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "flat-vs-reducing-rate",
+      "width": 1440,
+      "theme": "light",
+      "status": 200,
+      "primary": "Flat-rate EMI\n\u20b911,742",
+      "year": "5.5",
+      "finalRow": "5.5 | \u20b97,75,000 | \u20b96,52,070 | \u20b90 | \u20b91,22,930 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-light.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "interest-only-mortgage",
+      "width": 1440,
+      "theme": "light",
+      "status": 200,
+      "primary": "Interest-only payment\n$1,625",
+      "year": "30.5",
+      "finalRow": "30.5 | $9,750 | $300,000 | $0 | $261 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-light.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "rent-vs-buy",
+      "width": 1440,
+      "theme": "light",
+      "status": 200,
+      "primary": "Monthly cost to buy\n$2,897",
+      "year": "7.5",
+      "finalRow": "7.5 | $225,000 | $260,771 | $36,186 | -$416 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-light.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "retirement",
+      "width": 1440,
+      "theme": "light",
+      "status": 200,
+      "primary": "Projected retirement savings\n$1,145,115",
+      "year": "21.5",
+      "finalRow": "21.5 | 60 | $7,200 | $38,686 | $1,145,115 | -$854,885 | Partial period: 6 contribution months; existing savings grow over the exact remaining part year.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "swp",
+      "width": 1440,
+      "theme": "light",
+      "status": 200,
+      "primary": "Estimated withdrawal runway\n51.4 years",
+      "year": "52",
+      "finalRow": "52 | \u20b92,42,825 | \u20b92,46,470 | \u20b93,645 | \u20b90 | Corpus depleted in a partial final month; only the available balance is withdrawn.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-light.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "roth-vs-traditional-ira",
+      "width": 1440,
+      "theme": "light",
+      "status": 200,
+      "primary": "Roth after-tax value\n$29,634",
+      "year": "25",
+      "finalRow": "25 | $29,634 | $29,634 | $0 | $1,540",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-light.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "sip-goal",
+      "width": 1440,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Monthly savings needed\n\u20b94,656",
+      "year": "1.5",
+      "finalRow": "1.5 | \u20b927,936 | \u20b93,268 | \u20b91,00,000 | \u20b90 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-dark.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "flat-vs-reducing-rate",
+      "width": 1440,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Flat-rate EMI\n\u20b911,742",
+      "year": "5.5",
+      "finalRow": "5.5 | \u20b97,75,000 | \u20b96,52,070 | \u20b90 | \u20b91,22,930 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-dark.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "interest-only-mortgage",
+      "width": 1440,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Interest-only payment\n$1,625",
+      "year": "30.5",
+      "finalRow": "30.5 | $9,750 | $300,000 | $0 | $261 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-dark.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "rent-vs-buy",
+      "width": 1440,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Monthly cost to buy\n$2,897",
+      "year": "7.5",
+      "finalRow": "7.5 | $225,000 | $260,771 | $36,186 | -$416 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-dark.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "retirement",
+      "width": 1440,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Projected retirement savings\n$1,145,115",
+      "year": "21.5",
+      "finalRow": "21.5 | 60 | $7,200 | $38,686 | $1,145,115 | -$854,885 | Partial period: 6 contribution months; existing savings grow over the exact remaining part year.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "swp",
+      "width": 1440,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Estimated withdrawal runway\n51.4 years",
+      "year": "52",
+      "finalRow": "52 | \u20b92,42,825 | \u20b92,46,470 | \u20b93,645 | \u20b90 | Corpus depleted in a partial final month; only the available balance is withdrawn.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-dark.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "roth-vs-traditional-ira",
+      "width": 1440,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Roth after-tax value\n$29,634",
+      "year": "25",
+      "finalRow": "25 | $29,634 | $29,634 | $0 | $1,540",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-dark.png",
+      "alreadyVisible": true,
+      "focus": {
+        "result": false,
+        "button": true
+      },
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "sip-goal",
+      "width": 390,
+      "theme": "light",
+      "status": 200,
+      "primary": "Monthly savings needed\n\u20b94,656",
+      "year": "1.5",
+      "finalRow": "1.5 | \u20b927,936 | \u20b93,268 | \u20b91,00,000 | \u20b90 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "flat-vs-reducing-rate",
+      "width": 390,
+      "theme": "light",
+      "status": 200,
+      "primary": "Flat-rate EMI\n\u20b911,742",
+      "year": "5.5",
+      "finalRow": "5.5 | \u20b97,75,000 | \u20b96,52,070 | \u20b90 | \u20b91,22,930 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "interest-only-mortgage",
+      "width": 390,
+      "theme": "light",
+      "status": 200,
+      "primary": "Interest-only payment\n$1,625",
+      "year": "30.5",
+      "finalRow": "30.5 | $9,750 | $300,000 | $0 | $261 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "rent-vs-buy",
+      "width": 390,
+      "theme": "light",
+      "status": 200,
+      "primary": "Monthly cost to buy\n$2,897",
+      "year": "7.5",
+      "finalRow": "7.5 | $225,000 | $260,771 | $36,186 | -$416 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "retirement",
+      "width": 390,
+      "theme": "light",
+      "status": 200,
+      "primary": "Projected retirement savings\n$1,145,115",
+      "year": "21.5",
+      "finalRow": "21.5 | 60 | $7,200 | $38,686 | $1,145,115 | -$854,885 | Partial period: 6 contribution months; existing savings grow over the exact remaining part year.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "swp",
+      "width": 390,
+      "theme": "light",
+      "status": 200,
+      "primary": "Estimated withdrawal runway\n51.4 years",
+      "year": "52",
+      "finalRow": "52 | \u20b92,42,825 | \u20b92,46,470 | \u20b93,645 | \u20b90 | Corpus depleted in a partial final month; only the available balance is withdrawn.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-swp-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-swp-390-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "roth-vs-traditional-ira",
+      "width": 390,
+      "theme": "light",
+      "status": 200,
+      "primary": "Roth after-tax value\n$29,634",
+      "year": "25",
+      "finalRow": "25 | $29,634 | $29,634 | $0 | $1,540",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "sip-goal",
+      "width": 390,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Monthly savings needed\n\u20b94,656",
+      "year": "1.5",
+      "finalRow": "1.5 | \u20b927,936 | \u20b93,268 | \u20b91,00,000 | \u20b90 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "flat-vs-reducing-rate",
+      "width": 390,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Flat-rate EMI\n\u20b911,742",
+      "year": "5.5",
+      "finalRow": "5.5 | \u20b97,75,000 | \u20b96,52,070 | \u20b90 | \u20b91,22,930 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "interest-only-mortgage",
+      "width": 390,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Interest-only payment\n$1,625",
+      "year": "30.5",
+      "finalRow": "30.5 | $9,750 | $300,000 | $0 | $261 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "rent-vs-buy",
+      "width": 390,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Monthly cost to buy\n$2,897",
+      "year": "7.5",
+      "finalRow": "7.5 | $225,000 | $260,771 | $36,186 | -$416 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "retirement",
+      "width": 390,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Projected retirement savings\n$1,145,115",
+      "year": "21.5",
+      "finalRow": "21.5 | 60 | $7,200 | $38,686 | $1,145,115 | -$854,885 | Partial period: 6 contribution months; existing savings grow over the exact remaining part year.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "swp",
+      "width": 390,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Estimated withdrawal runway\n51.4 years",
+      "year": "52",
+      "finalRow": "52 | \u20b92,42,825 | \u20b92,46,470 | \u20b93,645 | \u20b90 | Corpus depleted in a partial final month; only the available balance is withdrawn.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-swp-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-swp-390-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "roth-vs-traditional-ira",
+      "width": 390,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Roth after-tax value\n$29,634",
+      "year": "25",
+      "finalRow": "25 | $29,634 | $29,634 | $0 | $1,540",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "sip-goal",
+      "width": 320,
+      "theme": "light",
+      "status": 200,
+      "primary": "Monthly savings needed\n\u20b94,656",
+      "year": "1.5",
+      "finalRow": "1.5 | \u20b927,936 | \u20b93,268 | \u20b91,00,000 | \u20b90 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "flat-vs-reducing-rate",
+      "width": 320,
+      "theme": "light",
+      "status": 200,
+      "primary": "Flat-rate EMI\n\u20b911,742",
+      "year": "5.5",
+      "finalRow": "5.5 | \u20b97,75,000 | \u20b96,52,070 | \u20b90 | \u20b91,22,930 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "interest-only-mortgage",
+      "width": 320,
+      "theme": "light",
+      "status": 200,
+      "primary": "Interest-only payment\n$1,625",
+      "year": "30.5",
+      "finalRow": "30.5 | $9,750 | $300,000 | $0 | $261 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "rent-vs-buy",
+      "width": 320,
+      "theme": "light",
+      "status": 200,
+      "primary": "Monthly cost to buy\n$2,897",
+      "year": "7.5",
+      "finalRow": "7.5 | $225,000 | $260,771 | $36,186 | -$416 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "retirement",
+      "width": 320,
+      "theme": "light",
+      "status": 200,
+      "primary": "Projected retirement savings\n$1,145,115",
+      "year": "21.5",
+      "finalRow": "21.5 | 60 | $7,200 | $38,686 | $1,145,115 | -$854,885 | Partial period: 6 contribution months; existing savings grow over the exact remaining part year.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "swp",
+      "width": 320,
+      "theme": "light",
+      "status": 200,
+      "primary": "Estimated withdrawal runway\n51.4 years",
+      "year": "52",
+      "finalRow": "52 | \u20b92,42,825 | \u20b92,46,470 | \u20b93,645 | \u20b90 | Corpus depleted in a partial final month; only the available balance is withdrawn.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-swp-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-swp-320-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "roth-vs-traditional-ira",
+      "width": 320,
+      "theme": "light",
+      "status": 200,
+      "primary": "Roth after-tax value\n$29,634",
+      "year": "25",
+      "finalRow": "25 | $29,634 | $29,634 | $0 | $1,540",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-light.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "sip-goal",
+      "width": 320,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Monthly savings needed\n\u20b94,656",
+      "year": "1.5",
+      "finalRow": "1.5 | \u20b927,936 | \u20b93,268 | \u20b91,00,000 | \u20b90 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "flat-vs-reducing-rate",
+      "width": 320,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Flat-rate EMI\n\u20b911,742",
+      "year": "5.5",
+      "finalRow": "5.5 | \u20b97,75,000 | \u20b96,52,070 | \u20b90 | \u20b91,22,930 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "interest-only-mortgage",
+      "width": 320,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Interest-only payment\n$1,625",
+      "year": "30.5",
+      "finalRow": "30.5 | $9,750 | $300,000 | $0 | $261 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "rent-vs-buy",
+      "width": 320,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Monthly cost to buy\n$2,897",
+      "year": "7.5",
+      "finalRow": "7.5 | $225,000 | $260,771 | $36,186 | -$416 | Partial period: 6 months. The term uses the nearest whole month.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "retirement",
+      "width": 320,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Projected retirement savings\n$1,145,115",
+      "year": "21.5",
+      "finalRow": "21.5 | 60 | $7,200 | $38,686 | $1,145,115 | -$854,885 | Partial period: 6 contribution months; existing savings grow over the exact remaining part year.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "swp",
+      "width": 320,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Estimated withdrawal runway\n51.4 years",
+      "year": "52",
+      "finalRow": "52 | \u20b92,42,825 | \u20b92,46,470 | \u20b93,645 | \u20b90 | Corpus depleted in a partial final month; only the available balance is withdrawn.",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-swp-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-swp-320-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "roth-vs-traditional-ira",
+      "width": 320,
+      "theme": "dark",
+      "status": 200,
+      "primary": "Roth after-tax value\n$29,634",
+      "year": "25",
+      "finalRow": "25 | $29,634 | $29,634 | $0 | $1,540",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-dark.png",
+      "alreadyVisible": false,
+      "focus": {
+        "result": true,
+        "button": false
+      },
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "savings-goal",
+      "width": 1440,
+      "theme": "light",
+      "solve": "Practical amount rounded up to the smallest USD unit. Exact engine solve: $4,655.960206.",
+      "finalRow": "Through 1y 6m\t$68,796.36\t$27,935.76\t$3,267.88\t$0.00\t$100,000.00\tSurplus $0.00",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-light.png",
+      "keyboardReveal": true,
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "savings-goal",
+      "width": 1440,
+      "theme": "dark",
+      "solve": "Practical amount rounded up to the smallest USD unit. Exact engine solve: $4,655.960206.",
+      "finalRow": "Through 1y 6m\t$68,796.36\t$27,935.76\t$3,267.88\t$0.00\t$100,000.00\tSurplus $0.00",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-dark.png",
+      "keyboardReveal": true,
+      "viewport": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "slug": "savings-goal",
+      "width": 390,
+      "theme": "light",
+      "solve": "Practical amount rounded up to the smallest USD unit. Exact engine solve: $4,655.960206.",
+      "finalRow": "Through 1y 6m\t$68,796.36\t$27,935.76\t$3,267.88\t$0.00\t$100,000.00\tSurplus $0.00",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-light.png",
+      "keyboardReveal": true,
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "savings-goal",
+      "width": 390,
+      "theme": "dark",
+      "solve": "Practical amount rounded up to the smallest USD unit. Exact engine solve: $4,655.960206.",
+      "finalRow": "Through 1y 6m\t$68,796.36\t$27,935.76\t$3,267.88\t$0.00\t$100,000.00\tSurplus $0.00",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-dark.png",
+      "keyboardReveal": true,
+      "viewport": 390,
+      "scrollWidth": 390
+    },
+    {
+      "slug": "savings-goal",
+      "width": 320,
+      "theme": "light",
+      "solve": "Practical amount rounded up to the smallest USD unit. Exact engine solve: $4,655.960206.",
+      "finalRow": "Through 1y 6m\t$68,796.36\t$27,935.76\t$3,267.88\t$0.00\t$100,000.00\tSurplus $0.00",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-light.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-light.png",
+      "keyboardReveal": true,
+      "viewport": 320,
+      "scrollWidth": 320
+    },
+    {
+      "slug": "savings-goal",
+      "width": 320,
+      "theme": "dark",
+      "solve": "Practical amount rounded up to the smallest USD unit. Exact engine solve: $4,655.960206.",
+      "finalRow": "Through 1y 6m\t$68,796.36\t$27,935.76\t$3,267.88\t$0.00\t$100,000.00\tSurplus $0.00",
+      "csv": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-dark.csv",
+      "screenshot": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-dark.png",
+      "keyboardReveal": true,
+      "viewport": 320,
+      "scrollWidth": 320
+    }
+  ],
+  "errors": [],
+  "csv_checks": [
+    {
+      "file": "candidate-sip-goal-1440-light.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-flat-vs-reducing-rate-1440-light.csv",
+      "period": "5.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-interest-only-mortgage-1440-light.csv",
+      "period": "30.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-rent-vs-buy-1440-light.csv",
+      "period": "7.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-retirement-1440-light.csv",
+      "period": "21.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-swp-1440-light.csv",
+      "period": "52",
+      "pass": true
+    },
+    {
+      "file": "candidate-roth-vs-traditional-ira-1440-light.csv",
+      "period": "25",
+      "pass": true
+    },
+    {
+      "file": "candidate-sip-goal-1440-dark.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-flat-vs-reducing-rate-1440-dark.csv",
+      "period": "5.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-interest-only-mortgage-1440-dark.csv",
+      "period": "30.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-rent-vs-buy-1440-dark.csv",
+      "period": "7.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-retirement-1440-dark.csv",
+      "period": "21.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-swp-1440-dark.csv",
+      "period": "52",
+      "pass": true
+    },
+    {
+      "file": "candidate-roth-vs-traditional-ira-1440-dark.csv",
+      "period": "25",
+      "pass": true
+    },
+    {
+      "file": "candidate-sip-goal-390-light.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-flat-vs-reducing-rate-390-light.csv",
+      "period": "5.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-interest-only-mortgage-390-light.csv",
+      "period": "30.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-rent-vs-buy-390-light.csv",
+      "period": "7.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-retirement-390-light.csv",
+      "period": "21.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-swp-390-light.csv",
+      "period": "52",
+      "pass": true
+    },
+    {
+      "file": "candidate-roth-vs-traditional-ira-390-light.csv",
+      "period": "25",
+      "pass": true
+    },
+    {
+      "file": "candidate-sip-goal-390-dark.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-flat-vs-reducing-rate-390-dark.csv",
+      "period": "5.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-interest-only-mortgage-390-dark.csv",
+      "period": "30.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-rent-vs-buy-390-dark.csv",
+      "period": "7.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-retirement-390-dark.csv",
+      "period": "21.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-swp-390-dark.csv",
+      "period": "52",
+      "pass": true
+    },
+    {
+      "file": "candidate-roth-vs-traditional-ira-390-dark.csv",
+      "period": "25",
+      "pass": true
+    },
+    {
+      "file": "candidate-sip-goal-320-light.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-flat-vs-reducing-rate-320-light.csv",
+      "period": "5.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-interest-only-mortgage-320-light.csv",
+      "period": "30.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-rent-vs-buy-320-light.csv",
+      "period": "7.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-retirement-320-light.csv",
+      "period": "21.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-swp-320-light.csv",
+      "period": "52",
+      "pass": true
+    },
+    {
+      "file": "candidate-roth-vs-traditional-ira-320-light.csv",
+      "period": "25",
+      "pass": true
+    },
+    {
+      "file": "candidate-sip-goal-320-dark.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-flat-vs-reducing-rate-320-dark.csv",
+      "period": "5.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-interest-only-mortgage-320-dark.csv",
+      "period": "30.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-rent-vs-buy-320-dark.csv",
+      "period": "7.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-retirement-320-dark.csv",
+      "period": "21.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-swp-320-dark.csv",
+      "period": "52",
+      "pass": true
+    },
+    {
+      "file": "candidate-roth-vs-traditional-ira-320-dark.csv",
+      "period": "25",
+      "pass": true
+    },
+    {
+      "file": "candidate-savings-goal-1440-light.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-savings-goal-1440-dark.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-savings-goal-390-light.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-savings-goal-390-dark.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-savings-goal-320-light.csv",
+      "period": "1.5",
+      "pass": true
+    },
+    {
+      "file": "candidate-savings-goal-320-dark.csv",
+      "period": "1.5",
+      "pass": true
+    }
+  ],
+  "pass": true
+}

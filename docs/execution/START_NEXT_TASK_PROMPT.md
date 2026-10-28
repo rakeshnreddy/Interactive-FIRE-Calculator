@@ -1,8 +1,8 @@
 # Current continuation — 2026-10-28
 
-Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. C30R/B77 is merged and verified on the shared beta and main CI. Continue the in-progress [B68/C30](prompts/B68.md), release it, and continue to [B70/C31](prompts/B70.md). B68 implementation, 2,811-test full suite and native product review pass; hosted release verification is next. B68 remains in progress; B70 remains pending. Push, exact-head CI, isolated candidate verification, shared-beta promotion/verification and clear resumption docs are required per step.
+Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. C30R/B77 and B68/C30 are accepted; B68's shared beta and exact product CI are verified. Resolve final landing/main CI in [PR #155](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/155) before beginning [B70/C31](prompts/B70.md) from clean main. B68 is done, B70 pending; 66/70 registered tasks done. Push, exact-head CI, isolated candidate verification, shared-beta promotion/verification and clean resumption docs remain required per step.
 
-The October 18 analysis is complete and preserved in `docs/calculator-excellence/ANALYSIS_2026-10-18.md`; do not rerun it. Direct implementation; no Gemini or broad agent fan-out. Narrow independent reviews may be used. Production/owner evidence gates remain in force. This continuation supersedes the older brief's initial-analysis instructions, counts and release state.
+The October 18 analysis is complete and preserved in `docs/calculator-excellence/ANALYSIS_2026-10-18.md`; do not rerun it. Direct implementation; no Gemini or broad agent fan-out. Narrow independent reviews may be used. Production/owner evidence gates remain in force. This continuation supersedes the historical brief's initial-analysis instructions, counts and release state.
 
 ---
 

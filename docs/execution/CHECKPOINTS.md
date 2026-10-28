@@ -38,8 +38,8 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C28 | Truthful generated input helpers | B66 | accepted | 7fc0170bc4996dd96d6eb7449574702df73fdc81 | [approved](reviews/C28.md) |
 | C29 | Market-growth presentation for lump sum and SIP | B67 | accepted | 698ce790a18ae016564264c074689ed304370c30 | [approved](reviews/C29.md) |
 | C30R | Audit preservation and next-contract registration | B77; audit/registration | accepted | 7d0f1782b03f9f49de3491eaac1be2067c9222e2 | [approved; shared beta verified](reviews/C30R.md) |
-| C30 | Exact-term reconciliation and contribution accounting | B68 | released | — | [Product/local checks pass; hosted release pending](reviews/C30.md) |
-| C31 | Design foundation and application shell | B70 | locked | — | Pending C30 acceptance |
+| C30 | Exact-term reconciliation and contribution accounting | B68 | accepted | 25af47ee5785c747155aad675ebade42d576e849 | [Approved; shared beta verified](reviews/C30.md) |
+| C31 | Design foundation and application shell | B70 | released | — | B68 accepted; pending implementation |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -94,6 +94,6 @@ Owner approved route-specific copy for high-traffic routes. C29/B67 covers lump 
 
 ## Stepwise continuation — 2026-10-26
 
-Owner authorizes push, release and shared-beta deployment after each bounded step. C30R preserves the existing audit and registers only B68 and B70. Finish and verify this documentation release before B68; finish B68/C30 before B70/C31. Other audit suggestions remain proposals. B69 is not implicitly included in C30. Task status remains 65 done of 70 registered; registration is not implementation or acceptance.
+Owner authorizes push, release and shared-beta deployment after each bounded step. C30R preserves the existing audit and registers only B68 and B70. Finish and verify this documentation release before B68; finish B68/C30 before B70/C31. Other audit suggestions remain proposals. B69 is not implicitly included in C30. Task status is now 66 done of 70 registered; registration is not implementation or acceptance.
 
-`released` in the ledger means the contract is available for execution; it does not mean a candidate is accepted or deployed. The review and RESUME record those observed outcomes separately. C31 stays locked until B68 is accepted.
+`released` in the ledger means the contract is available for execution; it does not mean a candidate is accepted or deployed. The review and RESUME record those observed outcomes separately. C31 is now released after B68 acceptance.

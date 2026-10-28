@@ -24,7 +24,7 @@
     "outside_review": "unavailable: Claude CLI not installed",
     "prior_attempts": "quota/capacity failures; not counted as complete"
   },
-  "hosted": "pending",
+  "hosted": "passed: candidate and beta provider/assets/routes;48browser+48CSVcases each",
   "raw_files": [
     {
       "path": "docs/execution/evidence/C30/raw/full-suite-2.log",
@@ -56,5 +56,6 @@
       "bytes": 21238,
       "sha256": "673bd3659b1230ce13c2aebc4bb4318765cb00c92e72ebd800c6045459664257"
     }
-  ]
+  ],
+  "source_sha": "25af47ee5785c747155aad675ebade42d576e849"
 }

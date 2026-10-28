@@ -1,0 +1,1189 @@
+{
+  "checked_at": "2026-10-28T08:57:01.904456+00:00",
+  "source_sha": "25af47ee5785c747155aad675ebade42d576e849",
+  "candidate_url": "https://512f7960.interactive-fire-calculator.pages.dev",
+  "beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+  "beta_immutable_url": "https://602127ca.interactive-fire-calculator.pages.dev",
+  "files": [
+    {
+      "path": "docs/execution/evidence/C30/raw/beta-alias-smoke.log",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/beta-browser-generic.js",
+      "bytes": 5653,
+      "sha256": "4d7642bcc962e19bae89a89e2bb8930b415877ae19bd373172f0d190f525b78f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/beta-browser-generic.log",
+      "bytes": 35778,
+      "sha256": "7d4dd0bbeb875bd15dfe830d07f8778f746a7ed536c4d622f54eac282fdfa596"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/beta-browser-goal.js",
+      "bytes": 2722,
+      "sha256": "ba163c4e8cef36500758e38b107cdddadc950839f52d1e7c2a627a00d4415f5c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/beta-browser-goal.log",
+      "bytes": 6575,
+      "sha256": "b47ecff6486fa6980b2ad2afc243a8096872c81268e42d3df4b47b05b5fc8460"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/beta-deploy.log",
+      "bytes": 614,
+      "sha256": "fc29ec356d75f0e5fefbb5d01e9169db176f99ae40b13c3bceaf319add6efd34"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/beta-immutable-smoke.log",
+      "bytes": 119,
+      "sha256": "62a4a755c670f525393016282cf0a3cb9164f922e5e4c57c50f00f8dd235c7c5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-baseline.log",
+      "bytes": 407,
+      "sha256": "47f2c52103ae7b6481904935edb433c9636b4a9d899d8ed093a8b773b4a1f59c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-exploration-001.json",
+      "bytes": 16176,
+      "sha256": "a2e154de2fc269701e3bb688950e6e99e043845f8b73529e4737686d65aa91cf"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-exploration-002.json",
+      "bytes": 19550,
+      "sha256": "ad9dce39d4954d0c542765a8a33fa3c651c87d49621f4307ae73889c099c58d7"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-exploration-003.json",
+      "bytes": 28663,
+      "sha256": "363fb1e8220b099af3144a1aa1ada1e5c4ca98dfe5c7f2f90e68973b1b551331"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-failure-snapshot.log",
+      "bytes": 18592,
+      "sha256": "239b119ed68de5241c3dccc6e3f9d80eedba54463b3afd47639cafb7f1a2bffe"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-generic-final.js",
+      "bytes": 5638,
+      "sha256": "80b04442bf1c31a8a7608e07483680eeb9c608bf0acf8eb542d0a10004c448a6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-generic-final.log",
+      "bytes": 36143,
+      "sha256": "ceb077819c0e9b402ab8b7995462b9563e140c3d11073e4d34ce83d9c744cf35"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-generic-result-v2.log",
+      "bytes": 35323,
+      "sha256": "805145b9d43166f118b41f559beb8067535c9485818582f515860ee7939bd4f9"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-generic-result.log",
+      "bytes": 951,
+      "sha256": "1d5742871f9cf1d6512c13144c1959c864c6188774e99bc3c0bca4e15fb34bd8"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-generic-template.js",
+      "bytes": 5592,
+      "sha256": "227c335a15f1a0e2403c2c6365db5fb4e4fdb6702b040715f48328ee1bcc37ff"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-generic-v2.js",
+      "bytes": 5469,
+      "sha256": "ab1cee42b278e7373509315fa8ed3ae118f2d4304126e92d62e68d03a6bcdf35"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-generic.js",
+      "bytes": 5274,
+      "sha256": "89973ab13289ab3aaa452f28fa4bc3d83a6826cfffdb3158482f7439c9f0fd8c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-goal-template.js",
+      "bytes": 2661,
+      "sha256": "0893fc2b5a03c676d60b42a0a7334b7b0c089fe9a77fbdb73818bdc11d172ff0"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-goal.js",
+      "bytes": 2707,
+      "sha256": "993648908437982f5693702189d6366b15dca76d59167cc5d8d2068c416c9a0d"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-goal.log",
+      "bytes": 6431,
+      "sha256": "a48676a0647a110589db8491384cc909ff7aaee56e82d64583c98f1b9226d8d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-open.log",
+      "bytes": 223,
+      "sha256": "d229b212b0dc8629714b8141366227aa9a5f901a12fea5657a0d30c46e63a9f5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-reopen.log",
+      "bytes": 396,
+      "sha256": "5f48af8fd1307c4c9da9eac88f6a2b4a85a5a1fbab0e0eb57717ccd5174d55cd"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/browser-snapshot.log",
+      "bytes": 15237,
+      "sha256": "bf8d79b06e036768832c6a786b2216f96cd1af54ba522e7bc3a17076e3ca388a"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/candidate-acceptance.json",
+      "bytes": 355,
+      "sha256": "af1f09197657c5e0d7b131073dc53b5c755a5ce4b887f8d8e6d28e0f00dfd74a"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/candidate-deploy.log",
+      "bytes": 681,
+      "sha256": "ca2e54d9f040747a4abf8482c61e7af4a6f4c7992cbf33870109a235e082c685"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/candidate-public-smoke.log",
+      "bytes": 119,
+      "sha256": "90f855cbd438f32aecb7abdf37e5d79f2d8c54ee4c216ad54ebb242f685adb07"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/ci-watch.log",
+      "bytes": 1853,
+      "sha256": "90ab6cfb11077a2baa2481e4fd9e8a69b68e84615f201ea55b97667a47b73b35"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/docs-audit.json",
+      "bytes": 6013,
+      "sha256": "3602202e675f0bd374246b1c1dc3f3325ab1d507917e97d09048d254027b9818"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/docs-section.md",
+      "bytes": 2880,
+      "sha256": "9344b19a08909e331c92f95374d8f028fdbb6fc0e8de5953154316e3df1440ea"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/docs-snapshot.log",
+      "bytes": 81287,
+      "sha256": "3c7cbd1f8435096485d84a92fad3f4e0f4791c04e515400ade3ef71e75ae6d25"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/full-suite-2.log",
+      "bytes": 7631,
+      "sha256": "1475bf364a0ee5b41d66b94aa2aeda7c2b8fa760724496b7f1c389b810f069e1"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/full-suite.log",
+      "bytes": 5744,
+      "sha256": "c9d13fab0978b672631a0d34f7295482beb9720c79f012d1eaf07bc30087161f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/goal-inspect.log",
+      "bytes": 1346,
+      "sha256": "8b761c406d6e10bbd6daba9a84a0f146f182856b42e696732b04d48c5e32075c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/goal-open.log",
+      "bytes": 360,
+      "sha256": "bc06f9d130d590f6b7f8ba3101e114fcb38687c3455f52cd346531581dda5b7b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/goal-snapshot.log",
+      "bytes": 16775,
+      "sha256": "7965f9932b51012f26f18edb1eb4e264ed6913ba9cfdad8dc36b90c4c5683699"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/green-tests.log",
+      "bytes": 4489,
+      "sha256": "d704384e1c079e62b8b80a1090ddf4143d7b767742f27b6b01d9536a4e5fb07a"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-1440-dark.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-1440-dark.png",
+      "bytes": 179393,
+      "sha256": "b2b8f75600b9740c11b9f47ad3a4e27ed3fb9ebb5f733cc0477698f896b6bc59"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-1440-light.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-1440-light.png",
+      "bytes": 178283,
+      "sha256": "488d1f90549b87c4db2d561892ef49dc84da52ab764aacc02916c9ad908a2a39"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-320-dark.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-320-dark.png",
+      "bytes": 78038,
+      "sha256": "d9038febe79d3866f52653037362ab2007567b7d35606da508a89b794eab8c92"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-320-light.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-320-light.png",
+      "bytes": 78161,
+      "sha256": "ac9df60fa6dc9543ad895e013da501c6f58487a9c12c54d79a21e0e860336e73"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-390-dark.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-390-dark.png",
+      "bytes": 89248,
+      "sha256": "f9e44f5619e9f62e59bb78f34e66e46e1ccd28013508dbbd210c00d55c565354"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-390-light.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-flat-vs-reducing-rate-390-light.png",
+      "bytes": 89369,
+      "sha256": "a52ea4d28173c4fe694aa0de82a60234dc1a0e9615aa035118f125242ec4d302"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-1440-dark.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-1440-dark.png",
+      "bytes": 200817,
+      "sha256": "534bfb3f4c8d5cbed32447842f6a0b6b0602d953d9a97517c4e3127f503ec35a"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-1440-light.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-1440-light.png",
+      "bytes": 203153,
+      "sha256": "afe939f0262a3f4c6eb0c6c6dd22e9ed63ec91cee704bee951185f33820c044b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-320-dark.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-320-dark.png",
+      "bytes": 74327,
+      "sha256": "a299c39f4bb022122251c542d01b321d183184704a4786037422037aa111f055"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-320-light.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-320-light.png",
+      "bytes": 75056,
+      "sha256": "ba019059cf5d2984a674d8fceb952a6af16648819b2634ec6b49e698aaf5de47"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-390-dark.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-390-dark.png",
+      "bytes": 87804,
+      "sha256": "0ccf06dd6798d2bcea2f3de030bc6daee5abe325b9ef6fe4cf59cbcf9269c4e6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-390-light.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-interest-only-mortgage-390-light.png",
+      "bytes": 88538,
+      "sha256": "4b7c1d0e7d419566355fb386134efab9d200a77e391c2029d6f3bdeb67b53ae2"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-1440-dark.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-1440-dark.png",
+      "bytes": 171568,
+      "sha256": "d68959bbeaee66ec5747a94de4bae20780553005d54209b4123cb3c4b2628f03"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-1440-light.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-1440-light.png",
+      "bytes": 207191,
+      "sha256": "7aeb0c8cc9eeb506a55f34e744606f49ef76d894a16adbf0b4d195da90b575dc"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-320-dark.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-320-dark.png",
+      "bytes": 71720,
+      "sha256": "76ad6e7f34d5d457ddd322f63ba83765ba8eee2c009155b736ac76f1abbeae1b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-320-light.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-320-light.png",
+      "bytes": 72668,
+      "sha256": "74f38fc3515b91cade175b79b22778a07c142056f425db9971d9ab53725d0c27"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-390-dark.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-390-dark.png",
+      "bytes": 82931,
+      "sha256": "c66312831ee922bcf3fa2951304a3923504a49bce8195596b4e8dd935d2ff103"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-390-light.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-rent-vs-buy-390-light.png",
+      "bytes": 84103,
+      "sha256": "4f9424e6ab8311473170b5caccf87127932c9db17b01917bef0da5c2a21a9401"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-1440-dark.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-1440-dark.png",
+      "bytes": 208610,
+      "sha256": "469b7cfb64513ffe7f363312791f5ba6a273f0e690c26030611ad147109fa11f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-1440-light.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-1440-light.png",
+      "bytes": 209394,
+      "sha256": "c0c771c53fccaac65985518ebe828e2b4403b40d1b6200a4d9f7c899afdf8121"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-320-dark.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-320-dark.png",
+      "bytes": 78953,
+      "sha256": "ecea12829a500c24aebdd8f4a5143ad15f5f360469c3fc4b66ebaadcd915e68c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-320-light.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-320-light.png",
+      "bytes": 79882,
+      "sha256": "a5aaa946d18c09fa86ef797c4ff8a78e47ab19d61b52dfacf9e0fef755e10da0"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-390-dark.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-390-dark.png",
+      "bytes": 83744,
+      "sha256": "6ea5afd167f0900d085a7054f44e619abfd0904423ceade7e7e6c71b77f7130d"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-390-light.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-retirement-390-light.png",
+      "bytes": 85537,
+      "sha256": "59c76fe0833d805e9ec4094b45588e3519db720e9db800664e5f9b582a9c6b91"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-1440-dark.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-1440-dark.png",
+      "bytes": 206226,
+      "sha256": "095e2707542c4896eb5a372473af35facfa37a36ca733b67e0a321d90fdc3dce"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-1440-light.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-1440-light.png",
+      "bytes": 209097,
+      "sha256": "5f1570227798f375aa8070bdee44dcbf7970f36a8a1d0d0c4a7b0f7ebb251862"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-320-dark.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-320-dark.png",
+      "bytes": 70520,
+      "sha256": "b2283948eac0bc2d46f0c007c8056905e5e41e2a1f7d1d7dcc728eb72fc2b588"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-320-light.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-320-light.png",
+      "bytes": 71419,
+      "sha256": "c9093369d597afe5eb43cbead763fea33c95af54c8b2e3a78e3be8c4dc17d19e"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-390-dark.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-390-dark.png",
+      "bytes": 85739,
+      "sha256": "9aacd016fc44f7d7c6856823af5405e016767d55cce243448928158edbbe4515"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-390-light.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-roth-vs-traditional-ira-390-light.png",
+      "bytes": 85962,
+      "sha256": "2f61b9d5ffbce088f9f0194fb1486b4ae474e7159f8dab74c99015dffe2aae6d"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-1440-dark.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-1440-dark.png",
+      "bytes": 204485,
+      "sha256": "5e022fcc24bb15b1a3a5c54a64703bbccb7c778e52ebcce4ae82d565482c2afa"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-1440-light.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-1440-light.png",
+      "bytes": 210914,
+      "sha256": "ef3a3753ff5020ca26e1d60e9b597a77ccecdea6db0363798ce07a56dda48b5b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-320-dark.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-320-dark.png",
+      "bytes": 81839,
+      "sha256": "c63cb983fcfd88924263efa5037cad502df3911f3ad542285c021d10466d7550"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-320-light.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-320-light.png",
+      "bytes": 84078,
+      "sha256": "4812f100ee775fdeb1b345938af5fafaa55834d92fbdb4841acce74b896736c1"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-390-dark.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-390-dark.png",
+      "bytes": 97904,
+      "sha256": "efe35dcf71552d29a09b75a30cb9363c25207c80692c3098c143254f7b035057"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-390-light.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-savings-goal-390-light.png",
+      "bytes": 100280,
+      "sha256": "3ae60da0ee230cd88ae5f287a95b4d55879e121caa28a479b5587b4f3c57dbc5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-1440-dark.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-1440-dark.png",
+      "bytes": 185469,
+      "sha256": "1433b8b232aea34f2f302096ec80c363176452cc806df8f179d1ee3a723eab9f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-1440-light.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-1440-light.png",
+      "bytes": 186477,
+      "sha256": "ee4aa6eee9ecd3a5cb329e3a0780b5eb729d9843217b4621aac55686df8854ab"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-320-dark.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-320-dark.png",
+      "bytes": 75558,
+      "sha256": "147403311a8c8d4bf6d817d8a9aa4a3659a29d42159b8240f17f92d534d4bc3e"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-320-light.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-320-light.png",
+      "bytes": 76333,
+      "sha256": "e254549673d09934ec9ad47eaf6f593b7743ebf1a9f6c1d3b59dccdc57854bf8"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-390-dark.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-390-dark.png",
+      "bytes": 88162,
+      "sha256": "ebfbf55b0b47e4fe0c9903c6179dc0ec5befd59fa56d021544d3f96b83e65038"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-390-light.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-sip-goal-390-light.png",
+      "bytes": 89048,
+      "sha256": "5eb9a5f0e409566cea380b30d788847347eb16e15138af40030956f09662b125"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-1440-dark.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-1440-dark.png",
+      "bytes": 214932,
+      "sha256": "843eabca0ab7d3a419079d777ce9cb7596ad18f697e5446a2ac825cfc678237c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-1440-light.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-1440-light.png",
+      "bytes": 216980,
+      "sha256": "57100e2f9de69fbd57bb283cfc343efee17b7d8a7dcba8f2426e35a6bb0ded06"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-320-dark.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-320-dark.png",
+      "bytes": 80395,
+      "sha256": "6b7f913a81cf37b96ad350faa16074b4a2f035db08a61955ef3d3e8b27daa147"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-320-light.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-320-light.png",
+      "bytes": 81143,
+      "sha256": "462fb521f86b15468c4e2535ddc3fc96f60b1ff302bebd407bd11d1da98dbe34"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-390-dark.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-390-dark.png",
+      "bytes": 94469,
+      "sha256": "0439969acf60eca41a8bfaa7b24571f73a91b920f0e644d0ed9efe0a89f9c063"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-390-light.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/beta-swp-390-light.png",
+      "bytes": 94460,
+      "sha256": "4a8143f4dc24fca804f94ae0179d03904e7e27541b3101fdb896f7927508ee60"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-dark.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-dark.png",
+      "bytes": 179394,
+      "sha256": "e2a5e9ebef5926c48a03e1c7830388e9738566adb6e7c227697b535d0b5ea584"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-light.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-1440-light.png",
+      "bytes": 178238,
+      "sha256": "6b0428b004119ef9c9c9ddc7f772eeb690ab7e8d82d69ec1b481875f8fa8c799"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-dark.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-dark.png",
+      "bytes": 78004,
+      "sha256": "9e801a8c2969f36a8c5b467de2038c66d387f4a92a7b84137f044f987400f3cc"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-light.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-320-light.png",
+      "bytes": 78161,
+      "sha256": "ac9df60fa6dc9543ad895e013da501c6f58487a9c12c54d79a21e0e860336e73"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-dark.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-dark.png",
+      "bytes": 89248,
+      "sha256": "f9e44f5619e9f62e59bb78f34e66e46e1ccd28013508dbbd210c00d55c565354"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-light.csv",
+      "bytes": 480,
+      "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-flat-vs-reducing-rate-390-light.png",
+      "bytes": 89369,
+      "sha256": "a52ea4d28173c4fe694aa0de82a60234dc1a0e9615aa035118f125242ec4d302"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-dark.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-dark.png",
+      "bytes": 200817,
+      "sha256": "534bfb3f4c8d5cbed32447842f6a0b6b0602d953d9a97517c4e3127f503ec35a"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-light.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-1440-light.png",
+      "bytes": 203153,
+      "sha256": "afe939f0262a3f4c6eb0c6c6dd22e9ed63ec91cee704bee951185f33820c044b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-dark.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-dark.png",
+      "bytes": 74327,
+      "sha256": "a299c39f4bb022122251c542d01b321d183184704a4786037422037aa111f055"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-light.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-320-light.png",
+      "bytes": 75056,
+      "sha256": "ba019059cf5d2984a674d8fceb952a6af16648819b2634ec6b49e698aaf5de47"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-dark.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-dark.png",
+      "bytes": 87832,
+      "sha256": "c5a81afef231710d9f68447d99a19de32c00a88e8926820c657e31db1233676a"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-light.csv",
+      "bytes": 1402,
+      "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-interest-only-mortgage-390-light.png",
+      "bytes": 88538,
+      "sha256": "4b7c1d0e7d419566355fb386134efab9d200a77e391c2029d6f3bdeb67b53ae2"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-dark.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-dark.png",
+      "bytes": 205030,
+      "sha256": "8aa8e405c01a197f24d415e9724a6b8c207c51af7f4f576cd266640b6a951710"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-light.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-1440-light.png",
+      "bytes": 207191,
+      "sha256": "7aeb0c8cc9eeb506a55f34e744606f49ef76d894a16adbf0b4d195da90b575dc"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-dark.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-dark.png",
+      "bytes": 71735,
+      "sha256": "98b2e3b8516277da38226e3a8809c08aaca816770122c8834223dd6e8c8d4c5b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-light.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-320-light.png",
+      "bytes": 72698,
+      "sha256": "e5c31a51aed3e08c3cfd44e1170ea69e1cbd41c5ec35c6e772313803d4582ce8"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-dark.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-dark.png",
+      "bytes": 82933,
+      "sha256": "0ac970597a695e6a35e41efda42c5b8f2406dcd35bfd6ed3059c805955f74df1"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-light.csv",
+      "bytes": 504,
+      "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-rent-vs-buy-390-light.png",
+      "bytes": 84103,
+      "sha256": "4f9424e6ab8311473170b5caccf87127932c9db17b01917bef0da5c2a21a9401"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-dark.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-dark.png",
+      "bytes": 208610,
+      "sha256": "469b7cfb64513ffe7f363312791f5ba6a273f0e690c26030611ad147109fa11f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-light.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-1440-light.png",
+      "bytes": 209394,
+      "sha256": "c0c771c53fccaac65985518ebe828e2b4403b40d1b6200a4d9f7c899afdf8121"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-dark.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-dark.png",
+      "bytes": 78953,
+      "sha256": "ecea12829a500c24aebdd8f4a5143ad15f5f360469c3fc4b66ebaadcd915e68c"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-light.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-320-light.png",
+      "bytes": 79882,
+      "sha256": "a5aaa946d18c09fa86ef797c4ff8a78e47ab19d61b52dfacf9e0fef755e10da0"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-dark.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-dark.png",
+      "bytes": 83744,
+      "sha256": "6ea5afd167f0900d085a7054f44e619abfd0904423ceade7e7e6c71b77f7130d"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-light.csv",
+      "bytes": 1348,
+      "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-retirement-390-light.png",
+      "bytes": 85537,
+      "sha256": "59c76fe0833d805e9ec4094b45588e3519db720e9db800664e5f9b582a9c6b91"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-dark.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-dark.png",
+      "bytes": 206118,
+      "sha256": "660e632ba4c5a5d34bdf4a8853e05f78b0e5d62369eb55f5bb1b1880ae25a808"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-light.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-1440-light.png",
+      "bytes": 209000,
+      "sha256": "16418510bd2b50293426565ffc2eb333001deb68d2e6b24753009a71ae18a365"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-dark.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-dark.png",
+      "bytes": 70568,
+      "sha256": "f06e6dd961dfd44317c1672acdad9bc5992a6a6379e4093ecf1c630293f3ceaa"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-light.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-320-light.png",
+      "bytes": 71419,
+      "sha256": "c9093369d597afe5eb43cbead763fea33c95af54c8b2e3a78e3be8c4dc17d19e"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-dark.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-dark.png",
+      "bytes": 85720,
+      "sha256": "8324f75f86e1dcb7c7f165aba5be428c83dae813ac1c43c118d8efc2e01592f7"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-light.csv",
+      "bytes": 922,
+      "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-roth-vs-traditional-ira-390-light.png",
+      "bytes": 86054,
+      "sha256": "c788d3cd869278824c47b5f004fbf636fa46857b81373304c871bb45d13a2088"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-dark.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-dark.png",
+      "bytes": 204556,
+      "sha256": "decc566b8937faa8bd48589c1c37233b04f2cb37525a49ba731112393915de43"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-light.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-1440-light.png",
+      "bytes": 210605,
+      "sha256": "4de30c8806b0848a952ce33b5df82f847baffe82b4f692c5c0909e5cba0f187e"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-dark.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-dark.png",
+      "bytes": 81890,
+      "sha256": "910f1b7ce2101646dc7d703d2cee1317baeff36b90e5bab3b3a0e838a91e018f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-light.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-320-light.png",
+      "bytes": 84006,
+      "sha256": "fac1478f6b6becdd77d8e6e5c52eed127d2f6bfefe5a42dd36bc9c8e8feba9ec"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-dark.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-dark.png",
+      "bytes": 97928,
+      "sha256": "07c7ee7150d2d23f58451e4e67ea28d165b69f2296e442f1cf9870ab7a55aa79"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-light.csv",
+      "bytes": 3320,
+      "sha256": "5609d566441c87b869f1f683d045b9fbe97332c3717af27a9e084a5e52573395"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-savings-goal-390-light.png",
+      "bytes": 100376,
+      "sha256": "c0dabcd3c8880175faeb0203fbec9c85307e4a22c5163bc8efd79958d9aa5d0d"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-dark.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-dark.png",
+      "bytes": 185469,
+      "sha256": "1433b8b232aea34f2f302096ec80c363176452cc806df8f179d1ee3a723eab9f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-light.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-1440-light.png",
+      "bytes": 186622,
+      "sha256": "475b43f1ed57a6b64246a203dfd623bd6e61c92dbe77470ce752b8f8698e2540"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-dark.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-dark.png",
+      "bytes": 75557,
+      "sha256": "84052bb88404c19788af88ae37d96e99b1f482895d6507fd04606eca49478135"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-light.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-320-light.png",
+      "bytes": 76398,
+      "sha256": "0cadaab246411a8a218d343b6a60970bed3ddf82e773e06bc933ff6a114314d0"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-dark.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-dark.png",
+      "bytes": 87927,
+      "sha256": "cb7e6fcbdc49f8b8650ab3961d3ed3eecda9156fe8194b05e44d032d699e5a80"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-light.csv",
+      "bytes": 233,
+      "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-sip-goal-390-light.png",
+      "bytes": 89034,
+      "sha256": "708b2000e2aafad8c7a7dcd93cd865e9d7aeed88dcbdab2826a776b00e89f2d1"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-dark.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-dark.png",
+      "bytes": 215004,
+      "sha256": "f85602b80301a5624ad6bf5d19916b083f03b1df54f306971b4c9d6d9aaae429"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-light.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-1440-light.png",
+      "bytes": 216980,
+      "sha256": "57100e2f9de69fbd57bb283cfc343efee17b7d8a7dcba8f2426e35a6bb0ded06"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-320-dark.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-320-dark.png",
+      "bytes": 80374,
+      "sha256": "1b1d94a06f67e16514a5f3782be770ea293edadde933705a4332ae9676cf87a7"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-320-light.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-320-light.png",
+      "bytes": 81186,
+      "sha256": "886ecf16e46e8dc6b2d515a95989d299f64af0c210104e666f2dfd050ce255cc"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-390-dark.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-390-dark.png",
+      "bytes": 94469,
+      "sha256": "0439969acf60eca41a8bfaa7b24571f73a91b920f0e644d0ed9efe0a89f9c063"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-390-light.csv",
+      "bytes": 3348,
+      "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/output/candidate-swp-390-light.png",
+      "bytes": 94460,
+      "sha256": "4a8143f4dc24fca804f94ae0179d03904e7e27541b3101fdb896f7927508ee60"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/preview-build.log",
+      "bytes": 3001,
+      "sha256": "6a3759070875af94065bfe245d132434956c6c3fd53a100544fa46e3fb875c18"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/provider-preflight.json",
+      "bytes": 324,
+      "sha256": "e004cdd2bc6603592594078667f3b28a0b1148b34ceb3c517f7c6fb384aa9c0d"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/qa-capture.log",
+      "bytes": 499,
+      "sha256": "8dd06c0d84de2c17a5d95e3fa0516c463229d256789ccf8495515920bcf7200b"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/red-tests.log",
+      "bytes": 21238,
+      "sha256": "673bd3659b1230ce13c2aebc4bb4318765cb00c92e72ebd800c6045459664257"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/review-start.log",
+      "bytes": 2169,
+      "sha256": "da62eea65742b5111998c803481a7f99ac19885fb08274e05f656d875a859f20"
+    },
+    {
+      "path": "docs/execution/evidence/C30/raw/wrangler-auth.log",
+      "bytes": 1891,
+      "sha256": "81e2ee28b9c3e6fa1be20c594cabdb2aef1ef38b969edecc70d43cade440e042"
+    }
+  ]
+}

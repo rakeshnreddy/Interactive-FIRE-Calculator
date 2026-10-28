@@ -1,10 +1,10 @@
-# Stable beta release protocol — verified 2026-10-27 (C30R/B77)
+# Stable beta release protocol — verified 2026-10-28 (C30/B68)
 
 ## Share one URL
 
-[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) is updated by controlled preview promotion at verified checkpoints. Current immutable deployment: https://10ca2f8d.interactive-fire-calculator.pages.dev, deployment `10ca2f8d-71e3-4424-b616-31fcbff63448`, clean source `34e077caca1562c600cafa51ceeb3487fb610e11`. Product equals accepted C30R/B77 source `7d0f1782b03f9f49de3491eaac1be2067c9222e2` (documentation-only delta). [Provider/asset/routes](evidence/C30R/beta-release.json), [beta browser](evidence/C30R/beta-browser-checks.json), [review](reviews/C30R.md). Previous verified beta: C29 `d5ce67a4` / `11ea34ee9365676bebdcc3c301f7c922022f8389` ([record](evidence/C29/beta-release.json)).
+[Bookmarkable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) updates only at verified checkpoints. Current immutable deployment: [602127ca](https://602127ca.interactive-fire-calculator.pages.dev), deployment `602127ca-c614-4fae-9eb4-da680c5cfb5e`, clean source `25af47ee5785c747155aad675ebade42d576e849`. This is the same accepted CI-passing product as candidate [512f7960](https://512f7960.interactive-fire-calculator.pages.dev). [Provider/assets/routes](evidence/C30/beta-release.json), [browser/CSV](evidence/C30/beta-browser-checks.json), [review](reviews/C30.md). Previous C30R beta: [10ca2f8d](https://10ca2f8d.interactive-fire-calculator.pages.dev), source `34e077caca1562c600cafa51ceeb3487fb610e11` ([record](evidence/C30R/beta-release.json)).
 
-Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; all 16 runtime JS/CSS hashes match the tested candidate at both immutable and alias URLs. Health 200/protected 401, all 84 routes on both URLs and six signed-out light/dark 1440/390/320 browser cases pass. No hosted financial-data write occurred. Native reader/zoom and B51 actual-user evidence remain deferred. Publication does not open production gates.
+Only isolated preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`; all 16 runtime hashes match on immutable and alias URLs. Health 200/protected 401 and all 84 public routes pass at both. Forty-eight browser journeys/CSV downloads cover eight routes in light/dark at 1440/390/320 with keyboard reveal, no overflow/errors and exact-term/oracle checks. No hosted financial-data write. Native reader/zoom and B51 actual-user evidence remain deferred. Publication does not open production gates.
 
 ## Promotion discipline
 
