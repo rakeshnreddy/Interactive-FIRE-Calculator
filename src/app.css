@@ -1,0 +1,6 @@
+/* Accessibility's important rules intentionally come first: important layer
+   precedence reverses. Normal shell rules outrank the preserved legacy stack. */
+@layer accessibility, legacy, tokens, shell;
+@import './styles.css';
+@import './vivid-theme.css';
+@import './shell.css';

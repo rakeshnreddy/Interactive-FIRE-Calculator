@@ -6,7 +6,7 @@
 
 Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. Documents/ChatGPT is stale at PR #138 and File Provider reads can stall; do not reset or overwrite it. Current implementation branch `codex/luminous-shell-foundation`; preserve other work and stage only owned paths.
 
-1. Continue B70 from verified main `7a61d88`: capture the current browser/contrast/performance baseline, inventory the cascade, then implement against the registered contract. No B70 app code has changed at this checkpoint.
+1. B70 local implementation and review are complete: [board](evidence/C31/design-board.md), [submission](submissions/B70.md), [review](reviews/C31.md). Full30Node/109files/2825tests, build/prerender/isolation,136browserlayout and24preference cases pass. Native review has no remaining defects. Next: documentation audit, explicit commit/push/PR/exact CI, clean authenticated candidate, hosted signed-in shell/gates and84-route/provider/assets verification, performance, then verified beta promotion and landing. No B70 PR or deployment yet. Raw work is preserved in ignored `evidence/C31/raw/` and `/private/tmp/finpath-b70/`.
 2. B70: compute real OKLCH contrast pairs, establish colour-token and stylesheet-layer ownership, redesign navigation/footer, fix invisible eyebrow text, and add transitions respecting reduced motion. Register no unrelated audit proposals implicitly. Release through the same tests/PR/exact CI/candidate/beta/browser/landing loop.
 3. Keep task status, checkpoints, submission/review and this resume aligned with observed evidence. Direct implementation; no Gemini or broad agent fan-out. Narrow independent reviews are permitted. Owner requests sequential pushes/releases/deployments and durable state after each step.
 

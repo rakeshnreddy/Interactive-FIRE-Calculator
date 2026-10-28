@@ -1112,10 +1112,10 @@
         "B68"
       ],
       "prompt": "prompts/B70.md",
-      "submission": null,
+      "submission": "submissions/B70.md",
       "owner": "Primary agent direct implementation and review \u2014 owner continuation",
       "code_sha": null,
-      "review": null,
+      "review": "reviews/C31.md",
       "blocked_reason": null
     },
     {

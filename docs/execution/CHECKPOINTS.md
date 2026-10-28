@@ -39,7 +39,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C29 | Market-growth presentation for lump sum and SIP | B67 | accepted | 698ce790a18ae016564264c074689ed304370c30 | [approved](reviews/C29.md) |
 | C30R | Audit preservation and next-contract registration | B77; audit/registration | accepted | 7d0f1782b03f9f49de3491eaac1be2067c9222e2 | [approved; shared beta verified](reviews/C30R.md) |
 | C30 | Exact-term reconciliation and contribution accounting | B68 | accepted | 25af47ee5785c747155aad675ebade42d576e849 | [Approved; shared beta verified](reviews/C30.md) |
-| C31 | Design foundation and application shell | B70 | released | — | B68 accepted; pending implementation |
+| C31 | Design foundation and application shell | B70 | released | — | B68 accepted; local implementation/review complete, hosted release pending |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 

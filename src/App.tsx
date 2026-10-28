@@ -1,3 +1,5 @@
+import { flushSync } from 'react-dom';
+import { createRouteTransitionRunner } from './lib/routeTransitions';
 import { useResultReveal } from './lib/resultReveal';
 import { EstimateCustomization } from './components/EstimateCustomization';
 import { AccountUserButton, SignInIntent, SignOutControl, SignUpIntent } from './authRuntime';
@@ -1046,22 +1048,43 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
           )
         )}
       </section>
-
-      <footer className="landing-footer">
-        <a href="/" onClick={link('/')} aria-label="FinPath home">
-          <PiggyBank size={22} />
-          <strong>FinPath</strong>
-        </a>
-        <p>Free financial calculators for the US and India. Estimates, not advice.</p>
-        <nav className="landing-footer-links" aria-label="Footer">
-          <a href="/calculators" onClick={link('/calculators')}>All calculators</a>
-          <a href="/calculators/fire" onClick={link('/calculators/fire')}>FIRE calculator</a>
-          <a href="/calculators#toolkit-home" onClick={link('/calculators#toolkit-home')}>Mortgage &amp; home</a>
-          <a href="/calculators#toolkit-income-tax" onClick={link('/calculators#toolkit-income-tax')}>Income &amp; tax</a>
-          <a href="/#faq">FAQ</a>
-        </nav>
-      </footer>
     </>
+  );
+}
+
+function SiteFooter({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
+  // The router resolves these fixed public fragment targets after the lazy page mounts.
+  const link = (route: string) => (event: ReactMouseEvent<HTMLAnchorElement>) =>
+    handleNavigationAnchorClick(event, route as AppRoute, onNavigate);
+  return (
+    <footer className="site-footer">
+      <div className="site-footer-inner">
+        <div className="site-footer-intro">
+          <a className="site-footer-brand" href="/" onClick={link('/')} aria-label="FinPath home">
+            <PiggyBank size={28} /><strong>FinPath</strong>
+          </a>
+          <p>A clearer view of your money. Free financial calculators for the US and India.</p>
+        </div>
+        <nav className="site-footer-nav" aria-label="Footer">
+          <div className="site-footer-group">
+            <strong>Explore</strong>
+            <a href="/calculators" onClick={link('/calculators')}>All calculators</a>
+            <a href="/calculators/fire" onClick={link('/calculators/fire')}>FIRE calculator</a>
+          </div>
+          <div className="site-footer-group">
+            <strong>Work it out</strong>
+            <a href="/calculators#toolkit-home" onClick={link('/calculators#toolkit-home')}>Mortgage &amp; home</a>
+            <a href="/calculators#toolkit-income-tax" onClick={link('/calculators#toolkit-income-tax')}>Income &amp; tax</a>
+          </div>
+          <div className="site-footer-group">
+            <strong>Your next step</strong>
+            <a href="/#faq" onClick={link('/#faq')}>Common questions</a>
+            <a href="/dashboard" onClick={link('/dashboard')}>Your workspace</a>
+          </div>
+        </nav>
+      </div>
+      <p className="site-footer-note">Planning estimates, not financial advice. You can use every public calculator without an account.</p>
+    </footer>
   );
 }
 
@@ -1127,6 +1150,8 @@ function TopbarAuthActions({
 function App({ auth }: { auth: AuthState }) {
   const { resultRef, revealResult } = useResultReveal<HTMLDivElement>();
   const [route, setRoute] = useState<AppRoute>(readRoute);
+  const routeTransition = useMemo(createRouteTransitionRunner, []);
+  useEffect(() => () => routeTransition.cancel(), [routeTransition]);
   const mainRef = useRef<HTMLElement>(null);
   const previousRouteRef = useRef<AppRoute>(route);
 
@@ -1408,7 +1433,7 @@ function App({ auth }: { auth: AuthState }) {
     document.documentElement.style.colorScheme = mode;
     document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute(
       'content',
-      mode === 'dark' ? '#111715' : '#f4f7f7'
+      getComputedStyle(document.querySelector('.app')!).getPropertyValue('--color-nav-solid').trim()
     );
   }, [mode]);
 
@@ -1425,8 +1450,10 @@ function App({ auth }: { auth: AuthState }) {
         return;
       }
 
-      setRoute(nextRoute);
-      setIsMenuOpen(false);
+      routeTransition.run(() => flushSync(() => {
+        setRoute(nextRoute);
+        setIsMenuOpen(false);
+      }));
 
       if (nextRoute === '/plans') {
         const deepLink = parsePlanDeepLink(window.location.href);
@@ -1441,7 +1468,7 @@ function App({ auth }: { auth: AuthState }) {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [isPlanningWorkspaceDirty, loadPlanDeepLinkTarget, route]);
+  }, [isPlanningWorkspaceDirty, loadPlanDeepLinkTarget, route, routeTransition]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -3234,17 +3261,15 @@ function App({ auth }: { auth: AuthState }) {
       setIsPlanningWorkspaceDirty(false);
       setPendingNavigation(null);
 
-      if (typeof window !== 'undefined') {
-        window.history.pushState({}, '', nextRoute);
-        window.scrollTo({ top: 0, left: 0 });
-      }
-
+      // History changes synchronously; a skipped snapshot must not reorder browser back/forward.
+      if (typeof window !== 'undefined') window.history.pushState({}, '', nextRoute);
       const baseRoute = normalizeRoute(nextRoute.split(/[?#]/)[0]);
-      setRoute(baseRoute);
-      setIsMenuOpen(false);
-      // In-page anchors (for example /calculators#toolkit-home): scroll once the target exists.
-      const fragment = nextRoute.split('#')[1];
-      if (fragment && typeof window !== 'undefined') scrollToFragmentWhenReady(fragment);
+      routeTransition.run(() => {
+        flushSync(() => { setRoute(baseRoute); setIsMenuOpen(false); });
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        const fragment = nextRoute.split('#')[1];
+        if (fragment) scrollToFragmentWhenReady(fragment);
+      });
 
       if (baseRoute === '/plans') {
         const deepLink = parsePlanDeepLink(nextRoute);
@@ -3256,7 +3281,7 @@ function App({ auth }: { auth: AuthState }) {
         }
       }
     },
-    [loadPlanDeepLinkTarget]
+    [loadPlanDeepLinkTarget, routeTransition]
   );
 
   const navigateTo = (nextRoute: AppRoute | string) => {
@@ -3279,9 +3304,11 @@ function App({ auth }: { auth: AuthState }) {
         Skip to content
       </a>
       <header className="topbar">
+        <div className="shell-bar">
         <a
           href="/"
           className="brand"
+          aria-label="FinPath home"
           onClick={(event) => handleNavigationAnchorClick(event, '/', navigateTo)}
         >
           <PiggyBank size={26} />
@@ -3312,6 +3339,7 @@ function App({ auth }: { auth: AuthState }) {
           >
             {isMenuOpen ? <X size={19} /> : <Menu size={19} />}
           </button>
+        </div>
         </div>
       </header>
 
@@ -4655,6 +4683,8 @@ function App({ auth }: { auth: AuthState }) {
           </>
         )}
       </main>
+
+      <SiteFooter onNavigate={navigateTo} />
 
       {pendingNavigation ? (
         <div

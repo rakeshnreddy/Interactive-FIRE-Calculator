@@ -1,13 +1,15 @@
-/*
- * Canonical FinPath design tokens.
- *
- * This file is imported after the historical component stylesheet. New component
- * rules consume the semantic --color-* / --space-* / --radius-* roles below.
- * The short aliases are kept only as a migration bridge for existing selectors;
- * their values are defined here, not in the legacy phase layers.
- */
+/* Canonical token owner. app.css establishes the layer order; unchanged component
+   rules share one legacy layer so their former source order/specificity survives. */
+@layer tokens {
 .app {
   --color-canvas: #eef3fa;
+  --topbar-height: 80px;
+  --color-eyebrow: #075f52;
+  --color-shell-active-bg: #e2f1ed;
+  --color-footer-bg: #0f1a29;
+  --color-footer-text: #d8e4f0;
+  --color-footer-muted: #a9bfd2;
+  --color-footer-accent: #8de6d1;
   --color-surface: #ffffff;
   --color-surface-strong: #ffffff;
   --color-surface-inset: #f1f5fb;
@@ -17,7 +19,7 @@
   --color-muted: #465a6e; /* 5.6:1 on the light panel surface; the previous #55697c measured 4.44:1 */
   --color-muted-strong: #3b5063;
   --color-border: #d6dfeb;
-  --color-control-border: #7c8fa3;
+  --color-control-border: #6b8096;
   --color-primary-bg: #0b7c6c;
   --color-primary-hover-bg: #096a5c;
   --color-primary-pressed-bg: #07574c;
@@ -122,11 +124,16 @@
   --chart-secondary: var(--color-data-2);
   --chart-grid: rgba(70, 83, 79, 0.15);
   --page-glaze: rgba(255, 255, 255, 0.42);
-  background: var(--canvas);
 }
 
 .app[data-mode="dark"] {
   --color-canvas: #070d16;
+  --color-eyebrow: #5fe6c8;
+  --color-shell-active-bg: #173b3a;
+  --color-footer-bg: #0a1320;
+  --color-footer-text: #d8e4f0;
+  --color-footer-muted: #a9bfd2;
+  --color-footer-accent: #8de6d1;
   --color-surface: #0f1a29;
   --color-surface-strong: #132234;
   --color-surface-inset: #0a1320;
@@ -196,6 +203,97 @@
   --chart-grid: rgba(170, 183, 179, 0.15);
   --page-glaze: rgba(4, 7, 13, 0.38);
 }
+@media (max-width: 1040px) { .app { --topbar-height: 72px; } }
+@supports (color: oklch(0 0 0)) {
+.app {
+  --color-canvas: oklch(0.96238179 0.01080385 256.69515);
+  --color-eyebrow: oklch(0.43571349 0.07750670 178.87542);
+  --color-shell-active-bg: oklch(0.94585838 0.01672262 178.26748);
+  --color-footer-bg: oklch(0.21551769 0.03378650 256.37586);
+  --color-footer-text: oklch(0.91339305 0.02085899 248.05652);
+  --color-footer-muted: oklch(0.79413304 0.03621683 244.30004);
+  --color-footer-accent: oklch(0.86287230 0.09128067 177.26271);
+  --color-surface: oklch(0.99999999 0.00000004 0.00000);
+  --color-surface-strong: oklch(0.99999999 0.00000004 0.00000);
+  --color-surface-inset: oklch(0.96883762 0.00909282 258.33547);
+  --color-field-surface: oklch(0.97903127 0.00698470 268.54850);
+  --color-heading: oklch(0.23028419 0.03746121 251.18526);
+  --color-body: oklch(0.33210237 0.04106251 246.55619);
+  --color-muted: oklch(0.45909864 0.04096515 248.73534);
+  --color-muted-strong: oklch(0.42178529 0.04110855 246.26558);
+  --color-border: oklch(0.90037326 0.01909434 255.53948);
+  --color-control-border: oklch(0.59116058 0.04177261 249.74246);
+  --color-primary-bg: oklch(0.52621917 0.09358938 179.31681);
+  --color-primary-hover-bg: oklch(0.47066752 0.08349096 179.18954);
+  --color-primary-pressed-bg: oklch(0.41049205 0.07200380 180.10547);
+  --color-primary-fg: oklch(0.99999999 0.00000004 0.00000);
+  --color-focus: oklch(0.57459238 0.20590016 265.04775);
+  --color-success: oklch(0.56180949 0.12043894 160.09090);
+  --color-warning: oklch(0.52918499 0.11938038 64.31735);
+  --color-danger: oklch(0.55744244 0.17652129 10.83889);
+  --color-data-1: oklch(0.52621917 0.09358938 179.31681);
+  --color-data-2: oklch(0.57459238 0.20590016 265.04775);
+  --color-data-3: oklch(0.64127427 0.15529812 38.47862);
+  --color-data-4: oklch(0.52918499 0.11938038 64.31735);
+  --color-data-violet: oklch(0.58088515 0.17355147 288.78527);
+  --color-inverse-surface: oklch(0.21551769 0.03378650 256.37586);
+  --color-inverse-heading: oklch(0.99999999 0.00000004 0.00000);
+  --color-inverse-body: oklch(0.91339305 0.02085899 248.05652);
+  --color-nav-solid: oklch(0.99999999 0.00000004 0.00000);
+  --color-nav-text: oklch(0.23028419 0.03746121 251.18526);
+  --color-nav-fg: oklch(0.36979680 0.04431887 246.74200);
+  --color-nav-fg-strong: oklch(0.23028419 0.03746121 251.18526);
+  --color-nav-accent: oklch(0.43571349 0.07750670 178.87542);
+  --color-primary-ink: oklch(0.43571349 0.07750670 178.87542);
+}
+.app[data-mode="dark"] {
+  --color-canvas: oklch(0.15755407 0.02178864 257.24904);
+  --color-eyebrow: oklch(0.84225534 0.12596932 175.93748);
+  --color-shell-active-bg: oklch(0.32575350 0.04129277 192.86766);
+  --color-footer-bg: oklch(0.18527742 0.03004780 257.54682);
+  --color-footer-text: oklch(0.91339305 0.02085899 248.05652);
+  --color-footer-muted: oklch(0.79413304 0.03621683 244.30004);
+  --color-footer-accent: oklch(0.86287230 0.09128067 177.26271);
+  --color-surface: oklch(0.21551769 0.03378650 256.37586);
+  --color-surface-strong: oklch(0.24810424 0.04019091 253.73519);
+  --color-surface-inset: oklch(0.18527742 0.03004780 257.54682);
+  --color-field-surface: oklch(0.19400330 0.03215976 256.92860);
+  --color-heading: oklch(0.96660343 0.01098111 243.65196);
+  --color-body: oklch(0.90395360 0.01985341 245.65521);
+  --color-muted: oklch(0.75692973 0.03303790 243.83565);
+  --color-muted-strong: oklch(0.85636667 0.02434977 244.17635);
+  --color-border: oklch(0.34300296 0.04961243 253.59990);
+  --color-control-border: oklch(0.55744526 0.04882139 251.79713);
+  --color-primary-bg: oklch(0.84225534 0.12596932 175.93748);
+  --color-primary-hover-bg: oklch(0.87747046 0.11172483 177.56956);
+  --color-primary-pressed-bg: oklch(0.77284855 0.12578677 174.67038);
+  --color-primary-fg: oklch(0.17947960 0.02666512 239.54861);
+  --color-focus: oklch(0.77846313 0.11235553 261.75436);
+  --color-success: oklch(0.83458921 0.11301024 162.51188);
+  --color-warning: oklch(0.84553767 0.11693384 80.41081);
+  --color-danger: oklch(0.78871600 0.12795797 6.32250);
+  --color-data-1: oklch(0.84225534 0.12596932 175.93748);
+  --color-data-2: oklch(0.77846313 0.11235553 261.75436);
+  --color-data-3: oklch(0.78503965 0.12954443 39.97844);
+  --color-data-4: oklch(0.84553767 0.11693384 80.41081);
+  --color-data-violet: oklch(0.80023036 0.11139948 293.60037);
+  --color-nav-solid: oklch(0.18903144 0.02809611 255.88569);
+  --color-nav-text: oklch(0.96660343 0.01098111 243.65196);
+  --color-nav-fg-strong: oklch(0.99999999 0.00000004 0.00000);
+  --color-nav-accent: oklch(0.84225534 0.12596932 175.93748);
+  --color-primary-ink: oklch(0.84225534 0.12596932 175.93748);
+}
+}
+}
+@layer legacy {
+/*
+ * Canonical FinPath design tokens.
+ *
+ * This file is imported after the historical component stylesheet. New component
+ * rules consume the semantic --color-* / --space-* / --radius-* roles below.
+ * The short aliases are kept only as a migration bridge for existing selectors;
+ * their values are defined here, not in the legacy phase layers.
+ */
 
 /* Shared control primitives: 44px targets, native semantics, and one focus role. */
 .app.app button {
@@ -208,7 +306,7 @@
   min-height: auto;
 }
 
-.app :where(.primary-button, .secondary-button, .nav-button, .icon-button, .topbar-link) {
+.app :where(.primary-button, .secondary-button, .nav-button, .icon-button) {
   border-radius: var(--radius-control);
 }
 
@@ -296,132 +394,6 @@ body,
 }
 
 /* Base navigation and overlays: solid default with glass progressive enhancement */
-.topbar {
-  min-height: 64px;
-  padding-block: 0.55rem;
-  border-color: var(--color-nav-border);
-  background: var(--color-nav-solid);
-  box-shadow: 0 8px 28px rgba(10, 24, 40, 0.1);
-}
-
-.desktop-nav-dropdown,
-.mobile-nav {
-  background: var(--color-surface-strong);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-overlay);
-}
-
-@supports (backdrop-filter: blur(14px)) or (-webkit-backdrop-filter: blur(14px)) {
-  .topbar {
-    background: var(--color-nav-surface);
-    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    box-shadow: inset 0 -1px 0 var(--color-nav-border), 0 8px 28px rgba(10, 24, 40, 0.08);
-  }
-
-  .desktop-nav-dropdown {
-    background: var(--glass);
-    border: 1px solid var(--glass-edge);
-    backdrop-filter: blur(14px) saturate(115%);
-    -webkit-backdrop-filter: blur(14px) saturate(115%);
-  }
-
-  .mobile-nav {
-    background: var(--glass);
-    border: 1px solid var(--glass-edge);
-    backdrop-filter: blur(14px) saturate(115%);
-    -webkit-backdrop-filter: blur(14px) saturate(115%);
-  }
-}
-
-.brand,
-.topbar .nav-button,
-.topbar .topbar-link,
-.topbar .icon-button {
-  color: var(--color-nav-fg);
-}
-
-.topbar .topbar-link {
-  border-color: var(--color-nav-border);
-  color: var(--color-nav-text);
-  background: transparent;
-}
-
-.brand {
-  color: var(--color-nav-fg-strong);
-}
-
-.brand svg {
-  color: var(--color-nav-accent);
-}
-
-:where(.topbar, .mobile-nav) .nav-button {
-  gap: 0.42rem;
-  min-height: var(--control-hit-size);
-  padding-inline: 0.7rem;
-  border-radius: var(--radius-control);
-  border-color: transparent;
-  background: transparent;
-}
-
-.topbar .nav-button:hover,
-.topbar .nav-button.active,
-.topbar .topbar-link:hover,
-.topbar .icon-button:hover {
-  color: var(--color-nav-fg-strong);
-  border-color: var(--color-nav-border);
-  background: var(--color-nav-hover-bg);
-}
-
-.topbar .topbar-link:focus-visible {
-  outline-color: var(--color-focus);
-  box-shadow: 0 0 0 2px var(--color-nav-solid);
-}
-
-.topbar .topbar-link:active {
-  color: var(--color-nav-fg-strong);
-  border-color: var(--color-nav-border);
-  background: var(--color-nav-hover-bg);
-}
-
-.topbar .topbar-link:disabled {
-  color: var(--color-nav-fg);
-  border-color: var(--color-nav-border);
-  background: transparent;
-  opacity: 0.7;
-}
-
-.topbar .nav-button.active {
-  color: var(--color-nav-accent);
-  background: var(--accent-soft);
-}
-
-.topbar .topbar-primary {
-  color: var(--color-primary-fg);
-  border-color: transparent;
-  background: var(--color-primary-bg);
-  background-image: var(--action-gradient);
-}
-
-.topbar .topbar-primary:hover {
-  color: var(--color-primary-fg);
-  border-color: transparent;
-  background: var(--color-primary-hover-bg);
-  background-image: var(--action-gradient-hover);
-}
-
-.topbar .topbar-primary:active {
-  color: var(--color-primary-fg);
-  border-color: transparent;
-  background: var(--color-primary-pressed-bg);
-  background-image: var(--action-gradient-pressed);
-}
-
-.topbar .topbar-primary:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--color-nav-solid);
-}
 
 /* Landing hero: theme-aware atmosphere, scrim, media and foreground copy */
 .landing-hero {
@@ -1173,11 +1145,6 @@ body {
   border-radius: 999px;
 }
 
-.app :where(.desktop-nav-dropdown, .mobile-nav) {
-  border-radius: 16px;
-  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
-}
-
 .app .eyebrow {
   background: var(--text-gradient);
   -webkit-background-clip: text;
@@ -1229,41 +1196,11 @@ body {
   }
 }
 
-@media (prefers-reduced-transparency: reduce) {
-  .topbar,
-  .mobile-nav,
-  .desktop-nav-dropdown {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  .topbar {
-    background: var(--color-nav-solid) !important;
-  }
-
-  .mobile-nav,
-  .desktop-nav-dropdown {
-    background: var(--color-surface-strong) !important;
-    border-color: var(--color-control-border) !important;
-  }
-}
-
 @media (forced-colors: active) {
-  .topbar,
-  .mobile-nav,
-  .desktop-nav-dropdown,
   .landing-hero,
-  .app .primary-button {
+.app .primary-button {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-  }
-
-  .topbar,
-  .mobile-nav,
-  .desktop-nav-dropdown {
-    background: Canvas !important;
-    color: CanvasText !important;
-    border: 1px solid CanvasText !important;
   }
 
   .app .primary-button {
@@ -1290,7 +1227,6 @@ body {
     margin-top: 1.5rem;
   }
 
-  .topbar,
   .skip-link {
     display: none !important;
   }
@@ -1339,46 +1275,13 @@ body {
   }
 
   /* Non-essential navigation overlays */
-  .mobile-nav,
-  .desktop-nav-dropdown {
-    display: none !important;
-  }
 
   /* Header: pair every retained element with readable foreground/background */
-  .topbar {
-    background: #ffffff !important;
-    color: #000000 !important;
-    border-bottom: 1px solid #d0d7de !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: none !important;
-  }
-
-  .topbar :where(a, button, span, strong, svg, div) {
-    color: #000000 !important;
-    background: transparent !important;
-    border-color: #000000 !important;
-    box-shadow: none !important;
-  }
 
   .topbar-brand,
-  .topbar-brand svg,
-  .brand,
-  .brand svg {
+.topbar-brand svg {
     color: #000000 !important;
     fill: #000000 !important;
-  }
-
-  .topbar .nav-button,
-  .topbar .nav-link {
-    color: #000000 !important;
-    background: transparent !important;
-  }
-
-  .topbar .topbar-primary {
-    background: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #000000 !important;
   }
 
   /* Landing hero */
@@ -1508,7 +1411,6 @@ body {
   }
 
   /* Landing and general site footer */
-  .landing-footer,
   .site-footer {
     background: #ffffff !important;
     background-color: #ffffff !important;
@@ -1516,7 +1418,6 @@ body {
     border-top: 1px solid #d0d7de !important;
   }
 
-  .landing-footer :where(p, span, strong, a, svg),
   .site-footer :where(p, span, strong, a, svg) {
     color: #000000 !important;
   }
@@ -1697,24 +1598,6 @@ body {
   line-height: 1.6;
 }
 
-.landing-footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.25rem;
-}
-
-.landing-footer-links a {
-  color: var(--color-heading);
-  font-weight: 650;
-  font-size: 0.9rem;
-  text-decoration: none;
-}
-
-.landing-footer-links a:hover {
-  color: var(--color-primary-bg);
-  text-decoration: underline;
-}
-
 @media (max-width: 980px) {
   .landing-toolkit-grid,
   .landing-trust-grid {
@@ -1758,11 +1641,6 @@ body {
   box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
 }
 
-.app .landing-footer {
-  width: min(1200px, calc(100% - 3rem));
-  margin-inline: auto;
-}
-
 /* B31 sweep fixes: text on soft tints uses the ink token (measured 3.8-4.2:1 with the primary) */
 .app .pill,
 .app .calculator-toolkit-backlink,
@@ -1781,7 +1659,6 @@ body {
 }
 
 .app .breadcrumbs button,
-.app .landing-footer-links a,
 .app .calculator-toolkit-backlink {
   display: inline-flex;
   align-items: center;
@@ -1828,26 +1705,6 @@ body {
 }
 
 /* Footer: below desktop the link list takes its own row so the tagline keeps its width. */
-@media (max-width: 1024px) {
-  .app .landing-footer {
-    grid-template-columns: auto minmax(0, 1fr);
-    row-gap: 1.25rem;
-  }
-
-  .app .landing-footer p {
-    text-align: left;
-  }
-
-  .app .landing-footer-links {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 560px) {
-  .app .landing-footer {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* Calculator library: region filter, badges, variant chips */
 .calculator-region-filter {
@@ -2149,3 +2006,6 @@ body {
 .return-method-notice > strong { color: var(--color-heading); }
 .return-method-notice p { margin: var(--space-2) 0 0; }
 .return-method-notice a { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; color: var(--color-heading); font-weight: 600; text-decoration: underline; text-underline-offset: 0.2em; }
+
+.app { background: var(--color-canvas); }
+}
