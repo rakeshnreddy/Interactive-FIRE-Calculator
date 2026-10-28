@@ -11,7 +11,7 @@ export default {
     const anonymousErrors = attachConsole(anonymous.page);
     const check = (condition, message) => { if (!condition) throw new helpers.SmokeError(message); };
     await stage('signed-in-shell', async () => {
-      const cases = [];
+      const cases = [], focus = [];
       for (const width of [1440, 1041, 768, 390, 320]) for (const theme of ['light', 'dark']) {
         await signed.setViewportSize({ width, height: 900 });
         await gotoTheme(signed, `${config.url}/dashboard`, theme);
@@ -26,6 +26,7 @@ export default {
           const routes = await signed.locator('.desktop-nav-dropdown a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
           check(['/accounts', '/plans', '/reports', '/settings'].every(route => routes.includes(route)), 'Workspace destination lost');
           await signed.keyboard.press('Escape');
+          await signed.waitForFunction(() => document.activeElement === document.querySelector('.desktop-nav button[aria-expanded="false"]') && !document.querySelector('.desktop-nav-dropdown'));
           check(await workspace.evaluate(node => node === document.activeElement), 'Desktop Escape lost trigger focus');
         } else {
           const menu = signed.getByRole('button', { name: 'Open navigation', exact: true });
@@ -33,14 +34,18 @@ export default {
           await signed.locator('.mobile-nav summary').click();
           await signed.locator('.mobile-nav a[href="/plans"]').waitFor({ state: 'visible' });
           await signed.keyboard.press('Escape');
+          const immediateFocus = await menu.evaluate(node => node === document.activeElement);
+          // The app deliberately restores focus on the next animation frame.
+          await signed.waitForFunction(() => document.activeElement === document.querySelector('[aria-controls="mobile-primary-navigation"]') && !document.querySelector('.mobile-nav'));
           check(await menu.evaluate(node => node === document.activeElement), 'Mobile Escape lost trigger focus');
+          focus.push({ width, theme, immediate: immediateFocus, settled: true });
         }
         const geometry = await signed.locator('.topbar').evaluate(node => ({ height: node.getBoundingClientRect().height, width: node.scrollWidth, viewport: innerWidth }));
         check(geometry.width <= width + 1, `Header overflow ${JSON.stringify(geometry)}`);
         cases.push({ width, theme, geometry, problems: layoutProblems(layout) });
       }
       check(!signedErrors.length, `Signed-in errors: ${JSON.stringify(signedErrors)}`);
-      return { cases, errors: signedErrors };
+      return { cases, focus, errors: signedErrors };
     });
     await stage('anonymous-account-gates', async () => {
       const cases = [];

@@ -1,7 +1,7 @@
 {
   "date": "2026-10-28",
   "baseline": "7a61d88126b5c8e36bf1ece5fb02da936c70614c",
-  "status": "local verified; hosted release pending",
+  "status": "Initial-product local evidence; hosted CLS finding requires reviewed main-height correction and replacement candidate. See C31 review.",
   "full_suite": {
     "node_checks": 30,
     "vitest_files": 109,
@@ -85,5 +85,6 @@
       "sha256": "fc42f87c8a19c74250d9e53b9d9aa4564c1eb92d460474816d0384a320f81f39"
     }
   ],
-  "fire_unchanged": true
+  "fire_unchanged": true,
+  "source_product_sha": "a581dff22aa9f1ee6a834175ecc781122e11f2bd"
 }
