@@ -23,6 +23,7 @@ import {
   type CalculatorSavePayload
 } from '../functions/_lib/calculatorResults';
 import * as sessionModule from '../functions/_lib/session';
+import { toSavedCalculatorResult } from './lib/api/calculatorResults';
 import { onRequestPost } from '../functions/api/calculator-results/index';
 
 const validPayload = {
@@ -1007,17 +1008,47 @@ describe('B04: atomic, retry-safe calculator save with real SQLite D1 harness', 
   });
 
 describe('versioned interpretation persistence', () => {
-  it.each(['payback-v2','catch-up-v2'] as const)('retains %s in stored JSON, retries and tenant-scoped reads', async modelVersion => {
+  it.each([
+    { calculatorSlug: 'mortgage-refinance', modelVersion: 'payback-v2' },
+    { calculatorSlug: 'social-security-break-even', modelVersion: 'catch-up-v2' },
+    { calculatorSlug: 'savings-goal', modelVersion: 'savings-goal-monthly-v1' },
+    { calculatorSlug: 'sip-goal', modelVersion: 'savings-goal-monthly-v1' },
+    { calculatorSlug: 'retirement', modelVersion: 'retirement-exact-term-v1' }
+  ] as const)('retains $calculatorSlug $modelVersion beside an unchanged legacy snapshot', async ({ calculatorSlug, modelVersion }) => {
     const { database, sqlite } = createRealD1();
-    const payload: CalculatorSavePayload = { ...validPayload, calculatorSlug: modelVersion === 'payback-v2' ? 'mortgage-refinance' : 'social-security-break-even', conversionRoute: '/plans', idempotencyKey: 'synthetic-versioned', result: {...validPayload.result, modelVersion} };
+    const legacyPayload: CalculatorSavePayload = {
+      ...validPayload,
+      calculatorSlug,
+      conversionRoute: '/plans',
+      idempotencyKey: 'synthetic-legacy',
+      result: { assumptions: ['Original stored assumption.'], metrics: [{ label: 'Original stored headline', value: 123.45, valueType: 'currency' }], narrative: 'Original stored explanation.' }
+    };
+    const legacy = await createSavedCalculatorResult(database, 'synthetic-version-A', legacyPayload);
+    const legacyJson = (sqlite.prepare('SELECT result_json FROM saved_calculator_results WHERE id = ?').get(legacy.savedResult.id) as { result_json: string }).result_json;
+    const parsed = parseCalculatorSavePayload({ ...legacyPayload, idempotencyKey: 'synthetic-versioned', result: { ...validPayload.result, modelVersion } });
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) throw new Error(parsed.error);
+    const payload = parsed.value;
     const first = await createSavedCalculatorResult(database, 'synthetic-version-A', payload);
     expect(first.savedResult.result.modelVersion).toBe(modelVersion);
-    const retry = await createSavedCalculatorResult(database,'synthetic-version-A',payload);
-    expect(retry.saveStatus).toBe('retry');expect(retry.savedResult.id).toBe(first.savedResult.id);
-    expect((await listSavedCalculatorResults(database,'synthetic-version-A'))[0].result.modelVersion).toBe(modelVersion);
-    expect(await listSavedCalculatorResults(database,'synthetic-version-B')).toEqual([]);
-    const row = sqlite.prepare('SELECT result_json FROM saved_calculator_results WHERE id = ?').get(first.savedResult.id) as {result_json:string};
+    const retry = await createSavedCalculatorResult(database, 'synthetic-version-A', payload);
+    expect(retry.saveStatus).toBe('retry');
+    expect(retry.savedResult.id).toBe(first.savedResult.id);
+
+    const history = await listSavedCalculatorResults(database, 'synthetic-version-A');
+    expect(history).toHaveLength(2);
+    const oldRead = history.find(saved => saved.id === legacy.savedResult.id)!;
+    const newRead = history.find(saved => saved.id === first.savedResult.id)!;
+    expect(oldRead.result).toEqual(legacyPayload.result);
+    expect(oldRead.result).not.toHaveProperty('modelVersion');
+    expect(newRead.result).toEqual(payload.result);
+    expect(toSavedCalculatorResult(oldRead)?.result).toEqual(legacyPayload.result);
+    expect(toSavedCalculatorResult(newRead)?.result).toEqual(payload.result);
+    expect(await listSavedCalculatorResults(database, 'synthetic-version-B')).toEqual([]);
+    const row = sqlite.prepare('SELECT result_json FROM saved_calculator_results WHERE id = ?').get(first.savedResult.id) as { result_json: string };
     expect(JSON.parse(row.result_json).modelVersion).toBe(modelVersion);
+    expect((sqlite.prepare('SELECT result_json FROM saved_calculator_results WHERE id = ?').get(legacy.savedResult.id) as { result_json: string }).result_json).toBe(legacyJson);
+    expect(JSON.parse(legacyJson)).toEqual(legacyPayload.result);
   });
 });
 

@@ -491,7 +491,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['personal-loan', 'Personal Loan Calculator', 'loan', [money('principal', 'Personal loan amount', 15000), percent('rate', 'Interest rate', 11), number('years', 'Term', 4, 'yrs'), ...additionalPaymentInputs]],
     ['student-loan-payoff', 'Student Loan Payoff Calculator', 'debt-payoff', [money('balance', 'Student loan balance', 45000), percent('rate', 'Interest rate', 6), money('payment', 'Required monthly payment', 600), ...additionalPaymentInputs]],
     ['401k', '401(k) Calculator', 'compound', [money('principal', 'Current 401(k)', 50000), money('monthly', 'Monthly contribution', 900), annualTopUpInput, ...termInputs]],
-    ['roth-vs-traditional-ira', 'Roth vs Traditional IRA Calculator', 'roth-traditional', [money('income', 'Annual IRA contribution', 7000), percent('currentTaxRate', 'Current marginal tax rate', 22), percent('futureTaxRate', 'Retirement tax rate', 22), percent('rate', 'Annual return', 7), number('years', 'Years to retirement', 25, 'yrs')]],
+    ['roth-vs-traditional-ira', 'Roth vs Traditional IRA Calculator', 'roth-traditional', [money('income', 'One-time pre-tax contribution', 7000, 'A single contribution today, with the same pre-tax budget for each option; no recurring deposits.'), percent('currentTaxRate', 'Current marginal tax rate', 22), percent('futureTaxRate', 'Retirement tax rate', 22), percent('rate', 'Annual return', 7), number('years', 'Years to retirement', 25, 'yrs')]],
     ['paycheck', 'Paycheck Calculator', 'paycheck', [money('income', 'Gross pay per period', 5000), percent('effectiveRate', 'Estimated withholding rate', 22), number('periods', 'Pay periods per year', 26), money('preTaxDeductions', 'Pre-tax deductions per period', 250), money('postTaxDeductions', 'Post-tax deductions per period', 75)]],
     ['income-tax-us', 'US Federal Income Tax Estimator', 'us-tax', [money('income', 'Annual gross income', 120000), money('deductions', 'Extra deductions beyond standard deduction', 0), percent('stateRate', 'State and local tax rate', 4)]],
     ['social-security-break-even', 'Social Security Break-even Calculator', 'social-security', [money('early', 'Early monthly benefit', 1800), money('full', 'Full monthly benefit', 2600), number('delayYears', 'Years delayed', 5, 'yrs')]],
@@ -603,16 +603,16 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'savings-goal': {
-      const futureCurrent = get('current') * (1 + rate) ** years;
+      const futureCurrent = get('current') * (1 + monthlyRate) ** months;
       const shortfall = Math.max(0, get('target') - futureCurrent);
       const monthlyNeeded = monthlyRate === 0 ? shortfall / months : shortfall / fvFactor;
-      return result('Monthly savings needed', monthlyNeeded, 'Estimated monthly contribution required to reach the target.', [
-        'Existing savings are compounded at the assumed annual rate.',
+      return { ...result('Monthly savings needed', monthlyNeeded, 'Estimated monthly contribution required to reach the target.', [
+        'Existing savings and contributions compound monthly at the annual nominal rate divided by 12.',
         'Monthly savings are added at month end.'
       ], [
         metric('Future current savings', futureCurrent, 'currency'),
         metric('Remaining target', shortfall, 'currency')
-      ]);
+      ]), modelVersion: 'savings-goal-monthly-v1' };
     }
     case 'net-worth':
       return result('Estimated net worth', get('assets') - get('liabilities'), 'Assets minus liabilities.', [], [
@@ -633,20 +633,20 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     case 'retirement': {
       const savingYears = Math.max(0, get('retirementAge') - get('currentAge'));
-      const savingMonths = Math.max(1, savingYears * 12);
+      const savingMonths = Math.max(0, Math.round(savingYears * 12));
       const savingRate = get('rate') / 100 / 12;
       const contributionProjection = projectRecurringBalance(0, get('monthly'), get('annualTopUp'), savingRate, savingMonths);
       const projected = get('currentSavings') * (1 + get('rate') / 100) ** savingYears
         + contributionProjection.balance;
       const needed = get('withdrawalRate') > 0 ? get('annualIncome') / (get('withdrawalRate') / 100) : 0;
-      return result('Projected retirement savings', projected, 'Projected savings compared with the portfolio implied by desired annual income.', [
+      return { ...result('Projected retirement savings', projected, 'Projected savings compared with the portfolio implied by desired annual income.', [
         'Withdrawal need uses the provided withdrawal rate.',
-        'Contributions are assumed monthly.',
+        'Existing savings compound annually over the exact term; contributions compound monthly over the nearest whole number of months.',
         get('annualTopUp') > 0 ? 'A separate contribution is added at each year end.' : 'No additional yearly contribution is applied.'
       ], [
         metric('Estimated need', needed, 'currency'),
         metric('Gap / surplus', projected - needed, 'currency', projected >= needed ? 'positive' : 'warning')
-      ]);
+      ]), modelVersion: 'retirement-exact-term-v1' };
     }
     case 'debt-payoff': {
       const baseline = payoffDebt(get('balance'), get('rate') / 100, get('payment'));
@@ -1012,7 +1012,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'swp': {
       const runway = withdrawalRunway(get('corpus'), get('rate') / 100, get('withdrawal'));
       return result('Estimated withdrawal runway', runway.months / 12, 'Estimated years the corpus may support the monthly withdrawal.', [
-        'This is a simplified drawdown estimate.',
+        'This is a simplified drawdown estimate. Months covered includes a partial final month if the corpus cannot fund a full withdrawal.',
         'Market sequence risk is not modeled.'
       ], [
         metric('Months covered', runway.months, 'number'),
@@ -1484,7 +1484,7 @@ function presentValueFromPayment(payment: number, annualRate: number, years: num
     : payment * (1 - (1 + monthlyRate) ** -months) / monthlyRate;
 }
 
-function remainingLoanBalance(principal: number, annualRate: number, years: number, elapsedMonths: number): number {
+export function remainingLoanBalance(principal: number, annualRate: number, years: number, elapsedMonths: number): number {
   const payment = loanPayment(principal, annualRate, years);
   const monthlyRate = annualRate / 12;
   let balance = Math.max(0, principal);

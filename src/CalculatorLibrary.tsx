@@ -1,3 +1,4 @@
+import { formatStoredCurrency } from './lib/format';
 import { ReturnMethodNotice } from './components/ReturnMethodNotice';
 import { VehicleCalculator } from './VehicleCalculator';
 import type { DatedReturnInputModel } from './lib/datedReturns';
@@ -83,7 +84,6 @@ import {
   type CalculatorResult,
   type SeoCalculator
 } from './lib/seoCalculators';
-import { resolveMoneyLocale } from './lib/money';
 
 
 type RegionFilter = 'all' | 'US' | 'India';
@@ -1890,11 +1890,7 @@ export function formatChartValue(
   const effectiveCurrency = currency ?? calculatorCurrency(calculator);
 
   if (effectiveType === 'currency') {
-    return new Intl.NumberFormat(resolveMoneyLocale(effectiveCurrency), {
-      currency: effectiveCurrency,
-      maximumFractionDigits: 0,
-      style: 'currency'
-    }).format(value);
+    return formatStoredCurrency(value, effectiveCurrency);
   }
 
   if (effectiveType === 'percent') {
@@ -1910,11 +1906,7 @@ export function formatChartValue(
 
 function formatMetric(metric: CalculatorMetric, calculator: SeoCalculator): string {
   if (metric.valueType === 'currency') {
-    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
-      currency: calculatorCurrency(calculator),
-      maximumFractionDigits: 0,
-      style: 'currency'
-    }).format(metric.value);
+    return formatStoredCurrency(metric.value, calculatorCurrency(calculator));
   }
 
   if (metric.valueType === 'percent') {
@@ -1948,11 +1940,7 @@ function formatScheduleCell(
   }
 
   if (valueType === 'currency') {
-    return new Intl.NumberFormat(resolveMoneyLocale(calculatorCurrency(calculator)), {
-      currency: calculatorCurrency(calculator),
-      maximumFractionDigits: 0,
-      style: 'currency'
-    }).format(numericValue);
+    return formatStoredCurrency(numericValue, calculatorCurrency(calculator));
   }
 
   if (valueType === 'percent') {

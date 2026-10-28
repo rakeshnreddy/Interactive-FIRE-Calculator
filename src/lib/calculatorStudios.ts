@@ -6,6 +6,7 @@ import {
   calculatorCurrency,
   calculatorPath,
   LOAN_RESIDUAL_TOLERANCE,
+  remainingLoanBalance,
   seoCalculators,
   termMonths,
   type CalculatorInput,
@@ -1283,12 +1284,11 @@ function fhaConventionalComparisonSchedule(_calculator: SeoCalculator, values: R
 
 function flatRateComparisonSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
-  const years = scheduleYears(values.years ?? 0);
+  const years = Math.max(0, values.years ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const months = Math.max(1, years * 12);
+  const months = termMonths(years);
   const flatMonthly = (principal + principal * rate * years) / months;
   const reducingPayment = loanPayment(principal, rate, years);
-  const reducingRows = amortizationRows(principal, rate, years, reducingPayment);
 
   return {
     columns: [
@@ -1299,37 +1299,34 @@ function flatRateComparisonSchedule(_calculator: SeoCalculator, values: Record<s
       moneyColumn('extraCostToDate', 'Flat extra cost')
     ],
     description: 'Annual comparison of flat-rate payments versus a reducing-balance loan using the same nominal rate.',
-    rows: Array.from({ length: years }, (_, index) => {
-      const year = index + 1;
-      const yearRows = reducingRows.slice(0, year * 12);
-      const last = yearRows.at(-1);
-      const reducingPaid = reducingPayment * Math.min(year * 12, reducingRows.length);
-      const flatPaid = flatMonthly * Math.min(year * 12, months);
+    rows: monthlyTermPeriods(years).map(({ year, endMonth, months: periodMonths }) => {
+      const remaining = remainingLoanBalance(principal, rate, years, endMonth);
+      const reducingPaid = reducingPayment * endMonth;
+      const flatPaid = flatMonthly * Math.min(endMonth, months);
 
       return {
         id: `flat-year-${year}`,
+        note: monthlyPeriodNote(periodMonths),
         values: {
           extraCostToDate: flatPaid - reducingPaid,
           flatPaid,
-          reducingBalance: Number(last?.values.endingBalance) || 0,
+          reducingBalance: remaining < LOAN_RESIDUAL_TOLERANCE ? 0 : remaining,
           reducingPaid,
           year
         }
       };
     }),
-    summary: 'Flat-rate quotes can be misleading; this table shows the payment cost beside reducing-balance math.',
+    summary: scheduleCapSummary(years, 'Flat-rate quotes can be misleading; this table shows the payment cost beside reducing-balance math. Loan terms use the nearest whole month.'),
     title: 'Flat versus reducing-balance schedule'
   };
 }
 
 function interestOnlySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
-  const years = scheduleYears(values.years ?? 0);
+  const years = Math.max(0, values.years ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const interestOnlyPayment = principal * rate / 12;
   const amortizingPayment = loanPayment(principal, rate, years);
-  let amortizingBalance = principal;
-  const monthlyRate = rate / 12;
 
   return {
     columns: [
@@ -1340,23 +1337,23 @@ function interestOnlySchedule(_calculator: SeoCalculator, values: Record<string,
       moneyColumn('paymentGap', 'Monthly payment gap')
     ],
     description: 'Annual view of interest-only payments compared with the balance path of a normal amortizing loan.',
-    rows: Array.from({ length: years }, (_, index) => {
-      for (let month = 1; month <= 12; month += 1) {
-        amortizingBalance = Math.max(0, amortizingBalance + amortizingBalance * monthlyRate - amortizingPayment);
-      }
+    rows: monthlyTermPeriods(years).map(({ year, endMonth, months }) => {
+      const remaining = remainingLoanBalance(principal, rate, years, endMonth);
+      const amortizingBalance = remaining < LOAN_RESIDUAL_TOLERANCE ? 0 : remaining;
 
       return {
-        id: `io-year-${index + 1}`,
+        id: `io-year-${year}`,
+        note: monthlyPeriodNote(months),
         values: {
           amortizingBalance,
-          interestOnlyPaid: interestOnlyPayment * 12,
+          interestOnlyPaid: interestOnlyPayment * months,
           paymentGap: amortizingPayment - interestOnlyPayment,
           principalStillOwed: principal,
-          year: index + 1
+          year
         }
       };
     }),
-    summary: 'The table makes the tradeoff explicit: lower current payment, but principal remains unless separate payments are made.',
+    summary: scheduleCapSummary(years, 'Lower current payment leaves principal owed unless separate payments are made. Loan terms use the nearest whole month.'),
     title: 'Interest-only comparison schedule'
   };
 }
@@ -1780,16 +1777,15 @@ function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<
 }
 
 function rentBuySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
-  const years = scheduleYears(values.years ?? 0);
+  const years = Math.max(1, values.years ?? 0);
   const rent = Math.max(0, values.rent ?? 0);
   const homePrice = Math.max(0, values.homePrice ?? 0);
   const downPayment = Math.max(0, values.downPayment ?? 0);
   const principal = Math.max(0, homePrice - downPayment);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const loanYears = Math.max(1, values.loanYears ?? years);
+  const loanYears = Math.max(1, values.loanYears || years);
   const ownershipMonthly = homePrice * Math.max(0, values.ownershipRate ?? 0) / 100 / 12;
   const payment = loanPayment(principal, rate, loanYears);
-  const rows = amortizationRows(principal, rate, loanYears, payment);
 
   return {
     columns: [
@@ -1800,18 +1796,17 @@ function rentBuySchedule(_calculator: SeoCalculator, values: Record<string, numb
       moneyColumn('netDifference', 'Buying minus renting')
     ],
     description: 'Cumulative view over the years you would stay: rent paid, cost of owning, equity built by paying down the loan, and the running difference.',
-    rows: Array.from({ length: years }, (_, index) => {
-      const year = index + 1;
-      const loanMonthsSoFar = Math.min(year * 12, rows.length);
-      const last = rows[loanMonthsSoFar - 1];
-      const balance = loanMonthsSoFar > 0 ? Number(last?.values.endingBalance) || 0 : principal;
+    rows: monthlyTermPeriods(years).map(({ year, endMonth, months }) => {
+      const loanMonthsSoFar = Math.min(endMonth, termMonths(loanYears));
+      const balance = remainingLoanBalance(principal, rate, loanYears, loanMonthsSoFar);
       const ownerEquity = Math.max(0, principal - balance);
       // Loan payments stop at payoff; ownership costs continue every month of the stay.
-      const buyPayments = payment * loanMonthsSoFar + ownershipMonthly * year * 12;
-      const rentPaid = rent * 12 * year;
+      const buyPayments = payment * loanMonthsSoFar + ownershipMonthly * endMonth;
+      const rentPaid = rent * endMonth;
 
       return {
         id: `rent-buy-year-${year}`,
+        note: monthlyPeriodNote(months),
         values: {
           buyPayments,
           netDifference: buyPayments - ownerEquity - rentPaid,
@@ -1821,7 +1816,7 @@ function rentBuySchedule(_calculator: SeoCalculator, values: Record<string, numb
         }
       };
     }),
-    summary: 'This keeps the comparison grounded in cash paid and equity built; taxes, appreciation, maintenance, and selling costs remain future comprehensive inputs.',
+    summary: scheduleCapSummary(years, 'Stay and loan terms use the nearest whole month, with a minimum one-year stay. This compares cash paid and loan equity; appreciation, taxes and selling costs are excluded.'),
     title: 'Rent versus buy annual table'
   };
 }
@@ -2143,8 +2138,8 @@ function savingsGoalSchedule(
   const target = Math.max(0, values.target ?? 0);
   const monthlyNeeded = Math.max(0, result.metrics[0]?.value ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const years = scheduleYears(values.years ?? 0);
-  const months = Math.max(1, Math.round(years * 12));
+  const years = Math.max(0, values.years ?? 0);
+  const months = Math.min(maxScheduleYears * 12, termMonths(years));
   const monthlyRate = rate / 12;
   let balance = Math.max(0, values.current ?? 0);
   let annualDeposits = 0;
@@ -2158,9 +2153,10 @@ function savingsGoalSchedule(
     annualDeposits += monthlyNeeded;
 
     if (month % 12 === 0 || month === months) {
-      const year = Math.ceil(month / 12);
+      const year = month === termMonths(years) && years > 0 ? years : month / 12;
       rows.push({
         id: `goal-year-${year}`,
+        note: monthlyPeriodNote(month % 12 || 12),
         values: {
           balance,
           deposits: annualDeposits,
@@ -2184,7 +2180,7 @@ function savingsGoalSchedule(
     ],
     description: 'Annual path from current savings to the target using the calculated monthly savings amount.',
     rows,
-    summary: scheduleCapSummary(values.years ?? years, `The table keeps the goal math visible: deposits, growth, projected balance, and remaining target gap.`),
+    summary: scheduleCapSummary(values.years ?? years, `Deposits and existing savings compound monthly. The term uses the nearest whole month; the table shows deposits, growth, projected balance and remaining gap.`),
     title: 'Goal funding schedule'
   };
 }
@@ -2231,6 +2227,22 @@ function exactTermPoints(value: number): number[] {
   const points = Array.from({ length: Math.floor(term) }, (_, index) => index + 1);
   if (term > Math.floor(term)) points.push(term);
   return points;
+}
+
+// Annual rollups of the same rounded monthly horizon used by the headline.
+function monthlyTermPeriods(years: number): Array<{ year: number; endMonth: number; months: number }> {
+  const totalMonths = Math.min(maxScheduleYears * 12, termMonths(years));
+  const periods = [];
+  for (let previous = 0; previous < totalMonths; previous += 12) {
+    const endMonth = Math.min(previous + 12, totalMonths);
+    const year = endMonth === termMonths(years) && years > 0 ? years : endMonth / 12;
+    periods.push({ year, endMonth, months: endMonth - previous });
+  }
+  return periods;
+}
+
+function monthlyPeriodNote(months: number): string | undefined {
+  return months === 12 ? undefined : `Partial period: ${months} months. The term uses the nearest whole month.`;
 }
 
 function partYearNote(year: number, subject: string): string | undefined {
@@ -2422,15 +2434,16 @@ function swpSchedule(_calculator: SeoCalculator, values: Record<string, number>)
 
   for (let month = 1; month <= maxScheduleYears * 12 && balance > 0; month += 1) {
     const growth = balance * monthlyRate;
-    balance = Math.max(0, balance + growth - withdrawal);
+    const actualWithdrawal = Math.min(withdrawal, balance + growth);
+    balance = balance + growth - actualWithdrawal;
     annualGrowth += growth;
-    annualWithdrawals += withdrawal;
+    annualWithdrawals += actualWithdrawal;
 
     if (month % 12 === 0 || balance === 0) {
       const year = Math.ceil(month / 12);
       rows.push({
         id: `swp-year-${year}`,
-        note: balance === 0 ? 'Corpus depleted in this period' : undefined,
+        note: balance === 0 ? (actualWithdrawal < withdrawal ? 'Corpus depleted in a partial final month; only the available balance is withdrawn.' : 'Corpus depleted in this period.') : undefined,
         values: {
           balance,
           growth: annualGrowth,
@@ -2457,7 +2470,7 @@ function swpSchedule(_calculator: SeoCalculator, values: Record<string, number>)
     rows,
     summary: rows.length >= maxScheduleYears
       ? `Shows the first ${maxScheduleYears} years because the withdrawal appears long-running under these assumptions.`
-      : `Shows the annual drawdown path until the corpus is depleted or the modeled period ends.`,
+      : `Shows actual withdrawals until depletion. The headline counts the partial final month even when a full withdrawal is unavailable.`,
     title: 'Withdrawal runway schedule'
   };
 }
@@ -2469,7 +2482,7 @@ function retirementSchedule(
 ): CalculatorDetailSchedule | null {
   const currentAge = Math.max(0, values.currentAge ?? 0);
   const rawSavingYears = Math.max(0, (values.retirementAge ?? 0) - currentAge);
-  const savingYears = scheduleYears(rawSavingYears);
+  const points = exactTermPoints(rawSavingYears);
   const currentSavings = Math.max(0, values.currentSavings ?? 0);
   const monthly = Math.max(0, values.monthly ?? 0);
   const annualTopUp = Math.max(0, values.annualTopUp ?? 0);
@@ -2515,26 +2528,29 @@ function retirementSchedule(
       moneyColumn('gap', 'Gap / surplus')
     ],
     description: 'Annual retirement savings path from today to the target retirement age.',
-    rows: Array.from({ length: savingYears }, (_, index) => {
-      const year = index + 1;
-      const monthsElapsed = year * 12;
-      const previousCurrentSavingsComponent = currentSavings * (1 + annualRate) ** (year - 1);
+    rows: points.map((year, index) => {
+      const previousYear = points[index - 1] ?? 0;
+      const monthsElapsed = Math.round(year * 12);
+      const previousMonths = Math.round(previousYear * 12);
+      const previousCurrentSavingsComponent = currentSavings * (1 + annualRate) ** previousYear;
       const currentSavingsComponent = currentSavings * (1 + annualRate) ** year;
       const previousContributionBalance = contributionBalance;
 
-      for (let month = (year - 1) * 12 + 1; month <= monthsElapsed; month += 1) {
+      for (let month = previousMonths + 1; month <= monthsElapsed; month += 1) {
         contributionBalance = contributionBalance * (1 + monthlyRate) + monthly;
         if (month % 12 === 0) contributionBalance += annualTopUp;
       }
 
       const balance = currentSavingsComponent + contributionBalance;
-      const deposits = monthly * 12 + annualTopUp;
+      const deposits = monthly * (monthsElapsed - previousMonths)
+        + annualTopUp * (Math.floor(monthsElapsed / 12) - Math.floor(previousMonths / 12));
       const growth =
         (currentSavingsComponent - previousCurrentSavingsComponent) +
         (contributionBalance - previousContributionBalance - deposits);
 
       return {
         id: `retirement-year-${year}`,
+        note: Number.isInteger(year) ? undefined : `Partial period: ${monthsElapsed - previousMonths} contribution months; existing savings grow over the exact remaining part year.`,
         values: {
           age: currentAge + year,
           balance,
@@ -2545,7 +2561,7 @@ function retirementSchedule(
         }
       };
     }),
-    summary: scheduleCapSummary(savingYears, 'Shows how contributions and growth build toward the retirement corpus need.'),
+    summary: scheduleCapSummary(rawSavingYears, 'Existing savings compound annually over the exact term; monthly contributions use the nearest whole month and yearly top-ups are added after each 12th month.'),
     title: 'Retirement savings schedule'
   };
 }
