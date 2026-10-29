@@ -1132,6 +1132,21 @@
       "code_sha": "7d0f1782b03f9f49de3491eaac1be2067c9222e2",
       "review": "reviews/C30R.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B78",
+      "title": "homepage question finder and visual redesign",
+      "checkpoint": "C38",
+      "status": "in_progress",
+      "dependencies": [
+        "B70"
+      ],
+      "prompt": "prompts/B78.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

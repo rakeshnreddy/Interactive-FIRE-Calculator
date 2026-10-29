@@ -772,3 +772,5 @@ B69 and B71–B76 remain ranked proposals requiring separate bounded registratio
 - [x] **B77 — Repair development-tool advisories blocking release.** [Contract](execution/prompts/B77.md). Exact-head CI passed tests/build but failed the unchanged dependency-audit gate. Patch compatible Vite/Vitest and Miniflare's Undici, without a forced Wrangler downgrade or runtime/formula changes. Re-run clean locked install, audit, full suite and the complete isolated-beta release verification before acceptance. B68 follows this prerequisite.
 
 C31/B70 accepted2026-10-28: product2aec033, [review](execution/reviews/C31.md), [verified shared beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev).67of70registered tasks done. B71–B76/B69 remain proposals; register a bounded next contract before edits.
+
+- [ ] **B78 / C38 — Homepage question finder and visual redesign.** [Contract](execution/prompts/B78.md). Bounded homepage stage derived from B74, after B70; real library search, extracted component, consolidated styles and fully verified preview release. B71/C32 retains debt/loan scope. No calculation/storage change.

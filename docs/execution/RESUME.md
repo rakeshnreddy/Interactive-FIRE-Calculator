@@ -1,12 +1,12 @@
 # FinPath execution resume —2026-10-28
 
-**B70/C31 accepted; shared beta verified.67of70registered tasks done.** Product `2aec033f905a5f906bf9958f843239aea2ecd676`, [PR156](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/156), [review](reviews/C31.md), [submission](submissions/B70.md), [board](evidence/C31/design-board.md). Final documentation CI, merge and main-CI authority is the PR landing receipt; resolve actual PR/main state before starting another checkpoint. Do not repeat completed B68/B70 releases.
+**B70/C31 accepted; shared beta verified.67of71registered tasks done.** Product `2aec033f905a5f906bf9958f843239aea2ecd676`, [PR156](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/156), [review](reviews/C31.md), [submission](submissions/B70.md), [board](evidence/C31/design-board.md). Final documentation CI, merge and main-CI authority is the PR landing receipt; resolve actual PR/main state before starting another checkpoint. Do not repeat completed B68/B70 releases.
 
 ## Working copy and next action
 
 Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. Documents/ChatGPT is stale at PR138 and File Provider reads can stall; preserve it. Resolve actual branch/main state from Git and PR156. Implementation branch was `codex/luminous-shell-foundation`; only owned changes were committed.
 
-Next register a bounded home-redesign checkpoint(B71/C32 proposal) before edits, from verified current main. B69/B71–B76 remain proposals; their audit IDs do not imply registration or acceptance. Direct implementation; no Gemini or broad fan-out. Narrow independent review is permitted. The owner authorizes sequential push, release and beta deployment with durable documentation after each step.
+Execute registered B78/C38 homepage contract from main6d60d61 on codex/luminous-homepage. B71/C32 remains debt/loan scope; B78 isolates the homepage stage from B74. B69/B71–B76 remain proposals; their audit IDs do not imply registration or acceptance. Direct implementation; no Gemini or broad fan-out. Narrow independent review is permitted. The owner authorizes sequential push, release and beta deployment with durable documentation after each step.
 
 ## Verified release
 
