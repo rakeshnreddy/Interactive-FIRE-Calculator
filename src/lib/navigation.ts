@@ -1,3 +1,5 @@
+import type { MouseEvent as ReactMouseEvent } from 'react';
+
 export type AppRoute =
   | '/'
   | '/dashboard'
@@ -206,4 +208,24 @@ export type PlansRouteAction = 'invalid-version' | 'load-link' | 'keep-active-pl
 export function resolvePlansRouteAction(deepLink: PlanDeepLink): PlansRouteAction {
   if (deepLink.isVersionInvalid) return 'invalid-version';
   return deepLink.planId ? 'load-link' : 'keep-active-plan';
+}
+
+export function handleNavigationAnchorClick(
+  event: ReactMouseEvent<HTMLAnchorElement>,
+  route: AppRoute,
+  onNavigate: (route: AppRoute) => void,
+  beforeNavigate?: () => void
+) {
+  if (
+    !shouldHandleNavigationClick(event, {
+      download: event.currentTarget.hasAttribute('download'),
+      target: event.currentTarget.target
+    })
+  ) {
+    return;
+  }
+
+  event.preventDefault();
+  beforeNavigate?.();
+  onNavigate(route);
 }

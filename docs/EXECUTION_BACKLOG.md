@@ -1,6 +1,6 @@
 # Ordered execution backlog
 
-2026-09-07. For delegated execution, follow [the checkpoint order](execution/CHECKPOINTS.md), not numeric ID order. Start only within the released checkpoint. Only the primary reviewer may check an item complete. See [task prompts and status](execution/README.md). **Owner-blocked** items stay visible but do not prevent unrelated Ready work. Do not re-plan the product before executing an item. Each item is a bounded PR; split if its acceptance criteria cannot fit the estimate. [Audit](CURRENT_STATE_AUDIT.md), [security roadmap](TECHNICAL_AND_SECURITY_ROADMAP.md), [measurement](MEASUREMENT_AND_EXPERIMENT_PLAN.md) define contracts. No merge/production deployment is authorized.
+2026-09-07. For delegated execution, follow [the checkpoint order](execution/CHECKPOINTS.md), not numeric ID order. Start only within the released checkpoint. Only the primary reviewer may check an item complete. See [task prompts and status](execution/README.md). **Owner-blocked** items stay visible but do not prevent unrelated Ready work. Do not re-plan the product before executing an item. Each item is a bounded PR; split if its acceptance criteria cannot fit the estimate. [Audit](CURRENT_STATE_AUDIT.md), [security roadmap](TECHNICAL_AND_SECURITY_ROADMAP.md), [measurement](MEASUREMENT_AND_EXPERIMENT_PLAN.md) define contracts. The current owner continuation authorizes reviewed merges and shared-beta releases; production remains separately gated.
 
 ## P0: safety and executable proof
 
@@ -772,3 +772,7 @@ B69 and B71–B76 remain ranked proposals requiring separate bounded registratio
 - [x] **B77 — Repair development-tool advisories blocking release.** [Contract](execution/prompts/B77.md). Exact-head CI passed tests/build but failed the unchanged dependency-audit gate. Patch compatible Vite/Vitest and Miniflare's Undici, without a forced Wrangler downgrade or runtime/formula changes. Re-run clean locked install, audit, full suite and the complete isolated-beta release verification before acceptance. B68 follows this prerequisite.
 
 C31/B70 accepted2026-10-28: product2aec033, [review](execution/reviews/C31.md), [verified shared beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev).67of70registered tasks done. B71–B76/B69 remain proposals; register a bounded next contract before edits.
+
+- [x] **B78 / C38 — Homepage question finder and visual redesign.** [Contract](execution/prompts/B78.md). Bounded homepage stage derived from B74, after B70; real library search, extracted component, consolidated styles and fully verified preview release. B71/C32 retains debt/loan scope. No calculation/storage change.
+
+C38/B78 accepted 2026-10-29 at 27e2ece after candidate and shared-beta verification. [Review](execution/reviews/C38.md), [board](execution/evidence/C38/design-board.md). B71/C32 debt/loan math is the next bounded proposal to register; no other proposal is implicitly accepted.

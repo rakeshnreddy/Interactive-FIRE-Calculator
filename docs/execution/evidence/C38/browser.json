@@ -1,0 +1,2462 @@
+{
+  "candidate": {
+    "status": "PASS",
+    "cases": 136,
+    "keyboard": {
+      "skip": "Skip to content",
+      "skipTarget": "main-content",
+      "routeFocus": "Start with the question, not the formula.",
+      "menuFocus": true
+    },
+    "history": true,
+    "rapid": {
+      "path": "/calculators/fire",
+      "h1": "FIRE Calculator"
+    },
+    "reducedCount": 0,
+    "unsupportedFallback": true,
+    "fragmentTop": 89.28125,
+    "errors": [],
+    "rows": [
+      {
+        "route": "/",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      }
+    ],
+    "homepage": {
+      "status": "PASS",
+      "rows": [
+        {
+          "width": 1440,
+          "mode": "light",
+          "collapsed": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 481.1875,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 1440,
+          "mode": "dark",
+          "collapsed": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 481.1875,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 768,
+          "mode": "light",
+          "collapsed": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 373.078125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 768,
+          "mode": "dark",
+          "collapsed": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 373.078125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 390,
+          "mode": "light",
+          "collapsed": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 421.890625,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 390,
+          "mode": "dark",
+          "collapsed": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 421.890625,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 320,
+          "mode": "light",
+          "collapsed": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 448.28125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 320,
+          "mode": "dark",
+          "collapsed": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 448.28125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        }
+      ],
+      "prefs": [
+        {
+          "width": 1440,
+          "mode": "light",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(1 4.00000e-8 0)"
+        },
+        {
+          "width": 1440,
+          "mode": "dark",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(0.248104 0.0401909 253.735)"
+        },
+        {
+          "width": 320,
+          "mode": "light",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(1 4.00000e-8 0)"
+        },
+        {
+          "width": 320,
+          "mode": "dark",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(0.248104 0.0401909 253.735)"
+        }
+      ],
+      "journeys": {
+        "searchEnter": true,
+        "searchButton": true,
+        "empty": true,
+        "encoded": true,
+        "history": true,
+        "routeFocus": true,
+        "footerFAQ": true
+      },
+      "print": {
+        "height": 721.765625,
+        "color": "rgb(0, 0, 0)"
+      },
+      "errors": []
+    }
+  },
+  "beta": {
+    "status": "PASS",
+    "cases": 136,
+    "keyboard": {
+      "skip": "Skip to content",
+      "skipTarget": "main-content",
+      "routeFocus": "Start with the question, not the formula.",
+      "menuFocus": true
+    },
+    "history": true,
+    "rapid": {
+      "path": "/calculators/fire",
+      "h1": "FIRE Calculator"
+    },
+    "reducedCount": 0,
+    "unsupportedFallback": true,
+    "fragmentTop": 89.28125,
+    "errors": [],
+    "rows": [
+      {
+        "route": "/",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 1440,
+        "theme": "light",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 1440,
+        "theme": "dark",
+        "scrollWidth": 1440,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 768,
+        "theme": "light",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 768,
+        "theme": "dark",
+        "scrollWidth": 768,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 390,
+        "theme": "light",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 390,
+        "theme": "dark",
+        "scrollWidth": 390,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 320,
+        "theme": "light",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/fire",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/sip",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/swp",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/income-tax-india",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/debt-snowball-avalanche",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/cagr",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/budget",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/compound-interest",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/savings-goal",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/xirr",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/lease-vs-buy",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/mortgage-affordability",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/emergency-fund",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      },
+      {
+        "route": "/calculators/net-worth",
+        "width": 320,
+        "theme": "dark",
+        "scrollWidth": 320,
+        "footer": 1
+      }
+    ],
+    "homepage": {
+      "status": "PASS",
+      "rows": [
+        {
+          "width": 1440,
+          "mode": "light",
+          "collapsed": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 481.1875,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 1440,
+          "mode": "dark",
+          "collapsed": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 1440,
+            "scrollWidth": 1440,
+            "mainWidth": 1440,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 481.1875,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 768,
+          "mode": "light",
+          "collapsed": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 373.078125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 768,
+          "mode": "dark",
+          "collapsed": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 768,
+            "scrollWidth": 768,
+            "mainWidth": 768,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 373.078125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 390,
+          "mode": "light",
+          "collapsed": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 421.890625,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 390,
+          "mode": "dark",
+          "collapsed": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 390,
+            "scrollWidth": 390,
+            "mainWidth": 390,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 421.890625,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 320,
+          "mode": "light",
+          "collapsed": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 448.28125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        },
+        {
+          "width": 320,
+          "mode": "dark",
+          "collapsed": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "expanded": {
+            "width": 320,
+            "scrollWidth": 320,
+            "mainWidth": 320,
+            "outside": [],
+            "small": [],
+            "h1": 1,
+            "footer": 1
+          },
+          "primaryBottom": 448.28125,
+          "exampleKeyboard": true,
+          "faqKeyboard": true
+        }
+      ],
+      "prefs": [
+        {
+          "width": 1440,
+          "mode": "light",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(1 4.00000e-8 0)"
+        },
+        {
+          "width": 1440,
+          "mode": "dark",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(0.248104 0.0401909 253.735)"
+        },
+        {
+          "width": 320,
+          "mode": "light",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(1 4.00000e-8 0)"
+        },
+        {
+          "width": 320,
+          "mode": "dark",
+          "motion": true,
+          "transparency": true,
+          "arrow": "none",
+          "hero": "none",
+          "example": "oklch(0.248104 0.0401909 253.735)"
+        }
+      ],
+      "journeys": {
+        "searchEnter": true,
+        "searchButton": true,
+        "empty": true,
+        "encoded": true,
+        "history": true,
+        "routeFocus": true,
+        "footerFAQ": true
+      },
+      "print": {
+        "height": 721.765625,
+        "color": "rgb(0, 0, 0)"
+      },
+      "errors": []
+    }
+  }
+}
