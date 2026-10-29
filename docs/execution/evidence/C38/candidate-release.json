@@ -1,0 +1,171 @@
+{
+  "checked_at": "2026-10-29T06:44:35.069Z",
+  "sha": "27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4",
+  "branch": "codex/luminous-homepage",
+  "deployment_id": "71aa3a01-9b40-4c5a-8c6a-c8924fb88bad",
+  "immutable_url": "https://71aa3a01.interactive-fire-calculator.pages.dev",
+  "aliases": [
+    "https://codex-luminous-homepage.interactive-fire-calculator.pages.dev"
+  ],
+  "provider_checks": {
+    "environment": true,
+    "branch": true,
+    "revision": true,
+    "clean": true,
+    "success": true,
+    "isolated_database": true,
+    "production_disabled": true,
+    "production_branch": true,
+    "production_unchanged": true
+  },
+  "targets": [
+    {
+      "url": "https://71aa3a01.interactive-fire-calculator.pages.dev",
+      "routes": [
+        {
+          "route": "/api/health",
+          "status": 200,
+          "expected": 200,
+          "pass": true
+        },
+        {
+          "route": "/api/me",
+          "status": 401,
+          "expected": 401,
+          "pass": true
+        },
+        {
+          "route": "/api/plans",
+          "status": 401,
+          "expected": 401,
+          "pass": true
+        },
+        {
+          "route": "/api/calculator-results",
+          "status": 401,
+          "expected": 401,
+          "pass": true
+        },
+        {
+          "route": "/calculators/savings-goal",
+          "status": 200,
+          "expected": 200,
+          "pass": true
+        },
+        {
+          "route": "/calculators/retirement",
+          "status": 200,
+          "expected": 200,
+          "pass": true
+        }
+      ],
+      "assets": [
+        {
+          "path": "/assets/BalanceImportPanel-B8F--APC.js",
+          "bytes": 9638,
+          "sha256": "ddd3012a330a8330d5939900e46a39d5e2c1119d84f3c94d0ba1cc6b055b532a",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/CalculatorLibrary-CGI4OWfZ.js",
+          "bytes": 397241,
+          "sha256": "48f3a193bb0913967b8213b5826ee3c6a742a91397d0f37874476a25a71a3a1f",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/PlanningWorkspace-CTEKNCRa.js",
+          "bytes": 27093,
+          "sha256": "4510ed7708dd359078bad83be9aa7a8a35c2bbeff66772d405f1ab19e06d4122",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/ProjectionChart-D_XVWqP-.js",
+          "bytes": 348252,
+          "sha256": "4d64ad90d6bb13ad5997e8839cfbac15cb2b9d9bda82b0e2db4ce4e05632930a",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/TransactionImportPanel-SzS4RQYP.js",
+          "bytes": 10168,
+          "sha256": "ca6fd19f30c138fc97f0fff68fc9097ea4e8dc82353f65b0a4d0e3642d2716a1",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/WorkspacePanels-pJMBAJSe.js",
+          "bytes": 46926,
+          "sha256": "df14b80343738fb8a2a8432406de5d268a8733db400552b2f2df3eb3afb674eb",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/calculator-catalog-CEXyXtha.js",
+          "bytes": 103181,
+          "sha256": "a9603a61078feb1c4d8acd2bb9193bf465386ff8e74236b7e7b4e59e849a04da",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/circle-check-ChL_mukK.js",
+          "bytes": 217,
+          "sha256": "fac86e201aadf34f12f6ba46a9281f0be8b2251bab078247255e822394d19c02",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/dist--Jp3jFdt.js",
+          "bytes": 145734,
+          "sha256": "db8c278187769d500b47e7b82178875760e8366371fe370db460f0f9a42440bc",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/history-CQ7GNyVZ.js",
+          "bytes": 271,
+          "sha256": "ae81e6a75911b61f420ce42fb94368fd6fed955d35e7be3ecb07c670a5b51839",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/main-ECt9sMcX.css",
+          "bytes": 199674,
+          "sha256": "866b0e02c4a0fb5e854050ac4d841a83ab60ae2255eed2b8e0c67bfd74896b65",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/main-ykGMwpN9.js",
+          "bytes": 213664,
+          "sha256": "7857f2576a5fd1ba2dfee498bae13020f230650bf233eeb0757e007b7bb02400",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/papaparse.min-CvzER6Wb.js",
+          "bytes": 19974,
+          "sha256": "3fe5f441d001abd31713d6afed906f53e514b48e28d23da6cb1adc3e460303f7",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/react-vendor-BKbRJdrT.js",
+          "bytes": 139933,
+          "sha256": "d605ce360c7cbd7ff44d1ca3ff2b722010e46ffe27ff8396882c8306eb31b7f4",
+          "status": 200,
+          "match": true
+        },
+        {
+          "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+          "bytes": 694,
+          "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+          "status": 200,
+          "match": true
+        }
+      ]
+    }
+  ]
+}

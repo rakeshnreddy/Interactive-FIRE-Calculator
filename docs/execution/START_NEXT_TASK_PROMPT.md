@@ -1,8 +1,10 @@
-# Current continuation — 2026-10-28
+# Current continuation — 2026-10-29
 
-Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. B68/C30 and B70/C31 are accepted; B70 shared beta is verified at product2aec033, immutable9a8e7915. PR156's landing receipt is the authority for final docs CI/merge/main CI; resolve actual state before new work.67of71registered tasks are done. Do not repeat completed releases. Execute registered B78/C38 homepage contract from verified main6d60d61; other proposal IDs are not automatically registered. Preserve the full tests/PR/exact CI/isolated candidate/verified beta/landing loop.
+Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`; preserve the stale Documents/ChatGPT copy. B68/C30, B70/C31 and B78/C38 are accepted with verified shared-beta releases. B78 accepted build 27e2ece, beta immutable b290c057. Resolve PR #157’s observed final CI/merge/main-CI landing receipt and actual Git state before new work. Do not repeat completed releases.
 
-The October 18 analysis is complete and preserved in `docs/calculator-excellence/ANALYSIS_2026-10-18.md`; do not rerun it. Direct implementation; no Gemini or broad agent fan-out. Narrow independent reviews may be used. Production/owner evidence gates remain in force. This continuation supersedes the historical brief's initial-analysis instructions, counts and release state.
+If landing remains unfinished, finish PR #157 first. Otherwise register B71/C32’s bounded debt/loan math contract from verified clean main before implementation. The old handoff’s B71=homepage label was wrong. B78 isolates the homepage stage from B74; library/shared templates and other original proposal IDs still require separate registration. The October 18 analysis is complete and immutable; do not rerun it. Preserve the full tests/PR/exact CI/isolated candidate/verified beta/landing loop after each checkpoint.
+
+Direct implementation; no Gemini or broad agent fan-out. Narrow independent review is permitted. Production, native-reader/zoom and real-user evidence gates remain in force. Current release details, compatibility readers, source/performance limits and exact resumption actions are in RESUME. This continuation supersedes the retained historical brief’s old counts, release state and initial-analysis instructions.
 
 ---
 

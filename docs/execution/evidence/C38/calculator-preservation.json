@@ -1,0 +1,698 @@
+{
+  "candidate": {
+    "pass": true,
+    "cases": 42,
+    "errors": [],
+    "csvProof": {
+      "status": "PASS",
+      "cases": 42,
+      "results": [
+        {
+          "slug": "sip-goal",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 390,
+          "theme": "light",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 390,
+          "theme": "light",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 390,
+          "theme": "light",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 390,
+          "theme": "light",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 390,
+          "theme": "light",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 390,
+          "theme": "light",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 390,
+          "theme": "light",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 320,
+          "theme": "light",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 320,
+          "theme": "light",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 320,
+          "theme": "light",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 320,
+          "theme": "light",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 320,
+          "theme": "light",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 320,
+          "theme": "light",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 320,
+          "theme": "light",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        }
+      ]
+    },
+    "raw": "raw/candidate-calculator-preservation.json"
+  },
+  "beta": {
+    "pass": true,
+    "cases": 42,
+    "errors": [],
+    "csvProof": {
+      "status": "PASS",
+      "cases": 42,
+      "results": [
+        {
+          "slug": "sip-goal",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 1440,
+          "theme": "light",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 1440,
+          "theme": "dark",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 390,
+          "theme": "light",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 390,
+          "theme": "light",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 390,
+          "theme": "light",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 390,
+          "theme": "light",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 390,
+          "theme": "light",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 390,
+          "theme": "light",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 390,
+          "theme": "light",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 390,
+          "theme": "dark",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 320,
+          "theme": "light",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 320,
+          "theme": "light",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 320,
+          "theme": "light",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 320,
+          "theme": "light",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 320,
+          "theme": "light",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 320,
+          "theme": "light",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 320,
+          "theme": "light",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "sip-goal",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 233,
+          "sha256": "95dac9d5878f03ba0145a17cad0d4ac651f3b1d89cd89e4d1d0940fa57fdafad",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "flat-vs-reducing-rate",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 480,
+          "sha256": "3720cd74ffc6b7bba87836daf63864aeec652a5d9adb336b16da61418d6080f6",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "interest-only-mortgage",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 1402,
+          "sha256": "8b742567d3ba6809f55f456a229e38c8ec192aa394afa24fcb89ecafc2d0e4d5",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "rent-vs-buy",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 504,
+          "sha256": "3df4fb576bb2d1ed82f4eb6e4156f773bed53c21859e58751f55813183ec913b",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "retirement",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 1348,
+          "sha256": "e50cb8ba5134d11700489885da27504df4e74ae1be8aa07d8d9ca3a78b76bc23",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "swp",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 3348,
+          "sha256": "c2fdf4f6f4dab1ba706124cd174af5860e35c009470764bc5db80d43afe3524f",
+          "finalRowMatchesTable": true
+        },
+        {
+          "slug": "roth-vs-traditional-ira",
+          "width": 320,
+          "theme": "dark",
+          "bytes": 922,
+          "sha256": "089a0ec59646c933f1de6cee233c4f771aa3386b407f15f7e4de9e121fdb804b",
+          "finalRowMatchesTable": true
+        }
+      ]
+    },
+    "raw": "raw/beta-calculator-preservation.json"
+  }
+}

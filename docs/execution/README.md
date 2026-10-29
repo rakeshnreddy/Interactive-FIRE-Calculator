@@ -1,6 +1,6 @@
 # FinPath execution protocol
 
-Read [RESUME.md](RESUME.md) first. [TASK_STATUS.json](TASK_STATUS.json) is the sole task/owner-action ledger; [CHECKPOINTS.md](CHECKPOINTS.md) defines ordering and gates, and [EXECUTION_BACKLOG.md](../EXECUTION_BACKLOG.md) defines task scope. Do not copy status counts into another tracker. Current owner continuation authorizes direct implementation; the October 18 analysis is complete. B68/C30 and B70/C31 are accepted with verified shared-beta releases. Resolve PR156’s final CI/merge/main-CI landing receipt and current Git state before work; execute registered B78/C38 homepage contract from verified main6d60d61; B71/C32 retains debt/loan scope. Do not rerun completed releases.
+Read [RESUME.md](RESUME.md) first. [TASK_STATUS.json](TASK_STATUS.json) is the sole task/owner-action ledger; [CHECKPOINTS.md](CHECKPOINTS.md) defines ordering and gates, and [EXECUTION_BACKLOG.md](../EXECUTION_BACKLOG.md) defines task scope. Do not copy status counts into another tracker. Current owner continuation authorizes direct implementation; the October 18 analysis is complete. B68/C30, B70/C31 and B78/C38 are accepted with verified shared-beta releases. Resolve PR #157’s observed final CI/merge/main-CI landing receipt and actual Git state first. Then register the bounded B71/C32 debt/loan proposal from current clean main. B78 is the completed homepage stage derived from B74. Do not rerun completed releases.
 
 ## Work and review
 

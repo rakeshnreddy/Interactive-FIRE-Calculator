@@ -1,0 +1,19 @@
+{
+  "source": "27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4",
+  "themes": [
+    {
+      "theme": "light",
+      "samples": 124,
+      "minimumRatio": 5.1047295294219515,
+      "raw": "raw/light-candidate.json",
+      "method": "Computed OKLCH foreground converted by canvas; actual screenshot background pixels sampled with ink hidden and alpha composited. Bounded samples, not conformance."
+    },
+    {
+      "theme": "dark",
+      "samples": 124,
+      "minimumRatio": 7.441563554287302,
+      "raw": "raw/dark-candidate.json",
+      "method": "Computed OKLCH foreground converted by canvas; actual screenshot background pixels sampled with ink hidden and alpha composited. Bounded samples, not conformance."
+    }
+  ]
+}

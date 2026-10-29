@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1137,15 +1137,15 @@
       "id": "B78",
       "title": "homepage question finder and visual redesign",
       "checkpoint": "C38",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B70"
       ],
       "prompt": "prompts/B78.md",
       "submission": "submissions/B78.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4",
+      "review": "reviews/C38.md",
       "blocked_reason": null
     }
   ],

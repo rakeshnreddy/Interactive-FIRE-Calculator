@@ -40,7 +40,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C30R | Audit preservation and next-contract registration | B77; audit/registration | accepted | 7d0f1782b03f9f49de3491eaac1be2067c9222e2 | [approved; shared beta verified](reviews/C30R.md) |
 | C30 | Exact-term reconciliation and contribution accounting | B68 | accepted | 25af47ee5785c747155aad675ebade42d576e849 | [Approved; shared beta verified](reviews/C30.md) |
 | C31 | Design foundation and application shell | B70 | accepted | 2aec033f905a5f906bf9958f843239aea2ecd676 | [Approved; shared beta verified](reviews/C31.md) |
-| C38 | Homepage question finder and visual redesign | B78 | released | — | — |
+| C38 | Homepage question finder and visual redesign | B78 | accepted | 27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4 | [Approved; shared beta verified](reviews/C38.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -101,4 +101,8 @@ Owner authorizes push, release and shared-beta deployment after each bounded ste
 
 ## Homepage stage registration — 2026-10-28
 
-B78/C38 isolates the homepage from audit B74. B71/C32 remains debt/loan math. B74 library/shared-template scope remains unregistered.67of71 registered tasks done; B78 is in progress.
+B78/C38 isolates the homepage from audit B74. B71/C32 remains debt/loan math. B74 library/shared-template scope remains unregistered.At registration, 67 of 71 tasks were done and B78 was in progress.
+
+## Homepage stage acceptance — 2026-10-29
+
+C38/B78 accepted at 27e2ece; candidate and shared beta verified. The table and TASK_STATUS ledger are authoritative. B71/C32 remains debt/loan math; B74 library/shared-template scope remains unregistered. Final CI/merge/main-CI facts are recorded in PR #157’s observed landing receipt.

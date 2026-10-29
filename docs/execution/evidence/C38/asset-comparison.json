@@ -1,0 +1,207 @@
+{
+  "method": "All runtime JS/CSS; B70 downloaded from accepted immutable and SHA256 checked, B78 local verified auth build; uniform Node gzip level9, excludes fonts/maps/HTML",
+  "totals": {
+    "B70.js": {
+      "files": 14,
+      "bytes": 1461946,
+      "gzip": 414464
+    },
+    "B70.css": {
+      "files": 1,
+      "bytes": 221295,
+      "gzip": 36245
+    },
+    "B78.js": {
+      "files": 14,
+      "bytes": 1462986,
+      "gzip": 414777
+    },
+    "B78.css": {
+      "files": 1,
+      "bytes": 199674,
+      "gzip": 33049
+    }
+  },
+  "rows": [
+    {
+      "release": "B70",
+      "path": "/assets/BalanceImportPanel-CUToppHh.js",
+      "bytes": 9638,
+      "gzip": 3387
+    },
+    {
+      "release": "B70",
+      "path": "/assets/CalculatorLibrary-U9y3sucx.js",
+      "bytes": 397340,
+      "gzip": 107182
+    },
+    {
+      "release": "B70",
+      "path": "/assets/PlanningWorkspace-kacctsjZ.js",
+      "bytes": 27091,
+      "gzip": 7534
+    },
+    {
+      "release": "B70",
+      "path": "/assets/ProjectionChart-CnpEYPkO.js",
+      "bytes": 348252,
+      "gzip": 101241
+    },
+    {
+      "release": "B70",
+      "path": "/assets/TransactionImportPanel-BrvmSiFG.js",
+      "bytes": 10168,
+      "gzip": 3469
+    },
+    {
+      "release": "B70",
+      "path": "/assets/WorkspacePanels-BwjULGD-.js",
+      "bytes": 46931,
+      "gzip": 9511
+    },
+    {
+      "release": "B70",
+      "path": "/assets/calculator-catalog-WAbKDJcp.js",
+      "bytes": 103177,
+      "gzip": 30657
+    },
+    {
+      "release": "B70",
+      "path": "/assets/circle-check-DDQnJn_2.js",
+      "bytes": 217,
+      "gzip": 196
+    },
+    {
+      "release": "B70",
+      "path": "/assets/dist--Jp3jFdt.js",
+      "bytes": 145734,
+      "gzip": 38621
+    },
+    {
+      "release": "B70",
+      "path": "/assets/history-CgYv1i2i.js",
+      "bytes": 271,
+      "gzip": 223
+    },
+    {
+      "release": "B70",
+      "path": "/assets/main-25OI54Ko.js",
+      "bytes": 212526,
+      "gzip": 59869
+    },
+    {
+      "release": "B70",
+      "path": "/assets/main-BT6MXVLM.css",
+      "bytes": 221295,
+      "gzip": 36245
+    },
+    {
+      "release": "B70",
+      "path": "/assets/papaparse.min-DNh3VwX4.js",
+      "bytes": 19974,
+      "gzip": 7363
+    },
+    {
+      "release": "B70",
+      "path": "/assets/react-vendor-BKbRJdrT.js",
+      "bytes": 139933,
+      "gzip": 44788
+    },
+    {
+      "release": "B70",
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "bytes": 694,
+      "gzip": 423
+    },
+    {
+      "release": "B78",
+      "path": "/assets/BalanceImportPanel-B8F--APC.js",
+      "bytes": 9638,
+      "gzip": 3387
+    },
+    {
+      "release": "B78",
+      "path": "/assets/CalculatorLibrary-CGI4OWfZ.js",
+      "bytes": 397241,
+      "gzip": 107153
+    },
+    {
+      "release": "B78",
+      "path": "/assets/PlanningWorkspace-CTEKNCRa.js",
+      "bytes": 27093,
+      "gzip": 7540
+    },
+    {
+      "release": "B78",
+      "path": "/assets/ProjectionChart-D_XVWqP-.js",
+      "bytes": 348252,
+      "gzip": 101239
+    },
+    {
+      "release": "B78",
+      "path": "/assets/TransactionImportPanel-SzS4RQYP.js",
+      "bytes": 10168,
+      "gzip": 3469
+    },
+    {
+      "release": "B78",
+      "path": "/assets/WorkspacePanels-pJMBAJSe.js",
+      "bytes": 46926,
+      "gzip": 9507
+    },
+    {
+      "release": "B78",
+      "path": "/assets/calculator-catalog-CEXyXtha.js",
+      "bytes": 103181,
+      "gzip": 30558
+    },
+    {
+      "release": "B78",
+      "path": "/assets/circle-check-ChL_mukK.js",
+      "bytes": 217,
+      "gzip": 196
+    },
+    {
+      "release": "B78",
+      "path": "/assets/dist--Jp3jFdt.js",
+      "bytes": 145734,
+      "gzip": 38621
+    },
+    {
+      "release": "B78",
+      "path": "/assets/history-CQ7GNyVZ.js",
+      "bytes": 271,
+      "gzip": 225
+    },
+    {
+      "release": "B78",
+      "path": "/assets/main-ECt9sMcX.css",
+      "bytes": 199674,
+      "gzip": 33049
+    },
+    {
+      "release": "B78",
+      "path": "/assets/main-ykGMwpN9.js",
+      "bytes": 213664,
+      "gzip": 60309
+    },
+    {
+      "release": "B78",
+      "path": "/assets/papaparse.min-CvzER6Wb.js",
+      "bytes": 19974,
+      "gzip": 7362
+    },
+    {
+      "release": "B78",
+      "path": "/assets/react-vendor-BKbRJdrT.js",
+      "bytes": 139933,
+      "gzip": 44788
+    },
+    {
+      "release": "B78",
+      "path": "/assets/rolldown-runtime-QTnfLwEv.js",
+      "bytes": 694,
+      "gzip": 423
+    }
+  ]
+}
