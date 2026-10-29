@@ -1142,7 +1142,7 @@
         "B70"
       ],
       "prompt": "prompts/B78.md",
-      "submission": null,
+      "submission": "submissions/B78.md",
       "owner": "Primary agent direct implementation and independent review",
       "code_sha": null,
       "review": null,

@@ -1,0 +1,52 @@
+{
+  "checkpoint": "C38",
+  "task": "B78",
+  "state": "local verification complete; independent final review interrupted by usage limit; candidate/beta/merge pending",
+  "base": "6d60d6151e9f83ef599abe37d5ad7eaa3c6fdbad",
+  "tests": {
+    "node": 30,
+    "files": 110,
+    "vitest": 2829,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92
+  },
+  "localBrowser": "8 theme/width combinations, collapsed+expanded geometry,4 reduced preference combinations, search Enter/button/empty/encoded, history/focus, FAQ, print PASS",
+  "contrast": {
+    "light": {
+      "samples": 122,
+      "minimumRatio": 5.1047295294219515
+    },
+    "dark": {
+      "samples": 122,
+      "minimumRatio": 7.441563554287302
+    }
+  },
+  "raw": [
+    {
+      "path": "raw/contrast-dark.json",
+      "bytes": 192483,
+      "sha256": "06378c92a59cba71b0fa526cf09c525945f07cb92b7c1d4ddf06b3ba5c2777c8"
+    },
+    {
+      "path": "raw/contrast-light.json",
+      "bytes": 191791,
+      "sha256": "2bdf7b2c1c04db7b65631fb1f0344c632b5d43f0d469b84bb8061618f654f2ce"
+    },
+    {
+      "path": "raw/full-suite-final.log",
+      "bytes": 7676,
+      "sha256": "70356858888ef8d37c2a42c8264dbf826720423d2dbf4edc92f454d0b8c99a2f"
+    },
+    {
+      "path": "raw/local-home.json",
+      "bytes": 5287,
+      "sha256": "e2771ade6086e8d7e75f2179f93ddf2788e321d6945402c8711c50492f34b9a4"
+    },
+    {
+      "path": "raw/red.log",
+      "bytes": 2835,
+      "sha256": "277c9002631d0cab8c19715f8d581cdf062140072a30c8684b28b2ef7dceffcf"
+    }
+  ]
+}

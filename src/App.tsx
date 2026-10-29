@@ -2,7 +2,7 @@ import { flushSync } from 'react-dom';
 import { createRouteTransitionRunner } from './lib/routeTransitions';
 import { useResultReveal } from './lib/resultReveal';
 import { EstimateCustomization } from './components/EstimateCustomization';
-import { AccountUserButton, SignInIntent, SignOutControl, SignUpIntent } from './authRuntime';
+import { AccountUserButton, SignInIntent, SignOutControl } from './authRuntime';
 import {
   ArrowRight,
   Banknote,
@@ -46,7 +46,9 @@ import type {
   CalculatorSaveOutcome,
   CalculatorSaveRequest
 } from './CalculatorLibrary';
-import { HeroFireExample } from './HeroFireExample';
+import { LandingPage } from './LandingPage';
+export { LandingPage, landingSteps, usefulCalculatorPaths } from './LandingPage';
+import { AuthActionButton } from './AuthActionButton';
 import { CalculatorSaveCoordinator } from './lib/calculatorSaveManager';
 import type {
   PlanVersionDetail,
@@ -88,7 +90,6 @@ import { validateFireForm } from './lib/fireValidation';
 import { configureAnalytics, flushAnalytics, track } from './lib/analyticsClient';
 import { formatCompactMoney } from './lib/money';
 import { HERO_FIRE_FIXTURE } from './lib/heroExample';
-import { landingFaq, landingHero, landingTrustPoints } from './lib/landingContent';
 import { FireRetirementEstimate, fireEstimateHeadline } from './components/FireRetirementEstimate';
 import { ReportsPanel } from './reports/ReportsPanel';
 import { PrivacyControlsPanel } from './settings/PrivacyControlsPanel';
@@ -103,6 +104,7 @@ import {
   primaryNavigationFor,
   shouldHandleNavigationClick,
   workspaceNavigation,
+  handleNavigationAnchorClick,
   type AppRoute
 } from './lib/navigation';
 import type { AuthState } from './auth';
@@ -455,26 +457,6 @@ function scrollToFragmentWhenReady(id: string, attemptsLeft = 40): void {
   if (attemptsLeft > 0) window.setTimeout(() => scrollToFragmentWhenReady(id, attemptsLeft - 1), 50);
 }
 
-function handleNavigationAnchorClick(
-  event: ReactMouseEvent<HTMLAnchorElement>,
-  route: AppRoute,
-  onNavigate: (route: AppRoute) => void,
-  beforeNavigate?: () => void
-) {
-  if (
-    !shouldHandleNavigationClick(event, {
-      download: event.currentTarget.hasAttribute('download'),
-      target: event.currentTarget.target
-    })
-  ) {
-    return;
-  }
-
-  event.preventDefault();
-  beforeNavigate?.();
-  onNavigate(route);
-}
-
 function modeledDurationFromTimeline(timeline: TimelineInput): number {
   return Math.max(1, Math.trunc(timeline.planEndAge) - Math.trunc(timeline.retirementAge));
 }
@@ -552,33 +534,6 @@ function applyScenario(plan: PlanInput, scenario: ScenarioConfig): PlanInput {
     )
   };
 }
-
-export const landingSteps = [
-  {
-    step: '1',
-    title: 'Add your numbers',
-    body: 'Start with your savings and spending.',
-    icon: Calculator
-  },
-  {
-    step: '2',
-    title: 'Try different assumptions',
-    body: 'Explore how changes affect the estimate.',
-    icon: TrendingUp
-  },
-  {
-    step: '3',
-    title: 'Review the results',
-    body: 'See the timeline and the assumptions behind it.',
-    icon: Target
-  }
-];
-
-export const usefulCalculatorPaths = [
-  { title: 'When could I retire?', action: 'Plan retirement', body: 'Test your spending, savings and timeline.', route: '/calculators/fire' as AppRoute, icon: Target },
-  { title: 'How soon can I be debt-free?', action: 'Pay down debt', body: 'See what paying a little extra changes.', route: '/calculators/debt-payoff' as AppRoute, icon: CircleDollarSign },
-  { title: 'What should I save each month?', action: 'Reach a savings goal', body: 'Turn an amount and a deadline into a plan.', route: '/calculators/savings-goal' as AppRoute, icon: TrendingUp }
-];
 
 export const platformPages: Record<
   PlatformRoute,
@@ -678,40 +633,6 @@ export const platformPages: Record<
 
 function isPlatformRoute(route: AppRoute): route is PlatformRoute {
   return route in platformPages;
-}
-
-function AuthActionButton({
-  auth,
-  kind,
-  className,
-  children,
-  onUnavailable
-}: {
-  auth: AuthState;
-  kind: 'sign-in' | 'sign-up';
-  className: string;
-  children: ReactNode;
-  onUnavailable: () => void;
-}) {
-  const button = (
-    <button className={className} onClick={auth.isConfigured ? undefined : onUnavailable}>
-      {children}
-    </button>
-  );
-
-  if (!auth.isConfigured) {
-    return button;
-  }
-
-  return kind === 'sign-in' ? (
-    <SignInIntent mode="redirect">
-      {button}
-    </SignInIntent>
-  ) : (
-    <SignUpIntent mode="redirect">
-      {button}
-    </SignUpIntent>
-  );
 }
 
 export function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { status: 'signed-in' }> }) {
@@ -925,130 +846,6 @@ function DesktopNavigation({
       </div>
       )}
     </nav>
-  );
-}
-
-export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate: (route: AppRoute) => void }) {
-  const link = (route: AppRoute | string) => (event: ReactMouseEvent<HTMLAnchorElement>) => handleNavigationAnchorClick(event, route as AppRoute, onNavigate);
-  return (
-    <>
-      <section className="landing-hero" aria-labelledby="landing-title">
-        <div className="landing-hero-inner">
-          <div className="landing-hero-copy">
-            <p className="eyebrow">{landingHero.eyebrow}</p>
-            <h1 id="landing-title">{landingHero.title}</h1>
-            <p>{landingHero.body}</p>
-            <div className="landing-actions">
-              <a href="/calculators/fire" className="primary-button icon-text-button" onClick={link('/calculators/fire')}>
-                <Target size={16} />
-                {landingHero.primaryAction}
-              </a>
-              <a href="/calculators" className="secondary-button icon-text-button" onClick={link('/calculators')}>
-                <Calculator size={16} />
-                {landingHero.secondaryAction}
-              </a>
-            </div>
-
-          </div>
-
-          <nav className="landing-decision-paths" aria-label="Choose a planning path">
-            <p className="eyebrow">What are you trying to work out?</p>
-            {usefulCalculatorPaths.map((pathItem) => {
-              const Icon = pathItem.icon;
-              return <a key={pathItem.route} href={pathItem.route} onClick={link(pathItem.route)}>
-                <Icon size={20} aria-hidden="true" />
-                <span><strong>{pathItem.action}</strong><small>{pathItem.title}</small></span>
-                <ArrowRight size={16} aria-hidden="true" />
-              </a>;
-            })}
-          </nav>
-          <HeroFireExample />
-        </div>
-      </section>
-
-      <section className="landing-capabilities" aria-labelledby="capabilities-title">
-        <header>
-          <p className="eyebrow">How it works</p>
-          <h2 id="capabilities-title">Start with a question. Leave with a clearer plan.</h2>
-          <p>Calculate with your numbers. Compare a change. Save the decision when you want to revisit it.</p>
-        </header>
-
-        <div className="landing-feature-list">
-          {landingSteps.map((stepItem) => {
-            const Icon = stepItem.icon;
-            return (
-              <article className="landing-feature" key={stepItem.title}>
-                <span className="feature-icon">
-                  <Icon size={20} />
-                </span>
-                <div>
-                  <strong>{stepItem.title}</strong>
-                  <small>{stepItem.body}</small>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="landing-trust" aria-labelledby="trust-title">
-        <header>
-          <p className="eyebrow">Why FinPath</p>
-          <h2 id="trust-title">Honest math, in your currency.</h2>
-        </header>
-        <div className="landing-trust-grid">
-          {landingTrustPoints.map((point) => (
-            <article key={point.title}>
-              <strong>{point.title}</strong>
-              <p>{point.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="landing-faq" id="faq" aria-labelledby="faq-title">
-        <header>
-          <p className="eyebrow">Common questions</p>
-          <h2 id="faq-title">Questions people ask before they start</h2>
-        </header>
-        <div className="landing-faq-list">
-          {landingFaq.map((item, index) => (
-            <details key={item.question} open={index === 0}>
-              <summary>{item.question}</summary>
-              <p>{item.answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      <section className="privacy-band" aria-labelledby="privacy-title">
-        <ShieldCheck size={24} />
-        <div>
-          <h2 id="privacy-title">Start without an account.</h2>
-          <p>
-            Use the public calculators before deciding whether to create an account.
-          </p>
-        </div>
-        {auth.isConfigured && (
-          auth.isSignedIn ? (
-            <a href="/dashboard" className="secondary-button icon-text-button" onClick={link('/dashboard')}>
-              Open dashboard
-              <ArrowRight size={17} />
-            </a>
-          ) : (
-            <AuthActionButton
-              auth={auth}
-              kind="sign-up"
-              className="secondary-button icon-text-button"
-              onUnavailable={() => onNavigate('/dashboard')}
-            >
-              Create account
-              <ArrowRight size={17} />
-            </AuthActionButton>
-          )
-        )}
-      </section>
-    </>
   );
 }
 
