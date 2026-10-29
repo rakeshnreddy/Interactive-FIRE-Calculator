@@ -1,7 +1,7 @@
 {
   "checkpoint": "C38",
   "task": "B78",
-  "state": "local verification complete; independent final review interrupted by usage limit; candidate/beta/merge pending",
+  "state": "native review resumed and completed for first product; documentation/input-size repair under re-verification; candidate/beta/merge pending",
   "base": "6d60d6151e9f83ef599abe37d5ad7eaa3c6fdbad",
   "tests": {
     "node": 30,
@@ -48,5 +48,30 @@
       "bytes": 2835,
       "sha256": "277c9002631d0cab8c19715f8d581cdf062140072a30c8684b28b2ef7dceffcf"
     }
-  ]
+  ],
+  "independentReview": {
+    "status": "complete",
+    "verdict": "clean",
+    "product": "e8c6541878c4d6393879e02c737d18c032af4c2d",
+    "base": "6d60d6151e9f83ef599abe37d5ad7eaa3c6fdbad",
+    "reviewer": "home_final_adversarial",
+    "quality_score": 9.2,
+    "completed": true,
+    "fixture_summary_mode": true,
+    "findings": [],
+    "outside_status": "unavailable: no Claude Code CLI resolved",
+    "recommendation": "proceed because routing, auth and calculator boundaries are preserved and no concrete remaining defect was established",
+    "chronology": "Initial review interrupted by usage limit; resumed same review and terminal completion received."
+  },
+  "documentationAudit": {
+    "attempt": 1,
+    "status": "blocked",
+    "corrections": [
+      "explicit homepage display/radius exceptions",
+      "finder16px baseline",
+      "append resumed review while retaining interruption"
+    ],
+    "repair": "Applied by parent; remaining read-only re-audit pending"
+  },
+  "noJavaScriptLimit": "Initial prerender is SEO shell only; native GET fallback is from an already rendered form. Fresh-no-JS probe timeout retained, not a product pass."
 }
