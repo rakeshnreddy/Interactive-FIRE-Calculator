@@ -1,10 +1,6 @@
-# Current continuation — 2026-10-29
+# Current continuation — 2026-10-30
 
-Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`; preserve the stale Documents/ChatGPT copy. B68/C30, B70/C31 and B78/C38 are accepted with verified shared-beta releases. B78 accepted build 27e2ece, beta immutable b290c057. Resolve PR #157’s observed final CI/merge/main-CI landing receipt and actual Git state before new work. Do not repeat completed releases.
-
-If landing remains unfinished, finish PR #157 first. Otherwise register B71/C32’s bounded debt/loan math contract from verified clean main before implementation. The old handoff’s B71=homepage label was wrong. B78 isolates the homepage stage from B74; library/shared templates and other original proposal IDs still require separate registration. The October 18 analysis is complete and immutable; do not rerun it. Preserve the full tests/PR/exact CI/isolated candidate/verified beta/landing loop after each checkpoint.
-
-Direct implementation; no Gemini or broad agent fan-out. Narrow independent review is permitted. Production, native-reader/zoom and real-user evidence gates remain in force. Current release details, compatibility readers, source/performance limits and exact resumption actions are in RESUME. This continuation supersedes the retained historical brief’s old counts, release state and initial-analysis instructions.
+Read RESUME.md. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`; preserve the stale Documents/ChatGPT copy. B68/B70/B78 are fully landed. PR157/main e2b77ce and CI40839135039 verified. B71/C32 debt/loan contract is registered and in progress on codex/debt-loan-reconciliation, baseline e2b77ce. Execute its bounded requirements through tests, PR/exact CI, isolated candidate, verified shared beta, merge/main CI and durable docs. Other proposals remain unregistered. Do not rerun the completed immutable analysis. Direct implementation, no Gemini/broad fan-out, narrow independent review allowed. Production/reader/zoom/real-user gates unchanged.
 
 ---
 

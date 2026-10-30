@@ -1,4 +1,7 @@
-# FinPath execution resume — 2026-10-29
+# FinPath execution resume — 2026-10-30
+
+**B71/C32 in progress; B78/C38 fully landed.68of72 registered tasks done.** Main baseline e2b77cebf279bdaaf26e2697eb910f7518cae1c6, PR157 merged and main CI40839135039 succeeded; verified landing receipt is on PR157. New branch codex/debt-loan-reconciliation, [B71 contract](prompts/B71.md) registered before code. Next: failing regressions, implementation and complete release loop; do not repeat B68/B70/B78. Direct implementation with narrow review, no Gemini/broad fan-out.
+
 
 **B78/C38 homepage accepted; shared beta verified. 68 of 71 registered tasks done.** Accepted build `27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4`, [PR #157](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/157), [review](reviews/C38.md), [submission](submissions/B78.md), [before/after board](evidence/C38/design-board.md). Final documentation CI, merge and main-CI authority is the observed PR #157 landing receipt. Resolve its actual state before new work; do not repeat completed B68/B70/B78 releases.
 
