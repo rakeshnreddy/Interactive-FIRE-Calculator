@@ -41,7 +41,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C30 | Exact-term reconciliation and contribution accounting | B68 | accepted | 25af47ee5785c747155aad675ebade42d576e849 | [Approved; shared beta verified](reviews/C30.md) |
 | C31 | Design foundation and application shell | B70 | accepted | 2aec033f905a5f906bf9958f843239aea2ecd676 | [Approved; shared beta verified](reviews/C31.md) |
 | C38 | Homepage question finder and visual redesign | B78 | accepted | 27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4 | [Approved; shared beta verified](reviews/C38.md) |
-| C32 | Debt payoff truth and loan reconciliation | B71 | released | — | — |
+| C32 | Debt payoff truth and loan reconciliation | B71 | accepted | b39e5ab89a860c20b890ccb38e8a2d4faf875450 | [Approved; shared beta verified](reviews/C32.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -111,3 +111,7 @@ C38/B78 accepted at 27e2ece; candidate and shared beta verified. The table and T
 ## Debt/loan registration — 2026-10-30
 
 B71/C32 is now in progress after verified PR157/main CI40839135039.68of72 tasks accepted. The rent-buy fallback subclaim is already fixed in B68 and receives preservation tests; no duplicated fix. Other original proposals remain unregistered.
+
+## Debt/loan acceptance — 2026-11-10
+
+C32/B71 accepted at `b39e5ab89a860c20b890ccb38e8a2d4faf875450`; candidate (`d416d469`) and shared beta (`d8f0a5f4` / `codex-finpath-quality-execut`) verified across 84 public routes and the 6-stage `c32-debt-loans` smoke runner. 69 of 72 registered tasks done. Final documentation CI, PR #158 merge, and `main` CI are recorded in the PR #158 landing receipt. Next bounded checkpoint to register from `ANALYSIS_2026-10-18.md` is B69 / C33 (scenario sensitivity and return/XIRR disclosure).

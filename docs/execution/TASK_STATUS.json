@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-30",
+  "updated": "2026-11-10",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1152,16 +1152,16 @@
       "id": "B71",
       "title": "debt payoff truth and loan reconciliation",
       "checkpoint": "C32",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B68",
         "B78"
       ],
       "prompt": "prompts/B71.md",
-      "submission": null,
+      "submission": "submissions/B71.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "b39e5ab89a860c20b890ccb38e8a2d4faf875450",
+      "review": "reviews/C32.md",
       "blocked_reason": null
     }
   ],

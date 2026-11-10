@@ -1,0 +1,109 @@
+{
+  "checkpoint": "C32",
+  "task": "B71",
+  "date": "2026-11-10",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "b39e5ab89a860c20b890ccb38e8a2d4faf875450",
+  "base": "e2b77cebf279bdaaf26e2697eb910f7518cae1c6",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/158",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 42863937608,
+    "event": "pull_request",
+    "headSha": "b39e5ab89a860c20b890ccb38e8a2d4faf875450",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/42863937608"
+  },
+  "candidate": {
+    "deployment_id": "d416d469-7c72-46c4-b5fe-0017cb1db723",
+    "immutable_url": "https://d416d469.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://codex-debt-loan-reconciliati.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "d8f0a5f4-13fb-4bb3-99a3-5a76dbcc758c",
+    "immutable_url": "https://d8f0a5f4.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "tests": {
+    "node": 30,
+    "files": 111,
+    "vitest": 2863,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "b39e5ab89a860c20b890ccb38e8a2d4faf875450"
+  },
+  "independent_review": {
+    "reviewer_conversation_id": "d974cd4e-ddfb-4a7c-959e-cd27e24d9b6d",
+    "role": "B71 C32 Adversarial Reviewer",
+    "completed": true,
+    "verdict": "PASS",
+    "findings": []
+  },
+  "source_hashes": [
+    {
+      "path": "scripts/smoke/c32-debt-loans.mjs",
+      "bytes": 2121,
+      "sha256": "303b8062e30bd892544850e9745ef47270e0d372fdada55897506e9ba9241729"
+    },
+    {
+      "path": "src/ModelHistory.test.tsx",
+      "bytes": 9405,
+      "sha256": "77f843930b0af29afd21e7c4432524df5bde8b46b2b5f86aae72dd280a382a93"
+    },
+    {
+      "path": "src/calculatorResults.test.ts",
+      "bytes": 44747,
+      "sha256": "a411f35b9401597a8643189988e9a880e5576946268623f02b4d8d0697ed1f32"
+    },
+    {
+      "path": "src/lib/calculatorModelVersion.ts",
+      "bytes": 2010,
+      "sha256": "8f43099778f60bafe78f5002cf56a445c57d7eeb81aed743dd9bb663f7e2921f"
+    },
+    {
+      "path": "src/lib/calculatorScope.ts",
+      "bytes": 17568,
+      "sha256": "1cc11d2ffbddb01abd9d8fc0609f89d3093c8be80d3ee22fbd65adc652360c6f"
+    },
+    {
+      "path": "src/lib/calculatorStudios.ts",
+      "bytes": 140015,
+      "sha256": "dc1b991bd219bd0b539725c2af60b7cb940b05cfdd01daeba32f2afeb00f3b40"
+    },
+    {
+      "path": "src/lib/debtLoanReconciliation.test.ts",
+      "bytes": 9161,
+      "sha256": "76cd914b6671cd884ad650ad78482ea59376d4144d7d1618afd8b22e21fec636"
+    },
+    {
+      "path": "src/lib/debtProjection.ts",
+      "bytes": 5135,
+      "sha256": "2f3849a3c5c52d1e2c573be53b10c0d03fba34ee3382c2294a90b47159360fcd"
+    },
+    {
+      "path": "src/lib/seoCalculators.test.ts",
+      "bytes": 17905,
+      "sha256": "6215999cc3c391e887fe640e22870cdbe56faa7a61507a1b487232d029ec10c4"
+    },
+    {
+      "path": "src/lib/seoCalculators.ts",
+      "bytes": 103841,
+      "sha256": "e12a8467a9e9061aea4562682e0b29dfb2c98a368212ddf0522127463f995c2e"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C32/raw/beta-hosted.json",
+      "bytes": 9359,
+      "sha256": "7aa7338c83113828773713e08b9dcbc4e968cd42aba861b3217221a364bbe2b4"
+    },
+    {
+      "path": "docs/execution/evidence/C32/raw/candidate-hosted.json",
+      "bytes": 9358,
+      "sha256": "e11efcac007b4aeb9150741b24de760af0279d50986a4522efdc6f834955a9ad"
+    }
+  ]
+}
