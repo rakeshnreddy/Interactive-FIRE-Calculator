@@ -356,7 +356,9 @@ describe('calculateSeoCalculator', () => {
       rate: 30
     });
 
-    expect(result.metrics[0]).toMatchObject({ label: 'Payoff time', value: 100, valueType: 'years' });
-    expect(result.metrics.find((metric) => metric.label === 'Months to payoff')?.value).toBe(1_200);
+    expect(result.metrics[0].label).toBe('Balance after 50 years');
+    expect(result.metrics[0].valueType).toBe('currency');
+    expect(result.metrics[0].value).toBeGreaterThan(10_000);
+    expect(result.metrics.find((metric) => metric.label === 'Months modeled')?.value).toBe(600);
   });
 });

@@ -1,0 +1,37 @@
+{
+  "checkpoint": "C32",
+  "task": "B71",
+  "verifiedAt": "2026-10-30",
+  "redPhase": {
+    "command": "npx vitest run src/lib/debtLoanReconciliation.test.ts",
+    "totalTests": 34,
+    "passed": 7,
+    "failed": 27
+  },
+  "greenPhase": {
+    "focusedSuites": [
+      {
+        "command": "npx vitest run src/lib/debtLoanReconciliation.test.ts",
+        "exitCode": 0,
+        "testsPassed": 34
+      },
+      {
+        "command": "npx vitest run src/calculatorResults.test.ts src/ModelHistory.test.tsx",
+        "exitCode": 0,
+        "testsPassed": 47
+      }
+    ],
+    "fullSuite": {
+      "command": "./scripts/test_all.sh",
+      "exitCode": 0,
+      "nodeTestsPassed": 30,
+      "vitestFilesPassed": 111,
+      "vitestTestsPassed": 2863,
+      "typecheck": "PASS",
+      "productionBuild": "PASS",
+      "prerenderedRoutes": 92,
+      "buildIsolationFiles": 26,
+      "fixtureLeaks": 0
+    }
+  }
+}

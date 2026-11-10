@@ -1,0 +1,38 @@
+{
+  "checkpoint": "C32",
+  "task": "B71",
+  "verifiedAt": "2026-10-30",
+  "oracles": [
+    {
+      "slug": "debt-payoff",
+      "inputs": { "balance": 12000, "rate": 19.99, "payment": 150, "extraMonthlyPayment": 100, "extraAnnualPayment": 0 },
+      "expectedMonths": 98,
+      "expectedTotalInterest": 12324.468152096,
+      "expectedTotalPaid": 24324.468152096,
+      "expectedFinalPayment": 74.468152096,
+      "baselinePaidOff": false
+    },
+    {
+      "slug": "mortgage-recast",
+      "inputs": { "principal": 300000, "prepayment": 50000, "rate": 6.5, "years": 25, "extraMonthlyPayment": 200, "extraAnnualPayment": 0 },
+      "expectedRecastInterestSavings": 51281.074202146,
+      "expectedAdditionalPaymentInterestSavings": 64927.881087772,
+      "expectedFirstRecastPaymentWithExtra": 1888.017903369,
+      "expectedFinalRecastPayment": 1569.318437957,
+      "expectedPayoffMonth": 234
+    },
+    {
+      "slug": "balloon-loan",
+      "inputs": { "principal": 250000, "rate": 6.5, "years": 30, "balloonYears": 0 },
+      "expectedBalloonBalance": 250000,
+      "expectedBalloonDueMonths": 0,
+      "expectedScheduleRows": 1
+    },
+    {
+      "slug": "pmi",
+      "inputs": { "homePrice": 450000, "downPayment": 90000, "rate": 0.6 },
+      "expectedMonthlyPmiAt80PercentLtv": 0,
+      "expectedMonthlyPmiAt90PercentLtv": 202.5
+    }
+  ]
+}

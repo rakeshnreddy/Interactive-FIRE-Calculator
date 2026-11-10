@@ -1,3 +1,4 @@
+import { projectDebt, projectTransfer, projectDebtStrategy } from './debtProjection';
 import { housingBudget } from './housingBudget';
 import { vehicleCostResult } from './vehicleLeaseBuy';
 import { buildCalculatorPublicContent } from './calculatorContent';
@@ -537,7 +538,13 @@ export const seoCalculators: SeoCalculator[] = [
     slug: slug as string,
     title: title as string
   }))
-].map((calculator) => (['gst', 'tds'].includes(calculator.slug) ? { ...calculator, region: 'India' as const } : calculator));
+].map((calculator) => (
+  ['gst', 'tds'].includes(calculator.slug)
+    ? { ...calculator, region: 'India' as const }
+    : ['pmi', 'heloc'].includes(calculator.slug)
+      ? { ...calculator, region: 'US' as const }
+      : calculator
+));
 
 export function calculatorPath(slug: string): `/calculators/${string}` {
   return `/calculators/${slug}`;
@@ -649,38 +656,38 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]), modelVersion: 'retirement-exact-term-v1' };
     }
     case 'debt-payoff': {
-      const baseline = payoffDebt(get('balance'), get('rate') / 100, get('payment'));
-      const payoff = payoffDebt(
-        get('balance'),
-        get('rate') / 100,
-        get('payment'),
-        get('extraMonthlyPayment'),
-        get('extraAnnualPayment')
-      );
-      return result('Payoff time', payoff.months / 12, 'Estimated years to pay off the balance.', [
-        'The required payment and additional monthly amount are applied every month.',
-        get('extraAnnualPayment') > 0 ? 'The additional yearly payment is applied every 12th month.' : 'No additional yearly payment is applied.',
-        'No new charges are added.'
-      ], [
-        metric('Months to payoff', payoff.months, 'number'),
-        metric('Months saved', Math.max(0, baseline.months - payoff.months), 'number', 'positive'),
-        metric('Total interest', payoff.interest, 'currency', 'warning'),
-        metric('Interest saved', Math.max(0, baseline.interest - payoff.interest), 'currency', 'positive'),
-        metric('Total paid', payoff.totalPaid, 'currency')
-      ]);
+      const baseline = projectDebt(get('balance'), rate, get('payment'));
+      const payoff = projectDebt(get('balance'), rate, get('payment'), get('extraMonthlyPayment'), get('extraAnnualPayment'));
+      const completed = baseline.paidOff && payoff.paidOff;
+      return { ...result(payoff.paidOff ? 'Payoff time' : 'Balance after 50 years', payoff.paidOff ? payoff.months / 12 : payoff.balance,
+        payoff.paidOff ? 'Estimated years to pay off the balance.' : 'The debt is not paid off within 50 years. This is the remaining balance, not a payoff date.', [
+          'The required payment and additional monthly amount are applied every month. No new charges are added.',
+          get('extraAnnualPayment') > 0 ? 'The additional yearly payment is applied every 12th month.' : 'No additional yearly payment is applied.',
+          ...(!payoff.paidOff ? ['The balance is not paid off within 50 years; interest and payments shown cover the modeled 600 months only.'] : []),
+          ...(!baseline.paidOff ? ['The required-payment baseline is not paid off within 50 years; lifetime savings are unavailable.'] : [])
+        ], [
+          metric(payoff.paidOff ? 'Months to payoff' : 'Months modeled', payoff.months, 'number'),
+          ...(completed ? [metric('Months saved', Math.max(0, baseline.months - payoff.months), 'number', 'positive')] : []),
+          metric(payoff.paidOff ? 'Total interest' : 'Interest through 50 years', payoff.interest, 'currency', 'warning'),
+          ...(completed ? [metric('Interest saved', Math.max(0, baseline.interest - payoff.interest), 'currency', 'positive')] : []),
+          metric(payoff.paidOff ? 'Total paid' : 'Paid through 50 years', payoff.totalPaid, 'currency')
+        ]), modelVersion: 'debt-payoff-v2' };
     }
     case 'debt-strategy': {
-      const debts = debtStrategyInputs(get);
-      const snowball = simulateDebtStrategy(debts, get('extraPayment'), 'snowball');
-      const avalanche = simulateDebtStrategy(debts, get('extraPayment'), 'avalanche');
-      return result('Avalanche interest savings', snowball.interest - avalanche.interest, 'Interest difference between avalanche and snowball payoff ordering.', [
-        'Each debt receives its minimum payment first.',
-        'Extra payoff dollars and freed-up minimum payments are redirected based on the selected strategy.'
-      ], [
-        metric('Snowball payoff months', snowball.months, 'number'),
-        metric('Avalanche payoff months', avalanche.months, 'number'),
-        metric('Avalanche total interest', avalanche.interest, 'currency', 'warning')
-      ]);
+      const snowball = projectDebtStrategy(values, 'snowball');
+      const avalanche = projectDebtStrategy(values, 'avalanche');
+      const completed = snowball.paidOff && avalanche.paidOff;
+      return { ...result(completed ? 'Avalanche interest savings' : 'Interest difference through 50 years', snowball.interest - avalanche.interest,
+        completed ? 'Interest difference between avalanche and snowball payoff ordering.' : 'Interest difference over the same 600-month horizon; at least one strategy is not paid off. This is not lifetime savings.', [
+          'Each debt receives its minimum payment first; extra dollars and freed-up minimums follow the selected strategy.',
+          'Unpaid strategies are capped at 600 months (50 years). Remaining balances are shown; no payoff date is implied.'
+        ], [
+          metric(snowball.paidOff ? 'Snowball payoff months' : 'Snowball months modeled', snowball.months, 'number'),
+          metric(avalanche.paidOff ? 'Avalanche payoff months' : 'Avalanche months modeled', avalanche.months, 'number'),
+          metric('Avalanche total interest', avalanche.interest, 'currency', 'warning'),
+          metric('Snowball balance remaining', snowball.balance, 'currency'),
+          metric('Avalanche balance remaining', avalanche.balance, 'currency')
+        ]), modelVersion: 'debt-strategy-v2' };
     }
     case 'loan':
     case 'amortization': {
@@ -720,16 +727,16 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'balloon-loan': {
-      const balloonMonth = Math.max(0, Math.round(Math.min(get('balloonYears') || years, years) * 12));
+      const balloonMonth = Math.max(0, Math.round(Math.min(Number.isFinite(values.balloonYears) ? get('balloonYears') : years, years) * 12));
       const payment = loanPayment(get('principal'), get('rate') / 100, years);
       const balloonBalance = remainingLoanBalance(get('principal'), get('rate') / 100, years, balloonMonth);
-      return result('Balloon balance', balloonBalance, 'Estimated remaining principal due when the balloon payment is reached.', [
+      return { ...result('Balloon balance', balloonBalance, 'Estimated remaining principal due when the balloon payment is reached.', [
         'Monthly payments are based on the longer amortization term.',
         'The balloon amount is the unpaid balance at the balloon date.'
       ], [
         metric('Monthly payment before balloon', payment, 'currency'),
         metric('Balloon due after months', balloonMonth, 'number')
-      ]);
+      ]), modelVersion: 'loan-boundary-v1' };
     }
     case 'biweekly-loan': {
       const monthlyPayment = loanPayment(get('principal'), get('rate') / 100, years);
@@ -830,14 +837,14 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const baseLoan = Math.max(0, get('homePrice') - get('downPayment'));
       const fhaFinanced = baseLoan * 1.0175;
       const fhaMonthly = loanPayment(fhaFinanced, get('rate') / 100, years) + baseLoan * 0.0055 / 12;
-      const conventionalMonthly = loanPayment(baseLoan, get('rate') / 100, years) + baseLoan * get('pmiRate') / 100 / 12;
-      return result('FHA monthly payment', fhaMonthly, 'Compares an FHA-style payment with a simplified conventional loan estimate.', [
+      const conventionalMonthly = loanPayment(baseLoan, get('rate') / 100, years) + (baseLoan > get('homePrice') * 0.8 ? baseLoan * get('pmiRate') / 100 / 12 : 0);
+      return { ...result('FHA monthly payment', fhaMonthly, 'Compares an FHA-style payment with a simplified conventional loan estimate.', [
         'FHA uses a 1.75% upfront mortgage insurance estimate and 0.55% annual MIP estimate.',
-        'Conventional PMI uses the annual PMI rate you provide.'
+        'For this initial-purchase estimate, conventional PMI uses your rate only above 80% loan-to-value. This does not determine cancellation on an existing loan.'
       ], [
         metric('Conventional monthly payment', conventionalMonthly, 'currency'),
         metric('FHA minus conventional', fhaMonthly - conventionalMonthly, 'currency', fhaMonthly <= conventionalMonthly ? 'positive' : 'warning')
-      ]);
+      ]), modelVersion: 'pmi-ltv-v1' };
     }
     case 'va-loan': {
       const baseLoan = Math.max(0, get('homePrice') - get('downPayment'));
@@ -958,16 +965,19 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const newPayment = loanPayment(newBalance, get('rate') / 100, years);
       const baseline = payoffDebt(newBalance, get('rate') / 100, newPayment);
       const accelerated = payoffDebt(newBalance, get('rate') / 100, newPayment, get('extraMonthlyPayment'), get('extraAnnualPayment'));
-      return result('Monthly payment after recast', newPayment, 'Estimated payment after applying a principal recast and keeping the remaining term.', [
-        'The recast lowers the balance used to calculate the payment.',
+      const original = payoffDebt(get('principal'), get('rate') / 100, oldPayment);
+      return { ...result('Monthly payment after recast', newPayment, 'Estimated payment after applying a principal recast and keeping the remaining term.', [
+        'The recast lump sum lowers the principal balance used to re-amortize the required payment; that upfront cash outlay is separate from monthly payment reduction.',
+        'Recast interest savings come from the lump-sum principal reduction; additional-payment interest savings come from optional extra monthly or yearly payments.',
         'Fees, servicer rules, and escrow changes are excluded.'
       ], [
         metric('Monthly payment reduction', oldPayment - newPayment, 'currency', 'positive'),
         metric('Recast balance', newBalance, 'currency'),
         metric('Payoff months after recast', accelerated.months, 'number'),
         metric('Months saved by additional payments', Math.max(0, baseline.months - accelerated.months), 'number', 'positive'),
+        metric('Recast interest savings', Math.max(0, original.interest - baseline.interest), 'currency', 'positive'),
         metric('Additional-payment interest savings', Math.max(0, baseline.interest - accelerated.interest), 'currency', 'positive')
-      ]);
+      ]), modelVersion: 'mortgage-recast-v2' };
     }
     case 'investment-return': {
       const annualized = years > 0 && get('initial') > 0 ? (get('final') / get('initial')) ** (1 / years) - 1 : 0;
@@ -1221,30 +1231,25 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     }
     case 'pmi': {
       const loan = Math.max(0, get('homePrice') - get('downPayment'));
-      return result('Estimated monthly PMI', loan * get('rate') / 100 / 12, 'Estimated PMI using an annual PMI rate.', [], [
-        metric('Loan-to-value', get('homePrice') > 0 ? loan / get('homePrice') : 0, 'percent'),
-        metric('Estimated loan amount', loan, 'currency')
-      ]);
+      return { ...result('Estimated monthly PMI', loan > get('homePrice') * 0.8 ? loan * get('rate') / 100 / 12 : 0, 'Initial-purchase conventional PMI estimate using the annual rate entered.', [
+        'Models no initial conventional PMI when the down payment is at least 20%. This does not determine cancellation or eligibility on an existing loan.'
+      ], [metric('Loan-to-value', get('homePrice') > 0 ? loan / get('homePrice') : 0, 'percent'), metric('Estimated loan amount', loan, 'currency')]), modelVersion: 'pmi-ltv-v1' };
     }
     case 'balance-transfer': {
-      const fee = get('balance') * get('feeRate') / 100;
-      const currentPayoff = payoffDebt(get('balance'), get('currentRate') / 100, get('payment'));
-      // Without a promo length (older callers) the promotional rate is assumed to last through payoff.
-      const promoMonths = Number.isFinite(values.promoMonths) ? Math.max(0, Math.round(get('promoMonths'))) : Number.POSITIVE_INFINITY;
-      const promo = payoffOverPeriod(get('balance') + fee, get('newRate') / 100, get('payment'), promoMonths);
-      const afterPromo = payoffDebt(promo.balance, get('currentRate') / 100, get('payment'));
-      const transferInterest = promo.interest + afterPromo.interest;
-      const transferCost = fee + transferInterest;
-      return result('Estimated payoff cost savings', currentPayoff.interest - transferCost, 'Interest at the current APR compared with the transfer fee plus interest at the promo APR, then at the current APR once the promo ends.', [
-        'Assumes the same monthly payment in both scenarios and no new purchases.',
-        promo.balance > 0 ? 'The balance left when the promo ends is charged at the current APR.' : 'The balance is cleared before the promo ends.'
-      ], [
-        metric('Transfer fee', fee, 'currency', 'warning'),
-        metric('Promo payoff months', promo.months, 'number'),
-        metric('Balance left when the promo ends', promo.balance, 'currency', promo.balance > 0 ? 'warning' : 'positive'),
-        metric('Total payoff months after transfer', promo.months + afterPromo.months, 'number'),
-        metric('Interest with transfer', transferInterest, 'currency')
-      ]);
+      const { current, transfer, fee, promoRows, promoBalance } = projectTransfer(values);
+      const completed = current.paidOff && transfer.paidOff;
+      return { ...result(completed ? 'Estimated payoff cost savings' : 'Cost difference through 50 years', current.interest - transfer.interest - fee,
+        completed ? 'Interest at the current APR compared with the transfer fee plus interest through payoff.' : 'Compares costs through the same 600-month horizon; at least one balance remains. This is not lifetime savings.', [
+          'Same monthly payment, no new purchases. The transfer fee is added once to the balance and included once in the transfer cost.',
+          'The promo APR applies for the entered months, then the current APR applies. Older inputs with no promo length keep the promo APR through the modeled horizon.',
+          ...(!completed ? ['At least one balance is not paid off within 50 years. Interest and cost differences cover only the modeled horizon.'] : [])
+        ], [
+          metric('Transfer fee', fee, 'currency', 'warning'), metric('Promo payoff months', promoRows, 'number'),
+          metric('Balance left when the promo ends', promoBalance, 'currency', promoBalance > 0 ? 'warning' : 'positive'),
+          metric(transfer.paidOff ? 'Total payoff months after transfer' : 'Transfer months modeled', transfer.months, 'number'),
+          metric('Interest with transfer', transfer.interest, 'currency'),
+          metric('Current balance remaining', current.balance, 'currency'), metric('Transfer balance remaining', transfer.balance, 'currency')
+        ]), modelVersion: 'balance-transfer-v2' };
     }
     case 'inflation': {
       const futureCost = get('principal') * (1 + rate) ** years;
@@ -1545,25 +1550,6 @@ function projectRecurringBalance(
   return { balance, contributions };
 }
 
-// Pays a balance for at most `limitMonths`, returning what is left; used for promotional periods.
-function payoffOverPeriod(balance: number, annualRate: number, payment: number, limitMonths: number): { balance: number; interest: number; months: number } {
-  let current = Math.max(0, balance);
-  let interest = 0;
-  let months = 0;
-  const monthlyRate = annualRate / 12;
-  while (current > LOAN_RESIDUAL_TOLERANCE && months < limitMonths) {
-    const monthlyInterest = current * monthlyRate;
-    const due = current + monthlyInterest;
-    const paid = Math.min(due, Math.max(0, payment));
-    interest += monthlyInterest;
-    current = Math.max(0, due - paid);
-    months += 1;
-    // A payment that does not cover interest never clears the balance; stop only when the period is open-ended.
-    if (paid <= monthlyInterest && !Number.isFinite(limitMonths)) break;
-  }
-  return { balance: current, interest, months };
-}
-
 // Annualised internal rate of return for an initial outflow, level end-of-month contributions and a
 // final value, solved by bisection on the monthly rate.
 export function monthlyCashFlowIrr(initial: number, monthly: number, finalValue: number, months: number): number {
@@ -1642,84 +1628,6 @@ function payoffDebt(
   }
 
   return { interest: Math.max(0, interest), months, totalPaid };
-}
-
-type DebtStrategyName = 'avalanche' | 'snowball';
-type DebtStrategyInput = {
-  balance: number;
-  minimum: number;
-  name: string;
-  rate: number;
-};
-
-function debtStrategyInputs(get: (key: string) => number): DebtStrategyInput[] {
-  return [
-    { balance: get('debt1Balance'), minimum: get('debt1Minimum'), name: 'Credit card', rate: get('debt1Rate') / 100 },
-    { balance: get('debt2Balance'), minimum: get('debt2Minimum'), name: 'Auto loan', rate: get('debt2Rate') / 100 },
-    { balance: get('debt3Balance'), minimum: get('debt3Minimum'), name: 'Student loan', rate: get('debt3Rate') / 100 }
-  ].filter((debt) => debt.balance > 0);
-}
-
-function simulateDebtStrategy(
-  debts: DebtStrategyInput[],
-  extraPayment: number,
-  strategy: DebtStrategyName
-): { interest: number; months: number } {
-  const activeDebts = debts.map((debt) => ({ ...debt, balance: Math.max(0, debt.balance), minimum: Math.max(0, debt.minimum) }));
-  const monthlyBudget = activeDebts.reduce((sum, debt) => sum + debt.minimum, 0) + Math.max(0, extraPayment);
-  let interest = 0;
-  let months = 0;
-
-  if (activeDebts.length === 0 || monthlyBudget <= 0) return { interest: 0, months: 0 };
-
-  while (activeDebts.some((debt) => debt.balance > 0) && months < 1200) {
-    months += 1;
-
-    activeDebts.forEach((debt) => {
-      if (debt.balance <= 0) return;
-      const monthlyInterest = debt.balance * debt.rate / 12;
-      debt.balance += monthlyInterest;
-      interest += monthlyInterest;
-    });
-
-    let remainingBudget = monthlyBudget;
-    activeDebts.forEach((debt) => {
-      if (debt.balance <= 0) return;
-      const payment = Math.min(debt.minimum, debt.balance, remainingBudget);
-      debt.balance -= payment;
-      remainingBudget -= payment;
-    });
-
-    while (remainingBudget > 0.005 && activeDebts.some((debt) => debt.balance > 0)) {
-      const target = selectDebtTarget(activeDebts, strategy);
-      if (!target) break;
-
-      const payment = Math.min(target.balance, remainingBudget);
-      target.balance -= payment;
-      remainingBudget -= payment;
-    }
-
-    const monthlyInterestAfterPayment = activeDebts.reduce((sum, debt) => sum + debt.balance * debt.rate / 12, 0);
-    if (activeDebts.some((debt) => debt.balance > 0) && monthlyBudget <= monthlyInterestAfterPayment) {
-      return { interest, months: 1200 };
-    }
-  }
-
-  return { interest, months };
-}
-
-function selectDebtTarget(
-  debts: Array<DebtStrategyInput & { balance: number }>,
-  strategy: DebtStrategyName
-): (DebtStrategyInput & { balance: number }) | null {
-  const activeDebts = debts.filter((debt) => debt.balance > 0);
-  if (activeDebts.length === 0) return null;
-
-  return activeDebts.sort((a, b) => (
-    strategy === 'avalanche'
-      ? b.rate - a.rate || a.balance - b.balance
-      : a.balance - b.balance || b.rate - a.rate
-  ))[0];
 }
 
 function withdrawalRunway(corpus: number, annualRate: number, withdrawal: number): { endingBalance: number; months: number } {

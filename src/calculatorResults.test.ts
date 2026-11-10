@@ -1013,7 +1013,13 @@ describe('versioned interpretation persistence', () => {
     { calculatorSlug: 'social-security-break-even', modelVersion: 'catch-up-v2' },
     { calculatorSlug: 'savings-goal', modelVersion: 'savings-goal-monthly-v1' },
     { calculatorSlug: 'sip-goal', modelVersion: 'savings-goal-monthly-v1' },
-    { calculatorSlug: 'retirement', modelVersion: 'retirement-exact-term-v1' }
+    { calculatorSlug: 'retirement', modelVersion: 'retirement-exact-term-v1' },
+    { calculatorSlug: 'debt-payoff', modelVersion: 'debt-payoff-v2' },
+    { calculatorSlug: 'debt-snowball-avalanche', modelVersion: 'debt-strategy-v2' },
+    { calculatorSlug: 'balance-transfer', modelVersion: 'balance-transfer-v2' },
+    { calculatorSlug: 'mortgage-recast', modelVersion: 'mortgage-recast-v2' },
+    { calculatorSlug: 'pmi', modelVersion: 'pmi-ltv-v1' },
+    { calculatorSlug: 'balloon-loan', modelVersion: 'loan-boundary-v1' }
   ] as const)('retains $calculatorSlug $modelVersion beside an unchanged legacy snapshot', async ({ calculatorSlug, modelVersion }) => {
     const { database, sqlite } = createRealD1();
     const legacyPayload: CalculatorSavePayload = {
