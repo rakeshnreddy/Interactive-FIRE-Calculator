@@ -203,6 +203,20 @@ export function buildCalculatorScenarios(
   });
 }
 
+const pinnedScenarioSlugs = new Set([
+  'fd',
+  'cd',
+  'rd',
+  'lumpsum-mutual-fund',
+  'sip',
+  'step-up-sip',
+  'ppf',
+  'investment-return',
+  'cagr'
+]);
+
+const neutralCaseFormulas = new Set(['investment-return', 'xirr']);
+
 export function buildScenarioValues(
   calculator: SeoCalculator,
   values: Record<string, number>,
@@ -216,11 +230,14 @@ export function buildScenarioValues(
 
   const studio = getCalculatorStudio(calculator);
   const direction = scenarioId === 'optimistic' ? 1 : -1;
+  const roundFloats = !pinnedScenarioSlugs.has(calculator.slug);
 
   return Object.fromEntries(
     calculator.inputs.map((input) => {
       const current = normalized[input.key] ?? input.defaultValue;
-      return [input.key, clampInput(input, adjustInput(input, current, studio, direction))];
+      const rawAdjusted = adjustInput(calculator, normalized, input, current, studio, direction);
+      const adjusted = roundFloats ? Number(rawAdjusted.toFixed(6)) : rawAdjusted;
+      return [input.key, clampInput(input, adjusted)];
     })
   );
 }
@@ -420,6 +437,8 @@ function normalizeInputValues(calculator: SeoCalculator, values: Record<string, 
 }
 
 function adjustInput(
+  calculator: SeoCalculator,
+  allValues: Record<string, number>,
   input: CalculatorInput,
   value: number,
   studio: CalculatorStudio,
@@ -429,8 +448,173 @@ function adjustInput(
   const label = input.label.toLowerCase();
   const text = `${key} ${label}`;
 
+  if (pinnedScenarioSlugs.has(calculator.slug)) {
+    if (
+      (calculator.formula === 'investment-return' || calculator.formula === 'xirr') &&
+      /\b(years?|terms?|tenures?)\b/.test(text) &&
+      value > 0 &&
+      value <= 1
+    ) {
+      const step = Math.max(0.25, Number((value * 0.25).toFixed(2)));
+      return Math.max(input.min || 0.25, value + direction * step);
+    }
+    if (input.type === 'percent') {
+      if (/effective|tax|tds|gst|pmi|fee|apr|interest|rate/.test(text)) {
+        const costDirection = riskierRateStudios.has(studio) ? -direction : direction;
+        return value + costDirection * Math.max(0.5, value * 0.15);
+      }
+      return value + direction * Math.max(0.5, value * 0.12);
+    }
+    if (input.type === 'currency') {
+      if (/expense|rent|withdrawal|debt|liabilit|cost|fee|tax/.test(text)) {
+        return value * (1 - direction * 0.1);
+      }
+      if (/payment|contribution|deposit|sip|saving|income|salary|ctc|employee|employer|annual/.test(text)) {
+        return value * (1 + direction * 0.12);
+      }
+      if (/principal|balance|corpus|asset|home price|loan amount|gain|final/.test(text)) {
+        return value * (1 + direction * 0.08);
+      }
+    }
+    if (/year|term|tenure|support|delay|period|months|coverage/.test(text)) {
+      const step = /month|coverage/.test(text) ? 1 : Math.max(1, Math.round(value * 0.1));
+      return value + direction * step;
+    }
+    return value;
+  }
+
+  // Fixed statutory / baseline / target parameters
+  if (key === 'periods' || key === 'metropercent' || key === 'annuitypercent') {
+    return value;
+  }
+  if (calculator.formula === 'retirement' && key === 'annualincome') {
+    return value;
+  }
+  if ((calculator.formula === 'savings-goal' || calculator.slug === 'sip-goal') && key === 'target') {
+    return value;
+  }
+  if (calculator.formula === 'inflation' && key === 'principal') {
+    return value;
+  }
+
+  // Route-specific directional scenario adjustments
+  if (calculator.formula === 'hra') {
+    if (key === 'salary') return value;
+    if (key === 'hra' || key === 'rent') return value * (1 + direction * 0.12);
+    return value;
+  }
+
+  if (calculator.formula === 'roth-traditional') {
+    if (key === 'currenttaxrate') return value;
+    if (key === 'futuretaxrate') return value - direction * Math.max(0.5, value * 0.15);
+    if (key === 'rate') return value + direction * Math.max(0.5, value * 0.12);
+  }
+
+  if (calculator.formula === 'insurance') {
+    if (key === 'years' || key === 'debts') {
+      const step = key === 'years' ? Math.max(1, Math.round(value * 0.1)) : value * 0.1;
+      return value - direction * step;
+    }
+    if (key === 'savings') {
+      return value * (1 + direction * 0.12);
+    }
+    return value;
+  }
+
+  if (calculator.formula === 'roi') {
+    if (key === 'gain') {
+      return value + direction * (Math.abs(value) > 0 ? Math.abs(value) * 0.08 : 100);
+    }
+    if (key === 'cost') {
+      const gainVal = allValues.gain ?? 0;
+      if (gainVal < 0) return value;
+      return value * (1 - direction * 0.1);
+    }
+    return value;
+  }
+
+  if (calculator.formula === 'social-security') {
+    const earlyVal = allValues.early ?? 0;
+    const fullVal = allValues.full ?? 0;
+    if (key === 'full' && fullVal > earlyVal) {
+      return value + direction * Math.max(25, (fullVal - earlyVal) * 0.15);
+    }
+    if (key === 'delayyears' && fullVal > earlyVal) {
+      const step = Math.max(1, Math.round(value * 0.1));
+      return Math.max(1, value - direction * step);
+    }
+    return value;
+  }
+
+  if (calculator.formula === 'rmd') {
+    if (key === 'divisor') {
+      return Math.max(1, value - direction * Math.max(0.5, Number((value * 0.05).toFixed(1))));
+    }
+    if (key === 'balance') {
+      return value * (1 + direction * 0.08);
+    }
+    return value;
+  }
+
+  if (calculator.formula === 'balance-transfer') {
+    if (key === 'balance' || key === 'currentrate' || key === 'payment') return value;
+    if (key === 'newrate' || key === 'feerate') return Math.max(0, value - direction * Math.max(0.5, value * 0.15));
+    if (key === 'promomonths') return Math.max(1, value + direction * Math.max(1, Math.round(value * 0.1)));
+    return value;
+  }
+
+  if (calculator.formula === 'debt-strategy') {
+    if (key === 'debt1rate') return value + direction * Math.max(0.5, value * 0.15);
+    if (key === 'extrapayment') return Math.max(0, value - direction * Math.max(20, value * 0.12));
+    return value;
+  }
+
+  if (calculator.formula === 'refinance') {
+    if (key === 'principal' || key === 'currentrate' || key === 'years') return value;
+    if (key === 'newrate') return Math.max(0.1, value - direction * Math.max(0.25, value * 0.08));
+    if (key === 'closingcosts') return value * (1 - direction * 0.1);
+    return value;
+  }
+
+  if (calculator.formula === 'points') {
+    if (key === 'principal' || key === 'rate' || key === 'years') return value;
+    if (key === 'newrate') return Math.max(0.1, value - direction * 0.25);
+    if (key === 'closingcosts') return value * (1 - direction * 0.1);
+    return value;
+  }
+
+  if (calculator.formula === 'loan-prepayment') {
+    if (key === 'principal' || key === 'rate' || key === 'years') return value;
+    if (key === 'prepayment') {
+      const principalVal = allValues.principal ?? value;
+      if (direction === 1 && value >= principalVal) return principalVal;
+      return Math.min(principalVal, value * (1 + direction * 0.12));
+    }
+    return value;
+  }
+
+  if (calculator.formula === 'mortgage-recast') {
+    if (key === 'principal' || key === 'rate' || key === 'years') return value;
+    if (key === 'prepayment') return value * (1 + direction * 0.12);
+    if (key === 'extramonthlypayment' || key === 'extraannualpayment') return value * (1 + direction * 0.12);
+    return value;
+  }
+
+  if (calculator.formula === 'closing-costs') {
+    if (key === 'homeprice' || key === 'downpayment') return value;
+    if (key === 'rate') return Math.max(0.1, value - direction * Math.max(0.5, value * 0.15));
+    return value;
+  }
+
+  if (calculator.formula === 'balloon-loan') {
+    if (key === 'principal' || key === 'years') return value;
+    if (key === 'rate') return Math.max(0.1, value - direction * Math.max(0.5, value * 0.15));
+    if (key === 'balloonyears') return Math.max(1, value + direction * 1);
+    return value;
+  }
+
   if (input.type === 'percent') {
-    if (/effective|tax|tds|gst|pmi|fee|apr|interest|rate/.test(text)) {
+    if (/\b(effective|tax(?:es)?|tds|gst|pmi|fees?|apr|interest|rates?)\b/.test(text)) {
       const costDirection = riskierRateStudios.has(studio) ? -direction : direction;
       return value + costDirection * Math.max(0.5, value * 0.15);
     }
@@ -439,21 +623,42 @@ function adjustInput(
   }
 
   if (input.type === 'currency') {
-    if (/expense|rent|withdrawal|debt|liabilit|cost|fee|tax/.test(text)) {
+    if (calculator.formula === 'debt-payoff' && key === 'balance') {
+      return value;
+    }
+
+    if (
+      studio === 'Debt Payoff Studio' &&
+      /\b(balance|principal|debt|loan amount)\b/.test(text)
+    ) {
+      return value * (1 - direction * 0.08);
+    }
+
+    if (
+      key !== 'income' &&
+      key !== 'principal' &&
+      key !== 'current' &&
+      key !== 'currentsavings' &&
+      /\b(expenses?|rent|withdrawals?|debts?|liabilit(?:y|ies)|costs?|fees?|tax(?:es)?|deductions?)\b/.test(text)
+    ) {
       return value * (1 - direction * 0.1);
     }
 
-    if (/payment|contribution|deposit|sip|saving|income|salary|ctc|employee|employer|annual/.test(text)) {
+    if (/\b(payments?|contributions?|deposits?|sip|savings?|income|salary|ctc|employee|employer|annual|current)\b/.test(text)) {
       return value * (1 + direction * 0.12);
     }
 
-    if (/principal|balance|corpus|asset|home price|loan amount|gain|final/.test(text)) {
+    if (/\b(principal|balance|corpus|assets?|home price|loan amount|gain|final|initial)\b/.test(text)) {
       return value * (1 + direction * 0.08);
     }
   }
 
-  if (/year|term|tenure|support|delay|period|months|coverage/.test(text)) {
-    const step = /month|coverage/.test(text) ? 1 : Math.max(1, Math.round(value * 0.1));
+  if (input.type !== 'currency' && /\b(years?|terms?|tenures?|support|delays?|periods?|months?|coverage)\b/.test(text)) {
+    if (!/\b(months?|coverage)\b/.test(text) && value > 0 && value <= 1) {
+      const step = Math.max(0.25, Number((value * 0.25).toFixed(2)));
+      return Math.max(input.min || 0.25, value + direction * step);
+    }
+    const step = /\b(months?|coverage)\b/.test(text) ? 1 : Math.max(1, Math.round(value * 0.1));
     return value + direction * step;
   }
 
@@ -472,7 +677,7 @@ export function isMarketGrowth(calculator: SeoCalculator): boolean {
 }
 
 function scenarioLabel(calculator: SeoCalculator, id: CalculatorScenarioId): string {
-  if (calculator.formula === 'investment-return') return id === 'base' ? 'Your inputs' : id === 'conservative' ? 'Case A' : 'Case B';
+  if (neutralCaseFormulas.has(calculator.formula)) return id === 'base' ? 'Your inputs' : id === 'conservative' ? 'Case A' : 'Case B';
   if (calculator.formula === 'fd') return id === 'base' ? 'Your deposit' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (calculator.formula === 'rd') return id === 'base' ? 'Your deposits' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (isMarketGrowth(calculator)) return id === 'base' ? 'Your plan' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
@@ -490,6 +695,28 @@ function scenarioDescription(calculator: SeoCalculator, id: CalculatorScenarioId
 
   if (calculator.formula === 'investment-return') {
     return 'Changes the ending value and holding period together. This is a sensitivity check, not a performance forecast.';
+  }
+
+  if (calculator.formula === 'xirr') {
+    return 'Changes the ending value, contributions and holding period together. This is a sensitivity check, not a performance forecast.';
+  }
+
+  if (calculator.formula === 'social-security') {
+    return id === 'conservative'
+      ? 'Tests a smaller delayed benefit increase or longer waiting period to show a slower catch-up horizon.'
+      : 'Tests a larger delayed benefit increase or shorter waiting period to show a faster catch-up horizon.';
+  }
+
+  if (calculator.formula === 'rmd') {
+    return id === 'conservative'
+      ? 'Tests a lower account balance with a slightly longer IRS distribution period.'
+      : 'Tests a higher account balance with a slightly shorter IRS distribution period.';
+  }
+
+  if (calculator.formula === 'inflation') {
+    return id === 'conservative'
+      ? 'Tests a lower annual inflation rate and shorter time horizon on the same starting cost.'
+      : 'Tests a higher annual inflation rate and longer time horizon on the same starting cost.';
   }
 
   if (calculator.formula === 'fd') {
@@ -831,7 +1058,13 @@ function comparisonChart(
       note: scenario.description,
       primary: scenario.result.metrics[0]?.value ?? 0,
       secondary: scenario.id === 'base' ? (result.metrics[0]?.value ?? 0) : undefined,
-      tone: scenario.id === 'base' ? 'accent' : scenario.id === 'optimistic' ? 'positive' : 'warning',
+      tone: scenario.id === 'base'
+        ? 'accent'
+        : neutralCaseFormulas.has(calculator.formula)
+          ? 'neutral'
+          : scenario.id === 'optimistic'
+            ? 'positive'
+            : 'warning',
       valueType
     })),
     legend: {

@@ -1,0 +1,84 @@
+{
+  "checkpoint": "C33",
+  "task": "B69",
+  "date": "2026-11-10",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "cc30c52681a9a1b5ed7d8597de375b483ead098e",
+  "base": "24bf4362b633acc23cddbf7a2b5673dbc7f4a1c9",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/159",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 42886994380,
+    "event": "pull_request",
+    "headSha": "cc30c52681a9a1b5ed7d8597de375b483ead098e",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/42886994380"
+  },
+  "candidate": {
+    "deployment_id": "9f0b39cc-0eb2-41c3-8c2c-bf9893fc9eea",
+    "immutable_url": "https://9f0b39cc.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://codex-scenario-sensitivity-r.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "e2fcc757-44a4-44fd-9f55-2ceea853b036",
+    "immutable_url": "https://e2fcc757.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "tests": {
+    "node": 30,
+    "files": 112,
+    "vitest": 2876,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "cc30c52681a9a1b5ed7d8597de375b483ead098e"
+  },
+  "independent_review": {
+    "reviewer_conversation_id": "963bf67e-0781-4ee1-8151-2f9152975bd9",
+    "role": "B69 C33 Adversarial Reviewer",
+    "completed": true,
+    "verdict": "PASS",
+    "findings": []
+  },
+  "source_hashes": [
+    {
+      "path": "scripts/smoke/c33-scenarios-sensitivity.mjs",
+      "bytes": 2527,
+      "sha256": "e2a603f49d5105dbb5938beca0ba3bfa316320ab1b976f33b25a7dacb90a442a"
+    },
+    {
+      "path": "src/CalculatorLibrary.tsx",
+      "bytes": 86144,
+      "sha256": "4aebcf78d6292ef9e7ab2c04132c0ff79746b546eb327dd8edc1d6d0bf51cc94"
+    },
+    {
+      "path": "src/lib/calculatorEngagement.ts",
+      "bytes": 12401,
+      "sha256": "6eb672d310b0e6add551c991e58dbc9dc5c1461246164baf09aca6477b8e030e"
+    },
+    {
+      "path": "src/lib/calculatorStudios.ts",
+      "bytes": 148752,
+      "sha256": "537186c05c713a500329d77ccc299b414edc90611ef07063cb92252fb595ba5d"
+    },
+    {
+      "path": "src/lib/scenarioSensitivityReconciliation.test.ts",
+      "bytes": 18883,
+      "sha256": "2acbf5893d824bad9f51dc0870a0badae01e0626d13d422709016618b236f19f"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C33/raw/beta-hosted.json",
+      "bytes": 9381,
+      "sha256": "4ae420cd35dd41c75a977bb1a0477e875490ad3738ea8b29e9a0dc0c2f8569eb"
+    },
+    {
+      "path": "docs/execution/evidence/C33/raw/candidate-hosted.json",
+      "bytes": 9383,
+      "sha256": "8bf303d2183168ae654fcb75107ef1224df02e5527a7947fb5a8d5260e8e1f78"
+    }
+  ]
+}

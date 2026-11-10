@@ -1,0 +1,77 @@
+{
+  "checkpoint": "C33",
+  "task": "B69",
+  "verifiedAt": "2026-11-10",
+  "oracles": [
+    {
+      "slug": "retirement",
+      "inputs": {
+        "currentSavings": 85000,
+        "monthlySavings": 1500,
+        "years": 25,
+        "rate": 7,
+        "annualIncome": 60000
+      },
+      "expectedConservativeCurrentSavings": 74800,
+      "expectedBaseCurrentSavings": 85000,
+      "expectedOptimisticCurrentSavings": 95200,
+      "expectedScenarioAnnualIncome": 60000
+    },
+    {
+      "slug": "ppf",
+      "inputs": {
+        "annual": 150000,
+        "rate": 7.1,
+        "years": 15
+      },
+      "expectedAnnualLowerInput": 135000,
+      "expectedAnnualHigherInput": 150000,
+      "expectedAnnualDirection": "raises",
+      "expectedYearsLowerInput": 13,
+      "expectedYearsHigherInput": 17
+    },
+    {
+      "slug": "inflation",
+      "inputs": {
+        "principal": 10000,
+        "rate": 4,
+        "years": 10
+      },
+      "expectedScenarioPrincipal": 10000,
+      "expectedRateLowerInput": 3.6,
+      "expectedRateHigherInput": 4.4
+    },
+    {
+      "slug": "roi",
+      "inputs": {
+        "gain": -5000,
+        "cost": 20000
+      },
+      "expectedConservativeGain": -5600,
+      "expectedBaseGain": -5000,
+      "expectedOptimisticGain": -4400,
+      "expectedBaseRoiPercent": -25,
+      "expectedConservativeRoiPercent": -28,
+      "expectedOptimisticRoiPercent": -22
+    },
+    {
+      "slug": "xirr",
+      "inputs": {
+        "initial": 10000,
+        "monthly": 500,
+        "final": 50000,
+        "years": 5
+      },
+      "expectedScenarioLabels": [
+        "Case A",
+        "Your inputs",
+        "Case B"
+      ],
+      "expectedChartTones": [
+        "neutral",
+        "accent",
+        "neutral"
+      ]
+    }
+  ]
+}

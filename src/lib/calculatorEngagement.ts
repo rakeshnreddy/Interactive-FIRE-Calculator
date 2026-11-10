@@ -19,11 +19,13 @@ export type CalculatorInputImpact = {
   higherOutput: number;
   inputKey: string;
   inputLabel: string;
+  isPrimaryDriver?: boolean;
   lowerInput: number;
   lowerOutput: number;
   magnitude: number;
   relativeMagnitude: number;
   summary: string;
+  targetValueType?: CalculatorResult['metrics'][number]['valueType'];
 };
 
 export type CalculatorShareState = {
@@ -116,6 +118,62 @@ export function buildCalculatorSummaryCsv(
   return rows.map((row) => row.map(csvEscape).join(',')).join('\n');
 }
 
+function computeTestChange(
+  calculator: SeoCalculator,
+  values: Record<string, number>,
+  input: CalculatorInput,
+  current: number
+): number {
+  const key = input.key.toLowerCase();
+
+  if (calculator.formula === 'ppf' && key === 'years') {
+    return Math.max(1, Math.round(Math.max(Math.abs(current) * 0.1, Math.abs(input.defaultValue) * 0.1, 1)));
+  }
+
+  if (/\b(years?|terms?|tenures?)\b/.test(key) && current > 0 && current <= 1) {
+    return Math.max(0.25, Number((current * 0.25).toFixed(2)));
+  }
+
+  if (input.type === 'percent') {
+    if (Math.abs(current) > 1e-9) {
+      return Number((Math.abs(current) * 0.1).toFixed(6));
+    }
+    return Math.max(Math.abs(input.defaultValue) * 0.1, minimumTestChange(input));
+  }
+
+  if (input.type === 'currency' && Math.abs(current) <= 1e-9 && Math.abs(input.defaultValue) <= 1e-9) {
+    const flowKeys = ['payment', 'monthly', 'debt1minimum', 'rent'];
+    const flowInput = calculator.inputs.find(
+      (item) => item.type === 'currency' && flowKeys.includes(item.key.toLowerCase()) && (values[item.key] ?? item.defaultValue) > 0
+    );
+    if (flowInput) {
+      const flowVal = values[flowInput.key] ?? flowInput.defaultValue;
+      const multiplier = /annual|yearly|topup/i.test(key) ? 1.2 : 0.1;
+      return Math.max(50, Math.round(flowVal * multiplier));
+    }
+    const maxCurrency = Math.max(
+      0,
+      ...calculator.inputs
+        .filter((item) => item.type === 'currency')
+        .map((item) => Math.abs(values[item.key] ?? item.defaultValue))
+    );
+    if (maxCurrency > 0) {
+      if (/monthly|hoa|insurance/i.test(key) && !/annual|yearly/i.test(key)) {
+        return 50;
+      }
+      if (/annualtaxes|annualinsurance/i.test(key)) {
+        return 600;
+      }
+      if (/annual|yearly|topup/i.test(key)) {
+        return Math.max(100, Math.round(maxCurrency * 0.005));
+      }
+      return Math.max(100, Math.round(maxCurrency * 0.05));
+    }
+  }
+
+  return Math.max(Math.abs(current) * 0.1, Math.abs(input.defaultValue) * 0.1, minimumTestChange(input));
+}
+
 function inputImpact(
   calculator: SeoCalculator,
   values: Record<string, number>,
@@ -124,32 +182,94 @@ function inputImpact(
   baseResult: CalculatorResult
 ): CalculatorInputImpact | null {
   const current = values[input.key] ?? input.defaultValue;
-  const change = Math.max(Math.abs(current) * 0.1, Math.abs(input.defaultValue) * 0.1, minimumTestChange(input));
-  const lowerInput = clampInput(input, current - change);
-  const higherInput = clampInput(input, current + change);
+  const change = computeTestChange(calculator, values, input, current);
+  const isShortYear = /\b(years?|terms?|tenures?)\b/.test(input.key.toLowerCase()) && current > 0 && current <= 1;
+  const lowerInput = isShortYear
+    ? Math.max(input.min || 0.25, clampInput(input, Number((current - change).toFixed(6))))
+    : clampInput(input, Number((current - change).toFixed(6)));
+  const higherInput = clampInput(input, Number((current + change).toFixed(6)));
   const lowerResult = calculateSeoCalculator(calculator, { ...values, [input.key]: lowerInput });
   const higherResult = calculateSeoCalculator(calculator, { ...values, [input.key]: higherInput });
   // A state transition can replace years with money. Those values cannot be subtracted.
   if ([lowerResult, higherResult].some(r => r.metrics[0]?.label !== baseResult.metrics[0]?.label || r.metrics[0]?.valueType !== baseResult.metrics[0]?.valueType)) return null;
-  const lowerOutput = primaryOutput(lowerResult);
-  const higherOutput = primaryOutput(higherResult);
-  const magnitude = Math.max(Math.abs(lowerOutput - baseOutput), Math.abs(higherOutput - baseOutput));
-  const direction = directionFrom(baseOutput, higherOutput);
+  let effectiveBase = baseOutput;
+  let lowerOutput = primaryOutput(lowerResult);
+  let higherOutput = primaryOutput(higherResult);
+  let magnitude = Math.max(Math.abs(lowerOutput - effectiveBase), Math.abs(higherOutput - effectiveBase));
+  let direction = directionFrom(effectiveBase, lowerOutput, higherOutput);
+  let targetLabel = 'the headline result';
+  let isPrimaryDriver = true;
+  let targetValueType = baseResult.metrics[0]?.valueType;
+
+  if (magnitude <= 1e-9 && baseResult.metrics.length > 1) {
+    const primaryValueType = baseResult.metrics[0]?.valueType;
+    const orderedSecondary = [
+      ...baseResult.metrics.slice(1).filter((m) => m.valueType === primaryValueType),
+      ...baseResult.metrics.slice(1).filter((m) => m.valueType !== primaryValueType)
+    ];
+    for (const baseMetric of orderedSecondary) {
+      const lowerMetric = lowerResult.metrics.find((m) => m.label === baseMetric.label && m.valueType === baseMetric.valueType);
+      const higherMetric = higherResult.metrics.find((m) => m.label === baseMetric.label && m.valueType === baseMetric.valueType);
+      if (!lowerMetric || !higherMetric) continue;
+      const bVal = Number.isFinite(baseMetric.value) ? baseMetric.value : 0;
+      const lVal = Number.isFinite(lowerMetric.value) ? lowerMetric.value : 0;
+      const hVal = Number.isFinite(higherMetric.value) ? higherMetric.value : 0;
+      const m = Math.max(Math.abs(lVal - bVal), Math.abs(hVal - bVal));
+      if (m > 1e-9) {
+        effectiveBase = bVal;
+        lowerOutput = lVal;
+        higherOutput = hVal;
+        magnitude = m;
+        direction = directionFrom(bVal, lVal, hVal);
+        targetLabel = lowerKeepingAcronyms(baseMetric.label);
+        isPrimaryDriver = false;
+        targetValueType = baseMetric.valueType;
+        break;
+      }
+    }
+  }
+
+  if (magnitude <= 1e-9) {
+    const addedHigherMetric = higherResult.metrics
+      .slice(1)
+      .find((hm) => !baseResult.metrics.some((bm) => bm.label === hm.label));
+    if (addedHigherMetric && Number.isFinite(addedHigherMetric.value)) {
+      const bVal = baseOutput;
+      const hVal = addedHigherMetric.value;
+      const m = Math.abs(hVal - bVal);
+      if (m > 1e-9) {
+        effectiveBase = bVal;
+        lowerOutput = bVal;
+        higherOutput = hVal;
+        magnitude = m;
+        direction = directionFrom(bVal, bVal, hVal);
+        targetLabel = lowerKeepingAcronyms(addedHigherMetric.label);
+        isPrimaryDriver = false;
+        targetValueType = addedHigherMetric.valueType;
+      }
+    }
+  }
+
+  const isRoiLossCost = calculator.formula === 'roi' && (values.gain ?? 0) < 0 && input.key === 'cost';
 
   return {
-    baseOutput,
+    baseOutput: effectiveBase,
     direction,
     higherInput,
     higherOutput,
     inputKey: input.key,
     inputLabel: input.label,
+    isPrimaryDriver,
     lowerInput,
     lowerOutput,
     magnitude,
-    relativeMagnitude: Math.abs(baseOutput) > 1e-9 ? magnitude / Math.abs(baseOutput) : magnitude,
+    relativeMagnitude: Math.abs(effectiveBase) > 1e-9 ? magnitude / Math.abs(effectiveBase) : magnitude,
     summary: direction === 'unchanged'
-      ? `${input.label} does not change the headline result inside this test range.`
-      : `A higher ${lowerKeepingAcronyms(input.label)} ${direction} the headline result when other inputs stay fixed.`
+      ? `${input.label} does not change ${targetLabel} inside this test range.`
+      : isRoiLossCost
+        ? `A higher ${lowerKeepingAcronyms(input.label)} spreads the fixed loss over a larger cost base when other inputs stay fixed.`
+        : `A higher ${lowerKeepingAcronyms(input.label)} ${direction} ${targetLabel} when other inputs stay fixed.`,
+    targetValueType
   };
 }
 
@@ -163,10 +283,16 @@ function primaryOutput(result: CalculatorResult): number {
   return Number.isFinite(value) ? value : 0;
 }
 
-function directionFrom(base: number, higher: number): CalculatorInputImpact['direction'] {
-  const difference = higher - base;
-  if (Math.abs(difference) <= 1e-9) return 'unchanged';
-  return difference > 0 ? 'raises' : 'lowers';
+function directionFrom(base: number, lower: number, higher: number): CalculatorInputImpact['direction'] {
+  const higherDiff = higher - base;
+  if (Math.abs(higherDiff) > 1e-9) {
+    return higherDiff > 0 ? 'raises' : 'lowers';
+  }
+  const lowerDiff = base - lower;
+  if (Math.abs(lowerDiff) > 1e-9) {
+    return lowerDiff > 0 ? 'raises' : 'lowers';
+  }
+  return 'unchanged';
 }
 
 function normalizeValues(calculator: SeoCalculator, values: Record<string, number>): Record<string, number> {

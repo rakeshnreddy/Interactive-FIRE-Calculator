@@ -1,0 +1,37 @@
+{
+  "checkpoint": "C33",
+  "task": "B69",
+  "verifiedAt": "2026-11-10",
+  "redPhase": {
+    "command": "npx vitest run src/lib/scenarioSensitivityReconciliation.test.ts",
+    "totalTests": 6,
+    "passed": 1,
+    "failed": 5
+  },
+  "greenPhase": {
+    "focusedSuites": [
+      {
+        "command": "npx vitest run src/lib/scenarioSensitivityReconciliation.test.ts",
+        "exitCode": 0,
+        "testsPassed": 6
+      },
+      {
+        "command": "npx vitest run src/lib/calculatorEngagement.test.ts src/lib/calculatorStudios.test.ts src/DepositPresentation.test.tsx src/RdScheduleReconciliation.test.tsx src/MarketGrowthPresentation.test.tsx src/PpfGratuityTerms.test.tsx src/ReturnMethodGuidance.test.tsx src/lib/socialSecurityStates.test.ts",
+        "exitCode": 0,
+        "testsPassed": 599
+      }
+    ],
+    "fullSuite": {
+      "command": "./scripts/test_all.sh",
+      "exitCode": 0,
+      "nodeTestsPassed": 30,
+      "vitestFilesPassed": 112,
+      "vitestTestsPassed": 2876,
+      "typecheck": "PASS",
+      "productionBuild": "PASS",
+      "prerenderedRoutes": 92,
+      "buildIsolationFiles": 26,
+      "fixtureLeaks": 0
+    }
+  }
+}
