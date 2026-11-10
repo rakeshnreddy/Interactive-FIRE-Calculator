@@ -1430,7 +1430,14 @@ function CalculatorEngagementPanel({
             </div>
           </div>
           <div className="calculator-driver-list">
-            {impacts.slice(0, 4).map((impact, index) => (
+            {[...impacts]
+              .sort(
+                (left, right) =>
+                  (right.isPrimaryDriver !== false ? 1 : 0) - (left.isPrimaryDriver !== false ? 1 : 0) ||
+                  right.magnitude - left.magnitude
+              )
+              .slice(0, 4)
+              .map((impact, index) => (
               <article key={impact.inputKey}>
                 <span>{index + 1}</span>
                 <div>
@@ -1798,8 +1805,7 @@ function changedInputsLabel(
 ): string {
   const changed = calculator.inputs
     .filter((input) => Math.abs((scenario.values[input.key] ?? 0) - (baseScenario.values[input.key] ?? 0)) > 1e-9)
-    .map((input) => input.label)
-    .slice(0, 3);
+    .map((input) => input.label);
 
   return changed.length > 0 ? `Changes ${changed.join(', ')}.` : 'Uses the values entered above.';
 }
@@ -1810,7 +1816,8 @@ function formatImpact(
   calculator: SeoCalculator
 ): string {
   if (!metric) return impact.magnitude.toLocaleString(undefined, { maximumFractionDigits: 2 });
-  return `up to ${formatMetric({ ...metric, value: impact.magnitude }, calculator)}`;
+  const valueType = impact.targetValueType ?? metric.valueType;
+  return `up to ${formatMetric({ ...metric, value: impact.magnitude, valueType }, calculator)}`;
 }
 
 function formatSavedMetric(saved: CalculatorSavedResult, calculator: SeoCalculator): string {
