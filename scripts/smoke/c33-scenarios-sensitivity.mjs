@@ -35,10 +35,10 @@ export default {
           for (const theme of ['light', 'dark']) {
             await page.setViewportSize({ width, height: 900 });
             await gotoTheme(page, `${config.url}${route}`, theme);
-            await page.locator('.calculator-result-panel').waitFor({ state: 'visible' });
+            await page.locator('.calculator-result-panel').first().waitFor({ state: 'visible' });
             const layout = await measureLayout(page);
             check(!layoutProblems(layout).length, `${route}/${width}/${theme}: ${layoutProblems(layout).join('; ')}`);
-            const primaryText = await page.locator('.calculator-result-metric-primary strong').innerText();
+            const primaryText = await page.locator('.calculator-result-metric-primary strong').first().innerText();
             check(primaryText.length > 0 && !/NaN|Infinity/i.test(primaryText), `Invalid primary metric on ${route}: ${primaryText}`);
             const bodyText = await page.locator('main').innerText();
             check(!/\.00000\d/.test(bodyText), `Float tail artifact on ${route}: ${bodyText}`);
