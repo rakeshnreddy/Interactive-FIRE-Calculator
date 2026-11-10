@@ -1,10 +1,6 @@
-# Current continuation — 2026-10-29
+# Current continuation — 2026-11-10
 
-Read [RESUME.md](RESUME.md) first. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`; preserve the stale Documents/ChatGPT copy. B68/C30, B70/C31 and B78/C38 are accepted with verified shared-beta releases. B78 accepted build 27e2ece, beta immutable b290c057. Resolve PR #157’s observed final CI/merge/main-CI landing receipt and actual Git state before new work. Do not repeat completed releases.
-
-If landing remains unfinished, finish PR #157 first. Otherwise register B71/C32’s bounded debt/loan math contract from verified clean main before implementation. The old handoff’s B71=homepage label was wrong. B78 isolates the homepage stage from B74; library/shared templates and other original proposal IDs still require separate registration. The October 18 analysis is complete and immutable; do not rerun it. Preserve the full tests/PR/exact CI/isolated candidate/verified beta/landing loop after each checkpoint.
-
-Direct implementation; no Gemini or broad agent fan-out. Narrow independent review is permitted. Production, native-reader/zoom and real-user evidence gates remain in force. Current release details, compatibility readers, source/performance limits and exact resumption actions are in RESUME. This continuation supersedes the retained historical brief’s old counts, release state and initial-analysis instructions.
+Read RESUME.md. Work in `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`; preserve the stale Documents/ChatGPT copy. B68/B70/B78/B71 are accepted and shared-beta verified. B71/C32 accepted at product commit `b39e5ab89a860c20b890ccb38e8a2d4faf875450` ([PR #158](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/158), CI `42863937608`, candidate `https://d416d469.interactive-fire-calculator.pages.dev`, beta `https://d8f0a5f4.interactive-fire-calculator.pages.dev` / `https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`). If PR #158 is still open, complete its final docs CI, merge, and `main` CI verification first; once merged and `main` CI is green, register and execute **B69 / C33** (scenario sensitivity and return/XIRR disclosure from `docs/calculator-excellence/ANALYSIS_2026-10-18.md`) through the full release loop. Do not rerun the completed immutable analysis or repeat B68/B70/B78/B71. Direct implementation, no Gemini/broad fan-out, narrow independent review allowed. Production/reader/zoom/real-user gates unchanged.
 
 ---
 

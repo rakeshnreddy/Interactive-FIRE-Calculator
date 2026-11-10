@@ -93,7 +93,7 @@ const definitions: Record<string, ScopeDefinition> = {
   'fha-vs-conventional': {
     included: 'A same-rate monthly payment comparison with simplified insurance costs.',
     excluded: 'Qualification, different lender offers, insurance duration and other housing costs.',
-    basis: v => `FHA upfront 1.75% and annual MIP 0.55% are fixed model assumptions, not an applicable-rate determination. Conventional PMI ${percent(v, 'pmiRate')} is your entry. Both options use the same loan rate and term.`,
+    basis: v => `FHA upfront 1.75% and annual MIP 0.55% are fixed model assumptions, not an applicable-rate determination. Conventional PMI ${percent(v, 'pmiRate')} is your entry and is modeled as 0 at 80% initial LTV or below; existing-loan cancellation at 80% by request or 78% scheduled termination depends on CFPB and servicer conditions. Both options use the same loan rate and term.`,
     sources: [fha, pmi]
   },
   '401k': {
@@ -147,7 +147,7 @@ const definitions: Record<string, ScopeDefinition> = {
   pmi: {
     included: 'Flat monthly PMI cost and the loan-to-value of your entered purchase.',
     excluded: 'Insurer pricing, lender approval and cancellation/termination schedules.',
-    basis: v => `Annual PMI assumption ${percent(v, 'rate')} applied to purchase price less down payment. Confirm your quote and cancellation conditions with the servicer.`,
+    basis: v => `Annual PMI assumption ${percent(v, 'rate')} applied to purchase price less down payment above 80% initial LTV (0 at 80% LTV or below). Under CFPB guidance, borrowers may request cancellation at 80% of original value and servicers generally terminate at 78% scheduled LTV when conditions are met; this initial-purchase estimate is not existing-loan cancellation advice.`,
     sources: [pmi]
   },
   heloc: {

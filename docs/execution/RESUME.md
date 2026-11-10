@@ -1,29 +1,33 @@
-# FinPath execution resume — 2026-10-29
+# FinPath execution resume — 2026-11-10
 
-**B78/C38 homepage accepted; shared beta verified. 68 of 71 registered tasks done.** Accepted build `27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4`, [PR #157](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/157), [review](reviews/C38.md), [submission](submissions/B78.md), [before/after board](evidence/C38/design-board.md). Final documentation CI, merge and main-CI authority is the observed PR #157 landing receipt. Resolve its actual state before new work; do not repeat completed B68/B70/B78 releases.
+**B71/C32 debt/loan reconciliation accepted; shared beta verified. 69 of 72 registered tasks done.** Accepted product commit `b39e5ab89a860c20b890ccb38e8a2d4faf875450`, baseline `main` `e2b77cebf279bdaaf26e2697eb910f7518cae1c6`, [PR #158](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/158), [C32 review](reviews/C32.md), [B71 submission](submissions/B71.md), [B71 contract](prompts/B71.md), [hosted evidence](evidence/C32/hosted.json), [provenance manifest](evidence/C32/manifest.json). Final documentation CI, merge, and `main` CI authority is the PR #158 landing receipt. Resolve its actual state before starting the next checkpoint; do not repeat completed B68/B70/B78/B71 releases.
 
 ## Working copy and exact next action
 
-Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. Documents/ChatGPT is stale at PR #138; preserve it. Current implementation branch is `codex/luminous-homepage`. Only owned changes were staged. The application source is frozen at 27e2ece (runtime identical to reviewed 06cbc31); later release records may have newer commit IDs.
+Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `Documents/ChatGPT` is stale at PR #138; preserve it. Current implementation branch is `codex/debt-loan-reconciliation`. Only owned changes were staged.
 
-If PR #157 is open, finish its exact final-head CI/merge/main-CI loop and record the landing receipt; inspect current state first. If it is merged and main CI is green, use clean current main and register **B71/C32 debt/loan fixes** before implementation. B71 was incorrectly called homepage in an old handoff; the immutable October 18 audit retains debt/loan scope. B78 isolates B74’s homepage stage; library/shared-template and B69/B72–B76 remain proposals. Do not rerun the completed multi-agent analysis or redesign B70’s shell again. Direct implementation; no Gemini or broad fan-out. Narrow independent review is permitted. The owner authorizes sequential push, release and beta deployment with durable resumption docs.
+1. If PR #158 is open, wait for exact final-head CI on the documentation commit, merge PR #158 to `main`, and verify `main` CI green.
+2. Once `main` is updated and `main` CI is green, register **B69 / C33** (Scenario sensitivity and return/XIRR disclosure from `docs/calculator-excellence/ANALYSIS_2026-10-18.md`) before implementation (`docs/execution/prompts/B69.md`, `TASK_STATUS.json`, `CHECKPOINTS.md`, `EXECUTION_BACKLOG.md`).
+3. Remaining backlog after B71/C32:
+   - **B69 / C33:** Scenario sensitivity and return/XIRR disclosure (input clamping, distinct scenario vectors, honest sensitivity labels, XIRR out-of-range convergence state, inflation-adjusted withdrawal schedules).
+   - **B72 / C34:** US tax rules & retirement catch-up truth (2025 IRS brackets, Secure 2.0 catch-up, Roth MAGI phase-out, HSA family/individual toggle, Social Security bend points).
+   - **B73 / C35:** India statutory schemes & tax regime truth (FY 2025-26 Section 87A rebate, NPS 75% equity cap, SSY whole-year deposit validation, SCSS ₹30L cap, HRA metro toggle).
+   - **B74 / C36:** Calculator library & shared calculator template visual rollout (`CalculatorLibrary.tsx` & shared studio views).
+   - **B75 / C37:** Dedicated calculator visual rollout & chart language (`HeroFireExample`, `XirrCalculator`, compound/savings/cashflow/vehicle/housing dedicated views).
+   - **B76 / C39:** Signed-in workspace visual rollout & final legacy CSS retirement (`PlanningWorkspace`, `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/reports`, `/settings`).
 
-## Verified shared-beta release
+## Verified shared-beta release (C32 / B71)
 
-[Stable beta](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev/), immutable [b290c057](https://b290c057.interactive-fire-calculator.pages.dev), deployment `b290c057-ed62-4b06-98c2-8b38e956c8d6`, clean build source 27e2ece. Same accepted [candidate 71aa3a01](https://71aa3a01.interactive-fire-calculator.pages.dev), deployment 71aa3a01-9b40-4c5a-8c6a-c8924fb88bad. Product CI [40830619729](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/40830619729) passed. [Provider/assets/API](evidence/C38/beta-release.json), [browser](evidence/C38/browser.json), [hosted cleanup](evidence/C38/hosted.json), [CSV](evidence/C38/calculator-preservation.json), [provenance](evidence/C38/manifest.json), [beta protocol](BETA_RELEASE_PROTOCOL.md).
-
-30 Node checks, 110 Vitest files / 2,829 tests, typecheck, build, 92 prerenders and isolation pass. 15 runtime hashes/API boundaries/84 routes match candidate and both beta URLs. Each deployment: 136 public cases, 8 homepage theme/width cases, 24 explicit preferences, 54 synthetic signed-in/anonymous cases with cleanup, 42 calculator keyboard/CSV cases. 124 rendered text samples per theme have minimum ratios of 5.10 / 7.44. 3 selected PNGs below 300,000 bytes.
-
-All 72 paired lab observations retained. Home median LCP 312 → 288ms desktop and 268 → 248ms mobile; library 376 → 404ms desktop and 404 → 380ms mobile. Home maximum CLS: desktop 0.00593 → 0.0000196, mobile 0.02489 → 0.03004; library 0. Small mobile initial-shift increase and variable library timing are disclosed. Runtime JS +313 / CSS −3,196 gzip bytes, net −2,883. No blanket speed, field INP/Lighthouse/trace or accessibility-conformance claim.
+- **Stable beta alias:** [`https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev)
+- **Beta immutable URL:** [`https://d8f0a5f4.interactive-fire-calculator.pages.dev`](https://d8f0a5f4.interactive-fire-calculator.pages.dev) (`d8f0a5f4-13fb-4bb3-99a3-5a76dbcc758c`)
+- **Candidate immutable URL:** [`https://d416d469.interactive-fire-calculator.pages.dev`](https://d416d469.interactive-fire-calculator.pages.dev) (`d416d469-7c72-46c4-b5fe-0017cb1db723`)
+- **Product source SHA:** `b39e5ab89a860c20b890ccb38e8a2d4faf875450`
+- **Exact-head product CI:** [`42863937608`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/42863937608) (`SUCCESS`)
+- **Suite & hosted verification:** 30 Node checks, 111 Vitest files / 2,863 tests, `tsc --noEmit`, build, 92 prerenders, and bundle isolation passed (`./scripts/test_all.sh`). Candidate, beta immutable, and beta alias all passed 84 public routes (`smoke_public_calculators.mjs`), and candidate + beta immutable both passed `scripts/hosted_smoke.mjs --scenario c32-debt-loans` (`preflight`, `d1-reachable`, `sign-in`, 10 `signed-in-shell` cases, 28 `anonymous-account-gates` cases, 64 `debt-loan-routes` cases with CSV final-row reconciliation, and verified 16-table zero-row cleanup on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`).
 
 ## Compatibility and boundaries
 
-No calculation/model/storage/schema change. Never edit src/lib/fire.ts. Rollback to B70 main 6d60d61 retains B68 savings-goal-monthly-v1 and retirement-exact-term-v1 readers AND slug mappings. No backfill/migration. Homepage native GET applies to an already rendered form; initial no-JS prerender remains an SEO shell.
-
-Only preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`. Production remains 3399dbbd8d7f0e6379972356a790b236e6b177b1 with automatic deployments off. OA-1/OA-3 production auth, B51 real-user evidence, B13/B14 and native reader/zoom deferrals remain gated; do not invent evidence or ask again for already-deferred recruitment. No production D1, DNS or paid actions.
-
-## Evidence and resumption pitfalls
-
-Raw logs/scripts/downloads are ignored under evidence/C38/raw and `/private/tmp/finpath-home/`; STATE.md and release JSONs there preserve actual progress. Initial source-review quota interruption was followed by clean native 9.2 completion and final amendment/binding. Initial test receipt became stale during CSS edits; repaired suite is authoritative. Original initial-no-JS probe timeout is retained. First preference sample/revised reset assertion failed because a reused CDP page retained reduced-transparency after `features: []`; media-reset diagnostic proves it. Fresh owned contexts, explicit no-preference/none and actual rendered-style waits pass on candidate/beta. No application patch followed that probe failure. Preserve chronology; do not claim failed samples passed.
-
-Initial publication docs audit used its initial+one repair budget and is current; no third audit in that invocation. Final deployed-facts landing documentation is a separate bounded closure audit. Parent commits only audited owned records; PR landing receipt resolves post-documentation facts without recursive docs commits. Clean up only owned browser/server processes after landing.
+- Never edit `src/lib/fire.ts` unless explicitly contracted.
+- Rollback must retain all 14 `calculatorModelVersions` entries (`payback-v2`, `catch-up-v2`, `monthly-periodic-v1`, `dated-xirr-v1`, `vehicle-cost-v1`, `housing-budget-v1`, `savings-goal-monthly-v1`, `retirement-exact-term-v1`, `debt-payoff-v2`, `debt-strategy-v2`, `balance-transfer-v2`, `mortgage-recast-v2`, `pmi-ltv-v1`, `loan-boundary-v1`) and their slug mappings in `src/lib/calculatorModelVersion.ts`.
+- Only preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da` may be used. Production remains `3399dbbd8d7f0e6379972356a790b236e6b177b1` with automatic deployments off; never touch production D1 `a5860350-0a50-4ebe-9f5f-1d9916a908e6`.
+- OA-1/OA-3 production auth, B51 real-user evidence, B13/B14, and native reader/zoom deferrals remain gated. Raw logs in `docs/execution/evidence/**/raw/` remain untracked.

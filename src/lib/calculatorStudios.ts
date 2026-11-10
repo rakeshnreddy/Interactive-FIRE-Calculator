@@ -1,5 +1,6 @@
 import { housingBudget } from './housingBudget';
 import { calculateVehicleCost } from './vehicleLeaseBuy';
+import { projectDebt, projectDebtStrategy, projectTransfer } from './debtProjection';
 import {
   calculateSeoCalculator,
   BACK_END_DEBT_SHARE,
@@ -283,9 +284,9 @@ export function buildCalculatorDetailSchedule(
     case 'points':
       return pointsBreakEvenSchedule(calculator, normalized);
     case 'balloon-loan':
-      return balloonLoanSchedule(calculator, normalized);
+      return balloonLoanSchedule(calculator, { ...normalized, balloonYears: Number.isFinite(values.balloonYears) ? normalized.balloonYears : normalized.years });
     case 'balance-transfer':
-      return balanceTransferSchedule(calculator, normalized);
+      return balanceTransferSchedule(calculator, { ...normalized, promoMonths: Number.isFinite(values.promoMonths) ? normalized.promoMonths : Number.NaN });
     case 'biweekly-loan':
       return biweeklyLoanSchedule(calculator, normalized);
     case 'budget':
@@ -395,7 +396,7 @@ export function buildCalculatorDetailSchedule(
     case 'refinance':
       return refinanceComparisonSchedule(calculator, normalized);
     case 'rent-buy':
-      return rentBuySchedule(calculator, normalized);
+      return rentBuySchedule(calculator, { ...normalized, loanYears: Number.isFinite(values.loanYears) ? normalized.loanYears : 0 });
     case 'investment-return':
       return investmentReturnSchedule(calculator, normalized);
     case 'xirr':
@@ -893,8 +894,32 @@ function balloonLoanSchedule(_calculator: SeoCalculator, values: Record<string, 
   const years = Math.max(1, values.years ?? 1);
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const payment = loanPayment(principal, rate, years);
-  const balloonMonths = Math.max(1, Math.round(Math.min(values.balloonYears ?? years, years) * 12));
-  const rows = amortizationRows(principal, rate, balloonMonths / 12, payment, balloonMonths);
+  const rawBalloonYears = Number.isFinite(values.balloonYears) ? Math.max(0, values.balloonYears) : years;
+  const balloonMonths = Math.max(0, Math.round(Math.min(rawBalloonYears, years) * 12));
+  const rows = balloonMonths === 0
+    ? [{
+      id: 'balloon-month-0',
+      note: 'Balloon payment due immediately',
+      values: {
+        balloonDue: principal,
+        cumulativeInterest: 0,
+        endingBalance: principal,
+        interest: 0,
+        month: 0,
+        payment: 0,
+        period: 0,
+        principalPaid: 0,
+        year: 0
+      }
+    }]
+    : amortizationRows(principal, rate, balloonMonths / 12, payment, balloonMonths).map((row, index, all) => ({
+      ...row,
+      note: index === all.length - 1 ? 'Balloon payment due after this period' : row.note,
+      values: {
+        ...row.values,
+        balloonDue: index === all.length - 1 ? row.values.endingBalance : 0
+      }
+    }));
 
   return {
     columns: [
@@ -902,51 +927,39 @@ function balloonLoanSchedule(_calculator: SeoCalculator, values: Record<string, 
       moneyColumn('balloonDue', 'Balloon due', 'Remaining balance due at the balloon date.')
     ],
     description: 'Payment schedule until the balloon date, with the remaining payoff amount shown on the final row.',
-    rows: rows.map((row, index) => ({
-      ...row,
-      note: index === rows.length - 1 ? 'Balloon payment due after this period' : row.note,
-      values: {
-        ...row.values,
-        balloonDue: index === rows.length - 1 ? row.values.endingBalance : 0
-      }
-    })),
+    rows,
     summary: monthlyScheduleCapSummary(balloonMonths / 12, 'Shows the payment path to the balloon date and the balance still due at that point.'),
     title: 'Balloon payment schedule'
   };
 }
 
 function balanceTransferSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
-  const payment = Math.max(0, values.payment ?? 0);
-  const fee = Math.max(0, values.balance ?? 0) * Math.max(0, values.feeRate ?? 0) / 100;
-  const currentRate = Math.max(0, values.currentRate ?? 0) / 100;
-  const current = createDebtState(Math.max(0, values.balance ?? 0), currentRate);
-  const transfer = createDebtState(Math.max(0, values.balance ?? 0) + fee, Math.max(0, values.newRate ?? 0) / 100);
-  // Same two-phase model as the headline: the promo APR for promoMonths, then the current APR.
-  const promoMonths = Number.isFinite(values.promoMonths) ? Math.max(0, Math.round(values.promoMonths)) : Number.POSITIVE_INFINITY;
-  const rows: CalculatorDetailScheduleRow[] = [];
+  const { current, transfer, fee, promoMonths } = projectTransfer(values);
+  const rowCount = Math.max(current.rows.length, transfer.rows.length);
+  if (rowCount === 0) return null;
 
-  if (payment <= 0) return null;
+  const rows: CalculatorDetailScheduleRow[] = Array.from({ length: rowCount }, (_, index) => {
+    const month = index + 1;
+    const currentRow = current.rows[index];
+    const transferRow = transfer.rows[index];
+    const currentBalance = currentRow ? currentRow.endingBalance : 0;
+    const promoBalance = transferRow ? transferRow.endingBalance : 0;
+    const currentInterest = currentRow ? currentRow.cumulativeInterest : current.interest;
+    const promoCost = (transferRow ? transferRow.cumulativeInterest : transfer.interest) + fee;
 
-  for (let month = 1; month <= maxMonthlyScheduleMonths && (current.balance > 0 || transfer.balance > 0); month += 1) {
-    if (month === promoMonths + 1) transfer.rate = currentRate;
-    stepDebtState(current, payment);
-    stepDebtState(transfer, payment);
-
-    rows.push({
+    return {
       id: `transfer-month-${month}`,
       note: month === promoMonths + 1 ? 'Promo ends; current APR applies' : undefined,
       values: {
-        costSavings: current.interest - (transfer.interest + fee),
-        currentBalance: current.balance,
-        currentInterest: current.interest,
+        costSavings: currentInterest - promoCost,
+        currentBalance,
+        currentInterest,
         month,
-        promoBalance: transfer.balance,
-        promoCost: transfer.interest + fee
+        promoBalance,
+        promoCost
       }
-    });
-
-    if ((current.stalled && transfer.stalled) || (current.balance === 0 && transfer.balance === 0)) break;
-  }
+    };
+  });
 
   return {
     columns: [
@@ -959,7 +972,9 @@ function balanceTransferSchedule(_calculator: SeoCalculator, values: Record<stri
     ],
     description: 'Month-by-month comparison of staying with the current APR versus using the transfer offer.',
     rows,
-    summary: `Includes the transfer fee in the transfer cost column so the comparison does not hide upfront cost.`,
+    summary: current.paidOff && transfer.paidOff
+      ? 'Includes the transfer fee in the transfer cost column so the comparison does not hide upfront cost.'
+      : 'Includes the transfer fee once and compares both paths through the same 600-month horizon because at least one balance is not paid off.',
     title: 'Balance transfer payoff comparison'
   };
 }
@@ -999,61 +1014,28 @@ function closingCostSchedule(_calculator: SeoCalculator, values: Record<string, 
 
 function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const balance = Math.max(0, values.balance ?? 0);
-  const payment = Math.max(0, values.payment ?? 0);
-  const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
-  const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
-  const monthlyRate = Math.max(0, values.rate ?? 0) / 100 / 12;
-  let currentBalance = balance;
-  let cumulativeInterest = 0;
-  const rows: CalculatorDetailScheduleRow[] = [];
+  if (balance <= 0) return null;
 
-  if (balance <= 0 || payment <= 0) return null;
-
-  for (let month = 1; month <= maxMonthlyScheduleMonths && currentBalance > 0; month += 1) {
-    const interest = currentBalance * monthlyRate;
-    const plannedPayment = payment + extraMonthlyPayment + (month % 12 === 0 ? extraAnnualPayment : 0);
-    const totalDue = currentBalance + interest;
-    let actualPayment: number;
-    let principalPaid: number;
-
-    if (totalDue <= plannedPayment + LOAN_RESIDUAL_TOLERANCE) {
-      actualPayment = totalDue;
-      principalPaid = currentBalance;
-      currentBalance = 0;
-    } else {
-      actualPayment = plannedPayment;
-      principalPaid = Math.max(0, actualPayment - interest);
-      currentBalance = Math.max(0, totalDue - actualPayment);
-      if (currentBalance <= LOAN_RESIDUAL_TOLERANCE) {
-        actualPayment += currentBalance;
-        principalPaid += currentBalance;
-        currentBalance = 0;
-      }
+  const projection = projectDebt(
+    balance,
+    Math.max(0, values.rate ?? 0) / 100,
+    Math.max(0, values.payment ?? 0),
+    Math.max(0, values.extraMonthlyPayment ?? 0),
+    Math.max(0, values.extraAnnualPayment ?? 0)
+  );
+  const rows: CalculatorDetailScheduleRow[] = projection.rows.map((row) => ({
+    id: `debt-month-${row.month}`,
+    note: row.note,
+    values: {
+      cumulativeInterest: row.cumulativeInterest,
+      endingBalance: row.endingBalance,
+      interest: row.interest,
+      month: row.month,
+      payment: row.payment,
+      principalPaid: row.principalPaid,
+      year: row.year
     }
-    cumulativeInterest += interest;
-
-    rows.push({
-      id: `debt-month-${month}`,
-      note: principalPaid <= 0
-        ? 'Payment does not reduce principal'
-        : currentBalance === 0
-          ? 'Final payment'
-          : month % 12 === 0
-            ? extraAnnualPayment > 0 ? `Year ${Math.ceil(month / 12)} close; yearly extra applied` : `Year ${Math.ceil(month / 12)} close`
-            : undefined,
-      values: {
-        cumulativeInterest,
-        endingBalance: currentBalance,
-        interest,
-        month,
-        payment: actualPayment,
-        principalPaid,
-        year: Math.ceil(month / 12)
-      }
-    });
-
-    if (principalPaid <= 0 && extraAnnualPayment <= 0) break;
-  }
+  }));
 
   return {
     columns: [
@@ -1067,15 +1049,17 @@ function debtPayoffSchedule(_calculator: SeoCalculator, values: Record<string, n
     ],
     description: 'Payoff schedule showing how required, monthly extra, and yearly extra payments are split between interest and principal.',
     rows,
-    summary: monthlyScheduleCapSummary(rows.length / 12, 'Shows the payoff path and flags when the payment is not enough to reduce principal.'),
+    summary: projection.paidOff
+      ? monthlyScheduleCapSummary(rows.length / 12, 'Shows the payoff path and flags when the payment is not enough to reduce principal.')
+      : `The balance is not paid off within the ${maxMonthlyScheduleMonths} months modeled; the table is capped at 50 years and shows the remaining balance.`,
     title: 'Debt payoff schedule'
   };
 }
 
 function debtStrategySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
-  const snowball = simulateDebtStrategyRows(values, 'snowball');
-  const avalanche = simulateDebtStrategyRows(values, 'avalanche');
-  const rowCount = Math.max(snowball.length, avalanche.length);
+  const snowball = projectDebtStrategy(values, 'snowball');
+  const avalanche = projectDebtStrategy(values, 'avalanche');
+  const rowCount = Math.max(snowball.rows.length, avalanche.rows.length);
 
   if (rowCount === 0) return null;
 
@@ -1090,23 +1074,37 @@ function debtStrategySchedule(_calculator: SeoCalculator, values: Record<string,
     ],
     description: 'Month-by-month payoff comparison using separate balances, APRs, minimum payments, and the same extra payoff budget.',
     rows: Array.from({ length: rowCount }, (_, index) => {
-      const snowballRow = snowball[Math.min(index, snowball.length - 1)];
-      const avalancheRow = avalanche[Math.min(index, avalanche.length - 1)];
+      const snowballRow = snowball.rows[index];
+      const avalancheRow = avalanche.rows[index];
+      const snowballBalance = snowballRow ? snowballRow.balance : 0;
+      const avalancheBalance = avalancheRow ? avalancheRow.balance : 0;
+      const snowballInterest = snowballRow ? snowballRow.interest : snowball.interest;
+      const avalancheInterest = avalancheRow ? avalancheRow.interest : avalanche.interest;
+      const milestones = [
+        snowballRow?.paidOffName ? `Snowball: ${snowballRow.paidOffName}` : null,
+        avalancheRow?.paidOffName ? `Avalanche: ${avalancheRow.paidOffName}` : null
+      ].filter(Boolean);
 
       return {
         id: `debt-strategy-${index + 1}`,
-        note: snowballRow?.paidOffName || avalancheRow?.paidOffName || (index + 1 === rowCount ? 'All modeled debts paid off' : undefined),
+        note: milestones.length > 0
+          ? milestones.join(' · ')
+          : index + 1 === rowCount && snowball.paidOff && avalanche.paidOff
+            ? 'All modeled debts paid off'
+            : undefined,
         values: {
-          avalancheBalance: avalancheRow?.balance ?? 0,
-          avalancheInterest: avalancheRow?.interest ?? 0,
-          interestSaved: (snowballRow?.interest ?? 0) - (avalancheRow?.interest ?? 0),
+          avalancheBalance,
+          avalancheInterest,
+          interestSaved: snowballInterest - avalancheInterest,
           month: index + 1,
-          snowballBalance: snowballRow?.balance ?? 0,
-          snowballInterest: snowballRow?.interest ?? 0
+          snowballBalance,
+          snowballInterest
         }
       };
     }),
-    summary: 'The table shows whether the faster balance win from snowball costs more interest than the avalanche order.',
+    summary: snowball.paidOff && avalanche.paidOff
+      ? 'The table shows whether the faster balance win from snowball costs more interest than the avalanche order.'
+      : 'Compares both strategies across the same 600-month horizon because at least one strategy does not pay off all balances.',
     title: 'Snowball versus avalanche payoff table'
   };
 }
@@ -1243,8 +1241,10 @@ function fhaConventionalComparisonSchedule(_calculator: SeoCalculator, values: R
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const years = Math.max(1, values.years ?? 1);
   const fhaFinanced = baseLoan * 1.0175;
-  const fhaPayment = loanPayment(fhaFinanced, rate, years) + baseLoan * 0.0055 / 12;
-  const conventionalPayment = loanPayment(baseLoan, rate, years) + baseLoan * Math.max(0, values.pmiRate ?? 0) / 100 / 12;
+  const fhaInsurance = baseLoan * 0.0055 / 12;
+  const fhaPayment = loanPayment(fhaFinanced, rate, years) + fhaInsurance;
+  const conventionalInsurance = baseLoan > homePrice * 0.8 ? baseLoan * Math.max(0, values.pmiRate ?? 0) / 100 / 12 : 0;
+  const conventionalPayment = loanPayment(baseLoan, rate, years) + conventionalInsurance;
 
   return {
     columns: [
@@ -1259,7 +1259,7 @@ function fhaConventionalComparisonSchedule(_calculator: SeoCalculator, values: R
       {
         id: 'fha',
         values: {
-          insurance: baseLoan * 0.0055 / 12,
+          insurance: fhaInsurance,
           loanAmount: fhaFinanced,
           monthlyPayment: fhaPayment,
           option: 'FHA estimate',
@@ -1269,7 +1269,7 @@ function fhaConventionalComparisonSchedule(_calculator: SeoCalculator, values: R
       {
         id: 'conventional',
         values: {
-          insurance: baseLoan * Math.max(0, values.pmiRate ?? 0) / 100 / 12,
+          insurance: conventionalInsurance,
           loanAmount: baseLoan,
           monthlyPayment: conventionalPayment,
           option: 'Conventional estimate',
@@ -1499,6 +1499,7 @@ function mortgageRecastSchedule(_calculator: SeoCalculator, values: Record<strin
   const originalRows = amortizationRows(principal, rate, years, oldPayment);
   const recastRows = amortizationRows(recastBalance, rate, years, newPayment, undefined, extraMonthlyPayment, extraAnnualPayment);
   const rowCount = Math.max(originalRows.length, recastRows.length);
+  let cumulativePaymentDifference = 0;
 
   return {
     columns: [
@@ -1510,18 +1511,23 @@ function mortgageRecastSchedule(_calculator: SeoCalculator, values: Record<strin
       moneyColumn('paymentSavings', 'Payment savings')
     ],
     description: 'Month-by-month comparison of the current payment path and the recast path with optional additional payments.',
-    rows: Array.from({ length: rowCount }, (_, index) => ({
-      id: `recast-${index + 1}`,
-      values: {
-        month: index + 1,
-        newBalance: Number(recastRows[index]?.values.endingBalance) || 0,
-        newPayment: index < recastRows.length ? newPayment : 0,
-        oldBalance: Number(originalRows[index]?.values.endingBalance) || 0,
-        oldPayment: index < originalRows.length ? oldPayment : 0,
-        paymentSavings: Math.min(index + 1, recastRows.length) * (oldPayment - newPayment)
-      }
-    })),
-    summary: 'Recasting changes the required payment, not the rate; this table separates payment relief from balance reduction.',
+    rows: Array.from({ length: rowCount }, (_, index) => {
+      const actualOldPayment = Number(originalRows[index]?.values.payment) || 0;
+      const actualNewPayment = Number(recastRows[index]?.values.payment) || 0;
+      cumulativePaymentDifference += actualOldPayment - actualNewPayment;
+      return {
+        id: `recast-${index + 1}`,
+        values: {
+          month: index + 1,
+          newBalance: Number(recastRows[index]?.values.endingBalance) || 0,
+          newPayment: actualNewPayment,
+          oldBalance: Number(originalRows[index]?.values.endingBalance) || 0,
+          oldPayment: actualOldPayment,
+          paymentSavings: cumulativePaymentDifference
+        }
+      };
+    }),
+    summary: 'Recasting changes the required payment after the lump-sum principal reduction; this table shows actual monthly outflows (including optional extra payments) and cumulative monthly cash-flow difference.',
     title: 'Mortgage recast comparison table'
   };
 }
@@ -1530,46 +1536,22 @@ function pmiCancellationSchedule(_calculator: SeoCalculator, values: Record<stri
   const homePrice = Math.max(0, values.homePrice ?? 0);
   const downPayment = Math.max(0, values.downPayment ?? 0);
   const principal = Math.max(0, homePrice - downPayment);
+  const ltv = homePrice > 0 ? principal / homePrice : 0;
   const pmiRate = Math.max(0, values.rate ?? 0) / 100;
-  const mortgageRate = 0.065;
-  const payment = loanPayment(principal, mortgageRate, 30);
-  const rows: CalculatorDetailScheduleRow[] = [];
-  let balance = principal;
-  let cumulativePmi = 0;
+  const monthlyPmi = principal > homePrice * 0.8 ? principal * pmiRate / 12 : 0;
 
-  for (let year = 1; year <= 30 && balance > homePrice * 0.8; year += 1) {
-    for (let month = 1; month <= 12; month += 1) {
-      balance = stepAmortizingBalance(balance, mortgageRate, payment).balance;
-    }
-    const ltv = homePrice > 0 ? balance / homePrice : 0;
-    const annualPmi = balance > homePrice * 0.8 ? principal * pmiRate : 0;
-    cumulativePmi += annualPmi;
-    rows.push({
-      id: `pmi-year-${year}`,
-      note: ltv <= 0.8 ? 'Approximate PMI cancellation threshold reached' : undefined,
-      values: {
-        annualPmi,
-        balance,
-        cumulativePmi,
-        ltv,
-        year
-      }
-    });
-  }
-
-  return {
-    columns: [
-      textColumn('year', 'Year'),
-      moneyColumn('balance', 'Estimated balance'),
-      percentColumn('ltv', 'Loan-to-value'),
-      moneyColumn('annualPmi', 'Annual PMI'),
-      moneyColumn('cumulativePmi', 'Cumulative PMI')
+  return lineItemSchedule({
+    description: 'Initial-purchase loan-to-value and flat PMI cost components from your entered home price, down payment, and annual PMI rate.',
+    rows: [
+      { amount: homePrice, id: 'home-price', lineItem: 'Home price', note: 'Purchase price used to measure initial loan-to-value.', rate: null },
+      { amount: downPayment, id: 'down-payment', lineItem: 'Down payment', note: 'Upfront equity reducing the initial loan balance.', rate: homePrice > 0 ? downPayment / homePrice : null },
+      { amount: principal, id: 'loan-amount', lineItem: 'Estimated loan amount', note: 'Purchase price less down payment.', rate: ltv },
+      { amount: monthlyPmi, id: 'monthly-pmi', lineItem: 'Estimated monthly PMI', note: principal > homePrice * 0.8 ? 'Applied because initial loan-to-value is above 80%.' : 'No initial conventional PMI modeled at 80% loan-to-value or below.', rate: pmiRate },
+      { amount: monthlyPmi * 12, id: 'annual-pmi', lineItem: 'Estimated annual PMI', note: 'Monthly PMI multiplied by 12 before any future cancellation.', rate: null }
     ],
-    description: 'Approximate PMI runway using a standard amortizing mortgage assumption to estimate when 80% LTV may be reached.',
-    rows,
-    summary: 'PMI depends on lender and property rules, but this table shows the balance path behind the cancellation estimate.',
-    title: 'PMI cancellation timeline'
-  };
+    summary: 'Shows the initial loan-to-value and flat PMI estimate without assuming an unentered mortgage rate or term.',
+    title: 'PMI cost breakdown'
+  });
 }
 
 function paycheckSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
@@ -2833,25 +2815,6 @@ type LineItemRow = {
   rate: number | null;
 };
 
-type DebtState = {
-  balance: number;
-  interest: number;
-  rate: number;
-  stalled: boolean;
-};
-type DebtStrategyMode = 'avalanche' | 'snowball';
-type StrategyDebt = {
-  balance: number;
-  minimum: number;
-  name: string;
-  rate: number;
-};
-type StrategyRow = {
-  balance: number;
-  interest: number;
-  month: number;
-  paidOffName?: string;
-};
 type ProgressiveTaxBracket = {
   rate: number;
   upTo: number;
@@ -3030,95 +2993,6 @@ function lineItemSchedule(options: {
     summary: options.summary,
     title: options.title
   };
-}
-
-function createDebtState(balance: number, annualRate: number): DebtState {
-  return {
-    balance: Math.max(0, balance),
-    interest: 0,
-    rate: Math.max(0, annualRate),
-    stalled: false
-  };
-}
-
-function stepDebtState(state: DebtState, payment: number): void {
-  if (state.balance <= 0) {
-    state.balance = 0;
-    return;
-  }
-
-  const interest = state.balance * state.rate / 12;
-  const actualPayment = Math.min(Math.max(0, payment), state.balance + interest);
-  const principalPaid = Math.max(0, actualPayment - interest);
-  state.interest += interest;
-  state.balance = Math.max(0, state.balance + interest - actualPayment);
-  state.stalled = principalPaid <= 0 && state.balance > 0;
-}
-
-function simulateDebtStrategyRows(values: Record<string, number>, strategy: DebtStrategyMode): StrategyRow[] {
-  const debts = strategyDebts(values);
-  const monthlyBudget = debts.reduce((sum, debt) => sum + debt.minimum, 0) + Math.max(0, values.extraPayment ?? 0);
-  const rows: StrategyRow[] = [];
-  let cumulativeInterest = 0;
-
-  if (debts.length === 0 || monthlyBudget <= 0) return rows;
-
-  for (let month = 1; month <= maxMonthlyScheduleMonths && debts.some((debt) => debt.balance > 0); month += 1) {
-    const paidOffThisMonth: string[] = [];
-
-    debts.forEach((debt) => {
-      if (debt.balance <= 0) return;
-      const interest = debt.balance * debt.rate / 12;
-      debt.balance += interest;
-      cumulativeInterest += interest;
-    });
-
-    let remainingBudget = monthlyBudget;
-    debts.forEach((debt) => {
-      if (debt.balance <= 0) return;
-      const payment = Math.min(debt.minimum, debt.balance, remainingBudget);
-      debt.balance = Math.max(0, debt.balance - payment);
-      remainingBudget -= payment;
-      if (debt.balance === 0) paidOffThisMonth.push(debt.name);
-    });
-
-    while (remainingBudget > 0.005 && debts.some((debt) => debt.balance > 0)) {
-      const target = selectStrategyDebt(debts, strategy);
-      if (!target) break;
-      const payment = Math.min(target.balance, remainingBudget);
-      target.balance = Math.max(0, target.balance - payment);
-      remainingBudget -= payment;
-      if (target.balance === 0) paidOffThisMonth.push(target.name);
-    }
-
-    rows.push({
-      balance: debts.reduce((sum, debt) => sum + debt.balance, 0),
-      interest: cumulativeInterest,
-      month,
-      paidOffName: paidOffThisMonth.length > 0 ? `${paidOffThisMonth.join(', ')} paid off` : undefined
-    });
-  }
-
-  return rows;
-}
-
-function strategyDebts(values: Record<string, number>): StrategyDebt[] {
-  return [
-    { balance: values.debt1Balance ?? 0, minimum: values.debt1Minimum ?? 0, name: 'Credit card', rate: (values.debt1Rate ?? 0) / 100 },
-    { balance: values.debt2Balance ?? 0, minimum: values.debt2Minimum ?? 0, name: 'Auto loan', rate: (values.debt2Rate ?? 0) / 100 },
-    { balance: values.debt3Balance ?? 0, minimum: values.debt3Minimum ?? 0, name: 'Student loan', rate: (values.debt3Rate ?? 0) / 100 }
-  ].filter((debt) => debt.balance > 0);
-}
-
-function selectStrategyDebt(debts: StrategyDebt[], strategy: DebtStrategyMode): StrategyDebt | null {
-  const activeDebts = debts.filter((debt) => debt.balance > 0);
-  if (activeDebts.length === 0) return null;
-
-  return activeDebts.sort((a, b) => (
-    strategy === 'avalanche'
-      ? b.rate - a.rate || a.balance - b.balance
-      : a.balance - b.balance || b.rate - a.rate
-  ))[0];
 }
 
 function presentValueFromPayment(payment: number, annualRate: number, years: number): number {

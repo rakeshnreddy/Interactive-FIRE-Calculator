@@ -87,6 +87,18 @@ describe('savings and retirement model history', () => {
       currency: 'USD',
       inputKey: 'currentAge',
       sampleValue: '35'
+    },
+    {
+      name: 'PMI at 20% down payment',
+      slug: 'pmi',
+      modelVersion: 'pmi-ltv-v1',
+      inputValues: { homePrice: 450000, downPayment: 90000, rate: 0.6 },
+      legacyValue: 180,
+      expectedValue: 0,
+      headlineLabel: 'Estimated monthly PMI',
+      currency: 'USD',
+      inputKey: 'downPayment',
+      sampleValue: '45000'
     }
   ];
 
