@@ -42,7 +42,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C31 | Design foundation and application shell | B70 | accepted | 2aec033f905a5f906bf9958f843239aea2ecd676 | [Approved; shared beta verified](reviews/C31.md) |
 | C38 | Homepage question finder and visual redesign | B78 | accepted | 27e2ece8d4a664e4f43fe27a3c407b0fefae6ab4 | [Approved; shared beta verified](reviews/C38.md) |
 | C32 | Debt payoff truth and loan reconciliation | B71 | accepted | b39e5ab89a860c20b890ccb38e8a2d4faf875450 | [Approved; shared beta verified](reviews/C32.md) |
-| C33 | Word-bounded scenario perturbations & bidirectional sensitivity drivers | B69 | released | — | In progress (`prompts/B69.md`) |
+| C33 | Word-bounded scenario perturbations & bidirectional sensitivity drivers | B69 | accepted | cc30c52681a9a1b5ed7d8597de375b483ead098e | [Approved; shared beta verified](reviews/C33.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -120,3 +120,7 @@ C32/B71 accepted at `b39e5ab89a860c20b890ccb38e8a2d4faf875450`; candidate (`d416
 ## Scenario & sensitivity registration — 2026-11-10
 
 B69/C33 is now in progress after verified PR #158 merge (`24bf4362b633acc23cddbf7a2b5673dbc7f4a1c9`) and `main` CI (`42877768988`). 69 of 73 registered tasks done. Other proposals (`B72`–`B76`) remain unregistered until separately scoped.
+
+## Scenario & sensitivity acceptance — 2026-11-10
+
+C33/B69 accepted at `cc30c52681a9a1b5ed7d8597de375b483ead098e`; candidate (`9f0b39cc`) and shared beta (`e2fcc757` / `codex-finpath-quality-execut`) verified across 84 public routes and the 6-stage `c33-scenarios-sensitivity` smoke runner. 70 of 73 registered tasks done. Final documentation CI, PR #159 merge, and `main` CI are recorded in the PR #159 landing receipt. Next bounded checkpoint to register is B74 / C36 (Unslop Stage A — Calculator library & shared studio template).

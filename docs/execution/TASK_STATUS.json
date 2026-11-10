@@ -1168,16 +1168,16 @@
       "id": "B69",
       "title": "word-bounded scenario perturbations and bidirectional sensitivity drivers",
       "checkpoint": "C33",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B68",
         "B71"
       ],
       "prompt": "prompts/B69.md",
-      "submission": null,
+      "submission": "submissions/B69.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "cc30c52681a9a1b5ed7d8597de375b483ead098e",
+      "review": "reviews/C33.md",
       "blocked_reason": null
     }
   ],
