@@ -1163,6 +1163,22 @@
       "code_sha": "b39e5ab89a860c20b890ccb38e8a2d4faf875450",
       "review": "reviews/C32.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B69",
+      "title": "word-bounded scenario perturbations and bidirectional sensitivity drivers",
+      "checkpoint": "C33",
+      "status": "in_progress",
+      "dependencies": [
+        "B68",
+        "B71"
+      ],
+      "prompt": "prompts/B69.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

@@ -1,20 +1,17 @@
 # FinPath execution resume — 2026-11-10
 
-**B71/C32 debt/loan reconciliation accepted; shared beta verified. 69 of 72 registered tasks done.** Accepted product commit `b39e5ab89a860c20b890ccb38e8a2d4faf875450`, baseline `main` `e2b77cebf279bdaaf26e2697eb910f7518cae1c6`, [PR #158](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/158), [C32 review](reviews/C32.md), [B71 submission](submissions/B71.md), [B71 contract](prompts/B71.md), [hosted evidence](evidence/C32/hosted.json), [provenance manifest](evidence/C32/manifest.json). Final documentation CI, merge, and `main` CI authority is the PR #158 landing receipt. Resolve its actual state before starting the next checkpoint; do not repeat completed B68/B70/B78/B71 releases.
+**B69/C33 scenario perturbations & sensitivity drivers registered and in progress (`codex/scenario-sensitivity-reconciliation`). 69 of 73 registered tasks done.** Baseline `main` `24bf4362b633acc23cddbf7a2b5673dbc7f4a1c9` ([PR #158](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/158) merged, `main` CI [`42877768988`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/42877768988) `SUCCESS`). Active contract: [B69 contract](prompts/B69.md). Do not repeat completed B68/B70/B78/B71 releases.
 
 ## Working copy and exact next action
 
-Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `Documents/ChatGPT` is stale at PR #138; preserve it. Current implementation branch is `codex/debt-loan-reconciliation`. Only owned changes were staged.
+Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `Documents/ChatGPT` is stale at PR #138; preserve it. Current implementation branch is `codex/scenario-sensitivity-reconciliation`.
 
-1. If PR #158 is open, wait for exact final-head CI on the documentation commit, merge PR #158 to `main`, and verify `main` CI green.
-2. Once `main` is updated and `main` CI is green, register **B69 / C33** (Scenario sensitivity and return/XIRR disclosure from `docs/calculator-excellence/ANALYSIS_2026-10-18.md`) before implementation (`docs/execution/prompts/B69.md`, `TASK_STATUS.json`, `CHECKPOINTS.md`, `EXECUTION_BACKLOG.md`).
-3. Remaining backlog after B71/C32:
-   - **B69 / C33:** Scenario sensitivity and return/XIRR disclosure (input clamping, distinct scenario vectors, honest sensitivity labels, XIRR out-of-range convergence state, inflation-adjusted withdrawal schedules).
-   - **B72 / C34:** US tax rules & retirement catch-up truth (2025 IRS brackets, Secure 2.0 catch-up, Roth MAGI phase-out, HSA family/individual toggle, Social Security bend points).
-   - **B73 / C35:** India statutory schemes & tax regime truth (FY 2025-26 Section 87A rebate, NPS 75% equity cap, SSY whole-year deposit validation, SCSS ₹30L cap, HRA metro toggle).
-   - **B74 / C36:** Calculator library & shared calculator template visual rollout (`CalculatorLibrary.tsx` & shared studio views).
-   - **B75 / C37:** Dedicated calculator visual rollout & chart language (`HeroFireExample`, `XirrCalculator`, compound/savings/cashflow/vehicle/housing dedicated views).
-   - **B76 / C39:** Signed-in workspace visual rollout & final legacy CSS retirement (`PlanningWorkspace`, `/dashboard`, `/accounts`, `/transactions`, `/goals`, `/reports`, `/settings`).
+1. Write failing behavioral regressions first (`src/lib/scenarioSensitivityReconciliation.test.ts`), then implement **B69 / C33** across `src/lib/calculatorStudios.ts`, `src/lib/calculatorEngagement.ts`, `src/CalculatorLibrary.tsx`, and `scripts/smoke/c33-scenarios-sensitivity.mjs`.
+2. Run `./scripts/test_all.sh`, conduct independent adversarial review, open PR #159, verify exact-head CI, deploy and verify isolated preview candidate + shared beta (`codex/finpath-quality-execution`), record `C33` evidence/submission/review, merge PR #159, and verify `main` CI green.
+3. **Owner directive (2026-11-10 — `/unslop` staged visual overhaul):** Immediately after current work (`B69 / C33`) finishes and deploys, apply the `/unslop` skill (`/Users/Rakesh/.gemini/config/skills/unslop/SKILL.md` — 9-pass redline craft: 4px spacing grid, one tinted neutral ramp + single high-contrast accent, zero decorative glows/blobs/gradient text/emoji/uppercase-tracked slop, sentence-case labels, 400–600 weights with tabular figures, nested radii, quiet chrome with one rich focal chart/moment, purposeful `cubic-bezier(0.22, 1, 0.36, 1)` motion) across the site in shippable stages, pushing, releasing, and deploying to the shared beta (`codex/finpath-quality-execution`) and `main` after every stage so each visual stage is immediately live on the site if usage limits hit:
+   - **B74 / C36 (Unslop Stage A — Calculator library & shared studio template):** Apply all 9 `/unslop` passes to `/calculators` and the shared calculator studio experience (`CalculatorLibrary.tsx`, studio headers, input panels, result hero, scenario cards, sensitivity drivers, schedule tables, and scope notices), deploy to beta, and merge.
+   - **B76 / C39 (Unslop Stage B — Dedicated calculators, charts, workspace & legacy CSS retirement):** Apply all 9 `/unslop` passes to dedicated calculators (`HeroFireExample`, `XirrCalculator`, compound/savings/cashflow/vehicle/housing views), shared chart chrome, and signed-in workspace (`/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/reports`, `/settings`), retiring legacy `src/styles.css` slop rules, deploy to beta, and merge.
+   - **B72 / C34, B73 / C35, B75 / C37:** Remaining calculator input validation (`B72`), dedicated planner/FIRE benchmark & currency fixes (`B73`), and schedule/copy refinements (`B75`), each released and deployed step by step.
 
 ## Verified shared-beta release (C32 / B71)
 
