@@ -1179,6 +1179,23 @@
       "code_sha": "cc30c52681a9a1b5ed7d8597de375b483ead098e",
       "review": "reviews/C33.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B74",
+      "title": "unslop stage A: calculator library and shared studio template visual overhaul",
+      "checkpoint": "C36",
+      "status": "done",
+      "dependencies": [
+        "B69",
+        "B70",
+        "B78"
+      ],
+      "prompt": "prompts/B74.md",
+      "submission": "submissions/B74.md",
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": "4bbc07514b6530a22213c3ccd879347f7be24b5a",
+      "review": "reviews/C36.md",
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

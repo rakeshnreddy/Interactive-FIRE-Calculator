@@ -131,7 +131,7 @@
     background-clip: border-box;
     -webkit-background-clip: border-box;
     -webkit-text-fill-color: currentColor;
-    font-weight: 620;
+    font-weight: 600;
     letter-spacing: 0;
   }
   .app .eyebrow.error-text { color: var(--color-danger); }

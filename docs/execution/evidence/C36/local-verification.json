@@ -1,0 +1,27 @@
+{
+  "checkpoint": "C36",
+  "task": "B74",
+  "verifiedAt": "2026-11-10",
+  "greenPhase": {
+    "focusedSuites": [
+      {
+        "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/CalculatorStudioUnslop.test.tsx src/CalculatorLibrary.test.tsx",
+        "exitCode": 0,
+        "testsPassed": 15
+      }
+    ],
+    "fullSuite": {
+      "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh",
+      "exitCode": 0,
+      "nodeTestsPassed": 30,
+      "vitestFilesPassed": 113,
+      "vitestTestsPassed": 2884,
+      "typecheck": "PASS",
+      "productionBuild": "PASS",
+      "prerenderedRoutes": 92,
+      "buildIsolationFiles": 26,
+      "previewAuthBuildIsolationFiles": 28,
+      "fixtureLeaks": 0
+    }
+  }
+}
