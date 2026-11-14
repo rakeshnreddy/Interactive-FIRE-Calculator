@@ -1216,7 +1216,7 @@
       "id": "B72",
       "title": "cross-field and boundary validation across loan, return, tax and retirement studios",
       "checkpoint": "C34",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B68",
         "B69",
@@ -1224,9 +1224,9 @@
         "B76"
       ],
       "prompt": "prompts/B72.md",
-      "submission": null,
+      "submission": "submissions/B72.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
+      "code_sha": "4abce6598fa702caf5688d0bf9018ef31eb2334f",
       "review": "reviews/C34.md",
       "blocked_reason": null
     }

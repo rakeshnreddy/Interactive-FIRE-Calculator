@@ -1,25 +1,24 @@
 # FinPath execution resume — 2026-11-14
 
-**C39/B76 accepted and shared-beta verified at `9d1266654f84b7d076e828ef1ffb2649d68d2e35` ([PR #161](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/161), [review](reviews/C39.md)). 72 of 75 registered tasks done.** Do not repeat completed B68/B70/B78/B71/B69/B74/B76 releases.
+**C34/B72 accepted and shared-beta verified at `4abce6598fa702caf5688d0bf9018ef31eb2334f` ([PR #162](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/162), [review](reviews/C34.md)). 73 of 76 registered tasks done.** Do not repeat completed B68/B70/B78/B71/B69/B74/B76/B72 releases.
 
 ## Working copy and exact next action
 
 Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `Documents/ChatGPT` is stale at PR #138; preserve it.
 
-1. Confirm `main` is at merged [PR #161](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/161) and `main` CI is green.
-2. Register and execute **B72 / C34 (Cross-field and boundary validation across Loan, Return, Tax, and Retirement studios)** from `docs/calculator-excellence/ANALYSIS_2026-10-18.md` (`LH-02`, `LH-07`, `RET-02`, `TAX-03`, `RINC-04`, `RINC-05`, `RINC-15`): write failing tests first, version changed results as needed while keeping legacy snapshots readable, run `./scripts/test_all.sh` + independent review + exact-head CI, deploy candidate and shared beta (`codex/finpath-quality-execution`) with `hosted_smoke.mjs`, write closure docs, and merge to `main`.
-3. Follow sequentially with:
-   - **B73 / C35**: Dedicated planner & saved-record integrity fixes (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`).
+1. Confirm `main` is at merged [PR #162](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/162) and `main` CI is green.
+2. Register and execute **B73 / C35 (Dedicated planner & saved-record integrity fixes)** from `docs/calculator-excellence/ANALYSIS_2026-10-18.md` (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`): write failing tests first, version changed results as needed while keeping legacy snapshots readable, run `./scripts/test_all.sh` + independent adversarial review + exact-head CI, deploy candidate and shared beta (`codex/finpath-quality-execution`) with `hosted_smoke.mjs`, write closure docs, and merge to `main`.
+3. Follow with:
    - **B75 / C37**: Chart unit consistency, Rule of 72 compound schedule, statutory provenance links, and P2/P3 copy refinements across all studios.
 
-## Verified shared-beta release (C39 / B76)
+## Verified shared-beta release (C34 / B72)
 
 - **Stable beta alias:** [`https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev)
-- **Beta immutable URL:** [`https://aa251d67.interactive-fire-calculator.pages.dev`](https://aa251d67.interactive-fire-calculator.pages.dev) (`aa251d67-e7e4-4c8c-8e33-0a4624d1c24f`)
-- **Candidate immutable URL:** [`https://f7cb0913.interactive-fire-calculator.pages.dev`](https://f7cb0913.interactive-fire-calculator.pages.dev) (`f7cb0913-097d-4d74-b959-f91f050beab4`)
-- **Product source SHA:** `9d1266654f84b7d076e828ef1ffb2649d68d2e35`
-- **Exact-head product CI:** [`43579533077`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43579533077) (`SUCCESS`)
-- **Suite & hosted verification:** 30 Node checks, 114 Vitest files / 2,888 tests, `tsc --noEmit`, build, 92 prerenders (`85` public + `7` workspace) + `404.html`, and bundle isolation (`0` fixture leaks) passed (`./scripts/test_all.sh`). Candidate, beta immutable, and beta alias all passed 84 public routes (`smoke_public_calculators.mjs`), and candidate + beta immutable both passed `scripts/hosted_smoke.mjs --scenario c39-unslop-stage-b` (`preflight`, `d1-reachable`, `sign-in`, 10 `signed-in-shell` cases, 28 `anonymous-account-gates` cases, 72 `unslop-dedicated-routes` cases across 9 routes/viewports/themes, 42 `unslop-workspace-routes` cases across 7 authenticated workspace routes, and verified 16-table zero-row cleanup + Clerk provider deletion on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`).
+- **Beta immutable URL:** [`https://959dca8e.interactive-fire-calculator.pages.dev`](https://959dca8e.interactive-fire-calculator.pages.dev) (`959dca8e-b7ce-4410-b788-b8e66016633a`)
+- **Candidate immutable URL:** [`https://873ea307.interactive-fire-calculator.pages.dev`](https://873ea307.interactive-fire-calculator.pages.dev) (`873ea307-5990-4e18-b516-fb404bf73f52`)
+- **Product source SHA:** `4abce6598fa702caf5688d0bf9018ef31eb2334f`
+- **Exact-head product CI:** [`43584682604`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43584682604) (`SUCCESS`)
+- **Suite & hosted verification:** 30 Node script checks, 115 Vitest files / 2,939 tests, `tsc --noEmit`, build, 92 prerendered routes + `404.html`, and bundle isolation (26 production assets, `0` fixture leaks) passed (`./scripts/test_all.sh`). Candidate, beta immutable, and beta alias all passed 84 public routes (`smoke_public_calculators.mjs`), and candidate + beta immutable both passed `scripts/hosted_smoke.mjs --scenario c34-boundary-validation` (all 6 stages passed, including 10 `signed-in-shell` cases, 28 `anonymous-account-gates` cases, 104 boundary layout cases across 13 routes, 12 interactive DOM checks, `errors: []`, and verified 16-table zero-row cleanup + Clerk provider deletion on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`).
 
 ## Compatibility and boundaries
 

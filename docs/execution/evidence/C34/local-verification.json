@@ -1,0 +1,42 @@
+{
+  "checkpoint": "C34",
+  "task": "B72",
+  "verifiedAt": "2026-11-14",
+  "sourceRevision": "4abce6598fa702caf5688d0bf9018ef31eb2334f",
+  "focusedChecks": [
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/CalculatorBoundaryValidation.test.tsx (initial red phase prior to product edits)",
+      "exitCode": 1,
+      "passed": 3,
+      "failed": 46,
+      "total": 49,
+      "status": "RED_PHASE_CONFIRMED"
+    },
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/CalculatorBoundaryValidation.test.tsx src/PpfGratuityTerms.test.tsx src/ReconciliationSchedules.test.ts src/ModelHistory.test.tsx src/CalculatorInputEditing.test.tsx src/lib/debtLoanReconciliation.test.ts src/lib/paybackStates.test.tsx src/lib/calculatorRegistryAudit.test.ts src/MortgageBudget.test.tsx src/lib/scenarioSensitivityReconciliation.test.ts src/GeneratedInputHelpers.test.ts",
+      "exitCode": 0,
+      "filesPassed": 11,
+      "testsPassed": 762,
+      "status": "PASS"
+    },
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH node --check scripts/smoke/c34-boundary-validation.mjs",
+      "exitCode": 0,
+      "status": "PASS"
+    }
+  ],
+  "fullSuite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh",
+    "exitCode": 0,
+    "nodeTestsPassed": 30,
+    "vitestFilesPassed": 115,
+    "vitestTestsPassed": 2939,
+    "boundaryValidationTestsPassed": 51,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "prerenderedRoutes": 92,
+    "buildIsolationFiles": 26,
+    "previewAuthBuildIsolationFiles": 28,
+    "fixtureLeaks": 0
+  }
+}
