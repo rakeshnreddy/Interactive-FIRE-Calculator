@@ -1184,17 +1184,17 @@
       "id": "B74",
       "title": "unslop stage A: calculator library and shared studio template visual overhaul",
       "checkpoint": "C36",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B69",
         "B70",
         "B78"
       ],
       "prompt": "prompts/B74.md",
-      "submission": null,
+      "submission": "submissions/B74.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "4bbc07514b6530a22213c3ccd879347f7be24b5a",
+      "review": "reviews/C36.md",
       "blocked_reason": null
     }
   ],
