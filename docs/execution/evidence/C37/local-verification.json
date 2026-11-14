@@ -1,0 +1,28 @@
+{
+  "checkpoint": "C37",
+  "task": "B75",
+  "verifiedAt": "2026-11-14",
+  "sourceRevision": "e9e4963d0eff19c3c6cf20bcb0b2b50089633254",
+  "focusedChecks": [
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/ChartsSchedulesCopyHonesty.test.tsx src/lib/calculatorStudios.test.ts src/lib/seoCalculators.test.ts src/lib/calculatorConsistency.test.ts",
+      "exitCode": 0,
+      "filesPassed": 4,
+      "testsPassed": 670,
+      "status": "PASS"
+    }
+  ],
+  "fullSuite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh",
+    "exitCode": 0,
+    "nodeTestsPassed": 30,
+    "vitestFilesPassed": 117,
+    "vitestTestsPassed": 2957,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "prerenderedRoutes": 92,
+    "buildIsolationFiles": 26,
+    "previewAuthBuildIsolationFiles": 28,
+    "fixtureLeaks": 0
+  }
+}

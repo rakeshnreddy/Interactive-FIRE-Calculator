@@ -9,12 +9,14 @@ import {
   LOAN_RESIDUAL_TOLERANCE,
   remainingLoanBalance,
   seoCalculators,
+  solveMonthlyPeriodicRate,
   termMonths,
   type CalculatorInput,
   type CalculatorMetric,
   type CalculatorResult,
   type SeoCalculator
 } from './seoCalculators';
+import { softLower } from './calculatorContent';
 import { getCalculatorStudio, type CalculatorStudio } from './calculatorQuality';
 import { assessPayback } from './payback';
 import { assessBenefitCatchUp } from './benefitCatchUp';
@@ -164,6 +166,33 @@ const riskierRateStudios = new Set<CalculatorStudio>([
   'Loan and Home Studio'
 ]);
 
+const chartMetadataOverrides: Partial<Record<SeoCalculator['formula'], { chartTitle: string; chartDescription: string }>> = {
+  'roth-traditional': {
+    chartTitle: 'After-tax retirement comparison',
+    chartDescription: 'Compare Roth and Traditional after-tax values under your current and retirement tax assumptions.'
+  },
+  hra: {
+    chartTitle: 'HRA exemption breakdown',
+    chartDescription: 'Compare annual HRA received against the statutory exemption and taxable HRA estimate.'
+  },
+  gst: {
+    chartTitle: 'GST tax breakdown',
+    chartDescription: 'Compare pre-tax amount, estimated GST, and invoice total including GST.'
+  },
+  budget: {
+    chartTitle: 'Monthly budget cash flow',
+    chartDescription: 'Compare monthly income, monthly expenses, and remaining monthly cash surplus.'
+  },
+  inflation: {
+    chartTitle: 'Purchasing power path',
+    chartDescription: 'Compare future nominal value with inflation-adjusted purchasing power over your selected horizon.'
+  },
+  'down-payment': {
+    chartTitle: 'Home purchase funding breakdown',
+    chartDescription: 'Compare home price, target down payment, and estimated loan amount before closing costs.'
+  }
+};
+
 export function getCalculatorStudioMetadata(
   calculator: SeoCalculator,
   allCalculators: SeoCalculator[] = seoCalculators
@@ -173,6 +202,7 @@ export function getCalculatorStudioMetadata(
 
   return {
     ...defaults,
+    ...(chartMetadataOverrides[calculator.formula] ?? {}),
     ...(calculator.formula === 'fd' ? {
       scenarioFocus: 'Compare your deposit with a smaller, shorter, lower-rate what-if and a larger, longer, higher-rate one. Each changes all three inputs.'
     } : calculator.formula === 'rd' ? {
@@ -720,6 +750,7 @@ export function isMarketGrowth(calculator: SeoCalculator): boolean {
 
 function scenarioLabel(calculator: SeoCalculator, id: CalculatorScenarioId): string {
   if (neutralCaseFormulas.has(calculator.formula)) return id === 'base' ? 'Your inputs' : id === 'conservative' ? 'Case A' : 'Case B';
+  if (calculator.slug === 'hysa') return id === 'base' ? 'Base' : id === 'conservative' ? 'Lower APY' : 'Higher APY';
   if (calculator.formula === 'fd') return id === 'base' ? 'Your deposit' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (calculator.formula === 'rd') return id === 'base' ? 'Your deposits' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
   if (isMarketGrowth(calculator)) return id === 'base' ? 'Your plan' : id === 'conservative' ? 'Lower what-if' : 'Higher what-if';
@@ -741,6 +772,18 @@ function scenarioDescription(calculator: SeoCalculator, id: CalculatorScenarioId
 
   if (calculator.formula === 'xirr') {
     return 'Changes the ending value, contributions and holding period together. This is a sensitivity check, not a performance forecast.';
+  }
+
+  if (calculator.formula === 'rule-72') {
+    if (id === 'conservative') return 'Tests a lower annual return rate, which lengthens the modeled doubling horizon.';
+    if (id === 'optimistic') return 'Tests a higher annual return rate, which shortens the modeled doubling horizon.';
+    return 'Uses your entered annual return rate.';
+  }
+
+  if (calculator.formula === 'roi') {
+    if (id === 'conservative') return 'Tests higher invested cost with lower ending value to stress-test net return.';
+    if (id === 'optimistic') return 'Tests lower invested cost with higher ending value to inspect upside return.';
+    return 'Uses your entered invested cost and ending value.';
   }
 
   if (calculator.formula === 'social-security') {
@@ -805,15 +848,17 @@ function scenarioDescription(calculator: SeoCalculator, id: CalculatorScenarioId
 
 function buildCalculatorExample(calculator: SeoCalculator): CalculatorStudioExample {
   const values = Object.fromEntries(calculator.inputs.map((input) => [input.key, input.defaultValue]));
-  const firstInput = calculator.inputs[0]?.label.toLowerCase() ?? 'main input';
-  const secondInput = calculator.inputs[1]?.label.toLowerCase() ?? 'second input';
+  const firstInput = softLower(calculator.inputs[0]?.label ?? 'main input');
+  const secondInput = calculator.inputs[1]?.label ? softLower(calculator.inputs[1].label) : null;
 
   return {
     description: calculator.formula === 'fd'
       ? `Load the sample deposit, term and rate so the maturity breakdown, schedule and what-ifs can be read together.`
       : calculator.formula === 'rd'
       ? `Load the sample monthly deposit, term and rate so the maturity breakdown, schedule and what-ifs can be read together.`
-      : `Load a sample ${calculator.title.toLowerCase()} using ${firstInput} and ${secondInput} so the visual, scenarios, and save path can be read together.`,
+      : secondInput
+      ? `Load a sample ${softLower(calculator.title)} using ${firstInput} and ${secondInput} so the visual, scenarios, and save path can be read together.`
+      : `Load a sample ${softLower(calculator.title)} using ${firstInput} so the visual, scenarios, and save path can be read together.`,
     insight: exampleInsight(calculator),
     title: `${calculator.title} example`,
     values
@@ -851,16 +896,25 @@ function relatedCalculatorsFor(
   allCalculators: SeoCalculator[]
 ): CalculatorRelatedRoute[] {
   const studio = getCalculatorStudio(calculator);
+  const currency = calculatorCurrency(calculator);
   const scored = allCalculators
     .filter((candidate) => candidate.slug !== calculator.slug)
-    .map((candidate) => ({
-      candidate,
-      score:
-        (getCalculatorStudio(candidate) === studio ? 10 : 0) +
-        (candidate.region === calculator.region ? 3 : 0) +
-        (candidate.category === calculator.category ? 2 : 0) +
-        (candidate.formula === calculator.formula ? 1 : 0)
-    }))
+    .map((candidate) => {
+      const sameRegion = candidate.region === calculator.region;
+      const sameCurrency = calculatorCurrency(candidate) === currency;
+      const crossRegion = calculator.region !== 'Global' && candidate.region !== 'Global' && candidate.region !== calculator.region;
+      const incompatibleRegionalRoute = crossRegion || (!sameRegion && candidate.region !== 'Global' && !sameCurrency);
+      return {
+        candidate,
+        score:
+          (getCalculatorStudio(candidate) === studio ? 10 : 0) +
+          (sameRegion ? 8 : 0) +
+          (incompatibleRegionalRoute ? -12 : 0) +
+          (sameCurrency ? 6 : 0) +
+          (candidate.category === calculator.category ? 2 : 0) +
+          (candidate.formula === calculator.formula ? 1 : 0)
+      };
+    })
     .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score || a.candidate.title.localeCompare(b.candidate.title))
     .slice(0, 4);
@@ -906,7 +960,11 @@ function selectedModelChart(
     'closing-costs': ['down-payment', 'closing-costs', 'cash-to-close'],
     'stamp-duty': ['stamp-duty', 'registration', 'total'],
     escrow: ['tax', 'insurance', 'hoa', 'escrow'],
-    insurance: ['income-replacement', 'debts', 'existing-coverage', 'coverage-gap']
+    insurance: ['income-replacement', 'debts', 'existing-coverage', 'coverage-gap'],
+    budget: ['income', 'expenses', 'surplus'],
+    hra: ['hra', 'exemption', 'taxable-hra'],
+    gst: ['base', 'tax', 'total'],
+    'down-payment': ['home-price', 'down-payment', 'loan-amount']
   };
   if (calculator.slug === 'mortgage-affordability') {
     const budget = housingBudget(values, BACK_END_DEBT_SHARE);
@@ -927,8 +985,9 @@ function selectedModelChart(
   if (ids) {
     if (!schedule) return unavailableChart(getCalculatorStudioMetadata(calculator));
     const costRows = schedule.rows;
+    const override = chartMetadataOverrides[calculator.formula];
     return {
-      currency, description: schedule.description, title: schedule.title, type: 'waterfall', valueType: 'currency',
+      currency, description: override?.chartDescription ?? schedule.description, title: override?.chartTitle ?? schedule.title, type: 'waterfall', valueType: 'currency',
       legend: { primary: 'Amount' }, summary: schedule.summary,
       entries: ids.map((id) => costRows.find((row) => row.id === id))
         .filter((row): row is CalculatorDetailScheduleRow => Boolean(row))
@@ -1002,6 +1061,55 @@ function selectedModelChart(
       primaryKey = 'balance'; secondaryKey = 'cumulativeDeposits';
       primaryLabel = 'Projected value'; secondaryLabel = 'Total deposited';
       start = values.principal; secondaryStart = start; axis = calculator.slug === 'hysa' ? 'Month' : 'Year'; type = 'timeline'; break;
+    case 'retirement':
+      primaryKey = 'balance'; secondaryKey = undefined;
+      primaryLabel = 'Projected savings'; secondaryLabel = undefined;
+      start = Math.max(0, values.currentSavings ?? 0); axis = 'Year'; type = 'timeline'; break;
+    case 'swp':
+      primaryKey = 'balance'; secondaryKey = undefined;
+      primaryLabel = 'Remaining corpus'; secondaryLabel = undefined;
+      start = Math.max(0, values.corpus ?? 0); axis = 'Year'; type = 'timeline'; break;
+    case 'ppf':
+      primaryKey = 'balance'; secondaryKey = 'totalContributions';
+      primaryLabel = 'Projected balance'; secondaryLabel = 'Total contributions';
+      start = 0; secondaryStart = 0; axis = 'Year'; type = 'timeline'; break;
+    case 'epf':
+      primaryKey = 'balance'; secondaryKey = undefined;
+      primaryLabel = 'Projected corpus'; secondaryLabel = undefined;
+      start = 0; axis = 'Year'; type = 'timeline'; break;
+    case 'nps':
+      primaryKey = 'balance'; secondaryKey = 'cumulativeDeposits';
+      primaryLabel = 'Projected corpus'; secondaryLabel = 'Total contributed';
+      start = 0; secondaryStart = 0; axis = 'Year'; type = 'timeline'; break;
+    case 'gratuity':
+      primaryKey = 'benefit'; secondaryKey = undefined;
+      primaryLabel = 'Estimated gratuity'; secondaryLabel = undefined;
+      start = 0; axis = 'Year'; type = 'timeline'; break;
+    case 'social-security':
+      primaryKey = 'delayedCumulative'; secondaryKey = 'earlyCumulative';
+      primaryLabel = 'Delayed claim total'; secondaryLabel = 'Early claim total';
+      start = 0; secondaryStart = 0; axis = 'Year'; type = 'timeline'; break;
+    case 'rmd':
+      primaryKey = 'balance'; secondaryKey = undefined;
+      primaryLabel = 'Balance after distribution'; secondaryLabel = undefined;
+      start = Math.max(0, values.balance ?? 0); axis = 'Year'; type = 'timeline'; break;
+    case 'rent-buy':
+      primaryKey = 'buyPayments'; secondaryKey = 'rentPaid';
+      primaryLabel = 'Paid to own'; secondaryLabel = 'Rent paid';
+      start = Math.max(0, values.downPayment ?? 0); secondaryStart = 0; axis = 'Year'; type = 'timeline'; break;
+    case 'inflation':
+      primaryKey = 'futureCost'; secondaryKey = 'purchasingPower';
+      primaryLabel = 'Future inflated cost'; secondaryLabel = "Today's buying power";
+      start = Math.max(0, values.principal ?? 0); secondaryStart = start; axis = 'Year'; type = 'timeline'; break;
+    case 'roth-traditional': {
+      const contribution = Math.max(0, values.income ?? 0);
+      const currentTaxSavings = contribution * Math.max(0, values.currentTaxRate ?? 0) / 100;
+      const rothContribution = Math.max(0, contribution - currentTaxSavings);
+      const futureTaxRate = Math.max(0, values.futureTaxRate ?? 0) / 100;
+      primaryKey = 'rothValue'; secondaryKey = 'traditionalAfterTax';
+      primaryLabel = 'Roth after-tax value'; secondaryLabel = 'Traditional after-tax value';
+      start = rothContribution; secondaryStart = contribution * (1 - futureTaxRate); axis = 'Year'; type = 'timeline'; break;
+    }
     default: return null;
   }
   if (!schedule) return unavailableChart(getCalculatorStudioMetadata(calculator));
@@ -1016,20 +1124,21 @@ function selectedModelChart(
   }
   // Sample actual rows while retaining the true final period, including capped/stalled schedules.
   const indices = [...new Set([0.25, 0.5, 0.75, 1].map((part) => Math.max(0, Math.ceil(rows.length * part) - 1)))];
-  const entries: CalculatorChartDatum[] = [{ label: 'Start', primary: start, secondary: secondaryStart, currency, valueType: 'currency', note: start === 0 && trimAtPayoff ? 'Paid in full at the start' : undefined }];
+  const entries: CalculatorChartDatum[] = [{ label: 'Start', primary: start, secondary: secondaryKey ? secondaryStart : undefined, currency, valueType: 'currency', note: start === 0 && trimAtPayoff ? 'Paid in full at the start' : undefined }];
   if (rows.length) {
     entries.push(...indices.map((index) => {
       const row = rows[index];
       const period = axis === 'Year' ? row.values.year : row.values.month ?? row.values.period;
-      return { label: `${axis} ${period}`, primary: Number(row.values[primaryKey]),
+      return { label: period === 'Now' ? 'Now' : `${axis} ${period}`, primary: Number(row.values[primaryKey]),
         secondary: secondaryKey ? Number(row.values[secondaryKey]) : undefined,
         currency, valueType: 'currency' as const, note: row.note };
     }));
   }
+  const override = chartMetadataOverrides[calculator.formula];
   return {
-    currency, description: schedule.description, entries, legend: { primary: primaryLabel, secondary: secondaryLabel },
+    currency, description: override?.chartDescription ?? schedule.description, entries, legend: { primary: primaryLabel, secondary: secondaryLabel },
     summary: `${secondaryKey === 'cumulativeInterest' && entries.at(-1)!.primary < start ? 'The balance declines and interest accumulates on the selected payment schedule. ' : ''}${schedule.summary} Chart points are sampled from the same table; comparator series are labelled separately.`,
-    title: schedule.title, type, valueType: 'currency'
+    title: override?.chartTitle ?? schedule.title, type, valueType: 'currency'
   };
 }
 
@@ -1043,7 +1152,10 @@ function waterfallChart(
   const baseMetric = result.metrics.find((m) => m.valueType === 'currency') ?? result.metrics[0];
   const baseValueType = baseMetric?.valueType ?? 'currency';
 
-  const compatibleMetrics = result.metrics.filter((m) => m.valueType === baseValueType);
+  const excludedWaterfallLabels = new Set(['Estimated monthly take-home', 'Estimated take-home per paycheck']);
+  const compatibleMetrics = result.metrics.filter(
+    (m) => m.valueType === baseValueType && !excludedWaterfallLabels.has(m.label)
+  );
   const entries: CalculatorChartDatum[] = compatibleMetrics.slice(0, 5).map((metric) => ({
     currency,
     label: metric.label,
@@ -1054,7 +1166,12 @@ function waterfallChart(
   }));
 
   if (entries.length < 3) {
-    const compatibleInputs = calculator.inputs.filter((input) => input.type === baseValueType);
+    const seenLabels = new Set(entries.map((entry) => entry.label));
+    const compatibleInputs = calculator.inputs.filter((input) => {
+      if (input.type !== baseValueType || seenLabels.has(input.label)) return false;
+      seenLabels.add(input.label);
+      return true;
+    });
     const inputEntries = compatibleInputs.slice(0, 3 - entries.length).map((input) => ({
       currency,
       label: input.label,
@@ -1074,7 +1191,7 @@ function waterfallChart(
     legend: {
       primary: baseValueType === 'currency' ? 'Amount' : (baseMetric?.label ?? 'Amount')
     },
-    summary: `This breakdown keeps the ${calculator.title.toLowerCase()} readable by showing the pieces behind the net result.`,
+    summary: `This breakdown keeps the ${softLower(calculator.title)} readable by showing the pieces behind the net result.`,
     title: metadata.chartTitle,
     type: 'waterfall',
     valueType: baseValueType
@@ -1114,7 +1231,7 @@ function comparisonChart(
       primary: result.metrics[0]?.label ?? 'Headline result',
       secondary: 'Base reference'
     },
-    summary: `This comparison shows how the ${calculator.title.toLowerCase()} changes when the main assumptions move.`,
+    summary: `This comparison shows how the ${softLower(calculator.title)} changes when the main assumptions move.`,
     title: metadata.chartTitle,
     type: 'comparison',
     valueType
@@ -1133,11 +1250,14 @@ function loanAmortizationSchedule(calculator: SeoCalculator, values: Record<stri
   const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
   const rows = amortizationRows(principal, rate, years, payment, undefined, extraMonthlyPayment, extraAnnualPayment);
 
+  const fhaNote = calculator.slug === 'fha-loan'
+    ? ' Includes financed upfront MIP in loan principal and excludes recurring monthly MIP.'
+    : '';
   return {
     columns: amortizationColumns(),
-    description: 'Expandable month-by-month payment schedule with required and additional payments, principal, interest, ending balance, and cumulative interest.',
+    description: `Expandable month-by-month payment schedule with required and additional payments, principal, interest, ending balance, and cumulative interest.${fhaNote}`,
     rows,
-    summary: monthlyScheduleCapSummary(years, `Shows ${rows.length} payment rows with the year noted on each row so monthly and yearly payment patterns are visible together.`),
+    summary: monthlyScheduleCapSummary(years, `Shows ${rows.length} payment rows with the year noted on each row so monthly and yearly payment patterns are visible together.${fhaNote}`),
     title: 'Monthly amortization schedule'
   };
 }
@@ -1406,7 +1526,10 @@ function budgetSchedule(_calculator: SeoCalculator, values: Record<string, numbe
 
 function emergencyFundSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const monthlyExpenses = Math.max(0, values.monthlyExpenses ?? 0);
-  const months = Math.max(1, Math.min(60, Math.ceil(values.months ?? 1)));
+  const rawMonths = Number.isFinite(values.months) ? values.months : 1;
+  if (rawMonths <= 0) return null;
+  const targetMonths = Math.min(60, rawMonths);
+  const rowCount = Math.ceil(targetMonths);
 
   return {
     columns: [
@@ -1416,15 +1539,16 @@ function emergencyFundSchedule(_calculator: SeoCalculator, values: Record<string
       moneyColumn('remainingTarget', 'Remaining target')
     ],
     description: 'Coverage-by-month emergency reserve target so the final number becomes a runway plan.',
-    rows: Array.from({ length: months }, (_, index) => {
-      const month = index + 1;
+    rows: Array.from({ length: rowCount }, (_, index) => {
+      const stepMonth = Math.min(targetMonths, index + 1);
       return {
-        id: `emergency-month-${month}`,
+        id: `emergency-month-${index + 1}`,
+        note: stepMonth < index + 1 ? 'Final partial month of reserve target.' : undefined,
         values: {
-          month,
+          month: Number(stepMonth.toFixed(4)),
           monthlyExpenses,
-          remainingTarget: monthlyExpenses * (months - month),
-          targetToDate: monthlyExpenses * month
+          remainingTarget: Number((monthlyExpenses * Math.max(0, targetMonths - stepMonth)).toFixed(2)),
+          targetToDate: Number((monthlyExpenses * stepMonth).toFixed(2))
         }
       };
     }),
@@ -2150,7 +2274,9 @@ function indiaTaxComparisonSchedule(_calculator: SeoCalculator, values: Record<s
 function usTaxSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const income = Math.max(0, values.income ?? 0);
   const extraDeductions = Math.max(0, values.deductions ?? 0);
-  const taxableIncome = Math.max(0, income - usSingle2026StandardDeduction - extraDeductions);
+  const appliedStandardDeduction = Math.min(income, usSingle2026StandardDeduction);
+  const appliedExtraDeductions = Math.min(Math.max(0, income - appliedStandardDeduction), extraDeductions);
+  const taxableIncome = Math.max(0, income - appliedStandardDeduction - appliedExtraDeductions);
   const bracketRows = progressiveTaxRows(taxableIncome, usSingle2026Brackets);
   const federalTax = bracketRows.reduce((sum, row) => sum + row.tax, 0);
   const stateTax = income * Math.max(0, values.stateRate ?? 0) / 100;
@@ -2172,9 +2298,23 @@ function usTaxSchedule(_calculator: SeoCalculator, values: Record<string, number
           note: '2026 single-filer standard deduction subtracted before bracket tax.',
           rate: '',
           tax: 0,
-          taxedAmount: usSingle2026StandardDeduction
+          taxedAmount: appliedStandardDeduction
         }
       },
+      ...(extraDeductions > 0
+        ? [
+            {
+              id: 'extra-deductions',
+              values: {
+                bracket: 'Extra deductions',
+                note: 'Additional deductions subtracted before federal bracket tax.',
+                rate: '',
+                tax: 0,
+                taxedAmount: appliedExtraDeductions
+              }
+            }
+          ]
+        : []),
       ...bracketRows.map((row, index) => ({
         id: `us-bracket-${index}`,
         values: {
@@ -2202,7 +2342,7 @@ function usTaxSchedule(_calculator: SeoCalculator, values: Record<string, number
           note: 'Federal bracket tax plus state/local placeholder.',
           rate: income > 0 ? (federalTax + stateTax) / income : '',
           tax: federalTax + stateTax,
-          taxedAmount: taxableIncome
+          taxedAmount: income
         }
       }
     ],
@@ -2237,7 +2377,9 @@ function simpleTaxBreakdownSchedule(calculator: SeoCalculator, values: Record<st
     description: 'Estimated tax breakdown from gross amount to taxable base, tax, and net amount.',
     rows: [
       { amount: base, id: 'base', lineItem: calculator.formula === 'capital-gains' ? 'Capital gain' : 'Gross amount', note: 'Starting amount before deductions or exemptions.', rate: null },
-      { amount: deductions, id: 'deductions', lineItem: 'Deductions / exempt amount', note: 'Amount removed before applying the estimate rate.', rate: null },
+      ...(calculator.formula === 'capital-gains'
+        ? []
+        : [{ amount: deductions, id: 'deductions', lineItem: 'Deductions / exempt amount', note: 'Amount removed before applying the estimate rate.', rate: null }]),
       { amount: taxable, id: 'taxable', lineItem: 'Taxable base', note: 'Amount multiplied by the rate input.', rate: null },
       { amount: tax, id: 'tax', lineItem: 'Estimated tax', note: 'Taxable base multiplied by the rate input.', rate: taxRate },
       { amount: base - tax, id: 'net', lineItem: 'Estimated net amount', note: 'Gross amount after estimated tax.', rate: null }
@@ -2355,10 +2497,10 @@ function recurringGrowthSchedule(
 
     if (month % 12 === 0 || month === months) {
       const partMonths = month % 12;
-      const year = options.effectiveApy || partMonths === 0 ? Math.ceil(month / 12) : Number((month / 12).toFixed(4));
+      const year = partMonths === 0 ? Math.ceil(month / 12) : Number((month / 12).toFixed(4));
       rows.push({
         id: `year-${Math.ceil(month / 12)}`,
-        note: !options.effectiveApy && partMonths > 0 ? `Part year: ${partMonths} ${partMonths === 1 ? 'month' : 'months'} of deposits and growth.` : undefined,
+        note: partMonths > 0 ? `Part year: ${partMonths} ${partMonths === 1 ? 'month' : 'months'} of deposits and growth.` : undefined,
         values: {
           ...(options.effectiveApy ? { month } : {}),
           balance,
@@ -2854,9 +2996,9 @@ function rmdSchedule(_calculator: SeoCalculator, values: Record<string, number>)
       moneyColumn('distribution', 'Distribution'),
       moneyColumn('balance', 'Balance after distribution')
     ],
-    description: 'Illustrative RMD schedule using the provided divisor and reducing it by one each year.',
+    description: 'Illustrative 0%-return RMD drawdown schedule using the entered divisor and reducing it by 1.0 each year.',
     rows,
-    summary: 'Shows the first 10 estimated distributions so the one-year RMD result has retirement-income context.',
+    summary: 'Shows the first 10 estimated annual distributions under a 0% return assumption while stepping the divisor down by 1.0 each year.',
     title: 'RMD distribution schedule'
   };
 }
@@ -2974,7 +3116,7 @@ function investmentReturnSchedule(_calculator: SeoCalculator, values: Record<str
 function xirrApproximationSchedule(
   _calculator: SeoCalculator,
   values: Record<string, number>,
-  result: CalculatorResult
+  _result: CalculatorResult
 ): CalculatorDetailSchedule | null {
   const initial = Math.max(0, values.initial ?? 0);
   const monthly = Math.max(0, values.monthly ?? 0);
@@ -2982,9 +3124,8 @@ function xirrApproximationSchedule(
   if ((values.years ?? 0) <= 0 || (initial <= 0 && monthly <= 0)) return null;
   const years = scheduleYears(values.years ?? 0);
   const months = Math.min(maxScheduleYears * 12, termMonths(values.years ?? 0));
-  const annualized = Number.isFinite(result.metrics[0]?.value) ? result.metrics[0].value : 0;
-  if (annualized <= -1) return null; // No finite implied monthly path for a total-loss boundary.
-  const monthlyRate = Math.expm1(Math.log1p(annualized) / 12);
+  const monthlyRate = solveMonthlyPeriodicRate(initial, monthly, final, months);
+  if (monthlyRate <= -1) return null; // No finite implied monthly path for a total-loss boundary.
   let cumulativeInvested = initial;
   let impliedValue = initial;
   let annualContribution = 0;
@@ -2996,10 +3137,12 @@ function xirrApproximationSchedule(
     cumulativeInvested += monthly;
 
     if (month % 12 === 0 || month === months) {
-      const year = month / 12;
+      const partMonths = month % 12;
+      const year = partMonths === 0 ? month / 12 : Number((month / 12).toFixed(2));
       const endingValue = impliedValue;
       rows.push({
         id: `xirr-year-${year}`,
+        note: partMonths > 0 ? `Part year: ${partMonths} ${partMonths === 1 ? 'month' : 'months'} modeled.` : undefined,
         values: {
           contribution: annualContribution,
           cumulativeInvested,
@@ -3071,7 +3214,7 @@ function doublingSchedule(_calculator: SeoCalculator, values: Record<string, num
     values: {
       period: step === 0 ? 'Start' : `${Math.round(step * 100)}% of path`,
       ruleYears: yearsToDouble * step,
-      valueMultiple: 1 + step
+      valueMultiple: Number((2 ** step).toFixed(2))
     }
   }));
 

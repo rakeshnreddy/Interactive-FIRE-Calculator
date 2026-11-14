@@ -1248,6 +1248,26 @@
       "code_sha": "171c3f57c7d725b882accd947a68a2b7edd94dd0",
       "review": "reviews/C35.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B75",
+      "title": "charts, schedules, statutory provenance links and P2/P3 copy honesty across all studios",
+      "checkpoint": "C37",
+      "status": "done",
+      "dependencies": [
+        "B68",
+        "B69",
+        "B71",
+        "B72",
+        "B73",
+        "B76"
+      ],
+      "prompt": "prompts/B75.md",
+      "submission": "submissions/B75.md",
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": "e9e4963d0eff19c3c6cf20bcb0b2b50089633254",
+      "review": "reviews/C37.md",
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

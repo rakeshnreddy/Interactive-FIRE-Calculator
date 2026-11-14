@@ -257,7 +257,7 @@ const libraryStartingPaths = [
   {
     question: 'Paying off debt?',
     title: 'Debt Payoff Calculator',
-    description: 'Compare avalanche and snowball strategies to eliminate high-interest debt faster.',
+    description: 'Estimate payoff time, total interest, and how extra monthly or yearly payments clear a debt faster.',
     path: '/calculators/debt-payoff',
     badge: 'Debt Payoff'
   }
@@ -711,7 +711,7 @@ function CalculatorDetail({
   const standardInputs = calculator.inputs.filter((input) => !isOptional(input.key));
   const housingKeys = new Set(['annualTaxes', 'annualInsurance', 'monthlyHoa', 'monthlyMortgageInsurance']);
   const optionalGroups = [
-    { key: 'payments', label: calculator.inputs.some((input) => input.key.startsWith('extra')) ? 'Pay extra' : calculator.formula === 'rd' ? 'Extra yearly deposit' : calculator.formula === 'sip' ? 'Extra yearly investment' : 'Additional contributions', inputs: calculator.inputs.filter((input) => isOptional(input.key) && !housingKeys.has(input.key)) },
+    { key: 'payments', label: mainExtraPayment ? 'Extra yearly payment' : calculator.inputs.some((input) => input.key.startsWith('extra')) ? 'Pay extra' : calculator.formula === 'rd' ? 'Extra yearly deposit' : calculator.formula === 'sip' ? 'Extra yearly investment' : 'Additional contributions', inputs: calculator.inputs.filter((input) => isOptional(input.key) && !housingKeys.has(input.key)) },
     { key: 'housing', label: 'Include housing costs', inputs: calculator.inputs.filter((input) => housingKeys.has(input.key)) }
   ].filter((group) => group.inputs.length > 0).map((group) => {
     const active = group.inputs.filter((input) => Number(rawValues[input.key]) !== 0 && rawValues[input.key]?.trim() !== '');

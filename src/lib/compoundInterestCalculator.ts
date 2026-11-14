@@ -511,7 +511,13 @@ function buildMilestones(
   }
   if (inputs.principal > 0) {
     const doubled = core.detailedSchedule.find((row) => row.closingBalance >= inputs.principal * 2);
-    if (doubled) milestones.push({ label: 'Starting balance doubled', time: doubled.time, value: doubled.closingBalance });
+    if (doubled) {
+      milestones.push({
+        label: doubled.cumulativeContributions > inputs.principal ? 'Balance reaches 2x starting amount' : 'Starting balance doubled',
+        time: doubled.time,
+        value: doubled.closingBalance
+      });
+    }
   }
   let cumulativeWithdrawals = 0;
   const crossover = core.detailedSchedule.find((row) => {

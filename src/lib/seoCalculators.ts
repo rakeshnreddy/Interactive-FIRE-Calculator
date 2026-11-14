@@ -1,7 +1,7 @@
 import { projectDebt, projectTransfer, projectDebtStrategy } from './debtProjection';
 import { housingBudget } from './housingBudget';
 import { vehicleCostResult } from './vehicleLeaseBuy';
-import { buildCalculatorPublicContent } from './calculatorContent';
+import { buildCalculatorPublicContent, softLower } from './calculatorContent';
 import type { CalculatorModelVersion } from './calculatorModelVersion';
 import { assessPayback } from './payback';
 import { assessBenefitCatchUp } from './benefitCatchUp';
@@ -380,7 +380,7 @@ export const seoCalculators: SeoCalculator[] = [
       annualTopUpInput,
       percent('rate', 'Annual return', 7),
       money('annualIncome', 'Desired annual income', 80000),
-      percent('withdrawalRate', 'Withdrawal rate', 4)
+      percent('withdrawalRate', 'Withdrawal rate', 4, 'Planned annual withdrawal percentage of your retirement nest egg, for example 4 for 4% a year.')
     ],
     keywords: ['retirement calculator'],
     region: 'Global',
@@ -414,7 +414,7 @@ export const seoCalculators: SeoCalculator[] = [
   ...([
     ['sip', 'SIP Calculator', 'sip', [money('monthly', 'Monthly SIP', 10000, 'Same amount invested at the end of each month.'), sipExtraInput, sipTermInput, sipReturnInput]],
     ['step-up-sip', 'Step-up SIP Calculator', 'sip', [money('monthly', 'Starting monthly SIP', 10000, "First year's instalment, invested at the end of each month."), percent('stepUp', 'Annual step-up', 10, 'Raises the monthly instalment by this percentage once a year, from month 13.'), sipExtraInput, sipTermInput, sipReturnInput]],
-    ['sip-goal', 'SIP Goal Calculator', 'savings-goal', [money('target', 'Target corpus', 10000000), money('current', 'Current savings', 0), ...termInputs]],
+    ['sip-goal', 'SIP Goal Calculator', 'savings-goal', [money('target', 'Target corpus', 10000000), money('current', 'Current savings', 0), sipTermInput, sipReturnInput]],
     ['lumpsum-mutual-fund', 'Lumpsum Mutual Fund Calculator', 'lumpsum', [money('principal', 'Lumpsum investment', 500000, 'One-time amount invested at the start; nothing is added later.'), number('years', 'Years', 10, 'yrs', 'Number of years invested; 1.5 means 18 months.'), percent('rate', 'Expected annual return', 8, 'Yearly return to assume, compounded once a year, like an annualised (CAGR) return. Market returns vary.')]],
     ['swp', 'SWP Calculator', 'swp', [money('corpus', 'Starting corpus', 10000000), money('withdrawal', 'Monthly withdrawal', 60000), percent('rate', 'Annual return', 7)]],
     ['emi', 'EMI Calculator', 'loan', [money('principal', 'Loan amount', 2000000), percent('rate', 'Interest rate', 9), number('years', 'Tenure', 10, 'yrs'), ...additionalPaymentInputs]],
@@ -423,15 +423,15 @@ export const seoCalculators: SeoCalculator[] = [
     ['personal-loan-emi', 'Personal Loan EMI Calculator', 'loan', [money('principal', 'Personal loan amount', 500000), percent('rate', 'Interest rate', 13), number('years', 'Tenure', 5, 'yrs'), ...additionalPaymentInputs]],
     ['income-tax-india', 'India Income Tax Calculator: Old vs New Regime', 'india-tax', [money('income', 'Annual taxable income before deductions', 1500000), money('deductions', 'Old-regime deductions and exemptions', 150000)]],
     ['salary-india', 'India Salary Take-home Calculator', 'salary', [money('income', 'Annual CTC', 2400000), percent('effectiveRate', 'Estimated income tax rate', 12), percent('employeePfRate', 'Employee PF / payroll deduction rate', 5), money('professionalTax', 'Annual professional tax', 2400)]],
-    ['hra-exemption', 'HRA Exemption Calculator', 'hra', [money('salary', 'Basic salary', 1200000), money('hra', 'HRA received', 500000), money('rent', 'Annual rent paid', 600000), percent('metroPercent', 'Salary exemption cap', 50)]],
+    ['hra-exemption', 'HRA Exemption Calculator', 'hra', [money('salary', 'Basic salary', 1200000, 'Annual basic salary (plus DA where applicable) in ₹.'), money('hra', 'HRA received', 500000, 'Annual house rent allowance received from your employer in ₹.'), money('rent', 'Annual rent paid', 600000), percent('metroPercent', 'Salary exemption cap', 50)]],
     ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000, depositHelper), number('years', 'Deposit term', 10, 'yrs', depositTermHelper), percent('rate', 'Annual interest rate', 8, 'Quoted yearly rate; this estimate compounds it once a year.')]],
     ['rd', 'RD Calculator', 'rd', [...rdInputs]],
     ['ppf', 'PPF Calculator', 'ppf', [
       { ...money('annual', 'Annual contribution', 150000, 'Deposit for each financial year, ₹500 to ₹1,50,000 per financial year under the PPF scheme. This model assumes one deposit made by 5 April.'), min: 500, max: 150000 },
-      percent('rate', 'Annual return', 7.1),
+      percent('rate', 'Annual interest rate', 7.1, 'Annual PPF interest rate as a percentage, for example 7.1 for 7.1% a year.'),
       { ...number('years', 'Years', 15, 'yrs', 'Whole financial years. The account can be closed after 15 years or extended in 5-year blocks.'), min: 1, step: 1 }
     ]],
-    ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, ...termInputs]],
+    ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, number('years', 'Years', 10, 'yrs'), percent('rate', 'Annual return / rate', 8, 'Annual EPF interest rate credited via monthly compounding (annual rate ÷ 12) in this planner.')]],
     ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), annualTopUpInput, ...termInputs, percent('annuityPercent', 'Annuity allocation', 40, 'Share of the corpus used to buy an annuity. 40% is an editable example, not a rule: the minimum depends on your NPS sector, exit type and corpus size.'), percent('annuityRate', 'Annuity rate', 6, 'The yearly payout rate the annuity provider offers on the annuitised portion.')]],
     ['gratuity', 'Gratuity Calculator', 'gratuity', [money('salary', 'Last drawn basic + DA', 120000), number('years', 'Completed service', 8, 'yrs')]],
     ['home-loan-prepayment', 'Home Loan Prepayment Calculator', 'loan-prepayment', [money('principal', 'Current loan balance', 6000000), percent('rate', 'Interest rate', 8.5), number('years', 'Remaining tenure', 15, 'yrs'), money('prepayment', 'One-time prepayment', 500000), ...additionalPaymentInputs]],
@@ -523,7 +523,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['heloc', 'HELOC Calculator', 'loan', [money('principal', 'HELOC balance', 50000), percent('rate', 'Interest rate', 8.5), number('years', 'Repayment years', 10, 'yrs'), ...additionalPaymentInputs]],
     ['balance-transfer', 'Balance Transfer Calculator', 'balance-transfer', [money('balance', 'Balance transferred', 8000), percent('currentRate', 'Current APR', 22), percent('newRate', 'Promo APR', 3), number('promoMonths', 'Promo period', 18, 'months'), percent('feeRate', 'Transfer fee', 3), money('payment', 'Monthly payment', 400)]],
     ['cd', 'CD Calculator', 'fd', [money('principal', 'Deposit amount', 10000, depositHelper), percent('rate', 'APY', 4.5, 'Annual percentage yield quoted for the CD.'), number('years', 'Term', 2, 'yrs', depositTermHelper)]],
-    ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25), number('years', 'Years', 3, 'yrs')]],
+    ['hysa', 'HYSA Calculator', 'compound', [money('principal', 'Starting savings', 10000), money('monthly', 'Monthly deposit', 500), annualTopUpInput, percent('rate', 'APY', 4.25, 'Annual percentage yield (APY) quoted by the savings account; compounding is already included.'), number('years', 'Years', 3, 'yrs')]],
     ['life-insurance-needs', 'Life Insurance Needs Calculator', 'insurance', [money('income', 'Annual income to replace', 100000), number('years', 'Years of support', 10, 'yrs'), money('debts', 'Debts and final expenses', 150000), money('savings', 'Existing savings/coverage', 100000)]],
     ['lease-vs-buy', 'Lease vs Buy Calculator', 'vehicle-cost', [money('homePrice', 'Vehicle purchase price', 25000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan APR', 0), number('loanYears', 'Loan term', 4, 'yrs'), number('years', 'Comparison horizon', 2, 'yrs'), money('rent', 'Monthly lease payment', 350), number('leaseYears', 'Quoted lease period', 2, 'yrs'), money('resale', 'Resale value at horizon', 14000), money('leaseUpfront', 'Upfront lease costs', 0), number('extendLease', 'Explicit lease continuation', 0), money('extensionMonthly', 'Continuation monthly cost', 0)]],
     ['roi', 'ROI Calculator', 'roi', [{ ...money('gain', 'Net gain', 5000, 'Enter a loss with a minus sign.'), min: -Number.MAX_SAFE_INTEGER }, money('cost', 'Cost', 20000)]]
@@ -649,6 +649,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const needed = get('withdrawalRate') > 0 ? get('annualIncome') / (get('withdrawalRate') / 100) : 0;
       return { ...result('Projected retirement savings', projected, 'Projected savings compared with the portfolio implied by desired annual income.', [
         'Withdrawal need uses the provided withdrawal rate.',
+        'Desired annual income is treated as the target annual withdrawal in retirement-year dollars; adjust the figure upward if you want an inflation-adjusted target.',
         'Existing savings compound annually over the exact term; contributions compound monthly over the nearest whole number of months.',
         get('annualTopUp') > 0 ? 'A separate contribution is added at each year end.' : 'No additional yearly contribution is applied.'
       ], [
@@ -955,7 +956,12 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       return result('Estimated interest saved', Math.max(0, baseline.interest - accelerated.interest), 'Interest avoided after applying the prepayment now.', [
         'Prepayment is modeled as an immediate principal reduction.',
         'The original EMI is kept the same to estimate faster payoff.',
-        'Optional monthly and yearly additional payments are applied after the immediate prepayment.'
+        'Optional monthly and yearly additional payments are applied after the immediate prepayment.',
+        ...(calculator.slug === 'home-loan-prepayment'
+          ? ['Under RBI guidelines, floating-rate home loans to individual borrowers for non-business purposes generally carry zero prepayment penalty; fixed-rate or commercial loans may still charge lender fees.']
+          : calculator.slug === 'home-loan-foreclosure'
+            ? ['Under RBI rules, floating-rate home loans to individual borrowers generally cannot be charged foreclosure penalties; fixed-rate loans may still incur foreclosure fees and 18% GST on lender charges.']
+            : [])
       ], [
         metric('New payoff months', accelerated.months, 'number'),
         metric('Months saved', Math.max(0, baseline.months - accelerated.months), 'number', 'positive'),
@@ -1048,7 +1054,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       return result('Estimated lower-regime net income', Math.max(0, get('income') - bestRegime.totalTax), 'Compares simplified old and new regime income-tax estimates and uses the lower tax outcome.', [
         'Uses a simplified India individual under-60 estimate for assessment year 2026-27.',
         'Old regime applies the deductions/exemptions input; new regime ignores that input.',
-        'Cess is modeled at 4% and surcharge, special rates, rebates edge cases, and employer-specific salary components are excluded.'
+        'Cess is modeled at 4% and surcharge, special rates, rebate edge cases, and employer-specific salary components are excluded.'
       ], [
         metric('Old regime tax estimate', oldRegime.totalTax, 'currency', 'warning'),
         metric('New regime tax estimate', newRegime.totalTax, 'currency', 'warning'),
@@ -1136,7 +1142,8 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const distribution = get('balance') / divisor;
       return result('Estimated RMD', distribution, 'Retirement account balance divided by the life expectancy divisor.', [
         'This is a simplified Required Minimum Distribution estimate.',
-        'Confirm the correct IRS table, balance date, and age rules before acting.'
+        'Confirm the correct IRS table, balance date, and age rules before acting.',
+        'The 10-year schedule illustrates a 0%-return drawdown that reduces the entered life-expectancy divisor by 1.0 each subsequent year.'
       ], [
         metric('Remaining balance after RMD', Math.max(0, get('balance') - distribution), 'currency'),
         metric('Divisor used', divisor, 'number')
@@ -1165,7 +1172,9 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const monthly = get('employee') + get('employer');
       const projection = projectRecurringBalance(0, monthly, get('annualTopUp'), monthlyRate, months);
       const futureValue = projection.balance;
-      return result('Estimated EPF corpus', futureValue, 'Employee plus employer monthly contributions compounded over time.', [], [
+      return result('Estimated EPF corpus', futureValue, 'Employee plus employer monthly contributions compounded over time.', [
+        'Applies monthly compounding at annual rate ÷ 12 to existing balance plus employee and employer monthly contributions.'
+      ], [
         metric('Total contributions', projection.contributions, 'currency'),
         metric('Estimated growth', futureValue - projection.contributions, 'currency', 'positive')
       ]);
@@ -1188,7 +1197,10 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const gratuity = Math.min(uncapped, statutoryCap);
       return result('Estimated gratuity', gratuity, 'Entered monthly salary multiplied by 15/26 and service years, capped at the model’s Rs 20,00,000 assumption.', [
         'Uses a legacy basic-plus-DA planning formula (15/26 per entered service year); current wage definitions and eligibility are not determined.',
-        'The modeled Rs 20,00,000 cap is not a determination of current entitlement or tax-free treatment; confirm the applicable Labour Code and employer terms.'
+        'The modeled Rs 20,00,000 cap is not a determination of current entitlement or tax-free treatment; confirm the applicable Labour Code and employer terms.',
+        ...(get('years') < 5
+          ? ['Continuous service under 5 years is generally below the standard statutory vesting threshold under the Payment of Gratuity Act (except in cases of death or disablement).']
+          : [])
       ], uncapped > statutoryCap ? [metric('Formula amount before the cap', uncapped, 'currency', 'warning')] : []);
     }
     case 'refinance': {
@@ -1198,7 +1210,10 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const payback = assessPayback(savings, get('closingCosts'), months, 'switching');
       return { ...result('Monthly savings', savings, payback.message, [
         'Closing costs are financed into the new balance. Both loans use the same entered term.',
-        'Cost divided by payment saving is a simplified comparison, not full economic break-even; it does not value time or changes in remaining term.'
+        'Cost divided by payment saving is a simplified comparison, not full economic break-even; it does not value time or changes in remaining term.',
+        ...(calculator.slug === 'home-loan-balance-transfer-india'
+          ? ['Include MODT / equitable mortgage charges, legal and technical valuation fees, and 18% GST on processing fees inside the switching fee input for an all-in India balance-transfer comparison.']
+          : [])
       ], [
         ...(payback.months === undefined ? [] : [metric('Simplified payback months', payback.months, 'number')]),
         metric('New payment', newPayment, 'currency')
@@ -1253,7 +1268,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
           'The promo APR applies for the entered months, then the current APR applies. Older inputs with no promo length keep the promo APR through the modeled horizon.',
           ...(!completed ? ['At least one balance is not paid off within 50 years. Interest and cost differences cover only the modeled horizon.'] : [])
         ], [
-          metric('Transfer fee', fee, 'currency', 'warning'), metric('Promo payoff months', promoRows, 'number'),
+          metric('Transfer fee', fee, 'currency', 'warning'), metric('Months in promo period', promoRows, 'number'),
           metric('Balance left when the promo ends', promoBalance, 'currency', promoBalance > 0 ? 'warning' : 'positive'),
           metric(transfer.paidOff ? 'Total payoff months after transfer' : 'Transfer months modeled', transfer.months, 'number'),
           metric('Interest with transfer', transfer.interest, 'currency'),
@@ -1266,8 +1281,24 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
         metric('Increase', futureCost - get('principal'), 'currency', 'warning')
       ]);
     }
-    case 'rule-72':
-      return result('Years to double', get('rate') > 0 ? 72 / get('rate') : 0, 'Rule of 72 estimate for doubling time.', [], []);
+    case 'rule-72': {
+      const ruleYears = get('rate') > 0 ? 72 / get('rate') : 0;
+      const exactYears = rate > 0 ? Math.log(2) / Math.log1p(rate) : 0;
+      return result(
+        'Years to double',
+        ruleYears,
+        'Rule of 72 estimate for doubling time.',
+        rate > 0
+          ? ['Exact compound doubling uses ln(2) ÷ ln(1 + r) for annual compounding; the Rule of 72 is accurate near 6%–10% and diverges at very low or high rates.']
+          : [],
+        rate > 0
+          ? [
+              metric('Exact compound years', exactYears, 'years'),
+              metric('Rule of 72 gap', ruleYears - exactYears, 'years')
+            ]
+          : []
+      );
+    }
     case 'social-security': {
       const monthlyIncrease = get('full') - get('early');
       const forgoneBenefits = get('early') * get('delayYears') * 12;
@@ -1322,7 +1353,8 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       const registration = get('homePrice') * get('registrationRate') / 100;
       return result('Stamp duty and registration cost', stampDuty + registration, 'Estimated property purchase taxes and registration charges.', [
         'Rates vary by state, city, buyer profile, and property type.',
-        'Use this as a cash-planning estimate before checking the official local schedule.'
+        'Use this as a cash-planning estimate before checking the official local schedule.',
+        'Stamp duty is legally assessed on the higher of the agreement value or the state Circle Rate / Ready Reckoner guidance value, and many states cap registration fees or offer concessions for women buyers.'
       ], [
         metric('Stamp duty', stampDuty, 'currency', 'warning'),
         metric('Registration charges', registration, 'currency', 'warning')
@@ -1357,7 +1389,7 @@ function result(
 
 // Used only when an input has no explicit helper; says nothing the label does not support.
 function defaultInputHelper(input: CalculatorInput): string {
-  const lower = input.label.toLowerCase();
+  const lower = softLower(input.label);
 
   if (input.type === 'currency') {
     if (/monthly/i.test(input.label)) return 'Amount each month in the calculator currency.';
@@ -1579,9 +1611,9 @@ function projectRecurringBalance(
   return { balance, contributions };
 }
 
-// Annualised internal rate of return for an initial outflow, level end-of-month contributions and a
-// final value, solved by bisection on the monthly rate.
-export function monthlyCashFlowIrr(initial: number, monthly: number, finalValue: number, months: number): number {
+// Periodic monthly internal rate of return for an initial outflow, level end-of-month
+// contributions and a final value, solved by bisection on the monthly rate.
+export function solveMonthlyPeriodicRate(initial: number, monthly: number, finalValue: number, months: number): number {
   const periods = Math.min(Math.max(0, Math.round(months)), MAX_YEARS * 12);
   if (periods <= 0 || (initial <= 0 && monthly <= 0)) return 0;
   // Nothing left at the end is a total loss, not a zero return.
@@ -1591,17 +1623,27 @@ export function monthlyCashFlowIrr(initial: number, monthly: number, finalValue:
     for (let month = 1; month <= periods; month += 1) balance = balance * (1 + r) + monthly;
     return balance;
   };
-  // Monthly rate between -99% (near-total loss) and +100%; results outside are clamped to the bound.
-  let low = -0.99;
+  // Monthly rate between -99.9999% (near-total loss) and +100%; results outside are clamped to the bound.
+  let low = -0.999999;
   let high = 1;
   if (valueAt(low) >= finalValue) return -1;
-  if (valueAt(high) <= finalValue) return (1 + high) ** 12 - 1;
-  for (let iteration = 0; iteration < 100; iteration += 1) {
+  if (valueAt(high) <= finalValue) return high;
+  for (let iteration = 0; iteration < 120; iteration += 1) {
     const mid = (low + high) / 2;
     if (valueAt(mid) < finalValue) low = mid;
     else high = mid;
   }
-  return (1 + (low + high) / 2) ** 12 - 1;
+  return (low + high) / 2;
+}
+
+// Annualised internal rate of return for an initial outflow, level end-of-month contributions and a
+// final value, solved by bisection on the monthly rate.
+export function monthlyCashFlowIrr(initial: number, monthly: number, finalValue: number, months: number): number {
+  const periods = Math.min(Math.max(0, Math.round(months)), MAX_YEARS * 12);
+  if (periods <= 0 || (initial <= 0 && monthly <= 0)) return 0;
+  const monthlyRate = solveMonthlyPeriodicRate(initial, monthly, finalValue, months);
+  if (monthlyRate <= -1) return -1;
+  return (1 + monthlyRate) ** 12 - 1;
 }
 
 export const LOAN_RESIDUAL_TOLERANCE = 0.005;

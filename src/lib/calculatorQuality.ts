@@ -420,6 +420,43 @@ const formulaOverrides: Partial<Record<CalculatorFormula, QualityOverride>> = {
       'Add benchmark and inflation-adjusted return for comprehensive mode.'
     ]
   },
+  inflation: {
+    decisionUsefulness: 'Use this calculator to translate a current expense or goal into the future dollars needed to keep the same purchasing power.',
+    interpretationChecks: [
+      'Compare today’s cost with the inflated future cost across the full horizon.',
+      'Test a higher inflation rate as well as a long-term average to see purchasing-power pressure.',
+      'Use the inflated figure when setting long-term savings or retirement spending targets.'
+    ],
+    calculationRequirements: [
+      'Compound the starting cost at the entered annual inflation rate over the exact term.',
+      'Show future cost, cumulative cost increase, and today’s equivalent purchasing power.'
+    ],
+    scenarioRequirements: [
+      'Compare lower, base, and higher inflation and horizon assumptions.'
+    ],
+    visualRequirements: [
+      'Annual inflation and purchasing power path table.',
+      'Scenario comparison across inflation assumptions.'
+    ]
+  },
+  'down-payment': {
+    decisionUsefulness: 'Use this calculator to see the upfront cash required for a target down-payment percentage and the remaining mortgage principal to finance.',
+    interpretationChecks: [
+      'Separate the down-payment cash from closing costs, prepaid items, and post-close reserves.',
+      'Compare how a larger down payment reduces the loan amount and potential PMI exposure.',
+      'Check that keeping liquid emergency savings takes priority over stretching for a higher down payment.'
+    ],
+    calculationRequirements: [
+      'Calculate down-payment cash and remaining loan amount from purchase price and down-payment percentage.'
+    ],
+    scenarioRequirements: [
+      'Compare lower, base, and higher purchase-price or down-payment assumptions.'
+    ],
+    visualRequirements: [
+      'Upfront down payment versus financed loan amount breakdown.',
+      'Scenario comparison across down-payment percentages.'
+    ]
+  },
   loan: {
     calculationRequirements: [
       'Generate amortization schedule data even when the route headline only asks for payment.',
@@ -521,8 +558,8 @@ const slugOverrides: Record<string, QualityOverride> = {
   },
   'income-tax-india': {
     calculationRequirements: [
-      'Implement old versus new regime slab logic with standard deduction, 80C-style deductions, cess, and surcharge assumptions.',
-      'Show taxable income, tax before cess, cess, total tax, and net income for each regime.'
+      'Compare simplified old- and new-regime slab estimates with modeled rebates, deductions, and 4% cess.',
+      'Show taxable income, base tax, cess, total tax, and net income for each regime while explicitly excluding marginal relief, surcharge, special-rate income, and automatic salary deductions.'
     ],
     visualRequirements: [
       'Old versus new regime comparison bars.',
@@ -613,7 +650,7 @@ export function getCalculatorQualitySpec(calculator: SeoCalculator): CalculatorQ
       `${input.label}: ${input.helper ?? 'Use the calculator unit shown with this input.'}`
     ),
     // Deposit guidance replaces the studio's contribution-based checks instead of appending after them.
-    interpretationChecks: ['fd', 'rd', 'lumpsum', 'sip'].includes(calculator.formula) ? mergeRequirements(formula.interpretationChecks, slug.interpretationChecks) : mergeRequirements(
+    interpretationChecks: ['fd', 'rd', 'lumpsum', 'sip', 'inflation', 'down-payment'].includes(calculator.formula) ? mergeRequirements(formula.interpretationChecks, slug.interpretationChecks) : mergeRequirements(
       defaults.interpretationChecks,
       formula.interpretationChecks,
       slug.interpretationChecks

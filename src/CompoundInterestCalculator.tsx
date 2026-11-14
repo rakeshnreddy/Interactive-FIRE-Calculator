@@ -661,7 +661,7 @@ export function CompoundInterestCalculator({
             <div className="compound-analysis-body">
               <fieldset className="compound-scenario-picker">
                 <legend>Choose the case shown in the headline</legend>
-                <p>Conservative and optimistic cases move only the annual rate by 2 percentage points. They are deterministic comparisons, not probabilities.</p>
+                <p>Lower and higher rate cases move only the annual rate by 2 percentage points. They are deterministic comparisons, not probabilities.</p>
                 <div>
                   {scenarios.map((scenario) => (
                     <label key={scenario.id}>
@@ -1410,8 +1410,8 @@ function formatDuration(years: number): string {
 }
 
 function scenarioLabel(id: ScenarioId): string {
-  if (id === 'lower') return 'Conservative';
-  if (id === 'higher') return 'Optimistic';
+  if (id === 'lower') return 'Lower rate';
+  if (id === 'higher') return 'Higher rate';
   return 'Base';
 }
 

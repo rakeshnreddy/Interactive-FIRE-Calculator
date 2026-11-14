@@ -268,7 +268,7 @@ function inputImpact(
       ? `${input.label} does not change ${targetLabel} inside this test range.`
       : isRoiLossCost
         ? `A higher ${lowerKeepingAcronyms(input.label)} spreads the fixed loss over a larger cost base when other inputs stay fixed.`
-        : `A higher ${lowerKeepingAcronyms(input.label)} ${direction} ${targetLabel} when other inputs stay fixed.`,
+        : `${/^years$/i.test(input.label.trim()) ? 'A longer holding period (years)' : `A higher ${lowerKeepingAcronyms(input.label)}`} ${direction} ${targetLabel} when other inputs stay fixed.`,
     targetValueType
   };
 }

@@ -64,7 +64,7 @@ const blueprints: Record<CalculatorFormula, CalculatorContentBlueprint> = {
   rmd: blueprint('estimate a required distribution from a retirement balance', 'divides the qualifying balance by the entered life-expectancy divisor', 'the balance date, age, account type, and divisor are correct for the owner', 'reserve the expected distribution in retirement cashflow planning'),
   roi: blueprint('measure net gain relative to the cost committed', 'divides net gain by cost to produce a simple return percentage', 'the gain is net of the costs needed for a fair comparison', 'compare opportunities on proportional return as well as dollars gained'),
   'roth-traditional': blueprint('compare after-tax Roth and traditional IRA outcomes', 'grows the same contribution and applies current and future marginal tax-rate assumptions', 'eligibility, contribution limits, state taxes, and side-account reinvestment are reviewed separately', 'test whether today\'s or retirement tax rate drives the stronger after-tax result'),
-  'rule-72': blueprint('estimate how long a steady return may take to double money', 'divides 72 by the entered annual rate', 'the rate is positive, steady, and compounded closely enough for this shortcut', 'use the result as a mental check before running a detailed growth projection'),
+  'rule-72': blueprint('estimate how long a steady return may take to double money', 'divides 72 by the entered annual rate', 'the rate is positive, steady, and compounded closely enough for this shortcut', 'benchmark doubling time quickly before running a detailed growth projection'),
   salary: blueprint('translate annual CTC into estimated monthly and annual take-home', 'subtracts payroll contributions, professional tax, and estimated income tax from CTC', 'the entered rates approximate the employee\'s actual salary structure and payroll treatment', 'set a cashflow plan from spendable pay rather than headline CTC'),
   'savings-goal': blueprint('solve for the recurring contribution needed to reach a target', 'grows current savings and solves the remaining target across the selected contribution cadence', 'the deadline, rate basis, fees, inflation, current balance, contribution timing, and step-up remain as entered', 'turn the target into a practical funding commitment'),
   sip: blueprint('project a recurring mutual-fund contribution path', 'compounds monthly SIP deposits and applies an annual step-up when provided', 'contributions arrive each month and the return is a long-run planning assumption', 'compare total invested with estimated gains and test a sustainable step-up'),
@@ -86,7 +86,11 @@ export function buildCalculatorPublicContent(options: {
   const { formula, inputs, slug, title } = options;
   const content = slug === 'mortgage-affordability'
     ? blueprint('estimate a mortgage loan budget after entered housing costs', 'reserves entered monthly housing costs inside income-based planning limits before converting the remaining payment to loan principal', 'the housing share is your input and the 36% total-debt limit is a fixed planning assumption, not a lender requirement', 'review the loan-payment budget alongside maintenance, utilities, closing costs and reserves')
-    : blueprints[formula];
+    : slug === 'sip-goal'
+      ? { ...blueprints[formula], assumption: 'existing savings and monthly contributions compound monthly at the entered annual return' }
+      : formula === 'loan' && !['emi', 'home-loan-emi', 'car-loan-emi', 'personal-loan-emi'].includes(slug)
+        ? { ...blueprints[formula], decision: 'compare payment affordability with total interest instead of viewing monthly payment alone' }
+        : blueprints[formula];
   const inputNames = humanList(inputs.slice(0, 4).map((input) => softLower(input.label)));
   const changingInputs = humanList(inputs.slice(0, 3).map((input) => input.label));
   const keyInputs = humanList(inputs.slice(0, 3).map((input) => softLower(input.label)));
@@ -97,7 +101,7 @@ export function buildCalculatorPublicContent(options: {
   return {
     assumptions: [
       capitalize(content.assumption) + '.',
-      `${changingInputs} are held at the values you enter unless you select another scenario.`
+      `${changingInputs} ${inputs.length === 1 ? 'is held at the value' : 'are held at the values'} you enter unless you select another scenario.`
     ],
     description,
     explanation,
@@ -129,7 +133,7 @@ const routeAngles: Record<string, string> = {
   'compound-interest': 'Its dedicated experience makes rate basis, contribution timing, fees, inflation, target basis, and future cash flows explicit while preserving the legacy monthly default.',
   'credit-card-payoff': 'It treats the balance as revolving card debt and highlights whether the payment overcomes a high APR.',
   emi: 'It provides a general India EMI estimate before loan-specific fees or protections are added.',
-  'extra-mortgage-payment': 'The entered payment is treated as the regular payment plus the extra principal commitment.',
+  'extra-mortgage-payment': 'It separates your required monthly mortgage payment from extra monthly and yearly principal payments to show time and interest saved.',
   fd: 'It treats an India cumulative fixed deposit as interest compounded once a year and paid with the deposit at maturity.',
   heloc: 'It treats the balance as a repayment-phase home-equity line rather than modeling a separate draw period.',
   'home-equity-loan': 'It treats home equity borrowing as a fixed installment loan with a defined repayment term.',
@@ -139,7 +143,7 @@ const routeAngles: Record<string, string> = {
   'lease-vs-buy': 'It compares net costs over the same period with your explicit resale estimate and lease terms.',
   'lumpsum-mutual-fund': 'It frames the one-time investment as a market-linked mutual-fund projection rather than a guaranteed deposit.',
   mortgage: 'It focuses on the standard principal-and-interest payment for a fixed-rate home loan.',
-  'mortgage-affordability': 'It reserves entered taxes, insurance and HOA inside the income-based housing and total-debt planning limits, then estimates the loan budget from the remaining payment. Maintenance, utilities, closing costs and reserves are excluded; it does not decide lender eligibility.',
+  'mortgage-affordability': 'It focuses on how property taxes, insurance, HOA dues, and other debts affect your monthly housing budget.',
   'mortgage-payoff': 'The entered payment represents the current payoff pace used to estimate the finish date.',
   'personal-loan': 'It frames the installment estimate around unsecured US personal borrowing.',
   'personal-loan-emi': 'It frames the EMI around an India unsecured personal-loan balance and tenure.',
@@ -171,7 +175,7 @@ function humanList(values: string[]): string {
 }
 
 // Lowercases a label for use mid-sentence while keeping acronyms such as APR, EMI, DA or HRA.
-function softLower(label: string): string {
+export function softLower(label: string): string {
   return label
     .split(' ')
     .map((word) => (/[A-Z]{2,}|\(k\)|\d/.test(word) ? word : word.toLowerCase()))

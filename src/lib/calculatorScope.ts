@@ -11,7 +11,7 @@ type ScopeDefinition = Omit<CalculatorScope, 'basis' | 'checked'> & { basis: (v:
 const percent = (v: Record<string, number>, key: string) => `${new Intl.NumberFormat('en-US', {maximumFractionDigits: 4}).format(v[key])}%`;
 const source = (label: string, url: string) => ({label, url});
 const indiaTax = source('Income Tax Department: AY 2026–27', 'https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-1');
-const salary = source('Income Tax Department: salary and HRA', 'https://www.incometaxindia.gov.in/en/income-from-salary');
+const salary = source('Income Tax Department: salary and HRA', 'https://www.incometax.gov.in/');
 const loanCosts = source('CFPB: loan costs', 'https://www.consumerfinance.gov/owning-a-home/explore/learn-about-loan-costs/');
 const fha = source('HUD: mortgage insurance premiums', 'https://www.hud.gov/hud-partners/housing-mip');
 const pmi = source('CFPB: PMI cancellation', 'https://www.consumerfinance.gov/ask-cfpb/when-can-i-remove-private-mortgage-insurance-pmi-from-my-loan-en-202/');
@@ -44,7 +44,7 @@ const definitions: Record<string, ScopeDefinition> = {
   epf: {
     included: 'Entered employee/employer amounts accumulated as monthly savings.',
     excluded: 'EPS pension allocation, wage eligibility, statutory contribution limits and changing declared rates.',
-    basis: () => 'Both entered amounts are credited to this modeled savings balance. Enter the employer amount actually credited to EPF, after any EPS allocation; this is not an EPFO passbook forecast.',
+    basis: () => 'Models monthly employee and employer EPF contributions compounding monthly at annual rate ÷ 12 across the selected years until retirement. Enter the employer amount actually credited to EPF, after any EPS allocation; this is not an EPFO passbook forecast.',
     sources: [source('EPFO: employer contribution guidance', 'https://www.epfindia.gov.in/site_docs/PDFs/MiscPDFs/Employer_Information_Booklet.pdf')]
   },
   nps: {
@@ -57,7 +57,7 @@ const definitions: Record<string, ScopeDefinition> = {
     included: 'Entered monthly salary × 15/26 × service years, with a modeled ₹20,00,000 cap.',
     excluded: 'Employment eligibility, current wage-definition checks, service rounding and tax exemption.',
     basis: () => 'Legacy basic-plus-DA planning formula. Service years are used exactly as entered. The model cap is not a determination of current entitlement or tax-free treatment under the Labour Codes.',
-    sources: [source('Ministry of Labour: Labour Codes FAQs', 'https://www.labour.gov.in/static/uploads/2026/03/a4ccf4c6d97c4f1f36a6d83f8c64213d.pdf')]
+    sources: [source('Ministry of Labour: Labour Codes FAQs', 'https://labour.gov.in/')]
   },
   'loan-eligibility-india': {
     included: 'An income-based payment capacity converted into modeled loan principal.',

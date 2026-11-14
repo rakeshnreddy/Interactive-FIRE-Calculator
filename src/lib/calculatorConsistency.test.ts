@@ -97,7 +97,7 @@ describe('balance transfer', () => {
   it('keeps the promotional rate for the whole promo period even when payments do not cover interest', () => {
     const values = { ...defaults('balance-transfer'), balance: 10_000, currentRate: 0, newRate: 12, feeRate: 0, payment: 50, promoMonths: 12 };
     const result = calculateSeoCalculator(calculator('balance-transfer'), values);
-    expect(metric(result, 'Promo payoff months')).toBe(12);
+    expect(metric(result, 'Months in promo period')).toBe(12);
     // 12 months at 1% a month with $50 payments: about $1,268 of promo interest.
     expect(metric(result, 'Interest with transfer')).toBeGreaterThan(1_200);
   });
