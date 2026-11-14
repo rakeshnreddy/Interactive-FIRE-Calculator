@@ -336,7 +336,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
     <section className="calculator-library route-shell" aria-labelledby="calculators-title">
       <div className="route-heading calculator-library-heading">
         <p className="eyebrow">Decision toolkits</p>
-        <h1 id="calculators-title">Start with the question, not the formula.</h1>
+        <h1 id="calculators-title">Start with the question, not the formula</h1>
         <p>Find a calculator for the decision in front of you. Choose a toolkit or search by name.</p>
 
       </div>
@@ -384,8 +384,8 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
           </div>
           {totalMatches === 0 ? (
             <div className="calculator-empty-state">
-              <CircleHelp size={22} />
-              <strong>No calculator matches that phrase.</strong>
+              <CircleHelp size={18} strokeWidth={1.5} />
+              <strong>No calculator matches that phrase</strong>
               <span>Try a decision such as buying a home, paying off debt, saving for retirement, or estimating tax.</span>
             </div>
           ) : (
@@ -483,7 +483,7 @@ function CalculatorToolkitPanel({
   return (
     <article className={`calculator-toolkit toolkit-${toolkit.id}`} id={`toolkit-${toolkit.id}`}>
       <header>
-        <span className="calculator-toolkit-icon"><Icon size={20} /></span>
+        <span className="calculator-toolkit-icon"><Icon size={18} strokeWidth={1.5} /></span>
         <div>
           <span>{toolkit.prompt}</span>
           <h2>{toolkit.title}</h2>
@@ -1377,7 +1377,7 @@ function CalculatorEngagementPanel({
         <span className="feature-icon"><Columns3 size={17} /></span>
         <span>
           <strong>Compare, revisit, and share</strong>
-          <small>Open the decision drawer for scenario deltas, outcome drivers, saved runs, and portable summaries.</small>
+          <small>Open the decision drawer for scenario deltas, outcome drivers, saved runs, and portable summaries</small>
         </span>
         <ChevronDown size={17} />
       </summary>
@@ -1405,7 +1405,7 @@ function CalculatorEngagementPanel({
             <span className="feature-icon"><Columns3 size={16} /></span>
             <div>
               <strong id="calculator-scenario-comparison-title">Scenario comparison</strong>
-              <small>Each column changes a bounded set of inputs while preserving the values entered above.</small>
+              <small>Each column changes a bounded set of inputs while preserving the values entered above</small>
             </div>
           </div>
           {disabled ? <p>Previous scenarios — finish your inputs to update.</p> : null}
@@ -1426,7 +1426,7 @@ function CalculatorEngagementPanel({
             <span className="feature-icon"><Gauge size={16} /></span>
             <div>
               <strong id="calculator-driver-title">What changed the outcome most</strong>
-              <small>One input moves at a time inside a 10% test range; this is sensitivity evidence, not a forecast.</small>
+              <small>One input moves at a time inside a 10% test range; this is sensitivity evidence, not a forecast</small>
             </div>
           </div>
           <div className="calculator-driver-list">
@@ -1455,7 +1455,7 @@ function CalculatorEngagementPanel({
             <span className="feature-icon"><History size={16} /></span>
             <div>
               <strong id="calculator-history-title">Recent saved runs</strong>
-              <small>Select a saved result to compare it with the current output; loading its inputs is a separate action.</small>
+              <small>Select a saved result to compare it with the current output; loading its inputs is a separate action</small>
             </div>
           </div>
 

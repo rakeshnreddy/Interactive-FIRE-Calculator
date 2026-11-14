@@ -47,7 +47,7 @@
   --color-nav-accent: #075f52;
   /* Text-on-tint tokens: the primary teal reads 4.2:1 on soft tinted chips, so text uses a darker ink. */
   --color-primary-ink: #075f52;
-  --text-gradient: linear-gradient(115deg, #086a5c 0%, #1f4fc0 100%);
+  --text-gradient: none;
   --shadow-overlay: 0 18px 44px rgba(28, 54, 92, 0.14);
   --shadow-rest: 0 1px 2px rgba(28, 54, 92, 0.08);
   --glass: rgba(255, 255, 255, 0.72);
@@ -57,14 +57,11 @@
   --glass-highlight: rgba(255, 255, 255, 0.85);
   --glass-shadow: 0 10px 30px rgba(28, 54, 92, 0.1), 0 1px 2px rgba(28, 54, 92, 0.06);
   --glass-blur: 18px;
-  --app-atmosphere:
-    radial-gradient(60rem 40rem at -10% -10%, rgba(11, 124, 108, 0.16), transparent 60%),
-    radial-gradient(52rem 36rem at 110% 0%, rgba(59, 108, 240, 0.14), transparent 60%),
-    radial-gradient(48rem 40rem at 50% 120%, rgba(122, 99, 217, 0.12), transparent 60%);
-  --atmosphere: linear-gradient(135deg, #e6f7f2 0%, #e8efff 48%, #f0eaff 100%);
-  --action-gradient: linear-gradient(115deg, #0b7c6c 0%, #2f6fe8 100%);
-  --action-gradient-hover: linear-gradient(115deg, #096a5c 0%, #285fcc 100%);
-  --action-gradient-pressed: linear-gradient(115deg, #07574c 0%, #214fa9 100%);
+  --app-atmosphere: none;
+  --atmosphere: none;
+  --action-gradient: none;
+  --action-gradient-hover: none;
+  --action-gradient-pressed: none;
   --hero-media-opacity: 0.12;
   --hero-media-filter: saturate(0.85) contrast(0.95);
   --hero-scrim: linear-gradient(90deg, rgba(238, 243, 250, 0.98) 0%, rgba(238, 243, 250, 0.88) 45%, rgba(232, 239, 255, 0.45) 75%, rgba(240, 234, 255, 0.12) 100%);
@@ -166,7 +163,7 @@
   --color-nav-border: rgba(255, 255, 255, 0.12);
   --color-nav-accent: #5fe6c8;
   --color-primary-ink: #5fe6c8;
-  --text-gradient: linear-gradient(115deg, #5fe6c8 0%, #8fb7ff 100%);
+  --text-gradient: none;
   --shadow-overlay: 0 18px 44px rgba(0, 0, 0, 0.32);
   --shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.3);
   --glass: rgba(15, 26, 41, 0.72);
@@ -176,14 +173,11 @@
   --glass-highlight: rgba(255, 255, 255, 0.09);
   --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.32), 0 1px 2px rgba(0, 0, 0, 0.3);
   --glass-blur: 20px;
-  --app-atmosphere:
-    radial-gradient(60rem 40rem at -10% -10%, rgba(95, 230, 200, 0.14), transparent 60%),
-    radial-gradient(52rem 36rem at 110% 0%, rgba(143, 183, 255, 0.14), transparent 60%),
-    radial-gradient(48rem 40rem at 50% 120%, rgba(193, 176, 255, 0.12), transparent 60%);
-  --atmosphere: linear-gradient(135deg, #0d2f30 0%, #12213f 50%, #251c44 100%);
-  --action-gradient: linear-gradient(115deg, #5fe6c8 0%, #8fb7ff 100%);
-  --action-gradient-hover: linear-gradient(115deg, #7cefd6 0%, #a6c8ff 100%);
-  --action-gradient-pressed: linear-gradient(115deg, #46cfb0 0%, #74a1f0 100%);
+  --app-atmosphere: none;
+  --atmosphere: none;
+  --action-gradient: none;
+  --action-gradient-hover: none;
+  --action-gradient-pressed: none;
   --hero-media-opacity: 0.85;
   --hero-media-filter: saturate(0.95) contrast(1.05);
   --hero-scrim: linear-gradient(90deg, rgba(7, 13, 22, 0.97) 0%, rgba(7, 13, 22, 0.88) 45%, rgba(18, 33, 63, 0.4) 75%, rgba(37, 28, 68, 0.12) 100%);
@@ -440,17 +434,11 @@ body,
   -webkit-backdrop-filter: none;
 }
 
-.calculator-input-panel {
-  border-top: 3px solid var(--accent);
-}
-
-.calculator-result-panel {
-  border-top: 3px solid var(--data-blue);
-}
-
+.calculator-input-panel,
+.calculator-result-panel,
 .calculator-explanation-panel,
 .calculator-related-panel {
-  border-top: 3px solid var(--warm);
+  border-top: 1px solid var(--color-border);
 }
 
 /* Ensure strong counter badge in toolkit meets WCAG AA contrast against soft tint */
@@ -580,16 +568,16 @@ body,
 
 .calculator-featured-tag {
   display: inline-block;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-primary-bg);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.15rem;
+  color: var(--color-primary-ink);
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: 0.125rem;
 }
 
 .calculator-card-fire {
-  border-top: 3px solid var(--color-primary-bg) !important;
+  border-color: var(--color-border);
 }
 
 @media (max-width: 980px) {
@@ -638,34 +626,29 @@ body {
   background: var(--color-canvas);
 }
 .app :where(.panel, .account-panel, .quick-calculator, .calculator-toolkit, .starting-path-card, .module-card, .scenario-card, .insight-card, .dashboard-review-card, .summary-band, .insight-summary-strip article, .report-scope-panel, .calculator-card, .saved-item, .tracker-metric, .privacy-controls-panel, .profile-editor, .calculator-result-card, .auth-gate-panel, .review-status-card, .plan-revision-prompt, .plan-context-bar) {
-  border: 1px solid var(--glass-edge);
-  border-radius: 14px;
-  background: var(--glass-panel);
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--glass-highlight) 40%, transparent), transparent 42%);
-  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
-}
-
-@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-.app :where(.panel, .account-panel, .quick-calculator, .calculator-toolkit, .starting-path-card, .module-card, .scenario-card, .insight-card, .dashboard-review-card, .summary-band, .insight-summary-strip article, .report-scope-panel, .calculator-card, .saved-item, .tracker-metric, .privacy-controls-panel, .profile-editor, .calculator-result-card, .auth-gate-panel, .review-status-card, .plan-revision-prompt, .plan-context-bar) {
-    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-  }
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  background-image: none;
+  box-shadow: var(--shadow-rest);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* Nested surfaces: a quieter tint without stacking blur */
 .app :where(.panel, .account-panel, .quick-calculator) :where(.scenario-card, .saved-item, .tracker-metric,
   .review-status-card, .plan-revision-prompt, .calculator-result-card, .insight-card, .dashboard-review-card) {
-  background: var(--glass-panel-strong);
+  background: var(--color-surface-inset);
   background-image: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: var(--shadow-rest);
-  border-radius: 12px;
+  box-shadow: none;
+  border-radius: 8px;
 }
 .app :where(.starting-path-card, .module-card, .dashboard-review-card, .calculator-card):hover {
-  border-color: color-mix(in srgb, var(--color-primary-bg) 45%, var(--glass-edge));
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--color-primary-bg) 16%, transparent), inset 0 1px 0 var(--glass-highlight);
-  transform: translateY(-1px);
+  border-color: var(--color-control-border);
+  box-shadow: var(--shadow-rest);
+  transform: none;
 }
 
 .app :where(.field input, .field select, .field textarea, .compound-select, .calculator-input-control, .planning-form-grid input) {
@@ -673,30 +656,31 @@ body {
 }
 
 .app .primary-button {
-  border-radius: 999px;
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--color-primary-bg) 28%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  background-image: none;
+  box-shadow: none;
 }
 
 .app .primary-button:hover:not(:disabled) {
-  box-shadow: 0 14px 30px color-mix(in srgb, var(--color-primary-bg) 34%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  transform: translateY(-1px);
+  background-image: none;
+  box-shadow: none;
+  transform: none;
 }
 
 .app .secondary-button {
-  border-radius: 999px;
-  background: var(--glass-panel-strong);
-  border-color: color-mix(in srgb, var(--color-control-border) 70%, transparent);
+  border-radius: 8px;
+  background: var(--color-surface);
+  border-color: var(--color-control-border);
 }
 .app :where(.pill, .review-badge, .insight-category, .starting-path-badge, .calculator-featured-tag) {
-  border-radius: 999px;
+  border-radius: 6px;
 }
 
 .app .eyebrow {
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 750;
+  color: var(--color-eyebrow);
+  background: none;
+  background-image: none;
+  font-weight: 600;
   letter-spacing: 0;
 }
 .app .route-heading h1 {

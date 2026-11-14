@@ -2857,21 +2857,21 @@ table {
 
 th,
 td {
-  padding: 0.78rem 0.9rem !important;
-  border-bottom: 1px solid var(--border) !important;
+  padding: 0.78rem 0.9rem;
+  border-bottom: 1px solid var(--border);
   text-align: left;
   vertical-align: middle;
 }
 
 th {
-  color: var(--muted-strong) !important;
+  color: var(--muted-strong);
   background: var(--surface-soft);
-  font-size: 0.76rem !important;
-  font-weight: 850 !important;
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 td {
-  color: var(--text) !important;
+  color: var(--text);
 }
 
 .table-wrap {
