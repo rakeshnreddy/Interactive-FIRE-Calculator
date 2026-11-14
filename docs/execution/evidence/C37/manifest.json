@@ -1,0 +1,161 @@
+{
+  "checkpoint": "C37",
+  "task": "B75",
+  "date": "2026-11-14",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "e9e4963d0eff19c3c6cf20bcb0b2b50089633254",
+  "base": "391ec32557df70973eec27481adf0e2585216d7f",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/164",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 43626312918,
+    "event": "pull_request",
+    "headSha": "e9e4963d0eff19c3c6cf20bcb0b2b50089633254",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43626312918"
+  },
+  "candidate": {
+    "deployment_id": "f4433442-1dcd-4eba-bb6f-09d00c9bc0e2",
+    "immutable_url": "https://f4433442.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://c37-candidate.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "54c96047-fbbc-4982-a65b-b9ce8018f451",
+    "immutable_url": "https://54c96047.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "tests": {
+    "node": 30,
+    "files": 117,
+    "vitest": 2957,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "e9e4963d0eff19c3c6cf20bcb0b2b50089633254"
+  },
+  "independent_review": {
+    "reviewer": "994b0454-c2e8-454c-82b0-2981d4f866b9",
+    "role": "B75 C37 Adversarial Reviewer",
+    "completed": true,
+    "verdict": "PASS",
+    "findings": [
+      "Fixed down-payment chart metadata/data closing-cost claim, inflation/roth-traditional timeline charts, emergencyFundSchedule sub-month reconciliation, solveMonthlyPeriodicRate lower bound -0.999999, and relatedCalculatorsFor Global region matching before final PASS."
+    ]
+  },
+  "source_hashes": [
+    {
+      "path": "scripts/smoke/c37-charts-schedules-copy.mjs",
+      "bytes": 9487,
+      "sha256": "c9e45e23997eba46a92d976c3b91de4994aa7891b9a45b0faf3ffab10538b39b"
+    },
+    {
+      "path": "src/CalculatorLibrary.tsx",
+      "bytes": 86686,
+      "sha256": "dd127cd26fed90f3815560fc23992c1e4459842e1155ae6f4cf7d2b1deb3043e"
+    },
+    {
+      "path": "src/ChartsSchedulesCopyHonesty.test.tsx",
+      "bytes": 23612,
+      "sha256": "01cead232a7232f2c703b53edf1958a9d3012ae5a8c885a3cf5bc0ba283e8168"
+    },
+    {
+      "path": "src/CompoundInterestCalculator.tsx",
+      "bytes": 79267,
+      "sha256": "8ae77e73830c811952ab3d1b795c18ec13e9b21b1fb3c073605b6c5da2630166"
+    },
+    {
+      "path": "src/SavingsGoalCalculator.tsx",
+      "bytes": 63149,
+      "sha256": "a6e30bcc5c36644de1fe07ff0b4d98453552f5c2612e60ea9324f7058b496bd9"
+    },
+    {
+      "path": "src/XirrCalculator.tsx",
+      "bytes": 14920,
+      "sha256": "9bfc940c39cd4f63cb3203191a03c9a2804e529241caf35dbd234735c65924b1"
+    },
+    {
+      "path": "src/lib/calculatorConsistency.test.ts",
+      "bytes": 9590,
+      "sha256": "ab3c4719bd4ad61abf7f7fdb3cea138acaabcd42c4c5be7eb21da9270be2d89b"
+    },
+    {
+      "path": "src/lib/calculatorContent.ts",
+      "bytes": 27327,
+      "sha256": "c1394236f74caf6cabc10ca6db070726518004561df676729ccfafd9efe7fd0f"
+    },
+    {
+      "path": "src/lib/calculatorEngagement.ts",
+      "bytes": 12480,
+      "sha256": "64069fb5498d7d9377052085ed6586a2d23f8e581ad4092"
+    },
+    {
+      "path": "src/lib/calculatorQuality.ts",
+      "bytes": 33177,
+      "sha256": "b039ada10cba1f0a82ac23c38c52c5f335acd89c4bf07a983c732f7e7c247585"
+    },
+    {
+      "path": "src/lib/calculatorScope.ts",
+      "bytes": 17552,
+      "sha256": "fd547cf8010cffda356876a04fa7dd0aa60d5b77d542365e8fb1e33c64290157"
+    },
+    {
+      "path": "src/lib/calculatorStudios.test.ts",
+      "bytes": 19507,
+      "sha256": "a7ebd1a7c64f9a81349903445350623aa0130c329943ec93fff52b346acd99df"
+    },
+    {
+      "path": "src/lib/calculatorStudios.ts",
+      "bytes": 159329,
+      "sha256": "7a31b5d87292c2bb12958b54af16b9389055c081e5cc47ce0b7210d251a8720f"
+    },
+    {
+      "path": "src/lib/compoundInterestCalculator.ts",
+      "bytes": 23020,
+      "sha256": "b6d06c53fd7fa295a5e8f254f7ce158246a86d69ecb54a09b2c3143e5ae617f4"
+    },
+    {
+      "path": "src/lib/datedReturns.ts",
+      "bytes": 5612,
+      "sha256": "a07543e0a11a7fcbe6f58255b73e414350b68e80e40b3cee2260f1f8c9fafbf3"
+    },
+    {
+      "path": "src/lib/seoCalculators.test.ts",
+      "bytes": 17908,
+      "sha256": "42d1383c83a9af58d19260ae42c306f72f760d8e4500a11ee40e9838355282b4"
+    },
+    {
+      "path": "src/lib/seoCalculators.ts",
+      "bytes": 108748,
+      "sha256": "6e4c638d7eef1666385e6cdeec8d81c81d45ca2b95dd54a6988c958a6b297010"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C37/raw/beta-alias-public-calculators.txt",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C37/raw/beta-hosted.json",
+      "bytes": 9445,
+      "sha256": "fb5a56c38e937e9e1607933c0edc51aa7c45ea8a98d579ab2b511e10d4bda67d"
+    },
+    {
+      "path": "docs/execution/evidence/C37/raw/beta-public-calculators.json",
+      "bytes": 119,
+      "sha256": "dbf90b33e113e8cb58eb6479ae5082b71aeae6200f40224d0205e6d9d2d3873f"
+    },
+    {
+      "path": "docs/execution/evidence/C37/raw/candidate-hosted.json",
+      "bytes": 9445,
+      "sha256": "7272f7e706f7a2dabf2f9f4e8d056601cc7857eff04058efdd1ad3a4cdeafa7b"
+    },
+    {
+      "path": "docs/execution/evidence/C37/raw/candidate-public-calculators.json",
+      "bytes": 119,
+      "sha256": "cd26587321ee43d2f2a1d52c9db276c20be5f420bead2a8837d5f0a80aca9cd9"
+    }
+  ]
+}

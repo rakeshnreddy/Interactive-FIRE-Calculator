@@ -1253,7 +1253,7 @@
       "id": "B75",
       "title": "charts, schedules, statutory provenance links and P2/P3 copy honesty across all studios",
       "checkpoint": "C37",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B68",
         "B69",
@@ -1263,10 +1263,10 @@
         "B76"
       ],
       "prompt": "prompts/B75.md",
-      "submission": null,
+      "submission": "submissions/B75.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "e9e4963d0eff19c3c6cf20bcb0b2b50089633254",
+      "review": "reviews/C37.md",
       "blocked_reason": null
     }
   ],
