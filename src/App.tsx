@@ -228,6 +228,13 @@ type CalculatorPanel = 'planner' | 'results' | 'compare';
 type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
 type ProjectionBasis = 'fire-number' | 'current-portfolio';
+
+function sanitizePlanForMode(inputPlan: PlanInput, mode: CalculatorMode): PlanInput {
+  if (mode === 'withdrawal-income' && !Number.isFinite(inputPlan.annualExpense)) {
+    return { ...inputPlan, annualExpense: 0 };
+  }
+  return inputPlan;
+}
 type ScenarioField = 'spendingDelta' | 'portfolioDelta' | 'returnDelta' | 'inflationDelta';
 export type TimelineInput = {
   currentAge: number;
@@ -1623,7 +1630,8 @@ function App({ auth }: { auth: AuthState }) {
     };
   }, [auth.status, auth.isSignedIn, auth.user?.id]);
 
-  const result = useMemo<FirePlanResult>(() => calculateFirePlan(plan), [plan]);
+  const effectivePlan = useMemo<PlanInput>(() => sanitizePlanForMode(plan, calculatorMode), [calculatorMode, plan]);
+  const result = useMemo<FirePlanResult>(() => calculateFirePlan(effectivePlan), [effectivePlan]);
   const accountSummary = useMemo<AccountSummary>(() => summarizeAccountList(financialAccounts), [financialAccounts]);
   const filteredTransactions = useMemo(
     () => filterTransactions(transactions, transactionFilters),
@@ -1671,7 +1679,7 @@ function App({ auth }: { auth: AuthState }) {
           auth.status === 'signed-in'
             ? {
                 name: activeSavedPlan?.name ?? 'Current FIRE draft',
-                plan,
+                plan: effectivePlan,
                 result,
                 versionNumber: activeSavedPlan?.versionNumber
               }
@@ -1679,14 +1687,14 @@ function App({ auth }: { auth: AuthState }) {
         transactions,
         today: todayInputDate()
       }),
-    [activeSavedPlan?.name, activeSavedPlan?.versionNumber, auth.status, financialAccounts, goalSummary, goals, plan, result, transactions]
+    [activeSavedPlan?.name, activeSavedPlan?.versionNumber, auth.status, financialAccounts, goalSummary, goals, effectivePlan, result, transactions]
   );
   const formatFireMoney = (value: number, options: Intl.NumberFormatOptions = {}) =>
     formatMoney(value, { currency: fireCurrency, ...options });
   const currencySymbol = fireCurrency === 'INR' ? '₹' : '$';
   const duration = totalDuration(plan.ratePeriods);
   const timelineDuration = modeledDurationFromTimeline(timeline);
-  const currentSimulation = useMemo(() => stressTestCurrentPortfolio(plan), [plan]);
+  const currentSimulation = useMemo(() => stressTestCurrentPortfolio(effectivePlan), [effectivePlan]);
   const incomeStreams = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'income');
   const expensePhases = (plan.recurringCashFlows ?? []).map((flow, index) => ({ flow, index })).filter(({ flow }) => flow.kind === 'expense');
   const timingSummary = plan.withdrawalTiming === 'start' ? 'Start-year timing' : 'End-year timing';
@@ -1776,7 +1784,10 @@ function App({ auth }: { auth: AuthState }) {
     return () => window.clearTimeout(timer);
   }, [calculationCount, displayedResult, fireCurrency, retirementEstimate]);
 
-  const withdrawalCoverage = activeResultForDisplay.maxAnnualExpense - activePlanForDisplay.annualExpense;
+  const hasNeedBenchmark = Number.isFinite(activePlanForDisplay.annualExpense);
+  const withdrawalCoverage = hasNeedBenchmark
+    ? activeResultForDisplay.maxAnnualExpense - activePlanForDisplay.annualExpense
+    : 0;
   const requiredWithdrawalRate =
     activeResultForDisplay.requiredPortfolio > 0 && Number.isFinite(activeResultForDisplay.requiredPortfolio)
       ? activePlanForDisplay.annualExpense / activeResultForDisplay.requiredPortfolio
@@ -1806,11 +1817,16 @@ function App({ auth }: { auth: AuthState }) {
         }
       : {
           label: 'Need coverage',
-          value:
-            withdrawalCoverage >= 0
+          value: hasNeedBenchmark
+            ? withdrawalCoverage >= 0
               ? `+${formatFireMoney(withdrawalCoverage)}`
-              : formatFireMoney(withdrawalCoverage),
-          tone: withdrawalCoverage >= 0 ? ('success' as const) : ('warning' as const)
+              : formatFireMoney(withdrawalCoverage)
+            : 'No benchmark set',
+          tone: !hasNeedBenchmark
+            ? ('neutral' as const)
+            : withdrawalCoverage >= 0
+              ? ('success' as const)
+              : ('warning' as const)
         };
   const fireNumberGap = activeResultForDisplay.requiredPortfolio - activePlanForDisplay.initialPortfolio;
   const supportResult =
@@ -1829,10 +1845,16 @@ function App({ auth }: { auth: AuthState }) {
           value: formatFireMoney(activePlanForDisplay.initialPortfolio)
         };
   const projectionRows =
-    projectionBasis === 'fire-number' ? activeResultForDisplay.expenseMode.rows : activeSimulationForDisplay.rows;
+    projectionBasis === 'fire-number'
+      ? activeModeForDisplay === 'withdrawal-income'
+        ? activeResultForDisplay.portfolioMode.rows
+        : activeResultForDisplay.expenseMode.rows
+      : activeSimulationForDisplay.rows;
   const projectionLabel =
     projectionBasis === 'fire-number'
-      ? 'FIRE number projection'
+      ? activeModeForDisplay === 'withdrawal-income'
+        ? 'Annual withdrawal projection'
+        : 'FIRE number projection'
       : 'Current portfolio stress test';
   const displayDuration = totalDuration(activePlanForDisplay.ratePeriods);
   const displayTimelineDuration = modeledDurationFromTimeline(activeTimelineForDisplay);
@@ -1863,7 +1885,13 @@ function App({ auth }: { auth: AuthState }) {
   }
 
   const warningNotices = [
-    ...planWarnings(activePlanForDisplay, activeResultForDisplay, activeSimulationForDisplay.rows, displayDuration),
+    ...planWarnings(
+      sanitizePlanForMode(activePlanForDisplay, activeModeForDisplay),
+      activeResultForDisplay,
+      activeSimulationForDisplay.rows,
+      displayDuration,
+      fireCurrency
+    ),
     ...timelineWarnings
   ];
   const fieldIssue = (path: string): string | undefined =>
@@ -1881,7 +1909,7 @@ function App({ auth }: { auth: AuthState }) {
   }));
 
   const comparisonRows = useMemo(() => {
-    const basePlan = activePlanForDisplay;
+    const basePlan = sanitizePlanForMode(activePlanForDisplay, activeModeForDisplay);
     const baseResult = activeResultForDisplay;
     return scenarios.map((scenario, index) => {
       const adjustedPlan = applyScenario(basePlan, scenario);
@@ -1899,7 +1927,7 @@ function App({ auth }: { auth: AuthState }) {
         depletionYear: firstNegativeYear(adjustedSimulation.rows)
       };
     });
-  }, [activePlanForDisplay, activeResultForDisplay, scenarios]);
+  }, [activeModeForDisplay, activePlanForDisplay, activeResultForDisplay, scenarios]);
 
   const markInputsChanged = () => {
     if (hasCalculated) {
@@ -2052,8 +2080,9 @@ function App({ auth }: { auth: AuthState }) {
   const applySnapshot = (snapshot: AppSnapshot) => {
     const { nextPlan, nextTimeline } = hydrateFromSnapshot(snapshot);
     const nextMode = snapshot.calculatorMode ?? 'fire-number';
-    const nextResult = calculateFirePlan(nextPlan);
-    const nextSimulation = stressTestCurrentPortfolio(nextPlan);
+    const evaluatedPlan = sanitizePlanForMode(nextPlan, nextMode);
+    const nextResult = calculateFirePlan(evaluatedPlan);
+    const nextSimulation = stressTestCurrentPortfolio(evaluatedPlan);
 
     setLastSeedImport(null);
     setDisplayedResult({
@@ -4253,7 +4282,7 @@ function App({ auth }: { auth: AuthState }) {
                     className={projectionBasis === 'fire-number' ? 'active' : ''}
                     onClick={() => setProjectionBasis('fire-number')}
                   >
-                    FIRE number
+                    {activeModeForDisplay === 'withdrawal-income' ? 'Annual withdrawal' : 'FIRE number'}
                   </button>
                   <button
                     className={projectionBasis === 'current-portfolio' ? 'active' : ''}

@@ -1229,6 +1229,25 @@
       "code_sha": "4abce6598fa702caf5688d0bf9018ef31eb2334f",
       "review": "reviews/C34.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B73",
+      "title": "dedicated planner and saved-record integrity fixes across cashflow and retirement studios",
+      "checkpoint": "C35",
+      "status": "in_progress",
+      "dependencies": [
+        "B68",
+        "B69",
+        "B71",
+        "B72",
+        "B76"
+      ],
+      "prompt": "prompts/B73.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": null,
+      "review": "reviews/C35.md",
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

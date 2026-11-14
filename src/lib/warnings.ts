@@ -188,11 +188,14 @@ export function averageRate(periods: RatePeriod[], key: 'r' | 'i'): number {
   return periods.reduce((sum, period) => sum + period[key] * period.duration, 0) / duration;
 }
 
+export type FireCurrency = 'USD' | 'INR';
+
 export function planWarnings(
   plan: PlanInput,
   result: FirePlanResult,
   currentRows: YearResult[],
-  duration: number
+  duration: number,
+  currency: FireCurrency = 'USD'
 ): WarningNotice[] {
   const exportedWarnings = engineWarnings(result, duration, plan.desiredFinalValue);
   const notices: WarningNotice[] = [];
@@ -215,7 +218,7 @@ export function planWarnings(
   if (Number.isFinite(requiredGap) && requiredGap > 0) {
     notices.push({
       title: 'Funding gap',
-      message: `${formatMoney(requiredGap)} separates the current portfolio from the calculated FIRE number.`,
+      message: `${formatMoney(requiredGap, { currency })} separates the current portfolio from the calculated FIRE number.`,
       severity: 'info'
     });
   }

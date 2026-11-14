@@ -905,7 +905,8 @@ function selectedModelChart(
   const costIds: Partial<Record<SeoCalculator['formula'], string[]>> = {
     'closing-costs': ['down-payment', 'closing-costs', 'cash-to-close'],
     'stamp-duty': ['stamp-duty', 'registration', 'total'],
-    escrow: ['tax', 'insurance', 'hoa', 'escrow']
+    escrow: ['tax', 'insurance', 'hoa', 'escrow'],
+    insurance: ['income-replacement', 'debts', 'existing-coverage', 'coverage-gap']
   };
   if (calculator.slug === 'mortgage-affordability') {
     const budget = housingBudget(values, BACK_END_DEBT_SHARE);

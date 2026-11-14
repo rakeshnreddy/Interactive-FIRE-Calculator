@@ -46,6 +46,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C36 | Unslop Stage A: Calculator library & shared studio template | B74 | accepted | 4bbc07514b6530a22213c3ccd879347f7be24b5a | [Approved; shared beta verified](reviews/C36.md) |
 | C39 | Unslop Stage B: Dedicated calculators, chart chrome, workspace & legacy CSS retirement | B76 | accepted | 9d1266654f84b7d076e828ef1ffb2649d68d2e35 | [Approved; shared beta verified](reviews/C39.md) |
 | C34 | Cross-field and boundary validation across Loan, Return, Tax & Retirement studios (`LH-02`, `LH-07`, `RET-02`, `RINC-04`, `RINC-05`, `TAX-03`, `RINC-15`) | B72 | accepted | 4abce6598fa702caf5688d0bf9018ef31eb2334f | [Approved; shared beta verified](reviews/C34.md) |
+| C35 | Dedicated planner & saved-record integrity fixes (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`) | B73 | in_progress | — | [C35.md](reviews/C35.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -147,3 +148,7 @@ C39/B76 accepted at `9d1266654f84b7d076e828ef1ffb2649d68d2e35`; candidate (`f7cb
 ## Cross-field & boundary validation acceptance — 2026-11-14
 
 B72/C34 is accepted on `2026-11-14` at product commit `4abce6598fa702caf5688d0bf9018ef31eb2334f` ([PR #162](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/162), exact-head `Verify` CI [`43584682604`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43584682604) `SUCCESS`, candidate `873ea307-5990-4e18-b516-fb404bf73f52`, shared beta `959dca8e-b7ce-4410-b788-b8e66016633a` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C34.md)). 73 of 76 registered tasks done. Remaining audit checkpoints (`B73` / `C35` and `B75` / `C37`) follow sequentially after `C34`.
+
+## Dedicated planner & saved-record integrity registration — 2026-11-14
+
+B73/C35 is now in progress after verified PR #162 merge (`3eb7f70f962db56c30289b6fee4a8b85f6706657`) and `main` CI (`43586199897`). 73 of 77 registered tasks done. Remaining audit checkpoint (`B75` / `C37`) follows sequentially after `C35`.
