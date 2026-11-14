@@ -30,12 +30,12 @@ export default {
 
       // 1. Responsive light/dark layout sweep across dedicated planners and FIRE.
       for (const route of ROUTES) {
-        const panelSelector = route === '/calculators/fire' ? '.results-panel' : '.calculator-result-panel';
+        const readySelector = route === '/calculators/fire' ? 'main h1:visible' : '.calculator-result-panel';
         for (const width of [1440, 768, 390, 320]) {
           for (const theme of ['light', 'dark']) {
             await page.setViewportSize({ width, height: 900 });
             await gotoTheme(page, `${config.url}${route}`, theme);
-            await page.locator(panelSelector).first().waitFor({ state: 'visible' });
+            await page.locator(readySelector).first().waitFor({ state: 'visible' });
             const layout = await measureLayout(page);
             check(!layoutProblems(layout).length, `${route}/${width}/${theme}: ${layoutProblems(layout).join('; ')}`);
             cases.push({ route, width, theme, problems: layoutProblems(layout) });
@@ -70,6 +70,8 @@ export default {
         `${config.url}/calculators/emergency-fund?v=finpath-emergency-fund-v2&cashOnHand=3000&bankSavings=12000&shortTermDeposits=10000&monthlyEssentials=4500&targetMonths=6&incomeStability=invalid&householdEarners=9&locale=de-DE`,
         'light'
       );
+      await page.locator('#emergency-risk summary').waitFor({ state: 'visible' });
+      await page.locator('#emergency-risk summary').click();
       await page.locator('#planning-incomeStability').waitFor({ state: 'visible' });
       check(
         (await page.locator('#planning-incomeStability').getAttribute('aria-invalid')) === 'true',
@@ -87,7 +89,7 @@ export default {
 
       await gotoTheme(page, `${config.url}/calculators/net-worth?v=finpath-net-worth-v2&locale=de-DE`, 'light');
       await page.locator('.calculator-result-panel').first().waitFor({ state: 'visible' });
-      await page.locator('summary', { hasText: 'Balance-sheet audit' }).click();
+      await page.locator('.compound-analysis-card summary', { hasText: 'Balance-sheet audit' }).click();
       await page.locator('table', { hasText: 'Net worth balance-sheet reconciliation' }).waitFor({ state: 'visible' });
       const nwTableText = await page.locator('table', { hasText: 'Net worth balance-sheet reconciliation' }).innerText();
       check(/5,3/.test(nwTableText), `Expected German comma percent formatting (5,3) in breakdown table, got: ${nwTableText}`);
@@ -106,11 +108,18 @@ export default {
         `Expected Estimated net worth $175,000 in Net Worth history, got: ${nwHistoryText}`
       );
       await gotoTheme(signedPage, `${config.url}/accounts`, 'light');
-      await signedPage.locator('main').waitFor({ state: 'visible' });
+      await signedPage.waitForFunction(
+        () => Boolean(window.Clerk?.user) && !document.querySelector('.auth-gate-panel') && !document.querySelector('[aria-busy="true"]'),
+        null,
+        { timeout: 30000 }
+      );
       const accountsText = await signedPage.locator('main').innerText();
       check(/175,000/.test(accountsText), `Expected net worth $175,000 in /accounts, got: ${accountsText}`);
 
       await gotoTheme(signedPage, `${config.url}/calculators/emergency-fund`, 'light');
+      await signedPage.waitForFunction(() => Boolean(window.Clerk?.user));
+      await signedPage.locator('#emergency-risk summary').waitFor({ state: 'visible' });
+      await signedPage.locator('#emergency-risk summary').click();
       await signedPage.locator('#planning-incomeStability').selectOption('uncertain');
       await signedPage.locator('#planning-householdEarners').selectOption('1');
       await signedPage.locator('#planning-dependents').fill('3');
@@ -151,6 +160,7 @@ export default {
       await page.locator('#fire-return').fill('7');
       await page.locator('#fire-inflation').fill('2.5');
       await page.getByRole('button', { name: 'Calculate', exact: true }).click();
+      await page.getByRole('tab', { name: /Results/i }).click();
       await page.locator('.health-panel').waitFor({ state: 'visible' });
       const healthText = await page.locator('.health-panel').innerText();
       check(healthText.includes('₹5,37,909'), `Expected ₹5,37,909 in .health-panel, got: ${healthText}`);
