@@ -46,7 +46,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C36 | Unslop Stage A: Calculator library & shared studio template | B74 | accepted | 4bbc07514b6530a22213c3ccd879347f7be24b5a | [Approved; shared beta verified](reviews/C36.md) |
 | C39 | Unslop Stage B: Dedicated calculators, chart chrome, workspace & legacy CSS retirement | B76 | accepted | 9d1266654f84b7d076e828ef1ffb2649d68d2e35 | [Approved; shared beta verified](reviews/C39.md) |
 | C34 | Cross-field and boundary validation across Loan, Return, Tax & Retirement studios (`LH-02`, `LH-07`, `RET-02`, `RINC-04`, `RINC-05`, `TAX-03`, `RINC-15`) | B72 | accepted | 4abce6598fa702caf5688d0bf9018ef31eb2334f | [Approved; shared beta verified](reviews/C34.md) |
-| C35 | Dedicated planner & saved-record integrity fixes (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`) | B73 | in_progress | — | [C35.md](reviews/C35.md) |
+| C35 | Dedicated planner & saved-record integrity fixes (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`) | B73 | accepted | 171c3f57c7d725b882accd947a68a2b7edd94dd0 | [Approved; shared beta verified](reviews/C35.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -152,3 +152,7 @@ B72/C34 is accepted on `2026-11-14` at product commit `4abce6598fa702caf5688d0bf
 ## Dedicated planner & saved-record integrity registration — 2026-11-14
 
 B73/C35 is now in progress after verified PR #162 merge (`3eb7f70f962db56c30289b6fee4a8b85f6706657`) and `main` CI (`43586199897`). 73 of 77 registered tasks done. Remaining audit checkpoint (`B75` / `C37`) follows sequentially after `C35`.
+
+## Dedicated planner & saved-record integrity acceptance — 2026-11-14
+
+B73/C35 is accepted on `2026-11-14` at product commit `171c3f57c7d725b882accd947a68a2b7edd94dd0` ([PR #163](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/163), exact-head `Verify` CI [`43620374133`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43620374133) `SUCCESS`, candidate `1ed863af-8ca1-4595-99bb-9c568df8667e`, shared beta `2dbcfae0-7f99-489e-aea7-06ba8587f7e3` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C35.md)). `74` of `77` registered tasks done. Next bounded audit checkpoint to register and execute is **B75 / C37** (Charts, schedules, statutory provenance links & P2/P3 copy honesty across all studios).

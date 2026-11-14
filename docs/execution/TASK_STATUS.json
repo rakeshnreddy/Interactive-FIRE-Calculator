@@ -1234,7 +1234,7 @@
       "id": "B73",
       "title": "dedicated planner and saved-record integrity fixes across cashflow and retirement studios",
       "checkpoint": "C35",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B68",
         "B69",
@@ -1243,9 +1243,9 @@
         "B76"
       ],
       "prompt": "prompts/B73.md",
-      "submission": null,
+      "submission": "submissions/B73.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
+      "code_sha": "171c3f57c7d725b882accd947a68a2b7edd94dd0",
       "review": "reviews/C35.md",
       "blocked_reason": null
     }
