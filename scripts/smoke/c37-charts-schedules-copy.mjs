@@ -135,19 +135,20 @@ export default {
       check(gstVisual.includes('GST tax breakdown'), `Expected GST tax breakdown chart title, got: ${gstVisual}`);
 
       await gotoTheme(page, `${config.url}/calculators/compound-interest`, 'light');
-      await page.locator('main h1').first().waitFor({ state: 'visible' });
+      await page.locator('.calculator-result-panel').first().waitFor({ state: 'visible' });
+      await page.locator('.compound-analysis-card summary').first().click();
       const compoundMain = await page.locator('main').innerText();
       check(
         compoundMain.includes('Lower rate') && compoundMain.includes('Higher rate'),
-        `Expected Lower rate / Higher rate scenario labels on /calculators/compound-interest`
+        `Expected Lower rate / Higher rate scenario labels on /calculators/compound-interest, got: ${compoundMain}`
       );
 
       await gotoTheme(page, `${config.url}/calculators/savings-goal`, 'light');
-      await page.locator('main h1').first().waitFor({ state: 'visible' });
+      await page.locator('.calculator-result-panel').first().waitFor({ state: 'visible' });
       const savingsMain = await page.locator('main').innerText();
       check(
         savingsMain.includes('Current:') && savingsMain.includes('Required:'),
-        `Expected Current: and Required: runway captions on /calculators/savings-goal`
+        `Expected Current: and Required: runway captions on /calculators/savings-goal, got: ${savingsMain}`
       );
 
       await gotoTheme(page, `${config.url}/calculators`, 'light');
