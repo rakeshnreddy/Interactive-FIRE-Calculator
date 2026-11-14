@@ -274,8 +274,10 @@
 }
 
 .app.app .breadcrumbs button {
-  min-block-size: auto;
-  min-height: auto;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 24px;
+  min-height: 24px;
 }
 
 .app :where(.primary-button, .secondary-button, .nav-button, .icon-button) {

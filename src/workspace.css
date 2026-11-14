@@ -4,6 +4,11 @@
   /* Scope tokens and shared timing function cleanly to dedicated calculators and workspace views */
   :is(
     .route-shell,
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -30,6 +35,11 @@
      ========================================================================= */
   :is(
     .route-shell,
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -51,6 +61,11 @@
 
   :is(
     .route-shell,
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -72,6 +87,11 @@
 
   :is(
     .route-shell,
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -174,6 +194,11 @@
 
   :is(
     .route-shell:not(.calculator-library),
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -380,6 +405,11 @@
   /* Level-3 interactive controls: 6px radius, 500 button weight, >=36-40px touch target */
   :is(
     .route-shell:not(.calculator-library),
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -421,8 +451,31 @@
     font-weight: 500;
   }
 
+  .breadcrumbs button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+  }
+
+  :is(
+    .route-heading > a:not(.calculator-toolkit-backlink),
+    [aria-labelledby="vehicle-title"] p a,
+    [aria-labelledby="dated-return-title"] p a,
+    .calculator-methodology-panel a
+  ) {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 24px;
+  }
+
   :is(
     .route-shell:not(.calculator-library),
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -441,6 +494,11 @@
 
   :is(
     .route-shell:not(.calculator-library),
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -458,6 +516,11 @@
 
   :is(
     .route-shell:not(.calculator-library),
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -476,6 +539,11 @@
 
   :is(
     .route-shell:not(.calculator-library),
+    .calculator-intro,
+    .quick-calculator,
+    .focused-calculator,
+    .panel,
+    .estimate-customization,
     .planner-grid,
     .compound-calculator,
     .savings-goal-calculator,
@@ -751,6 +819,25 @@
     gap: 12px;
   }
 
+  .compound-analysis-body {
+    min-width: 0;
+  }
+
+  .compound-analysis-body:not(.calculator-faq-grid) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .compound-table-wrap {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .compound-analysis-body > .secondary-button {
+    justify-self: start;
+    max-width: 100%;
+  }
+
   /* Responsive discipline for 768px, 390px, and 320px viewports */
   @media (max-width: 768px) {
     :is(
@@ -798,6 +885,11 @@
   @media (prefers-reduced-motion: reduce) {
     :is(
       .route-shell,
+      .calculator-intro,
+      .quick-calculator,
+      .focused-calculator,
+      .panel,
+      .estimate-customization,
       .planner-grid,
       .compound-calculator,
       .savings-goal-calculator,

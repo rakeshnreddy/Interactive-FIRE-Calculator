@@ -48,6 +48,12 @@ describe('B76 / C39 — Unslop Stage B: Dedicated calculators, chart chrome, wor
     expect(workspaceCss).toMatch(/\.icon-button\.row-action\s*\{[^}]*padding:\s*0;/s);
     expect(workspaceCss).not.toMatch(/:is\([^)]*\.row-action[^)]*\)\s*\{[^}]*padding:\s*8px 16px/s);
     expect(workspaceCss).toMatch(/\.insight-action-row[\s\S]*border-radius:\s*8px/);
+    expect(workspaceCss).toContain('.route-heading > a:not(.calculator-toolkit-backlink)');
+    expect(workspaceCss).toMatch(
+      /\.compound-analysis-body:not\(\.calculator-faq-grid\)\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s
+    );
+    expect(workspaceCss).toMatch(/\.compound-table-wrap\s*\{[^}]*overflow-x:\s*auto/s);
+    expect(workspaceCss).toMatch(/\.quick-calculator[\s\S]*font-weight:\s*600/);
   });
 
   it('retires all remaining visual slop from src/styles.css and src/vivid-theme.css while preserving repeating-linear-gradient pattern fills', () => {
@@ -83,6 +89,8 @@ describe('B76 / C39 — Unslop Stage B: Dedicated calculators, chart chrome, wor
     expect(vividCss).not.toMatch(/--hero-scrim:\s*linear-gradient/i);
     expect(vividCss).not.toContain('--glass');
     expect(vividCss).not.toContain('--action-gradient');
+    expect(vividCss).toMatch(/\.app\.app \.breadcrumbs button\s*\{[^}]*min-height:\s*24px/s);
+    expect(vividCss).not.toMatch(/\.breadcrumbs button[^}]*min-height:\s*auto/s);
   });
 
   it('quiets Recharts chart chrome in src/ProjectionChart.tsx and strips trailing periods from workspace headings in src/App.tsx', () => {

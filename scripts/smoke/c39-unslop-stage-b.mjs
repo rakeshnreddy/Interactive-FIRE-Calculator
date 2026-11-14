@@ -159,7 +159,7 @@ export default {
             for (const theme of ['light', 'dark']) {
               await anonymous.page.setViewportSize({ width, height: 900 });
               await gotoTheme(anonymous.page, `${config.url}${route}`, theme);
-              await anonymous.page.locator('main h1').first().waitFor({ state: 'visible' });
+              await anonymous.page.locator('main h1:visible').first().waitFor({ state: 'visible' });
               if (route === '/calculators/fire') {
                 await anonymous.page.getByRole('button', { name: 'Use example values' }).click();
                 await anonymous.page.getByRole('button', { name: /^(Calculate|Recalculate)$/ }).click();
@@ -198,8 +198,8 @@ export default {
               { timeout: 30000 }
             );
             check((await page.locator('.auth-gate-panel').count()) === 0, `${route}/${width}/${theme} rendered signed-out AuthGate`);
-            await page.locator('main h1').first().waitFor({ state: 'visible' });
-            const h1Text = (await page.locator('main h1').first().innerText()).trim();
+            await page.locator('main h1:visible').first().waitFor({ state: 'visible' });
+            const h1Text = (await page.locator('main h1:visible').first().innerText()).trim();
             check(Boolean(h1Text) && !h1Text.endsWith('.'), `${route}/${width}/${theme} H1 trailing period: ${h1Text}`);
             const layout = await measureLayout(page);
             const problems = layoutProblems(layout);
