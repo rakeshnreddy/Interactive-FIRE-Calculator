@@ -345,7 +345,7 @@ describe('calculateSeoCalculator', () => {
     });
 
     expect(slowPayoff.metrics[0].value).toBeGreaterThan(fastPayoff.metrics[0].value);
-    expect(fastPayoff.metrics.find((metric) => metric.label === 'Promo payoff months')?.value).toBeLessThan(12);
+    expect(fastPayoff.metrics.find((metric) => metric.label === 'Months in promo period')?.value).toBeLessThan(12);
   });
 
   it('keeps unsustainable debt payoff bounded instead of looping indefinitely', () => {

@@ -2,7 +2,7 @@ export type DatedCashFlow = { date: string; amount: number };
 export type DatedReturnInputModel = { kind: 'dated-cash-flows'; version: 'dated-xirr-v1'; cashFlows: DatedCashFlow[] };
 export type DatedReturn = { ok: true; rate: number; days: number; residual: number; cashFlows: DatedCashFlow[] } | { ok: false; error: string };
 type FlowParse = { ok: true; value: DatedCashFlow[] } | { ok: false; error: string };
-export const datedReturnLimits = { rows: 50, amount: 1e12, days: 36525, minRate: -0.9999, maxRate: 1000, iterations: 200, residual: 1e-10 } as const;
+export const datedReturnLimits = { rows: 50, amount: 1e12, days: 36525, minRate: -0.9999, maxRate: 1000, iterations: 200, residual: 1e-12 } as const;
 export function isoDay(date: unknown): number | null {
   if (typeof date !== 'string' || !/^(?:19|20|21)\d{2}-\d{2}-\d{2}$/.test(date) || date > '2100-12-31') return null;
   const time = Date.parse(date + 'T00:00:00Z');
@@ -49,12 +49,12 @@ export function calculateDatedReturn(rows: unknown): DatedReturn {
   const success = (logRate:number,value:number): DatedReturn => ({ok:true,rate:Math.expm1(logRate),days:isoDay(cashFlows.at(-1)!.date)!-first,residual:Math.abs(value),cashFlows});
   let low = Math.log1p(datedReturnLimits.minRate), high = Math.log1p(datedReturnLimits.maxRate);
   const lowValue=evaluate(low), highValue=evaluate(high);
-  if(Math.abs(lowValue)<=1e-12)return success(low,lowValue);
-  if(Math.abs(highValue)<=1e-12)return success(high,highValue);
+  if(Math.abs(lowValue)<=datedReturnLimits.residual)return success(low,lowValue);
+  if(Math.abs(highValue)<=datedReturnLimits.residual)return success(high,highValue);
   if (lowValue<0 || highValue>0) return {ok:false,error:'No converged return within the supported rate range (-99.99% to 100,000%). Review the dates and amounts.'};
   for (let iteration=0;iteration<datedReturnLimits.iterations;iteration++) {
     const mid=(low+high)/2, value=evaluate(mid);
-    if (Math.abs(value)<=1e-12) return success(mid,value);
+    if (Math.abs(value)<=datedReturnLimits.residual) return success(mid,value);
     if(value>0)low=mid;else high=mid;
   }
   return {ok:false,error:'The bounded solver did not converge. No return is shown.'};
