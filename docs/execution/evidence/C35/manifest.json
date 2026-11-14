@@ -1,0 +1,111 @@
+{
+  "checkpoint": "C35",
+  "task": "B73",
+  "date": "2026-11-14",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "171c3f57c7d725b882accd947a68a2b7edd94dd0",
+  "base": "3eb7f70f962db56c30289b6fee4a8b85f6706657",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/163",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 43620374133,
+    "event": "pull_request",
+    "headSha": "171c3f57c7d725b882accd947a68a2b7edd94dd0",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43620374133"
+  },
+  "candidate": {
+    "deployment_id": "1ed863af-8ca1-4595-99bb-9c568df8667e",
+    "immutable_url": "https://1ed863af.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://c35-candidate.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "2dbcfae0-7f99-489e-aea7-06ba8587f7e3",
+    "immutable_url": "https://2dbcfae0.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "tests": {
+    "node": 30,
+    "files": 116,
+    "vitest": 2945,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "171c3f57c7d725b882accd947a68a2b7edd94dd0"
+  },
+  "independent_review": {
+    "reviewer": "Astra (direct architect/reviewer diff audit during plan review)",
+    "role": "B73 C35 Adversarial Reviewer",
+    "completed": true,
+    "verdict": "PASS",
+    "findings": [
+      "Added missing activeModeForDisplay dependency to comparisonRows useMemo in src/App.tsx before final acceptance."
+    ]
+  },
+  "source_hashes": [
+    {
+      "path": "scripts/smoke/c35-dedicated-planners.mjs",
+      "bytes": 10565,
+      "sha256": "6cab5fd94cd9f9e78f590e36e359df2ae0386ceccd728deb16106641649a93fd"
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 170651,
+      "sha256": "747a6fcb1c2778f66d4b57ecae51116e125e545aa216786a4b2985b1f538feb4"
+    },
+    {
+      "path": "src/CashflowPlanningCalculator.tsx",
+      "bytes": 91808,
+      "sha256": "85d960276b6e73e3f5d89b54697c612d9837756225bf444c86586d5865c3f0ad"
+    },
+    {
+      "path": "src/DedicatedPlannersIntegrity.test.tsx",
+      "bytes": 19087,
+      "sha256": "3d1836db9129e701bff236887db8a55d7e0b729d63bba732f0ce6c1dae590957"
+    },
+    {
+      "path": "src/lib/calculatorStudios.ts",
+      "bytes": 151310,
+      "sha256": "4ac0bde62fc430232447952363896482da1d417046e82a71e04ca5041fd406be"
+    },
+    {
+      "path": "src/lib/seoCalculators.ts",
+      "bytes": 105300,
+      "sha256": "12423f39fc5cc0ea5f70430077a0f40430cc6d8db3b29216f8ad0f813e385ad8"
+    },
+    {
+      "path": "src/lib/warnings.ts",
+      "bytes": 8101,
+      "sha256": "d575d1f5a79d462011617f8331918f8a2d2220df128534735f269dd00d087a38"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C35/raw/beta-alias-public-calculators.txt",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C35/raw/beta-hosted.json",
+      "bytes": 9440,
+      "sha256": "05e5417ddd20f191d51c1083617a4f53c4c387b77b624ea1bff8febc20b3ff8c"
+    },
+    {
+      "path": "docs/execution/evidence/C35/raw/beta-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "73e751739717b7d0befb25bace30ece5bbb6b605064a2b18974556d22525f202"
+    },
+    {
+      "path": "docs/execution/evidence/C35/raw/candidate-hosted.json",
+      "bytes": 9440,
+      "sha256": "3c64e16604c5ef948f2d0a4f2cd226fd45f10c0e14e7856744ade68d22984fa9"
+    },
+    {
+      "path": "docs/execution/evidence/C35/raw/candidate-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "1b4708a11198b353e63be99bc20d081572608d256d240e95064504d76cf1cad1"
+    }
+  ]
+}

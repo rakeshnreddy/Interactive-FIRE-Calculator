@@ -175,7 +175,7 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
         ['Why is liquid position different from net worth?', 'Net worth includes every entered asset and liability. This calculator defines liquid position more narrowly as cash plus taxable investments minus credit cards and other short-term liabilities.'],
         ['Does paying debt from savings increase net worth immediately?', 'No. Paying a liability with an existing asset reduces both sides by the same amount before fees, so net worth is initially unchanged even though leverage and cash access change.']
       ]}
-      history={<HistoryPanel auth={auth} history={history} onLoad={loadSaved} title="Net worth snapshots" />}
+      history={<HistoryPanel auth={auth} history={history} locale={resolvedLocale} localePreference={locale} onLoad={loadSaved} title="Net worth snapshots" />}
       input={(
         <section className="calculator-input-panel" aria-labelledby="planning-input-title">
           <PanelHeading eyebrow="Balance sheet" title="Enter one dated snapshot" onReset={reset} />
@@ -236,7 +236,7 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
       title="Net Worth Calculator"
     >
       <AnalysisCard summary="Asset and liability categories, exact totals, and valuation sensitivity" title="Balance-sheet audit">
-        <BreakdownTable caption="Net worth balance-sheet reconciliation" money={money} assetRows={projection.assetRows} liabilityRows={projection.liabilityRows} projection={projection} />
+        <BreakdownTable assetRows={projection.assetRows} caption="Net worth balance-sheet reconciliation" liabilityRows={projection.liabilityRows} locale={resolvedLocale} money={money} projection={projection} />
         <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={16} strokeWidth={1.5} /> Download balance sheet</button>
       </AnalysisCard>
       <AnalysisCard summary="See what a broad change in non-cash asset values would do" title="Valuation sensitivity">
@@ -348,7 +348,7 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
         ['Is 50/30/20 a rule I must follow?', 'No. It is shown only as an optional reference. Housing costs, dependents, debt, location, income volatility, and priorities can make another allocation more appropriate.'],
         ['Why compare an income shock and a flexible-spending trim?', 'They answer two different questions: whether the current essentials survive lower income, and how much discretionary changes could improve the monthly margin.']
       ]}
-      history={<HistoryPanel auth={auth} history={history} onLoad={loadSaved} title="Budget snapshots" />}
+      history={<HistoryPanel auth={auth} history={history} locale={resolvedLocale} localePreference={locale} onLoad={loadSaved} title="Budget snapshots" />}
       input={(
         <section className="calculator-input-panel" aria-labelledby="planning-input-title">
           <PanelHeading eyebrow="Monthly plan" title="Map income and outgoings" onReset={reset} />
@@ -513,7 +513,13 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
         calculator,
         currency,
         result: toEmergencyFundResult(projection, inputs),
-        values: { ...numericEmergencyInputs(inputs), currentSavings: projection.currentReserve, target: projection.selectedTarget, years: projection.monthsToGoal === null ? 0 : projection.monthsToGoal / 12 }
+        values: {
+          ...numericEmergencyInputs(inputs),
+          incomeStabilityCode: incomeStabilityToCode(inputs.incomeStability),
+          currentSavings: projection.currentReserve,
+          target: projection.selectedTarget,
+          years: projection.monthsToGoal === null ? 0 : projection.monthsToGoal / 12
+        }
       });
       clearDraft('emergency-fund');
       setMessage(outcome.message);
@@ -526,7 +532,7 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
 
   const loadSaved = (saved: CalculatorSavedResult) => {
     const numeric = inputsFromSaved(numericEmergencyInputs(defaultEmergencyFundInputs), saved.inputValues);
-    setInputs((current) => ({ ...current, ...numeric }));
+    setInputs((current) => ({ ...current, ...numeric, incomeStability: incomeStabilityFromSaved(saved.inputValues) }));
     setDisplayFromSaved(saved, setCurrency);
     setMessage(`Loaded the reserve plan saved on ${new Date(saved.createdAt).toLocaleDateString(resolvedLocale)}.`);
   };
@@ -543,7 +549,7 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
         ['Can I count investments?', 'Only count assets you are genuinely willing and able to access. Market-exposed assets can fall or take time to sell; this calculator uses the entered value without a haircut and warns when they are included.'],
         ['Does the funding schedule include interest?', 'No. It is intentionally transparent: current reserve plus entered monthly contributions until the selected target is reached. Use Savings Goal for a return-bearing projection.']
       ]}
-      history={<HistoryPanel auth={auth} history={history} onLoad={loadSaved} title="Emergency-fund plans" />}
+      history={<HistoryPanel auth={auth} history={history} locale={resolvedLocale} localePreference={locale} onLoad={loadSaved} title="Emergency-fund plans" />}
       input={(
         <section className="calculator-input-panel" aria-labelledby="planning-input-title">
           <PanelHeading eyebrow="Reserve plan" title="Set spending, liquidity, and coverage" onReset={reset} />
@@ -567,7 +573,7 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
             <PlanningMoneyGrid><PlanningMoneyField error={projection.validation.errors.oneTimeBuffer} fieldKey="oneTimeBuffer" helper="Optional separate amount for a likely deductible, repair, travel, or other one-time shock." label="One-time shock buffer" onChange={(raw) => updateNumber(setInputs, 'oneTimeBuffer', raw)} value={inputs.oneTimeBuffer} /></PlanningMoneyGrid>
           </EstimateOptionGroup>
           <EstimateOptionGroup id="emergency-risk" title="Risk context" summary={`${inputs.incomeStability} income · ${inputs.householdEarners === 2 ? '2+ earners' : '1 earner'} · ${inputs.dependents} dependents · reference only`}>
-            <PlanningMoneyGrid><PlanningSelectField fieldKey="incomeStability" helper="Used only in the labeled risk-reference comparison; it does not overwrite your selected months." label="Income pattern" onChange={(value) => setInputs((current) => ({ ...current, incomeStability: value as IncomeStability }))} options={[['Stable', 'stable'], ['Variable', 'variable'], ['Currently uncertain', 'uncertain']]} value={inputs.incomeStability} /><PlanningSelectField fieldKey="householdEarners" helper="Two-plus earners can diversify income interruption risk; actual income dependence may differ." label="Household income earners" onChange={(value) => setInputs((current) => ({ ...current, householdEarners: Number(value) as 1 | 2 }))} options={[['One', 1], ['Two or more', 2]]} value={inputs.householdEarners} /><PlanningNumberField error={projection.validation.errors.dependents} fieldKey="dependents" helper="People whose essential costs rely materially on this household income." label="Financial dependents" max={20} onChange={(raw) => updateNumber(setInputs, 'dependents', raw)} step={1} value={inputs.dependents} /></PlanningMoneyGrid>
+            <PlanningMoneyGrid><PlanningSelectField error={projection.validation.errors.incomeStability} fieldKey="incomeStability" helper="Used only in the labeled risk-reference comparison; it does not overwrite your selected months." label="Income pattern" onChange={(value) => setInputs((current) => ({ ...current, incomeStability: value as IncomeStability }))} options={[['Stable', 'stable'], ['Variable', 'variable'], ['Currently uncertain', 'uncertain']]} value={inputs.incomeStability} /><PlanningSelectField error={projection.validation.errors.householdEarners} fieldKey="householdEarners" helper="Two-plus earners can diversify income interruption risk; actual income dependence may differ." label="Household income earners" onChange={(value) => setInputs((current) => ({ ...current, householdEarners: Number(value) as 1 | 2 }))} options={[['One', 1], ['Two or more', 2]]} value={inputs.householdEarners} /><PlanningNumberField error={projection.validation.errors.dependents} fieldKey="dependents" helper="People whose essential costs rely materially on this household income." label="Financial dependents" max={20} onChange={(raw) => updateNumber(setInputs, 'dependents', raw)} step={1} value={inputs.dependents} /></PlanningMoneyGrid>
           </EstimateOptionGroup>
           <DisplayOptions currency={currency} locale={locale} onCurrency={setCurrency} onLocale={setLocale} />
           <CalculatorResultAction disabled={!projection.validation.isValid} onReveal={revealResult} />
@@ -587,7 +593,7 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
                 <ResultMetric help="Straight-line months needed using the entered monthly contribution and no assumed growth." label="Funding time" value={projection.monthsToGoal === null ? 'No funding date' : projection.monthsToGoal === 0 ? 'Target funded' : `${projection.monthsToGoal.toLocaleString(resolvedLocale)} months`} />
                 <ResultMetric help="A transparent heuristic using income pattern, number of earners, and dependents. It is a comparison, not advice." label="Risk-based reference" value={`${number(projection.riskReferenceMonths, resolvedLocale, 1)} months · ${money(projection.riskReferenceTarget)}`} />
               </div>
-              <EmergencyRunway money={money} projection={projection} />
+              <EmergencyRunway locale={resolvedLocale} money={money} projection={projection} />
               <p className="compound-interpretation">{emergencyInterpretation(projection, inputs, money, resolvedLocale)}</p>
               <Warnings warnings={projection.validation.warnings} />
               <ActionRow auth={auth} disabled={currency !== 'USD'} isSaving={isSaving} message={message} saveLabel={currency === 'USD' ? 'Create emergency-fund goal' : 'Use USD to create goal'} onCopy={copyShareLink} onExport={exportCsv} onSave={saveResult} />
@@ -743,13 +749,16 @@ function PlanningNumberField({ error, fieldKey, helper, label, max, min = 0, onC
   );
 }
 
-function PlanningSelectField({ fieldKey, helper, label, onChange, options, value }: { fieldKey: string; helper: string; label: string; onChange: (value: string) => void; options: Array<[string, string | number]>; value: string | number }) {
+function PlanningSelectField({ error, fieldKey, helper, label, onChange, options, value }: { error?: string; fieldKey: string; helper: string; label: string; onChange: (value: string) => void; options: Array<[string, string | number]>; value: string | number }) {
   const id = `planning-${fieldKey}`;
   const helpId = `${id}-help`;
+  const errorId = `${id}-error`;
+  const describedBy = error ? `${helpId} ${errorId}` : helpId;
   return (
     <label className="field" htmlFor={id}>
       <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} strokeWidth={1.5} /></span>
-      <select aria-describedby={helpId} className="compound-select" id={id} name={id} value={value} onChange={(event) => onChange(event.target.value)}>{options.map(([name, option]) => <option key={String(option)} value={option}>{name}</option>)}</select>
+      <select aria-describedby={describedBy} aria-invalid={error ? 'true' : undefined} className="compound-select" id={id} name={id} value={value} onChange={(event) => onChange(event.target.value)}>{options.map(([name, option]) => <option key={String(option)} value={option}>{name}</option>)}</select>
+      {error ? <small className="field-error" id={errorId} role="alert">{error}</small> : null}
       <small id={helpId}>{helper}</small>
     </label>
   );
@@ -816,11 +825,49 @@ function AnalysisCard({ children, summary, title }: { children: ReactNode; summa
   return <details className="compound-analysis-card"><summary><span><strong>{title}</strong><small>{summary}</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary><div className="compound-analysis-body">{children}</div></details>;
 }
 
-function HistoryPanel({ auth, history, onLoad, title }: { auth: AuthState; history: CalculatorSavedResult[]; onLoad: (saved: CalculatorSavedResult) => void; title: string }) {
+function formatSavedMetric(
+  saved: CalculatorSavedResult,
+  entryCurrency: ReturnType<typeof supportedCurrency>,
+  entryLocale: string | undefined
+): string {
+  const metric = saved.result.metrics[0];
+  if (!metric) return 'Saved result';
+  if (typeof metric.value !== 'number') return String(metric.value);
+  if (!Number.isFinite(metric.value)) return String(metric.value);
+  const digits = Math.abs(metric.value - Math.round(metric.value)) < 1e-6 ? 0 : 2;
+  if (metric.valueType === 'currency') {
+    return moneyFormatter(entryCurrency, entryLocale)(metric.value, digits);
+  }
+  if (metric.valueType === 'percent') return percent(metric.value, entryLocale);
+  if (metric.valueType === 'years') {
+    return `${metric.value.toLocaleString(entryLocale, { maximumFractionDigits: 1 })} years`;
+  }
+  return metric.value.toLocaleString(entryLocale, { maximumFractionDigits: digits });
+}
+
+function HistoryPanel({
+  auth,
+  history,
+  locale,
+  localePreference = 'auto',
+  onLoad,
+  title
+}: {
+  auth: AuthState;
+  history: CalculatorSavedResult[];
+  locale?: string;
+  localePreference?: Parameters<typeof resolveMoneyLocale>[1];
+  onLoad: (saved: CalculatorSavedResult) => void;
+  title: string;
+}) {
   return (
     <section className="compound-history-panel" aria-labelledby="planning-history-title">
       <div><p className="eyebrow">Saved history</p><h2 id="planning-history-title">{title}</h2><p>{auth.status === 'signed-in' ? 'Reload a recent snapshot without overwriting the saved record.' : 'Browser drafts work without an account. Sign in to keep multiple dated results.'}</p></div>
-      {history.length ? <div className="compound-history-list">{history.map((saved) => <button type="button" key={saved.id} onClick={() => onLoad(saved)}><History size={16} strokeWidth={1.5} /><strong>{saved.result.metrics[0]?.label ?? saved.calculatorTitle}</strong><small>{saved.result.metrics[0] ? String(saved.result.metrics[0].value) : 'Saved result'}</small><small>{new Date(saved.createdAt).toLocaleDateString()}</small></button>)}</div> : <div className="cashflow-history-empty"><History size={18} strokeWidth={1.5} /><span>No saved snapshots for this calculator yet.</span></div>}
+      {history.length ? <div className="compound-history-list">{history.map((saved) => {
+        const entryCurrency = supportedCurrency(saved.currency);
+        const entryLocale = resolveMoneyLocale(entryCurrency, localePreference, locale);
+        return <button type="button" key={saved.id} onClick={() => onLoad(saved)}><History size={16} strokeWidth={1.5} /><strong>{saved.result.metrics[0]?.label ?? saved.calculatorTitle}</strong><small>{formatSavedMetric(saved, entryCurrency, entryLocale)}</small><small>{new Date(saved.createdAt).toLocaleDateString(entryLocale)}</small></button>;
+      })}</div> : <div className="cashflow-history-empty"><History size={18} strokeWidth={1.5} /><span>No saved snapshots for this calculator yet.</span></div>}
     </section>
   );
 }
@@ -854,13 +901,13 @@ function BudgetWaterfall({ money, projection }: { money: (value: number, digits?
   );
 }
 
-function EmergencyRunway({ money, projection }: { money: (value: number, digits?: number) => string; projection: EmergencyFundProjection }) {
+function EmergencyRunway({ locale, money, projection }: { locale?: string; money: (value: number, digits?: number) => string; projection: EmergencyFundProjection }) {
   const target = Math.max(1, projection.selectedTarget);
   return (
     <figure className="cashflow-figure emergency-runway-figure">
       <figcaption><strong>Reserve progress and access</strong><small>The progress bar uses the selected target. The tier bar shows how the current reserve can be accessed.</small></figcaption>
       <div className="emergency-progress" role="progressbar" aria-label="Emergency fund progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(projection.progress * 100)}><i style={{ width: `${Math.max(0, Math.min(100, projection.progress * 100))}%` }} /></div>
-      <div className="emergency-progress-labels"><span>{money(projection.currentReserve)} current</span><strong>{percent(projection.progress, undefined)} funded</strong><span>{money(projection.selectedTarget)} target</span></div>
+      <div className="emergency-progress-labels"><span>{money(projection.currentReserve)} current</span><strong>{percent(projection.progress, locale)} funded</strong><span>{money(projection.selectedTarget)} target</span></div>
       <div className="reserve-tier-bar" role="img" aria-label={`Immediate reserve ${money(projection.immediateReserve)}, short-notice reserve ${money(projection.nearTermReserve)}, and market-exposed reserve ${money(projection.marketExposedReserve)}.`}>
         {projection.immediateReserve > 0 ? <i className="is-immediate" style={{ width: `${projection.immediateReserve / Math.max(target, projection.currentReserve, 1) * 100}%` }} /> : null}
         {projection.nearTermReserve > 0 ? <i className="is-near" style={{ width: `${projection.nearTermReserve / Math.max(target, projection.currentReserve, 1) * 100}%` }} /> : null}
@@ -881,8 +928,8 @@ function ScenarioBars({ baseline, money, rows }: { baseline: number; money: (val
   return <div className="cashflow-scenario-bars">{rows.map((row) => <div className={Math.abs(row.value - baseline) < 1e-8 ? 'is-base' : ''} key={row.label}><span>{row.label}</span><div><i className={row.value < 0 ? 'is-negative' : ''} style={{ width: `${row.value === 0 ? 0 : Math.max(1, Math.abs(row.value) / maximum * 100)}%` }} /></div><strong>{money(row.value)}</strong></div>)}</div>;
 }
 
-function BreakdownTable({ assetRows, caption, liabilityRows, money, projection }: { assetRows: BreakdownRow[]; caption: string; liabilityRows: BreakdownRow[]; money: (value: number, digits?: number) => string; projection: NetWorthProjection }) {
-  return <div className="compound-table-wrap" role="region" aria-label={caption} tabIndex={0}><table><caption>{caption}</caption><thead><tr><th scope="col">Section</th><th scope="col">Category</th><th scope="col">Value</th><th scope="col">Share of section</th></tr></thead><tbody>{assetRows.map((row) => <tr key={row.key}><th scope="row">Asset</th><td>{row.label}</td><td>{money(row.value, 2)}</td><td>{percent(projection.totalAssets > 0 ? row.value / projection.totalAssets : 0, undefined)}</td></tr>)}{liabilityRows.map((row) => <tr key={row.key}><th scope="row">Liability</th><td>{row.label}</td><td>{money(row.value, 2)}</td><td>{percent(projection.totalLiabilities > 0 ? row.value / projection.totalLiabilities : 0, undefined)}</td></tr>)}</tbody><tfoot><tr><th scope="row" colSpan={2}>Net worth</th><td>{money(projection.netWorth, 2)}</td><td>Assets − liabilities</td></tr></tfoot></table></div>;
+function BreakdownTable({ assetRows, caption, liabilityRows, locale, money, projection }: { assetRows: BreakdownRow[]; caption: string; liabilityRows: BreakdownRow[]; locale?: string; money: (value: number, digits?: number) => string; projection: NetWorthProjection }) {
+  return <div className="compound-table-wrap" role="region" aria-label={caption} tabIndex={0}><table><caption>{caption}</caption><thead><tr><th scope="col">Section</th><th scope="col">Category</th><th scope="col">Value</th><th scope="col">Share of section</th></tr></thead><tbody>{assetRows.map((row) => <tr key={row.key}><th scope="row">Asset</th><td>{row.label}</td><td>{money(row.value, 2)}</td><td>{percent(projection.totalAssets > 0 ? row.value / projection.totalAssets : 0, locale)}</td></tr>)}{liabilityRows.map((row) => <tr key={row.key}><th scope="row">Liability</th><td>{row.label}</td><td>{money(row.value, 2)}</td><td>{percent(projection.totalLiabilities > 0 ? row.value / projection.totalLiabilities : 0, locale)}</td></tr>)}</tbody><tfoot><tr><th scope="row" colSpan={2}>Net worth</th><td>{money(projection.netWorth, 2)}</td><td>Assets − liabilities</td></tr></tfoot></table></div>;
 }
 
 function BudgetTable({ inputs, money, projection }: { inputs: BudgetInputs; money: (value: number, digits?: number) => string; projection: BudgetProjection }) {
@@ -922,13 +969,13 @@ function budgetMoneyFields(inputs: BudgetInputs, projection: BudgetProjection, s
   return fields.map(([key, label, helper]) => <PlanningMoneyField error={projection.validation.errors[key]} fieldKey={key} helper={helper} key={key} label={label} onChange={(raw) => updateNumber(setInputs, key, raw)} value={inputs[key]} />);
 }
 
-function toNetWorthResult(projection: NetWorthProjection): CalculatorResult {
+export function toNetWorthResult(projection: NetWorthProjection): CalculatorResult {
   return {
     assumptions: ['All balances use one user-entered snapshot date.', 'Net worth equals assets minus liabilities.', 'Currency selection changes display only.'],
     metrics: [
+      { description: 'Total assets minus total liabilities.', label: 'Estimated net worth', tone: projection.netWorth < 0 ? 'warning' : 'positive', value: projection.netWorth, valueType: 'currency' },
       { description: 'Sum of entered asset categories.', label: 'Total assets', value: projection.totalAssets, valueType: 'currency' },
       { description: 'Sum of entered liability categories.', label: 'Total liabilities', value: projection.totalLiabilities, valueType: 'currency' },
-      { description: 'Total assets minus total liabilities.', label: 'Estimated net worth', tone: projection.netWorth < 0 ? 'warning' : 'positive', value: projection.netWorth, valueType: 'currency' },
       { description: 'Cash and bank balances plus taxable investments.', label: 'Liquid assets', value: projection.liquidAssets, valueType: 'currency' },
       { description: 'Liquid assets minus entered short-term liabilities.', label: 'Liquid position', value: projection.liquidPosition, valueType: 'currency' }
     ],
@@ -1055,6 +1102,19 @@ function inputsFromSaved<Inputs extends Record<string, number>>(defaults: Inputs
 function numericEmergencyInputs(inputs: EmergencyFundInputs): Omit<EmergencyFundInputs, 'incomeStability'> {
   const { incomeStability: _, ...numeric } = inputs;
   return numeric;
+}
+
+function incomeStabilityToCode(value: IncomeStability): number {
+  if (value === 'variable') return 1;
+  if (value === 'uncertain') return 2;
+  return 0;
+}
+
+function incomeStabilityFromSaved(values: Record<string, number> | undefined): IncomeStability {
+  const code = values?.incomeStabilityCode;
+  if (code === 1) return 'variable';
+  if (code === 2) return 'uncertain';
+  return 'stable';
 }
 
 function setDisplayFromSaved(saved: CalculatorSavedResult, setCurrency: Dispatch<SetStateAction<PlanningCurrencyCode>>): void {

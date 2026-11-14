@@ -528,7 +528,7 @@ export const seoCalculators: SeoCalculator[] = [
     ['lease-vs-buy', 'Lease vs Buy Calculator', 'vehicle-cost', [money('homePrice', 'Vehicle purchase price', 25000), money('downPayment', 'Down payment', 5000), percent('rate', 'Loan APR', 0), number('loanYears', 'Loan term', 4, 'yrs'), number('years', 'Comparison horizon', 2, 'yrs'), money('rent', 'Monthly lease payment', 350), number('leaseYears', 'Quoted lease period', 2, 'yrs'), money('resale', 'Resale value at horizon', 14000), money('leaseUpfront', 'Upfront lease costs', 0), number('extendLease', 'Explicit lease continuation', 0), money('extensionMonthly', 'Continuation monthly cost', 0)]],
     ['roi', 'ROI Calculator', 'roi', [{ ...money('gain', 'Net gain', 5000, 'Enter a loss with a minus sign.'), min: -Number.MAX_SAFE_INTEGER }, money('cost', 'Cost', 20000)]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
-    category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'capital-gains' || formula === 'gst' || formula === 'tax-rate' ? 'Tax' : 'Investing',
+    category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'capital-gains' || formula === 'gst' || formula === 'tax-rate' ? 'Tax' : formula === 'insurance' ? 'Planning' : 'Investing',
     description: `${title} for a quick estimate you can compare, save, or revisit later.`,
     explanation: `${title} uses the inputs you provide to estimate the main outcome and show the supporting amount behind it.`,
     formula: formula as CalculatorFormula,
@@ -1287,8 +1287,28 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       };
     }
     case 'insurance': {
-      const need = Math.max(0, get('income') * get('years') + get('debts') - get('savings'));
-      return result('Coverage need', need, 'Income replacement plus debts minus existing coverage or savings.', [], []);
+      const incomeReplacement = get('income') * get('years');
+      const debts = get('debts');
+      const savings = get('savings');
+      const grossNeed = incomeReplacement + debts;
+      const need = Math.max(0, grossNeed - savings);
+      const narrative = need === 0 && grossNeed > 0
+        ? 'Existing savings and coverage already meet or exceed the modeled income replacement and debt obligations.'
+        : 'Income replacement plus debts minus existing coverage or savings.';
+      return result(
+        'Coverage need',
+        need,
+        narrative,
+        [
+          'Income replacement uses an undiscounted nominal multiple (annual income × years of support) without modeling investment returns on the payout or future inflation.',
+          'Excludes income taxes on replacement earnings, Social Security or pension survivor benefits, spouse income changes, and policy underwriting limits.'
+        ],
+        [
+          metric('Income replacement need', incomeReplacement, 'currency'),
+          metric('Debts and final expenses', debts, 'currency'),
+          metric('Existing savings / coverage', savings, 'currency')
+        ]
+      );
     }
     case 'roi': {
       const roi = get('cost') > 0 ? get('gain') / get('cost') : 0;

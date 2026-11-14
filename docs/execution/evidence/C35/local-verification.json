@@ -1,0 +1,42 @@
+{
+  "checkpoint": "C35",
+  "task": "B73",
+  "verifiedAt": "2026-11-14",
+  "sourceRevision": "171c3f57c7d725b882accd947a68a2b7edd94dd0",
+  "focusedChecks": [
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/DedicatedPlannersIntegrity.test.tsx (initial red phase prior to product edits)",
+      "exitCode": 1,
+      "passed": 0,
+      "failed": 6,
+      "total": 6,
+      "status": "RED_PHASE_CONFIRMED"
+    },
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/DedicatedPlannersIntegrity.test.tsx",
+      "exitCode": 0,
+      "filesPassed": 1,
+      "testsPassed": 6,
+      "status": "PASS"
+    },
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH node --check scripts/smoke/c35-dedicated-planners.mjs",
+      "exitCode": 0,
+      "status": "PASS"
+    }
+  ],
+  "fullSuite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh",
+    "exitCode": 0,
+    "nodeTestsPassed": 30,
+    "vitestFilesPassed": 116,
+    "vitestTestsPassed": 2945,
+    "dedicatedPlannersTestsPassed": 6,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "prerenderedRoutes": 92,
+    "buildIsolationFiles": 26,
+    "previewAuthBuildIsolationFiles": 28,
+    "fixtureLeaks": 0
+  }
+}
