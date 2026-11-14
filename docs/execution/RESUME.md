@@ -1,26 +1,25 @@
-# FinPath execution resume — 2026-11-10
+# FinPath execution resume — 2026-11-14
 
-**C36/B74 accepted and shared-beta verified at `4bbc07514b6530a22213c3ccd879347f7be24b5a` ([PR #160](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/160), [review](reviews/C36.md)). 71 of 74 registered tasks done.** Do not repeat completed B68/B70/B78/B71/B69/B74 releases.
+**C39/B76 accepted and shared-beta verified at `9d1266654f84b7d076e828ef1ffb2649d68d2e35` ([PR #161](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/161), [review](reviews/C39.md)). 72 of 75 registered tasks done.** Do not repeat completed B68/B70/B78/B71/B69/B74/B76 releases.
 
 ## Working copy and exact next action
 
 Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `Documents/ChatGPT` is stale at PR #138; preserve it.
 
-1. Merge [PR #160](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/160) into `main` after closure-documentation CI turns green, pull `main`, and verify `main` CI green.
-2. **Owner directive (`/unslop` staged visual overhaul):** Immediately register and execute **B76 / C39 (Unslop Stage B — Dedicated calculators, charts, workspace & legacy CSS retirement)** using the `/unslop` skill (`/Users/Rakesh/.gemini/config/skills/unslop/SKILL.md` — 9-pass redline craft: 4px spacing grid, one tinted neutral ramp + single high-contrast accent, zero decorative glows/blobs/gradient text/emoji/uppercase-tracked slop, sentence-case labels, 400–600 weights with tabular figures, nested radii, quiet chrome with one rich focal chart/moment, purposeful `cubic-bezier(0.22, 1, 0.36, 1)` motion) across dedicated calculators (`HeroFireExample`, `XirrCalculator`, compound/savings/cashflow/vehicle/housing views), shared chart chrome, and signed-in workspace (`/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/reports`, `/settings`), retiring legacy `src/styles.css` slop rules, then push, release, deploy to candidate and shared beta (`codex/finpath-quality-execution`), and merge to `main`.
-3. Follow immediately with:
-   - **B72 / C34**: Calculator input validation & edge-case boundaries.
-   - **B73 / C35**: Dedicated planner / FIRE benchmark & currency fixes.
-   - **B75 / C37**: Schedule & copy refinements.
+1. Confirm `main` is at merged [PR #161](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/161) and `main` CI is green.
+2. Register and execute **B72 / C34 (Cross-field and boundary validation across Loan, Return, Tax, and Retirement studios)** from `docs/calculator-excellence/ANALYSIS_2026-10-18.md` (`LH-02`, `LH-07`, `RET-02`, `TAX-03`, `RINC-04`, `RINC-05`, `RINC-15`): write failing tests first, version changed results as needed while keeping legacy snapshots readable, run `./scripts/test_all.sh` + independent review + exact-head CI, deploy candidate and shared beta (`codex/finpath-quality-execution`) with `hosted_smoke.mjs`, write closure docs, and merge to `main`.
+3. Follow sequentially with:
+   - **B73 / C35**: Dedicated planner & saved-record integrity fixes (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`).
+   - **B75 / C37**: Chart unit consistency, Rule of 72 compound schedule, statutory provenance links, and P2/P3 copy refinements across all studios.
 
-## Verified shared-beta release (C36 / B74)
+## Verified shared-beta release (C39 / B76)
 
 - **Stable beta alias:** [`https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev)
-- **Beta immutable URL:** [`https://1c7bf155.interactive-fire-calculator.pages.dev`](https://1c7bf155.interactive-fire-calculator.pages.dev) (`1c7bf155-51d3-4194-aa61-71f51f05c6b0`)
-- **Candidate immutable URL:** [`https://752076af.interactive-fire-calculator.pages.dev`](https://752076af.interactive-fire-calculator.pages.dev) (`752076af-ea8a-4361-b81a-8f06be0a966d`)
-- **Product source SHA:** `4bbc07514b6530a22213c3ccd879347f7be24b5a`
-- **Exact-head product CI:** [`43572151004`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43572151004) (`SUCCESS`)
-- **Suite & hosted verification:** 30 Node checks, 113 Vitest files / 2,884 tests, `tsc --noEmit`, build, 92 prerenders (`85` public + `7` workspace) + `404.html`, and bundle isolation (`0` fixture leaks) passed (`./scripts/test_all.sh`). Candidate, beta immutable, and beta alias all passed 84 public routes (`smoke_public_calculators.mjs`), and candidate + beta immutable both passed `scripts/hosted_smoke.mjs --scenario c36-unslop-studios` (`preflight`, `d1-reachable`, `sign-in`, 10 `signed-in-shell` cases, 28 `anonymous-account-gates` cases, 72 `unslop-studios-routes` cases across 10 routes/viewports/themes, and verified 16-table zero-row cleanup on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`).
+- **Beta immutable URL:** [`https://aa251d67.interactive-fire-calculator.pages.dev`](https://aa251d67.interactive-fire-calculator.pages.dev) (`aa251d67-e7e4-4c8c-8e33-0a4624d1c24f`)
+- **Candidate immutable URL:** [`https://f7cb0913.interactive-fire-calculator.pages.dev`](https://f7cb0913.interactive-fire-calculator.pages.dev) (`f7cb0913-097d-4d74-b959-f91f050beab4`)
+- **Product source SHA:** `9d1266654f84b7d076e828ef1ffb2649d68d2e35`
+- **Exact-head product CI:** [`43579533077`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43579533077) (`SUCCESS`)
+- **Suite & hosted verification:** 30 Node checks, 114 Vitest files / 2,888 tests, `tsc --noEmit`, build, 92 prerenders (`85` public + `7` workspace) + `404.html`, and bundle isolation (`0` fixture leaks) passed (`./scripts/test_all.sh`). Candidate, beta immutable, and beta alias all passed 84 public routes (`smoke_public_calculators.mjs`), and candidate + beta immutable both passed `scripts/hosted_smoke.mjs --scenario c39-unslop-stage-b` (`preflight`, `d1-reachable`, `sign-in`, 10 `signed-in-shell` cases, 28 `anonymous-account-gates` cases, 72 `unslop-dedicated-routes` cases across 9 routes/viewports/themes, 42 `unslop-workspace-routes` cases across 7 authenticated workspace routes, and verified 16-table zero-row cleanup + Clerk provider deletion on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`).
 
 ## Compatibility and boundaries
 

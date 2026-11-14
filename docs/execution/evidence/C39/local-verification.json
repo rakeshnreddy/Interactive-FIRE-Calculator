@@ -1,0 +1,33 @@
+{
+  "checkpoint": "C39",
+  "task": "B76",
+  "verifiedAt": "2026-11-14",
+  "sourceRevision": "9d1266654f84b7d076e828ef1ffb2649d68d2e35",
+  "focusedChecks": [
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH node --check scripts/smoke/c39-unslop-stage-b.mjs",
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    {
+      "command": "72-case dedicated route Chrome sweep (9 routes x 4 widths [1440, 768, 390, 320] x 2 themes on vite preview + /calculators/budget 2-column FAQ grid + /calculators/mortgage Stage A backlink)",
+      "exitCode": 0,
+      "casesChecked": 72,
+      "failures": 0,
+      "status": "PASS"
+    }
+  ],
+  "fullSuite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh",
+    "exitCode": 0,
+    "nodeTestsPassed": 30,
+    "vitestFilesPassed": 114,
+    "vitestTestsPassed": 2888,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "prerenderedRoutes": 92,
+    "buildIsolationFiles": 26,
+    "previewAuthBuildIsolationFiles": 28,
+    "fixtureLeaks": 0
+  }
+}
