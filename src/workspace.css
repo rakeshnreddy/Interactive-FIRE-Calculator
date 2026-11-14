@@ -1,0 +1,838 @@
+/* B76 / C39 — Unslop Stage B: Dedicated calculators, shared chart chrome & signed-in workspace.
+   Applies the 9-pass /unslop redline craft in @layer workspace (outranking @layer legacy). */
+@layer workspace {
+  /* Scope tokens and shared timing function cleanly to dedicated calculators and workspace views */
+  :is(
+    .route-shell,
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    .financial-dashboard,
+    .planning-workspace,
+    .insights-workspace,
+    .account-workspace,
+    .transaction-workspace,
+    .goal-workspace,
+    .balance-import-panel,
+    .transaction-import-panel,
+    .privacy-controls-panel,
+    .analytics-consent-panel,
+    .profile-editor,
+    .auth-gate-panel,
+    .modal-scrim
+  ) {
+    --workspace-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* =========================================================================
+     Pass 3 — Icons & Pass 5 — Typography & Weight Cap (<= 600)
+     ========================================================================= */
+  :is(
+    .route-shell,
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    .financial-dashboard,
+    .planning-workspace,
+    .insights-workspace,
+    .account-workspace,
+    .transaction-workspace,
+    .goal-workspace,
+    .privacy-controls-panel,
+    .analytics-consent-panel,
+    .profile-editor,
+    .auth-gate-panel,
+    .modal-content
+  ) :is(h1, h2, h3, h4, strong, th, summary, legend, .eyebrow) {
+    font-weight: 600;
+  }
+
+  :is(
+    .route-shell,
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    .financial-dashboard,
+    .planning-workspace,
+    .insights-workspace,
+    .account-workspace,
+    .transaction-workspace,
+    .goal-workspace,
+    .privacy-controls-panel,
+    .analytics-consent-panel,
+    .profile-editor,
+    .auth-gate-panel,
+    .modal-content
+  ) svg.lucide {
+    stroke-width: 1.5;
+  }
+
+  :is(
+    .route-shell,
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    .financial-dashboard,
+    .planning-workspace,
+    .insights-workspace,
+    .account-workspace,
+    .transaction-workspace,
+    .goal-workspace,
+    .privacy-controls-panel,
+    .analytics-consent-panel,
+    .profile-editor,
+    .auth-gate-panel
+  ) .feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--color-muted);
+    flex-shrink: 0;
+  }
+
+  /* Tabular numerals across every numerical ledger, KPI, table cell, and chart */
+  :is(
+    .metric strong,
+    .tracker-metric strong,
+    .calculator-result-card strong,
+    .hero-result strong,
+    .calculator-result-metric strong,
+    .result-facts strong,
+    .result-facts dd,
+    .account-balance,
+    .transaction-amount,
+    .goal-amount-summary,
+    .goal-progress-block,
+    .goal-funding-gap-row,
+    .cashflow-figure,
+    .emergency-runway-figure,
+    .compound-result-panel strong,
+    .compound-headline strong,
+    .compound-chart-values strong,
+    .compound-milestone-list strong,
+    .compound-deposit-proof,
+    .savings-chart-text strong,
+    .dashboard-summary-grid strong,
+    .dashboard-account-row strong,
+    .dashboard-goal-row strong,
+    .dashboard-calculator-card strong,
+    .dashboard-cashflow-columns strong,
+    .summary-band strong,
+    .planning-review-panel strong,
+    .insight-summary-strip strong,
+    .insight-evidence-grid dd,
+    .insight-evidence-grid strong,
+    .report-scope-grid dd,
+    .chart-tooltip span,
+    .recharts-cartesian-axis-tick-value,
+    .dated-flow-endpoints,
+    .vehicle-cost-row,
+    .planning-overview strong,
+    .version-compare td,
+    table td,
+    table th
+  ) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Sentence-case discipline on headings, badges, and table columns */
+  :is(
+    .eyebrow,
+    .pill,
+    .account-stale-badge,
+    .account-status,
+    .goal-status-badge,
+    .goal-type-badge,
+    .source-tag,
+    .stale-evidence-badge,
+    .stale-result-badge,
+    .insight-category,
+    .history-count,
+    .compound-model-badges span,
+    .compound-base-label,
+    .review-badge,
+    table th
+  ) {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .goal-no-progress {
+    font-style: normal;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"],
+    .financial-dashboard,
+    .planning-workspace,
+    .insights-workspace,
+    .account-workspace,
+    .transaction-workspace,
+    .goal-workspace
+  ) em {
+    font-style: normal;
+  }
+
+  /* =========================================================================
+     Pass 1, 2, 6, 7 & 9 — Surfaces, Nested Radii, Buttons & Motion
+     ========================================================================= */
+  .route-shell {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    .route-shell[aria-labelledby="vehicle-title"],
+    .route-shell[aria-labelledby="dated-return-title"]
+  ) {
+    padding-top: 16px;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"]
+  ) > .route-heading {
+    display: grid;
+    gap: 8px;
+    max-width: 760px;
+    padding-top: 8px;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"]
+  ) > .route-heading h1 {
+    margin: 0;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-heading);
+    text-wrap: balance;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"]
+  ) > .route-heading p:not(.eyebrow) {
+    margin: 0;
+    max-width: 64ch;
+    color: var(--color-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"]
+  ) > .route-heading .eyebrow,
+  .panel-heading .eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-eyebrow);
+  }
+
+  /* Outer level-1 panels: 12px radius, opaque surface, 1px hairline border */
+  :is(
+    .panel,
+    .summary-band,
+    .auth-gate-panel,
+    .profile-band,
+    .auth-save-note,
+    .profile-editor,
+    .account-panel,
+    .transaction-create-panel,
+    .transaction-filter-panel,
+    .transaction-import-panel,
+    .balance-import-panel,
+    .goal-create-panel,
+    .planning-overview,
+    .planning-save-panel,
+    .planning-library-panel,
+    .planning-review-panel,
+    .planning-history-panel,
+    .planning-seed-panel,
+    .planning-loading-panel,
+    .privacy-controls-panel,
+    .analytics-consent-panel,
+    .insight-list-panel,
+    .insight-method-panel,
+    .report-scope-panel,
+    .quick-calculator,
+    .focused-calculator,
+    .calculator-mode-choice,
+    .compound-result-panel,
+    .compound-related-panel,
+    .compound-history-panel,
+    .compound-methodology,
+    .modal-content
+  ) {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-rest);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  :is(
+    .panel,
+    .account-panel,
+    .transaction-create-panel,
+    .transaction-filter-panel,
+    .transaction-import-panel,
+    .balance-import-panel,
+    .goal-create-panel,
+    .planning-save-panel,
+    .planning-library-panel,
+    .planning-review-panel,
+    .planning-history-panel,
+    .planning-seed-panel,
+    .privacy-controls-panel,
+    .analytics-consent-panel,
+    .profile-editor,
+    .insight-list-panel,
+    .insight-method-panel,
+    .report-scope-panel,
+    .compound-result-panel,
+    .compound-related-panel,
+    .compound-history-panel
+  ) {
+    padding: 20px;
+  }
+
+  /* Inner level-2 cards & metric wells: 8px radius, subtle inset surface */
+  :is(
+    .metric,
+    .tracker-metric,
+    .scenario-card,
+    .warning-card,
+    .account-card,
+    .transaction-row-card,
+    .goal-card,
+    .empty-card,
+    .compound-analysis-card,
+    .compound-faq-card,
+    .compound-growth-chart,
+    .savings-runway-chart,
+    .cashflow-bar-chart,
+    .dated-flow-visual,
+    .dated-flow-row,
+    .vehicle-cost-visual,
+    .vehicle-equity-visual,
+    .dashboard-account-row,
+    .dashboard-goal-row,
+    .dashboard-calculator-card,
+    .dashboard-plan-card,
+    .dashboard-reviews-rollup,
+    .insight-summary-strip > article,
+    .report-scope-grid > div,
+    .stale-evidence-box,
+    .plan-revision-prompt,
+    .insight-action-row
+  ) {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface-inset);
+    box-shadow: none;
+    transition: border-color 160ms var(--workspace-ease), background-color 160ms var(--workspace-ease);
+  }
+
+  .planning-controlled-error,
+  .historical-version-banner,
+  .review-status-card {
+    border-radius: 8px;
+  }
+
+  .scenario-card:hover,
+  .account-card:hover,
+  .goal-card:hover,
+  .transaction-row-card:hover {
+    transform: none;
+    border-color: var(--color-control-border);
+  }
+
+  /* Level-3 interactive controls: 6px radius, 500 button weight, >=36-40px touch target */
+  :is(
+    .route-shell:not(.calculator-library),
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"],
+    .calculator-mode-choice,
+    .dated-result-actions,
+    .financial-dashboard,
+    .planning-workspace,
+    .insights-workspace,
+    .account-workspace,
+    .transaction-workspace,
+    .goal-workspace,
+    .modal-content
+  ) :is(.primary-button, .secondary-button) {
+    min-height: 40px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition:
+      border-color 160ms var(--workspace-ease),
+      background-color 160ms var(--workspace-ease),
+      color 160ms var(--workspace-ease);
+  }
+
+  .icon-button.row-action {
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+    border-radius: 6px;
+  }
+
+  .goal-link-button {
+    min-height: 28px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"],
+    .calculator-mode-choice,
+    .dated-result-actions,
+    .modal-content
+  ) .primary-button {
+    border: 1px solid var(--color-primary-bg);
+    background: var(--color-primary-bg);
+    color: var(--color-primary-fg);
+    box-shadow: none;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"],
+    .calculator-mode-choice,
+    .dated-result-actions,
+    .modal-content
+  ) .primary-button:hover:not(:disabled) {
+    border-color: var(--color-primary-hover-bg);
+    background: var(--color-primary-hover-bg);
+    transform: none;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"],
+    .calculator-mode-choice,
+    .dated-result-actions,
+    .modal-content
+  ) .secondary-button {
+    border: 1px solid var(--color-control-border);
+    background: var(--color-surface);
+    color: var(--color-heading);
+    box-shadow: none;
+  }
+
+  :is(
+    .route-shell:not(.calculator-library),
+    .planner-grid,
+    .compound-calculator,
+    .savings-goal-calculator,
+    .cashflow-planning-calculator,
+    [aria-labelledby="vehicle-title"],
+    [aria-labelledby="dated-return-title"],
+    .calculator-mode-choice,
+    .dated-result-actions,
+    .modal-content
+  ) .secondary-button:hover:not(:disabled) {
+    border-color: var(--color-primary-bg);
+    background: var(--color-surface-inset);
+    transform: none;
+  }
+
+  :is(
+    .panel-tabs,
+    .segmented
+  ) {
+    padding: 4px;
+    gap: 4px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface-inset);
+  }
+
+  :is(.panel-tabs button, .segmented button) {
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition:
+      background-color 160ms var(--workspace-ease),
+      color 160ms var(--workspace-ease),
+      border-color 160ms var(--workspace-ease);
+  }
+
+  :is(.panel-tabs button.active, .segmented button.active) {
+    background: var(--color-primary-bg);
+    color: var(--color-primary-fg);
+    box-shadow: none;
+  }
+
+  :is(.field input, .field select, .field textarea, .compound-select select, .dated-currency select, .dated-flow-row input, .vehicle-field input) {
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-control-border);
+    border-radius: 6px;
+    background: var(--color-field-surface);
+    color: var(--color-heading);
+    transition: border-color 160ms var(--workspace-ease), background-color 160ms var(--workspace-ease);
+  }
+
+  :is(.field input, .field select, .field textarea, .compound-select select, .dated-currency select, .dated-flow-row input, .vehicle-field input):focus-visible {
+    border-color: var(--color-primary-bg);
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /* Level-4 tags & status badges: 4px radius, crisp borders, restrained inks */
+  :is(
+    .pill,
+    .account-stale-badge,
+    .account-status,
+    .goal-status-badge,
+    .goal-type-badge,
+    .source-tag,
+    .stale-evidence-badge,
+    .stale-result-badge,
+    .insight-category,
+    .history-count,
+    .compound-model-badges span
+  ) {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 24px;
+    padding: 4px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-muted-strong);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  /* =========================================================================
+     Pass 8 — Quiet Shared Chart Chrome (ProjectionChart & Inline Visuals)
+     ========================================================================= */
+  .chart-frame {
+    padding: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+  }
+
+  .chart-frame .recharts-cartesian-grid line {
+    stroke: var(--color-border);
+    stroke-opacity: 0.7;
+  }
+
+  .chart-frame .recharts-cartesian-axis-line,
+  .chart-frame .recharts-cartesian-axis-tick-line {
+    stroke: var(--color-border);
+  }
+
+  .chart-frame .recharts-legend-item-text {
+    color: var(--color-muted-strong) !important;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .chart-tooltip {
+    display: grid;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-control-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-heading);
+    box-shadow: var(--shadow-rest);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .chart-tooltip strong {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .chart-tooltip span {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .compound-growth-chart,
+  .savings-runway-chart,
+  .cashflow-bar-chart,
+  .dated-flow-visual,
+  .vehicle-cost-visual,
+  .vehicle-equity-visual {
+    padding: 16px;
+    gap: 12px;
+    background: var(--color-surface);
+  }
+
+  .compound-chart-plot,
+  .savings-runway-plot {
+    gap: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    background: var(--color-surface-inset);
+    border: 1px solid var(--color-border);
+  }
+
+  /* =========================================================================
+     Dedicated Calculator & Workspace Ledger Grids (Strict 4px Spacing Grid)
+     ========================================================================= */
+  .planner-grid {
+    gap: 20px;
+  }
+
+  .input-panel .panel-heading,
+  .results-panel .panel-heading,
+  .planning-workspace .panel-heading,
+  .insights-workspace .panel-heading,
+  .account-workspace .panel-heading,
+  .transaction-workspace .panel-heading,
+  .goal-workspace .panel-heading,
+  .privacy-controls-panel .panel-heading,
+  .analytics-consent-panel .panel-heading,
+  .profile-editor .panel-heading {
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-result {
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-inset);
+    gap: 12px;
+  }
+
+  .hero-result h3,
+  .hero-result strong {
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .financial-dashboard,
+  .planning-workspace,
+  .insights-workspace,
+  .account-workspace,
+  .transaction-workspace,
+  .goal-workspace {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+  }
+
+  .dashboard-summary-grid,
+  .account-overview-strip,
+  .transaction-overview-strip,
+  .goal-overview-strip,
+  .insight-summary-strip,
+  .report-scope-grid {
+    gap: 12px;
+  }
+
+  .tracker-metric,
+  .account-overview-strip article,
+  .transaction-overview-strip article,
+  .goal-overview-strip article,
+  .insight-summary-strip > article,
+  .report-scope-grid > div {
+    padding: 16px;
+    gap: 4px;
+  }
+
+  .account-card,
+  .goal-card,
+  .transaction-row-card,
+  .planning-list-row,
+  .privacy-action-row,
+  .privacy-delete-form,
+  .insight-action-row {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .insight-action-row > div {
+    gap: 4px;
+  }
+
+  .insight-evidence-grid span {
+    gap: 4px;
+    padding: 12px;
+    border-radius: 6px;
+  }
+
+  .next-module-band {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .planning-overview {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .planning-seed-panel,
+  .version-compare {
+    display: grid;
+    gap: 12px;
+  }
+
+  .modal-scrim {
+    background: rgba(15, 23, 42, 0.56);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .modal-content {
+    padding: 24px;
+    gap: 16px;
+  }
+
+  .modal-actions {
+    gap: 12px;
+  }
+
+  /* Responsive discipline for 768px, 390px, and 320px viewports */
+  @media (max-width: 768px) {
+    :is(
+      .panel,
+      .account-panel,
+      .transaction-create-panel,
+      .transaction-filter-panel,
+      .transaction-import-panel,
+      .balance-import-panel,
+      .goal-create-panel,
+      .planning-save-panel,
+      .planning-library-panel,
+      .planning-review-panel,
+      .planning-history-panel,
+      .planning-seed-panel,
+      .privacy-controls-panel,
+      .analytics-consent-panel,
+      .profile-editor,
+      .insight-list-panel,
+      .insight-method-panel,
+      .report-scope-panel,
+      .compound-result-panel,
+      .compound-related-panel,
+      .compound-history-panel
+    ) {
+      padding: 16px;
+    }
+
+    .planner-grid,
+    .financial-dashboard,
+    .planning-workspace,
+    .insights-workspace,
+    .account-workspace,
+    .transaction-workspace,
+    .goal-workspace {
+      gap: 16px;
+    }
+
+    .chart-frame {
+      padding: 12px;
+    }
+  }
+
+  /* Accessibility: honor reduced-motion and OS high-contrast preferences */
+  @media (prefers-reduced-motion: reduce) {
+    :is(
+      .route-shell,
+      .planner-grid,
+      .compound-calculator,
+      .savings-goal-calculator,
+      .cashflow-planning-calculator,
+      .financial-dashboard,
+      .planning-workspace,
+      .insights-workspace,
+      .account-workspace,
+      .transaction-workspace,
+      .goal-workspace,
+      .modal-scrim
+    ) * {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    :is(
+      .panel,
+      .account-panel,
+      .metric,
+      .tracker-metric,
+      .scenario-card,
+      .warning-card,
+      .chart-frame,
+      .chart-tooltip,
+      .pill
+    ) {
+      border-color: CanvasText;
+    }
+
+    :is(.panel-tabs button.active, .segmented button.active) {
+      background: Highlight;
+      color: HighlightText;
+    }
+  }
+}

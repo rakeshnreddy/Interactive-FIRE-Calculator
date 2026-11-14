@@ -237,7 +237,7 @@ function NetWorthCalculator({ auth, calculator, onNavigate, onSaveResult, savedR
     >
       <AnalysisCard summary="Asset and liability categories, exact totals, and valuation sensitivity" title="Balance-sheet audit">
         <BreakdownTable caption="Net worth balance-sheet reconciliation" money={money} assetRows={projection.assetRows} liabilityRows={projection.liabilityRows} projection={projection} />
-        <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={15} /> Download balance sheet</button>
+        <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={16} strokeWidth={1.5} /> Download balance sheet</button>
       </AnalysisCard>
       <AnalysisCard summary="See what a broad change in non-cash asset values would do" title="Valuation sensitivity">
         <ScenarioBars rows={projection.valuationScenarios.map((scenario) => ({ label: scenario.label, value: scenario.netWorth }))} money={money} baseline={projection.netWorth} />
@@ -416,7 +416,7 @@ function BudgetCalculator({ auth, calculator, onNavigate, onSaveResult, savedRes
     >
       <AnalysisCard summary="Every entered category, monthly total, and annual pace" title="Category audit">
         <BudgetTable inputs={inputs} money={money} projection={projection} />
-        <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={15} /> Download budget CSV</button>
+        <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={16} strokeWidth={1.5} /> Download budget CSV</button>
       </AnalysisCard>
       <AnalysisCard summary="Current plan, income shock, and flexible-spending comparison" title="Cashflow stress checks">
         <ScenarioBars rows={projection.scenarios.map((scenario) => ({ label: scenario.label, value: scenario.monthlySurplus }))} money={money} baseline={projection.monthlySurplus} />
@@ -611,7 +611,7 @@ function EmergencyFundCalculator({ auth, calculator, onNavigate, onSaveResult, s
       </AnalysisCard>
       <AnalysisCard summary="Month-by-month deposits with no hidden return assumption" title="Funding schedule">
         <EmergencyScheduleTable money={money} projection={projection} />
-        <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={15} /> Download funding schedule</button>
+        <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={16} strokeWidth={1.5} /> Download funding schedule</button>
       </AnalysisCard>
       <AnalysisCard summary="Definitions, limitations, and authoritative references" title="Method and sources">
         <div className="compound-methodology">
@@ -663,7 +663,7 @@ function FamilyShell({
         <p className="eyebrow">{eyebrow}</p>
         <h1 id="calculator-detail-title">{title}</h1>
         <p className="calculator-scope-note">{description}</p>
-        <a href="/calculators" onClick={(event) => { event.preventDefault(); onNavigate('/calculators'); }}><ArrowRight size={15} /> Explore all calculators</a>
+        <a href="/calculators" onClick={(event) => { event.preventDefault(); onNavigate('/calculators'); }}><ArrowRight size={16} strokeWidth={1.5} /> Explore all calculators</a>
       </div>
       <div className="calculator-detail-grid compound-workspace cashflow-workspace">{input}{result}</div>
       <section className="compound-analysis-section" aria-labelledby="planning-analysis-title">
@@ -678,7 +678,7 @@ function FamilyShell({
               <strong id="planning-faq-title">Frequently asked questions</strong>
               <small>Practical rules and interpretation for this {calculator.slug.replace('-', ' ')} plan</small>
             </span>
-            <ChevronDown size={17} />
+            <ChevronDown size={18} strokeWidth={1.5} />
           </summary>
           <div className="calculator-faq-grid compound-analysis-body">
             {faq.map(([question, answer]) => (
@@ -693,7 +693,7 @@ function FamilyShell({
       <section className="compound-related-panel" aria-label="Related next steps">
         {related.map(([route, heading, detail]) => (
           <a href={route} key={route} onClick={(event) => { event.preventDefault(); onNavigate(route); }}>
-            <Target size={18} /><span><strong>{heading}</strong><small>{detail}</small></span><ArrowRight size={16} />
+            <Target size={18} strokeWidth={1.5} /><span><strong>{heading}</strong><small>{detail}</small></span><ArrowRight size={16} strokeWidth={1.5} />
           </a>
         ))}
       </section>
@@ -705,7 +705,7 @@ function PanelHeading({ badges, eyebrow, onReset, title }: { badges?: string[]; 
   return (
     <div className="panel-heading">
       <div><p className="eyebrow">{eyebrow}</p><h2 id={onReset ? 'planning-input-title' : 'planning-result-title'}>{title}</h2></div>
-      {onReset ? <button className="secondary-button icon-text-button" type="button" onClick={onReset}><RotateCcw size={15} /> Reset</button> : (
+      {onReset ? <button className="secondary-button icon-text-button" type="button" onClick={onReset}><RotateCcw size={16} strokeWidth={1.5} /> Reset</button> : (
         <div className="compound-model-badges">{badges?.map((badge) => <span className="compound-version" key={badge}>{badge}</span>)}</div>
       )}
     </div>
@@ -731,7 +731,7 @@ function PlanningNumberField({ error, fieldKey, helper, label, max, min = 0, onC
   const errorId = `${id}-error`;
   return (
     <label className={`field ${error ? 'has-error' : ''}`} htmlFor={id}>
-      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} /></span>
+      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} strokeWidth={1.5} /></span>
       <div className="calculator-input-control">
         {prefix ? <small aria-hidden="true">{prefix}</small> : null}
         <input aria-describedby={`${helpId}${error ? ` ${errorId}` : ''}`} aria-invalid={Boolean(error)} autoComplete="off" id={id} inputMode="decimal" max={max} min={min} name={id} step={step} type="number" value={Number.isFinite(value) ? value : ''} onChange={(event) => onChange(event.target.value)} />
@@ -748,7 +748,7 @@ function PlanningSelectField({ fieldKey, helper, label, onChange, options, value
   const helpId = `${id}-help`;
   return (
     <label className="field" htmlFor={id}>
-      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} /></span>
+      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} strokeWidth={1.5} /></span>
       <select aria-describedby={helpId} className="compound-select" id={id} name={id} value={value} onChange={(event) => onChange(event.target.value)}>{options.map(([name, option]) => <option key={String(option)} value={option}>{name}</option>)}</select>
       <small id={helpId}>{helper}</small>
     </label>
@@ -758,7 +758,7 @@ function PlanningSelectField({ fieldKey, helper, label, onChange, options, value
 function DisplayOptions({ currency, locale, onCurrency, onLocale }: { currency: PlanningCurrencyCode; locale: PlanningLocaleCode; onCurrency: (value: PlanningCurrencyCode) => void; onLocale: (value: PlanningLocaleCode) => void }) {
   return (
     <details id="estimate-display" className="compound-disclosure calculator-options-shell">
-      <summary><span><strong>Display only</strong><small>{currency} · {locale} · no FX conversion</small></span><ChevronDown size={17} /></summary>
+      <summary><span><strong>Display only</strong><small>{currency} · {locale} · no FX conversion</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
       <div className="compound-advanced-body"><DisplayFields currency={currency} locale={locale} onCurrency={onCurrency} onLocale={onLocale} /></div>
     </details>
   );
@@ -780,7 +780,7 @@ function Headline({ detail, label, tone, value }: { detail: string; label: strin
 function ResultMetric({ help, label, tone, value }: { help: string; label: string; tone?: 'positive' | 'warning'; value: string }) {
   return (
     <div className={`calculator-result-metric ${tone ? `metric-${tone}` : ''}`}>
-      <span className="calculator-metric-label"><span>{label}</span><button className="calculator-help-dot" type="button" aria-label={`Explain ${label}`}><CircleHelp aria-hidden="true" size={14} /></button><span className="compound-metric-tooltip" role="tooltip">{help}</span></span>
+      <span className="calculator-metric-label"><span>{label}</span><button className="calculator-help-dot" type="button" aria-label={`Explain ${label}`}><CircleHelp aria-hidden="true" size={16} strokeWidth={1.5} /></button><span className="compound-metric-tooltip" role="tooltip">{help}</span></span>
       <strong>{value}</strong>
     </div>
   );
@@ -799,8 +799,8 @@ function ActionRow({ auth, disabled = false, isSaving, message, onCopy, onExport
   return (
     <>
       <div className="compound-action-row">
-        <button className="secondary-button icon-text-button" type="button" onClick={onCopy}><Copy size={15} /> Copy link</button>
-        <button className="secondary-button icon-text-button" type="button" onClick={onExport}><Download size={15} /> Export CSV</button>
+        <button className="secondary-button icon-text-button" type="button" onClick={onCopy}><Copy size={16} strokeWidth={1.5} /> Copy link</button>
+        <button className="secondary-button icon-text-button" type="button" onClick={onExport}><Download size={16} strokeWidth={1.5} /> Export CSV</button>
         {auth.status === 'signed-in' ? <button className="primary-button" disabled={disabled || isSaving} type="button" onClick={onSave}>{isSaving ? 'Saving…' : saveLabel}</button> : auth.status === 'not-configured' ? (
           <button className="primary-button" disabled={disabled} type="button" onClick={onSave}>Keep browser draft</button>
         ) : (
@@ -813,14 +813,14 @@ function ActionRow({ auth, disabled = false, isSaving, message, onCopy, onExport
 }
 
 function AnalysisCard({ children, summary, title }: { children: ReactNode; summary: string; title: string }) {
-  return <details className="compound-analysis-card"><summary><span><strong>{title}</strong><small>{summary}</small></span><ChevronDown size={17} /></summary><div className="compound-analysis-body">{children}</div></details>;
+  return <details className="compound-analysis-card"><summary><span><strong>{title}</strong><small>{summary}</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary><div className="compound-analysis-body">{children}</div></details>;
 }
 
 function HistoryPanel({ auth, history, onLoad, title }: { auth: AuthState; history: CalculatorSavedResult[]; onLoad: (saved: CalculatorSavedResult) => void; title: string }) {
   return (
     <section className="compound-history-panel" aria-labelledby="planning-history-title">
       <div><p className="eyebrow">Saved history</p><h2 id="planning-history-title">{title}</h2><p>{auth.status === 'signed-in' ? 'Reload a recent snapshot without overwriting the saved record.' : 'Browser drafts work without an account. Sign in to keep multiple dated results.'}</p></div>
-      {history.length ? <div className="compound-history-list">{history.map((saved) => <button type="button" key={saved.id} onClick={() => onLoad(saved)}><History size={16} /><strong>{saved.result.metrics[0]?.label ?? saved.calculatorTitle}</strong><small>{saved.result.metrics[0] ? String(saved.result.metrics[0].value) : 'Saved result'}</small><small>{new Date(saved.createdAt).toLocaleDateString()}</small></button>)}</div> : <div className="cashflow-history-empty"><History size={18} /><span>No saved snapshots for this calculator yet.</span></div>}
+      {history.length ? <div className="compound-history-list">{history.map((saved) => <button type="button" key={saved.id} onClick={() => onLoad(saved)}><History size={16} strokeWidth={1.5} /><strong>{saved.result.metrics[0]?.label ?? saved.calculatorTitle}</strong><small>{saved.result.metrics[0] ? String(saved.result.metrics[0].value) : 'Saved result'}</small><small>{new Date(saved.createdAt).toLocaleDateString()}</small></button>)}</div> : <div className="cashflow-history-empty"><History size={18} strokeWidth={1.5} /><span>No saved snapshots for this calculator yet.</span></div>}
     </section>
   );
 }

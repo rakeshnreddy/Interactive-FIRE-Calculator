@@ -256,7 +256,7 @@ export function CompoundInterestCalculator({
           event.preventDefault();
           onNavigate('/calculators');
         }}>
-          <ArrowRight size={15} />
+          <ArrowRight size={16} strokeWidth={1.5} />
           Explore all calculators
         </a>
       </div>
@@ -269,7 +269,7 @@ export function CompoundInterestCalculator({
               <h2 id="compound-input-title">Set the growth plan</h2>
             </div>
             <button className="secondary-button icon-text-button" type="button" onClick={reset}>
-              <RotateCcw size={15} /> Reset
+              <RotateCcw size={16} strokeWidth={1.5} /> Reset
             </button>
           </div>
 
@@ -614,15 +614,15 @@ export function CompoundInterestCalculator({
 
               <div className="compound-action-row">
                 <button className="secondary-button icon-text-button" type="button" onClick={copyShareLink}>
-                  <Copy size={15} /> Copy link
+                  <Copy size={16} strokeWidth={1.5} /> Copy link
                 </button>
                 <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}>
-                  <Download size={15} /> Export CSV
+                  <Download size={16} strokeWidth={1.5} /> Export CSV
                 </button>
               </div>
 
               <div className="calculator-conversion-panel">
-                <span className="feature-icon"><Target size={18} /></span>
+                <span className="feature-icon"><Target size={18} strokeWidth={1.5} /></span>
                 <div>
                   <strong>{calculator.conversionLabel}</strong>
                   <small>Save this run, then revisit actual progress inside FinPath.</small>
@@ -657,7 +657,7 @@ export function CompoundInterestCalculator({
           </div>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Scenario comparison</strong><small>Lower, base, and higher constant-rate cases</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Scenario comparison</strong><small>Lower, base, and higher constant-rate cases</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               <fieldset className="compound-scenario-picker">
                 <legend>Choose the case shown in the headline</legend>
@@ -683,7 +683,7 @@ export function CompoundInterestCalculator({
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Schedule and audit trail</strong><small>Every row uses the same engine as the headline</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Schedule and audit trail</strong><small>Every row uses the same engine as the headline</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               <div className="compound-schedule-toolbar">
                 <label>
@@ -694,7 +694,7 @@ export function CompoundInterestCalculator({
                   </select>
                 </label>
                 <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}>
-                  <Download size={15} /> Raw CSV
+                  <Download size={16} strokeWidth={1.5} /> Raw CSV
                 </button>
               </div>
               <ScheduleTable currency={currency} locale={resolvedLocale} rows={schedule} showInflationAdjusted={showInflationAdjusted} />
@@ -702,7 +702,7 @@ export function CompoundInterestCalculator({
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Sensitivity grid</strong><small>Return versus recurring contribution</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Sensitivity grid</strong><small>Return versus recurring contribution</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               <p>Each cell changes only the row’s rate and column’s contribution. This is deterministic sensitivity—not a probability range.</p>
               <div className="compound-sensitivity-wrap" role="region" aria-label="Return and contribution sensitivity" tabIndex={0}>
@@ -740,7 +740,7 @@ export function CompoundInterestCalculator({
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Milestones and target timing</strong><small>When key thresholds are first reached</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Milestones and target timing</strong><small>When key thresholds are first reached</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               {projection.milestones.length > 0 ? (
                 <div className="compound-milestone-list">
@@ -759,7 +759,7 @@ export function CompoundInterestCalculator({
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Methodology, limits, and sources</strong><small>Definitions that can change the answer</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Methodology, limits, and sources</strong><small>Definitions that can change the answer</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body compound-methodology">
               <p><strong>Rate basis.</strong> Nominal mode uses (1 + annual rate ÷ compounds per year) raised to elapsed compound periods. APY mode uses (1 + APY) raised to elapsed years; compounding frequency is intentionally not applied twice.</p>
               <p><strong>Cash-flow timing.</strong> End contributions at the horizon are included; beginning contributions at the horizon are excluded. Annual top-ups occur on full-year anniversaries. One-time deposits are applied before same-time withdrawals.</p>
@@ -794,7 +794,7 @@ export function CompoundInterestCalculator({
           <div className="compound-history-list">
             {history.map((saved) => (
               <button key={saved.id} type="button" onClick={() => loadSaved(saved)}>
-                <History size={16} />
+                <History size={16} strokeWidth={1.5} />
                 <span>{new Date(saved.createdAt).toLocaleDateString(resolvedLocale)}</span>
                 <strong>{formatSavedHeadline(saved, currency, resolvedLocale)}</strong>
                 <small>Load inputs</small>
@@ -822,10 +822,10 @@ export function CompoundInterestCalculator({
 
       <section className="compound-related-panel" aria-label="Related next steps">
         <a href="/calculators/savings-goal" onClick={(event) => { event.preventDefault(); onNavigate('/calculators/savings-goal'); }}>
-          <Target size={18} /><span><strong>Need to solve for the required contribution?</strong><small>Use Savings Goal next.</small></span><ArrowRight size={16} />
+          <Target size={18} strokeWidth={1.5} /><span><strong>Need to solve for the required contribution?</strong><small>Use Savings Goal next.</small></span><ArrowRight size={16} strokeWidth={1.5} />
         </a>
         <a href="/calculators/investment-return" onClick={(event) => { event.preventDefault(); onNavigate('/calculators/investment-return'); }}>
-          <Landmark size={18} /><span><strong>Evaluating a completed investment?</strong><small>Use Investment Return.</small></span><ArrowRight size={16} />
+          <Landmark size={18} strokeWidth={1.5} /><span><strong>Evaluating a completed investment?</strong><small>Use Investment Return.</small></span><ArrowRight size={16} strokeWidth={1.5} />
         </a>
       </section>
     </section>
@@ -862,7 +862,7 @@ function NumberField({
   const errorId = `compound-${inputKey}-error`;
   return (
     <label className={`field ${error ? 'has-error' : ''}`} htmlFor={`compound-${inputKey}`}>
-      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} /></span>
+      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} strokeWidth={1.5} /></span>
       <div className="calculator-input-control">
         {currency ? <small aria-hidden="true">{currency}</small> : null}
         <input
@@ -904,7 +904,7 @@ function SelectField({
   const helpId = `compound-${inputKey}-help`;
   return (
     <label className="field" htmlFor={`compound-${inputKey}`}>
-      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} /></span>
+      <span className="calculator-field-label"><span>{label}</span><CircleHelp aria-hidden="true" size={16} strokeWidth={1.5} /></span>
       <select
         autoComplete="off"
         aria-describedby={helpId}
@@ -938,7 +938,7 @@ function ResultMetric({
       <span className="calculator-metric-label">
         <span>{label}</span>
         <span className="calculator-help-dot" aria-describedby={helpId} aria-label={`About ${label}`} tabIndex={0}>
-          <CircleHelp aria-hidden="true" size={15} />
+          <CircleHelp aria-hidden="true" size={16} strokeWidth={1.5} />
         </span>
         <span className="compound-metric-tooltip" id={helpId} role="tooltip">{help}</span>
       </span>

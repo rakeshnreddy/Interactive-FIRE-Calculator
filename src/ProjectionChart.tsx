@@ -41,27 +41,41 @@ export function ProjectionChart({
   return (
     <div className="chart-frame" role="img" aria-label={`${label} chart showing ending balance and withdrawal by ${axisLabel.toLowerCase()}`}>
       <ResponsiveContainer width="100%" height={360}>
-        <LineChart data={data} margin={{ top: 10, right: 22, left: 8, bottom: 18 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="age" label={{ value: axisLabel, position: 'insideBottom', offset: -8 }} />
-          <YAxis tickFormatter={(value) => formatCompactMoney(Number(value), currency)} width={72} />
-          <Tooltip content={<MoneyTooltip axisLabel={axisLabel} currency={currency} />} />
-          <Legend verticalAlign="top" height={30} />
+        <LineChart data={data} margin={{ top: 10, right: 20, left: 8, bottom: 18 }}>
+          <CartesianGrid strokeDasharray="none" vertical={false} stroke="var(--color-border)" strokeWidth={1} />
+          <XAxis
+            dataKey="age"
+            tickLine={false}
+            axisLine={{ stroke: 'var(--color-border)' }}
+            tick={{ fontSize: 12, fill: 'var(--color-muted)' }}
+            label={{ value: axisLabel, position: 'insideBottom', offset: -8, fontSize: 12, fill: 'var(--color-muted)' }}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tick={{ fontSize: 12, fill: 'var(--color-muted)' }}
+            tickFormatter={(value) => formatCompactMoney(Number(value), currency)}
+            width={72}
+          />
+          <Tooltip cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }} content={<MoneyTooltip axisLabel={axisLabel} currency={currency} />} />
+          <Legend verticalAlign="top" height={30} iconType="plainline" />
           <Line
             type="monotone"
             dataKey="balance"
             name={label}
             stroke="var(--chart-primary)"
-            strokeWidth={3}
+            strokeWidth={2}
             dot={false}
+            activeDot={{ r: 4, strokeWidth: 1.5 }}
           />
           <Line
             type="monotone"
             dataKey="withdrawal"
             name="Withdrawal"
             stroke="var(--chart-secondary)"
-            strokeWidth={3}
+            strokeWidth={2}
             dot={false}
+            activeDot={{ r: 4, strokeWidth: 1.5 }}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -19,12 +19,12 @@ export function EstimateCustomization({ groups, compact = false }: { groups: Cus
   };
   return (
     <nav className="estimate-customization" aria-label="Customize this estimate">
-      <strong><SlidersHorizontal size={16} aria-hidden="true" /> Customize this estimate</strong>
+      <strong><SlidersHorizontal size={16} aria-hidden="true" strokeWidth={1.5} /> Customize this estimate</strong>
       <div className={`estimate-customization-links${compact ? ' is-compact' : ''}`}>
         {groups.map((group) => (
           <button type="button" key={group.id} aria-label={group.label} aria-controls={group.id} onClick={() => reveal(group.id)}>
             <span><strong>{group.label}</strong>{!compact ? <small>{group.summary}</small> : null}</span>
-            <ArrowDownRight size={16} aria-hidden="true" />
+            <ArrowDownRight size={16} aria-hidden="true" strokeWidth={1.5} />
           </button>
         ))}
       </div>
@@ -33,5 +33,5 @@ export function EstimateCustomization({ groups, compact = false }: { groups: Cus
 }
 
 export function EstimateOptionGroup({ id, title, summary, children }: { id: string; title: string; summary: string; children: ReactNode }) {
-  return <details id={id} className="compound-disclosure calculator-options-shell"><summary><span><strong>{title}</strong><small>{summary}</small></span><ChevronDown size={17} aria-hidden="true" /></summary><div className="compound-advanced-body">{children}</div></details>;
+  return <details id={id} className="compound-disclosure calculator-options-shell"><summary><span><strong>{title}</strong><small>{summary}</small></span><ChevronDown size={18} aria-hidden="true" strokeWidth={1.5} /></summary><div className="compound-advanced-body">{children}</div></details>;
 }

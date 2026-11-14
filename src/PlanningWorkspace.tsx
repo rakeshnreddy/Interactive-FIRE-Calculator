@@ -646,7 +646,7 @@ export function PlanningWorkspace({
           </div>
           <button className="secondary-button icon-text-button" onClick={onNavigateCalculator}>
             Open calculator
-            <ArrowRight size={16} />
+            <ArrowRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -695,7 +695,7 @@ export function PlanningWorkspace({
             disabled={isSaving || !activePlanId || !draft.name.trim()}
             onClick={() => onSave('new-version', draft)}
           >
-            <Save size={16} />
+            <Save size={16} strokeWidth={1.5} />
             Save new version
           </button>
           <button
@@ -703,7 +703,7 @@ export function PlanningWorkspace({
             disabled={isSaving || !draft.name.trim()}
             onClick={() => onSave('new-plan', draft)}
           >
-            <Save size={16} />
+            <Save size={16} strokeWidth={1.5} />
             Save as new plan
           </button>
           <p className="storage-status" role="status" aria-live="polite">{message}</p>
@@ -788,7 +788,7 @@ export function PlanningWorkspace({
               aria-label="Revision next step"
             >
               <div className="plan-revision-prompt-header">
-                <AlertCircle size={18} aria-hidden="true" />
+                <AlertCircle size={18} aria-hidden="true" strokeWidth={1.5} />
                 <strong>Next step: Revise financial assumptions in calculator and save Version {(activePlan?.versionNumber ?? currentVersionNumber) + 1}</strong>
               </div>
               <p>
@@ -801,7 +801,7 @@ export function PlanningWorkspace({
                   onClick={onNavigateCalculator}
                 >
                   Open calculator
-                  <ArrowRight size={16} />
+                  <ArrowRight size={16} strokeWidth={1.5} />
                 </button>
                 <button
                   type="button"
@@ -888,7 +888,7 @@ export function PlanningWorkspace({
                   disabled={isSubmittingReview || isLoadingReviews}
                   onClick={handleReviewSubmit}
                 >
-                  <CheckCircle2 size={16} />
+                  <CheckCircle2 size={16} strokeWidth={1.5} />
                   {reviewDecision === 'keep'
                     ? 'Confirm unchanged assumptions'
                     : reviewDecision === 'revise'
@@ -993,11 +993,11 @@ export function PlanningWorkspace({
 
         <div className="planning-actions">
           <button className="secondary-button icon-text-button" onClick={buildSeedPreview}>
-            <Link2 size={16} />
+            <Link2 size={16} strokeWidth={1.5} />
             Preview import
           </button>
           <button className="secondary-button icon-text-button" disabled={!canUndoSeed} onClick={onUndoSeed}>
-            <RotateCcw size={16} />
+            <RotateCcw size={16} strokeWidth={1.5} />
             Undo last import
           </button>
         </div>
@@ -1020,7 +1020,7 @@ export function PlanningWorkspace({
                     setSeedPreview(null);
                   }}
                 >
-                  <Check size={16} />
+                  <Check size={16} strokeWidth={1.5} />
                   Apply import
                 </button>
               </>
@@ -1057,7 +1057,7 @@ export function PlanningWorkspace({
                   Open
                 </button>
                 <button className="icon-button row-action" disabled={isSaving} aria-label={`Archive ${item.name}`} onClick={() => onArchive(item.id)}>
-                  <Trash2 size={16} />
+                  <Trash2 size={16} strokeWidth={1.5} />
                 </button>
               </div>
             </article>
@@ -1071,7 +1071,7 @@ export function PlanningWorkspace({
             <p className="eyebrow">Immutable record</p>
             <h2 id="planning-history-title">Version history</h2>
           </div>
-          <span className="history-count"><History size={16} /> {versions.length}</span>
+          <span className="history-count"><History size={16} strokeWidth={1.5} /> {versions.length}</span>
         </div>
         <p className="storage-status" role="status" aria-live="polite">{versionMessage}</p>
 
@@ -1100,7 +1100,7 @@ export function PlanningWorkspace({
 
         {compareItems.length > 0 ? (
           <div className="version-compare" aria-label="Selected version comparison">
-            <div className="version-compare-heading"><GitCompare size={17} /><strong>Version comparison</strong></div>
+            <div className="version-compare-heading"><GitCompare size={18} strokeWidth={1.5} /><strong>Version comparison</strong></div>
             <div className="version-compare-grid">
               {compareItems.map((version) => {
                 const health = healthForVersion(version);

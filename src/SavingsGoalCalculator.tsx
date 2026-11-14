@@ -258,7 +258,7 @@ export function SavingsGoalCalculator({
           event.preventDefault();
           onNavigate('/calculators');
         }}>
-          <ArrowRight size={15} /> Explore all calculators
+          <ArrowRight size={16} strokeWidth={1.5} /> Explore all calculators
         </a>
       </div>
 
@@ -270,7 +270,7 @@ export function SavingsGoalCalculator({
               <h2 id="savings-input-title">Set the goal</h2>
             </div>
             <button className="secondary-button icon-text-button" type="button" onClick={reset}>
-              <RotateCcw size={15} /> Reset
+              <RotateCcw size={16} strokeWidth={1.5} /> Reset
             </button>
           </div>
 
@@ -382,12 +382,12 @@ export function SavingsGoalCalculator({
               ) : null}
 
               <div className="compound-action-row">
-                <button className="secondary-button icon-text-button" type="button" onClick={copyShareLink}><Copy size={15} /> Copy link</button>
-                <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={15} /> Export CSV</button>
+                <button className="secondary-button icon-text-button" type="button" onClick={copyShareLink}><Copy size={16} strokeWidth={1.5} /> Copy link</button>
+                <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={16} strokeWidth={1.5} /> Export CSV</button>
               </div>
 
               <div className="calculator-conversion-panel">
-                <span className="feature-icon"><Target size={18} /></span>
+                <span className="feature-icon"><Target size={18} strokeWidth={1.5} /></span>
                 <div><strong>Create this savings goal</strong><small>{currency === 'USD' ? 'Save the selected scenario and revisit actual progress inside FinPath.' : 'Share and export remain available, but Goal creation is limited to USD until Goals store currency explicitly.'}</small></div>
                 {auth.status === 'signed-in' ? (
                   <button className="primary-button" disabled={isSaving || currency !== 'USD'} type="button" onClick={saveResult}>{isSaving ? 'Saving…' : currency === 'USD' ? 'Create savings goal' : 'Use USD to create goal'}</button>
@@ -408,7 +408,7 @@ export function SavingsGoalCalculator({
           <div className="compound-analysis-heading"><p className="eyebrow">Expert analysis</p><h2>Audit and stress-test the goal</h2><p>Open only the comparison, sensitivity, schedule, or methodology you need. Every section is collapsed by default.</p></div>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Current pace and milestones</strong><small>Compare what you plan now with what the goal requires</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Current pace and milestones</strong><small>Compare what you plan now with what the goal requires</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               <div className="savings-plan-comparison">
                 <span><small>Current contribution</small><strong>{money(inputs.currentContribution, minorUnitDigits)} {frequencyLabel(inputs.contributionFrequency)}</strong></span>
@@ -425,7 +425,7 @@ export function SavingsGoalCalculator({
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Scenario comparison</strong><small>Lower, base, and higher constant-rate cases</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Scenario comparison</strong><small>Lower, base, and higher constant-rate cases</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               <fieldset className="compound-scenario-picker">
                 <legend>Choose the case shown in the headline</legend>
@@ -443,7 +443,7 @@ export function SavingsGoalCalculator({
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Deadline and target sensitivity</strong><small>See which lever changes the saving pace most</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Deadline and target sensitivity</strong><small>See which lever changes the saving pace most</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               <p>Each cell changes only the row’s goal amount and column’s deadline. The rate cases below change only the annual rate.</p>
               <div className="compound-sensitivity-wrap" role="region" aria-label="Goal amount and deadline sensitivity" tabIndex={0}>
@@ -462,18 +462,18 @@ export function SavingsGoalCalculator({
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Schedule and audit trail</strong><small>Every row uses the same engine as the headline</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Schedule and audit trail</strong><small>Every row uses the same engine as the headline</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body">
               <div className="compound-schedule-toolbar">
                 <label><span>Schedule detail</span><select autoComplete="off" name="savings-schedule-detail" value={schedulePeriod} onChange={(event) => setSchedulePeriod(event.target.value as SchedulePeriod)}><option value="annual">Annual summary</option><option value="detailed">Contribution events</option></select></label>
-                <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={15} /> Raw CSV</button>
+                <button className="secondary-button icon-text-button" type="button" onClick={exportCsv}><Download size={16} strokeWidth={1.5} /> Raw CSV</button>
               </div>
               <SavingsScheduleTable currency={currency} locale={resolvedLocale} rows={schedule} target={projection.resolvedTarget} />
             </div>
           </details>
 
           <details className="compound-analysis-card">
-            <summary><span><strong>Methodology, limits, and sources</strong><small>Definitions that can materially change the answer</small></span><ChevronDown size={17} /></summary>
+            <summary><span><strong>Methodology, limits, and sources</strong><small>Definitions that can materially change the answer</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
             <div className="compound-analysis-body compound-methodology">
               <p><strong>Inverse solve.</strong> The engine first projects current savings and fixed annual top-ups, then divides the remaining deadline target by the future-value factor of one recurring contribution. Annual contribution increases remain linear, so no iterative root is needed.</p>
               <p><strong>Rate basis.</strong> Nominal mode uses (1 + annual rate ÷ compounds per year) raised to elapsed compound periods. APY mode uses (1 + APY) raised to elapsed years and does not apply compounding twice.</p>
@@ -498,7 +498,7 @@ export function SavingsGoalCalculator({
       <section className="compound-history-panel" aria-labelledby="savings-history-title">
         <div><p className="eyebrow">Revisitability</p><h2 id="savings-history-title">Recent saved plans</h2><p>Browser drafts preserve one current plan. Signed-in history keeps multiple runs.</p></div>
         {auth.status !== 'signed-in' ? <p>Create an account when you want to keep and compare more than one savings plan.</p> : history.length === 0 ? <p>No Savings Goal runs saved yet.</p> : (
-          <div className="compound-history-list">{history.map((saved) => <button key={saved.id} type="button" onClick={() => loadSaved(saved)}><History size={16} /><span>{new Date(saved.createdAt).toLocaleDateString(resolvedLocale)}</span><strong>{formatSavedHeadline(saved, currency, resolvedLocale)}</strong><small>Load inputs</small></button>)}</div>
+          <div className="compound-history-list">{history.map((saved) => <button key={saved.id} type="button" onClick={() => loadSaved(saved)}><History size={16} strokeWidth={1.5} /><span>{new Date(saved.createdAt).toLocaleDateString(resolvedLocale)}</span><strong>{formatSavedHeadline(saved, currency, resolvedLocale)}</strong><small>Load inputs</small></button>)}</div>
         )}
       </section>
 
@@ -513,8 +513,8 @@ export function SavingsGoalCalculator({
       </section>
 
       <nav className="compound-related-panel" aria-label="Related calculators">
-        <a href="/calculators/compound-interest" onClick={(event) => { event.preventDefault(); onNavigate('/calculators/compound-interest'); }}><Landmark size={18} /><span><strong>Compound Interest</strong><small>Project what a known saving plan could become</small></span><ArrowRight size={16} /></a>
-        <a href="/calculators/emergency-fund" onClick={(event) => { event.preventDefault(); onNavigate('/calculators/emergency-fund'); }}><Target size={18} /><span><strong>Emergency Fund</strong><small>Build the right liquidity target first</small></span><ArrowRight size={16} /></a>
+        <a href="/calculators/compound-interest" onClick={(event) => { event.preventDefault(); onNavigate('/calculators/compound-interest'); }}><Landmark size={18} strokeWidth={1.5} /><span><strong>Compound Interest</strong><small>Project what a known saving plan could become</small></span><ArrowRight size={16} strokeWidth={1.5} /></a>
+        <a href="/calculators/emergency-fund" onClick={(event) => { event.preventDefault(); onNavigate('/calculators/emergency-fund'); }}><Target size={18} strokeWidth={1.5} /><span><strong>Emergency Fund</strong><small>Build the right liquidity target first</small></span><ArrowRight size={16} strokeWidth={1.5} /></a>
       </nav>
     </section>
   );

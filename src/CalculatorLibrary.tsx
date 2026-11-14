@@ -342,7 +342,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
       </div>
 
       <div className="calculator-search-panel">
-        <Search size={18} />
+        <Search size={18} strokeWidth={1.5} />
         <input
           aria-label="Find calculators"
           autoComplete="off"
@@ -415,7 +415,7 @@ function CalculatorHub({ onNavigate }: { onNavigate: (route: string) => void }) 
                 >
                   <div className="starting-path-head">
                     <span className="starting-path-badge">{item.badge}</span>
-                    <ArrowRight size={16} />
+                    <ArrowRight size={16} strokeWidth={1.5} />
                   </div>
                   <span className="starting-path-question">{item.question}</span>
                   <strong className="starting-path-title">{item.title}</strong>
@@ -448,7 +448,7 @@ function FireSearchCard({ onNavigate }: { onNavigate: (route: string) => void })
       <small>Model required nest egg, target retirement age, sustainable withdrawal rates, and inflation-adjusted cash flows.</small>
       <em>
         Open calculator
-        <ArrowRight size={14} />
+        <ArrowRight size={16} strokeWidth={1.5} />
       </em>
     </a>
   );
@@ -500,7 +500,7 @@ function CalculatorToolkitPanel({
           >
             {index === 0 ? <span className="calculator-featured-tag">Start here</span> : null}
             <strong>{calculator.title}</strong>
-            <ArrowRight size={15} />
+            <ArrowRight size={16} strokeWidth={1.5} />
           </a>
         ))}
       </nav>
@@ -508,7 +508,7 @@ function CalculatorToolkitPanel({
         <details className="calculator-toolkit-more">
           <summary>
             View all {listedCount} calculators
-            <ChevronDown size={16} />
+            <ChevronDown size={16} strokeWidth={1.5} />
           </summary>
           <div>
             {remainingGroups.map((group) => (
@@ -566,7 +566,7 @@ function CalculatorSearchCard({
       <small>{calculator.description}</small>
       <em>
         Open calculator
-        <ArrowRight size={14} />
+        <ArrowRight size={16} strokeWidth={1.5} />
       </em>
     </a>
   );
@@ -836,7 +836,7 @@ function CalculatorDetail({
           href="/calculators"
           onClick={(event) => navigateInternalLink(event, '/calculators', onNavigate)}
         >
-          <ArrowRight size={15} />
+          <ArrowRight size={16} strokeWidth={1.5} />
           Explore the {toolkit.title} toolkit
         </a>
       </div>
@@ -865,7 +865,7 @@ function CalculatorDetail({
           </div>
           {optionalGroups.map((group) => (
             <details className="calculator-options-shell" id={group.id} key={group.id}>
-              <summary><span><strong>{group.label}</strong><small>{group.summary}</small></span><ChevronDown size={17} /></summary>
+              <summary><span><strong>{group.label}</strong><small>{group.summary}</small></span><ChevronDown size={18} strokeWidth={1.5} /></summary>
               <div className="calculator-input-grid calculator-options-grid">{group.inputs.map(renderInput)}</div>
             </details>
           ))}
@@ -927,7 +927,7 @@ function CalculatorDetail({
                         }))
                       }
                     >
-                      <CircleHelp size={14} />
+                      <CircleHelp size={16} strokeWidth={1.5} />
                     </button>
                   </span>
                   <strong>{formatMetric(metric, calculator)}</strong>
@@ -955,7 +955,7 @@ function CalculatorDetail({
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} disabled={!canUseResult} />
           {!result.modelVersion ? <p className="calculator-result-narrative">{result.narrative}</p> : null}
           <div className="calculator-conversion-panel">
-            <span className="feature-icon"><ConversionIcon size={18} /></span>
+            <span className="feature-icon"><ConversionIcon size={18} strokeWidth={1.5} /></span>
             <div>
               <strong>{calculator.conversionLabel}</strong>
               <small>Use this estimate as the first step, then track progress inside FinPath.</small>
@@ -963,7 +963,7 @@ function CalculatorDetail({
             {auth.status === 'signed-in' ? (
               <button className="primary-button icon-text-button" disabled={isSaving || !canUseResult} type="button" onClick={saveResult}>
                 {isSaving ? 'Saving' : 'Save result'}
-                <ArrowRight size={16} />
+                <ArrowRight size={16} strokeWidth={1.5} />
               </button>
             ) : auth.status === 'not-configured' ? (
               <button className="primary-button icon-text-button" disabled={!canUseResult} type="button" onClick={() => {
@@ -972,13 +972,13 @@ function CalculatorDetail({
                 onNavigate(calculator.conversionRoute);
               }}>
                 Continue
-                <ArrowRight size={16} />
+                <ArrowRight size={16} strokeWidth={1.5} />
               </button>
             ) : (
               <SignUpIntent mode="modal">
                 <button className="primary-button icon-text-button" disabled={!canUseResult} type="button" onClick={persistSignedOutDraft}>
                   Create account to save
-                  <ArrowRight size={16} />
+                  <ArrowRight size={16} strokeWidth={1.5} />
                 </button>
               </SignUpIntent>
             )}
@@ -1101,12 +1101,12 @@ function CalculatorSchedulePanel({
   return (
     <details className="calculator-breakdown-shell">
       <summary className="calculator-breakdown-summary">
-        <span className="feature-icon"><Table2 size={17} /></span>
+        <span className="feature-icon"><Table2 size={18} strokeWidth={1.5} /></span>
         <span>
           <strong>{schedule.title}</strong>
           <small>{schedule.description}</small>
         </span>
-        <ChevronDown size={17} />
+        <ChevronDown size={18} strokeWidth={1.5} />
       </summary>
       <div className="calculator-breakdown-body">
         <div className="calculator-breakdown-toolbar">
@@ -1129,7 +1129,7 @@ function CalculatorSchedulePanel({
               type="button"
               onClick={() => downloadScheduleCsv(calculator, schedule)}
             >
-              <Download size={16} />
+              <Download size={16} strokeWidth={1.5} />
               CSV
             </button>
           </div>
@@ -1374,12 +1374,12 @@ function CalculatorEngagementPanel({
   return (
     <details className="calculator-engagement-shell">
       <summary className="calculator-engagement-summary">
-        <span className="feature-icon"><Columns3 size={17} /></span>
+        <span className="feature-icon"><Columns3 size={18} strokeWidth={1.5} /></span>
         <span>
           <strong>Compare, revisit, and share</strong>
           <small>Open the decision drawer for scenario deltas, outcome drivers, saved runs, and portable summaries</small>
         </span>
-        <ChevronDown size={17} />
+        <ChevronDown size={18} strokeWidth={1.5} />
       </summary>
 
       <div className="calculator-engagement-body">
@@ -1390,11 +1390,11 @@ function CalculatorEngagementPanel({
           </div>
           <div className="calculator-engagement-actions">
             <button className="secondary-button icon-text-button" type="button" disabled={disabled} onClick={onCopyShareLink}>
-              <Copy size={15} />
+              <Copy size={16} strokeWidth={1.5} />
               Copy link
             </button>
             <button className="secondary-button icon-text-button" type="button" disabled={disabled} onClick={onExportSummary}>
-              <Download size={15} />
+              <Download size={16} strokeWidth={1.5} />
               Summary CSV
             </button>
           </div>
@@ -1402,7 +1402,7 @@ function CalculatorEngagementPanel({
 
         <section className="calculator-comparison-section" aria-labelledby="calculator-scenario-comparison-title">
           <div className="calculator-engagement-heading">
-            <span className="feature-icon"><Columns3 size={16} /></span>
+            <span className="feature-icon"><Columns3 size={16} strokeWidth={1.5} /></span>
             <div>
               <strong id="calculator-scenario-comparison-title">Scenario comparison</strong>
               <small>Each column changes a bounded set of inputs while preserving the values entered above</small>
@@ -1423,7 +1423,7 @@ function CalculatorEngagementPanel({
 
         <section className="calculator-driver-section" aria-labelledby="calculator-driver-title">
           <div className="calculator-engagement-heading">
-            <span className="feature-icon"><Gauge size={16} /></span>
+            <span className="feature-icon"><Gauge size={16} strokeWidth={1.5} /></span>
             <div>
               <strong id="calculator-driver-title">What changed the outcome most</strong>
               <small>One input moves at a time inside a 10% test range; this is sensitivity evidence, not a forecast</small>
@@ -1452,7 +1452,7 @@ function CalculatorEngagementPanel({
 
         <section className="calculator-history-section" aria-labelledby="calculator-history-title">
           <div className="calculator-engagement-heading">
-            <span className="feature-icon"><History size={16} /></span>
+            <span className="feature-icon"><History size={16} strokeWidth={1.5} /></span>
             <div>
               <strong id="calculator-history-title">Recent saved runs</strong>
               <small>Select a saved result to compare it with the current output; loading its inputs is a separate action</small>
@@ -1695,7 +1695,7 @@ function CalculatorExamplePanel({
       <div className="calculator-example-actions">
         <small>{example.insight}</small>
         <button className="secondary-button icon-text-button" type="button" onClick={() => onLoadExample(example.values)}>
-          <Calculator size={16} />
+          <Calculator size={16} strokeWidth={1.5} />
           Load example
         </button>
       </div>
@@ -1751,7 +1751,7 @@ function CalculatorRelatedPanel({
           >
             <span>{related.title}</span>
             <small>{related.reason}</small>
-            <ArrowRight size={15} />
+            <ArrowRight size={16} strokeWidth={1.5} />
           </a>
         ))}
       </div>

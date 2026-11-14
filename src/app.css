@@ -1,8 +1,9 @@
 /* Accessibility's important rules intentionally come first: important layer
-   precedence reverses. Normal studio and shell rules outrank the preserved legacy stack. */
-@layer accessibility, legacy, tokens, home, studios, shell;
+   precedence reverses. Normal studio, workspace and shell rules outrank the preserved legacy stack. */
+@layer accessibility, legacy, tokens, home, studios, workspace, shell;
 @import './styles.css';
 @import './vivid-theme.css';
 @import './studios.css';
+@import './workspace.css';
 @import './shell.css';
 @import './home.css';

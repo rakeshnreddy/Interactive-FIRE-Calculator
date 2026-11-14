@@ -25,7 +25,7 @@ export function AnalyticsConsentPanel({
           </p>
         </div>
         <span className="feature-icon">
-          <BarChart3 size={20} aria-hidden="true" />
+          <BarChart3 size={18} aria-hidden="true" strokeWidth={1.5} />
         </span>
       </div>
       <label className="analytics-toggle">

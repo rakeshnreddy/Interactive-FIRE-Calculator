@@ -37,7 +37,7 @@ describe('B74 / C36 — Unslop Stage A: Calculator library & shared studio templ
 
   it('registers @layer studios in src/app.css and imports ./studios.css', () => {
     const appCss = readFileSync(appCssPath, 'utf8');
-    expect(appCss).toMatch(/@layer\s+accessibility,\s*legacy,\s*tokens,\s*home,\s*studios,\s*shell;/);
+    expect(appCss).toMatch(/@layer\s+accessibility,\s*legacy,\s*tokens,\s*home,\s*studios(?:,\s*workspace)?,\s*shell;/);
     expect(appCss).toContain("@import './studios.css';");
     expect(existsSync(studiosCssPath)).toBe(true);
   });

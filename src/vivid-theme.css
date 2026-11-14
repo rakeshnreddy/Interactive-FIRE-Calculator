@@ -50,21 +50,10 @@
   --text-gradient: none;
   --shadow-overlay: 0 18px 44px rgba(28, 54, 92, 0.14);
   --shadow-rest: 0 1px 2px rgba(28, 54, 92, 0.08);
-  --glass: rgba(255, 255, 255, 0.72);
-  --glass-edge: rgba(255, 255, 255, 0.92);
-  --glass-panel: rgba(255, 255, 255, 0.66);
-  --glass-panel-strong: rgba(255, 255, 255, 0.82);
-  --glass-highlight: rgba(255, 255, 255, 0.85);
-  --glass-shadow: 0 10px 30px rgba(28, 54, 92, 0.1), 0 1px 2px rgba(28, 54, 92, 0.06);
-  --glass-blur: 18px;
   --app-atmosphere: none;
-  --atmosphere: none;
-  --action-gradient: none;
-  --action-gradient-hover: none;
-  --action-gradient-pressed: none;
   --hero-media-opacity: 0.12;
   --hero-media-filter: saturate(0.85) contrast(0.95);
-  --hero-scrim: linear-gradient(90deg, rgba(238, 243, 250, 0.98) 0%, rgba(238, 243, 250, 0.88) 45%, rgba(232, 239, 255, 0.45) 75%, rgba(240, 234, 255, 0.12) 100%);
+  --hero-scrim: none;
   --hero-eyebrow: var(--color-primary-bg);
   --hero-heading: var(--color-heading);
   --hero-body: var(--color-muted);
@@ -166,21 +155,10 @@
   --text-gradient: none;
   --shadow-overlay: 0 18px 44px rgba(0, 0, 0, 0.32);
   --shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --glass: rgba(15, 26, 41, 0.72);
-  --glass-edge: rgba(255, 255, 255, 0.12);
-  --glass-panel: rgba(15, 26, 41, 0.6);
-  --glass-panel-strong: rgba(15, 26, 41, 0.78);
-  --glass-highlight: rgba(255, 255, 255, 0.09);
-  --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.32), 0 1px 2px rgba(0, 0, 0, 0.3);
-  --glass-blur: 20px;
   --app-atmosphere: none;
-  --atmosphere: none;
-  --action-gradient: none;
-  --action-gradient-hover: none;
-  --action-gradient-pressed: none;
   --hero-media-opacity: 0.85;
   --hero-media-filter: saturate(0.95) contrast(1.05);
-  --hero-scrim: linear-gradient(90deg, rgba(7, 13, 22, 0.97) 0%, rgba(7, 13, 22, 0.88) 45%, rgba(18, 33, 63, 0.4) 75%, rgba(37, 28, 68, 0.12) 100%);
+  --hero-scrim: none;
   --hero-eyebrow: var(--color-primary-bg);
   --hero-heading: var(--color-heading);
   --hero-body: var(--color-muted);
@@ -312,7 +290,6 @@
   border-color: var(--color-primary-bg);
   color: var(--color-primary-fg);
   background: var(--color-primary-bg);
-  background-image: var(--action-gradient);
   box-shadow: var(--shadow-rest);
 }
 
@@ -320,7 +297,6 @@
   border-color: var(--color-primary-hover-bg);
   color: var(--color-primary-fg);
   background: var(--color-primary-hover-bg);
-  background-image: var(--action-gradient-hover);
   box-shadow: var(--shadow-rest);
   filter: none;
 }
@@ -330,7 +306,6 @@
   border-color: var(--color-primary-pressed-bg);
   color: var(--color-primary-fg);
   background: var(--color-primary-pressed-bg);
-  background-image: var(--action-gradient-pressed);
 }
 
 .app .primary-button:disabled,
@@ -468,7 +443,7 @@ body,
 .starting-paths-header h2 {
   margin: 0.25rem 0 0.35rem;
   font-size: 1.75rem;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--color-heading);
 }
 
@@ -493,14 +468,13 @@ body,
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card, 0.75rem);
   text-decoration: none;
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 160ms cubic-bezier(0.22, 1, 0.36, 1), background-color 160ms cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: var(--shadow-rest);
 }
 
 .starting-path-card:hover {
   border-color: var(--color-primary-bg);
-  box-shadow: var(--shadow-overlay);
-  transform: translateY(-2px);
+  background: var(--color-surface-inset);
 }
 
 .starting-path-head {
@@ -516,13 +490,13 @@ body,
   color: var(--color-primary-ink);
   background: var(--accent-soft);
   padding: 0.15rem 0.5rem;
-  border-radius: 999px;
+  border-radius: 4px;
   border: 1px solid var(--color-border);
 }
 
 .starting-path-head svg {
   color: var(--color-muted);
-  transition: transform 0.15s ease, color 0.15s ease;
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1), color 160ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .starting-path-card:hover .starting-path-head svg {
@@ -538,7 +512,7 @@ body,
 
 .starting-path-title {
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-heading);
   line-height: 1.3;
 }
@@ -904,16 +878,16 @@ body {
   min-height: 2.25rem;
   padding: 0 0.85rem;
   border: 1px solid var(--color-control-border);
-  border-radius: 999px;
-  background: var(--glass-panel-strong);
+  border-radius: 6px;
+  background: var(--color-surface);
   color: var(--color-heading);
   font-size: 0.86rem;
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .app .calculator-region-filter button.active {
-  border-color: transparent;
-  background: var(--action-gradient);
+  border-color: var(--color-primary-bg);
+  background: var(--color-primary-bg);
   color: var(--color-primary-fg);
 }
 
@@ -921,12 +895,12 @@ body {
   display: inline-block;
   margin-left: 0.5rem;
   padding: 0.1rem 0.5rem;
-  border-radius: 999px;
+  border-radius: 4px;
   border: 1px solid var(--color-border);
   background: var(--color-surface-inset);
   color: var(--color-muted-strong);
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0;
   vertical-align: middle;
   -webkit-text-fill-color: var(--color-muted-strong);
@@ -945,10 +919,10 @@ body {
 .calculator-variants a {
   padding: 0.25rem 0.7rem;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--glass-panel-strong);
+  border-radius: 6px;
+  background: var(--color-surface);
   color: var(--color-heading);
-  font-weight: 650;
+  font-weight: 500;
   text-decoration: none;
 }
 
@@ -967,7 +941,7 @@ body {
 .calculator-toolkit-row-lead {
   color: var(--color-muted);
   font-size: 0.86rem;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .calculator-toolkit-presets {
@@ -979,9 +953,9 @@ body {
 .calculator-toolkit-more .calculator-toolkit-presets a {
   padding: 0.15rem 0.6rem;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: 6px;
   font-size: 0.8rem;
-  font-weight: 650;
+  font-weight: 500;
 }
 
 /* Estimate provenance stays beside the answer; text carries the status as well
@@ -1088,10 +1062,10 @@ body {
 .calculator-mode-actions,.dated-result-actions { display:flex; flex-wrap:wrap; gap:8px; }
 .calculator-mode-actions button,.dated-result-actions button { min-height:44px; }
 .dated-currency { display:grid; gap:4px; margin-block:12px; max-width:200px; font-weight:600; }
-.dated-currency select,.dated-flow-row input { width:100%; min-width:0; min-height:44px; padding:10px; border:1px solid var(--color-control-border); border-radius:8px; background:var(--color-field-surface); color:var(--color-body); }
+.dated-currency select,.dated-flow-row input { width:100%; min-width:0; min-height:44px; padding:8px 12px; border:1px solid var(--color-control-border); border-radius:8px; background:var(--color-field-surface); color:var(--color-body); }
 .dated-flow-list { display:grid; gap:12px; margin-block:12px; }
 .dated-flow-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; align-items:end; gap:12px; min-width:0; margin:0; padding:12px; border:1px solid var(--color-border); border-radius:12px; background:var(--color-surface-inset); }
-.dated-flow-row legend { padding-inline:4px; font-size:.875rem; font-weight:700; color:var(--color-muted); }
+.dated-flow-row legend { padding-inline:4px; font-size:.875rem; font-weight:600; color:var(--color-muted); }
 .dated-flow-row label { display:grid; gap:4px; min-width:0; font-weight:600; }
 .dated-flow-row input[aria-invalid=true] { border-color:var(--color-danger); }
 .dated-flow-visual { margin:16px 0; }
@@ -1120,26 +1094,26 @@ body {
 
 /* Vehicle decisions: three short input groups; total costs and equity have distinct scales. */
 .vehicle-group { min-width:0; padding:12px 0; margin:0; border:0; border-top:1px solid var(--color-border); }
-.vehicle-group legend { font-weight:700; padding:8px 0; color:var(--color-heading); }
+.vehicle-group legend { font-weight:600; padding:8px 0; color:var(--color-heading); }
 .vehicle-group p,.vehicle-continuation p { font-size:.875rem; line-height:1.5; margin:8px 0; color:var(--color-muted); }
-.vehicle-field { display:grid; align-content:start; gap:6px; min-width:0; font-size:.875rem; }
+.vehicle-field { display:grid; align-content:start; gap:8px; min-width:0; font-size:.875rem; }
 .vehicle-field > span { font-weight:600; }
-.vehicle-field input { width:100%; min-width:0; min-height:44px; padding:10px 12px; border:1px solid var(--color-control-border); border-radius:var(--radius-control); background:var(--color-surface); color:var(--color-heading); font-size:1rem; }
+.vehicle-field input { width:100%; min-width:0; min-height:44px; padding:8px 12px; border:1px solid var(--color-control-border); border-radius:var(--radius-control); background:var(--color-surface); color:var(--color-heading); font-size:1rem; }
 .vehicle-field input:focus-visible { outline:3px solid var(--color-focus); outline-offset:2px; }
 .vehicle-field small { line-height:1.5; color:var(--color-muted); }
 .vehicle-continuation { margin-block:12px; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-control); background:var(--color-surface); }
-.vehicle-continuation > label { display:flex; align-items:center; gap:10px; min-height:44px; font-weight:600; font-size:.875rem; }
+.vehicle-continuation > label { display:flex; align-items:center; gap:8px; min-height:44px; font-weight:600; font-size:.875rem; }
 .vehicle-continuation input[type=checkbox] { width:20px; height:20px; flex:none; accent-color:var(--color-data-1); }
 .vehicle-cost-visual,.vehicle-equity-visual { margin:16px 0; padding:12px; border:1px solid var(--color-border); border-radius:var(--radius-control); }
 .vehicle-cost-visual figcaption,.vehicle-equity-visual figcaption { display:grid; gap:4px; font-size:.875rem; line-height:1.5; }
 .vehicle-cost-visual figcaption span,.vehicle-equity-visual figcaption span { color:var(--color-muted); }
 .vehicle-cost-row { margin-top:12px; font-size:.875rem; }
-.vehicle-cost-track { position:relative; height:22px; margin-top:6px; background:var(--color-surface); }
+.vehicle-cost-track { position:relative; height:24px; margin-top:8px; background:var(--color-surface); }
 .vehicle-cost-track b { position:absolute; height:100%; min-width:0; border:1px solid currentColor; }
 .vehicle-buy-bar { background:var(--color-data-1); }
 .vehicle-lease-bar { background:var(--color-muted); }
 .vehicle-zero { position:absolute; top:-2px; bottom:-2px; width:1px; background:var(--color-heading); z-index:1; }
-.vehicle-equity-track { display:flex; height:22px; margin-top:12px; background:var(--color-surface); }
+.vehicle-equity-track { display:flex; height:24px; margin-top:12px; background:var(--color-surface); }
 .vehicle-equity-track span { min-width:0; border:1px solid currentColor; }
 .vehicle-equity-covered { background:var(--color-muted); }
 .vehicle-equity-left { background:var(--color-data-1); }
