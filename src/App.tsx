@@ -547,7 +547,7 @@ export const platformPages: Record<
 > = {
   '/dashboard': {
     eyebrow: 'Dashboard',
-    title: 'Your financial snapshot starts here.',
+    title: 'Your financial snapshot starts here',
     description:
       'Net worth, account balances, and funded goals roll up from your saved tracker data.',
     icon: LayoutDashboard,
@@ -559,7 +559,7 @@ export const platformPages: Record<
   },
   '/accounts': {
     eyebrow: 'Accounts',
-    title: 'Keep every balance in view.',
+    title: 'Keep every balance in view',
     description:
       'Add accounts by hand or review a balance CSV before updating net worth and account history.',
     icon: CircleDollarSign,
@@ -571,7 +571,7 @@ export const platformPages: Record<
   },
   '/transactions': {
     eyebrow: 'Transactions',
-    title: 'Manual ledger for cash flow.',
+    title: 'Manual ledger for cash flow',
     description:
       'Add income, expenses, transfers, and adjustments without linking them to balance imports yet.',
     icon: ClipboardList,
@@ -583,7 +583,7 @@ export const platformPages: Record<
   },
   '/goals': {
     eyebrow: 'Goals',
-    title: 'Fund the milestones that matter next.',
+    title: 'Fund the milestones that matter next',
     description:
       'Create dated targets, update funded amounts, and keep overdue or paused goals visible.',
     icon: Target,
@@ -595,7 +595,7 @@ export const platformPages: Record<
   },
   '/plans': {
     eyebrow: 'Plans',
-    title: 'Saved planning versions will collect here.',
+    title: 'Saved planning versions will collect here',
     description:
       'This route separates durable financial plans from one-time calculator runs and local demo drafts.',
     icon: FolderKanban,
@@ -607,7 +607,7 @@ export const platformPages: Record<
   },
   '/reports': {
     eyebrow: 'Reports',
-    title: 'Insights with the evidence attached.',
+    title: 'Insights with the evidence attached',
     description:
       'Prioritized recommendations stay rule-based, traceable, and clear about uncertainty.',
     icon: BarChart3,
@@ -619,7 +619,7 @@ export const platformPages: Record<
   },
   '/settings': {
     eyebrow: 'Settings',
-    title: 'Profile and privacy controls.',
+    title: 'Profile and privacy controls',
     description:
       'Manage household planning defaults, download saved data, and delete your saved records when needed.',
     icon: Settings,
@@ -640,7 +640,7 @@ export function SignedInProfileBand({ auth }: { auth: Extract<AuthState, { statu
   return (
     <section className="profile-band" aria-label="Signed-in profile">
       <span className="feature-icon">
-        <UserCircle size={20} />
+        <UserCircle size={18} strokeWidth={1.5} />
       </span>
       <div>
         <span>Signed in as</span>
@@ -680,7 +680,7 @@ export function AuthGate({
     <section className="route-shell auth-gate" aria-labelledby={`${route.slice(1)}-auth-title`}>
       <div className="auth-gate-panel">
         <span className="feature-icon">
-          {auth.status === 'not-configured' ? <LockKeyhole size={20} /> : <Icon size={20} />}
+          {auth.status === 'not-configured' ? <LockKeyhole size={18} strokeWidth={1.5} /> : <Icon size={18} strokeWidth={1.5} />}
         </span>
         <div className="route-heading">
           <p className="eyebrow">{page.eyebrow}</p>
@@ -692,11 +692,11 @@ export function AuthGate({
           {auth.status === 'loading' ? (
             <>
               <button className="primary-button icon-text-button" disabled>
-                <LogIn size={17} />
+                <LogIn size={18} strokeWidth={1.5} />
                 Checking session
               </button>
               <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
-                <Calculator size={16} />
+                <Calculator size={16} strokeWidth={1.5} />
                 Browse calculators
               </button>
             </>
@@ -708,7 +708,7 @@ export function AuthGate({
                 className="primary-button icon-text-button"
                 onUnavailable={() => onNavigate(route)}
               >
-                <LogIn size={17} />
+                <LogIn size={18} strokeWidth={1.5} />
                 Sign in
               </AuthActionButton>
               <AuthActionButton
@@ -718,21 +718,21 @@ export function AuthGate({
                 onUnavailable={() => onNavigate(route)}
               >
                 Create account
-                <ArrowRight size={17} />
+                <ArrowRight size={18} strokeWidth={1.5} />
               </AuthActionButton>
               <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
-                <Calculator size={16} />
+                <Calculator size={16} strokeWidth={1.5} />
                 Browse calculators
               </button>
             </>
           ) : (
             <>
               <button className="primary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
-                <Calculator size={16} />
+                <Calculator size={16} strokeWidth={1.5} />
                 Explore public calculators
               </button>
               <button className="secondary-button icon-text-button" disabled aria-disabled="true">
-                <LockKeyhole size={17} />
+                <LockKeyhole size={18} strokeWidth={1.5} />
                 Account features unavailable
               </button>
             </>
@@ -798,7 +798,7 @@ function DesktopNavigation({
             aria-current={isActive ? 'page' : undefined}
             onClick={(event) => handleNavigationAnchorClick(event, item.path, onNavigate)}
           >
-            <Icon size={17} />
+            <Icon size={18} strokeWidth={1.5} />
             {item.label}
           </a>
         );
@@ -814,9 +814,9 @@ function DesktopNavigation({
           aria-expanded={isWorkspaceOpen}
           onClick={() => setIsWorkspaceOpen((open) => !open)}
         >
-          <FolderKanban size={17} />
+          <FolderKanban size={18} strokeWidth={1.5} />
           Workspace
-          <ChevronDown className={isWorkspaceOpen ? 'nav-chevron open' : 'nav-chevron'} size={15} />
+          <ChevronDown className={isWorkspaceOpen ? 'nav-chevron open' : 'nav-chevron'} size={16} strokeWidth={1.5} />
         </button>
         {isWorkspaceOpen && (
           <div className="desktop-nav-dropdown" id="desktop-workspace-navigation">
@@ -833,7 +833,7 @@ function DesktopNavigation({
                     handleNavigationAnchorClick(event, item.path, onNavigate, () => setIsWorkspaceOpen(false))
                   }
                 >
-                  <Icon size={17} />
+                  <Icon size={18} strokeWidth={1.5} />
                   <span>
                     <strong>{item.label}</strong>
                     <small>{item.path === '/accounts' ? 'Balances and net worth' : item.path === '/plans' ? 'Saved scenarios' : item.path === '/reports' ? 'Progress and insights' : 'Profile and preferences'}</small>
@@ -858,7 +858,7 @@ function SiteFooter({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
       <div className="site-footer-inner">
         <div className="site-footer-intro">
           <a className="site-footer-brand" href="/" onClick={link('/')} aria-label="FinPath home">
-            <PiggyBank size={28} /><strong>FinPath</strong>
+            <PiggyBank size={28} strokeWidth={1.5} /><strong>FinPath</strong>
           </a>
           <p>A clearer view of your money. Free financial calculators for the US and India.</p>
         </div>
@@ -901,7 +901,7 @@ function TopbarAuthActions({
         </div>
         <SignOutControl redirectUrl="/">
           <button className="secondary-button topbar-link icon-text-button">
-            <LogOut size={16} />
+            <LogOut size={16} strokeWidth={1.5} />
             Sign out
           </button>
         </SignOutControl>
@@ -922,7 +922,7 @@ function TopbarAuthActions({
           className="secondary-button topbar-link icon-text-button"
           onUnavailable={() => onNavigate('/dashboard')}
         >
-          <LogIn size={16} />
+          <LogIn size={16} strokeWidth={1.5} />
           Sign in
         </AuthActionButton>
       )}
@@ -3108,7 +3108,7 @@ function App({ auth }: { auth: AuthState }) {
           aria-label="FinPath home"
           onClick={(event) => handleNavigationAnchorClick(event, '/', navigateTo)}
         >
-          <PiggyBank size={26} />
+          <PiggyBank size={26} strokeWidth={1.5} />
           <span>FinPath</span>
         </a>
 
@@ -3123,7 +3123,7 @@ function App({ auth }: { auth: AuthState }) {
             aria-pressed={mode === 'dark'}
             onClick={() => setMode((current) => (current === 'light' ? 'dark' : 'light'))}
           >
-            {mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            {mode === 'light' ? <Moon size={18} strokeWidth={1.5} /> : <Sun size={18} strokeWidth={1.5} />}
           </button>
           <button
             ref={mobileMenuButtonRef}
@@ -3134,7 +3134,7 @@ function App({ auth }: { auth: AuthState }) {
             aria-label={isMenuOpen ? 'Close navigation' : 'Open navigation'}
             onClick={() => setIsMenuOpen((open) => !open)}
           >
-            {isMenuOpen ? <X size={19} /> : <Menu size={19} />}
+            {isMenuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
           </button>
         </div>
         </div>
@@ -3154,7 +3154,7 @@ function App({ auth }: { auth: AuthState }) {
                   aria-current={isActive ? 'page' : undefined}
                   onClick={(event) => handleNavigationAnchorClick(event, item.path, navigateTo)}
                 >
-                  <Icon size={17} />
+                  <Icon size={18} strokeWidth={1.5} />
                   {item.label}
                 </a>
               );
@@ -3162,9 +3162,9 @@ function App({ auth }: { auth: AuthState }) {
           {(auth.status === 'signed-in' || auth.status === 'loading') && (
           <details className="mobile-nav-group">
             <summary>
-              <FolderKanban size={17} />
+              <FolderKanban size={18} strokeWidth={1.5} />
               Workspace
-              <ChevronDown size={16} />
+              <ChevronDown size={16} strokeWidth={1.5} />
             </summary>
             <div>
               {workspaceNavigation.map((item) => {
@@ -3178,7 +3178,7 @@ function App({ auth }: { auth: AuthState }) {
                     aria-current={isActive ? 'page' : undefined}
                     onClick={(event) => handleNavigationAnchorClick(event, item.path, navigateTo)}
                   >
-                    <Icon size={17} />
+                    <Icon size={18} strokeWidth={1.5} />
                     {item.label}
                   </a>
                 );
@@ -3190,14 +3190,14 @@ function App({ auth }: { auth: AuthState }) {
             <>
               <SignOutControl redirectUrl="/">
                 <button className="nav-button mobile-cta">
-                  <LogOut size={17} />
+                  <LogOut size={18} strokeWidth={1.5} />
                   Sign out
                 </button>
               </SignOutControl>
             </>
           ) : auth.status === 'loading' ? (
             <button className="nav-button mobile-cta" disabled>
-              <LogIn size={17} />
+              <LogIn size={18} strokeWidth={1.5} />
               Checking session
             </button>
           ) : (
@@ -3208,7 +3208,7 @@ function App({ auth }: { auth: AuthState }) {
                 className="nav-button mobile-cta"
                 onUnavailable={() => navigateTo('/dashboard')}
               >
-                <LogIn size={17} />
+                <LogIn size={18} strokeWidth={1.5} />
                 Sign in
               </AuthActionButton>
               <AuthActionButton
@@ -3217,7 +3217,7 @@ function App({ auth }: { auth: AuthState }) {
                 className="nav-button mobile-cta"
                 onUnavailable={() => navigateTo('/dashboard')}
               >
-                <UserCircle size={17} />
+                <UserCircle size={18} strokeWidth={1.5} />
                 Create account
               </AuthActionButton>
             </>
@@ -3255,7 +3255,7 @@ function App({ auth }: { auth: AuthState }) {
               <section className="route-shell" aria-labelledby="plans-title">
                 <div className="route-heading">
                   <p className="eyebrow">Planning workspace</p>
-                  <h1 id="plans-title">Build a plan you can revisit.</h1>
+                  <h1 id="plans-title">Build a plan you can revisit</h1>
                   <p>Import selected account facts, preserve assumptions as immutable versions, and compare how the plan changes over time.</p>
                 </div>
                 <SignedInProfileBand auth={auth} />
@@ -3397,7 +3397,7 @@ function App({ auth }: { auth: AuthState }) {
           <>
         <nav className="breadcrumbs" aria-label="Breadcrumb">
           <button onClick={() => navigateTo('/calculators')}>Calculators</button>
-          <ChevronRight size={15} />
+          <ChevronRight size={16} strokeWidth={1.5} />
           <button onClick={() => navigateTo('/calculators/fire')}>FIRE Calculator</button>
         </nav>
 
@@ -3415,7 +3415,7 @@ function App({ auth }: { auth: AuthState }) {
         {activeSavedPlan ? (
           <aside className="plan-context-bar" data-testid="calculator-plan-context" role="region" aria-label="Loaded plan context">
             <div className="plan-context-info">
-              <FolderKanban size={18} aria-hidden="true" />
+              <FolderKanban size={18} aria-hidden="true" strokeWidth={1.5} />
               <span>Editing assumptions for plan: <strong>{activeSavedPlan.name}</strong> (Version {activeSavedPlan.versionNumber})</span>
             </div>
             <div className="plan-context-actions">
@@ -3425,7 +3425,7 @@ function App({ auth }: { auth: AuthState }) {
                 onClick={() => navigateTo('/plans')}
               >
                 Back to Planning Workspace
-                <ArrowRight size={16} />
+                <ArrowRight size={16} strokeWidth={1.5} />
               </button>
             </div>
           </aside>
@@ -3468,7 +3468,7 @@ function App({ auth }: { auth: AuthState }) {
             </div>
 
             <div className="full-field example-values-note" role="note">
-              <Info size={16} aria-hidden="true" />
+              <Info size={16} aria-hidden="true" strokeWidth={1.5} />
               <span>
                 {calculatorMode === 'fire-number' ? (
                   <>
@@ -3611,7 +3611,7 @@ function App({ auth }: { auth: AuthState }) {
               />
             </Field>
             <div className="full-field rate-example-note" role="note">
-              <Info size={16} aria-hidden="true" />
+              <Info size={16} aria-hidden="true" strokeWidth={1.5} />
               <span>
                 Not sure? The homepage illustration uses <strong>{EXAMPLE_RATE_ENTRY.r}% return</strong> and{' '}
                 <strong>{EXAMPLE_RATE_ENTRY.i}% inflation</strong>. These are illustrative assumptions, not forecasts or historical averages.
@@ -3681,7 +3681,7 @@ function App({ auth }: { auth: AuthState }) {
                 <strong>Optional refinements</strong>
                 <small>{advancedSummaryDescription}</small>
               </span>
-              <SlidersHorizontal size={18} />
+              <SlidersHorizontal size={18} strokeWidth={1.5} />
             </summary>
             <div className="planner-grid" id="planner">
               <section className="panel" aria-labelledby="period-title">
@@ -3698,7 +3698,7 @@ function App({ auth }: { auth: AuthState }) {
 
                 {!fireValidation.ratesMissing && plan.ratePeriods.every((p) => p.r === 0 && p.i === 0) && (
                   <div className="assumption-baseline-note" role="note">
-                    <Info size={16} />
+                    <Info size={16} strokeWidth={1.5} />
                     <span>
                       <strong>No growth or inflation assumed</strong> — 0.0% is a transparent baseline simplification, not an economic forecast. Adjust return and inflation for your expected asset allocation.
                     </span>
@@ -3781,7 +3781,7 @@ function App({ auth }: { auth: AuthState }) {
                         aria-label="Remove period"
                         onClick={() => removePeriod(index)}
                       >
-                        <X size={16} />
+                        <X size={16} strokeWidth={1.5} />
                       </button>
                     </div>
                   ))}
@@ -3908,7 +3908,7 @@ function App({ auth }: { auth: AuthState }) {
                         aria-label="Remove event"
                         onClick={() => removeEvent(index)}
                       >
-                        <X size={16} />
+                        <X size={16} strokeWidth={1.5} />
                       </button>
                     </div>
                   ))}
@@ -4001,7 +4001,7 @@ function App({ auth }: { auth: AuthState }) {
                         aria-label="Remove income stream"
                         onClick={() => removeRecurringCashFlow(index)}
                       >
-                        <X size={16} />
+                        <X size={16} strokeWidth={1.5} />
                       </button>
                     </div>
                   ))}
@@ -4094,7 +4094,7 @@ function App({ auth }: { auth: AuthState }) {
                         aria-label="Remove expense phase"
                         onClick={() => removeRecurringCashFlow(index)}
                       >
-                        <X size={16} />
+                        <X size={16} strokeWidth={1.5} />
                       </button>
                     </div>
                   ))}
@@ -4112,7 +4112,7 @@ function App({ auth }: { auth: AuthState }) {
               aria-disabled={fireValidation.ok ? undefined : true}
               aria-describedby={fireValidation.ok ? undefined : 'fire-calc-blocker'}
             >
-              {isStale ? <RotateCcw size={17} /> : <Calculator size={17} />}
+              {isStale ? <RotateCcw size={18} strokeWidth={1.5} /> : <Calculator size={18} strokeWidth={1.5} />}
               {isStale ? 'Recalculate' : 'Calculate'}
             </button>
             <p className="visually-hidden" role="status" aria-live="polite" aria-atomic="true" data-testid="fire-result-announcement">
@@ -4131,7 +4131,7 @@ function App({ auth }: { auth: AuthState }) {
             <div ref={resultRef} tabIndex={-1} role="region" aria-label="FIRE calculation result" className={`calculator-result-card hero-result ${isStale ? 'is-stale' : ''}`}>
               {isStale && (
                 <div className="stale-result-badge" role="status" aria-live="polite">
-                  <RotateCcw size={14} aria-hidden="true" />
+                  <RotateCcw size={16} aria-hidden="true" strokeWidth={1.5} />
                   <span>Inputs changed since this result. Select Recalculate to update it.</span>
                 </div>
               )}
@@ -4178,21 +4178,21 @@ function App({ auth }: { auth: AuthState }) {
                     className={`scenario-card warning-card warning-${warning.severity}`}
                     key={`${warning.title}-${index}`}
                   >
-                    <span>{warning.severity.toUpperCase()}</span>
+                    <span>{`${warning.severity.charAt(0).toUpperCase()}${warning.severity.slice(1)}`}</span>
                     <strong>{warning.title}</strong>
                     <small>{warning.message}</small>
                   </article>
                 ))
               ) : (
                 <article className="scenario-card warning-card warning-ok">
-                  <span>OK</span>
+                  <span>Passed</span>
                   <strong>Model checks passed</strong>
                   <small>No validation or depletion warnings.</small>
                 </article>
               )}
               {warningNotices.length > 3 && (
                 <article className="scenario-card warning-card warning-info">
-                  <span>MORE</span>
+                  <span>More</span>
                   <strong>{warningNotices.length - 3} additional checks</strong>
                   <small>Open Results or Compare to inspect the model in more detail.</small>
                 </article>
@@ -4220,7 +4220,7 @@ function App({ auth }: { auth: AuthState }) {
                     role="tab"
                     aria-selected={calculatorPanel === item.id}
                   >
-                    <Icon size={16} />
+                    <Icon size={16} strokeWidth={1.5} />
                     {item.label}
                   </button>
                 );
@@ -4388,13 +4388,13 @@ function App({ auth }: { auth: AuthState }) {
               <h2 id="saved-title">Save and move plans</h2>
             </div>
             <button className="secondary-button icon-text-button" onClick={resetToFreshPlan}>
-              <RotateCcw size={16} />
+              <RotateCcw size={16} strokeWidth={1.5} />
               New plan
             </button>
           </div>
 
               <div className="auth-save-note">
-                <UserCircle size={17} />
+                <UserCircle size={18} strokeWidth={1.5} />
                 <span>
                   {auth.isSignedIn
                     ? `Signed in as ${auth.user.displayName}; FIRE plans save to your account.`
@@ -4416,18 +4416,18 @@ function App({ auth }: { auth: AuthState }) {
                   disabled={isSavingPlan || isLoadingSavedPlans}
                   onClick={saveCurrentPlan}
                 >
-                  <Save size={16} />
+                  <Save size={16} strokeWidth={1.5} />
                   {auth.isSignedIn ? 'Save to account' : 'Save'}
                 </button>
                 <button className="secondary-button icon-text-button" onClick={exportPlanJson}>
-                  <Download size={16} />
+                  <Download size={16} strokeWidth={1.5} />
                   Export JSON
                 </button>
                 <button
                   className="secondary-button icon-text-button"
                   onClick={() => importInputRef.current?.click()}
                 >
-                  <Upload size={16} />
+                  <Upload size={16} strokeWidth={1.5} />
                   Import JSON
                 </button>
                 <input
@@ -4469,7 +4469,7 @@ function App({ auth }: { auth: AuthState }) {
                           aria-label={`Delete ${item.name}`}
                           onClick={() => removeSavedPlan(item.id)}
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={16} strokeWidth={1.5} />
                         </button>
                       </div>
                     </article>

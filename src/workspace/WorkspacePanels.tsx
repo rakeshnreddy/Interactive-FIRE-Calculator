@@ -118,7 +118,7 @@ export function ProfileSettingsPanel({
             </p>
           ) : null}
           <button className="primary-button icon-text-button" disabled={isLoading || isSaving} type="submit">
-            <Save size={16} />
+            <Save size={16} strokeWidth={1.5} />
             Save profile
           </button>
         </div>
@@ -266,7 +266,7 @@ export function DashboardPanel({
           </div>
           <button className="secondary-button icon-text-button" onClick={() => onNavigate('/reports')}>
             Reports
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -319,7 +319,7 @@ export function DashboardPanel({
             </div>
             <button className="secondary-button icon-text-button" onClick={() => onNavigate('/plans')}>
               Plans
-              <ChevronRight size={16} />
+              <ChevronRight size={16} strokeWidth={1.5} />
             </button>
           </div>
 
@@ -360,7 +360,7 @@ export function DashboardPanel({
           </div>
           <button className="secondary-button icon-text-button" onClick={() => onNavigate('/calculators')}>
             Calculators
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -440,7 +440,7 @@ export function DashboardPanel({
           </div>
           <button className="secondary-button icon-text-button" onClick={() => onNavigate('/transactions')}>
             Transactions
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -512,7 +512,7 @@ export function DashboardPanel({
           </div>
           <button className="secondary-button icon-text-button" onClick={() => onNavigate('/goals')}>
             Goals
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -565,7 +565,7 @@ export function DashboardPanel({
           </div>
           <button className="secondary-button icon-text-button" onClick={() => onNavigate('/accounts')}>
             Accounts
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -785,7 +785,7 @@ export function TransactionsPanel({
             />
           </Field>
           <button className="primary-button icon-text-button" disabled={isSaving} type="submit">
-            <Save size={16} />
+            <Save size={16} strokeWidth={1.5} />
             Add transaction
           </button>
         </form>
@@ -800,7 +800,7 @@ export function TransactionsPanel({
             <h2>Find transaction rows</h2>
           </div>
           <button className="secondary-button icon-text-button" disabled={!filtersAreActive} onClick={onClearFilters}>
-            <SlidersHorizontal size={16} />
+            <SlidersHorizontal size={16} strokeWidth={1.5} />
             Clear filters
           </button>
         </div>
@@ -989,7 +989,7 @@ export function TransactionsPanel({
                       />
                     </Field>
                     <button className="secondary-button icon-text-button" disabled={isSaving} type="submit">
-                      <Save size={16} />
+                      <Save size={16} strokeWidth={1.5} />
                       Save
                     </button>
                     <button
@@ -1000,7 +1000,7 @@ export function TransactionsPanel({
                       title={`Remove ${transaction.description}`}
                       onClick={() => onArchiveTransaction(transaction.id)}
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={16} strokeWidth={1.5} />
                     </button>
                   </form>
                 </article>
@@ -1136,7 +1136,7 @@ export function GoalsPanel({
             />
           </Field>
           <button className="primary-button icon-text-button" disabled={isSaving} type="submit">
-            <Target size={16} />
+            <Target size={16} strokeWidth={1.5} />
             Add goal
           </button>
         </form>
@@ -1184,7 +1184,7 @@ export function GoalsPanel({
                       <strong>{goal.name}</strong>
                       {linkedPlan ? (
                         <div className="goal-linked-plan">
-                          <FolderKanban size={14} />
+                          <FolderKanban size={16} strokeWidth={1.5} />
                           <span>Linked plan: <strong>{linkedPlan.name}</strong> (v{linkedPlan.versionNumber ?? 1})</span>
                           {onNavigate ? (
                             <button
@@ -1309,7 +1309,7 @@ export function GoalsPanel({
                       </select>
                     </Field>
                     <button className="secondary-button icon-text-button" disabled={isSaving} type="submit">
-                      <Save size={16} />
+                      <Save size={16} strokeWidth={1.5} />
                       Save
                     </button>
                     <button
@@ -1320,7 +1320,7 @@ export function GoalsPanel({
                       title={`Archive ${goal.name}`}
                       onClick={() => onArchiveGoal(goal.id)}
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={16} strokeWidth={1.5} />
                     </button>
                   </form>
                 </article>
@@ -1463,7 +1463,7 @@ export function AccountsPanel({
             />
           </Field>
           <button className="primary-button icon-text-button" disabled={isSaving} type="submit">
-            <Save size={16} />
+            <Save size={16} strokeWidth={1.5} />
             Add account
           </button>
         </form>
@@ -1544,7 +1544,7 @@ export function AccountsPanel({
                       />
                     </Field>
                     <button className="secondary-button icon-text-button" disabled={isSaving} type="submit">
-                      <Save size={16} />
+                      <Save size={16} strokeWidth={1.5} />
                       Record
                     </button>
                     <button
@@ -1554,7 +1554,7 @@ export function AccountsPanel({
                       aria-label={`Archive ${account.name}`}
                       onClick={() => onArchiveAccount(account.id)}
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={16} strokeWidth={1.5} />
                     </button>
                   </form>
 
@@ -1880,7 +1880,7 @@ export function PlatformPage({
 
       <section className="next-module-band" aria-label={`${page.eyebrow} next action`}>
         <span className="feature-icon">
-          <Icon size={20} />
+          <Icon size={18} strokeWidth={1.5} />
         </span>
         <div>
           <strong>
@@ -1916,7 +1916,7 @@ export function PlatformPage({
           onClick={() => onNavigate(route === '/dashboard' ? '/accounts' : route === '/transactions' ? '/accounts' : route === '/goals' ? '/dashboard' : route === '/reports' ? '/plans' : '/calculators')}
         >
           {route === '/dashboard' ? 'Accounts' : route === '/transactions' ? 'Accounts' : route === '/goals' ? 'Dashboard' : route === '/reports' ? 'Plans' : 'Calculators'}
-          <ChevronRight size={16} />
+          <ChevronRight size={16} strokeWidth={1.5} />
         </button>
       </section>
     </section>

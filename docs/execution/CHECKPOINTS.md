@@ -44,6 +44,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C32 | Debt payoff truth and loan reconciliation | B71 | accepted | b39e5ab89a860c20b890ccb38e8a2d4faf875450 | [Approved; shared beta verified](reviews/C32.md) |
 | C33 | Word-bounded scenario perturbations & bidirectional sensitivity drivers | B69 | accepted | cc30c52681a9a1b5ed7d8597de375b483ead098e | [Approved; shared beta verified](reviews/C33.md) |
 | C36 | Unslop Stage A: Calculator library & shared studio template | B74 | accepted | 4bbc07514b6530a22213c3ccd879347f7be24b5a | [Approved; shared beta verified](reviews/C36.md) |
+| C39 | Unslop Stage B: Dedicated calculators, chart chrome, workspace & legacy CSS retirement | B76 | accepted | 9d1266654f84b7d076e828ef1ffb2649d68d2e35 | [Approved; shared beta verified](reviews/C39.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -133,3 +134,11 @@ B74/C36 is now in progress after verified PR #159 merge (`c7c13c30f86d726084d8b4
 ## Unslop Stage A acceptance — 2026-11-10
 
 C36/B74 accepted at `4bbc07514b6530a22213c3ccd879347f7be24b5a`; candidate (`752076af`) and shared beta (`1c7bf155` / `codex-finpath-quality-execut`) verified across 84 public routes and the 6-stage `c36-unslop-studios` smoke runner (72 cases across 10 routes/viewports/themes, 0 errors, 16-table cleanup PASS). 71 of 74 registered tasks done. Final documentation CI, PR #160 merge, and `main` CI are recorded in the PR #160 landing receipt. Next bounded checkpoint to register is B76 / C39 (Unslop Stage B — Dedicated calculators, chart chrome, workspace & legacy CSS retirement).
+
+## Unslop Stage B registration — 2026-11-10
+
+C39 / B76 registered from `main` `c9f714d2274461b75d6cf7c133577ea81bf39162` to complete the `/unslop` overhaul across dedicated calculator routes (`/calculators/fire`, `/calculators/compound-interest`, `/calculators/savings-goal`, `/calculators/budget`, `/calculators/net-worth`, `/calculators/emergency-fund`, `/calculators/xirr`, `/calculators/lease-vs-buy`), shared charts (`src/ProjectionChart.tsx`), signed-in workspace routes (`/dashboard`, `/accounts`, `/transactions`, `/goals`, `/plans`, `/reports`, `/settings`), `@layer workspace` (`src/workspace.css`), and `@layer legacy` slop retirement (`src/styles.css`, `src/vivid-theme.css`). See [prompts/B76.md](prompts/B76.md).
+
+## Unslop Stage B acceptance — 2026-11-14
+
+C39/B76 accepted at `9d1266654f84b7d076e828ef1ffb2649d68d2e35`; candidate (`f7cb0913`) and shared beta (`aa251d67` / `codex-finpath-quality-execut`) verified across 84 public routes and the 7-stage `c39-unslop-stage-b` smoke runner (`72` dedicated cases across `9` routes × `4` widths × `2` themes + `42` workspace cases across `7` routes × `3` widths × `2` themes, `0` errors, 16-table cleanup + Clerk provider deletion `PASS`). 72 of 75 registered tasks done. Final documentation CI, PR #161 merge, and `main` CI complete C39. Next bounded checkpoint to register is **B72 / C34** (Cross-field and boundary validation across Loan, Return, Tax, and Retirement studios).

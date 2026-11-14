@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-10",
+  "updated": "2026-11-14",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1195,6 +1195,21 @@
       "owner": "Primary agent direct implementation and independent review",
       "code_sha": "4bbc07514b6530a22213c3ccd879347f7be24b5a",
       "review": "reviews/C36.md",
+      "blocked_reason": null
+    },
+    {
+      "id": "B76",
+      "title": "unslop stage B: dedicated calculators, chart chrome, workspace and legacy CSS retirement",
+      "checkpoint": "C39",
+      "status": "done",
+      "dependencies": [
+        "B74"
+      ],
+      "prompt": "prompts/B76.md",
+      "submission": "submissions/B76.md",
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": "9d1266654f84b7d076e828ef1ffb2649d68d2e35",
+      "review": "reviews/C39.md",
       "blocked_reason": null
     }
   ],

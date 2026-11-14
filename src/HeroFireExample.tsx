@@ -48,11 +48,11 @@ export function HeroFireExample() {
     >
       <div className="hero-example-header">
         <span className="hero-example-badge">
-          <Target size={14} aria-hidden="true" />
+          <Target size={16} aria-hidden="true" strokeWidth={1.5} />
           Illustrative example · USD
         </span>
         <span className="hero-example-horizon">
-          <Calendar size={13} aria-hidden="true" />
+          <Calendar size={16} aria-hidden="true" strokeWidth={1.5} />
           {formatted.timelineYearsLabel} horizon
         </span>
       </div>
@@ -68,7 +68,7 @@ export function HeroFireExample() {
 
       </div>
       <p className="hero-example-driver">{formatted.returnRate} assumed return · {formatted.inflationRate} inflation · {formatted.timelineYearsLabel} horizon</p>
-      <p className="hero-example-note"><Info size={13} aria-hidden="true" /> An illustration, not a forecast. Your own numbers will change the answer.</p>
+      <p className="hero-example-note"><Info size={16} aria-hidden="true" strokeWidth={1.5} /> An illustration, not a forecast. Your own numbers will change the answer.</p>
       <details className="hero-example-detail">
         <summary>See how this example works</summary>
         <div className="hero-example-detail-body">
@@ -87,7 +87,7 @@ export function HeroFireExample() {
       >
         <figcaption className="hero-example-chart-header">
           <span id={chartTitleId} className="chart-legend-label">
-            <TrendingUp size={13} aria-hidden="true" />
+            <TrendingUp size={16} aria-hidden="true" strokeWidth={1.5} />
             Retirement withdrawals from the modeled target
           </span>
           <span className="chart-legend-end">Modeled end balance: {formatted.modeledEndBalance}</span>
@@ -194,7 +194,7 @@ export function HeroFireExample() {
           </span>
         </div>
         <p className="hero-example-note">
-          <Info size={13} aria-hidden="true" />
+          <Info size={16} aria-hidden="true" strokeWidth={1.5} />
           An estimate based on the assumptions shown, not a guaranteed outcome.
         </p>
       </div>

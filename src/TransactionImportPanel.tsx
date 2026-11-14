@@ -178,7 +178,7 @@ export function TransactionImportPanel({ accounts, auth, onImportComplete }: Tra
         </div>
         <div className="balance-import-heading-actions">
           <button className="secondary-button icon-text-button" type="button" onClick={downloadTemplate}>
-            <Download size={16} />
+            <Download size={16} strokeWidth={1.5} />
             Template
           </button>
           <button
@@ -187,7 +187,7 @@ export function TransactionImportPanel({ accounts, auth, onImportComplete }: Tra
             type="button"
             onClick={() => inputRef.current?.click()}
           >
-            <FileUp size={16} />
+            <FileUp size={16} strokeWidth={1.5} />
             Select CSV
           </button>
           <input
@@ -260,11 +260,11 @@ export function TransactionImportPanel({ accounts, auth, onImportComplete }: Tra
               type="button"
               onClick={commitImport}
             >
-              <CheckCircle2 size={16} />
+              <CheckCircle2 size={16} strokeWidth={1.5} />
               Import {preview.summary.readyRows} {preview.summary.readyRows === 1 ? 'transaction' : 'transactions'}
             </button>
             <button className="secondary-button icon-text-button" disabled={isCommitting} type="button" onClick={resetReview}>
-              <RotateCcw size={16} />
+              <RotateCcw size={16} strokeWidth={1.5} />
               Clear review
             </button>
           </div>
@@ -273,7 +273,7 @@ export function TransactionImportPanel({ accounts, auth, onImportComplete }: Tra
 
       <div className="import-history" aria-label="Recent transaction imports">
         <div className="import-history-heading">
-          <Clock3 size={16} />
+          <Clock3 size={16} strokeWidth={1.5} />
           <strong>Recent transaction imports</strong>
         </div>
         {isLoadingHistory ? (
@@ -301,12 +301,12 @@ export function TransactionImportPanel({ accounts, auth, onImportComplete }: Tra
 
 function ImportStatus({ status }: { status: TransactionImportPreviewRow['status'] }) {
   if (status === 'ready') {
-    return <span className="import-status import-status-ready"><CheckCircle2 size={14} /> Ready</span>;
+    return <span className="import-status import-status-ready"><CheckCircle2 size={16} strokeWidth={1.5} /> Ready</span>;
   }
 
   return (
     <span className={`import-status import-status-${status}`}>
-      <AlertTriangle size={14} />
+      <AlertTriangle size={16} strokeWidth={1.5} />
       {status === 'duplicate' ? 'Duplicate' : 'Rejected'}
     </span>
   );

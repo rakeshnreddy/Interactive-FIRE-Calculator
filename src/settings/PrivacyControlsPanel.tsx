@@ -44,7 +44,7 @@ export function PrivacyControlsPanel({
           </p>
         </div>
         <span className="feature-icon">
-          <ShieldCheck size={20} aria-hidden="true" />
+          <ShieldCheck size={18} aria-hidden="true" strokeWidth={1.5} />
         </span>
       </div>
 
@@ -72,7 +72,7 @@ export function PrivacyControlsPanel({
           <small>Includes your saved records. Keep the file somewhere private; download it before deleting if you may need it.</small>
         </div>
         <button className="secondary-button icon-text-button" disabled={busy} type="button" onClick={onExport}>
-          <Download size={16} aria-hidden="true" />
+          <Download size={16} aria-hidden="true" strokeWidth={1.5} />
           {isExporting ? 'Preparing download…' : 'Download my data'}
         </button>
       </div>
@@ -101,7 +101,7 @@ export function PrivacyControlsPanel({
           />
         </Field>
         <button className="secondary-button danger-button icon-text-button" disabled={!canDelete} type="submit">
-          <Trash2 size={16} aria-hidden="true" />
+          <Trash2 size={16} aria-hidden="true" strokeWidth={1.5} />
           {isDeleting ? 'Deleting…' : 'Delete my data'}
         </button>
       </form>

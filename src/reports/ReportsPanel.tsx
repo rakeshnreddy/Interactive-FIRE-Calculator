@@ -28,7 +28,7 @@ function ReportScopePanel({ scope, insights, isLoading }: { scope: ReportScope; 
             className="secondary-button icon-text-button"
             onClick={() => downloadCsv(`finpath-report-${scope.asOf}.csv`, buildReportCsv(insights, scope))}
           >
-            <Download size={16} aria-hidden="true" />
+            <Download size={16} aria-hidden="true" strokeWidth={1.5} />
             Download CSV
           </button>
           <button type="button" className="secondary-button icon-text-button" onClick={() => {
@@ -37,7 +37,7 @@ function ReportScopePanel({ scope, insights, isLoading }: { scope: ReportScope; 
               });
               window.print();
             }}>
-            <Printer size={16} aria-hidden="true" />
+            <Printer size={16} aria-hidden="true" strokeWidth={1.5} />
             Print
           </button>
         </div>
@@ -119,7 +119,7 @@ export function ReportsPanel({
           </div>
           <button className="secondary-button icon-text-button" onClick={() => onNavigate('/plans')}>
             Plans
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -130,7 +130,7 @@ export function ReportsPanel({
               <article className={`insight-card insight-priority-${insight.priority}`} key={insight.id}>
                 <div className="insight-card-heading">
                   <span className="feature-icon">
-                    <Icon size={18} />
+                    <Icon size={18} strokeWidth={1.5} />
                   </span>
                   <div>
                     <span>{AREA_LABEL[insight.area]} / {PRIORITY_LABEL[insight.priority]}</span>
@@ -158,7 +158,7 @@ export function ReportsPanel({
                   </div>
                   <button className="secondary-button icon-text-button" onClick={() => onNavigate(insight.route)}>
                     Open
-                    <ChevronRight size={16} />
+                    <ChevronRight size={16} strokeWidth={1.5} />
                   </button>
                 </div>
 
