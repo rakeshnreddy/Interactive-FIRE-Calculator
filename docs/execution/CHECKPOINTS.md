@@ -45,6 +45,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C33 | Word-bounded scenario perturbations & bidirectional sensitivity drivers | B69 | accepted | cc30c52681a9a1b5ed7d8597de375b483ead098e | [Approved; shared beta verified](reviews/C33.md) |
 | C36 | Unslop Stage A: Calculator library & shared studio template | B74 | accepted | 4bbc07514b6530a22213c3ccd879347f7be24b5a | [Approved; shared beta verified](reviews/C36.md) |
 | C39 | Unslop Stage B: Dedicated calculators, chart chrome, workspace & legacy CSS retirement | B76 | accepted | 9d1266654f84b7d076e828ef1ffb2649d68d2e35 | [Approved; shared beta verified](reviews/C39.md) |
+| C34 | Cross-field and boundary validation across Loan, Return, Tax & Retirement studios (`LH-02`, `LH-07`, `RET-02`, `RINC-04`, `RINC-05`, `TAX-03`, `RINC-15`) | B72 | accepted | 4abce6598fa702caf5688d0bf9018ef31eb2334f | [Approved; shared beta verified](reviews/C34.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -142,3 +143,7 @@ C39 / B76 registered from `main` `c9f714d2274461b75d6cf7c133577ea81bf39162` to c
 ## Unslop Stage B acceptance — 2026-11-14
 
 C39/B76 accepted at `9d1266654f84b7d076e828ef1ffb2649d68d2e35`; candidate (`f7cb0913`) and shared beta (`aa251d67` / `codex-finpath-quality-execut`) verified across 84 public routes and the 7-stage `c39-unslop-stage-b` smoke runner (`72` dedicated cases across `9` routes × `4` widths × `2` themes + `42` workspace cases across `7` routes × `3` widths × `2` themes, `0` errors, 16-table cleanup + Clerk provider deletion `PASS`). 72 of 75 registered tasks done. Final documentation CI, PR #161 merge, and `main` CI complete C39. Next bounded checkpoint to register is **B72 / C34** (Cross-field and boundary validation across Loan, Return, Tax, and Retirement studios).
+
+## Cross-field & boundary validation acceptance — 2026-11-14
+
+B72/C34 is accepted on `2026-11-14` at product commit `4abce6598fa702caf5688d0bf9018ef31eb2334f` ([PR #162](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/162), exact-head `Verify` CI [`43584682604`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43584682604) `SUCCESS`, candidate `873ea307-5990-4e18-b516-fb404bf73f52`, shared beta `959dca8e-b7ce-4410-b788-b8e66016633a` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C34.md)). 73 of 76 registered tasks done. Remaining audit checkpoints (`B73` / `C35` and `B75` / `C37`) follow sequentially after `C34`.

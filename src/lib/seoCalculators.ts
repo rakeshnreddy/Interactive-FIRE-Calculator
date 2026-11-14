@@ -77,6 +77,7 @@ export type CalculatorInput = {
   label: string;
   max?: number;
   min?: number;
+  step?: number;
   suffix?: string;
   type: 'currency' | 'number' | 'percent';
 };
@@ -372,8 +373,8 @@ export const seoCalculators: SeoCalculator[] = [
     formula: 'retirement',
     h1: 'Retirement Calculator',
     inputs: [
-      number('currentAge', 'Current age', 35),
-      number('retirementAge', 'Retirement age', 60),
+      { ...number('currentAge', 'Current age', 35), max: 120, min: 0, step: 1 },
+      { ...number('retirementAge', 'Retirement age', 60), max: 120, min: 0, step: 1 },
       money('currentSavings', 'Current savings', 100000),
       money('monthly', 'Monthly contribution', 1200),
       annualTopUpInput,
@@ -426,9 +427,9 @@ export const seoCalculators: SeoCalculator[] = [
     ['fd', 'FD Calculator', 'fd', [money('principal', 'Deposit amount', 500000, depositHelper), number('years', 'Deposit term', 10, 'yrs', depositTermHelper), percent('rate', 'Annual interest rate', 8, 'Quoted yearly rate; this estimate compounds it once a year.')]],
     ['rd', 'RD Calculator', 'rd', [...rdInputs]],
     ['ppf', 'PPF Calculator', 'ppf', [
-      { ...money('annual', 'Annual contribution', 150000, 'Deposit for each financial year, ₹500 to ₹1,50,000 per financial year under the PPF scheme. This model assumes one deposit made by 5 April.'), max: 150000 },
+      { ...money('annual', 'Annual contribution', 150000, 'Deposit for each financial year, ₹500 to ₹1,50,000 per financial year under the PPF scheme. This model assumes one deposit made by 5 April.'), min: 500, max: 150000 },
       percent('rate', 'Annual return', 7.1),
-      number('years', 'Years', 15, 'yrs', 'Whole financial years. The account can be closed after 15 years or extended in 5-year blocks.')
+      { ...number('years', 'Years', 15, 'yrs', 'Whole financial years. The account can be closed after 15 years or extended in 5-year blocks.'), min: 1, step: 1 }
     ]],
     ['epf', 'EPF Calculator', 'epf', [money('employee', 'Employee monthly contribution', 12000), money('employer', 'Employer monthly contribution', 12000), annualTopUpInput, ...termInputs]],
     ['nps', 'NPS Calculator', 'nps', [money('monthly', 'Monthly contribution', 10000), annualTopUpInput, ...termInputs, percent('annuityPercent', 'Annuity allocation', 40, 'Share of the corpus used to buy an annuity. 40% is an editable example, not a rule: the minimum depends on your NPS sector, exit type and corpus size.'), percent('annuityRate', 'Annuity rate', 6, 'The yearly payout rate the annuity provider offers on the annuitised portion.')]],
@@ -493,10 +494,10 @@ export const seoCalculators: SeoCalculator[] = [
     ['student-loan-payoff', 'Student Loan Payoff Calculator', 'debt-payoff', [money('balance', 'Student loan balance', 45000), percent('rate', 'Interest rate', 6), money('payment', 'Required monthly payment', 600), ...additionalPaymentInputs]],
     ['401k', '401(k) Calculator', 'compound', [money('principal', 'Current 401(k)', 50000), money('monthly', 'Monthly contribution', 900), annualTopUpInput, ...termInputs]],
     ['roth-vs-traditional-ira', 'Roth vs Traditional IRA Calculator', 'roth-traditional', [money('income', 'One-time pre-tax contribution', 7000, 'A single contribution today, with the same pre-tax budget for each option; no recurring deposits.'), percent('currentTaxRate', 'Current marginal tax rate', 22), percent('futureTaxRate', 'Retirement tax rate', 22), percent('rate', 'Annual return', 7), number('years', 'Years to retirement', 25, 'yrs')]],
-    ['paycheck', 'Paycheck Calculator', 'paycheck', [money('income', 'Gross pay per period', 5000), percent('effectiveRate', 'Estimated withholding rate', 22), number('periods', 'Pay periods per year', 26), money('preTaxDeductions', 'Pre-tax deductions per period', 250), money('postTaxDeductions', 'Post-tax deductions per period', 75)]],
+    ['paycheck', 'Paycheck Calculator', 'paycheck', [money('income', 'Gross pay per period', 5000), percent('effectiveRate', 'Estimated withholding rate', 22), { ...number('periods', 'Pay periods per year', 26), max: 365, min: 1, step: 1 }, money('preTaxDeductions', 'Pre-tax deductions per period', 250), money('postTaxDeductions', 'Post-tax deductions per period', 75)]],
     ['income-tax-us', 'US Federal Income Tax Estimator', 'us-tax', [money('income', 'Annual gross income', 120000), money('deductions', 'Extra deductions beyond standard deduction', 0), percent('stateRate', 'State and local tax rate', 4)]],
     ['social-security-break-even', 'Social Security Break-even Calculator', 'social-security', [money('early', 'Early monthly benefit', 1800), money('full', 'Full monthly benefit', 2600), number('delayYears', 'Years delayed', 5, 'yrs')]],
-    ['rmd', 'Required Minimum Distribution Calculator', 'rmd', [money('balance', 'Retirement account balance', 800000), number('divisor', 'IRS life expectancy divisor', 26.5)]]
+    ['rmd', 'Required Minimum Distribution Calculator', 'rmd', [money('balance', 'Retirement account balance', 800000), { ...number('divisor', 'IRS life expectancy divisor', 26.5), max: 100, min: 1, step: 0.1 }]]
   ] satisfies GeneratedCalculator[]).map(([slug, title, formula, inputs]) => defineCalculator({
     category: borrowingFormulas.has(formula) ? 'Borrowing' : formula === 'us-tax' || formula === 'roth-traditional' || formula === 'paycheck' || formula === 'rmd' ? 'Tax' : 'Planning',
     description: `${title} for a quick planning estimate you can turn into a goal, account, or plan.`,
@@ -755,10 +756,11 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'arm': {
+      const termYears = months / 12;
       const fixedMonths = Math.max(0, Math.min(Math.round(get('fixedYears') * 12), months));
-      const initialPayment = loanPayment(get('principal'), get('rate') / 100, years);
-      const balanceAtReset = remainingLoanBalance(get('principal'), get('rate') / 100, years, fixedMonths);
-      const remainingYears = Math.max(1 / 12, years - fixedMonths / 12);
+      const initialPayment = loanPayment(get('principal'), get('rate') / 100, termYears);
+      const balanceAtReset = remainingLoanBalance(get('principal'), get('rate') / 100, termYears, fixedMonths);
+      const remainingYears = Math.max(1 / 12, (months - fixedMonths) / 12);
       const adjustedPayment = loanPayment(balanceAtReset, get('adjustedRate') / 100, remainingYears);
       return result('Payment during the fixed period', initialPayment, 'Principal and interest at the initial rate, then re-amortised at the assumed rate after the first adjustment.', [
         'The adjusted rate is your planning assumption; the real reset follows the index, margin and caps in the note.',
@@ -859,7 +861,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'flat-rate-loan': {
-      const flatInterest = get('principal') * get('rate') / 100 * years;
+      const flatInterest = get('principal') * get('rate') / 100 * (months / 12);
       const flatEmi = (get('principal') + flatInterest) / months;
       const reducingEmi = loanPayment(get('principal'), get('rate') / 100, years);
       const reducingInterest = reducingEmi * months - get('principal');
@@ -883,12 +885,14 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'loan-comparison': {
-      const optionAYears = Math.max(1, get('compareYears'));
-      const optionBYears = Math.max(1, years);
+      const optionAMonths = termMonths(get('compareYears'));
+      const optionBMonths = termMonths(years);
+      const optionAYears = optionAMonths / 12;
+      const optionBYears = optionBMonths / 12;
       const optionAPayment = loanPayment(get('principal'), get('currentRate') / 100, optionAYears);
       const optionBPayment = loanPayment(get('principal'), get('newRate') / 100, optionBYears);
-      const optionAInterest = optionAPayment * optionAYears * 12 - get('principal');
-      const optionBInterest = optionBPayment * optionBYears * 12 - get('principal');
+      const optionAInterest = optionAPayment * optionAMonths - get('principal');
+      const optionBInterest = optionBPayment * optionBMonths - get('principal');
       return result('Option B monthly payment', optionBPayment, 'Side-by-side payment and lifetime-interest comparison for two loan options.', [
         'Option A uses the first rate and term.',
         'Option B uses the second rate and term.'
@@ -1064,9 +1068,10 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'paycheck': {
-      const annualGross = get('income') * get('periods');
-      const preTax = get('preTaxDeductions') * get('periods');
-      const postTax = get('postTaxDeductions') * get('periods');
+      const periods = Math.max(1, Math.round(get('periods')));
+      const annualGross = get('income') * periods;
+      const preTax = get('preTaxDeductions') * periods;
+      const postTax = get('postTaxDeductions') * periods;
       const taxable = Math.max(0, annualGross - preTax);
       const withholding = taxable * get('effectiveRate') / 100;
       const annualTakeHome = Math.max(0, annualGross - preTax - withholding - postTax);
@@ -1074,7 +1079,7 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
         'Withholding is modeled from the percentage you provide, not from Form W-4 tables.',
         'Pre-tax deductions reduce taxable wages; post-tax deductions reduce take-home only.'
       ], [
-        metric('Estimated take-home per paycheck', get('periods') > 0 ? annualTakeHome / get('periods') : 0, 'currency'),
+        metric('Estimated take-home per paycheck', annualTakeHome / periods, 'currency'),
         metric('Estimated withholding', withholding, 'currency', 'warning'),
         metric('Taxable wages', taxable, 'currency')
       ]);
@@ -1127,13 +1132,14 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
       ]);
     }
     case 'rmd': {
-      const distribution = get('divisor') > 0 ? get('balance') / get('divisor') : 0;
+      const divisor = Math.max(1, get('divisor'));
+      const distribution = get('balance') / divisor;
       return result('Estimated RMD', distribution, 'Retirement account balance divided by the life expectancy divisor.', [
         'This is a simplified Required Minimum Distribution estimate.',
         'Confirm the correct IRS table, balance date, and age rules before acting.'
       ], [
         metric('Remaining balance after RMD', Math.max(0, get('balance') - distribution), 'currency'),
-        metric('Divisor used', get('divisor'), 'number')
+        metric('Divisor used', divisor, 'number')
       ]);
     }
     case 'hra': {
@@ -1201,25 +1207,28 @@ export function calculateSeoCalculator(calculator: SeoCalculator, values: Record
     case 'vehicle-cost': return vehicleCostResult(values);
     case 'rent-buy': {
       const loanAmount = Math.max(0, get('homePrice') - get('downPayment'));
-      const loanYears = Math.max(1, get('loanYears') || years);
-      const stayMonths = Math.max(1, Math.round(Math.max(1, years) * 12));
+      const stayMonths = termMonths(years);
+      const rawLoanYears = get('loanYears') > 0 ? get('loanYears') : years;
+      const loanMonths = termMonths(rawLoanYears);
+      const loanYears = loanMonths / 12;
       const payment = loanPayment(loanAmount, get('rate') / 100, loanYears);
       const ownershipMonthly = get('homePrice') * get('ownershipRate') / 100 / 12;
       const buyMonthly = payment + ownershipMonthly;
-      const loanMonthsInStay = Math.min(stayMonths, Math.round(loanYears * 12));
+      const loanMonthsInStay = Math.min(stayMonths, loanMonths);
       const balanceAfterStay = remainingLoanBalance(loanAmount, get('rate') / 100, loanYears, loanMonthsInStay);
       const equityBuilt = loanAmount - balanceAfterStay;
       const rentTotal = get('rent') * stayMonths;
       // Loan payments stop at payoff; ownership costs continue for the whole stay.
       const buyNetCost = payment * loanMonthsInStay + ownershipMonthly * stayMonths - equityBuilt;
+      const stayYearsLabel = Number((stayMonths / 12).toFixed(4));
       return result('Monthly cost to buy', buyMonthly, 'Loan payment over the full loan term plus the ownership costs you entered, compared with the rent or lease you pay now.', [
         'The loan is amortised over its own term, not the years you stay; if you stay past payoff only the ownership costs continue.',
         'Equity built by paying down principal is credited back when comparing total cost over your stay; price changes, selling costs and deposits are not modelled.'
       ], [
         metric('Current rent or lease', get('rent'), 'currency'),
         metric('Monthly difference', buyMonthly - get('rent'), 'currency', buyMonthly > get('rent') ? 'warning' : 'positive'),
-        metric(`Net cost of buying over ${Math.max(1, years)} years`, buyNetCost, 'currency'),
-        metric(`Cost of renting over ${Math.max(1, years)} years`, rentTotal, 'currency'),
+        metric(`Net cost of buying over ${stayYearsLabel} years`, buyNetCost, 'currency'),
+        metric(`Cost of renting over ${stayYearsLabel} years`, rentTotal, 'currency'),
         metric('Buying minus renting over the stay', buyNetCost - rentTotal, 'currency', buyNetCost <= rentTotal ? 'positive' : 'warning')
       ]);
     }
@@ -1504,7 +1513,7 @@ export function remainingLoanBalance(principal: number, annualRate: number, year
 function approximateApr(principal: number, fees: number, payment: number, years: number): number {
   if (principal <= 0 || payment <= 0 || years <= 0) return 0;
 
-  const netProceeds = Math.max(1, principal - Math.max(0, fees));
+  const netProceeds = Math.max(1e-9, principal - Math.max(0, fees));
   let low = 0;
   let high = 1;
 

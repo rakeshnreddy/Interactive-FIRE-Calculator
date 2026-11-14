@@ -232,7 +232,7 @@ export function buildScenarioValues(
   const direction = scenarioId === 'optimistic' ? 1 : -1;
   const roundFloats = !pinnedScenarioSlugs.has(calculator.slug);
 
-  return Object.fromEntries(
+  const next = Object.fromEntries(
     calculator.inputs.map((input) => {
       const current = normalized[input.key] ?? input.defaultValue;
       const rawAdjusted = adjustInput(calculator, normalized, input, current, studio, direction);
@@ -240,6 +240,43 @@ export function buildScenarioValues(
       return [input.key, clampInput(input, adjusted)];
     })
   );
+
+  if (Number.isFinite(next.homePrice) && Number.isFinite(next.downPayment) && next.homePrice > 0) {
+    if (['fha-loan', 'va-loan', 'fha-conventional'].includes(calculator.formula)) {
+      if (next.downPayment >= next.homePrice) {
+        const ratio = Math.min(0.99, Math.max(0, (normalized.downPayment ?? 0) / Math.max(1e-9, normalized.homePrice ?? 1)));
+        const scaled = Number((next.homePrice * ratio).toFixed(next.homePrice >= 1 ? 2 : 6));
+        next.downPayment = scaled < next.homePrice ? scaled : next.homePrice * ratio;
+      }
+    } else if (next.downPayment > next.homePrice) {
+      next.downPayment = next.homePrice;
+    }
+  }
+  if (calculator.formula === 'apr' && next.principal > 0 && next.closingCosts >= next.principal) {
+    const ratio = Math.min(0.99, Math.max(0, (normalized.closingCosts ?? 0) / Math.max(1e-9, normalized.principal ?? 1)));
+    const scaled = Number((next.principal * ratio).toFixed(next.principal >= 1 ? 2 : 6));
+    next.closingCosts = scaled < next.principal ? scaled : next.principal * ratio;
+  }
+  if (calculator.formula === 'arm') {
+    next.years = Math.max(2 / 12, next.years);
+    const totalMonths = termMonths(next.years);
+    const rawFixedMonths = Math.round((next.fixedYears ?? 0) * 12);
+    if (rawFixedMonths < 1 || rawFixedMonths >= totalMonths || next.fixedYears >= next.years) {
+      next.fixedYears = Number((Math.max(1, Math.min(totalMonths - 1, rawFixedMonths)) / 12).toFixed(6));
+    }
+  }
+  if (calculator.formula === 'balloon-loan' && next.balloonYears > 0) {
+    if (next.balloonYears > next.years || Math.round(next.balloonYears * 12) > termMonths(next.years)) {
+      next.balloonYears = next.years;
+    }
+  }
+  if (calculator.formula === 'rule-72' && next.rate <= 0) {
+    const half = Math.max(0, normalized.rate ?? 1) * 0.5;
+    const rounded = Number(half.toFixed(6));
+    next.rate = rounded > 0 && rounded < (normalized.rate ?? 1) ? rounded : half > 0 ? half : 0.1;
+  }
+
+  return next;
 }
 
 export function buildCalculatorStudioChart(
@@ -609,7 +646,12 @@ function adjustInput(
   if (calculator.formula === 'balloon-loan') {
     if (key === 'principal' || key === 'years') return value;
     if (key === 'rate') return Math.max(0.1, value - direction * Math.max(0.5, value * 0.15));
-    if (key === 'balloonyears') return Math.max(1, value + direction * 1);
+    if (key === 'balloonyears') {
+      if (value <= 0) return 0;
+      const maxYears = Math.max(1 / 12, allValues.years ?? value);
+      const step = maxYears <= 1 ? Math.max(1 / 12, Number((maxYears * 0.25).toFixed(4))) : 1;
+      return Math.min(maxYears, Math.max(1 / 12, value + direction * step));
+    }
     return value;
   }
 
@@ -1083,7 +1125,7 @@ const maxMonthlyScheduleMonths = 600;
 
 function loanAmortizationSchedule(calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = loanPrincipalForSchedule(calculator, values);
-  const years = Math.max(1, values.years ?? 1);
+  const years = termMonths(values.years ?? 1) / 12;
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const payment = loanPayment(principal, rate, years);
   const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
@@ -1102,7 +1144,7 @@ function loanAmortizationSchedule(calculator: SeoCalculator, values: Record<stri
 function aprBreakdownSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const fees = Math.max(0, values.closingCosts ?? 0);
-  const years = Math.max(1, values.years ?? 1);
+  const years = termMonths(values.years ?? 1) / 12;
   const noteRate = Math.max(0, values.rate ?? 0) / 100;
   const payment = loanPayment(principal, noteRate, years);
   const netProceeds = Math.max(0, principal - fees);
@@ -1124,7 +1166,7 @@ function aprBreakdownSchedule(_calculator: SeoCalculator, values: Record<string,
 
 function balloonLoanSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
-  const years = Math.max(1, values.years ?? 1);
+  const years = termMonths(values.years ?? 1) / 12;
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const payment = loanPayment(principal, rate, years);
   const rawBalloonYears = Number.isFinite(values.balloonYears) ? Math.max(0, values.balloonYears) : years;
@@ -1214,7 +1256,7 @@ function balanceTransferSchedule(_calculator: SeoCalculator, values: Record<stri
 
 function biweeklyLoanSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule {
   const principal = Math.max(0, values.principal ?? 0);
-  const years = Math.max(1, values.years ?? 1);
+  const years = termMonths(values.years ?? 1) / 12;
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const monthlyPayment = loanPayment(principal, rate, years);
   return {
@@ -1472,7 +1514,8 @@ function fhaConventionalComparisonSchedule(_calculator: SeoCalculator, values: R
   const downPayment = Math.max(0, values.downPayment ?? 0);
   const baseLoan = Math.max(0, homePrice - downPayment);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const years = Math.max(1, values.years ?? 1);
+  const months = termMonths(values.years ?? 1);
+  const years = months / 12;
   const fhaFinanced = baseLoan * 1.0175;
   const fhaInsurance = baseLoan * 0.0055 / 12;
   const fhaPayment = loanPayment(fhaFinanced, rate, years) + fhaInsurance;
@@ -1496,7 +1539,7 @@ function fhaConventionalComparisonSchedule(_calculator: SeoCalculator, values: R
           loanAmount: fhaFinanced,
           monthlyPayment: fhaPayment,
           option: 'FHA estimate',
-          totalPaid: fhaPayment * years * 12
+          totalPaid: fhaPayment * months
         }
       },
       {
@@ -1506,7 +1549,7 @@ function fhaConventionalComparisonSchedule(_calculator: SeoCalculator, values: R
           loanAmount: baseLoan,
           monthlyPayment: conventionalPayment,
           option: 'Conventional estimate',
-          totalPaid: conventionalPayment * years * 12
+          totalPaid: conventionalPayment * months
         }
       }
     ],
@@ -1520,7 +1563,7 @@ function flatRateComparisonSchedule(_calculator: SeoCalculator, values: Record<s
   const years = Math.max(0, values.years ?? 0);
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const months = termMonths(years);
-  const flatMonthly = (principal + principal * rate * years) / months;
+  const flatMonthly = (principal + principal * rate * (months / 12)) / months;
   const reducingPayment = loanPayment(principal, rate, years);
 
   return {
@@ -1593,8 +1636,8 @@ function interestOnlySchedule(_calculator: SeoCalculator, values: Record<string,
 
 function loanComparisonSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
-  const optionAYears = Math.max(1, values.compareYears ?? 1);
-  const optionBYears = Math.max(1, values.years ?? 1);
+  const optionAYears = termMonths(values.compareYears ?? 1) / 12;
+  const optionBYears = termMonths(values.years ?? 1) / 12;
   const optionAPayment = loanPayment(principal, Math.max(0, values.currentRate ?? 0) / 100, optionAYears);
   const optionBPayment = loanPayment(principal, Math.max(0, values.newRate ?? 0) / 100, optionBYears);
   const optionARows = amortizationRows(principal, Math.max(0, values.currentRate ?? 0) / 100, optionAYears, optionAPayment);
@@ -1673,7 +1716,7 @@ function loanPrepaymentSchedule(_calculator: SeoCalculator, values: Record<strin
   const principal = Math.max(0, values.principal ?? 0);
   const prepayment = Math.min(principal, Math.max(0, values.prepayment ?? 0));
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const years = Math.max(1, values.years ?? 1);
+  const years = termMonths(values.years ?? 1) / 12;
   const payment = loanPayment(principal, rate, years);
   const extraMonthlyPayment = Math.max(0, values.extraMonthlyPayment ?? 0);
   const extraAnnualPayment = Math.max(0, values.extraAnnualPayment ?? 0);
@@ -1723,7 +1766,7 @@ function loanPrepaymentSchedule(_calculator: SeoCalculator, values: Record<strin
 function mortgageRecastSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const recastBalance = Math.max(0, principal - Math.max(0, values.prepayment ?? 0));
-  const years = Math.max(1, values.years ?? 1);
+  const years = termMonths(values.years ?? 1) / 12;
   const rate = Math.max(0, values.rate ?? 0) / 100;
   const oldPayment = loanPayment(principal, rate, years);
   const newPayment = loanPayment(recastBalance, rate, years);
@@ -1865,8 +1908,8 @@ function salaryTakeHomeSchedule(_calculator: SeoCalculator, values: Record<strin
 
 function armPaymentSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
-  const years = Math.max(1, values.years ?? 1);
-  const months = Math.round(years * 12);
+  const months = termMonths(values.years ?? 1);
+  const years = months / 12;
   const fixedMonths = Math.max(0, Math.min(Math.round((values.fixedYears ?? 0) * 12), months));
   const initialRate = Math.max(0, values.rate ?? 0) / 100;
   const adjustedRate = Math.max(0, values.adjustedRate ?? 0) / 100;
@@ -1891,10 +1934,10 @@ function armPaymentSchedule(_calculator: SeoCalculator, values: Record<string, n
     yearPayment = payment;
     cumulativeInterest += interest;
     if (month % 12 === 0 || month === months || balance <= 0.005) {
-      const year = Math.ceil(month / 12);
+      const year = month === months && months % 12 !== 0 ? Number((months / 12).toFixed(4)) : Math.ceil(month / 12);
       rows.push({
         id: `arm-${year}`,
-        note: fixedMonths > 0 && month > fixedMonths && month - 12 < fixedMonths + 1 && month - 12 >= 0 && year === Math.ceil((fixedMonths + 1) / 12) ? 'First adjustment' : undefined,
+        note: fixedMonths > 0 && month > fixedMonths && month - 12 < fixedMonths + 1 && Math.ceil(month / 12) === Math.ceil((fixedMonths + 1) / 12) ? 'First adjustment' : undefined,
         values: { cumulativeInterest, endingBalance: balance, payment: yearPayment, rate, year, yearInterest }
       });
       yearInterest = 0;
@@ -1920,8 +1963,8 @@ function armPaymentSchedule(_calculator: SeoCalculator, values: Record<string, n
 function pointsBreakEvenSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const cost = Math.max(0, values.closingCosts ?? 0);
-  const years = Math.max(1, values.years ?? 1);
-  const months = Math.round(years * 12);
+  const months = termMonths(values.years ?? 1);
+  const years = months / 12;
   const paymentWithout = loanPayment(principal, Math.max(0, values.currentRate ?? 0) / 100, years);
   const paymentWith = loanPayment(principal, Math.max(0, values.newRate ?? 0) / 100, years);
   const monthlySavings = paymentWithout - paymentWith;
@@ -1950,7 +1993,8 @@ function pointsBreakEvenSchedule(_calculator: SeoCalculator, values: Record<stri
 function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const principal = Math.max(0, values.principal ?? 0);
   const closingCosts = Math.max(0, values.closingCosts ?? 0);
-  const years = Math.max(1, values.years ?? 1);
+  const months = termMonths(values.years ?? 1);
+  const years = months / 12;
   const oldRate = Math.max(0, values.currentRate ?? 0) / 100;
   const newRate = Math.max(0, values.newRate ?? 0) / 100;
   const oldPayment = loanPayment(principal, oldRate, years);
@@ -1986,19 +2030,20 @@ function refinanceComparisonSchedule(_calculator: SeoCalculator, values: Record<
         }
       };
     }),
-    summary: `${assessPayback(monthlySavings, closingCosts, years * 12, 'switching').message} Fees are financed; the net column also subtracts fees for a simplified cost-to-saving comparison, not full economic break-even.`,
+    summary: `${assessPayback(monthlySavings, closingCosts, months, 'switching').message} Fees are financed; the net column also subtracts fees for a simplified cost-to-saving comparison, not full economic break-even.`,
     title: 'Refinance break-even schedule'
   };
 }
 
 function rentBuySchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
-  const years = Math.max(1, values.years ?? 0);
+  const years = Math.max(0, values.years ?? 0);
   const rent = Math.max(0, values.rent ?? 0);
   const homePrice = Math.max(0, values.homePrice ?? 0);
   const downPayment = Math.max(0, values.downPayment ?? 0);
   const principal = Math.max(0, homePrice - downPayment);
   const rate = Math.max(0, values.rate ?? 0) / 100;
-  const loanYears = Math.max(1, values.loanYears || years);
+  const rawLoanYears = (values.loanYears ?? 0) > 0 ? values.loanYears! : years;
+  const loanYears = termMonths(rawLoanYears) / 12;
   const ownershipMonthly = homePrice * Math.max(0, values.ownershipRate ?? 0) / 100 / 12;
   const payment = loanPayment(principal, rate, loanYears);
 
@@ -2031,7 +2076,7 @@ function rentBuySchedule(_calculator: SeoCalculator, values: Record<string, numb
         }
       };
     }),
-    summary: scheduleCapSummary(years, 'Stay and loan terms use the nearest whole month, with a minimum one-year stay. This compares cash paid and loan equity; appreciation, taxes and selling costs are excluded.'),
+    summary: scheduleCapSummary(years, 'Stay and loan terms use the nearest whole month. This compares cash paid and loan equity; appreciation, taxes and selling costs are excluded.'),
     title: 'Rent versus buy annual table'
   };
 }
@@ -2894,7 +2939,7 @@ function investmentReturnSchedule(_calculator: SeoCalculator, values: Record<str
   // Same term and rate as the headline; the last row is the entered ending value.
   const term = Math.max(0, Number.isFinite(values.years) ? values.years : 0);
   const points = exactTermPoints(term);
-  if (!points.length) return null;
+  if (initial <= 0 || !points.length) return null;
   const annualized = initial > 0 ? (final / initial) ** (1 / term) - 1 : 0;
   const endPoint = points[points.length - 1];
   const rows: CalculatorDetailScheduleRow[] = [0, ...points].map((year) => {
@@ -2933,8 +2978,9 @@ function xirrApproximationSchedule(
   const initial = Math.max(0, values.initial ?? 0);
   const monthly = Math.max(0, values.monthly ?? 0);
   const final = Math.max(0, values.final ?? 0);
+  if ((values.years ?? 0) <= 0 || (initial <= 0 && monthly <= 0)) return null;
   const years = scheduleYears(values.years ?? 0);
-  const months = Math.min(maxScheduleYears * 12, Math.max(1, Math.round((values.years ?? 0) * 12)));
+  const months = Math.min(maxScheduleYears * 12, termMonths(values.years ?? 0));
   const annualized = Number.isFinite(result.metrics[0]?.value) ? result.metrics[0].value : 0;
   if (annualized <= -1) return null; // No finite implied monthly path for a total-loss boundary.
   const monthlyRate = Math.expm1(Math.log1p(annualized) / 12);
@@ -2965,7 +3011,7 @@ function xirrApproximationSchedule(
     }
   }
 
-  if (months === Math.round((values.years ?? 0) * 12) && Math.abs(impliedValue - final) > Math.max(0.01, Math.abs(final) * 1e-8)) return null;
+  if (months === termMonths(values.years ?? 0) && Math.abs(impliedValue - final) > Math.max(0.01, Math.abs(final) * 1e-8)) return null;
 
   return {
     columns: [
@@ -3017,7 +3063,8 @@ function inflationSchedule(_calculator: SeoCalculator, values: Record<string, nu
 
 function doublingSchedule(_calculator: SeoCalculator, values: Record<string, number>): CalculatorDetailSchedule | null {
   const rate = Math.max(0, values.rate ?? 0);
-  const yearsToDouble = rate > 0 ? 72 / rate : 0;
+  if (rate <= 0) return null;
+  const yearsToDouble = 72 / rate;
   const rows: CalculatorDetailScheduleRow[] = [0, 0.25, 0.5, 0.75, 1].map((step) => ({
     id: `double-${step}`,
     values: {
@@ -3303,7 +3350,7 @@ function formatBracketAmount(value: number): string {
 function approximateApr(principal: number, fees: number, payment: number, years: number): number {
   if (principal <= 0 || payment <= 0 || years <= 0) return 0;
 
-  const netProceeds = Math.max(1, principal - Math.max(0, fees));
+  const netProceeds = Math.max(1e-9, principal - Math.max(0, fees));
   let low = 0;
   let high = 1;
 
