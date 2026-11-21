@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-11-14",
+  "updated": "2026-11-21",
   "closure_owner": "primary-reviewer",
   "tasks": [
     {
@@ -1292,17 +1292,17 @@
       "id": "B80",
       "title": "Final /unslop sitewide polish, WCAG contrast and performance verification",
       "checkpoint": "C41",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B74",
         "B76",
         "B79"
       ],
       "prompt": "prompts/B80.md",
-      "submission": null,
+      "submission": "submissions/B80.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "58b1a3604196842c64a8af224f24616b6f8cd0c9",
+      "review": "reviews/C41.md",
       "blocked_reason": null
     }
   ],

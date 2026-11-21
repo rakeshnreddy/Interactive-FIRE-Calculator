@@ -49,7 +49,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C35 | Dedicated planner & saved-record integrity fixes (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`) | B73 | accepted | 171c3f57c7d725b882accd947a68a2b7edd94dd0 | [Approved; shared beta verified](reviews/C35.md) |
 | C37 | Charts, schedules, statutory provenance links & P2/P3 copy honesty across all studios (`TAX-05`, `TAX-06`, `TAX-08`, `TAX-09`, `RET-04`, `RET-05`, `RET-07`, `RET-08`, `RINC-05`, `RINC-06`, `RINC-09`, `RINC-11`, `RINC-14`, `RINC-16`, `DEBT-04`, `DEBT-06`, `DEBT-07`, `GGS-04`, `GGS-05`, `GGS-06`, `GGS-08`, `GGS-09`, `GGS-10`, `LH-09`, `LH-10`, `LH-11`, `CBS-06`) | B75 | accepted | e9e4963d0eff19c3c6cf20bcb0b2b50089633254 | [Approved; shared beta verified](reviews/C37.md) |
 | C40 | Unslop Stage C: Homepage, application shell & footer | B79 | accepted | 3d2eec784501ff5de884d96dd0e0d6819370344b | [Approved; shared beta verified](reviews/C40.md) |
-| C41 | Final `/unslop` sitewide polish, WCAG contrast & performance verification | B80 | in_progress | — | Pending |
+| C41 | Final `/unslop` sitewide polish, WCAG contrast & performance verification | B80 | accepted | 58b1a3604196842c64a8af224f24616b6f8cd0c9 | [Approved; shared beta verified](reviews/C41.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -179,3 +179,7 @@ B79/C40 is accepted on `2026-11-21` at product commit `3d2eec784501ff5de884d96dd
 ## Unslop final polish registration — 2026-11-21
 
 B80/C41 is now in progress from `main` `d20a994b0a2a303d99d11b46d444405addbffce9` ([PR #165](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/165), `main` CI `44907393485`) to fix the final live-audited WCAG AA contrast pairs, unstyled links, AuthGate H1 trailing periods, dark-mode overscroll background, and leftover legacy CSS radii/weights, plus publish review handoff notes for Gemini Argon. `76` of `80` registered tasks done. See [prompts/B80.md](prompts/B80.md).
+
+## Unslop final polish acceptance — 2026-11-21
+
+B80/C41 is accepted on `2026-11-21` at product commit `58b1a3604196842c64a8af224f24616b6f8cd0c9` ([PR #166](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/166), exact-head `Verify` CI [`44910672642`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44910672642) `SUCCESS`, candidate `0bbddbcf-ee4c-47b7-9cb0-0ebcf49142f6`, shared beta `6467d8ac-ead9-4a40-8e0c-54dcc329cd8d` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C41.md), [Gemini Argon review notes](GEMINI_ARGON_REVIEW_NOTES.md)). `77` of `80` registered tasks done. All autonomous calculator-excellence and `/unslop` visual overhaul checkpoints are complete; only owner-gated items (`OA-1`/`OA-3` production cutover, `B51`, `B13`, `B14`, and deferred native reader/200%-zoom sweeps) remain.

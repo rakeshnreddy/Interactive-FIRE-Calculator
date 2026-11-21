@@ -1,0 +1,146 @@
+{
+  "checkpoint": "C41",
+  "task": "B80",
+  "date": "2026-11-21",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "58b1a3604196842c64a8af224f24616b6f8cd0c9",
+  "base": "d20a994b0a2a303d99d11b46d444405addbffce9",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/166",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 44910672642,
+    "event": "pull_request",
+    "headSha": "58b1a3604196842c64a8af224f24616b6f8cd0c9",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44910672642"
+  },
+  "candidate": {
+    "deployment_id": "0bbddbcf-ee4c-47b7-9cb0-0ebcf49142f6",
+    "immutable_url": "https://0bbddbcf.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://c41-candidate.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "6467d8ac-ead9-4a40-8e0c-54dcc329cd8d",
+    "immutable_url": "https://6467d8ac.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "verified_assets": [
+      "assets/main-B76RqLAG.js",
+      "assets/main-BrVVeBp4.css"
+    ]
+  },
+  "tests": {
+    "node": 30,
+    "files": 119,
+    "vitest": 2964,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "58b1a3604196842c64a8af224f24616b6f8cd0c9"
+  },
+  "independent_review": {
+    "reviewer": "9c9ddc08-ce1e-432f-ae8f-e0611cf1cf03",
+    "role": "B80 C41 Adversarial Reviewer",
+    "completed": true,
+    "verdict": "PASS",
+    "findings": [
+      "Round 1–2 on b241737: fixed warm-cache transferSize distortion via fresh browser contexts per perf route, normalized 13th legacy radius (styles.css:7555 border-radius: 50% -> 6px), tightened UnslopFinalPolish.test.tsx to parse every border-radius and font-weight across all 7 CSS files, expanded details.compound-analysis-card in c41 smoke, and added Clerk SVG gradient exclusion.",
+      "Round 3 on 58b1a36 (after live candidate 85a68898 caught span.row-number=3.99:1): independently verified exact hex<->OKLCH equivalence and WCAG 2.2 AA contrast on --color-success (#116b46), --color-danger (#b02a4b), .row-number, .pill, and all tinted badge selectors; returned PASS (0 remaining findings)."
+    ]
+  },
+  "source_hashes": [
+    {
+      "path": "DESIGN.md",
+      "bytes": 22169,
+      "sha256": "baea75518306f6d8ec015e58ff28f6fb3463dbaddac502c1273bc0ac0c83d3bd"
+    },
+    {
+      "path": "docs/EXECUTION_BACKLOG.md",
+      "bytes": 120334,
+      "sha256": "efce163c7fece31609934d4c48bc9b5a1643132e904514e097966e0fcf66b45c"
+    },
+    {
+      "path": "scripts/run_local_browser_checks.mjs",
+      "bytes": 14250,
+      "sha256": "9eeba0e1d9760ad3bbc905b9f00f30201c758310e530091e55368088b8c6bce3"
+    },
+    {
+      "path": "scripts/smoke/c41-unslop-final-polish.mjs",
+      "bytes": 14131,
+      "sha256": "ef59d713a5c6dee02db9875c9ce0ece53fdc90c991a8e7078ee60b573c9eb271"
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 170648,
+      "sha256": "2e8387c4264189d12a226c1d4e20623b26c7ec1b8fdbfe08b3e0dd67ec6014ba"
+    },
+    {
+      "path": "src/UnslopFinalPolish.test.tsx",
+      "bytes": 7110,
+      "sha256": "ed23ffdd2d4f1ba3f5e330920d9acd5070daa218c9bdbc289f278febdc2be332"
+    },
+    {
+      "path": "src/appParity.test.tsx",
+      "bytes": 7770,
+      "sha256": "a23420a2498732f7238a318c3d8b2309b37282f8b91717f5cb30336a691f95c4"
+    },
+    {
+      "path": "src/authGateCopy.test.tsx",
+      "bytes": 6585,
+      "sha256": "528059f2333fd0c9d8c3b05e414d79f12dd526dc6da4ed0922f73e8a90b67f3b"
+    },
+    {
+      "path": "src/shellNavigation.test.tsx",
+      "bytes": 1750,
+      "sha256": "b572f16d83234aec56e6b8a25909ffcb426101d9722953e7d734294652d371ed"
+    },
+    {
+      "path": "src/studios.css",
+      "bytes": 40871,
+      "sha256": "d502e8e4fac593a03f5bcbb48940c671d556e6c7bf7bf8271409e12c25aa1546"
+    },
+    {
+      "path": "src/styles.css",
+      "bytes": 171898,
+      "sha256": "947f1c0b6dac8b8aa8a7adf9117b251f6a759a1b922dbd90c0e5dd7ebdbfbb9d"
+    },
+    {
+      "path": "src/vivid-theme.css",
+      "bytes": 41992,
+      "sha256": "61016d200a484480926fd519d769ca92ebaee4028964d9cf5dcb8f94bbf57fc8"
+    },
+    {
+      "path": "src/workspace.css",
+      "bytes": 23345,
+      "sha256": "1283d66e015369dee47a43d8e75401f6ceb0d1cc7731e8f785fbf5c5431c4012"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C41/raw/beta-alias-public-calculators.txt",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C41/raw/beta-hosted.json",
+      "bytes": 10379,
+      "sha256": "0f2f17b320630790840e3ecb09aaa93cf6bf34f01003c58a69f97927ae89fde5"
+    },
+    {
+      "path": "docs/execution/evidence/C41/raw/beta-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "46480092c71128b1dc9736b50a2add609b906f3b63ee43bd931887f36ae8d39a"
+    },
+    {
+      "path": "docs/execution/evidence/C41/raw/candidate-hosted.json",
+      "bytes": 10374,
+      "sha256": "3d103990272cac1b5a1b8b7e8a109dd305312c1f9e16f80a90f4efec05ec5069"
+    },
+    {
+      "path": "docs/execution/evidence/C41/raw/candidate-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "3e5bc173504841997e214dafcad0f2607a0c58df59280761138ddc314566472a"
+    }
+  ]
+}
