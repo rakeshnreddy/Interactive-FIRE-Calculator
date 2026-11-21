@@ -1,0 +1,28 @@
+{
+  "checkpoint": "C40",
+  "task": "B79",
+  "verifiedAt": "2026-11-21",
+  "sourceRevision": "3d2eec784501ff5de884d96dd0e0d6819370344b",
+  "focusedChecks": [
+    {
+      "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/UnslopStageC.test.tsx src/landingPage.test.tsx src/LandingFinder.test.tsx src/LandingIntentionality.test.tsx src/HeroFireExample.test.tsx src/shellNavigation.test.tsx src/UnslopStageB.test.tsx src/CalculatorStudioUnslop.test.tsx",
+      "exitCode": 0,
+      "filesPassed": 8,
+      "testsPassed": 34,
+      "status": "PASS"
+    }
+  ],
+  "fullSuite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh",
+    "exitCode": 0,
+    "nodeTestsPassed": 30,
+    "vitestFilesPassed": 118,
+    "vitestTestsPassed": 2960,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "prerenderedRoutes": 92,
+    "buildIsolationFiles": 26,
+    "previewAuthBuildIsolationFiles": 28,
+    "fixtureLeaks": 0
+  }
+}
