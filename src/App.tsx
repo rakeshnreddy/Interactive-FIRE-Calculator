@@ -3120,6 +3120,12 @@ function App({ auth }: { auth: AuthState }) {
 
   const navigate = (nextPanel: CalculatorPanel) => {
     if (nextPanel === 'compare') track('comparison_viewed', { family: 'fire' });
+    if (nextPanel === 'planner') {
+      const target = document.getElementById('fire-optional-refinements');
+      if (target instanceof HTMLDetailsElement) {
+        target.open = true;
+      }
+    }
     setCalculatorPanel(nextPanel);
     setIsMenuOpen(false);
   };
