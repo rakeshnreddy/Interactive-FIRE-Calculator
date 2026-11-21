@@ -37,7 +37,7 @@
   --color-inverse-heading: #ffffff;
   --color-inverse-body: #d8e4f0;
   --color-inverse-border: rgba(255, 255, 255, 0.28);
-  --color-nav-surface: rgba(255, 255, 255, 0.72);
+  --color-nav-surface: #ffffff;
   --color-nav-solid: #ffffff;
   --color-nav-text: #0f1e2e;
   --color-nav-fg: #2c4256;
@@ -48,8 +48,8 @@
   /* Text-on-tint tokens: the primary teal reads 4.2:1 on soft tinted chips, so text uses a darker ink. */
   --color-primary-ink: #075f52;
   --text-gradient: none;
-  --shadow-overlay: 0 18px 44px rgba(28, 54, 92, 0.14);
-  --shadow-rest: 0 1px 2px rgba(28, 54, 92, 0.08);
+  --shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.05);
   --app-atmosphere: none;
   --hero-media-opacity: 0.12;
   --hero-media-filter: saturate(0.85) contrast(0.95);
@@ -143,7 +143,7 @@
   --color-data-3: #ff9b78;
   --color-data-4: #f4c46f;
   --color-data-violet: #c1b0ff;
-  --color-nav-surface: rgba(10, 18, 30, 0.66);
+  --color-nav-surface: #0b1420;
   --color-nav-solid: #0b1420;
   --color-nav-text: #eef5fb;
   --color-nav-fg: rgba(238, 245, 251, 0.82);
@@ -153,8 +153,8 @@
   --color-nav-accent: #5fe6c8;
   --color-primary-ink: #5fe6c8;
   --text-gradient: none;
-  --shadow-overlay: 0 18px 44px rgba(0, 0, 0, 0.32);
-  --shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.32);
+  --shadow-rest: none;
   --app-atmosphere: none;
   --hero-media-opacity: 0.85;
   --hero-media-filter: saturate(0.95) contrast(1.05);

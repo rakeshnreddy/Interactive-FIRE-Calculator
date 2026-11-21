@@ -45,11 +45,11 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
             <p>{landingHero.body}</p>
             <div className="landing-actions">
               <a href="/calculators/fire" className="primary-button icon-text-button" onClick={link('/calculators/fire')}>
-                <Target size={16} />
+                <Target size={16} strokeWidth={1.5} aria-hidden="true" />
                 {landingHero.primaryAction}
               </a>
               <a href="/calculators" className="secondary-button icon-text-button" onClick={link('/calculators')}>
-                <Calculator size={16} />
+                <Calculator size={16} strokeWidth={1.5} aria-hidden="true" />
                 {landingHero.secondaryAction}
               </a>
             </div>
@@ -64,9 +64,9 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
           }}>
             <label htmlFor="home-question">What are you trying to work out?</label>
             <div className="landing-finder-field">
-              <Search size={20} aria-hidden="true" />
+              <Search size={18} strokeWidth={1.5} aria-hidden="true" />
               <input id="home-question" type="search" name="q" placeholder="Try mortgage, PPF or retirement" maxLength={120} aria-describedby="home-question-help" />
-              <button type="submit" className="primary-button">Find a calculator <ArrowRight size={18} aria-hidden="true" /></button>
+              <button type="submit" className="secondary-button">Search</button>
             </div>
             <p id="home-question-help">Search by topic. Use your own numbers in the calculator.</p>
           </form>
@@ -75,9 +75,9 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
             {usefulCalculatorPaths.map((pathItem) => {
               const Icon = pathItem.icon;
               return <a key={pathItem.route} href={pathItem.route} onClick={link(pathItem.route)}>
-                <Icon size={20} aria-hidden="true" />
+                <Icon size={18} strokeWidth={1.5} aria-hidden="true" />
                 <span><strong>{pathItem.action}</strong><small>{pathItem.title}</small></span>
-                <ArrowRight size={16} aria-hidden="true" />
+                <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
               </a>;
             })}
           </nav>
@@ -89,7 +89,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
       <section className="landing-capabilities" aria-labelledby="capabilities-title">
         <header>
           <p className="eyebrow">How it works</p>
-          <h2 id="capabilities-title">Start with a question. Leave with a clearer plan.</h2>
+          <h2 id="capabilities-title">Start with a question, leave with a clearer plan</h2>
           <p>Calculate with your numbers. Compare a change. Save the decision when you want to revisit it.</p>
         </header>
 
@@ -111,7 +111,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
       <section className="landing-trust" aria-labelledby="trust-title">
         <header>
           <p className="eyebrow">Why FinPath</p>
-          <h2 id="trust-title">Honest math, in your currency.</h2>
+          <h2 id="trust-title">Honest math, in your currency</h2>
         </header>
         <div className="landing-trust-grid">
           {landingTrustPoints.map((point) => (
@@ -139,9 +139,9 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
       </section>
 
       <section className="privacy-band" aria-labelledby="privacy-title">
-        <ShieldCheck size={24} />
+        <ShieldCheck size={18} strokeWidth={1.5} aria-hidden="true" />
         <div>
-          <h2 id="privacy-title">Start without an account.</h2>
+          <h2 id="privacy-title">Start without an account</h2>
           <p>
             Use the public calculators before deciding whether to create an account.
           </p>
@@ -150,7 +150,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
           auth.isSignedIn ? (
             <a href="/dashboard" className="secondary-button icon-text-button" onClick={link('/dashboard')}>
               Open dashboard
-              <ArrowRight size={17} />
+              <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </a>
           ) : (
             <AuthActionButton
@@ -160,7 +160,7 @@ export function LandingPage({ auth, onNavigate }: { auth: AuthState; onNavigate:
               onUnavailable={() => onNavigate('/dashboard')}
             >
               Create account
-              <ArrowRight size={17} />
+              <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </AuthActionButton>
           )
         )}

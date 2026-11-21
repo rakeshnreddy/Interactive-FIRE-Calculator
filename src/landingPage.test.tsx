@@ -48,9 +48,10 @@ describe('LandingPage (B18)', () => {
       <LandingPage auth={unconfiguredAuth} onNavigate={() => {}} />
     );
 
-    // Exact B18 copy contract
+    // Exact B18 / B79 copy contract
     expect(html).toContain('Free financial calculators for the US and India');
-    expect(html).toContain('Clear answers to your money questions.');
+    expect(html).toContain('Clear answers to your money questions');
+    expect(html).not.toContain('Clear answers to your money questions.');
     expect(html).toContain('No account needed, no ads.');
 
     // Obsolete copy must be absent
@@ -104,7 +105,7 @@ describe('LandingPage (B18)', () => {
     );
 
     // Lower section heading
-    expect(html).toContain('Start with a question. Leave with a clearer plan.');
+    expect(html).toContain('Start with a question, leave with a clearer plan');
 
     // 3 steps
     expect(html).toContain('Add your numbers');
@@ -125,7 +126,8 @@ describe('LandingPage (B18)', () => {
     const unconfiguredHtml = renderToStaticMarkup(
       <LandingPage auth={unconfiguredAuth} onNavigate={() => {}} />
     );
-    expect(unconfiguredHtml).toContain('Start without an account.');
+    expect(unconfiguredHtml).toContain('Start without an account');
+    expect(unconfiguredHtml).not.toContain('Start without an account.');
     expect(unconfiguredHtml).toContain(
       'Use the public calculators before deciding whether to create an account.'
     );

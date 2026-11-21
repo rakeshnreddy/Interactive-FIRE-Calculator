@@ -48,6 +48,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C34 | Cross-field and boundary validation across Loan, Return, Tax & Retirement studios (`LH-02`, `LH-07`, `RET-02`, `RINC-04`, `RINC-05`, `TAX-03`, `RINC-15`) | B72 | accepted | 4abce6598fa702caf5688d0bf9018ef31eb2334f | [Approved; shared beta verified](reviews/C34.md) |
 | C35 | Dedicated planner & saved-record integrity fixes (`CBS-01`, `CBS-02`, `CBS-04`, `CBS-05`, `CBS-07`, `RINC-07`, `RINC-12`) | B73 | accepted | 171c3f57c7d725b882accd947a68a2b7edd94dd0 | [Approved; shared beta verified](reviews/C35.md) |
 | C37 | Charts, schedules, statutory provenance links & P2/P3 copy honesty across all studios (`TAX-05`, `TAX-06`, `TAX-08`, `TAX-09`, `RET-04`, `RET-05`, `RET-07`, `RET-08`, `RINC-05`, `RINC-06`, `RINC-09`, `RINC-11`, `RINC-14`, `RINC-16`, `DEBT-04`, `DEBT-06`, `DEBT-07`, `GGS-04`, `GGS-05`, `GGS-06`, `GGS-08`, `GGS-09`, `GGS-10`, `LH-09`, `LH-10`, `LH-11`, `CBS-06`) | B75 | accepted | e9e4963d0eff19c3c6cf20bcb0b2b50089633254 | [Approved; shared beta verified](reviews/C37.md) |
+| C40 | Unslop Stage C: Homepage, application shell & footer | B79 | in_progress | — | Pending |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -165,3 +166,7 @@ B75/C37 is now in progress after verified PR #163 merge (`391ec32557df70973eec27
 ## Charts, schedules, provenance & copy honesty acceptance — 2026-11-14
 
 B75/C37 is accepted on `2026-11-14` at product commit `e9e4963d0eff19c3c6cf20bcb0b2b50089633254` ([PR #164](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/164), exact-head `Verify` CI [`43626312918`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/43626312918) `SUCCESS`, candidate `f4433442-1dcd-4eba-bb6f-09d00c9bc0e2`, shared beta `54c96047-fbbc-4982-a65b-b9ce8018f451` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C37.md)). `75` of `78` registered tasks done. All `10` bounded calculator analysis & `/unslop` visual overhaul checkpoints (`B68`–`B78` / `C30`–`C39`) from `ANALYSIS_2026-10-18.md` are now accepted and shared-beta verified.
+
+## Unslop Stage C registration — 2026-11-21
+
+B79/C40 is now in progress from `main` `63299bb1c2dcffd23f4de4c70fe89f3f1e1118ef` ([PR #164](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/164), `main` CI `43627466081`) to complete the `/unslop` visual overhaul across the homepage (`src/home.css`, `src/LandingPage.tsx`, `src/lib/landingContent.ts`, `src/HeroFireExample.tsx`), application shell & footer (`src/shell.css`, `src/vivid-theme.css`), and shared shadow tokens. `75` of `79` registered tasks done. See [prompts/B79.md](prompts/B79.md).

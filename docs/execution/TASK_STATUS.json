@@ -1268,6 +1268,25 @@
       "code_sha": "e9e4963d0eff19c3c6cf20bcb0b2b50089633254",
       "review": "reviews/C37.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B79",
+      "title": "Unslop Stage C: homepage, application shell and footer",
+      "checkpoint": "C40",
+      "status": "in_progress",
+      "dependencies": [
+        "B70",
+        "B74",
+        "B76",
+        "B78",
+        "B75"
+      ],
+      "prompt": "prompts/B79.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

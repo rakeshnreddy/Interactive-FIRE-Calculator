@@ -113,14 +113,15 @@ export function HeroFireExample() {
             Modeled trajectory starting at {formatted.requiredPortfolio} in Year {startYear} and drawing down to {formatted.modeledEndBalance} at Year {endYear}.
           </desc>
 
-          <defs>
-            <linearGradient id="heroGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--color-primary-bg)" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="var(--color-primary-bg)" stopOpacity="0.02" />
-            </linearGradient>
-          </defs>
-
-          {/* Zero baseline grid */}
+          {/* Subtle horizontal mid-rule and zero baseline */}
+          <line
+            x1={padding.left}
+            y1={padding.top + graphHeight / 2}
+            x2={svgWidth - padding.right}
+            y2={padding.top + graphHeight / 2}
+            className="hero-svg-grid"
+            aria-hidden="true"
+          />
           <line
             x1={padding.left}
             y1={padding.top + graphHeight}
@@ -130,14 +131,14 @@ export function HeroFireExample() {
             aria-hidden="true"
           />
 
-          {/* Shaded area and line */}
-          <path d={areaD} fill="url(#heroGradient)" aria-hidden="true" />
-          <path d={pathD} fill="none" className="hero-svg-line" strokeWidth="2.5" aria-hidden="true" />
+          {/* Quiet flat area tint and trajectory line */}
+          <path d={areaD} className="hero-svg-area" aria-hidden="true" />
+          <path d={pathD} fill="none" className="hero-svg-line" strokeWidth="2" aria-hidden="true" />
 
           {/* Key landmark points with dollar amounts */}
           {points[0] && (
             <g aria-hidden="true">
-              <circle cx={points[0].x} cy={points[0].y} r="4" className="hero-svg-point" />
+              <circle cx={points[0].x} cy={points[0].y} r="3.5" className="hero-svg-point" />
               <text x={points[0].x} y={points[0].y - 8} className="hero-svg-amount-label">
                 {formatted.requiredPortfolio}
               </text>
@@ -148,7 +149,7 @@ export function HeroFireExample() {
               <circle
                 cx={points[points.length - 1].x}
                 cy={points[points.length - 1].y}
-                r="4"
+                r="3.5"
                 className="hero-svg-point"
               />
               <text
