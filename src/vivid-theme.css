@@ -25,9 +25,9 @@
   --color-primary-pressed-bg: #07574c;
   --color-primary-fg: #ffffff;
   --color-focus: #3b6cf0;
-  --color-success: #178a5c;
+  --color-success: #116b46;
   --color-warning: #9a5a00;
-  --color-danger: #c4385a;
+  --color-danger: #b02a4b;
   --color-data-1: #0b7c6c;
   --color-data-2: #3b6cf0;
   --color-data-3: #d9653f;
@@ -200,9 +200,9 @@
   --color-primary-pressed-bg: oklch(0.41049205 0.07200380 180.10547);
   --color-primary-fg: oklch(0.99999999 0.00000004 0.00000);
   --color-focus: oklch(0.57459238 0.20590016 265.04775);
-  --color-success: oklch(0.56180949 0.12043894 160.09090);
+  --color-success: oklch(0.46828459 0.10030752 159.71012);
   --color-warning: oklch(0.52918499 0.11938038 64.31735);
-  --color-danger: oklch(0.55744244 0.17652129 10.83889);
+  --color-danger: oklch(0.50650649 0.16984463 11.79706);
   --color-data-1: oklch(0.52621917 0.09358938 179.31681);
   --color-data-2: oklch(0.57459238 0.20590016 265.04775);
   --color-data-3: oklch(0.64127427 0.15529812 38.47862);

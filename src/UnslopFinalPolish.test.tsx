@@ -49,12 +49,21 @@ describe('B80 / C41 — Final /unslop sitewide polish, WCAG contrast & legacy al
     }
   });
 
-  it('repairs light-mode WCAG AA contrast on info-dot, compound-base-label, and chart legend text while preserving pattern swatches (R1)', () => {
+  it('repairs light-mode WCAG AA contrast on info-dot, row-number, tinted badges, compound-base-label, semantic tokens, and chart legend text while preserving pattern swatches (R1)', () => {
     const stylesCss = readFileSync(resolve(rootDir, 'src/styles.css'), 'utf8');
+    const vividCss = readFileSync(resolve(rootDir, 'src/vivid-theme.css'), 'utf8');
 
-    // .info-dot and .compound-base-label use high-contrast --color-primary-ink (not raw --accent)
+    // .info-dot, .row-number, .pill, review badges, and .compound-base-label use high-contrast --color-primary-ink (not raw --accent)
     expect(stylesCss).toMatch(/\.info-dot\s*\{[^}]*color:\s*var\(--color-primary-ink\)/s);
+    expect(stylesCss).toMatch(/\.row-number\s*\{[^}]*color:\s*var\(--color-primary-ink\)/s);
+    expect(stylesCss).toMatch(/\.pill\s*\{[^}]*color:\s*var\(--color-primary-ink\)/s);
+    expect(stylesCss).toMatch(/\.review-badge-deferred,\s*\.review-badge-defer\s*\{[^}]*color:\s*var\(--color-primary-ink\)/s);
+    expect(stylesCss).toMatch(/\.review-badge-revise\s*\{[^}]*color:\s*var\(--color-primary-ink\)/s);
+    expect(stylesCss).toMatch(/\.review-badge-too-early,\s*\.review-badge-baseline\s*\{[^}]*color:\s*var\(--color-muted-strong\)/s);
     expect(stylesCss).toMatch(/\.compound-base-label\s*\{[^}]*color:\s*var\(--color-primary-ink\)[^}]*font-size:\s*0\.75rem/s);
+    // Light-mode semantic success and danger tokens pass >= 4.5:1 on surfaces and soft tinted badges
+    expect(vividCss).toContain('--color-success: #116b46;');
+    expect(vividCss).toContain('--color-danger: #b02a4b;');
 
     // Legend labels render neutral readable text (--color-body) while ::before carries series color/pattern
     expect(stylesCss).toMatch(

@@ -918,7 +918,7 @@ svg {
 .transaction-type-transfer,
 .transaction-type-adjustment {
   border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
-  color: var(--accent);
+  color: var(--color-primary-ink);
   background: var(--accent-wash);
 }
 
@@ -1024,7 +1024,7 @@ svg {
 
 .goal-status-active {
   border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
-  color: var(--accent);
+  color: var(--color-primary-ink);
   background: var(--accent-wash);
 }
 
@@ -1156,7 +1156,7 @@ svg {
 }
 
 .dashboard-calculator-card span {
-  color: var(--accent);
+  color: var(--color-primary-ink);
   font-size: 0.7rem;
   font-weight: 600;
   line-height: 1.25;
@@ -2474,7 +2474,7 @@ h2 {
   height: 44px;
   border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
   border-radius: 8px;
-  color: var(--accent);
+  color: var(--color-primary-ink);
   background: var(--accent-soft);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
@@ -2629,7 +2629,7 @@ h2 {
   padding: 0 0.72rem;
   border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
   border-radius: 6px;
-  color: var(--accent);
+  color: var(--color-primary-ink);
   background: var(--accent-soft);
   font-size: 0.78rem;
   font-weight: 600;
@@ -4434,7 +4434,7 @@ h2 {
 }
 
 .compound-scenario-picker span {
-  color: var(--accent);
+  color: var(--color-primary-ink);
   font-size: 0.73rem;
   font-weight: 600;
   text-transform: none;
@@ -5597,7 +5597,7 @@ h2 {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: none;
-  color: var(--accent);
+  color: var(--color-primary-ink);
   white-space: nowrap;
   padding: 0.35rem 0.65rem;
   border-radius: 6px;
@@ -5812,7 +5812,7 @@ h2 {
 .review-badge-deferred,
 .review-badge-defer {
   background: color-mix(in srgb, var(--accent) 16%, transparent);
-  color: var(--accent);
+  color: var(--color-primary-ink);
   border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
@@ -5825,14 +5825,14 @@ h2 {
 
 .review-badge-revise {
   background: color-mix(in srgb, var(--accent) 16%, transparent);
-  color: var(--accent);
+  color: var(--color-primary-ink);
   border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .review-badge-too-early,
 .review-badge-baseline {
   background: color-mix(in srgb, var(--muted) 16%, transparent);
-  color: var(--muted);
+  color: var(--color-muted-strong);
   border-color: var(--border);
 }
 
@@ -6599,7 +6599,7 @@ h2 {
   padding: 0.22rem 0.5rem;
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--accent);
+  color: var(--color-primary-ink);
   background: var(--accent-wash);
   font-size: 0.72rem;
   font-weight: 600;
@@ -7504,7 +7504,7 @@ h2 {
 
 .calculator-comparison-grid span,
 .calculator-history-compare span {
-  color: var(--accent);
+  color: var(--color-primary-ink);
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: none;
@@ -8554,7 +8554,7 @@ body:has(.app[data-mode="dark"]) {
   padding: 0;
   border: 0;
   border-radius: 0;
-  color: var(--accent);
+  color: var(--color-primary-ink);
   background: transparent;
   font-size: 0.7rem;
   font-weight: 600;
