@@ -34,7 +34,7 @@ describe('homepage question finder', () => {
     expect(form!.getAttribute('method')).toBe('get');
     const input = form!.querySelector<HTMLInputElement>('input[name="q"]')!;
     expect(host.querySelector(`label[for="${input.id}"]`)?.textContent).toBe('What are you trying to work out?');
-    expect(form!.querySelector('button[type="submit"]')?.textContent).toContain('Find a calculator');
+    expect(form!.querySelector('button[type="submit"]')?.textContent?.trim()).toBe('Search');
   });
   it('trims and URL-encodes topics without interpreting financial input', async () => {
     await submit('  PPF & retirement  ');

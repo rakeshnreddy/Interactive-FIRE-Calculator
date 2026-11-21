@@ -2,7 +2,7 @@
 // search engines and assistants read is exactly what visitors see.
 export const landingHero = {
   eyebrow: 'Free financial calculators for the US and India',
-  title: 'Clear answers to your money questions.',
+  title: 'Clear answers to your money questions',
   body:
     'Work out retirement, debt and savings. Change the assumptions. See what moves the answer. No account needed, no ads.',
   primaryAction: 'See when you could retire',

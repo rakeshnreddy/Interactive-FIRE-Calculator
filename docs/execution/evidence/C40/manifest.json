@@ -1,0 +1,131 @@
+{
+  "checkpoint": "C40",
+  "task": "B79",
+  "date": "2026-11-21",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "3d2eec784501ff5de884d96dd0e0d6819370344b",
+  "base": "63299bb1c2dcffd23f4de4c70fe89f3f1e1118ef",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/165",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 44906248663,
+    "event": "pull_request",
+    "headSha": "3d2eec784501ff5de884d96dd0e0d6819370344b",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44906248663"
+  },
+  "candidate": {
+    "deployment_id": "fb66b6c2-6777-444e-bb07-56d6a940f806",
+    "immutable_url": "https://fb66b6c2.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://c40-candidate.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "47932667-2094-444b-94ed-4543f98ab44d",
+    "immutable_url": "https://47932667.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "tests": {
+    "node": 30,
+    "files": 118,
+    "vitest": 2960,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "3d2eec784501ff5de884d96dd0e0d6819370344b"
+  },
+  "independent_review": {
+    "reviewer": "2033b825-5825-4200-96b9-1fdfc5ade2bb",
+    "role": "B79 C40 Adversarial Reviewer",
+    "completed": true,
+    "verdict": "PASS",
+    "findings": [
+      "Fixed c40-unslop-stage-c.mjs context cleanup (B1), .site-footer-brand strong and .home-page strong UA weight 700 (B2), wrapped finder field nested-radius symmetry (M1), 4-corner radius audit (M2), 72px column-gap cap (m1), off-scale weight & menu runtime checks (m2), and Clerk third-party UserButton cl-* exclusion (B3) before final PASS."
+    ]
+  },
+  "source_hashes": [
+    {
+      "path": "DESIGN.md",
+      "bytes": 20452,
+      "sha256": "e38a7f01405dd2e939a7f4ac3abc85d39aaa4558f1dd81f0ac920a53d5fd4247"
+    },
+    {
+      "path": "scripts/smoke/c40-unslop-stage-c.mjs",
+      "bytes": 12510,
+      "sha256": "835b5375000d5e1b02ec7f4410534be6c95ca844a5ddb8df28fedc1e2736e8b4"
+    },
+    {
+      "path": "src/HeroFireExample.tsx",
+      "bytes": 8709,
+      "sha256": "ac4f45468bb87f992c660b6606ddf562ff45b73a8683e4bda310b5f32632a2d9"
+    },
+    {
+      "path": "src/LandingFinder.test.tsx",
+      "bytes": 3192,
+      "sha256": "04914f19d0a330b31db24c6d987503067c8f45e6a51112ed5b54997e19ef061a"
+    },
+    {
+      "path": "src/LandingPage.tsx",
+      "bytes": 7562,
+      "sha256": "8fdb7c1260740ad46358699fd4631c9555dd47100d9739b907b041b8b9894518"
+    },
+    {
+      "path": "src/UnslopStageC.test.tsx",
+      "bytes": 8061,
+      "sha256": "7bd8873b471383a5ba5c07deb38ea934dd101db04c38b518a4b7379feffeefeb"
+    },
+    {
+      "path": "src/home.css",
+      "bytes": 13019,
+      "sha256": "6046c3e0bd806762522e52060fd2f95f79474432767927d9f54cf6919507a6e1"
+    },
+    {
+      "path": "src/landingPage.test.tsx",
+      "bytes": 5840,
+      "sha256": "46c0fb9dc63b6b5a36c22db0cee4eaa22cd7581f624efae3a971242ac32c217d"
+    },
+    {
+      "path": "src/lib/landingContent.ts",
+      "bytes": 3186,
+      "sha256": "01c4bfc5aae6b12dc1a4b1761f811931c6b8b70119226c39f186a4afb0c8e7d1"
+    },
+    {
+      "path": "src/shell.css",
+      "bytes": 10331,
+      "sha256": "4ab0971d246978016e871953c3f9c43c8791016e968b56aa083ec582563de2bb"
+    },
+    {
+      "path": "src/vivid-theme.css",
+      "bytes": 41992,
+      "sha256": "ce1f52c0b746b2ab0773075d20bddba5e884878a492549d4979e66bc7b5953cb"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C40/raw/beta-alias-public-calculators.txt",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C40/raw/beta-hosted.json",
+      "bytes": 10642,
+      "sha256": "5caacad3a6f2fc2529cef9bca140c10d9223ca40e283e9093fa7e81c60f12897"
+    },
+    {
+      "path": "docs/execution/evidence/C40/raw/beta-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "942ab00474bd5dfc4f14d525acda0da488b22afa4e85f15c74931c9fafa00174"
+    },
+    {
+      "path": "docs/execution/evidence/C40/raw/candidate-hosted.json",
+      "bytes": 10638,
+      "sha256": "74459e570d7f003a8b822d2a1145fe061a9ac825c45a1f62d63d63cfaaddcd87"
+    },
+    {
+      "path": "docs/execution/evidence/C40/raw/candidate-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "b038568a40c5aea0a3cf956b819aa7fe759f684c3b7ec251aea203e1779622ab"
+    }
+  ]
+}
