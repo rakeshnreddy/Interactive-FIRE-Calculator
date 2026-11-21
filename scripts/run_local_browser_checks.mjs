@@ -356,7 +356,7 @@ async function main() {
     const errorUiInspection = await errClient.eval(`(() => {
       const heading = document.querySelector('h1')?.textContent?.trim() || null;
       const allText = document.body.innerText;
-      const expectedSnippet = 'Account features are currently unavailable.';
+      const expectedSnippet = 'Account features are currently unavailable';
       const hasErrorSnippet = allText.includes(expectedSnippet);
       const actionBtn = Array.from(document.querySelectorAll('button, a')).find(
         (b) =>

@@ -1,23 +1,22 @@
 # FinPath execution resume — 2026-11-21
 
-**C40/B79 (Unslop Stage C: Homepage, application shell & footer) accepted and shared-beta verified at `3d2eec784501ff5de884d96dd0e0d6819370344b` ([PR #165](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/165), [review](reviews/C40.md)). 76 of 79 registered tasks done.** Do not repeat completed B68–B79 releases.
+**C41/B80 (Final `/unslop` sitewide polish, WCAG contrast & performance verification) accepted and shared-beta verified at `58b1a3604196842c64a8af224f24616b6f8cd0c9` ([PR #166](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/166), [review](reviews/C41.md), [Gemini Argon review notes](GEMINI_ARGON_REVIEW_NOTES.md)). 77 of 80 registered tasks done.** All autonomous calculator-excellence (`B68`–`B75`) and `/unslop` visual overhaul (`B70`, `B78`, `B74`, `B76`, `B79`, `B80`) checkpoints are complete. Do not repeat completed releases.
 
 ## Working copy and exact next action
 
 Use `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`. `Documents/ChatGPT` is stale at PR #138; preserve it.
 
-1. Confirm `main` is at merged [PR #165](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/165) and `main` CI is green.
-2. Register and execute **B80 / C41 (Final `/unslop` sitewide polish, measured contrast & performance audit + Gemini Argon review handoff notes)** across every page family (home, calculator library, all 7 calculator studios, dedicated calculators, signed-in workspace, header/footer/menus) in light and dark themes, deploying to candidate and shared beta (`codex/finpath-quality-execution`) and merging to `main`.
-3. Production cutover (`OA-1`, `OA-3`), real-user validation (`B51`), paid offer (`B13`), and mobile capability study (`B14`) remain owner-gated.
+1. **For Gemini Argon thorough review:** Start with [GEMINI_ARGON_REVIEW_NOTES.md](GEMINI_ARGON_REVIEW_NOTES.md), which contains the complete release ledger (`B68`–`B80`), file-by-file change map, exact measured contrast & cold-load Web Vitals metrics, copy-pasteable verification commands, and high-value adversarial spot-checks against live shared beta.
+2. **Remaining work is owner-gated only:** Production cutover (`OA-1`, `OA-3`), real-user cohort validation (`B51` / `OA-5`), paid offer (`B13`), mobile capability study (`B14`), and deferred native screen-reader & 200%-zoom sweeps (`DEFERRED_CHECKS.md`).
 
-## Verified shared-beta release (C40 / B79)
+## Verified shared-beta release (C41 / B80)
 
-- **Stable beta alias:** [`https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev)
-- **Beta immutable URL:** [`https://47932667.interactive-fire-calculator.pages.dev`](https://47932667.interactive-fire-calculator.pages.dev) (`47932667-2094-444b-94ed-4543f98ab44d`)
-- **Candidate immutable URL:** [`https://fb66b6c2.interactive-fire-calculator.pages.dev`](https://fb66b6c2.interactive-fire-calculator.pages.dev) (`fb66b6c2-6777-444e-bb07-56d6a940f806`)
-- **Product source SHA:** `3d2eec784501ff5de884d96dd0e0d6819370344b`
-- **Exact-head product CI:** [`44906248663`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44906248663) (`SUCCESS`)
-- **Suite & hosted verification:** Focused Vitest suites passed `34/34` across `8` files (`3/3` in `src/UnslopStageC.test.tsx`); `PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh` passed (`30` Node script checks, `118` Vitest files / `2,960` tests, `tsc --noEmit`, build `240.38 kB` / `37.59 kB` gzip CSS, `92` prerendered routes + `404.html`, and bundle isolation `26` standard + `28` preview-auth production assets with `0` fixture leaks). Candidate, beta immutable, and beta alias all passed 84 public routes (`smoke_public_calculators.mjs`), and candidate + beta immutable both passed `scripts/hosted_smoke.mjs --scenario c40-unslop-stage-c` (all 7 stages passed, including `8` `unslop-homepage` cases + `14` `unslop-shell-footer` cases with expanded hero SVG, mobile menu, and signed-in desktop dropdown, `errors: []`, and verified 16-table zero-row cleanup + Clerk provider deletion on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`).
+- **Stable beta alias:** [`https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev) (verified serving `assets/main-B76RqLAG.js` & `assets/main-BrVVeBp4.css`)
+- **Beta immutable URL:** [`https://6467d8ac.interactive-fire-calculator.pages.dev`](https://6467d8ac.interactive-fire-calculator.pages.dev) (`6467d8ac-ead9-4a40-8e0c-54dcc329cd8d`)
+- **Candidate immutable URL:** [`https://0bbddbcf.interactive-fire-calculator.pages.dev`](https://0bbddbcf.interactive-fire-calculator.pages.dev) (`0bbddbcf-ee4c-47b7-9cb0-0ebcf49142f6`)
+- **Product source SHA:** `58b1a3604196842c64a8af224f24616b6f8cd0c9`
+- **Exact-head product CI:** [`44910672642`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44910672642) (`SUCCESS`)
+- **Suite & hosted verification:** `PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh` passed (`30` Node script checks, `119` Vitest files / `2,964` tests including `4/4` in `src/UnslopFinalPolish.test.tsx`, `tsc --noEmit`, Vite build `241.37 kB` / `37.69 kB` gzip CSS, `92` prerendered routes + `404.html`, and bundle isolation `26` standard + `28` preview-auth production assets with `0` fixture leaks). Candidate, immutable beta, and stable beta alias all passed 84 public routes (`smoke_public_calculators.mjs`), and candidate + immutable beta both passed all 7 stages of `scripts/hosted_smoke.mjs --scenario c41-unslop-final-polish` (`16` routes / `66` live cases including expanded `.compound-analysis-card` and signed-in `/dashboard`, `globalMinContrast: 4.58`, cold-load `LCP: 256–380ms`, `CLS: 0–0.0001`, `CSS: 38.7 KB`, `errors: []`, and verified 16-table zero-row cleanup + Clerk provider deletion on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`).
 
 ## Compatibility and boundaries
 
