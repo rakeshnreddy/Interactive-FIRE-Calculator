@@ -881,6 +881,24 @@
     }
   }
 
+  /* Semantic inline links in methodology panels and dedicated calculator prose */
+  .calculator-methodology-panel a,
+  .route-shell > p a:not([class]),
+  [aria-labelledby="vehicle-title"] p a:not([class]),
+  [aria-labelledby="dated-return-title"] a:not([class]) {
+    color: var(--color-primary-ink);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .calculator-methodology-panel a:hover,
+  .route-shell > p a:not([class]):hover,
+  [aria-labelledby="vehicle-title"] p a:not([class]):hover,
+  [aria-labelledby="dated-return-title"] a:not([class]):hover {
+    color: var(--color-heading);
+  }
+
   /* Accessibility: honor reduced-motion and OS high-contrast preferences */
   @media (prefers-reduced-motion: reduce) {
     :is(

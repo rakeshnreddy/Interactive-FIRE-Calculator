@@ -14,6 +14,6 @@ describe('B70 shared application shell', () => {
   for(const href of ['/','/calculators','/calculators/fire','/calculators#toolkit-home','/calculators#toolkit-income-tax','/#faq']) expect(footer.querySelector(`a[href="${href}"]`)).not.toBeNull();
   expect(element.querySelector('.brand')?.getAttribute('aria-label')).toBe('FinPath home');
   expect(element.querySelector('.desktop-nav')?.textContent).not.toContain('Workspace');
-  if(route==='/dashboard') expect(element.textContent).toContain('Account features are currently unavailable.');
+  if(route==='/dashboard') expect(element.textContent).toContain('Account features are currently unavailable');
  });
 });

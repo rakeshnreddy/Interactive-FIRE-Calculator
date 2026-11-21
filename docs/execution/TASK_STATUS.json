@@ -1287,6 +1287,23 @@
       "code_sha": "3d2eec784501ff5de884d96dd0e0d6819370344b",
       "review": "reviews/C40.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B80",
+      "title": "Final /unslop sitewide polish, WCAG contrast and performance verification",
+      "checkpoint": "C41",
+      "status": "in_progress",
+      "dependencies": [
+        "B74",
+        "B76",
+        "B79"
+      ],
+      "prompt": "prompts/B80.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

@@ -146,7 +146,7 @@ describe('B39 App Parity Verification (Read-Only against Immutable Baseline)', (
     window.history.replaceState({}, '', '/dashboard');
     const candidateHtml = normalizeHtml(renderToStaticMarkup(<App auth={signedOutAuth} />));
     expect(candidateHtml).toContain('FinPath');
-    expect(candidateHtml).toContain('Sign in to open Dashboard.');
+    expect(candidateHtml).toContain('Sign in to open Dashboard');
     expect(candidateHtml).toContain('Dashboard is part of your signed-in workspace.');
     expect(candidateHtml).toContain('Browse calculators');
   });

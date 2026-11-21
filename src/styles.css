@@ -1913,7 +1913,7 @@ h2 {
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
   border-radius: 6px;
-  color: var(--accent);
+  color: var(--color-primary-ink);
   background: var(--accent-soft);
   font-size: 0.72rem;
   font-weight: 600;
@@ -4017,15 +4017,20 @@ h2 {
   background: color-mix(in srgb, var(--warning) 8%, var(--surface-soft));
 }
 
-.savings-runway-chart .compound-chart-legend .is-required { color: var(--savings-required); }
-.savings-runway-chart .compound-chart-legend .is-current { color: var(--savings-current); }
-.savings-runway-chart .compound-chart-legend .is-target { color: var(--savings-target); }
+.savings-runway-chart .compound-chart-legend .is-required,
+.savings-runway-chart .compound-chart-legend .is-current,
+.savings-runway-chart .compound-chart-legend .is-target { color: var(--color-body); }
+
+.savings-runway-chart .compound-chart-legend .is-required::before {
+  background: var(--savings-required);
+}
 
 .savings-runway-chart .compound-chart-legend .is-current::before {
-  background: repeating-linear-gradient(135deg, currentColor, currentColor 3px, transparent 3px, transparent 6px);
+  background: repeating-linear-gradient(135deg, var(--savings-current), var(--savings-current) 3px, transparent 3px, transparent 6px);
 }
 
 .savings-runway-chart .compound-chart-legend .is-target::before {
+  background: var(--savings-target);
   height: 3px;
   border-radius: 0;
 }
@@ -4584,20 +4589,22 @@ h2 {
   content: "";
 }
 
-.compound-chart-legend .is-capital {
-  color: var(--compound-capital);
-}
-
-.compound-chart-legend .is-growth {
-  color: var(--compound-growth);
-}
-
+.compound-chart-legend .is-capital,
+.compound-chart-legend .is-growth,
 .compound-chart-legend .is-real {
-  color: var(--warm);
+  color: var(--color-body);
+}
+
+.compound-chart-legend .is-capital::before {
+  background: var(--compound-capital);
+}
+
+.compound-chart-legend .is-growth::before {
+  background: var(--compound-growth);
 }
 
 .compound-chart-legend .is-real::before {
-  border: 2px solid currentColor;
+  border: 2px solid var(--warm);
   background: transparent;
 }
 
@@ -4842,8 +4849,8 @@ h2 {
 
 .compound-base-label {
   display: block;
-  color: var(--accent);
-  font-size: 0.65rem;
+  color: var(--color-primary-ink);
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
@@ -5613,7 +5620,7 @@ h2 {
 .modal-content.planning-unsaved-modal {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: 12px;
   padding: 1.75rem;
   max-width: 480px;
   width: 100%;
@@ -6121,7 +6128,7 @@ h2 {
 @media (max-width: 620px) {
   .planning-overview {
     grid-template-columns: 1fr;
-    border-radius: 16px;
+    border-radius: 12px;
   }
 
   .planning-overview article,
@@ -6759,7 +6766,7 @@ h2 {
   gap: 0.75rem;
   padding: 0.85rem;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--surface-soft);
 }
 
@@ -7035,7 +7042,7 @@ h2 {
   gap: 0.65rem;
   padding: 0.75rem;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--surface-soft);
 }
 
@@ -7192,7 +7199,7 @@ h2 {
 
 .calculator-breakdown-shell {
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--surface-soft);
   box-shadow: none;
 }
@@ -7314,7 +7321,7 @@ h2 {
   max-height: 430px;
   overflow: auto;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   background: color-mix(in srgb, var(--surface-strong) 66%, transparent);
 }
 
@@ -7545,7 +7552,7 @@ h2 {
   width: 26px;
   height: 26px;
   place-items: center;
-  border-radius: 50%;
+  border-radius: 6px;
   color: var(--heading);
   background: var(--accent-wash);
   font-size: 0.72rem;
@@ -7730,7 +7737,7 @@ h2 {
   align-items: center;
   padding: 0.85rem;
   border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--accent-wash);
 }
 
@@ -7819,7 +7826,7 @@ h2 {
   min-width: 0;
   padding: 0.75rem;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   color: var(--text);
   background: var(--surface-soft);
   text-align: left;
@@ -7886,7 +7893,7 @@ h2 {
   min-width: 0;
   padding: 0.85rem;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--surface-soft);
 }
 
@@ -7925,7 +7932,7 @@ h2 {
   .calculator-breakdown-shell,
   .calculator-engagement-shell,
   .calculator-faq-panel {
-    border-radius: 16px;
+    border-radius: 12px;
   }
 
   .calculator-card-grid,
@@ -7941,11 +7948,11 @@ h2 {
 
   .calculator-scenario-tabs {
     grid-template-columns: 1fr;
-    border-radius: 18px;
+    border-radius: 12px;
   }
 
   .calculator-scenario-tabs button {
-    border-radius: 14px;
+    border-radius: 8px;
   }
 
   .calculator-studio-chart-row {
@@ -8026,6 +8033,12 @@ h2 {
 
 body {
   background: #f4f7f7;
+}
+
+html:has(.app[data-mode="dark"]),
+body:has(.app[data-mode="dark"]) {
+  color: #eef5fb;
+  background: #090f19;
 }
 
 .app {
@@ -8370,7 +8383,7 @@ body {
   margin-bottom: 0.12rem;
   color: var(--muted);
   font-size: 0.73rem;
-  font-weight: 560;
+  font-weight: 500;
 }
 
 .calculator-toolkit h2 {
@@ -8425,7 +8438,7 @@ body {
 .calculator-toolkit-featured a span {
   color: var(--muted);
   font-size: 0.68rem;
-  font-weight: 560;
+  font-weight: 500;
 }
 
 .calculator-toolkit-featured a strong {

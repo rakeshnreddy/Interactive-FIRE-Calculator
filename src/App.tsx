@@ -672,10 +672,10 @@ export function AuthGate({
   const Icon = page.icon;
   const title =
     auth.status === 'not-configured'
-      ? 'Account features are currently unavailable.'
+      ? 'Account features are currently unavailable'
       : auth.status === 'loading'
-        ? 'Checking your session.'
-        : `Sign in to open ${page.eyebrow}.`;
+        ? 'Checking your session'
+        : `Sign in to open ${page.eyebrow}`;
   const description =
     auth.status === 'not-configured'
       ? 'Saved plans, accounts, and cross-device sync require account services that are not active in this preview. You can use all interactive financial calculators without an account.'

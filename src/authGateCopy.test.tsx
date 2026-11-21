@@ -55,7 +55,8 @@ describe('AuthGate copy, privacy, and public navigation (B09)', () => {
     expect(html).not.toContain('auth-env-list');
 
     // Must display honest explanation of unavailable account features
-    expect(html).toContain('Account features are currently unavailable.');
+    expect(html).toContain('Account features are currently unavailable');
+    expect(html).not.toContain('Account features are currently unavailable.');
     expect(html).toContain(
       'Saved plans, accounts, and cross-device sync require account services that are not active in this preview. You can use all interactive financial calculators without an account.'
     );
@@ -71,7 +72,8 @@ describe('AuthGate copy, privacy, and public navigation (B09)', () => {
       <AuthGate auth={loadingAuth} route="/dashboard" onNavigate={() => {}} />
     );
 
-    expect(html).toContain('Checking your session.');
+    expect(html).toContain('Checking your session');
+    expect(html).not.toContain('Checking your session.');
     expect(html).not.toContain('Clerk session');
     expect(html).toContain('FinPath is confirming whether there is an active session for this browser.');
     expect(html).toContain('Checking session');
@@ -83,7 +85,8 @@ describe('AuthGate copy, privacy, and public navigation (B09)', () => {
       <AuthGate auth={signedOutAuth} route="/dashboard" onNavigate={() => {}} />
     );
 
-    expect(html).toContain('Sign in to open Dashboard.');
+    expect(html).toContain('Sign in to open Dashboard');
+    expect(html).not.toContain('Sign in to open Dashboard.');
     expect(html).toContain('Sign in');
     expect(html).toContain('Create account');
     expect(html).toContain('Browse calculators');
@@ -98,7 +101,7 @@ describe('AuthGate copy, privacy, and public navigation (B09)', () => {
       );
 
       // Must render unconfigured auth gate, never account or transaction content
-      expect(html).toContain('Account features are currently unavailable.');
+      expect(html).toContain('Account features are currently unavailable');
       expect(html).not.toContain('Download JSON export');
       expect(html).not.toContain('Record balance');
     }
