@@ -187,3 +187,7 @@ B80/C41 is accepted on `2026-11-21` at product commit `58b1a3604196842c64a8af224
 ## FIRE Calculator Split Financial Workbench registration — 2026-11-21
 
 B81/C42 is now in progress from `main` `002af73f43b785c35c84aa11e8ba2a2faba140da` ([PR #166](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/166), `main` CI `44911923068`) to implement the owner-selected Option A Split Financial Workbench on `/calculators/fire` with 3-across Age Triad, paired 6-column input subgrid, single-border input controls, `24×24px` `.info-dot` targets, and above-the-fold default-visible `.hero-result` + `#results.chart-panel` interactive Recharts projection chart. `77` of `81` registered tasks done. See [prompts/B81.md](prompts/B81.md).
+
+## FIRE Calculator Split Financial Workbench acceptance — 2026-11-21
+
+B81/C42 is accepted on `2026-11-21` at product commit `6edc13d56da54ee40d7e9214fdb0f456d46fba6a` ([PR #167](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/167), exact-head `Verify` CI [`44959390226`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44959390226) `SUCCESS`, candidate `8d6556d7-fa9f-4aac-9678-04f746225d21`, shared beta `112689f1-1dc1-4c56-8b5a-6acb43ac8fad` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C42.md)). `78` of `81` registered tasks done.
