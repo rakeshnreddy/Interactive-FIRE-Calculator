@@ -20,11 +20,12 @@ function buildAuditScript(selectors) {
     let svgGradientCount = 0;
     for (const root of roots) {
       allSet.add(root);
+      const isClerkThirdParty = (el) => Boolean(el.closest('.account-user-button, .cl-rootBox, [data-clerk-component]') || String(el.className || '').split(/\s+/).some((cls) => cls.startsWith('cl-')));
       for (const el of root.querySelectorAll('*')) {
-        if (visible(el) && !el.closest('.account-user-button')) allSet.add(el);
+        if (visible(el) && !isClerkThirdParty(el)) allSet.add(el);
       }
       for (const el of root.querySelectorAll('h1, h2, h3, h4, strong, b, th, button, a, label, summary, .eyebrow')) {
-        if (visible(el) && !el.closest('.account-user-button')) typoSet.add(el);
+        if (visible(el) && !isClerkThirdParty(el)) typoSet.add(el);
       }
       svgGradientCount += root.querySelectorAll('svg linearGradient, svg radialGradient').length;
     }
