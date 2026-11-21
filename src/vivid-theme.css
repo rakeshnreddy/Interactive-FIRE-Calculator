@@ -818,10 +818,13 @@ body {
 }
 
 /* B31 sweep fixes: pointer targets at least 24px (WCAG 2.5.8) for small inline controls */
-.app .info-dot,
-.app .calculator-help-btn {
+.app.app .info-dot,
+.app.app .calculator-help-btn {
   min-width: 24px;
   min-height: 24px;
+  min-block-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .app .breadcrumbs button,

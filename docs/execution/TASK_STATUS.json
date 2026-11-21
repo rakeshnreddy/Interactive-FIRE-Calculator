@@ -1304,6 +1304,22 @@
       "code_sha": "58b1a3604196842c64a8af224f24616b6f8cd0c9",
       "review": "reviews/C41.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B81",
+      "title": "FIRE Calculator Option A: Split Financial Workbench and default-visible interactive projection",
+      "checkpoint": "C42",
+      "status": "done",
+      "dependencies": [
+        "B76",
+        "B80"
+      ],
+      "prompt": "prompts/B81.md",
+      "submission": "submissions/B81.md",
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": "6edc13d56da54ee40d7e9214fdb0f456d46fba6a",
+      "review": "reviews/C42.md",
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

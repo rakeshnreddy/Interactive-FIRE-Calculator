@@ -899,6 +899,376 @@
     color: var(--color-heading);
   }
 
+  /* B81 / C42 — Option A: FIRE Calculator Split Financial Workbench */
+  .workspace:has(.fire-workbench-grid) {
+    width: min(1320px, calc(100% - clamp(1.25rem, 3.2vw, 2.75rem)));
+    padding-top: 4px;
+  }
+
+  .workspace:has(.fire-workbench-grid) > .breadcrumbs {
+    min-height: 24px;
+    margin-bottom: 4px;
+  }
+
+  .workspace:has(.fire-workbench-grid) > .breadcrumbs button {
+    min-height: 24px;
+    min-block-size: 24px;
+  }
+
+  .workspace:has(.fire-workbench-grid) > .calculator-intro {
+    margin-bottom: 8px;
+    padding: 0 0 4px;
+    gap: 8px;
+  }
+
+  .workspace:has(.fire-workbench-grid) > .calculator-intro > .pill {
+    width: fit-content;
+    justify-self: start;
+  }
+
+  .workspace:has(.fire-workbench-grid) > .calculator-intro h1 {
+    font-size: clamp(1.3rem, 1.9vw, 1.55rem);
+    line-height: 1.12;
+    margin: 0;
+  }
+
+  .workspace:has(.fire-workbench-grid) > .calculator-intro .eyebrow {
+    margin-bottom: 0;
+    font-size: 0.72rem;
+  }
+
+  .workspace:has(.fire-workbench-grid) > .calculator-intro .calculator-scope-note {
+    margin-top: 0;
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
+  .fire-workbench-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    margin-bottom: 16px;
+  }
+
+  .fire-workbench-inputs {
+    margin-bottom: 0;
+    padding: 8px 12px 12px;
+    gap: 4px;
+    border-radius: 12px;
+  }
+
+  .fire-workbench-inputs .quick-heading h2 {
+    font-size: 1rem;
+    line-height: 1.18;
+  }
+
+  .fire-workbench-inputs .quick-heading .eyebrow {
+    margin-bottom: 0;
+    font-size: 0.7rem;
+  }
+
+  .fire-workbench-inputs .estimate-customization {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  .fire-workbench-inputs .estimate-customization > strong {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .fire-workbench-inputs .estimate-customization-links {
+    margin-top: 0;
+  }
+
+  .fire-workbench-inputs .estimate-customization-links button {
+    padding: 0 8px;
+    min-height: 26px;
+    min-block-size: 26px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+  }
+
+  .fire-workbench-inputs .estimate-customization-links button small {
+    display: none;
+  }
+
+  .fire-workbench-inputs .core-fire-form {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 4px 8px;
+  }
+
+  .fire-workbench-inputs .core-fire-form > .field {
+    grid-column: span 3;
+    gap: 4px;
+  }
+
+  .fire-workbench-inputs .core-fire-form > .fire-age-field {
+    grid-column: span 2;
+  }
+
+  .fire-workbench-inputs .core-fire-form > .full-field {
+    grid-column: 1 / -1;
+  }
+
+  .fire-workbench-inputs .field-label {
+    min-height: 24px;
+  }
+
+  /* Clean unified input box inside .calculator-input-control */
+  .fire-workbench-inputs .calculator-input-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 34px;
+    min-block-size: 34px;
+    padding: 0 8px;
+    border: 1px solid var(--color-control-border);
+    border-radius: 6px;
+    background: var(--color-field-surface);
+  }
+
+  .fire-workbench-inputs .calculator-input-control:focus-within {
+    border-color: var(--color-primary-bg);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary-bg) 18%, transparent);
+  }
+
+  .fire-workbench-inputs .calculator-input-control input {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 32px;
+    min-block-size: 32px;
+    height: 32px;
+    padding: 0 4px;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 0.9rem;
+  }
+
+  .fire-workbench-inputs .calculator-input-control small {
+    font-size: 0.74rem;
+    color: var(--color-muted);
+  }
+
+  .fire-workbench-inputs .segmented {
+    padding: 4px;
+    gap: 4px;
+    border-radius: 6px;
+  }
+
+  .fire-workbench-inputs .segmented button {
+    min-height: 28px;
+    min-block-size: 28px;
+    padding: 0 4px;
+    font-size: 0.76rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .fire-workbench-inputs .example-values-note,
+  .fire-workbench-inputs .rate-example-note {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    line-height: 1.25;
+    gap: 8px;
+    border-radius: 6px;
+  }
+
+  .fire-workbench-inputs .rate-example-note .secondary-button {
+    min-height: 26px;
+    min-block-size: 26px;
+    padding: 0 8px;
+    font-size: 0.73rem;
+    white-space: nowrap;
+  }
+
+  .fire-workbench-inputs .advanced-summary {
+    padding: 4px 8px;
+    min-height: 32px;
+    min-block-size: 32px;
+    border-radius: 6px;
+  }
+
+  .fire-workbench-inputs .advanced-summary small {
+    font-size: 0.71rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .fire-workbench-inputs .quick-actions .primary-button {
+    min-height: 36px;
+    min-block-size: 36px;
+  }
+
+  .fire-workbench-outputs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    align-content: start;
+    min-width: 0;
+  }
+
+  .fire-workbench-outputs > .panel,
+  .fire-workbench-outputs > .calculator-result-card {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 12px;
+  }
+
+  .fire-workbench-outputs .hero-result {
+    padding: 8px 12px;
+    gap: 4px;
+  }
+
+  .fire-workbench-outputs .hero-result > strong {
+    font-size: clamp(1.4rem, 2vw, 1.7rem);
+    line-height: 1.05;
+  }
+
+  .fire-workbench-outputs .result-facts {
+    gap: 8px;
+    margin-top: 0;
+  }
+
+  .fire-workbench-outputs .result-facts span {
+    padding: 4px 8px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    border-radius: 6px;
+  }
+
+  .fire-workbench-outputs .result-facts strong {
+    display: inline;
+    margin-top: 0;
+    font-size: 0.88rem;
+  }
+
+  .fire-workbench-outputs .fire-retirement-estimate {
+    margin-top: 4px;
+    padding-top: 4px;
+    gap: 0;
+  }
+
+  .fire-workbench-outputs .fire-estimate-headline {
+    font-size: 0.92rem;
+  }
+
+  .fire-workbench-outputs .fire-retirement-estimate p {
+    font-size: 0.76rem;
+    line-height: 1.26;
+  }
+
+  .fire-workbench-outputs .result-tabs-panel {
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .fire-workbench-outputs .result-tabs-panel .panel-tabs {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .fire-workbench-outputs .result-tabs-panel .panel-tabs button {
+    min-height: 28px;
+    min-block-size: 28px;
+    padding: 0 8px;
+    font-size: 0.78rem;
+  }
+
+  .fire-workbench-outputs .chart-panel {
+    padding: 8px 12px 8px;
+    min-height: 0;
+    gap: 4px;
+  }
+
+  .fire-workbench-outputs .chart-panel > .panel-heading {
+    margin-bottom: 0;
+  }
+
+  .fire-workbench-outputs .chart-panel > .panel-heading h2 {
+    font-size: 0.96rem;
+    line-height: 1.18;
+  }
+
+  .fire-workbench-outputs .chart-panel > .panel-heading p {
+    font-size: 0.74rem;
+    margin-top: 0;
+    line-height: 1.25;
+  }
+
+  .fire-workbench-outputs .chart-panel > .panel-heading .secondary-button {
+    min-height: 28px;
+    min-block-size: 28px;
+    padding: 0 8px;
+    font-size: 0.76rem;
+  }
+
+  .fire-workbench-outputs .chart-panel > .form-grid {
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  .fire-workbench-outputs .chart-panel .segmented {
+    padding: 4px;
+  }
+
+  .fire-workbench-outputs .chart-panel .segmented button {
+    min-height: 26px;
+    min-block-size: 26px;
+    padding: 0 8px;
+    font-size: 0.76rem;
+  }
+
+  .fire-workbench-outputs .chart-frame {
+    min-height: 205px;
+    padding: 4px 8px 0;
+    border-radius: 8px;
+  }
+
+  .fire-preview-modules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  @media (min-width: 1041px) {
+    .fire-workbench-grid {
+      grid-template-columns: minmax(450px, 500px) minmax(0, 1fr);
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .fire-workbench-inputs .core-fire-form > .field {
+      grid-column: 1 / -1;
+    }
+
+    .fire-workbench-inputs .core-fire-form > .fire-age-field {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .fire-workbench-inputs .core-fire-form > .fire-age-field {
+      grid-column: 1 / -1;
+    }
+  }
+
   /* Accessibility: honor reduced-motion and OS high-contrast preferences */
   @media (prefers-reduced-motion: reduce) {
     :is(

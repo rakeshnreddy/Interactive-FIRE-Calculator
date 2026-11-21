@@ -12,6 +12,7 @@ export function Field({
   issue,
   prefix,
   suffix,
+  className,
   children
 }: {
   id?: string;
@@ -20,6 +21,7 @@ export function Field({
   issue?: string;
   prefix?: string;
   suffix?: string;
+  className?: string;
   children: ReactNode;
 }) {
   const autoId = useId().replace(/[^a-zA-Z0-9_-]/g, '_');
@@ -43,8 +45,9 @@ export function Field({
       })
     : children;
 
+  const baseClass = issue ? 'field field-has-issue' : 'field';
   return (
-    <div className={issue ? 'field field-has-issue' : 'field'}>
+    <div className={className ? `${baseClass} ${className}` : baseClass}>
       <span className="field-label">
         <label htmlFor={resolvedId}>{label}</label>
         {help && <InfoTip id={helpId} text={help} label={label} />}

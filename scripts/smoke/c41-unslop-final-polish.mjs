@@ -222,6 +222,34 @@ export default {
               assertAudit(`${route}/${width}/${theme}`, audit);
               if (audit.minContrastRatio < globalMinContrast) globalMinContrast = audit.minContrastRatio;
               cases.push({ route, width, theme, minContrastRatio: audit.minContrastRatio });
+              if (route === '/calculators/fire') {
+                await anonymous.page.locator('button', { hasText: /Use example values/i }).first().click();
+                await anonymous.page.locator('button', { hasText: /^Calculate$/i }).first().click();
+                await anonymous.page.locator('#results.chart-panel').waitFor({ state: 'visible', timeout: 10000 });
+                const calcLayout = await measureLayout(anonymous.page);
+                const calcProblems = layoutProblems(calcLayout);
+                check(!calcProblems.length, `${route}#calculated/${width}/${theme}: ${calcProblems.join('; ')}`);
+                if (width === 1440) {
+                  const fold = await anonymous.page.evaluate(() => {
+                    const inp = document.querySelector('.fire-workbench-inputs')?.getBoundingClientRect();
+                    const out = document.querySelector('.fire-workbench-outputs')?.getBoundingClientRect();
+                    const hero = document.querySelector('.fire-workbench-outputs .hero-result')?.getBoundingClientRect();
+                    const chart = document.querySelector('#results.chart-panel')?.getBoundingClientRect();
+                    return {
+                      sideBySide: Boolean(inp && out && out.left >= inp.right - 4),
+                      inputsBottom: inp ? Math.round(inp.bottom) : 9999,
+                      heroBottom: hero ? Math.round(hero.bottom) : 9999,
+                      chartBottom: chart ? Math.round(chart.bottom) : 9999
+                    };
+                  });
+                  check(fold.sideBySide, `/calculators/fire#calculated/1440/${theme} expected side-by-side split workbench: ${JSON.stringify(fold)}`);
+                  check(fold.inputsBottom <= 900 && fold.heroBottom <= 900 && fold.chartBottom <= 900, `/calculators/fire#calculated/1440/${theme} expected inputs, hero result & chart above 900px fold: ${JSON.stringify(fold)}`);
+                }
+                const calcAudit = await anonymous.page.evaluate(SITEWIDE_AUDIT_SCRIPT);
+                assertAudit(`${route}#calculated/${width}/${theme}`, calcAudit);
+                if (calcAudit.minContrastRatio < globalMinContrast) globalMinContrast = calcAudit.minContrastRatio;
+                cases.push({ route: `${route}#calculated`, width, theme, minContrastRatio: calcAudit.minContrastRatio });
+              }
             }
           }
         }
