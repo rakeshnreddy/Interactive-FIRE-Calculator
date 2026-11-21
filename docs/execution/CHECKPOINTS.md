@@ -195,3 +195,7 @@ B81/C42 is accepted on `2026-11-21` at product commit `6edc13d56da54ee40d7e9214f
 ## FIRE Calculator `/unslop` redline registration — 2026-11-21
 
 B82/C43 is now in progress from `main` `286e726a8b778020cc283c50b0ae9fc904df6f76` ([PR #167](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/167), `main` CI `44960793142`) to resolve overlapping inputs in `#fire-optional-refinements`, restructure market periods / one-off events / recurring income & spending phases into non-overlapping 6-column cards, right-align the 11-column cash-flow ledger table inside `#results`, eliminate the orphan 4th column on `.health-grid`, and refine `#compare` scenario cards across all screen sizes. `78` of `82` registered tasks done. See [prompts/B82.md](prompts/B82.md).
+
+## FIRE Calculator `/unslop` redline acceptance — 2026-11-21
+
+B82/C43 is accepted on `2026-11-21` at product commit `fbbabb15c6de5eb542d63269261d0c60eaf63502` ([PR #168](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/168), exact-head `Verify` CI [`44962862164`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44962862164) `SUCCESS`, candidate `7d8d9577-4896-4b26-ae1b-d49284f8793c`, shared beta `84c5320a-fe2d-4df3-b001-4e3e4487fb9e` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C43.md)). `79` of `82` registered tasks done.

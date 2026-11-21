@@ -1,0 +1,106 @@
+{
+  "checkpoint": "C43",
+  "task": "B82",
+  "date": "2026-11-21",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "fbbabb15c6de5eb542d63269261d0c60eaf63502",
+  "base": "286e726a8b778020cc283c50b0ae9fc904df6f76",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/168",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 44962862164,
+    "event": "pull_request",
+    "headSha": "fbbabb15c6de5eb542d63269261d0c60eaf63502",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44962862164"
+  },
+  "candidate": {
+    "deployment_id": "7d8d9577-4896-4b26-ae1b-d49284f8793c",
+    "immutable_url": "https://7d8d9577.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://c43-candidate.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "84c5320a-fe2d-4df3-b001-4e3e4487fb9e",
+    "immutable_url": "https://84c5320a.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "verified_assets": [
+      "assets/main-pt3IvmUL.js",
+      "assets/main-B05ezhVA.css"
+    ]
+  },
+  "tests": {
+    "node": 30,
+    "files": 120,
+    "vitest": 2969,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "fbbabb15c6de5eb542d63269261d0c60eaf63502"
+  },
+  "source_hashes": [
+    {
+      "path": "DESIGN.md",
+      "bytes": 25938,
+      "sha256": "70f8e4ed2f39226619c1eee58e34b47d00b21114ff05eb116d63b7c476712502"
+    },
+    {
+      "path": "docs/EXECUTION_BACKLOG.md",
+      "bytes": 123781,
+      "sha256": "52f936c5cdd79f5f69005d78f5525fca4f9f5879f0c8751d4f4e839ad6bf82e9"
+    },
+    {
+      "path": "docs/execution/prompts/B82.md",
+      "bytes": 6279,
+      "sha256": "cdd7e8e04a54ecd51dab12e775c3baa8d6c848cd442fce8a63a4d1637afa0c01"
+    },
+    {
+      "path": "scripts/smoke/c41-unslop-final-polish.mjs",
+      "bytes": 18977,
+      "sha256": "5e974b72fc843d44676fb376f5b0e17aa6c2a4063d2c0ef3eb9689e215f6f1e9"
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 173386,
+      "sha256": "7e437cd22d5e5e0a778a19441bd4cd0e30708f4c6c00f955db0d9b904683c69c"
+    },
+    {
+      "path": "src/FireWorkbenchUsability.test.tsx",
+      "bytes": 7748,
+      "sha256": "97351bd7e2d9f75513a786a8a46ffd46dedee0ecea14fa91f105068cb8c6f88c"
+    },
+    {
+      "path": "src/workspace.css",
+      "bytes": 40625,
+      "sha256": "0ea9be940fa707d2bf4f7542e3b2d04d1e60e12bfb17a02bbf171b2a34c9907b"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C43/raw/candidate-public-calculators.json",
+      "bytes": 119,
+      "sha256": "82cffc5ae3247487b3521eacf8648217d81bf672010db3cd66aa9f832de5580b"
+    },
+    {
+      "path": "docs/execution/evidence/C43/raw/candidate-smoke.json",
+      "bytes": 10385,
+      "sha256": "0167e716fc94b8cdf8ae73c7663c27386747c16dd8a759b5868b55d2164c7adb"
+    },
+    {
+      "path": "docs/execution/evidence/C43/raw/shared-beta-alias-public-calculators.json",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C43/raw/shared-beta-public-calculators.json",
+      "bytes": 119,
+      "sha256": "45105703807d4e1ff32763db49db8f42fa673187146abef22f8b2517d1d02013"
+    },
+    {
+      "path": "docs/execution/evidence/C43/raw/shared-beta-smoke.json",
+      "bytes": 10376,
+      "sha256": "3b43ce45b1a1fe55bf1986fa137c4bc1ff3da7612785697dcd78721fe937b079"
+    }
+  ]
+}

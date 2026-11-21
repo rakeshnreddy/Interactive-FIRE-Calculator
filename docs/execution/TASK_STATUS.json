@@ -1325,16 +1325,16 @@
       "id": "B82",
       "title": "FIRE Calculator /unslop redline: non-overlapping Optional refinements, structured repeat cards and output ledger presentation",
       "checkpoint": "C43",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B80",
         "B81"
       ],
       "prompt": "prompts/B82.md",
-      "submission": null,
+      "submission": "submissions/B82.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "fbbabb15c6de5eb542d63269261d0c60eaf63502",
+      "review": "reviews/C43.md",
       "blocked_reason": null
     }
   ],
