@@ -992,7 +992,7 @@ function App({ auth }: { auth: AuthState }) {
   const [plan, setPlan] = useState<PlanInput>(initialPlan);
   const [timeline, setTimeline] = useState<TimelineInput>(initialTimeline);
   const [mode, setMode] = useState<Mode>(readPreferredMode);
-  const [calculatorPanel, setCalculatorPanel] = useState<CalculatorPanel>('planner');
+  const [calculatorPanel, setCalculatorPanel] = useState<CalculatorPanel>('results');
   const [calculatorMode, setCalculatorMode] = useState<CalculatorMode>('fire-number');
   const [hasCalculated, setHasCalculated] = useState(false);
   // Screen readers hear the answer after each Calculate through a polite live region.
@@ -1956,7 +1956,7 @@ function App({ auth }: { auth: AuthState }) {
     });
     setIsStale(false);
     setHasCalculated(true);
-    setCalculatorPanel('planner');
+    setCalculatorPanel('results');
     revealResult();
   };
 
@@ -2094,7 +2094,7 @@ function App({ auth }: { auth: AuthState }) {
     });
     setIsStale(false);
     setHasCalculated(true);
-    setCalculatorPanel('planner');
+    setCalculatorPanel('results');
   };
 
   const loadSavedPlan = (savedPlan: SavedPlan) => {
@@ -3460,7 +3460,8 @@ function App({ auth }: { auth: AuthState }) {
           </aside>
         ) : null}
 
-        <section className="quick-calculator focused-calculator" aria-labelledby="quick-calculator-title">
+        <div className="fire-workbench-grid">
+        <section className="quick-calculator focused-calculator fire-workbench-inputs" aria-labelledby="quick-calculator-title">
           <div className="panel-heading quick-heading">
             <div>
               <p className="eyebrow">{activeCalculator.eyebrow}</p>
@@ -3471,7 +3472,7 @@ function App({ auth }: { auth: AuthState }) {
 
           <EstimateCustomization groups={[{ id: 'fire-optional-refinements', label: 'Optional refinements', summary: advancedSummaryDescription }]} />
           <div className="form-grid quick-form core-fire-form">
-            <div className="field full-field">
+            <div className="field">
               <span className="field-label">
                 Planning question
                 <InfoTip
@@ -3496,6 +3497,23 @@ function App({ auth }: { auth: AuthState }) {
               </div>
             </div>
 
+            <div className="field">
+              <span className="field-label">Currency</span>
+              <div className="segmented" role="group" aria-label="Currency">
+                {(['USD', 'INR'] as const).map((code) => (
+                  <button
+                    key={code}
+                    type="button"
+                    className={fireCurrency === code ? 'active' : ''}
+                    aria-pressed={fireCurrency === code}
+                    onClick={() => setFireCurrency(code)}
+                  >
+                    {code === 'USD' ? 'US dollar ($)' : 'Indian rupee (₹)'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="full-field example-values-note" role="note">
               <Info size={16} aria-hidden="true" strokeWidth={1.5} />
               <span>
@@ -3513,6 +3531,7 @@ function App({ auth }: { auth: AuthState }) {
 
             <Field
               id="fire-current-age"
+              className="fire-age-field"
               label="Current age"
               suffix="years"
               help="Your age today. It is used to check that the retirement timeline makes sense."
@@ -3527,6 +3546,7 @@ function App({ auth }: { auth: AuthState }) {
             </Field>
             <Field
               id="fire-retirement-age"
+              className="fire-age-field"
               label="Retirement age"
               suffix="years"
               help="The age when withdrawals start in this plan."
@@ -3541,6 +3561,7 @@ function App({ auth }: { auth: AuthState }) {
             </Field>
             <Field
               id="fire-plan-end-age"
+              className="fire-age-field"
               label="Plan end age"
               suffix="years"
               help="The age through which the model should keep funding withdrawals."
@@ -3685,23 +3706,6 @@ function App({ auth }: { auth: AuthState }) {
                 </Field>
               </>
             )}
-
-            <div className="field full-field">
-              <span className="field-label">Currency</span>
-              <div className="segmented" role="group" aria-label="Currency">
-                {(['USD', 'INR'] as const).map((code) => (
-                  <button
-                    key={code}
-                    type="button"
-                    className={fireCurrency === code ? 'active' : ''}
-                    aria-pressed={fireCurrency === code}
-                    onClick={() => setFireCurrency(code)}
-                  >
-                    {code === 'USD' ? 'US dollar ($)' : 'Indian rupee (₹)'}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
 
           <details className="advanced-shell" id="fire-optional-refinements">
@@ -4155,6 +4159,36 @@ function App({ auth }: { auth: AuthState }) {
               </p>
             ) : null}
           </div>
+        </section>
+
+        <div className="fire-workbench-outputs">
+          {!hasCalculated ? (
+            <section className="panel fire-workbench-preview" aria-label="FIRE output preview">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Live output &amp; projection stage</p>
+                  <h2>Your FIRE answer and interactive trajectory graph appear here</h2>
+                  <p>
+                    Enter your expected return and inflation on the left (or select <strong>Use example values</strong>) and press <strong>Calculate</strong>. Your required FIRE portfolio, retirement age estimate, interactive year-by-year cash-flow chart, and scenario comparison will appear right here above the fold.
+                  </p>
+                </div>
+              </div>
+              <div className="fire-preview-modules">
+                <article className="scenario-card empty-card">
+                  <span>1 · Headline FIRE target &amp; retirement age</span>
+                  <small>Required portfolio, initial withdrawal rate, gap or surplus at retirement, and earliest funded retirement age.</small>
+                </article>
+                <article className="scenario-card empty-card">
+                  <span>2 · Default-visible interactive projection chart</span>
+                  <small>Year-by-year portfolio trajectory with hover inspection, current-portfolio stress comparison, table toggle, and CSV export.</small>
+                </article>
+                <article className="scenario-card empty-card">
+                  <span>3 · Three-way scenario comparison &amp; plan health</span>
+                  <small>Compare Base, Guardrail, and Upside assumptions side by side alongside automated depletion and horizon checks.</small>
+                </article>
+              </div>
+            </section>
+          ) : null}
 
           {hasCalculated && (
             <div ref={resultRef} tabIndex={-1} role="region" aria-label="FIRE calculation result" className={`calculator-result-card hero-result ${isStale ? 'is-stale' : ''}`}>
@@ -4189,226 +4223,222 @@ function App({ auth }: { auth: AuthState }) {
               ) : null}
             </div>
           )}
-        </section>
 
-        {hasCalculated && (
-          <section className="panel health-panel" aria-labelledby="warnings-title">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Plan checks</p>
-                <h2 id="warnings-title">Plan health</h2>
+          {hasCalculated && (
+            <section className="panel result-tabs-panel" aria-label="Calculated outputs">
+              <div className="panel-tabs" role="tablist" aria-label="FIRE result views">
+                {calculatorPanels.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      className={calculatorPanel === item.id ? 'active' : ''}
+                      onClick={() => navigate(item.id)}
+                      role="tab"
+                      aria-selected={calculatorPanel === item.id}
+                    >
+                      <Icon size={16} strokeWidth={1.5} />
+                      {item.label}
+                    </button>
+                  );
+                })}
               </div>
-              <span className="pill">{warningNotices.length} checks</span>
-            </div>
-            <div className="comparison-grid health-grid">
-              {warningNotices.length > 0 ? (
-                warningNotices.slice(0, 3).map((warning, index) => (
-                  <article
-                    className={`scenario-card warning-card warning-${warning.severity}`}
-                    key={`${warning.title}-${index}`}
-                  >
-                    <span>{`${warning.severity.charAt(0).toUpperCase()}${warning.severity.slice(1)}`}</span>
-                    <strong>{warning.title}</strong>
-                    <small>{warning.message}</small>
-                  </article>
-                ))
-              ) : (
-                <article className="scenario-card warning-card warning-ok">
-                  <span>Passed</span>
-                  <strong>Model checks passed</strong>
-                  <small>No validation or depletion warnings.</small>
-                </article>
-              )}
-              {warningNotices.length > 3 && (
-                <article className="scenario-card warning-card warning-info">
-                  <span>More</span>
-                  <strong>{warningNotices.length - 3} additional checks</strong>
-                  <small>Open Results or Compare to inspect the model in more detail.</small>
-                </article>
-              )}
-            </div>
-          </section>
-        )}
+            </section>
+          )}
 
-
-
-
-
-
-
-        {hasCalculated && (
-          <section className="panel result-tabs-panel" aria-label="Calculated outputs">
-            <div className="panel-tabs" role="tablist" aria-label="FIRE result views">
-              {calculatorPanels.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    className={calculatorPanel === item.id ? 'active' : ''}
-                    onClick={() => navigate(item.id)}
-                    role="tab"
-                    aria-selected={calculatorPanel === item.id}
-                  >
-                    <Icon size={16} strokeWidth={1.5} />
-                    {item.label}
+          {hasCalculated && calculatorPanel !== 'compare' && (
+            <section className="panel chart-panel" id="results" aria-labelledby="results-title">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Projection</p>
+                  <h2 id="results-title">Year-by-year cash flow</h2>
+                  <p>Switch between the calculated FIRE plan and the entered portfolio stress test.</p>
+                </div>
+                <div className="topbar-actions">
+                  <button className="secondary-button" onClick={exportSelectedProjection}>
+                    Export CSV
                   </button>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {hasCalculated && calculatorPanel === 'results' && (
-          <section className="panel chart-panel" id="results" aria-labelledby="results-title">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Projection</p>
-                <h2 id="results-title">Year-by-year cash flow</h2>
-                <p>Switch between the calculated FIRE plan and the entered portfolio stress test.</p>
-              </div>
-              <div className="topbar-actions">
-                <button className="secondary-button" onClick={exportSelectedProjection}>
-                  Export CSV
-                </button>
-                <span className="pill">{activePlanForDisplay.withdrawalTiming === 'start' ? 'Start-year' : 'End-year'}</span>
-              </div>
-            </div>
-
-            <div className="form-grid">
-              <div className="field">
-                <span>Projection basis</span>
-                <div className="segmented">
-                  <button
-                    className={projectionBasis === 'fire-number' ? 'active' : ''}
-                    onClick={() => setProjectionBasis('fire-number')}
-                  >
-                    {activeModeForDisplay === 'withdrawal-income' ? 'Annual withdrawal' : 'FIRE number'}
-                  </button>
-                  <button
-                    className={projectionBasis === 'current-portfolio' ? 'active' : ''}
-                    onClick={() => setProjectionBasis('current-portfolio')}
-                  >
-                    Current
-                  </button>
+                  <span className="pill">{activePlanForDisplay.withdrawalTiming === 'start' ? 'Start-year' : 'End-year'}</span>
                 </div>
               </div>
-              <div className="field">
-                <span>View</span>
-                <div className="segmented">
-                  <button
-                    className={resultsMode === 'chart' ? 'active' : ''}
-                    onClick={() => setResultsMode('chart')}
-                  >
-                    Chart
-                  </button>
-                  <button
-                    className={resultsMode === 'table' ? 'active' : ''}
-                    onClick={() => setResultsMode('table')}
-                  >
-                    Table
-                  </button>
-                </div>
-              </div>
-            </div>
 
-            {resultsMode === 'chart' ? (
-              <Suspense
-                fallback={
-                  <div className="chart-frame chart-loading" role="status" aria-live="polite">
-                    Loading projection chart...
+              <div className="form-grid">
+                <div className="field">
+                  <span>Projection basis</span>
+                  <div className="segmented">
+                    <button
+                      className={projectionBasis === 'fire-number' ? 'active' : ''}
+                      onClick={() => setProjectionBasis('fire-number')}
+                    >
+                      {activeModeForDisplay === 'withdrawal-income' ? 'Annual withdrawal' : 'FIRE number'}
+                    </button>
+                    <button
+                      className={projectionBasis === 'current-portfolio' ? 'active' : ''}
+                      onClick={() => setProjectionBasis('current-portfolio')}
+                    >
+                      Current
+                    </button>
                   </div>
-                }
-              >
-                <ProjectionChart
+                </div>
+                <div className="field">
+                  <span>View</span>
+                  <div className="segmented">
+                    <button
+                      className={resultsMode === 'chart' ? 'active' : ''}
+                      onClick={() => setResultsMode('chart')}
+                    >
+                      Chart
+                    </button>
+                    <button
+                      className={resultsMode === 'table' ? 'active' : ''}
+                      onClick={() => setResultsMode('table')}
+                    >
+                      Table
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {resultsMode === 'chart' ? (
+                <Suspense
+                  fallback={
+                    <div className="chart-frame chart-loading" role="status" aria-live="polite">
+                      Loading projection chart...
+                    </div>
+                  }
+                >
+                  <ProjectionChart
+                    label={projectionLabel}
+                    rows={chartRows}
+                    startAge={activeTimelineForDisplay.retirementAge}
+                    currency={fireCurrency}
+                    height={205}
+                  />
+                </Suspense>
+              ) : (
+                <YearByYearTable
+                  rows={projectionRows}
                   label={projectionLabel}
-                  rows={chartRows}
                   startAge={activeTimelineForDisplay.retirementAge}
                   currency={fireCurrency}
                 />
-              </Suspense>
-            ) : (
-              <YearByYearTable
-                rows={projectionRows}
-                label={projectionLabel}
-                startAge={activeTimelineForDisplay.retirementAge}
-                currency={fireCurrency}
-              />
-            )}
-          </section>
-        )}
+              )}
+            </section>
+          )}
 
-        {hasCalculated && calculatorPanel === 'compare' && (
-          <section className="panel" id="compare" aria-labelledby="compare-title">
-            <div className="panel-heading">
-              <div>
-                <p className="eyebrow">Scenarios</p>
-                <h2 id="compare-title">Three-way assumption comparison</h2>
-                <p>Test spending, portfolio, return, and inflation changes against the same timeline.</p>
+          {hasCalculated && calculatorPanel === 'compare' && (
+            <section className="panel" id="compare" aria-labelledby="compare-title">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Scenarios</p>
+                  <h2 id="compare-title">Three-way assumption comparison</h2>
+                  <p>Test spending, portfolio, return, and inflation changes against the same timeline.</p>
+                </div>
+                <span className="pill">3 scenarios</span>
               </div>
-              <span className="pill">3 scenarios</span>
-            </div>
-            <div className="comparison-grid">
-              {comparisonRows.map((row) => (
-                <article className="scenario-card" key={row.id}>
-                  <Field label="Scenario name">
-                    <input type="text" value={row.scenario.label} onChange={setScenarioLabel(row.id)} />
-                  </Field>
-                  <strong>{formatFireMoney(row.requiredPortfolio)}</strong>
-                  <small>FIRE number for {row.label}</small>
-                  <small>
-                    Vs planner: {row.requiredDelta > 0 ? '+' : ''}
-                    {formatFireMoney(row.requiredDelta)}
-                  </small>
-                  <small>Portfolio income: {formatFireMoney(row.maxAnnualExpense)}</small>
-                  <small>Current ending: {formatFireMoney(row.actualFinalBalance)}</small>
-                  <small>
-                    {row.depletionYear === null
-                      ? 'No current-portfolio depletion in this timeline'
-                      : `Current portfolio depletes in year ${row.depletionYear}`}
-                  </small>
-                  <div className="form-grid">
-                    <Field label="Spend shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.spendingDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'spendingDelta')}
-                      />
+              <div className="comparison-grid">
+                {comparisonRows.map((row) => (
+                  <article className="scenario-card" key={row.id}>
+                    <Field label="Scenario name">
+                      <input type="text" value={row.scenario.label} onChange={setScenarioLabel(row.id)} />
                     </Field>
-                    <Field label="Portfolio shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.portfolioDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'portfolioDelta')}
-                      />
-                    </Field>
-                    <Field label="Return shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.returnDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'returnDelta')}
-                      />
-                    </Field>
-                    <Field label="Inflation shift">
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={(row.scenario.inflationDelta * 100).toFixed(1)}
-                        onChange={setScenarioPercent(row.id, 'inflationDelta')}
-                      />
-                    </Field>
-                  </div>
-                  <small>
-                    Return {formatSignedPercent(row.scenario.returnDelta)}; inflation{' '}
-                    {formatSignedPercent(row.scenario.inflationDelta)}
-                  </small>
-                </article>
-              ))}
-            </div>
-          </section>
-        )}
+                    <strong>{formatFireMoney(row.requiredPortfolio)}</strong>
+                    <small>FIRE number for {row.label}</small>
+                    <small>
+                      Vs planner: {row.requiredDelta > 0 ? '+' : ''}
+                      {formatFireMoney(row.requiredDelta)}
+                    </small>
+                    <small>Portfolio income: {formatFireMoney(row.maxAnnualExpense)}</small>
+                    <small>Current ending: {formatFireMoney(row.actualFinalBalance)}</small>
+                    <small>
+                      {row.depletionYear === null
+                        ? 'No current-portfolio depletion in this timeline'
+                        : `Current portfolio depletes in year ${row.depletionYear}`}
+                    </small>
+                    <div className="form-grid">
+                      <Field label="Spend shift">
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={(row.scenario.spendingDelta * 100).toFixed(1)}
+                          onChange={setScenarioPercent(row.id, 'spendingDelta')}
+                        />
+                      </Field>
+                      <Field label="Portfolio shift">
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={(row.scenario.portfolioDelta * 100).toFixed(1)}
+                          onChange={setScenarioPercent(row.id, 'portfolioDelta')}
+                        />
+                      </Field>
+                      <Field label="Return shift">
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={(row.scenario.returnDelta * 100).toFixed(1)}
+                          onChange={setScenarioPercent(row.id, 'returnDelta')}
+                        />
+                      </Field>
+                      <Field label="Inflation shift">
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={(row.scenario.inflationDelta * 100).toFixed(1)}
+                          onChange={setScenarioPercent(row.id, 'inflationDelta')}
+                        />
+                      </Field>
+                    </div>
+                    <small>
+                      Return {formatSignedPercent(row.scenario.returnDelta)}; inflation{' '}
+                      {formatSignedPercent(row.scenario.inflationDelta)}
+                    </small>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {hasCalculated && (
+            <section className="panel health-panel" aria-labelledby="warnings-title">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Plan checks</p>
+                  <h2 id="warnings-title">Plan health</h2>
+                </div>
+                <span className="pill">{warningNotices.length} checks</span>
+              </div>
+              <div className="comparison-grid health-grid">
+                {warningNotices.length > 0 ? (
+                  warningNotices.slice(0, 3).map((warning, index) => (
+                    <article
+                      className={`scenario-card warning-card warning-${warning.severity}`}
+                      key={`${warning.title}-${index}`}
+                    >
+                      <span>{`${warning.severity.charAt(0).toUpperCase()}${warning.severity.slice(1)}`}</span>
+                      <strong>{warning.title}</strong>
+                      <small>{warning.message}</small>
+                    </article>
+                  ))
+                ) : (
+                  <article className="scenario-card warning-card warning-ok">
+                    <span>Passed</span>
+                    <strong>Model checks passed</strong>
+                    <small>No validation or depletion warnings.</small>
+                  </article>
+                )}
+                {warningNotices.length > 3 && (
+                  <article className="scenario-card warning-card warning-info">
+                    <span>More</span>
+                    <strong>{warningNotices.length - 3} additional checks</strong>
+                    <small>Open Results or Compare to inspect the model in more detail.</small>
+                  </article>
+                )}
+              </div>
+            </section>
+          )}
+        </div>
+        </div>
 
         <section className="panel utility-panel" id="saved-plans" aria-labelledby="saved-title">
           <div className="panel-heading">

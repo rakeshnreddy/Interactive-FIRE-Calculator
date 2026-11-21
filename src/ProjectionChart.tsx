@@ -28,19 +28,21 @@ export function ProjectionChart({
   label,
   rows,
   startAge,
-  currency = 'USD'
+  currency = 'USD',
+  height = 360
 }: {
   label: string;
   rows: ProjectionChartRow[];
   startAge?: number;
   currency?: string;
+  height?: number;
 }) {
   // Year 1 of the drawdown is the retirement age, so the axis can show ages the user recognises.
   const data = rows.map((row) => ({ ...row, age: startAge === undefined ? row.year : startAge + row.year - 1 }));
   const axisLabel = startAge === undefined ? 'Year' : 'Age';
   return (
     <div className="chart-frame" role="img" aria-label={`${label} chart showing ending balance and withdrawal by ${axisLabel.toLowerCase()}`}>
-      <ResponsiveContainer width="100%" height={360}>
+      <ResponsiveContainer width="100%" height={height}>
         <LineChart data={data} margin={{ top: 10, right: 20, left: 8, bottom: 18 }}>
           <CartesianGrid strokeDasharray="none" vertical={false} stroke="var(--color-border)" strokeWidth={1} />
           <XAxis
@@ -67,6 +69,7 @@ export function ProjectionChart({
             strokeWidth={2}
             dot={false}
             activeDot={{ r: 4, strokeWidth: 1.5 }}
+            isAnimationActive={false}
           />
           <Line
             type="monotone"
@@ -76,6 +79,7 @@ export function ProjectionChart({
             strokeWidth={2}
             dot={false}
             activeDot={{ r: 4, strokeWidth: 1.5 }}
+            isAnimationActive={false}
           />
         </LineChart>
       </ResponsiveContainer>
