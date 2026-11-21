@@ -130,4 +130,50 @@ describe('B81 / C42 — FIRE Calculator Option A Split Financial Workbench', () 
     expect(workspaceCss).toContain('.fire-workbench-outputs');
     expect(workspaceCss).toContain('.fire-age-field');
   });
+
+  it('B82 / C43: defines 1-column planner-grid inside .fire-workbench-inputs, structured 6-column repeat cards, right-aligned cash-flow table, and auto-fit health-grid (R1, R2, R3)', () => {
+    const workspaceCss = readFileSync(resolve(__dirname, 'workspace.css'), 'utf8');
+
+    // R1: 1-column planner-grid inside .fire-workbench-inputs + 6-column structured event & recurring rows
+    expect(workspaceCss).toMatch(/\.fire-workbench-inputs\s+\.advanced-shell\s+\.planner-grid[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    expect(workspaceCss).toMatch(/\.fire-workbench-inputs\s+\.period-list\s+\.repeat-row[\s\S]*?grid-template-columns:\s*32px\s+repeat\(3,\s*minmax\(0,\s*1fr\)\)\s+32px/);
+    expect(workspaceCss).toMatch(/\.fire-workbench-inputs\s+:is\(\.event-row,\s*\.recurring-row\)[\s\S]*?grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)/);
+
+    // R2: right-aligned tabular ledger columns in #results table without 1040px min-width overflow
+    expect(workspaceCss).toMatch(/\.fire-workbench-outputs\s+#results\s+table[\s\S]*?min-width:\s*640px/);
+    expect(workspaceCss).toMatch(/\.fire-workbench-outputs\s+#results\s+:is\(th,\s*td\):nth-child\(n\+3\)[\s\S]*?text-align:\s*right/);
+
+    // R3: auto-fit health-grid without orphan 4th column
+    expect(workspaceCss).toMatch(/\.fire-workbench-outputs\s+\.health-grid[\s\S]*?grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(200px,\s*1fr\)\)/);
+  });
+
+  it('B82 / C43: clicking the Inputs tab in .result-tabs-panel opens #fire-optional-refinements so advanced refinements are visible (R3)', async () => {
+    await act(async () => {
+      root.render(<App auth={mockAuth} />);
+    });
+
+    const useExampleBtn = Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find(
+      (b) => b.textContent?.trim() === 'Use example values'
+    )!;
+    await act(async () => {
+      useExampleBtn.click();
+    });
+
+    const calcBtn = container.querySelector<HTMLButtonElement>('.quick-actions .primary-button')!;
+    await act(async () => {
+      calcBtn.click();
+    });
+
+    const disclosure = container.querySelector<HTMLDetailsElement>('#fire-optional-refinements')!;
+    expect(disclosure.open).toBe(false);
+
+    const inputsTab = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('.result-tabs-panel button[role="tab"]')
+    ).find((b) => b.textContent?.includes('Inputs'))!;
+    await act(async () => {
+      inputsTab.click();
+    });
+
+    expect(disclosure.open).toBe(true);
+  });
 });

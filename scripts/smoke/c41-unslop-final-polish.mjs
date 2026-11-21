@@ -249,6 +249,38 @@ export default {
                 assertAudit(`${route}#calculated/${width}/${theme}`, calcAudit);
                 if (calcAudit.minContrastRatio < globalMinContrast) globalMinContrast = calcAudit.minContrastRatio;
                 cases.push({ route: `${route}#calculated`, width, theme, minContrastRatio: calcAudit.minContrastRatio });
+
+                // Expand #fire-optional-refinements, add rows to all 4 repeatable sections, and verify zero row overflow or child overlap
+                await anonymous.page.locator('#fire-optional-refinements > summary').click();
+                for (const sectionId of ['period-title', 'events-title', 'income-title', 'phase-title']) {
+                  await anonymous.page.locator(`section[aria-labelledby="${sectionId}"] button`, { hasText: /^Add$/i }).click();
+                }
+                const refCheck = await anonymous.page.evaluate(() => {
+                  const pageOverflow = document.documentElement.scrollWidth - document.documentElement.clientWidth;
+                  const rows = Array.from(document.querySelectorAll('#fire-optional-refinements .repeat-row'));
+                  let maxRowOverflow = 0;
+                  let anyChildOverlap = false;
+                  for (const r of rows) {
+                    const ov = r.scrollWidth - r.clientWidth;
+                    if (ov > maxRowOverflow) maxRowOverflow = ov;
+                    const rects = Array.from(r.children).map((c) => c.getBoundingClientRect());
+                    for (let i = 0; i < rects.length; i++) {
+                      for (let j = i + 1; j < rects.length; j++) {
+                        const a = rects[i];
+                        const b = rects[j];
+                        const xOv = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+                        const yOv = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+                        if (xOv > 1 && yOv > 1) anyChildOverlap = true;
+                      }
+                    }
+                  }
+                  return { rowCount: rows.length, pageOverflow, maxRowOverflow, anyChildOverlap };
+                });
+                check(refCheck.rowCount >= 5 && refCheck.pageOverflow === 0 && refCheck.maxRowOverflow === 0 && !refCheck.anyChildOverlap, `${route}#refinements/${width}/${theme} row overflow or child overlap: ${JSON.stringify(refCheck)}`);
+                const refAudit = await anonymous.page.evaluate(SITEWIDE_AUDIT_SCRIPT);
+                assertAudit(`${route}#refinements/${width}/${theme}`, refAudit);
+                if (refAudit.minContrastRatio < globalMinContrast) globalMinContrast = refAudit.minContrastRatio;
+                cases.push({ route: `${route}#refinements`, width, theme, minContrastRatio: refAudit.minContrastRatio });
               }
             }
           }
