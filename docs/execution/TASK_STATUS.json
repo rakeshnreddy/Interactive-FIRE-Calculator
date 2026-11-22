@@ -1359,7 +1359,7 @@
       "id": "B84",
       "title": "Stage 2: Option A Split Financial Workbench and above-the-fold charts for the 7 dedicated calculators",
       "checkpoint": "C45",
-      "status": "in_progress",
+      "status": "done",
       "dependencies": [
         "B76",
         "B80",
@@ -1368,10 +1368,10 @@
         "B83"
       ],
       "prompt": "prompts/B84.md",
-      "submission": null,
+      "submission": "submissions/B84.md",
       "owner": "Primary agent direct implementation and independent review",
-      "code_sha": null,
-      "review": null,
+      "code_sha": "42b4d608f383486375ab06be617ea79999db3c46",
+      "review": "reviews/C45.md",
       "blocked_reason": null
     }
   ],
