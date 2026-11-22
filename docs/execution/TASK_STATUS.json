@@ -1354,6 +1354,25 @@
       "code_sha": "b22877cebb122db8024d8a67b8a01d08815ec83d",
       "review": "reviews/C44.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B84",
+      "title": "Stage 2: Option A Split Financial Workbench and above-the-fold charts for the 7 dedicated calculators",
+      "checkpoint": "C45",
+      "status": "done",
+      "dependencies": [
+        "B76",
+        "B80",
+        "B81",
+        "B82",
+        "B83"
+      ],
+      "prompt": "prompts/B84.md",
+      "submission": "submissions/B84.md",
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": "42b4d608f383486375ab06be617ea79999db3c46",
+      "review": "reviews/C45.md",
+      "blocked_reason": null
     }
   ],
   "owner_actions": [
