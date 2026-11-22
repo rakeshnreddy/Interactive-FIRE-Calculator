@@ -247,6 +247,48 @@ export default {
                   `${route}/1440/${theme} expected studio action button and visual chart above 900px fold: ${JSON.stringify(studioFold)}`
                 );
               }
+              if ((route === '/calculators/compound-interest' || route === '/calculators/savings-goal' || route === '/calculators/emergency-fund') && width === 1440) {
+                const dedFold = await anonymous.page.evaluate(() => {
+                  const inp = document.querySelector('.calculator-input-panel')?.getBoundingClientRect();
+                  const res = document.querySelector('.calculator-result-panel')?.getBoundingClientRect();
+                  const chart = document.querySelector('.compound-growth-chart, .savings-runway-chart, .cashflow-figure')?.getBoundingClientRect();
+                  return {
+                    sideBySide: Boolean(inp && res && res.left >= inp.right - 4),
+                    chartTop: chart ? Math.round(chart.top) : 9999,
+                    chartBottom: chart ? Math.round(chart.bottom) : 9999
+                  };
+                });
+                check(dedFold.sideBySide, `${route}/1440/${theme} expected Option A side-by-side dedicated workbench: ${JSON.stringify(dedFold)}`);
+                check(dedFold.chartTop < 900 && dedFold.chartBottom <= 900, `${route}/1440/${theme} expected dedicated chart above 900px fold: ${JSON.stringify(dedFold)}`);
+              }
+              if (route === '/calculators/xirr?returnMode=dated' && width === 1440) {
+                await anonymous.page.locator('button', { hasText: /Use example cash flows/i }).first().click();
+                await anonymous.page.locator('.dated-flow-visual svg').waitFor({ state: 'visible', timeout: 10000 });
+                const xirrFold = await anonymous.page.evaluate(() => {
+                  const inp = document.querySelector('[aria-labelledby="dated-return-title"] .calculator-input-panel')?.getBoundingClientRect();
+                  const res = document.querySelector('[aria-labelledby="dated-return-title"] .calculator-result-panel')?.getBoundingClientRect();
+                  const vis = document.querySelector('.dated-flow-visual')?.getBoundingClientRect();
+                  return {
+                    sideBySide: Boolean(inp && res && res.left >= inp.right - 4),
+                    visualBottom: vis ? Math.round(vis.bottom) : 9999
+                  };
+                });
+                check(xirrFold.sideBySide && xirrFold.visualBottom <= 900, `${route}#example/1440/${theme} expected dated XIRR timeline above 900px fold: ${JSON.stringify(xirrFold)}`);
+              }
+              if (route === '/calculators/lease-vs-buy' && width === 1440) {
+                await anonymous.page.locator('button', { hasText: /Use example terms/i }).first().click();
+                await anonymous.page.locator('.vehicle-equity-visual').waitFor({ state: 'visible', timeout: 10000 });
+                const leaseFold = await anonymous.page.evaluate(() => {
+                  const inp = document.querySelector('.calculator-input-panel')?.getBoundingClientRect();
+                  const res = document.querySelector('.calculator-result-panel')?.getBoundingClientRect();
+                  const eq = document.querySelector('.vehicle-equity-visual')?.getBoundingClientRect();
+                  return {
+                    sideBySide: Boolean(inp && res && res.left >= inp.right - 4),
+                    equityBottom: eq ? Math.round(eq.bottom) : 9999
+                  };
+                });
+                check(leaseFold.sideBySide && leaseFold.equityBottom <= 900, `${route}#example/1440/${theme} expected both lease-vs-buy visuals above 900px fold: ${JSON.stringify(leaseFold)}`);
+              }
               if (route === '/calculators/fire') {
                 await anonymous.page.locator('button', { hasText: /Use example values/i }).first().click();
                 await anonymous.page.locator('button', { hasText: /^Calculate$/i }).first().click();
