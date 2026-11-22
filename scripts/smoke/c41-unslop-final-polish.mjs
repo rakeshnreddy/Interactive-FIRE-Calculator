@@ -222,6 +222,31 @@ export default {
               assertAudit(`${route}/${width}/${theme}`, audit);
               if (audit.minContrastRatio < globalMinContrast) globalMinContrast = audit.minContrastRatio;
               cases.push({ route, width, theme, minContrastRatio: audit.minContrastRatio });
+              if ((route === '/calculators/mortgage' || route === '/calculators/sip') && width === 1440) {
+                const studioFold = await anonymous.page.evaluate(() => {
+                  const inp = document.querySelector('.calculator-input-panel')?.getBoundingClientRect();
+                  const res = document.querySelector('.calculator-result-panel')?.getBoundingClientRect();
+                  const viewBtn = document.querySelector('.calculator-result-action button')?.getBoundingClientRect();
+                  const vis = document.querySelector('.calculator-visual-panel')?.getBoundingClientRect();
+                  const chart = document.querySelector('.calculator-studio-chart')?.getBoundingClientRect();
+                  const innerInputBorders = [...document.querySelectorAll('.calculator-input-control input')].filter(
+                    (el) => parseFloat(getComputedStyle(el).borderTopWidth || '0') > 0
+                  ).length;
+                  return {
+                    sideBySide: Boolean(inp && res && res.left >= inp.right - 4),
+                    innerInputBorders,
+                    viewResultBottom: viewBtn ? Math.round(viewBtn.bottom) : 9999,
+                    visualTop: vis ? Math.round(vis.top) : 9999,
+                    chartBottom: chart ? Math.round(chart.bottom) : 9999
+                  };
+                });
+                check(studioFold.sideBySide, `${route}/1440/${theme} expected Option A side-by-side studio workbench: ${JSON.stringify(studioFold)}`);
+                check(studioFold.innerInputBorders === 0, `${route}/1440/${theme} expected single-border .calculator-input-control inputs: ${JSON.stringify(studioFold)}`);
+                check(
+                  studioFold.viewResultBottom <= 900 && studioFold.visualTop < 900 && studioFold.chartBottom <= 900,
+                  `${route}/1440/${theme} expected studio action button and visual chart above 900px fold: ${JSON.stringify(studioFold)}`
+                );
+              }
               if (route === '/calculators/fire') {
                 await anonymous.page.locator('button', { hasText: /Use example values/i }).first().click();
                 await anonymous.page.locator('button', { hasText: /^Calculate$/i }).first().click();

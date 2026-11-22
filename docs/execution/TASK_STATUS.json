@@ -1336,6 +1336,24 @@
       "code_sha": "fbbabb15c6de5eb542d63269261d0c60eaf63502",
       "review": "reviews/C43.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B83",
+      "title": "Stage 1: Option A Split Financial Workbench and above-the-fold visual chart for shared studio calculators (75 routes)",
+      "checkpoint": "C44",
+      "status": "in_progress",
+      "dependencies": [
+        "B74",
+        "B80",
+        "B81",
+        "B82"
+      ],
+      "prompt": "prompts/B83.md",
+      "submission": null,
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": null,
+      "review": null,
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

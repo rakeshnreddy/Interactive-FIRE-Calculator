@@ -949,9 +949,9 @@ function CalculatorDetail({
           ) : null}
           {isMarketGrowth(calculator) && hasValidResult && result.metrics.length > 1 ? <MarketGrowthReconciliation calculator={calculator} result={result} values={scenarioValues} /> : null}
           {calculator.formula === 'rd' && hasValidResult && result.metrics.length > 2 ? <RecurringDepositReconciliation calculator={calculator} result={result} values={scenarioValues} /> : null}
+          {hasValidResult && studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
           {hasValidResult ? <CalculatorScopeNotice scope={buildCalculatorScope(calculator, scenarioValues)} /> : null}
           <VariantChips calculator={calculator} onNavigate={onNavigate} />
-          {hasValidResult && studioChart.entries.length > 0 ? <CalculatorStudioVisual calculator={calculator} chart={studioChart} metrics={result.metrics} /> : null}
           <CalculatorSchedulePanel calculator={calculator} schedule={detailSchedule} disabled={!canUseResult} />
           {!result.modelVersion ? <p className="calculator-result-narrative">{result.narrative}</p> : null}
           <div className="calculator-conversion-panel">
@@ -1650,7 +1650,7 @@ export function CalculatorStudioVisual({
                 <th scope="col">Category</th>
                 <th scope="col">{chart.legend.primary}</th>
                 {chart.legend.secondary ? <th scope="col">{chart.legend.secondary}</th> : null}
-                {chart.entries.some((e) => e.note) ? <th scope="col">Note</th> : null}
+                {chart.entries.some((e) => e.note) ? <th scope="col" className="calculator-note-column">Note</th> : null}
               </tr>
             </thead>
             <tbody>
@@ -1664,7 +1664,7 @@ export function CalculatorStudioVisual({
                     {chart.legend.secondary ? (
                       <td>{entry.secondary !== undefined ? formatChartValue(entry.secondary, calculator, entryValueType, entryCurrency) : '—'}</td>
                     ) : null}
-                    {chart.entries.some((e) => e.note) ? <td>{entry.note ?? ''}</td> : null}
+                    {chart.entries.some((e) => e.note) ? <td className="calculator-note-column">{entry.note ?? ''}</td> : null}
                   </tr>
                 );
               })}
