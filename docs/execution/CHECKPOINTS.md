@@ -54,7 +54,7 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C43 | FIRE Calculator `/unslop` redline — Optional refinements, structured repeat cards & output ledger | B82 | accepted | fbbabb15c6de5eb542d63269261d0c60eaf63502 | [Approved; shared beta verified](reviews/C43.md) |
 | C44 | Stage 1 Option A Split Financial Workbench across 75 shared studio calculators | B83 | accepted | b22877cebb122db8024d8a67b8a01d08815ec83d | [Approved; shared beta verified](reviews/C44.md) |
 | C45 | Stage 2 Option A Split Financial Workbench across the 7 dedicated calculators | B84 | accepted | 42b4d608f383486375ab06be617ea79999db3c46 | [Approved; shared beta verified](reviews/C45.md) |
-| C46 | Pre-Launch Polish Pack: dynamic production origin, `/privacy` & `/terms`, `og:image`, feedback link & refreshed Gemini Argon review notes | B85 | in_progress | — | Pending |
+| C46 | Pre-Launch Polish Pack: dynamic production origin, `/privacy` & `/terms`, `og:image`, feedback link & refreshed Gemini Argon review notes | B85 | accepted | ab37dc8dc1c6b2572b8424a218935f8b737a998f | [Approved; shared beta verified](reviews/C46.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -223,4 +223,8 @@ B84/C45 is accepted on `2026-11-21` at product commit `42b4d608f383486375ab06be6
 
 ## Pre-Launch Polish Pack registration — 2026-11-22
 
-B85/C46 is now in progress from `main` `e8ca544c9b2e07c5df157809a1e3e6f7103fc432` ([PR #170](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/170)) to parameterize the production origin across canonical/OG/sitemap/robots/llms outputs, add public `/privacy` and `/terms` pages + quiet footer feedback link, ship a `1200×630` `public/og-card.png` social preview card, and refresh `docs/execution/GEMINI_ARGON_REVIEW_NOTES.md` through `B81–B85`. `81` of `85` registered tasks done. See [prompts/B85.md](prompts/B85.md).
+B85/C46 is now in progress from `main` `e8ca544fe8dda4de1d5daaa5ff46edf7b80284e4` ([PR #170](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/170)) to parameterize the production origin across canonical/OG/sitemap/robots/llms outputs, add public `/privacy` and `/terms` pages + quiet footer feedback link, ship a `1200×630` `public/og-card.png` social preview card, and refresh `docs/execution/GEMINI_ARGON_REVIEW_NOTES.md` through `B81–B85`. `81` of `85` registered tasks done. See [prompts/B85.md](prompts/B85.md).
+
+## Pre-Launch Polish Pack acceptance — 2026-11-22
+
+B85/C46 is accepted on `2026-11-22` at product commit `ab37dc8dc1c6b2572b8424a218935f8b737a998f` ([PR #171](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/171), exact-head `Verify` CI [`45011064285`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/45011064285) `SUCCESS`, candidate `f149e843-efc5-4be7-ac45-80d97991d1db`, shared beta `176f20ff-6641-4325-b868-1e90747341d7` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C46.md), [Gemini Argon review notes](GEMINI_ARGON_REVIEW_NOTES.md)). `82` of `85` registered tasks done. FinPath is launch-polished and ready for owner-executed custom-domain + production Clerk/D1 cutover per `docs/PRODUCTION_AUTH_RUNBOOK.md`.

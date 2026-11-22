@@ -1,0 +1,29 @@
+{
+  "checkpoint": "C46",
+  "task": "B85",
+  "verifiedAt": "2026-11-22",
+  "sourceRevision": "ab37dc8dc1c6b2572b8424a218935f8b737a998f",
+  "focusedSuite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH npx vitest run src/PreLaunchPolish.test.tsx src/prerenderRoutes.test.ts src/lib/routeMetadata.test.ts src/shellNavigation.test.tsx",
+    "exitCode": 0,
+    "vitestFilesPassed": 4,
+    "vitestTestsPassed": 100
+  },
+  "fullSuite": {
+    "command": "PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh (CI run 45011064285 + local) & npm run build:preview-auth",
+    "exitCode": 0,
+    "nodeTestsPassed": 30,
+    "vitestFilesPassed": 123,
+    "vitestTestsPassed": 2985,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "cssBytes": 278216,
+    "cssGzipBytes": 42530,
+    "prerenderedRoutes": 94,
+    "publicPrerenderedRoutes": 87,
+    "workspacePrerenderedRoutes": 7,
+    "buildIsolationFiles": 26,
+    "previewAuthBuildIsolationFiles": 28,
+    "fixtureLeaks": 0
+  }
+}

@@ -3,15 +3,15 @@
 **Prepared:** 2026-11-22
 **Workspace:** `/Users/Rakesh/Projects/Interactive-FIRE-Calculator`
 **Live Shared Beta (Stable Alias):** [`https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev)
-**Latest Verified Immutable Beta (`B84 / C45` baseline):** [`https://1a13441c.interactive-fire-calculator.pages.dev`](https://1a13441c.interactive-fire-calculator.pages.dev) (`1a13441c-a940-4da5-b5cd-bcd9d1405d1c`)
-**Latest Accepted Product SHA (`B84 / C45` baseline):** `42b4d608f383486375ab06be617ea79999db3c46` ([PR #170](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/170), exact-head `Verify` CI [`44992445526`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44992445526)) — `B85 / C46` Pre-Launch Polish Pack currently in progress
+**Latest Verified Immutable Beta (`B85 / C46`):** [`https://176f20ff.interactive-fire-calculator.pages.dev`](https://176f20ff.interactive-fire-calculator.pages.dev) (`176f20ff-6641-4325-b868-1e90747341d7`)
+**Latest Accepted Product SHA (`B85 / C46`):** `ab37dc8dc1c6b2572b8424a218935f8b737a998f` ([PR #171](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/171), exact-head `Verify` CI [`45011064285`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/45011064285))
 **Production Status (Untouched):** Still serving `3399dbbd8d7f0e6379972356a790b236e6b177b1`; production D1 (`a5860350-0a50-4ebe-9f5f-1d9916a908e6`) untouched; automatic production deployments remain off.
 
 ---
 
 ## 1. Executive Summary
 
-All autonomous engineering, calculator-correctness (`B68–B75`), `/unslop` visual overhaul (`B70`, `B78`, `B74`, `B76`, `B79`, `B80`), and Option A Split Financial Workbench rollout (`B81–B84`) checkpoints are complete (`81` of `85` registered tasks done; `B85 / C46` Pre-Launch Polish Pack is the final launch-hygiene pass, and the remaining `3` are owner-gated `B51`, `B13`, `B14`). The site has been delivered incrementally in bounded checkpoints—each passing red/green unit tests, `./scripts/test_all.sh`, independent adversarial review, exact-head GitHub Actions `Verify` CI, isolated candidate preview, shared-beta promotion (`codex/finpath-quality-execution` on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`), and `main` merge.
+All autonomous engineering, calculator-correctness (`B68–B75`), `/unslop` visual overhaul (`B70`, `B78`, `B74`, `B76`, `B79`, `B80`), Option A Split Financial Workbench rollout (`B81–B84`), and Pre-Launch Polish Pack (`B85 / C46`) checkpoints are complete (`82` of `85` registered tasks done; the remaining `3` are owner-gated `B51`, `B13`, `B14`). The site has been delivered incrementally in bounded checkpoints—each passing red/green unit tests, `./scripts/test_all.sh`, independent adversarial review, exact-head GitHub Actions `Verify` CI, isolated candidate preview, shared-beta promotion (`codex/finpath-quality-execution` on preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`), and `main` merge.
 
 This handoff document is structured so **Gemini Argon** can independently verify:
 1. Every architectural, visual, accessibility, and performance change across the full `/unslop` overhaul (`B74/C36` -> `B76/C39` -> `B79/C40` -> `B80/C41`), the Option A Split Financial Workbench rollout (`B81/C42` -> `B82/C43` -> `B83/C44` -> `B84/C45`), the Pre-Launch Polish Pack (`B85/C46`), and the preceding calculator-analysis checkpoints (`B68–B75`).
@@ -37,7 +37,7 @@ This handoff document is structured so **Gemini Argon** can independently verify
 | **FIRE Redline** | `B82 / C43` | FIRE Optional refinements non-overlapping cards, 6-col repeat rows, right-aligned output ledger | `fbbabb15c6de5eb542d63269261d0c60eaf63502` | [#168](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/168) | [`44962862164`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44962862164) | `84c5320a-fe2d-4df3-b001-4e3e4487fb9e` |
 | **Shared Studios Workbench** | `B83 / C44` | Stage 1 Option A Split Financial Workbench & above-the-fold charts across 75 shared studio routes | `b22877cebb122db8024d8a67b8a01d08815ec83d` | [#169](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/169) | [`44978472742`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44978472742) | `090cdedb-0983-4fb6-b940-c29f509a8cf7` |
 | **Dedicated Planners Workbench** | `B84 / C45` | Stage 2 Option A Split Financial Workbench & above-the-fold charts across 7 dedicated calculators | `42b4d608f383486375ab06be617ea79999db3c46` | [#170](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/170) | [`44992445526`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44992445526) | `1a13441c-a940-4da5-b5cd-bcd9d1405d1c` |
-| **Pre-Launch Polish Pack** | `B85 / C46` | Dynamic production origin, public `/privacy` & `/terms`, `1200×630` `og-card.png`, footer feedback link, build-time sitemap/robots/llms | Pending acceptance | Pending | Pending | Pending |
+| **Pre-Launch Polish Pack** | `B85 / C46` | Dynamic production origin, public `/privacy` & `/terms`, `1200×630` `og-card.png`, footer feedback link, build-time sitemap/robots/llms | `ab37dc8dc1c6b2572b8424a218935f8b737a998f` | [#171](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/171) | [`45011064285`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/45011064285) | `176f20ff-6641-4325-b868-1e90747341d7` |
 
 ### B. Preceding Calculator Excellence Checkpoints (`ANALYSIS_2026-10-18.md`, All 10 Accepted)
 
@@ -105,15 +105,19 @@ Across all `7` stylesheets (`src/app.css`, `src/styles.css`, `src/vivid-theme.cs
 - `backdrop-filter` blur: **0**
 - `transition: all`: **0**
 
-### Local Test & Build Receipts (`B84/C45` Baseline + `B85/C46` Local Verification)
-- `B84/C45` accepted baseline (`42b4d608f383486375ab06be617ea79999db3c46`, exact-head CI [`44992445526`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44992445526)): `30` Node checks, `122` Vitest files / `2,981` tests, `92` prerendered routes + `404.html`, `26` standard / `28` preview-auth clean assets (`0` fixture leaks), shared beta `1a13441c-a940-4da5-b5cd-bcd9d1405d1c` (`16` routes / `74` live cases, `globalMinContrast: 4.58`, cold-load `/` `LCP: 420ms` / `CLS: 0`, `/calculators/fire` `LCP: 372ms` / `CLS: 0.0006`).
-- `B85/C46` local suite (`PATH=/opt/homebrew/bin:$PATH ./scripts/test_all.sh`): **exit 0**
+### Local, CI & Live Shared-Beta Verification Receipts (`B85 / C46`)
+- **Product SHA & Exact-Head CI:** `ab37dc8dc1c6b2572b8424a218935f8b737a998f`, GitHub Actions `Verify` run [`45011064285`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/45011064285) (`SUCCESS`) + local `./scripts/test_all.sh` (`exit 0`):
   - Node script tests: **30 passed** (`11 + 5 + 14`)
   - TypeScript (`tsc --noEmit`): **PASS**
   - Vitest: **123 files / 2,985 tests passed** (`4/4` in `src/PreLaunchPolish.test.tsx`, `7/7` in `src/DedicatedWorkbench.test.tsx`, `4/4` in `src/UnslopFinalPolish.test.tsx`, `3/3` in `src/UnslopStageC.test.tsx`, `4/4` in `src/UnslopStageB.test.tsx`, `8/8` in `src/CalculatorStudioUnslop.test.tsx`)
   - Prerender: **94 route pages** (`87` public including `/privacy` and `/terms`, `7` workspace) + `404.html`, `sitemap.xml`, `robots.txt`, and `llms.txt`
-  - Build isolation: **26** standard production assets clean, **0 fixture leaks**
-  - Hosted candidate/beta receipts for `B85/C46` will be recorded in `docs/execution/evidence/C46/manifest.json` upon acceptance.
+  - Build isolation: **26** standard + **28** preview-auth production assets clean (`assets/main-BZjYS_X-.js`, `assets/main-B3wbRNpz.css`, `278.21 kB` / `42.53 kB` gzip CSS), **0 fixture leaks**
+- **Candidate & Shared Beta Hosted Proof (`c41-unslop-final-polish`, Preview D1 `0dbad68e-7493-452f-8504-98d4c61ee5da`):**
+  - Candidate: [`https://f149e843.interactive-fire-calculator.pages.dev`](https://f149e843.interactive-fire-calculator.pages.dev) (`f149e843-efc5-4be7-ac45-80d97991d1db`) — **PASS** (`84/84` public calculator routes + all `7` hosted stages)
+  - Shared beta: [`https://176f20ff.interactive-fire-calculator.pages.dev`](https://176f20ff.interactive-fire-calculator.pages.dev) (`176f20ff-6641-4325-b868-1e90747341d7`, stable alias [`https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev)) — **PASS** (`84/84` public calculator routes on immutable & alias, HTTP `200` `image/png` `/og-card.png`, HTTP `200` `/privacy` & `/terms`, `/robots.txt` `Sitemap:`, all `7` hosted stages)
+  - `sitewide-contrast-unslop`: **`18` routes / `82` live cases**, **`globalMinContrast: 4.58`**, `errors: []`
+  - `web-vitals-snapshot` (shared beta cold loads): `/` (`LCP 424ms`, `CLS 0`, `43.6 KB` CSS), `/calculators` (`LCP 376ms`, `CLS 0`), `/calculators/mortgage` (`LCP 452ms`, `CLS 0.0348`), `/calculators/fire` (`LCP 288ms`, `CLS 0.0006`)
+  - Cleanup: 16-table zero-row D1 cleanup + tombstone present + Clerk provider deletion verified (`ok: true`, `errors: []`); full provenance in `docs/execution/evidence/C46/manifest.json`.
 
 ---
 

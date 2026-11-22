@@ -1,0 +1,164 @@
+{
+  "checkpoint": "C46",
+  "task": "B85",
+  "date": "2026-11-22",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "ab37dc8dc1c6b2572b8424a218935f8b737a998f",
+  "base": "e8ca544fe8dda4de1d5daaa5ff46edf7b80284e4",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/171",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 45011064285,
+    "event": "pull_request",
+    "headSha": "ab37dc8dc1c6b2572b8424a218935f8b737a998f",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/45011064285"
+  },
+  "candidate": {
+    "deployment_id": "f149e843-efc5-4be7-ac45-80d97991d1db",
+    "immutable_url": "https://f149e843.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://c46-candidate.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "176f20ff-6641-4325-b868-1e90747341d7",
+    "immutable_url": "https://176f20ff.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "verified_assets": [
+      "assets/main-BZjYS_X-.js",
+      "assets/main-B3wbRNpz.css",
+      "og-card.png",
+      "robots.txt",
+      "sitemap.xml"
+    ]
+  },
+  "tests": {
+    "node": 30,
+    "files": 123,
+    "vitest": 2985,
+    "typecheck": true,
+    "build": true,
+    "prerender": 94,
+    "source_revision": "ab37dc8dc1c6b2572b8424a218935f8b737a998f"
+  },
+  "source_hashes": [
+    {
+      "path": ".env.production.example",
+      "bytes": 515,
+      "sha256": "e2ef963eb506e410ad41b795a0703cdcdfa64c2b391f7850b95c479ba43d93e1"
+    },
+    {
+      "path": "docs/PRODUCTION_AUTH_RUNBOOK.md",
+      "bytes": 6022,
+      "sha256": "af6d59102f245c1c6c7f25310975989cc9e1825261a9b3673458b60e64d72388"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1920,
+      "sha256": "fc3f64538715438abc4d3f62f960559809aa5d006c37e43ee2510b3325ea419d"
+    },
+    {
+      "path": "public/og-card.png",
+      "bytes": 89548,
+      "sha256": "5be58841abda169686bdeecff2635cf5b15c856110d8c6cc9aa201e2d6b9e892"
+    },
+    {
+      "path": "public/sitemap.xml",
+      "bytes": 15707,
+      "sha256": "791a60561c7c01e638a8e918f67b0dfa2d29a490e177944a280cc70e7b91d3c0"
+    },
+    {
+      "path": "scripts/prerender_routes.mjs",
+      "bytes": 9776,
+      "sha256": "8e9c5e306583b0925f608cff45d0f2ddb8d5e1a80ee7dfd3668cda7133d682a1"
+    },
+    {
+      "path": "scripts/smoke/c41-unslop-final-polish.mjs",
+      "bytes": 26847,
+      "sha256": "3007b1c188276534d8ec94973b3e8614f62b6deae727634d2a5c485060a29616"
+    },
+    {
+      "path": "scripts/smoke_public_calculators.mjs",
+      "bytes": 2316,
+      "sha256": "1b0008d3a8c3fe75c3baf1f652b851a3189a1565ee6caa4fab5e2297629d590d"
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 174287,
+      "sha256": "860aa07f28a3c54f6ae918cb432ef94487a5e50701727770e289f6feae07b5c1"
+    },
+    {
+      "path": "src/LegalPages.tsx",
+      "bytes": 7079,
+      "sha256": "10a9335225f86563f36dbab8edf7910bd7bf6b1374d8ca60180bd3dee72a3d4d"
+    },
+    {
+      "path": "src/PreLaunchPolish.test.tsx",
+      "bytes": 9307,
+      "sha256": "fce8ee05b7aeef84d3463b749695db4947eec8aaa8d936d67985cc03caed77da"
+    },
+    {
+      "path": "src/lib/navigation.ts",
+      "bytes": 6472,
+      "sha256": "e13503709d77c4e915f587fa125afbdf4377f949c413238ee6420c14ddcd8d6d"
+    },
+    {
+      "path": "src/lib/routeMetadata.test.ts",
+      "bytes": 4013,
+      "sha256": "2e23b7ade8676b21e4dc6f34f8e02db4895beee2e553c3a1d8c7d7c807ae4126"
+    },
+    {
+      "path": "src/lib/routeMetadata.ts",
+      "bytes": 11781,
+      "sha256": "c4a00a4370bc330cbc9946429fc50f8c3d79ba726f92997bb4b147887d9f2f9d"
+    },
+    {
+      "path": "src/prerenderRoutes.test.ts",
+      "bytes": 4231,
+      "sha256": "910e96e71814f2187ebe16116862d339e5d30690294af1b96e194ed35e739837"
+    },
+    {
+      "path": "src/shell.css",
+      "bytes": 10602,
+      "sha256": "bc99d7681f8413a94fa030e98fb3610fb6bf89d44f6caa755d91af6fb69cbe0f"
+    },
+    {
+      "path": "src/workspace.css",
+      "bytes": 60113,
+      "sha256": "a39cf5a644bcda8c1c3764f2c3427d15f9bc47de8b732e508b166adcd68abef8"
+    },
+    {
+      "path": "vite.config.ts",
+      "bytes": 2230,
+      "sha256": "25b2a6b9234815bfcb221dc81c7875994ee724065326b37ecdbf92ea78951264"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C46/raw/beta-alias-public-calculators.txt",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C46/raw/beta-hosted.json",
+      "bytes": 10383,
+      "sha256": "8d7ebdbe755511a3604d6944e49e817d9d5ab4d66ec681013fc6b0d63353c2df"
+    },
+    {
+      "path": "docs/execution/evidence/C46/raw/beta-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "89bfd8f3285c024e4dd0efc610608117902db9bb044f47a9c92d619d4546e32d"
+    },
+    {
+      "path": "docs/execution/evidence/C46/raw/candidate-hosted.json",
+      "bytes": 10383,
+      "sha256": "5f150110be9648c62559549427ec998631ee15eab54912b7815905c63055e9ba"
+    },
+    {
+      "path": "docs/execution/evidence/C46/raw/candidate-public-calculators.txt",
+      "bytes": 119,
+      "sha256": "be96466bd9b7c9ff5103a44d4ae7687ec1de1536384b161642497a334e7255b8"
+    }
+  ]
+}
