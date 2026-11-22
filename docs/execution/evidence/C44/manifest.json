@@ -1,0 +1,116 @@
+{
+  "checkpoint": "C44",
+  "task": "B83",
+  "date": "2026-11-21",
+  "status": "APPROVED; shared beta verified",
+  "accepted_source": "b22877cebb122db8024d8a67b8a01d08815ec83d",
+  "base": "835f344de48abb6ad7eed224ec7de8d711fbfc80",
+  "pull_request": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/169",
+  "exact_product_ci": {
+    "conclusion": "success",
+    "databaseId": 44978472742,
+    "event": "pull_request",
+    "headSha": "b22877cebb122db8024d8a67b8a01d08815ec83d",
+    "status": "completed",
+    "url": "https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44978472742"
+  },
+  "candidate": {
+    "deployment_id": "c64321b9-ca6a-43d4-9c76-9b8136ca10d0",
+    "immutable_url": "https://c64321b9.interactive-fire-calculator.pages.dev",
+    "branch_alias_url": "https://c44-candidate.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da"
+  },
+  "beta": {
+    "deployment_id": "090cdedb-0983-4fb6-b940-c29f509a8cf7",
+    "immutable_url": "https://090cdedb.interactive-fire-calculator.pages.dev",
+    "stable_beta_url": "https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev",
+    "preview_d1_id": "0dbad68e-7493-452f-8504-98d4c61ee5da",
+    "verified_assets": [
+      "assets/main-DsdrrSbO.js",
+      "assets/main-BYgDBc7q.css"
+    ]
+  },
+  "tests": {
+    "node": 30,
+    "files": 121,
+    "vitest": 2974,
+    "typecheck": true,
+    "build": true,
+    "prerender": 92,
+    "source_revision": "b22877cebb122db8024d8a67b8a01d08815ec83d"
+  },
+  "source_hashes": [
+    {
+      "path": "DESIGN.md",
+      "bytes": 28141,
+      "sha256": "e6903eacfe1eced6f0862597fb5839057c1d816b9be5ad4afc41420aebeb249d"
+    },
+    {
+      "path": "docs/EXECUTION_BACKLOG.md",
+      "bytes": 126063,
+      "sha256": "b7904df25a30cb9eace9f0876e165630800ccc568c740ae804c0c2d2f27da69c"
+    },
+    {
+      "path": "docs/execution/prompts/B83.md",
+      "bytes": 6064,
+      "sha256": "0620b32926a71d8ffe852e706027dfcf51064d8c26ea395babcfc88a066f7c39"
+    },
+    {
+      "path": "scripts/smoke/c41-unslop-final-polish.mjs",
+      "bytes": 20984,
+      "sha256": "3fb6f2e4d67a0d50a0d15bf462b6505b6cf25bd7f6d78254af616cf9f383f7c1"
+    },
+    {
+      "path": "src/CalculatorLibrary.tsx",
+      "bytes": 86756,
+      "sha256": "3d11b18ce272a43b314c966254167679ec1181e611b571634238556f9aee3207"
+    },
+    {
+      "path": "src/CalculatorStudioWorkbench.test.tsx",
+      "bytes": 5280,
+      "sha256": "fc96d15b59d4213ed5758c7cf7961a43ab7c32b166b6b92910faafe6039c7206"
+    },
+    {
+      "path": "src/studios.css",
+      "bytes": 53113,
+      "sha256": "3bda06d925f9df0db35309c3878e9b9391176928e4506efbd31d6373e5dc0328"
+    },
+    {
+      "path": "src/styles.css",
+      "bytes": 171908,
+      "sha256": "f32a2110202e6f832fe4af28812fc3fc814112f88b1d6b69beb5ad3c048275ec"
+    },
+    {
+      "path": "src/workspace.css",
+      "bytes": 40629,
+      "sha256": "bc567f2bd4f73c6900ed460d5597f5c31d59d6214d7830fb6787797b08aacb58"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "docs/execution/evidence/C44/raw/candidate-public-smoke.txt",
+      "bytes": 119,
+      "sha256": "4a515487a7cd2ded518c048ea4a768750f11b90cf279afd7923959ec89fcd0cd"
+    },
+    {
+      "path": "docs/execution/evidence/C44/raw/candidate-smoke.json",
+      "bytes": 10386,
+      "sha256": "f044422cb444523f9b29cb307fd4b57ef942e22d3dd9ccaf73664adc991f7b1f"
+    },
+    {
+      "path": "docs/execution/evidence/C44/raw/shared-beta-alias-public-smoke.txt",
+      "bytes": 139,
+      "sha256": "175f497dadfd1ad2162efeba87ddbd7ada30cc4d0466f01fce6b521d75a4891c"
+    },
+    {
+      "path": "docs/execution/evidence/C44/raw/shared-beta-public-smoke.txt",
+      "bytes": 119,
+      "sha256": "56a5bd88a1af7e4a7aa92749850aa3d0ab97238e29d1bfe97f3c1e5f88c02b40"
+    },
+    {
+      "path": "docs/execution/evidence/C44/raw/shared-beta-smoke.json",
+      "bytes": 10611,
+      "sha256": "531f048fa5703029f0469f68b1bd3d5c8bbbfe2ac56683f3c9915fee491f841d"
+    }
+  ]
+}
