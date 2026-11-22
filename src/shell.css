@@ -177,14 +177,28 @@
   }
   .site-footer a:hover { color: var(--color-footer-accent); text-decoration: underline; }
   .site-footer a:focus-visible { outline-color: var(--color-footer-accent); box-shadow: none; }
-  .site-footer-note {
+  .site-footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
     max-width: 1200px;
     margin: 32px auto 0;
-    padding-block-start: 20px;
+    padding-block-start: 16px;
     border-top: 1px solid var(--color-footer-muted);
+  }
+  .site-footer-note {
+    margin: 0;
     color: var(--color-footer-muted);
     font-size: 0.75rem;
     line-height: 1.6;
+  }
+  .site-footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
   }
   /* Footer fragments must remain visible below the sticky navigation. */
   .calculator-toolkit[id], #faq { scroll-margin-top: calc(var(--topbar-height) + 16px); }

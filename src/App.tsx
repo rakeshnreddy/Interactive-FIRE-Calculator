@@ -48,6 +48,7 @@ import type {
 } from './CalculatorLibrary';
 import { LandingPage } from './LandingPage';
 export { LandingPage, landingSteps, usefulCalculatorPaths } from './LandingPage';
+import { PrivacyPolicyPage, TermsOfUsePage } from './LegalPages';
 import { AuthActionButton } from './AuthActionButton';
 import { CalculatorSaveCoordinator } from './lib/calculatorSaveManager';
 import type {
@@ -75,7 +76,7 @@ import {
   type InsightPriority
 } from './lib/insights';
 import { undoPlanSeed, type PlanSeedPreview, type SeedApplication } from './lib/planWorkspace';
-import { applyRouteMetadata } from './lib/routeMetadata';
+import { applyRouteMetadata, feedbackUrl } from './lib/routeMetadata';
 import {
   buildTransactionCashflowRollup,
   emptyTransactionFilters,
@@ -223,7 +224,7 @@ const ProjectionChart = lazy(() =>
 );
 
 type Mode = 'light' | 'dark';
-export type PlatformRoute = Exclude<AppRoute, '/' | '/calculators' | `/calculators/${string}`>;
+export type PlatformRoute = Exclude<AppRoute, '/' | '/calculators' | `/calculators/${string}` | '/privacy' | '/terms'>;
 type CalculatorPanel = 'planner' | 'results' | 'compare';
 type CalculatorMode = 'fire-number' | 'withdrawal-income';
 type ResultsMode = 'chart' | 'table';
@@ -421,6 +422,8 @@ function normalizeRoute(pathname: string): AppRoute {
     case '/plans':
     case '/calculators':
     case '/calculators/fire':
+    case '/privacy':
+    case '/terms':
     case '/reports':
     case '/settings':
       return cleanPath;
@@ -860,6 +863,7 @@ function SiteFooter({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
   // The router resolves these fixed public fragment targets after the lazy page mounts.
   const link = (route: string) => (event: ReactMouseEvent<HTMLAnchorElement>) =>
     handleNavigationAnchorClick(event, route as AppRoute, onNavigate);
+  const isExternalFeedback = feedbackUrl.startsWith('https://');
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
@@ -887,7 +891,20 @@ function SiteFooter({ onNavigate }: { onNavigate: (route: AppRoute) => void }) {
           </div>
         </nav>
       </div>
-      <p className="site-footer-note">Planning estimates, not financial advice. You can use every public calculator without an account.</p>
+      <div className="site-footer-bottom">
+        <p className="site-footer-note">Planning estimates, not financial advice. You can use every public calculator without an account.</p>
+        <nav className="site-footer-legal" aria-label="Legal and feedback">
+          <a href="/privacy" onClick={link('/privacy')}>Privacy</a>
+          <a href="/terms" onClick={link('/terms')}>Terms</a>
+          <a
+            href={feedbackUrl}
+            target={isExternalFeedback ? '_blank' : undefined}
+            rel={isExternalFeedback ? 'noopener noreferrer' : undefined}
+          >
+            Send feedback
+          </a>
+        </nav>
+      </div>
     </footer>
   );
 }
@@ -3268,6 +3285,10 @@ function App({ auth }: { auth: AuthState }) {
       >
         {route === '/' ? (
           <LandingPage auth={auth} onNavigate={navigateTo} />
+        ) : route === '/privacy' ? (
+          <PrivacyPolicyPage onNavigate={navigateTo} />
+        ) : route === '/terms' ? (
+          <TermsOfUsePage onNavigate={navigateTo} />
         ) : route === '/calculators' || (route.startsWith('/calculators/') && route !== '/calculators/fire') ? (
           <Suspense
             fallback={

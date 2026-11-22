@@ -1373,6 +1373,23 @@
       "code_sha": "42b4d608f383486375ab06be617ea79999db3c46",
       "review": "reviews/C45.md",
       "blocked_reason": null
+    },
+    {
+      "id": "B85",
+      "title": "Pre-Launch Polish Pack: dynamic production origin, /privacy & /terms pages, og:image card, feedback link and updated Gemini Argon review notes",
+      "checkpoint": "C46",
+      "status": "done",
+      "dependencies": [
+        "B79",
+        "B80",
+        "B84"
+      ],
+      "prompt": "prompts/B85.md",
+      "submission": "submissions/B85.md",
+      "owner": "Primary agent direct implementation and independent review",
+      "code_sha": "ab37dc8dc1c6b2572b8424a218935f8b737a998f",
+      "review": "reviews/C46.md",
+      "blocked_reason": null
     }
   ],
   "owner_actions": [

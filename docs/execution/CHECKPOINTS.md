@@ -50,6 +50,11 @@ The table below is the current checkpoint state. Task/owner-action status is in 
 | C37 | Charts, schedules, statutory provenance links & P2/P3 copy honesty across all studios (`TAX-05`, `TAX-06`, `TAX-08`, `TAX-09`, `RET-04`, `RET-05`, `RET-07`, `RET-08`, `RINC-05`, `RINC-06`, `RINC-09`, `RINC-11`, `RINC-14`, `RINC-16`, `DEBT-04`, `DEBT-06`, `DEBT-07`, `GGS-04`, `GGS-05`, `GGS-06`, `GGS-08`, `GGS-09`, `GGS-10`, `LH-09`, `LH-10`, `LH-11`, `CBS-06`) | B75 | accepted | e9e4963d0eff19c3c6cf20bcb0b2b50089633254 | [Approved; shared beta verified](reviews/C37.md) |
 | C40 | Unslop Stage C: Homepage, application shell & footer | B79 | accepted | 3d2eec784501ff5de884d96dd0e0d6819370344b | [Approved; shared beta verified](reviews/C40.md) |
 | C41 | Final `/unslop` sitewide polish, WCAG contrast & performance verification | B80 | accepted | 58b1a3604196842c64a8af224f24616b6f8cd0c9 | [Approved; shared beta verified](reviews/C41.md) |
+| C42 | FIRE Calculator Option A Split Financial Workbench & default-visible projection | B81 | accepted | 6edc13d56da54ee40d7e9214fdb0f456d46fba6a | [Approved; shared beta verified](reviews/C42.md) |
+| C43 | FIRE Calculator `/unslop` redline — Optional refinements, structured repeat cards & output ledger | B82 | accepted | fbbabb15c6de5eb542d63269261d0c60eaf63502 | [Approved; shared beta verified](reviews/C43.md) |
+| C44 | Stage 1 Option A Split Financial Workbench across 75 shared studio calculators | B83 | accepted | b22877cebb122db8024d8a67b8a01d08815ec83d | [Approved; shared beta verified](reviews/C44.md) |
+| C45 | Stage 2 Option A Split Financial Workbench across the 7 dedicated calculators | B84 | accepted | 42b4d608f383486375ab06be617ea79999db3c46 | [Approved; shared beta verified](reviews/C45.md) |
+| C46 | Pre-Launch Polish Pack: dynamic production origin, `/privacy` & `/terms`, `og:image`, feedback link & refreshed Gemini Argon review notes | B85 | accepted | ab37dc8dc1c6b2572b8424a218935f8b737a998f | [Approved; shared beta verified](reviews/C46.md) |
 | C12 | Paid offer, only after retention | B13 | locked | — | — |
 | C13 | Mobile study, only after evidence | B14 | locked | — | — |
 
@@ -215,3 +220,11 @@ B84/C45 is now in progress from `main` `af67a03d41011f4fc6ee36e79c7929bbf9dee895
 ## Stage 2 Dedicated Calculators Split Financial Workbench acceptance — 2026-11-21
 
 B84/C45 is accepted on `2026-11-21` at product commit `42b4d608f383486375ab06be617ea79999db3c46` ([PR #170](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/170), exact-head `Verify` CI [`44992445526`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44992445526) `SUCCESS`, candidate `9ef52443-bdeb-44c6-8448-b817b58a3c08`, shared beta `1a13441c-a940-4da5-b5cd-bcd9d1405d1c` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C45.md)). `81` of `84` registered tasks done. Every public calculator on FinPath (FIRE + all 75 shared studio calculators + all 7 dedicated planners = all 83 calculator experiences / 84 public routes) now runs the calm Option A Split Financial Workbench with above-the-fold interactive visuals.
+
+## Pre-Launch Polish Pack registration — 2026-11-22
+
+B85/C46 is now in progress from `main` `e8ca544fe8dda4de1d5daaa5ff46edf7b80284e4` ([PR #170](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/170)) to parameterize the production origin across canonical/OG/sitemap/robots/llms outputs, add public `/privacy` and `/terms` pages + quiet footer feedback link, ship a `1200×630` `public/og-card.png` social preview card, and refresh `docs/execution/GEMINI_ARGON_REVIEW_NOTES.md` through `B81–B85`. `81` of `85` registered tasks done. See [prompts/B85.md](prompts/B85.md).
+
+## Pre-Launch Polish Pack acceptance — 2026-11-22
+
+B85/C46 is accepted on `2026-11-22` at product commit `ab37dc8dc1c6b2572b8424a218935f8b737a998f` ([PR #171](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/171), exact-head `Verify` CI [`45011064285`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/45011064285) `SUCCESS`, candidate `f149e843-efc5-4be7-ac45-80d97991d1db`, shared beta `176f20ff-6641-4325-b868-1e90747341d7` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C46.md), [Gemini Argon review notes](GEMINI_ARGON_REVIEW_NOTES.md)). `82` of `85` registered tasks done. FinPath is launch-polished and ready for owner-executed custom-domain + production Clerk/D1 cutover per `docs/PRODUCTION_AUTH_RUNBOOK.md`.

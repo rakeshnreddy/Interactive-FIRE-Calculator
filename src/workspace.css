@@ -899,6 +899,98 @@
     color: var(--color-heading);
   }
 
+  /* B85 / C46: Public /privacy and /terms document layout */
+  .legal-document {
+    max-width: 760px;
+    margin-inline: auto;
+    display: grid;
+    gap: 24px;
+  }
+
+  .legal-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    color: var(--color-primary-ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    justify-self: start;
+  }
+
+  .legal-back-link:hover {
+    color: var(--color-heading);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .route-shell.legal-document > .route-heading p.legal-updated {
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .legal-card {
+    display: grid;
+    gap: 24px;
+    padding: 24px;
+    border-radius: 12px;
+  }
+
+  .legal-section {
+    display: grid;
+    gap: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .legal-section:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .legal-section h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-heading);
+    line-height: 1.35;
+  }
+
+  .legal-section p {
+    margin: 0;
+    color: var(--color-body);
+    line-height: 1.65;
+  }
+
+  .legal-section code {
+    font-size: 0.875rem;
+    color: var(--color-heading);
+  }
+
+  .legal-links-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .legal-links-row a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--color-primary-ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .legal-links-row a:hover {
+    color: var(--color-heading);
+  }
+
   /* B81 / C42 — Option A: FIRE Calculator Split Financial Workbench */
   .workspace:has(.fire-workbench-grid) {
     width: min(1320px, calc(100% - clamp(1.25rem, 3.2vw, 2.75rem)));

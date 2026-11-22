@@ -10,6 +10,8 @@ export type AppRoute =
   | '/calculators'
   | '/calculators/fire'
   | `/calculators/${string}`
+  | '/privacy'
+  | '/terms'
   | '/reports'
   | '/settings';
 

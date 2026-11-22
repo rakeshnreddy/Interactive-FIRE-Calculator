@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { buildRouteMetadata } from './lib/routeMetadata';
 import { seoCalculators } from './lib/seoCalculators';
 // @ts-expect-error — plain ESM build script without type declarations
-import { renderNotFoundHtml, renderRouteHtml, WORKSPACE_ROUTES } from '../scripts/prerender_routes.mjs';
+import { LEGAL_ROUTES, renderNotFoundHtml, renderRouteHtml, WORKSPACE_ROUTES } from '../scripts/prerender_routes.mjs';
 
 const template = `<!doctype html><html><head>
 <meta name="description" content="generic" />
@@ -44,7 +44,7 @@ describe('prerendered route HTML (B38)', () => {
 
   it('public routes are exactly the sitemap; workspace routes are noindex', () => {
     const sitemap = [...readFileSync('public/sitemap.xml', 'utf8').matchAll(/<loc>https:\/\/interactive-fire-calculator\.pages\.dev([^<]*)<\/loc>/g)].map((m) => m[1] || '/');
-    const publicRoutes = ['/', '/calculators', '/calculators/fire', ...seoCalculators.map((c) => `/calculators/${c.slug}`)];
+    const publicRoutes = ['/', '/calculators', '/calculators/fire', ...seoCalculators.map((c) => `/calculators/${c.slug}`), ...LEGAL_ROUTES];
     expect(new Set(publicRoutes)).toEqual(new Set(sitemap));
     for (const route of publicRoutes) expect(buildRouteMetadata(route).robots).toBe('index, follow');
     for (const route of WORKSPACE_ROUTES) expect(buildRouteMetadata(route).robots).toBe('noindex, nofollow');

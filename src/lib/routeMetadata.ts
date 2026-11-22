@@ -1,23 +1,89 @@
 import { calculatorCurrency, findSeoCalculator, seoCalculators } from './seoCalculators';
 import { landingFaq } from './landingContent';
 
-export const siteOrigin = 'https://interactive-fire-calculator.pages.dev';
+export const DEFAULT_SITE_ORIGIN = 'https://interactive-fire-calculator.pages.dev';
+export const DEFAULT_FEEDBACK_URL =
+  'https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/issues/new?title=FinPath+feedback';
+export const OG_IMAGE_PATH = '/og-card.png';
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 630;
+export const OG_IMAGE_ALT =
+  'FinPath — Free financial calculators for the US and India with visible assumptions';
+
+export function resolveSiteOrigin(candidate?: string | null): string {
+  if (!candidate || typeof candidate !== 'string') return DEFAULT_SITE_ORIGIN;
+  const trimmed = candidate.trim();
+  if (!trimmed) return DEFAULT_SITE_ORIGIN;
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== 'https:' || !parsed.hostname || parsed.username || parsed.password) {
+      return DEFAULT_SITE_ORIGIN;
+    }
+    return parsed.origin;
+  } catch {
+    return DEFAULT_SITE_ORIGIN;
+  }
+}
+
+export function ogImageUrl(origin?: string | null): string {
+  return `${resolveSiteOrigin(origin)}${OG_IMAGE_PATH}`;
+}
+
+export function resolveFeedbackUrl(candidate?: string | null): string {
+  if (!candidate || typeof candidate !== 'string') return DEFAULT_FEEDBACK_URL;
+  const trimmed = candidate.trim();
+  if (!trimmed) return DEFAULT_FEEDBACK_URL;
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.username || parsed.password) return DEFAULT_FEEDBACK_URL;
+    if (parsed.protocol === 'https:') {
+      return parsed.hostname ? parsed.href : DEFAULT_FEEDBACK_URL;
+    }
+    if (parsed.protocol === 'mailto:') {
+      return parsed.pathname.trim() ? parsed.href : DEFAULT_FEEDBACK_URL;
+    }
+    return DEFAULT_FEEDBACK_URL;
+  } catch {
+    return DEFAULT_FEEDBACK_URL;
+  }
+}
+
+const runtimeEnv = (import.meta as { env?: Record<string, string | undefined> }).env;
+const nodeEnv = typeof process !== 'undefined' ? process.env : undefined;
+
+export const siteOrigin = resolveSiteOrigin(
+  runtimeEnv?.VITE_SITE_ORIGIN || nodeEnv?.VITE_SITE_ORIGIN || nodeEnv?.FINPATH_PRODUCTION_ORIGIN
+);
+
+export const feedbackUrl = resolveFeedbackUrl(
+  runtimeEnv?.VITE_FEEDBACK_URL || nodeEnv?.VITE_FEEDBACK_URL
+);
 
 export type RouteMetadata = {
   canonicalUrl: string;
   description: string;
   jsonLd: Record<string, unknown> | null;
+  ogImageUrl: string;
   robots: 'index, follow' | 'noindex, nofollow';
   title: string;
 };
 
-export function buildRouteMetadata(path: string): RouteMetadata {
+export function buildRouteMetadata(path: string, origin: string = siteOrigin): RouteMetadata {
+  const resolvedOrigin = resolveSiteOrigin(origin);
   const canonicalPath = normalizePath(path);
   const calculator = findSeoCalculator(canonicalPath);
   const isCalculatorHub = canonicalPath === '/calculators';
   const isFireCalculator = canonicalPath === '/calculators/fire';
   const isLandingPage = canonicalPath === '/';
-  const isPublic = Boolean(calculator) || isCalculatorHub || isFireCalculator || isLandingPage;
+  const isPrivacyPage = canonicalPath === '/privacy';
+  const isTermsPage = canonicalPath === '/terms';
+  const isPublic =
+    Boolean(calculator) ||
+    isCalculatorHub ||
+    isFireCalculator ||
+    isLandingPage ||
+    isPrivacyPage ||
+    isTermsPage;
   const title = calculator
     ? `${calculator.title} | FinPath`
     : isCalculatorHub
@@ -26,7 +92,11 @@ export function buildRouteMetadata(path: string): RouteMetadata {
         ? 'FIRE Calculator | FinPath'
         : isLandingPage
           ? 'FinPath | FIRE Calculator and Financial Planning'
-          : `${routeLabel(canonicalPath)} | FinPath`;
+          : isPrivacyPage
+            ? 'Privacy Policy | FinPath'
+            : isTermsPage
+              ? 'Terms of Use | FinPath'
+              : `${routeLabel(canonicalPath)} | FinPath`;
   const description = calculator
     ? calculator.description
     : isCalculatorHub
@@ -35,8 +105,13 @@ export function buildRouteMetadata(path: string): RouteMetadata {
         ? 'Use the public FIRE calculator to estimate retirement readiness, withdrawals, and portfolio scenarios.'
         : isLandingPage
           ? 'Plan financial independence, retirement, savings, goals, accounts, and cash flow in FinPath.'
-          : 'Private FinPath workspace for signed-in accounts, goals, plans, transactions, and financial reports.';
-  const canonicalUrl = `${siteOrigin}${canonicalPath}`;
+          : isPrivacyPage
+            ? 'How FinPath handles browser drafts, optional Clerk accounts, Cloudflare D1 records, data export, and permanent deletion.'
+            : isTermsPage
+              ? 'Terms of use, planning-estimate disclaimers, and statutory source limitations for FinPath financial calculators.'
+              : 'Private FinPath workspace for signed-in accounts, goals, plans, transactions, and financial reports.';
+  const canonicalUrl = `${resolvedOrigin}${canonicalPath}`;
+  const resolvedOgImageUrl = ogImageUrl(resolvedOrigin);
 
   return {
     canonicalUrl,
@@ -44,12 +119,15 @@ export function buildRouteMetadata(path: string): RouteMetadata {
     jsonLd: calculator
       ? calculatorJsonLd(calculator, canonicalUrl)
       : isCalculatorHub
-        ? calculatorHubJsonLd(canonicalUrl)
+        ? calculatorHubJsonLd(canonicalUrl, resolvedOrigin)
         : isFireCalculator
           ? fireCalculatorJsonLd(canonicalUrl)
           : isLandingPage
-            ? websiteJsonLd()
-            : null,
+            ? websiteJsonLd(resolvedOrigin)
+            : isPrivacyPage || isTermsPage
+              ? webPageJsonLd(title, description, canonicalUrl)
+              : null,
+    ogImageUrl: resolvedOgImageUrl,
     robots: isPublic ? 'index, follow' : 'noindex, nofollow',
     title
   };
@@ -65,14 +143,19 @@ export function applyRouteMetadata(path: string): RouteMetadata {
   document.title = metadata.title;
   upsertMetaName('description', metadata.description);
   upsertMetaName('robots', metadata.robots);
-  upsertMetaName('twitter:card', 'summary');
+  upsertMetaName('twitter:card', 'summary_large_image');
   upsertMetaName('twitter:title', metadata.title);
   upsertMetaName('twitter:description', metadata.description);
+  upsertMetaName('twitter:image', metadata.ogImageUrl);
   upsertMetaProperty('og:type', 'website');
   upsertMetaProperty('og:site_name', 'FinPath');
   upsertMetaProperty('og:title', metadata.title);
   upsertMetaProperty('og:description', metadata.description);
   upsertMetaProperty('og:url', metadata.canonicalUrl);
+  upsertMetaProperty('og:image', metadata.ogImageUrl);
+  upsertMetaProperty('og:image:width', String(OG_IMAGE_WIDTH));
+  upsertMetaProperty('og:image:height', String(OG_IMAGE_HEIGHT));
+  upsertMetaProperty('og:image:alt', OG_IMAGE_ALT);
   upsertCanonical(metadata.canonicalUrl);
   upsertJsonLd(metadata.jsonLd);
 
@@ -118,7 +201,7 @@ function calculatorJsonLd(
   };
 }
 
-function calculatorHubJsonLd(url: string): Record<string, unknown> {
+function calculatorHubJsonLd(url: string, origin: string): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
@@ -126,7 +209,7 @@ function calculatorHubJsonLd(url: string): Record<string, unknown> {
       '@type': 'WebApplication',
       applicationCategory: 'FinanceApplication',
       name: calculator.title,
-      url: `${siteOrigin}/calculators/${calculator.slug}`
+      url: `${origin}/calculators/${calculator.slug}`
     })),
     name: 'Financial Calculators',
     url
@@ -138,7 +221,8 @@ function fireCalculatorJsonLd(url: string): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     applicationCategory: 'FinanceApplication',
-    description: 'Estimate retirement readiness, withdrawals, and portfolio scenarios with the public FinPath FIRE calculator.',
+    description:
+      'Estimate retirement readiness, withdrawals, and portfolio scenarios with the public FinPath FIRE calculator.',
     isAccessibleForFree: true,
     name: 'FIRE Calculator',
     offers: {
@@ -151,34 +235,46 @@ function fireCalculatorJsonLd(url: string): Record<string, unknown> {
   };
 }
 
-function websiteJsonLd(): Record<string, unknown> {
+function webPageJsonLd(name: string, description: string, url: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    description,
+    inLanguage: 'en',
+    name,
+    url
+  };
+}
+
+function websiteJsonLd(origin: string): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'Organization',
-        '@id': `${siteOrigin}/#organization`,
+        '@id': `${origin}/#organization`,
         name: 'FinPath',
-        url: siteOrigin,
-        description: 'Free financial calculators for the US and India: retirement, mortgages, loans, savings and tax, with every assumption visible.',
+        url: origin,
+        description:
+          'Free financial calculators for the US and India: retirement, mortgages, loans, savings and tax, with every assumption visible.',
         areaServed: ['US', 'IN']
       },
       {
         '@type': 'WebSite',
-        '@id': `${siteOrigin}/#website`,
+        '@id': `${origin}/#website`,
         name: 'FinPath',
-        url: siteOrigin,
+        url: origin,
         inLanguage: 'en',
-        publisher: { '@id': `${siteOrigin}/#organization` },
+        publisher: { '@id': `${origin}/#organization` },
         potentialAction: {
           '@type': 'SearchAction',
-          target: { '@type': 'EntryPoint', urlTemplate: `${siteOrigin}/calculators?q={search_term_string}` },
+          target: { '@type': 'EntryPoint', urlTemplate: `${origin}/calculators?q={search_term_string}` },
           'query-input': 'required name=search_term_string'
         }
       },
       {
         '@type': 'FAQPage',
-        '@id': `${siteOrigin}/#faq`,
+        '@id': `${origin}/#faq`,
         mainEntity: landingFaq.map((item) => ({
           '@type': 'Question',
           name: item.question,
