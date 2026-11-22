@@ -20,6 +20,8 @@ const AUDIT_ROUTES = [
   '/calculators/emergency-fund',
   '/calculators/xirr?returnMode=dated',
   '/calculators/lease-vs-buy',
+  '/privacy',
+  '/terms',
   '/dashboard'
 ];
 
@@ -222,6 +224,35 @@ export default {
               assertAudit(`${route}/${width}/${theme}`, audit);
               if (audit.minContrastRatio < globalMinContrast) globalMinContrast = audit.minContrastRatio;
               cases.push({ route, width, theme, minContrastRatio: audit.minContrastRatio });
+              if (route === '/' && width === 1440 && theme === 'light') {
+                const launchCheck = await anonymous.page.evaluate(async () => {
+                  const ogImage = document.head.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+                  const twitterCard = document.head.querySelector('meta[name="twitter:card"]')?.getAttribute('content') || '';
+                  const footer = document.querySelector('footer.site-footer');
+                  const hasPrivacy = Boolean(footer?.querySelector('a[href="/privacy"]'));
+                  const hasTerms = Boolean(footer?.querySelector('a[href="/terms"]'));
+                  const hasFeedback = Boolean([...(footer?.querySelectorAll('a') ?? [])].find((a) => /feedback/i.test(a.textContent || '')));
+                  const ogRes = await fetch('/og-card.png');
+                  const robotsRes = await fetch('/robots.txt');
+                  const robotsText = robotsRes.ok ? await robotsRes.text() : '';
+                  return {
+                    ogImage,
+                    twitterCard,
+                    hasPrivacy,
+                    hasTerms,
+                    hasFeedback,
+                    ogStatus: ogRes.status,
+                    ogContentType: ogRes.headers.get('content-type') || '',
+                    robotsStatus: robotsRes.status,
+                    hasSitemapLine: /^Sitemap:\s+https:\/\/.+\/sitemap\.xml$/m.test(robotsText)
+                  };
+                });
+                check(launchCheck.ogImage.endsWith('/og-card.png'), `Missing og:image /og-card.png: ${JSON.stringify(launchCheck)}`);
+                check(launchCheck.twitterCard === 'summary_large_image', `Expected summary_large_image: ${JSON.stringify(launchCheck)}`);
+                check(launchCheck.hasPrivacy && launchCheck.hasTerms && launchCheck.hasFeedback, `Missing footer legal/feedback links: ${JSON.stringify(launchCheck)}`);
+                check(launchCheck.ogStatus === 200 && launchCheck.ogContentType.includes('image/png'), `Invalid /og-card.png response: ${JSON.stringify(launchCheck)}`);
+                check(launchCheck.robotsStatus === 200 && launchCheck.hasSitemapLine, `Missing Sitemap directive in /robots.txt: ${JSON.stringify(launchCheck)}`);
+              }
               if ((route === '/calculators/mortgage' || route === '/calculators/sip') && width === 1440) {
                 const studioFold = await anonymous.page.evaluate(() => {
                   const inp = document.querySelector('.calculator-input-panel')?.getBoundingClientRect();

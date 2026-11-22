@@ -82,7 +82,9 @@ describe('calculator route metadata', () => {
       '/',
       '/calculators',
       '/calculators/fire',
-      ...seoCalculators.map((calculator) => `/calculators/${calculator.slug}`)
+      ...seoCalculators.map((calculator) => `/calculators/${calculator.slug}`),
+      '/privacy',
+      '/terms'
     ];
 
     expect(new Set(listedPaths).size).toBe(listedPaths.length);

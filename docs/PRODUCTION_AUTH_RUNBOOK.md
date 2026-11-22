@@ -67,7 +67,7 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
 FINPATH_PRODUCTION_ORIGIN=https://app.example.com
 ```
 
-The publishable key is intentionally embedded into the browser bundle. Never place `CLERK_SECRET_KEY` in a `VITE_` variable.
+The publishable key is intentionally embedded into the browser bundle. Never place `CLERK_SECRET_KEY` in a `VITE_` variable. `FINPATH_PRODUCTION_ORIGIN` automatically populates canonical links, OpenGraph/Twitter image URLs (`/og-card.png`), `dist/sitemap.xml`, `dist/robots.txt`, and `dist/llms.txt` during `npm run build`. You can optionally set `VITE_FEEDBACK_URL` (`https:` or `mailto:`) to override the footer feedback link.
 
 ## 5. Configure Cloudflare Pages Function Secrets
 
