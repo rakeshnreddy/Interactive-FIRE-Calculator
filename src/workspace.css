@@ -2190,7 +2190,33 @@
     gap: 8px;
   }
 
-  /* Dated XIRR SVG timeline above the fold */
+  /* Dated XIRR & Lease vs Buy compact Option A headings & above-the-fold SVG timeline */
+  .route-shell.calculator-detail[aria-labelledby="dated-return-title"],
+  .route-shell.calculator-detail[aria-labelledby="vehicle-title"] {
+    padding-top: 4px;
+  }
+
+  .route-shell.calculator-detail[aria-labelledby="dated-return-title"] > .route-heading,
+  .route-shell.calculator-detail[aria-labelledby="vehicle-title"] > .route-heading {
+    padding-top: 0;
+    gap: 4px;
+    max-width: none;
+  }
+
+  .route-shell.calculator-detail[aria-labelledby="dated-return-title"] > .route-heading h1,
+  .route-shell.calculator-detail[aria-labelledby="vehicle-title"] > .route-heading h1 {
+    font-size: clamp(1.35rem, 2vw, 1.65rem);
+    line-height: 1.15;
+  }
+
+  .route-shell.calculator-detail[aria-labelledby="dated-return-title"] > .route-heading p:not(.eyebrow),
+  .route-shell.calculator-detail[aria-labelledby="vehicle-title"] > .route-heading p:not(.eyebrow) {
+    margin: 0;
+    max-width: 78ch;
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
   .dated-flow-visual {
     margin: 0;
     padding: 12px;
@@ -2211,7 +2237,7 @@
   }
 
   .dated-flow-visual svg {
-    max-height: 136px;
+    max-height: 112px;
     margin-top: 4px;
   }
 

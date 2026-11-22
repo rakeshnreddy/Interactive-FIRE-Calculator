@@ -111,7 +111,7 @@ describe('B84 / C45 — Stage 2: Option A Split Financial Workbench across the 7
     // R2: compact above-the-fold charts across compound, savings runway, dated XIRR, and lease vs buy
     expect(workspaceCss).toMatch(/\.compound-calculator\s+\.compound-chart-plot[\s\S]*?min-height:\s*128px/);
     expect(workspaceCss).toMatch(/\.savings-goal-calculator\s+\.savings-runway-plot[\s\S]*?min-height:\s*112px/);
-    expect(workspaceCss).toMatch(/\.dated-flow-visual\s+svg[\s\S]*?max-height:\s*136px/);
+    expect(workspaceCss).toMatch(/\.dated-flow-visual\s+svg[\s\S]*?max-height:\s*112px/);
 
     // R3: right-aligned numeric columns in dedicated schedule & comparison tables
     expect(workspaceCss).toMatch(/\.dated-flow-table\s+table\s+:is\(th,\s*td\):nth-child\(2\)[\s\S]*?text-align:\s*right/);
