@@ -587,7 +587,7 @@
     box-shadow: none;
   }
 
-  :is(.field input, .field select, .field textarea, .compound-select select, .dated-currency select, .dated-flow-row input, .vehicle-field input) {
+  :is(.field > input, .field select, .field textarea, .compound-select select, .dated-currency select, .dated-flow-row input, .vehicle-field input) {
     min-height: 44px;
     padding: 8px 12px;
     border: 1px solid var(--color-control-border);
@@ -597,7 +597,7 @@
     transition: border-color 160ms var(--workspace-ease), background-color 160ms var(--workspace-ease);
   }
 
-  :is(.field input, .field select, .field textarea, .compound-select select, .dated-currency select, .dated-flow-row input, .vehicle-field input):focus-visible {
+  :is(.field > input, .field select, .field textarea, .compound-select select, .dated-currency select, .dated-flow-row input, .vehicle-field input):focus-visible {
     border-color: var(--color-primary-bg);
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;

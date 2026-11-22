@@ -199,3 +199,11 @@ B82/C43 is now in progress from `main` `286e726a8b778020cc283c50b0ae9fc904df6f76
 ## FIRE Calculator `/unslop` redline acceptance — 2026-11-21
 
 B82/C43 is accepted on `2026-11-21` at product commit `fbbabb15c6de5eb542d63269261d0c60eaf63502` ([PR #168](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/168), exact-head `Verify` CI [`44962862164`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44962862164) `SUCCESS`, candidate `7d8d9577-4896-4b26-ae1b-d49284f8793c`, shared beta `84c5320a-fe2d-4df3-b001-4e3e4487fb9e` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C43.md)). `79` of `82` registered tasks done.
+
+## Stage 1 Shared Studio Split Financial Workbench registration — 2026-11-21
+
+B83/C44 is now in progress from `main` `835f344de48abb6ad7eed224ec7de8d711fbfc80` ([PR #168](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/168), `main` CI `44964066918`) to apply the Option A Split Financial Workbench across all 75 shared studio calculators (`src/CalculatorLibrary.tsx`, `src/studios.css`, `src/workspace.css`): global single-border `.calculator-input-control` fix, compact 2-column header and inline `.estimate-customization` jump strip, 6-column smart metric ledger grid, and above-the-fold `.calculator-visual-panel` directly below the result metrics. `79` of `83` registered tasks done. See [prompts/B83.md](prompts/B83.md).
+
+## Stage 1 Shared Studio Split Financial Workbench acceptance — 2026-11-21
+
+B83/C44 is accepted on `2026-11-21` at product commit `b22877cebb122db8024d8a67b8a01d08815ec83d` ([PR #169](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/pull/169), exact-head `Verify` CI [`44978472742`](https://github.com/rakeshnreddy/Interactive-FIRE-Calculator/actions/runs/44978472742) `SUCCESS`, candidate `c64321b9-ca6a-43d4-9c76-9b8136ca10d0`, shared beta `090cdedb-0983-4fb6-b940-c29f509a8cf7` / [`codex-finpath-quality-execut.interactive-fire-calculator.pages.dev`](https://codex-finpath-quality-execut.interactive-fire-calculator.pages.dev), [review](reviews/C44.md)). `80` of `83` registered tasks done. Stage 2 (Option A Split Financial Workbench for the 8 remaining dedicated planners) is available when requested by the owner.
